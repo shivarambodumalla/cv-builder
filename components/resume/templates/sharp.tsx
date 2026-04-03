@@ -85,6 +85,18 @@ export function SharpTemplate({
         >
           {contact.name}
         </div>
+        {targetTitle?.title && visibleSections.includes("targetTitle") && (
+          <div
+            style={{
+              fontSize: "calc(var(--resume-body-size) + 1pt)",
+              color: "var(--resume-accent)",
+              marginTop: "4px",
+              fontFamily: "var(--resume-font)",
+            }}
+          >
+            {targetTitle.title}
+          </div>
+        )}
         {contactItems.length > 0 && (
           <div
             style={{

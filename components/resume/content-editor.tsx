@@ -238,8 +238,8 @@ function DateField({ control, name, label }: { control: any; name: string; label
         name={name}
         render={({ field }) => (
           <Input
-            type="month"
-            value={field.value && field.value !== "Present" ? field.value : ""}
+            placeholder="e.g. Jan 2024"
+            value={field.value || ""}
             onChange={(e) => field.onChange(e.target.value)}
             className="block"
           />
@@ -286,7 +286,7 @@ function DateRangeWithPresent({
                   name={endName}
                   render={({ field }) => (
                     <Input
-                      type="month"
+                      placeholder="e.g. Jan 2024"
                       value={field.value && field.value !== "Present" ? field.value : ""}
                       onChange={(e) => field.onChange(e.target.value)}
                       className="block"
