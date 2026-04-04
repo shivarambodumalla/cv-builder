@@ -1,6 +1,6 @@
 export type TemplateName = "classic" | "sharp" | "minimal" | "executive" | "sidebar";
 export type FontFamily = "classic" | "clean" | "elegant" | "strong";
-export type AccentColor = "slate" | "teal" | "navy" | "charcoal" | "rust" | "plum";
+export type AccentColor = "slate" | "teal" | "navy" | "rust" | "plum" | "deepRed" | "darkGold" | "forestGreen" | "steelBlue" | "softPurple" | "lavender" | "warmOrange" | "slateGray";
 export type HeaderAlignment = "left" | "center" | "right";
 export type DateFormat = "short" | "long" | "numeric";
 export type BodySize = "S" | "M" | "L";
@@ -63,9 +63,16 @@ export const ACCENT_COLORS: Record<AccentColor, string> = {
   slate: "#334155",
   teal: "#0D9488",
   navy: "#1E3A5F",
-  charcoal: "#374151",
   rust: "#C2410C",
   plum: "#6B21A8",
+  deepRed: "#9B2C2C",
+  darkGold: "#B7791F",
+  forestGreen: "#276749",
+  steelBlue: "#2C5282",
+  softPurple: "#805AD5",
+  lavender: "#9F7AEA",
+  warmOrange: "#DD6B20",
+  slateGray: "#4A5568",
 };
 
 export const BODY_SIZE_PT: Record<string, number> = { S: 9, M: 10, L: 11 };

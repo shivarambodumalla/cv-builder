@@ -45,6 +45,12 @@ export default function AdminLayout({
           >
             AI Settings
           </Link>
+          <Link
+            href="/admin/missing-roles"
+            className="flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            Missing Roles
+          </Link>
         </nav>
       </aside>
       <div className="flex flex-1 flex-col">

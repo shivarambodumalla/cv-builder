@@ -156,6 +156,7 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
       const cats = getValues("skills.categories") || [];
       if (cats.length > 0) {
         const current: string[] = getValues("skills.categories.0.skills") || [];
+        if (current.some((s) => s.toLowerCase() === skill.toLowerCase())) return;
         setValue("skills.categories.0.skills", [...current, skill]);
       } else {
         setValue("skills.categories", [{ name: "", skills: [skill] }]);
@@ -208,10 +209,10 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
                 {key === "contact" && <ContactFields register={register} />}
                 {key === "targetTitle" && <TargetTitleField register={register} />}
                 {key === "summary" && <SummaryField register={register} />}
-                {key === "experience" && <ExperienceFields control={control} register={register} />}
-                {key === "education" && <EducationFields control={control} register={register} />}
+                {key === "experience" && <ExperienceFields control={control} register={register} watched={watched} />}
+                {key === "education" && <EducationFields control={control} register={register} watched={watched} />}
                 {key === "skills" && <SkillsFields control={control} getValues={getValues} setValue={setValue} />}
-                {key === "certifications" && <CertificationFields control={control} register={register} />}
+                {key === "certifications" && <CertificationFields control={control} register={register} watched={watched} />}
                 {key === "awards" && <AwardFields control={control} register={register} />}
                 {key === "projects" && <ProjectFields control={control} register={register} />}
                 {key === "volunteering" && <VolunteeringFields control={control} register={register} />}
@@ -261,7 +262,6 @@ function ContactFields({ register }: { register: any }) {
 function TargetTitleField({ register }: { register: any }) {
   return (
     <div>
-      <Label className="text-xs">Target Job Title</Label>
       <Input {...register("targetTitle.title")} placeholder="Senior Software Engineer" />
     </div>
   );
@@ -298,6 +298,7 @@ function DateRangeWithPresent({
   currentName,
   startLabel = "Start",
   endLabel = "End",
+  currentLabel = "Present",
 }: {
   control: any;
   startName: string;
@@ -305,6 +306,7 @@ function DateRangeWithPresent({
   currentName?: string;
   startLabel?: string;
   endLabel?: string;
+  currentLabel?: string;
 }) {
   return (
     <Controller
@@ -321,7 +323,7 @@ function DateRangeWithPresent({
             <div>
               <Label className="text-xs">{endLabel}</Label>
               {isCurrent ? (
-                <Input value="Present" disabled className="block" />
+                <Input value={currentLabel} disabled className="block" />
               ) : (
                 <Controller
                   control={control}
@@ -353,7 +355,7 @@ function DateRangeWithPresent({
                   }}
                   className="rounded"
                 />
-                Present
+                {currentLabel}
               </label>
             )}
           </>
@@ -375,7 +377,7 @@ function EmptyState({ message, onAdd, buttonText }: { message: string; onAdd: ()
   );
 }
 
-function ExperienceFields({ control, register }: { control: any; register: any }) {
+function ExperienceFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
   const { fields, append, remove } = useFieldArray({ control, name: "experience.items" });
 
   if (fields.length === 0) {
@@ -391,7 +393,7 @@ function ExperienceFields({ control, register }: { control: any; register: any }
   return (
     <div className="space-y-4">
       {fields.map((field, i) => (
-        <ExpItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} />
+        <ExpItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} />
       ))}
       <Button
         type="button" variant="outline" size="sm"
@@ -403,46 +405,69 @@ function ExperienceFields({ control, register }: { control: any; register: any }
   );
 }
 
-function ExpItem({ index, control, register, onRemove }: { index: number; control: any; register: any; onRemove: () => void }) {
+function ExpItem({ index, control, register, onRemove, watched }: { index: number; control: any; register: any; onRemove: () => void; watched?: any }) {
   const { fields: bulletFields, append, remove } = useFieldArray({ control, name: `experience.items.${index}.bullets` as any });
+  const [open, setOpen] = useState(false);
+
+  const company = watched?.experience?.items?.[index]?.company || "";
+  const role = watched?.experience?.items?.[index]?.role || "";
+  const headerText = [role, company].filter(Boolean).join(" at ") || "New Experience";
 
   return (
-    <div className="rounded-lg border p-3 space-y-3">
-      <div className="flex items-start justify-between">
-        <div className="grid flex-1 grid-cols-2 gap-2">
-          <Input {...register(`experience.items.${index}.company`)} placeholder="Company" />
-          <Input {...register(`experience.items.${index}.role`)} placeholder="Role" />
-          <Input {...register(`experience.items.${index}.location`)} placeholder="Location" className="col-span-2" />
-          <DateRangeWithPresent
-            control={control}
-            startName={`experience.items.${index}.startDate`}
-            endName={`experience.items.${index}.endDate`}
-            currentName={`experience.items.${index}.isCurrent`}
-          />
-        </div>
-        <Button type="button" variant="ghost" size="icon" className="ml-2 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={onRemove}>
+    <div className="rounded-lg border">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setOpen(!open)}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(!open); }}
+        className="flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors cursor-pointer"
+      >
+        <span className="flex items-center gap-2 min-w-0">
+          <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+          <span className="truncate font-medium">{headerText}</span>
+        </span>
+        <Button
+          type="button" variant="ghost" size="icon"
+          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+          onClick={(e) => { e.stopPropagation(); onRemove(); }}
+        >
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>
-      <div className="space-y-2">
-        <Label className="text-xs text-muted-foreground">Bullet Points</Label>
-        {bulletFields.map((bf, bi) => (
-          <div key={bf.id} className="flex gap-2">
-            <Textarea {...register(`experience.items.${index}.bullets.${bi}`)} placeholder="Describe achievement..." rows={3} className="flex-1 resize-y" />
-            <Button type="button" variant="ghost" size="icon" className="mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(bi)}>
-              <X className="h-3.5 w-3.5" />
+      {open && (
+        <div className="border-t px-3 pb-3 pt-3 space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <Input {...register(`experience.items.${index}.company`)} placeholder="Company" />
+            <Input {...register(`experience.items.${index}.role`)} placeholder="Role" />
+            <Input {...register(`experience.items.${index}.location`)} placeholder="Location" className="col-span-2" />
+            <DateRangeWithPresent
+              control={control}
+              startName={`experience.items.${index}.startDate`}
+              endName={`experience.items.${index}.endDate`}
+              currentName={`experience.items.${index}.isCurrent`}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Bullet Points</Label>
+            {bulletFields.map((bf, bi) => (
+              <div key={bf.id} className="flex gap-2">
+                <Textarea {...register(`experience.items.${index}.bullets.${bi}`)} placeholder="Describe achievement..." rows={3} className="flex-1 resize-y" />
+                <Button type="button" variant="ghost" size="icon" className="mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(bi)}>
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            ))}
+            <Button type="button" variant="ghost" size="sm" onClick={() => append("" as any)}>
+              <Plus className="mr-1 h-3 w-3" /> Add Bullet
             </Button>
           </div>
-        ))}
-        <Button type="button" variant="ghost" size="sm" onClick={() => append("" as any)}>
-          <Plus className="mr-1 h-3 w-3" /> Add Bullet
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function EducationFields({ control, register }: { control: any; register: any }) {
+function EducationFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
   const { fields, append, remove } = useFieldArray({ control, name: "education.items" });
 
   if (fields.length === 0) {
@@ -452,24 +477,55 @@ function EducationFields({ control, register }: { control: any; register: any })
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {fields.map((field, i) => (
-        <div key={field.id} className="flex items-start gap-2">
-          <div className="grid flex-1 grid-cols-2 gap-2">
-            <Input {...register(`education.items.${i}.institution`)} placeholder="University" />
-            <Input {...register(`education.items.${i}.degree`)} placeholder="Degree" />
-            <Input {...register(`education.items.${i}.field`)} placeholder="Field of Study" className="col-span-2" />
-            <DateField control={control} name={`education.items.${i}.startDate`} label="Start" />
-            <DateField control={control} name={`education.items.${i}.endDate`} label="End" />
-          </div>
-          <Button type="button" variant="ghost" size="icon" className="mt-0.5 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
+        <EduItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} />
       ))}
       <Button type="button" variant="outline" size="sm" onClick={() => append({ institution: "", degree: "", field: "", startDate: "", endDate: "" })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Education
       </Button>
+    </div>
+  );
+}
+
+function EduItem({ index, control, register, onRemove, watched }: { index: number; control: any; register: any; onRemove: () => void; watched?: any }) {
+  const [open, setOpen] = useState(false);
+  const institution = watched?.education?.items?.[index]?.institution || "";
+  const degree = watched?.education?.items?.[index]?.degree || "";
+  const headerText = [degree, institution].filter(Boolean).join(" at ") || "New Education";
+
+  return (
+    <div className="rounded-lg border">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setOpen(!open)}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(!open); }}
+        className="flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors cursor-pointer"
+      >
+        <span className="flex items-center gap-2 min-w-0">
+          <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+          <span className="truncate font-medium">{headerText}</span>
+        </span>
+        <Button
+          type="button" variant="ghost" size="icon"
+          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+          onClick={(e) => { e.stopPropagation(); onRemove(); }}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+      {open && (
+        <div className="border-t px-3 pb-3 pt-3 space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <Input {...register(`education.items.${index}.institution`)} placeholder="University" />
+            <Input {...register(`education.items.${index}.degree`)} placeholder="Degree" />
+            <Input {...register(`education.items.${index}.field`)} placeholder="Field of Study" className="col-span-2" />
+            <DateField control={control} name={`education.items.${index}.startDate`} label="Start" />
+            <DateField control={control} name={`education.items.${index}.endDate`} label="End" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -566,7 +622,7 @@ function SkillsFields({ control, getValues, setValue }: { control: any; getValue
   );
 }
 
-function CertificationFields({ control, register }: { control: any; register: any }) {
+function CertificationFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
   const { fields, append, remove } = useFieldArray({ control, name: "certifications.items" });
 
   if (fields.length === 0) {
@@ -574,29 +630,61 @@ function CertificationFields({ control, register }: { control: any; register: an
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {fields.map((field, i) => (
-        <div key={field.id} className="flex items-start gap-2">
-          <div className="grid flex-1 grid-cols-2 gap-2">
-            <Input {...register(`certifications.items.${i}.name`)} placeholder="Certification Name" />
-            <Input {...register(`certifications.items.${i}.issuer`)} placeholder="Issuing Organization" />
-            <DateRangeWithPresent
-              control={control}
-              startName={`certifications.items.${i}.startDate`}
-              endName={`certifications.items.${i}.endDate`}
-              currentName={`certifications.items.${i}.isCurrent`}
-              startLabel="Issue Date"
-              endLabel="Expiry Date"
-            />
-          </div>
-          <Button type="button" variant="ghost" size="icon" className="mt-0.5 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
+        <CertItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} />
       ))}
       <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", issuer: "", startDate: "", endDate: "", isCurrent: false })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Certification
       </Button>
+    </div>
+  );
+}
+
+function CertItem({ index, control, register, onRemove, watched }: { index: number; control: any; register: any; onRemove: () => void; watched?: any }) {
+  const [open, setOpen] = useState(false);
+  const name = watched?.certifications?.items?.[index]?.name || "";
+  const issuer = watched?.certifications?.items?.[index]?.issuer || "";
+  const headerText = [name, issuer].filter(Boolean).join(" — ") || "New Certification";
+
+  return (
+    <div className="rounded-lg border">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setOpen(!open)}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(!open); }}
+        className="flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors cursor-pointer"
+      >
+        <span className="flex items-center gap-2 min-w-0">
+          <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+          <span className="truncate font-medium">{headerText}</span>
+        </span>
+        <Button
+          type="button" variant="ghost" size="icon"
+          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+          onClick={(e) => { e.stopPropagation(); onRemove(); }}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+      {open && (
+        <div className="border-t px-3 pb-3 pt-3 space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <Input {...register(`certifications.items.${index}.name`)} placeholder="Certification Name" />
+            <Input {...register(`certifications.items.${index}.issuer`)} placeholder="Issuing Organization" />
+            <DateRangeWithPresent
+              control={control}
+              startName={`certifications.items.${index}.startDate`}
+              endName={`certifications.items.${index}.endDate`}
+              currentName={`certifications.items.${index}.isCurrent`}
+              startLabel="Issue Date"
+              endLabel="Expiry Date"
+              currentLabel="No Expiry"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

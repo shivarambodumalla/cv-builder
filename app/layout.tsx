@@ -2,11 +2,19 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { DevReload } from "./dev-reload";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CVPilot — AI-Powered CV Builder",
+  title: "CVedge — AI-Powered CV Builder",
   description: "Build professional CVs with AI assistance",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/img/CV-Edge-Logo-square.svg", type: "image/svg+xml" },
+    ],
+    apple: "/img/CV-Edge-Logo-square.svg",
+  },
 };
 
 export default function RootLayout({
@@ -23,6 +31,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <DevReload />
           {children}
         </ThemeProvider>
       </body>

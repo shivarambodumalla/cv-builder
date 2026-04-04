@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
+import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
@@ -9,10 +10,6 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/api/admin");
 
   if (isAdminRoute) {
-    const { createServerClient } = await import("@supabase/ssr");
-
-    let supabaseResponse = NextResponse.next({ request });
-
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -21,15 +18,7 @@ export async function middleware(request: NextRequest) {
           getAll() {
             return request.cookies.getAll();
           },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value }) =>
-              request.cookies.set(name, value)
-            );
-            supabaseResponse = NextResponse.next({ request });
-            cookiesToSet.forEach(({ name, value, options }) =>
-              supabaseResponse.cookies.set(name, value, options)
-            );
-          },
+          setAll() {},
         },
       }
     );
@@ -45,8 +34,6 @@ export async function middleware(request: NextRequest) {
       url.pathname = "/dashboard";
       return NextResponse.redirect(url);
     }
-
-    return supabaseResponse;
   }
 
   return response;

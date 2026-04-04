@@ -44,43 +44,58 @@ export function PaperPreview({
     const el = contentRef.current;
     if (!el) return;
 
+    const containerRect = el.getBoundingClientRect();
+    const contentH = el.scrollHeight;
+
+    if (contentH <= pageHeight) {
+      setBreaks([]);
+      return;
+    }
+
     const sections = el.querySelectorAll<HTMLElement>("[data-resume-section]");
     const result: PageBreak[] = [];
     let currentPageBottom = pageHeight;
     let pageNum = 1;
 
+    function getTop(node: HTMLElement): number {
+      return node.getBoundingClientRect().top - containerRect.top;
+    }
+    function getBottom(node: HTMLElement): number {
+      return node.getBoundingClientRect().bottom - containerRect.top;
+    }
+
     sections.forEach((section) => {
       const sectionKey = section.dataset.resumeSection || "";
-      const sectionTop = section.offsetTop;
+      const sectionTop = getTop(section);
 
       if (manualBreaks.includes(sectionKey) && pageNum >= 1) {
         pageNum++;
-        result.push({
-          offsetY: sectionTop,
-          pageNum,
-          isManual: true,
-          sectionKey,
-        });
+        result.push({ offsetY: sectionTop, pageNum, isManual: true, sectionKey });
         currentPageBottom = sectionTop + pageHeight;
         return;
       }
 
       const entries = section.querySelectorAll<HTMLElement>("[data-resume-entry]");
-      const elements = entries.length > 0 ? Array.from(entries) : [section];
+      const hasEntries = entries.length > 0;
+      const elements = hasEntries ? Array.from(entries) : [section];
 
       elements.forEach((item) => {
-        const itemTop = item.offsetTop;
-        const itemBottom = itemTop + item.offsetHeight;
+        const itemTop = getTop(item);
+        const itemBottom = getBottom(item);
 
         if (itemBottom > currentPageBottom) {
           pageNum++;
-          const breakY = itemTop > currentPageBottom ? currentPageBottom : itemTop;
-          result.push({
-            offsetY: breakY,
-            pageNum,
-            isManual: false,
-          });
+          const breakY = hasEntries ? Math.min(itemTop, currentPageBottom) : currentPageBottom;
+          result.push({ offsetY: breakY, pageNum, isManual: false });
           currentPageBottom = breakY + pageHeight;
+
+          if (!hasEntries) {
+            while (itemBottom > currentPageBottom) {
+              pageNum++;
+              result.push({ offsetY: currentPageBottom, pageNum, isManual: false });
+              currentPageBottom += pageHeight;
+            }
+          }
         }
       });
     });
@@ -114,18 +129,22 @@ export function PaperPreview({
   const contentHeight = contentRef.current?.scrollHeight ?? pageHeight;
   const displayHeight = Math.max(contentHeight, pageHeight * totalPages);
 
+  const rawHeight = Math.max(displayHeight, pageHeight);
+  const scaledWidth = widthPx * scale;
+  const scaledHeight = rawHeight * scale;
+
   return (
-    <div ref={containerRef} className="w-full">
-      <div
-        style={{
-          width: widthPx,
-          minHeight: pageHeight,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-          marginBottom: `${displayHeight * scale - displayHeight}px`,
-        }}
-        className="relative"
-      >
+    <div ref={containerRef} className="w-full flex justify-center pb-4">
+      <div style={{ width: scaledWidth, height: scaledHeight }}>
+        <div
+          style={{
+            width: widthPx,
+            minHeight: rawHeight,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+          className="relative"
+        >
         <div
           ref={contentRef}
           className="bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.06)] rounded-sm"
@@ -138,7 +157,7 @@ export function PaperPreview({
           <div
             key={i}
             className="absolute left-0 right-0 pointer-events-auto"
-            style={{ top: b.offsetY * scale, zIndex: 10 }}
+            style={{ top: b.offsetY, zIndex: 10 }}
           >
             <div className="relative flex items-center py-2">
               <div
@@ -171,6 +190,7 @@ export function PaperPreview({
             </div>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

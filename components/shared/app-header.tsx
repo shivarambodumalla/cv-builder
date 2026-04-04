@@ -60,8 +60,8 @@ export function AppHeader({ user }: AppHeaderProps) {
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link href="/dashboard" className="text-lg font-bold">
-            CVPilot
+          <Link href="/dashboard" className="flex items-center">
+            <img src="/img/CV-Edge-Logo.svg" alt="CVedge" className="h-7" />
           </Link>
           <nav className="flex items-center gap-4">
             <Link

@@ -161,7 +161,7 @@ export function SidebarTemplate({
             "Experience",
             <>
               {experience.items.map((item, i) => (
-                <div key={i} style={{ marginBottom: i < experience.items.length - 1 ? "12px" : 0 }}>
+                <div key={i} data-resume-entry="" style={{ marginBottom: i < experience.items.length - 1 ? "12px" : 0 }}>
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
@@ -219,7 +219,7 @@ export function SidebarTemplate({
             "Education",
             <>
               {education.items.map((item, i) => (
-                <div key={i} style={{ marginBottom: i < education.items.length - 1 ? "8px" : 0 }}>
+                <div key={i} data-resume-entry="" style={{ marginBottom: i < education.items.length - 1 ? "8px" : 0 }}>
                   <div
                     style={{
                       display: "flex",
@@ -279,6 +279,7 @@ export function SidebarTemplate({
               {certifications.items.map((item, i) => (
                 <div
                   key={i}
+                  data-resume-entry=""
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -310,6 +311,7 @@ export function SidebarTemplate({
               {awards.items.map((item, i) => (
                 <div
                   key={i}
+                  data-resume-entry=""
                   style={{
                     fontFamily: "var(--resume-font)",
                     fontSize: "var(--resume-body-size)",
@@ -343,7 +345,7 @@ export function SidebarTemplate({
             "Projects",
             <>
               {projects.items.map((item, i) => (
-                <div key={i} style={{ marginBottom: i < projects.items.length - 1 ? "12px" : 0 }}>
+                <div key={i} data-resume-entry="" style={{ marginBottom: i < projects.items.length - 1 ? "12px" : 0 }}>
                   <div
                     style={{
                       display: "flex",
@@ -401,7 +403,7 @@ export function SidebarTemplate({
             "Volunteering",
             <>
               {volunteering.items.map((item, i) => (
-                <div key={i} style={{ marginBottom: i < volunteering.items.length - 1 ? "12px" : 0 }}>
+                <div key={i} data-resume-entry="" style={{ marginBottom: i < volunteering.items.length - 1 ? "12px" : 0 }}>
                   <div
                     style={{
                       display: "flex",
@@ -457,6 +459,7 @@ export function SidebarTemplate({
               {publications.items.map((item, i) => (
                 <div
                   key={i}
+                  data-resume-entry=""
                   style={{
                     fontFamily: "var(--resume-font)",
                     fontSize: "var(--resume-body-size)",

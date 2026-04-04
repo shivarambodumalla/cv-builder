@@ -36,6 +36,14 @@ Responsibilities:
 
 Behavior: reason before recommending, problems first then improvements, think in systems not screens.
 
+## Keyword List Fallback
+Priority order:
+1. Exact role match in keyword_lists table
+2. Fuzzy role match via ROLE_KEYWORD_MAPPING
+3. Domain fallback (domain:[domain] key)
+4. AI generated — saved to DB on first use
+Never block user with missing keyword error.
+
 ## Save Strategy
 - CV content: debounced auto-save, 2 second delay after last keystroke
 - Save trigger: onBlur or 2s debounce, whichever comes first
@@ -45,6 +53,21 @@ Behavior: reason before recommending, problems first then improvements, think in
 - Preview: never saved, always derived from parsed_json
 - On tab close: save via beforeunload event
 - Max 1 Supabase write per 2 seconds during editing
+
+## AI Prompts
+All AI prompts live in the Supabase `prompts` table. Never hardcode prompts in code.
+Use `callAI()` from `lib/ai/client.ts` for all AI calls — it fetches the prompt by name, substitutes `{{variables}}`, and respects `ai_settings`.
+
+Current prompts:
+| name | feature | used by |
+|------|---------|---------|
+| ats_analysis_v1 | ats_analysis | lib/ai/ats-analyser.ts |
+| cv_parse_v1 | cv_parse | lib/ai/gemini.ts → structureCvText() |
+| job_match_v1 | job_match | lib/ai/gemini.ts → matchJob() |
+| cover_letter_v1 | cover_letter | lib/ai/gemini.ts → generateCoverLetter() |
+| keyword_generate_v1 | keyword_generate | lib/ai/ats-analyser.ts → generateKeywordList() |
+
+Seed script: `npx tsx scripts/seed-prompts.ts`
 
 ## Token Rules (for AI tools)
 - One feature per prompt

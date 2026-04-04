@@ -148,7 +148,7 @@ export function MinimalTemplate({
         <div key="experience">
           {renderSectionTitle("Experience")}
           {experience.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < experience.items.length - 1 ? "14px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < experience.items.length - 1 ? "14px" : 0 }}>
               <div
                 style={{
                   fontFamily: "var(--resume-font)",
@@ -195,7 +195,7 @@ export function MinimalTemplate({
         <div key="education">
           {renderSectionTitle("Education")}
           {education.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < education.items.length - 1 ? "10px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < education.items.length - 1 ? "10px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -251,6 +251,7 @@ export function MinimalTemplate({
           {certifications.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -280,6 +281,7 @@ export function MinimalTemplate({
           {awards.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 fontFamily: "var(--resume-font)",
                 fontSize: "var(--resume-body-size)",
@@ -311,7 +313,7 @@ export function MinimalTemplate({
         <div key="projects">
           {renderSectionTitle("Projects")}
           {projects.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < projects.items.length - 1 ? "14px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < projects.items.length - 1 ? "14px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -363,7 +365,7 @@ export function MinimalTemplate({
         <div key="volunteering">
           {renderSectionTitle("Volunteering")}
           {volunteering.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < volunteering.items.length - 1 ? "14px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < volunteering.items.length - 1 ? "14px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -415,6 +417,7 @@ export function MinimalTemplate({
           {publications.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 fontFamily: "var(--resume-font)",
                 fontSize: "var(--resume-body-size)",

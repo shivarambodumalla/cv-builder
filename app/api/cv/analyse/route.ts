@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { analyseCV } from "@/lib/ai/ats-analyser";
+import { getDomainForRole } from "@/lib/resume/roles";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -37,9 +39,16 @@ export async function POST(request: NextRequest) {
     const error = err as Error & { code?: string; role?: string };
 
     if (error.code === "keyword_list_required") {
+      const admin = createAdminClient();
+      await admin.from("missing_roles").insert({
+        role_name: error.role || "Unknown",
+        domain: getDomainForRole(error.role || "") || null,
+        user_id: user.id,
+      });
+
       return NextResponse.json(
         {
-          error: `No keyword list found for role: "${error.role}". Contact support or add keywords in admin.`,
+          error: `No keyword list found for role: "${error.role}". We've recorded this request — keywords will be added soon.`,
           code: "keyword_list_required",
           role: error.role,
         },

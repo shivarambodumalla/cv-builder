@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
@@ -16,6 +16,8 @@ import { GoogleButton } from "@/components/shared/google-button";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ref = searchParams.get("ref");
   const [authError, setAuthError] = useState("");
   const [success, setSuccess] = useState(false);
   const {
@@ -47,6 +49,22 @@ export default function RegisterPage() {
       return;
     }
 
+    if (ref) {
+      try {
+        const res = await fetch("/api/cv/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ redirect_token: ref }),
+        });
+        const claimResult = await res.json();
+        if (claimResult.cv_id) {
+          router.push(`/resume/${claimResult.cv_id}`);
+          router.refresh();
+          return;
+        }
+      } catch {}
+    }
+
     router.push("/dashboard");
     router.refresh();
   }
@@ -56,7 +74,7 @@ export default function RegisterPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback${ref ? "?ref=" + ref : ""}`,
       },
     });
   }

@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CvUploadModal } from "@/components/shared/cv-upload-modal";
 import { JobDescriptionModal } from "@/components/shared/job-description-modal";
 import {
   Plus,
@@ -29,7 +28,6 @@ interface Cv {
 
 export function CvList({ cvs }: { cvs: Cv[] }) {
   const router = useRouter();
-  const [uploadOpen, setUploadOpen] = useState(false);
   const [jobDescOpen, setJobDescOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -67,15 +65,15 @@ export function CvList({ cvs }: { cvs: Cv[] }) {
     <>
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <button
-          onClick={() => setUploadOpen(true)}
+        <Link
+          href="/upload-resume"
           className="group flex flex-col items-center gap-3 rounded-xl border border-dashed p-6 transition-colors hover:border-primary/50 hover:bg-primary/5"
         >
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400">
             <Plus className="h-6 w-6" />
           </div>
           <span className="text-sm font-medium">New Resume</span>
-        </button>
+        </Link>
 
         <button
           onClick={() => setJobDescOpen(true)}
@@ -206,7 +204,7 @@ export function CvList({ cvs }: { cvs: Cv[] }) {
           {filtered.map((cv) => {
             const score = cv.ats_reports?.[0]?.score;
             return (
-              <Link key={cv.id} href={`/resume/${cv.id}`}>
+              <Link key={cv.id} href={`/resume/${cv.id}`} className="block">
                 <div className="flex items-center justify-between rounded-lg border px-4 py-3 transition-colors hover:bg-muted/50">
                   <div className="flex items-center gap-3 min-w-0">
                     <FileText className="h-5 w-5 shrink-0 text-muted-foreground" />
@@ -244,7 +242,6 @@ export function CvList({ cvs }: { cvs: Cv[] }) {
         </div>
       )}
 
-      <CvUploadModal open={uploadOpen} onOpenChange={setUploadOpen} />
       <JobDescriptionModal open={jobDescOpen} onOpenChange={setJobDescOpen} />
     </>
   );

@@ -28,6 +28,7 @@ import { DesignerPanel } from "@/components/resume/designer-panel";
 import { AtsPanel } from "@/components/shared/ats-panel";
 import { JobMatchPanel } from "@/components/shared/job-match-panel";
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
+import { calculateClientScore, type ClientScoreResult } from "@/lib/ats/client-scorer";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_CONTENT, DEFAULT_DESIGN } from "@/lib/resume/defaults";
 import { getPreviewContent } from "@/lib/resume/placeholder";
@@ -50,13 +51,14 @@ interface Cv {
   raw_text: string;
   parsed_json: ResumeContent | null;
   design_settings: ResumeDesignSettings | null;
+  updated_at?: string;
 }
 
 interface AtsReport {
   id: string;
   score: number;
   confidence?: string;
-  category_scores?: Record<string, unknown>;
+  category_scores?: Record<string, { score: number; weight: number }>;
   keywords?: { found: string[]; missing: string[]; stuffed: string[] };
   enhancements?: string[];
   summary?: string;
@@ -138,6 +140,18 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
   const titleDebounceRef = useRef<NodeJS.Timeout>();
   const designDebounceRef = useRef<NodeJS.Timeout>();
   const containerRef = useRef<HTMLDivElement>(null);
+  const scorerDebounceRef = useRef<NodeJS.Timeout>();
+  const [estimatedScore, setEstimatedScore] = useState<ClientScoreResult | null>(null);
+
+  useEffect(() => {
+    clearTimeout(scorerDebounceRef.current);
+    scorerDebounceRef.current = setTimeout(() => {
+      if (!latestReport) return;
+      const result = calculateClientScore(content, latestReport, null);
+      setEstimatedScore(result);
+    }, 300);
+    return () => clearTimeout(scorerDebounceRef.current);
+  }, [content, latestReport]);
 
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -175,6 +189,15 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
       titleInputRef.current.select();
     }
   }, [editingTitle]);
+
+  useEffect(() => {
+    function onSwitchTab(e: Event) {
+      const tab = (e as CustomEvent).detail as string;
+      if (tab) setActiveTab(tab);
+    }
+    window.addEventListener("switch-tab", onSwitchTab);
+    return () => window.removeEventListener("switch-tab", onSwitchTab);
+  }, []);
 
   const saveTitle = useCallback(async (t: string) => {
     const supabase = createClient();
@@ -229,7 +252,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => router.push("/dashboard")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary text-xs font-bold">CV</div>
+          <img src="/img/CV-Edge-Logo-square.svg" alt="CVedge" className="h-7 w-7 shrink-0" />
           {editingTitle ? (
             <input
               ref={titleInputRef}
@@ -257,7 +280,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" className="h-8" onClick={async () => {
+          <Button size="sm" className="h-8" onClick={async () => {
             try {
               const res = await fetch("/api/cv/export/pdf", {
                 method: "POST",
@@ -269,12 +292,12 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
               const url = URL.createObjectURL(blob);
               const a = document.createElement("a");
               a.href = url;
-              a.download = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
+              a.download = `${(title || "resume").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
               a.click();
               URL.revokeObjectURL(url);
             } catch { /* ignore */ }
           }}>
-            <Download className="mr-1.5 h-3.5 w-3.5" /> PDF
+            <Download className="mr-1.5 h-3.5 w-3.5" /> Resume
           </Button>
 
           <DropdownMenu>
@@ -320,17 +343,22 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
       <div ref={containerRef} className="relative flex flex-1 overflow-hidden">
         {/* Left Panel */}
         <div
-          className="shrink-0 border-r overflow-y-auto p-4"
+          className="shrink-0 border-r flex flex-col"
           style={{ width: `${leftPanelWidth}%` }}
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-4 w-full">
-              <TabsTrigger value="editor" className="flex-1">Content</TabsTrigger>
-              <TabsTrigger value="design" className="flex-1">Design</TabsTrigger>
-              <TabsTrigger value="analyser" className="flex-1">Analyser</TabsTrigger>
-              <TabsTrigger value="job-match" className="flex-1">Job Match</TabsTrigger>
-              <TabsTrigger value="cover-letter" className="flex-1">Cover Letter</TabsTrigger>
-            </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
+            <div className="sticky top-0 z-10 bg-background border-b px-4 pt-4 pb-3">
+              <div className="w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <TabsList className="w-max min-w-full inline-flex">
+                  <TabsTrigger value="editor" className="flex-1 whitespace-nowrap px-3">Content</TabsTrigger>
+                  <TabsTrigger value="design" className="flex-1 whitespace-nowrap px-3">Design</TabsTrigger>
+                  <TabsTrigger value="analyser" className="flex-1 whitespace-nowrap px-3">Analyser</TabsTrigger>
+                  <TabsTrigger value="job-match" className="flex-1 whitespace-nowrap px-3">Job Match</TabsTrigger>
+                  <TabsTrigger value="cover-letter" className="flex-1 whitespace-nowrap px-3">Cover Letter</TabsTrigger>
+                </TabsList>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
 
             {/* Content + Analyser tabs: show content editor on left */}
             {(activeTab === "editor" || activeTab === "analyser") && (
@@ -351,6 +379,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
             {activeTab === "cover-letter" && (
               <CoverLetterPanel cvId={cv.id} jobMatches={jobMatches} />
             )}
+            </div>
           </Tabs>
         </div>
 
@@ -361,10 +390,10 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
         />
 
         {/* Right Panel — changes based on active tab */}
-        <div className="flex-1 min-w-0 overflow-y-auto bg-muted/30 p-6">
+        <div className="flex-1 min-w-0 overflow-y-auto bg-muted/30 p-4 lg:p-6">
           {/* Content + Design tabs: live preview */}
           {(activeTab === "editor" || activeTab === "design") && (
-            <div className="mx-auto" style={{ maxWidth: "700px" }}>
+            <div className="mx-auto w-full">
               <PaperPreview
                 paperSize={design.paperSize}
                 manualBreaks={design.pageBreaks ?? []}
@@ -384,7 +413,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} />
             </div>
           )}
 
@@ -392,7 +421,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
           {activeTab === "job-match" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} />
             </div>
           )}
 

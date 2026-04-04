@@ -114,11 +114,7 @@ export async function POST(request: NextRequest) {
   try {
     parsedJson = await structureCvText(rawText);
   } catch (err) {
-    console.error("[cv/upload] Gemini structuring failed:", err);
-    return NextResponse.json(
-      { error: "Analysis failed. Please try again" },
-      { status: 502 }
-    );
+    console.error("[cv/upload] AI structuring failed (non-blocking):", err);
   }
 
   const admin = createAdminClient();
@@ -129,7 +125,7 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       title,
       raw_text: rawText,
-      parsed_json: parsedJson,
+      ...(parsedJson ? { parsed_json: parsedJson } : {}),
     })
     .select("id")
     .single();

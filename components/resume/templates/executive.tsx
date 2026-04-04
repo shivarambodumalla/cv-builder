@@ -154,7 +154,7 @@ export function ExecutiveTemplate({
         <div key="experience">
           {renderSectionTitle("Professional Experience")}
           {experience.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < experience.items.length - 1 ? "8px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < experience.items.length - 1 ? "8px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -205,6 +205,7 @@ export function ExecutiveTemplate({
           {education.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -258,6 +259,7 @@ export function ExecutiveTemplate({
           {certifications.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -287,6 +289,7 @@ export function ExecutiveTemplate({
           {awards.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 fontFamily: "var(--resume-font)",
                 fontSize: "var(--resume-body-size)",
@@ -320,7 +323,7 @@ export function ExecutiveTemplate({
         <div key="projects">
           {renderSectionTitle("Projects")}
           {projects.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < projects.items.length - 1 ? "8px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < projects.items.length - 1 ? "8px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -372,7 +375,7 @@ export function ExecutiveTemplate({
         <div key="volunteering">
           {renderSectionTitle("Volunteering")}
           {volunteering.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < volunteering.items.length - 1 ? "8px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < volunteering.items.length - 1 ? "8px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -422,6 +425,7 @@ export function ExecutiveTemplate({
           {publications.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 fontFamily: "var(--resume-font)",
                 fontSize: "var(--resume-body-size)",

@@ -6,7 +6,8 @@ interface ScoreRingProps {
   strokeWidth?: number;
 }
 
-export function ScoreRing({ score, size = 120, strokeWidth = 10 }: ScoreRingProps) {
+export function ScoreRing({ score: rawScore, size = 120, strokeWidth = 10 }: ScoreRingProps) {
+  const score = Number(rawScore) || 0;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (score / 100) * circumference;

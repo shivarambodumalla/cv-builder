@@ -24,8 +24,8 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link href="/" className="text-lg font-bold">
-              CVPilot
+            <Link href="/" className="flex items-center">
+              <img src="/img/CV-Edge-Logo.svg" alt="CVedge" className="h-7" />
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               AI-powered CV builder that helps you land more interviews.

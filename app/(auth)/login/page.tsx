@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
@@ -16,6 +16,8 @@ import { GoogleButton } from "@/components/shared/google-button";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ref = searchParams.get("ref");
   const [authError, setAuthError] = useState("");
   const {
     register,
@@ -38,6 +40,22 @@ export default function LoginPage() {
       return;
     }
 
+    if (ref) {
+      try {
+        const res = await fetch("/api/cv/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ redirect_token: ref }),
+        });
+        const result = await res.json();
+        if (result.cv_id) {
+          router.push(`/resume/${result.cv_id}`);
+          router.refresh();
+          return;
+        }
+      } catch {}
+    }
+
     router.push("/dashboard");
     router.refresh();
   }
@@ -47,7 +65,7 @@ export default function LoginPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback${ref ? "?ref=" + ref : ""}`,
       },
     });
   }
@@ -55,8 +73,17 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Sign In</CardTitle>
-        <CardDescription>Sign in to your CVPilot account</CardDescription>
+        {ref ? (
+          <>
+            <CardTitle className="text-2xl">Your CV has been analysed!</CardTitle>
+            <CardDescription>Sign in or create an account to see your results.</CardDescription>
+          </>
+        ) : (
+          <>
+            <CardTitle className="text-2xl">Sign In</CardTitle>
+            <CardDescription>Sign in to your CVPilot account</CardDescription>
+          </>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         <GoogleButton onClick={handleGoogleLogin} />

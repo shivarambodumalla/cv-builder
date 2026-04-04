@@ -212,32 +212,6 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
 
   return (
     <div className="space-y-6">
-      {/* Template */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Template</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.map((t) => {
-            const selected = design.template === t.name;
-            return (
-              <button
-                key={t.name}
-                type="button"
-                className={cn(
-                  "relative rounded-lg border p-1 text-left transition-all",
-                  selected && "ring-2 ring-primary"
-                )}
-                onClick={() => update("template", t.name)}
-              >
-                <div className="h-20 rounded bg-muted">
-                  <TemplatePreview template={t.name} />
-                </div>
-                <p className="mt-1 text-center text-xs font-medium">{t.label}</p>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
 
       {/* Font */}
       <section>
@@ -273,7 +247,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
       <section>
         <Label className="mb-3 block text-sm font-semibold">Accent Color</Label>
         <div className="space-y-3">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {ACCENT_PRESETS.map(({ key, hex }) => {
               const selected = currentHex === hex;
               return (
@@ -281,8 +255,8 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
                   key={key}
                   type="button"
                   className={cn(
-                    "h-8 w-8 rounded-full transition-all",
-                    selected && "ring-2 ring-primary ring-offset-2"
+                    "h-6 w-6 rounded-full transition-all shrink-0",
+                    selected && "ring-2 ring-primary ring-offset-1"
                   )}
                   style={{ backgroundColor: hex }}
                   title={key}
@@ -661,7 +635,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
       </section>
 
       {/* Section Order */}
-      <section className="pb-4">
+      <section>
         <Label className="mb-3 block text-sm font-semibold">Section Order</Label>
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
@@ -675,6 +649,32 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
             </div>
           </SortableContext>
         </DndContext>
+      </section>
+
+      {/* Template */}
+      <section className="pb-4">
+        <Label className="mb-3 block text-sm font-semibold">Template</Label>
+        <div className="grid grid-cols-2 gap-3">
+          {TEMPLATES.map((t) => {
+            const selected = design.template === t.name;
+            return (
+              <button
+                key={t.name}
+                type="button"
+                className={cn(
+                  "relative rounded-lg border p-1 text-left transition-all",
+                  selected && "ring-2 ring-primary"
+                )}
+                onClick={() => update("template", t.name)}
+              >
+                <div className="h-20 rounded bg-muted">
+                  <TemplatePreview template={t.name} />
+                </div>
+                <p className="mt-1 text-center text-xs font-medium">{t.label}</p>
+              </button>
+            );
+          })}
+        </div>
       </section>
     </div>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -25,9 +25,7 @@ interface KeywordList {
 }
 
 function TagInput({
-  label,
-  tags,
-  onChange,
+  label, tags, onChange,
 }: {
   label: string;
   tags: string[];
@@ -37,9 +35,7 @@ function TagInput({
 
   function add() {
     const v = value.trim();
-    if (v && !tags.includes(v)) {
-      onChange([...tags, v]);
-    }
+    if (v && !tags.includes(v)) onChange([...tags, v]);
     setValue("");
   }
 
@@ -48,16 +44,9 @@ function TagInput({
       <Label className="text-xs">{label}</Label>
       <div className="flex flex-wrap gap-1.5">
         {tags.map((t, i) => (
-          <span
-            key={i}
-            className="flex items-center gap-1 rounded-md border bg-muted/50 px-2 py-0.5 text-sm"
-          >
+          <span key={i} className="flex items-center gap-1 rounded-md border bg-muted/50 px-2 py-0.5 text-sm">
             {t}
-            <button
-              type="button"
-              onClick={() => onChange(tags.filter((_, j) => j !== i))}
-              className="text-muted-foreground hover:text-destructive"
-            >
+            <button type="button" onClick={() => onChange(tags.filter((_, j) => j !== i))} className="text-muted-foreground hover:text-destructive">
               <X className="h-3 w-3" />
             </button>
           </span>
@@ -66,12 +55,7 @@ function TagInput({
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            add();
-          }
-        }}
+        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
         placeholder="Type + Enter"
       />
     </div>
@@ -89,17 +73,12 @@ export default function AdminKeywordsPage() {
   const [synonymKey, setSynonymKey] = useState("");
   const [synonymValue, setSynonymValue] = useState("");
 
-  useEffect(() => {
-    loadLists();
-  }, []);
+  useEffect(() => { loadLists(); }, []);
 
   async function loadLists() {
-    const supabase = createClient();
-    const { data } = await supabase
-      .from("keyword_lists")
-      .select("*")
-      .order("role");
-    setLists(data ?? []);
+    const res = await fetch("/api/admin/keywords");
+    const data = await res.json();
+    setLists(Array.isArray(data) ? data : []);
   }
 
   function selectList(l: KeywordList) {
@@ -113,20 +92,21 @@ export default function AdminKeywordsPage() {
     setSaving(true);
     setMessage("");
 
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("keyword_lists")
-      .update({
+    const res = await fetch("/api/admin/keywords", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: selected.id,
         required: editing.required,
         important: editing.important,
         nice_to_have: editing.nice_to_have,
         synonym_map: editing.synonym_map,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", selected.id);
+      }),
+    });
 
-    if (error) {
-      setMessage(`Error: ${error.message}`);
+    const data = await res.json();
+    if (!res.ok) {
+      setMessage(`Error: ${data.error}`);
     } else {
       setMessage("Saved");
       await loadLists();
@@ -136,13 +116,15 @@ export default function AdminKeywordsPage() {
 
   async function handleAddRole() {
     if (!newRole.trim()) return;
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("keyword_lists")
-      .insert({ role: newRole.trim() });
+    const res = await fetch("/api/admin/keywords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole.trim() }),
+    });
 
-    if (error) {
-      setMessage(`Error: ${error.message}`);
+    const data = await res.json();
+    if (!res.ok) {
+      setMessage(`Error: ${data.error}`);
     } else {
       setNewRole("");
       setAddOpen(false);
@@ -152,10 +134,7 @@ export default function AdminKeywordsPage() {
 
   function addSynonym() {
     if (!editing || !synonymKey.trim() || !synonymValue.trim()) return;
-    setEditing({
-      ...editing,
-      synonym_map: { ...editing.synonym_map, [synonymKey.trim()]: synonymValue.trim() },
-    });
+    setEditing({ ...editing, synonym_map: { ...editing.synonym_map, [synonymKey.trim()]: synonymValue.trim() } });
     setSynonymKey("");
     setSynonymValue("");
   }
@@ -172,8 +151,7 @@ export default function AdminKeywordsPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Keywords</h1>
         <Button size="sm" onClick={() => setAddOpen(true)}>
-          <Plus className="mr-1.5 h-3.5 w-3.5" />
-          Add Role
+          <Plus className="mr-1.5 h-3.5 w-3.5" /> Add Role
         </Button>
       </div>
 
@@ -181,12 +159,8 @@ export default function AdminKeywordsPage() {
         <div className="space-y-2">
           {lists.map((l) => (
             <button
-              key={l.id}
-              type="button"
-              onClick={() => selectList(l)}
-              className={`w-full rounded-lg border p-3 text-left text-sm transition-colors hover:bg-muted/50 ${
-                selected?.id === l.id ? "border-primary bg-muted/50" : ""
-              }`}
+              key={l.id} type="button" onClick={() => selectList(l)}
+              className={`w-full rounded-lg border p-3 text-left text-sm transition-colors hover:bg-muted/50 ${selected?.id === l.id ? "border-primary bg-muted/50" : ""}`}
             >
               <p className="font-medium">{l.role}</p>
               <p className="mt-1 text-xs text-muted-foreground">
@@ -194,9 +168,7 @@ export default function AdminKeywordsPage() {
               </p>
             </button>
           ))}
-          {lists.length === 0 && (
-            <p className="text-sm text-muted-foreground">No roles configured yet.</p>
-          )}
+          {lists.length === 0 && <p className="text-sm text-muted-foreground">No roles configured yet.</p>}
         </div>
 
         {editing ? (
@@ -204,27 +176,13 @@ export default function AdminKeywordsPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-base">{editing.role}</CardTitle>
               <Button size="sm" onClick={handleSave} disabled={saving}>
-                <Save className="mr-1.5 h-3.5 w-3.5" />
-                {saving ? "Saving..." : "Save"}
+                <Save className="mr-1.5 h-3.5 w-3.5" /> {saving ? "Saving..." : "Save"}
               </Button>
             </CardHeader>
             <CardContent className="space-y-6">
-              <TagInput
-                label="Required"
-                tags={editing.required ?? []}
-                onChange={(tags) => setEditing({ ...editing, required: tags })}
-              />
-              <TagInput
-                label="Important"
-                tags={editing.important ?? []}
-                onChange={(tags) => setEditing({ ...editing, important: tags })}
-              />
-              <TagInput
-                label="Nice to Have"
-                tags={editing.nice_to_have ?? []}
-                onChange={(tags) => setEditing({ ...editing, nice_to_have: tags })}
-              />
-
+              <TagInput label="Required" tags={editing.required ?? []} onChange={(tags) => setEditing({ ...editing, required: tags })} />
+              <TagInput label="Important" tags={editing.important ?? []} onChange={(tags) => setEditing({ ...editing, important: tags })} />
+              <TagInput label="Nice to Have" tags={editing.nice_to_have ?? []} onChange={(tags) => setEditing({ ...editing, nice_to_have: tags })} />
               <div className="space-y-2">
                 <Label className="text-xs">Synonym Map</Label>
                 <div className="space-y-1.5">
@@ -233,50 +191,24 @@ export default function AdminKeywordsPage() {
                       <span className="font-medium">{k}</span>
                       <span className="text-muted-foreground">→</span>
                       <span>{v}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeSynonym(k)}
-                        className="ml-auto text-muted-foreground hover:text-destructive"
-                      >
+                      <button type="button" onClick={() => removeSynonym(k)} className="ml-auto text-muted-foreground hover:text-destructive">
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   ))}
                 </div>
                 <div className="flex gap-2">
-                  <Input
-                    value={synonymKey}
-                    onChange={(e) => setSynonymKey(e.target.value)}
-                    placeholder="Key"
-                    className="flex-1"
-                  />
-                  <Input
-                    value={synonymValue}
-                    onChange={(e) => setSynonymValue(e.target.value)}
-                    placeholder="Value"
-                    className="flex-1"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addSynonym();
-                      }
-                    }}
-                  />
-                  <Button variant="outline" size="sm" onClick={addSynonym}>
-                    Add
-                  </Button>
+                  <Input value={synonymKey} onChange={(e) => setSynonymKey(e.target.value)} placeholder="Key" className="flex-1" />
+                  <Input value={synonymValue} onChange={(e) => setSynonymValue(e.target.value)} placeholder="Value" className="flex-1"
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSynonym(); } }} />
+                  <Button variant="outline" size="sm" onClick={addSynonym}>Add</Button>
                 </div>
               </div>
-
-              {message && (
-                <p className="text-sm text-muted-foreground">{message}</p>
-              )}
+              {message && <p className="text-sm text-muted-foreground">{message}</p>}
             </CardContent>
           </Card>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Select a role to edit keywords.
-          </p>
+          <p className="text-sm text-muted-foreground">Select a role to edit keywords.</p>
         )}
       </div>
 
@@ -284,22 +216,12 @@ export default function AdminKeywordsPage() {
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Add New Role</DialogTitle>
+            <DialogDescription>Create a keyword list for a new target role.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <Input
-              value={newRole}
-              onChange={(e) => setNewRole(e.target.value)}
-              placeholder="e.g. Senior Frontend Engineer"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleAddRole();
-                }
-              }}
-            />
-            <Button className="w-full" onClick={handleAddRole}>
-              Create
-            </Button>
+            <Input value={newRole} onChange={(e) => setNewRole(e.target.value)} placeholder="e.g. Senior Frontend Engineer"
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddRole(); } }} />
+            <Button className="w-full" onClick={handleAddRole}>Create</Button>
           </div>
         </DialogContent>
       </Dialog>

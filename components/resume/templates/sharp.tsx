@@ -162,7 +162,7 @@ export function SharpTemplate({
         <div key="experience">
           {renderSectionTitle("Experience")}
           {experience.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < experience.items.length - 1 ? "12px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < experience.items.length - 1 ? "12px" : 0 }}>
               <div
                 style={{
                   fontFamily: "var(--resume-font)",
@@ -217,7 +217,7 @@ export function SharpTemplate({
         <div key="education">
           {renderSectionTitle("Education")}
           {education.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < education.items.length - 1 ? "8px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < education.items.length - 1 ? "8px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -280,6 +280,7 @@ export function SharpTemplate({
           {certifications.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -309,6 +310,7 @@ export function SharpTemplate({
           {awards.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 fontFamily: "var(--resume-font)",
                 fontSize: "var(--resume-body-size)",
@@ -340,7 +342,7 @@ export function SharpTemplate({
         <div key="projects">
           {renderSectionTitle("Projects")}
           {projects.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < projects.items.length - 1 ? "12px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < projects.items.length - 1 ? "12px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -396,7 +398,7 @@ export function SharpTemplate({
         <div key="volunteering">
           {renderSectionTitle("Volunteering")}
           {volunteering.items.map((item, i) => (
-            <div key={i} style={{ marginBottom: i < volunteering.items.length - 1 ? "12px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < volunteering.items.length - 1 ? "12px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -452,6 +454,7 @@ export function SharpTemplate({
           {publications.items.map((item, i) => (
             <div
               key={i}
+              data-resume-entry=""
               style={{
                 fontFamily: "var(--resume-font)",
                 fontSize: "var(--resume-body-size)",
