@@ -41,14 +41,15 @@ export function SidebarTemplate({
   ].filter(Boolean);
 
   const renderSection = (title: string, children: React.ReactNode) => (
-    <div
-      style={{
-        borderLeft: "3px solid var(--resume-accent)",
-        paddingLeft: "14px",
-        marginBottom: "14px",
-        marginTop: "14px",
-      }}
-    >
+    <div style={{ marginTop: `${sectionSpacing}px` }}>
+      <div
+        style={{
+          borderLeft: "3px solid var(--resume-accent)",
+          paddingLeft: "14px",
+          paddingTop: "4px",
+          paddingBottom: "4px",
+        }}
+      >
       <div
         data-resume-section-title=""
         style={{
@@ -64,6 +65,7 @@ export function SidebarTemplate({
         {title}
       </div>
       {children}
+      </div>
     </div>
   );
 

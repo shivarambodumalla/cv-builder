@@ -4,7 +4,7 @@ import { renderCvPdf } from "@/lib/pdf/render";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
   const {
@@ -15,40 +15,25 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const cvId = request.nextUrl.searchParams.get("cv_id");
+  const body = await request.json();
+  const { content, design: clientDesign, title } = body as {
+    content: ResumeContent;
+    design: Partial<ResumeDesignSettings>;
+    title: string;
+  };
 
-  if (!cvId) {
-    return NextResponse.json({ error: "cv_id is required" }, { status: 400 });
-  }
-
-  const { data: cv } = await supabase
-    .from("cvs")
-    .select("id, title, parsed_json, design_settings")
-    .eq("id", cvId)
-    .eq("user_id", user.id)
-    .single();
-
-  if (!cv) {
-    return NextResponse.json({ error: "CV not found" }, { status: 404 });
-  }
-
-  const parsed = cv.parsed_json as ResumeContent | null;
-
-  if (!parsed || !parsed.contact) {
+  if (!content || !content.contact) {
     return NextResponse.json(
       { error: "CV has no structured data. Edit your CV first." },
       { status: 422 }
     );
   }
 
-  const design: ResumeDesignSettings = {
-    ...DEFAULT_DESIGN,
-    ...(cv.design_settings as Partial<ResumeDesignSettings> || {}),
-  };
+  const design: ResumeDesignSettings = { ...DEFAULT_DESIGN, ...clientDesign };
 
   try {
-    const buffer = renderCvPdf(parsed, design, false);
-    const filename = `${(cv.title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
+    const buffer = renderCvPdf(content, design, false);
+    const filename = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
 
     return new NextResponse(new Uint8Array(buffer), {
       headers: {

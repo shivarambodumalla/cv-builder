@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { analyseCv } from "@/lib/ai/gemini";
+import { analyseCV } from "@/lib/ai/ats-analyser";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -19,48 +19,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "cv_id is required" }, { status: 400 });
   }
 
-  const { data: cv, error: cvError } = await supabase
+  const { data: cv } = await supabase
     .from("cvs")
-    .select("id, raw_text")
+    .select("id")
     .eq("id", cv_id)
     .eq("user_id", user.id)
     .single();
 
-  if (cvError || !cv) {
+  if (!cv) {
     return NextResponse.json({ error: "CV not found" }, { status: 404 });
   }
 
-  if (!cv.raw_text?.trim()) {
-    return NextResponse.json(
-      { error: "CV has no text content to analyse" },
-      { status: 422 }
-    );
-  }
-
   try {
-    const report = await analyseCv(cv.raw_text);
+    const report = await analyseCV(cv_id);
+    return NextResponse.json(report);
+  } catch (err: unknown) {
+    const error = err as Error & { code?: string; role?: string };
 
-    const { data: saved, error: saveError } = await supabase
-      .from("ats_reports")
-      .insert({
-        cv_id: cv.id,
-        score: report.score,
-        issues: report.issues,
-        suggestions: report.suggestions,
-      })
-      .select("id, score, issues, suggestions, created_at")
-      .single();
-
-    if (saveError) {
-      return NextResponse.json({ error: saveError.message }, { status: 500 });
+    if (error.code === "keyword_list_required") {
+      return NextResponse.json(
+        {
+          error: `No keyword list found for role: "${error.role}". Contact support or add keywords in admin.`,
+          code: "keyword_list_required",
+          role: error.role,
+        },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({
-      ...saved,
-      keywords: report.keywords,
-      summary: report.summary,
-    });
-  } catch {
+    console.error("[cv/analyse]", error.message);
     return NextResponse.json(
       { error: "AI analysis failed. Please try again." },
       { status: 502 }

@@ -128,6 +128,48 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
     setValue(`sections.${key}` as `sections.contact`, !current);
   }
 
+  useEffect(() => {
+    function onJumpToField(e: Event) {
+      const ref = (e as CustomEvent).detail as { section: string; field?: string | null };
+      if (!ref?.section) return;
+      const el = document.querySelector(`[data-section="${ref.section}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const trigger = el.querySelector("[data-state=closed]") as HTMLElement;
+        trigger?.click();
+        setTimeout(() => {
+          const fieldEl = ref.field
+            ? el.querySelector(`[name*="${ref.field}"], [data-field="${ref.field}"]`) as HTMLElement
+            : el.querySelector("input, textarea") as HTMLElement;
+          if (fieldEl) {
+            fieldEl.focus();
+            fieldEl.classList.add("ring-2", "ring-yellow-400");
+            setTimeout(() => fieldEl.classList.remove("ring-2", "ring-yellow-400"), 2000);
+          }
+        }, 300);
+      }
+    }
+
+    function onAddSkill(e: Event) {
+      const { skill } = (e as CustomEvent).detail;
+      if (!skill) return;
+      const cats = getValues("skills.categories") || [];
+      if (cats.length > 0) {
+        const current: string[] = getValues("skills.categories.0.skills") || [];
+        setValue("skills.categories.0.skills", [...current, skill]);
+      } else {
+        setValue("skills.categories", [{ name: "", skills: [skill] }]);
+      }
+    }
+
+    window.addEventListener("jump-to-field", onJumpToField);
+    window.addEventListener("add-skill", onAddSkill);
+    return () => {
+      window.removeEventListener("jump-to-field", onJumpToField);
+      window.removeEventListener("add-skill", onAddSkill);
+    };
+  }, [getValues, setValue]);
+
   return (
     <div className="space-y-3" onBlur={handleBlur}>
       {SECTION_ORDER.map((key) => {
@@ -136,7 +178,7 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
         const enabled = watched.sections?.[key] ?? DEFAULT_CONTENT.sections[key];
 
         return (
-          <Collapsible key={key} defaultOpen={enabled} className="rounded-lg border">
+          <Collapsible key={key} defaultOpen={enabled} className="rounded-lg border" data-section={key}>
             <div className="flex items-center">
               <button
                 type="button"

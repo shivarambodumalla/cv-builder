@@ -55,8 +55,13 @@ interface Cv {
 interface AtsReport {
   id: string;
   score: number;
-  issues: { category: string; description: string; severity: string }[];
-  suggestions: { original: string; improved: string }[];
+  confidence?: string;
+  category_scores?: Record<string, unknown>;
+  keywords?: { found: string[]; missing: string[]; stuffed: string[] };
+  enhancements?: string[];
+  summary?: string;
+  issues?: unknown;
+  suggestions?: unknown;
   created_at: string;
 }
 
@@ -252,7 +257,23 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" className="h-8" onClick={() => window.open(`/api/cv/export/pdf?cv_id=${cv.id}`, "_blank")}>
+          <Button variant="outline" size="sm" className="h-8" onClick={async () => {
+            try {
+              const res = await fetch("/api/cv/export/pdf", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content, design, title }),
+              });
+              if (!res.ok) throw new Error("PDF export failed");
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
+              a.click();
+              URL.revokeObjectURL(url);
+            } catch { /* ignore */ }
+          }}>
             <Download className="mr-1.5 h-3.5 w-3.5" /> PDF
           </Button>
 
@@ -362,14 +383,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
           {/* Analyser tab: ATS report on right */}
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
-              <AtsPanel cvId={cv.id} report={latestReport} />
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <AtsPanel cvId={cv.id} report={latestReport as any} />
             </div>
           )}
 
           {/* Job Match tab: report on right */}
           {activeTab === "job-match" && (
             <div className="mx-auto max-w-2xl">
-              <AtsPanel cvId={cv.id} report={latestReport} />
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <AtsPanel cvId={cv.id} report={latestReport as any} />
             </div>
           )}
 

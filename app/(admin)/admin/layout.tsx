@@ -27,6 +27,24 @@ export default function AdminLayout({
           >
             Users
           </Link>
+          <Link
+            href="/admin/prompts"
+            className="flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            Prompts
+          </Link>
+          <Link
+            href="/admin/keywords"
+            className="flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            Keywords
+          </Link>
+          <Link
+            href="/admin/ai-settings"
+            className="flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            AI Settings
+          </Link>
         </nav>
       </aside>
       <div className="flex flex-1 flex-col">

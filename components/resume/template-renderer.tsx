@@ -32,27 +32,49 @@ const MONTH_LONG = [
   "July", "August", "September", "October", "November", "December",
 ];
 
+const MONTH_MAP: Record<string, number> = {
+  jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11,
+  january:0,february:1,march:2,april:3,june:5,july:6,august:7,september:8,october:9,november:10,december:11,
+};
+
+function formatWithMonth(mi: number, year: string, format: DateFormat): string {
+  if (format === "short") return `${MONTH_SHORT[mi]} ${year}`;
+  if (format === "long") return `${MONTH_LONG[mi]} ${year}`;
+  return `${String(mi + 1).padStart(2, "0")}/${year}`;
+}
+
 export function formatDate(dateStr: string, format: DateFormat): string {
   if (!dateStr) return "";
-  const lower = dateStr.toLowerCase();
+  const s = dateStr.trim();
+  const lower = s.toLowerCase();
   if (lower === "present" || lower === "current") return "Present";
 
-  const parts = dateStr.split("-");
-  const year = parts[0];
-  const monthIndex = parts.length > 1 ? parseInt(parts[1], 10) - 1 : -1;
-
-  if (monthIndex < 0 || monthIndex > 11) return year ?? dateStr;
-
-  switch (format) {
-    case "short":
-      return `${MONTH_SHORT[monthIndex]} ${year}`;
-    case "long":
-      return `${MONTH_LONG[monthIndex]} ${year}`;
-    case "numeric":
-      return `${String(monthIndex + 1).padStart(2, "0")}/${year}`;
-    default:
-      return dateStr;
+  // YYYY-MM
+  const iso = s.match(/^(\d{4})-(\d{1,2})$/);
+  if (iso) {
+    const mi = parseInt(iso[2], 10) - 1;
+    if (mi >= 0 && mi <= 11) return formatWithMonth(mi, iso[1], format);
+    return iso[1];
   }
+
+  // "Mon YYYY" or "Month YYYY" (e.g. "Feb 2018", "January 2020")
+  const human = s.match(/^([a-zA-Z]+)\s+(\d{4})$/);
+  if (human) {
+    const mi = MONTH_MAP[human[1].toLowerCase()];
+    if (mi !== undefined) return formatWithMonth(mi, human[2], format);
+  }
+
+  // MM/YYYY
+  const slashed = s.match(/^(\d{1,2})\/(\d{4})$/);
+  if (slashed) {
+    const mi = parseInt(slashed[1], 10) - 1;
+    if (mi >= 0 && mi <= 11) return formatWithMonth(mi, slashed[2], format);
+  }
+
+  // Plain year
+  if (/^\d{4}$/.test(s)) return s;
+
+  return s;
 }
 
 const DEFAULT_SECTION_ORDER: SectionKey[] = [
