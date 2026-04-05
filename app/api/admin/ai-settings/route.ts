@@ -22,12 +22,29 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { settings } = await request.json();
+  const body = await request.json();
+  const admin = createAdminClient();
+
+  // Handle global settings update (from spend monitor)
+  if (body.global) {
+    const { error } = await admin
+      .from("ai_settings")
+      .update({
+        daily_spend_cap_usd: body.global.daily_spend_cap_usd,
+        usd_to_inr_rate: body.global.usd_to_inr_rate,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("feature", "global");
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  // Handle bulk settings update
+  const { settings } = body;
   if (!Array.isArray(settings)) {
     return NextResponse.json({ error: "settings array required" }, { status: 400 });
   }
 
-  const admin = createAdminClient();
   for (const s of settings) {
     const { error } = await admin
       .from("ai_settings")

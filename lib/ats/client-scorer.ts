@@ -74,8 +74,8 @@ function scoreSections(content: ResumeContent): number {
   return Math.max(0, Math.min(100, score));
 }
 
-function scoreKeywords(content: ResumeContent, keywordList: KeywordList | null): number {
-  if (!keywordList) return 50;
+function scoreKeywords(content: ResumeContent, keywordList: KeywordList | null): number | null {
+  if (!keywordList) return null;
 
   const allSkills = (content.skills?.categories ?? []).flatMap((c) => c.skills).join(" ");
   const allBullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []).join(" ");
@@ -130,10 +130,11 @@ export function calculateClientScore(
 ): ClientScoreResult {
   const lastCats = lastReport?.category_scores ?? {};
 
+  const keywordScore = scoreKeywords(content, keywordList);
   const scores: Record<string, number> = {
     contact: scoreContact(content),
     sections: scoreSections(content),
-    keywords: scoreKeywords(content, keywordList),
+    keywords: keywordScore ?? (lastCats.keywords as { score: number })?.score ?? 50,
     measurable_results: scoreMeasurableResults(content),
     bullet_quality: scoreBulletQuality(content),
     formatting: (lastCats.formatting as { score: number })?.score ?? 80,
@@ -149,7 +150,8 @@ export function calculateClientScore(
     overall += score * w;
 
     const lastScore = (lastCats[name] as { score: number })?.score;
-    if (lastScore !== undefined && Math.abs(score - lastScore) > 3) {
+    const isFallback = name === "keywords" && keywordScore === null;
+    if (!isFallback && lastScore !== undefined && Math.abs(score - lastScore) > 3) {
       changed.push(name);
     }
   }

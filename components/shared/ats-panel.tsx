@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { ScoreRing } from "@/components/shared/score-ring";
 import { Button } from "@/components/ui/button";
@@ -20,18 +20,26 @@ import {
   RotateCcw,
   AlertCircle,
   Check,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
 import type { ClientScoreResult } from "@/lib/ats/client-scorer";
+import type { ResumeContent } from "@/lib/resume/types";
+import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
+
+const REWRITABLE_SECTIONS = new Set(["experience", "summary", "projects", "volunteering"]);
 
 interface AtsPanelProps {
   cvId: string;
   report: AtsPanelReport | null;
   cvUpdatedAt?: string;
   estimatedScore?: ClientScoreResult | null;
+  currentSkills?: string[];
+  content?: ResumeContent;
+  onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
 }
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
@@ -83,12 +91,14 @@ function CategoryRow({
   name,
   data,
   onFix,
+  onRewrite,
   estimatedCatScore,
   changed,
 }: {
   name: string;
   data: AtsCategoryScore;
   onFix: (issue: { description: string; field_ref?: FieldRef }) => void;
+  onRewrite?: (issue: { description: string; fix: string; field_ref?: FieldRef }, category: string) => void;
   estimatedCatScore?: number;
   changed?: boolean;
 }) {
@@ -192,7 +202,18 @@ function CategoryRow({
                 <span className="text-xs font-medium text-green-600">
                   +{issue.impact}pts
                 </span>
-                {issue.field_ref && (
+                {issue.field_ref && REWRITABLE_SECTIONS.has(issue.field_ref.section) && onRewrite && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs text-primary"
+                    onClick={() => onRewrite(issue, name)}
+                  >
+                    <Sparkles className="mr-1 h-3 w-3" />
+                    Rewrite
+                  </Button>
+                )}
+                {issue.field_ref && (issue.field_ref.field || issue.field_ref.bulletText) && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -217,7 +238,7 @@ function CategoryRow({
   );
 }
 
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore }: AtsPanelProps) {
+export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept }: AtsPanelProps) {
   const router = useRouter();
   const [report, setReport] = useState<AtsPanelReport | null>(initialReport);
   const [loading, setLoading] = useState(false);
@@ -226,6 +247,9 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const [errorCode, setErrorCode] = useState("");
   const [errorRole, setErrorRole] = useState("");
   const [enhancementsOpen, setEnhancementsOpen] = useState(false);
+  const [rewriteOpen, setRewriteOpen] = useState(false);
+  const [rewriteIssue, setRewriteIssue] = useState<{ description: string; fix: string; category: string; field_ref?: FieldRef } | null>(null);
+  const [rewriteOriginal, setRewriteOriginal] = useState("");
   const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
 
   const hasEstimate = !!estimatedScore && !!report;
@@ -236,6 +260,23 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   useEffect(() => {
     setAddedKeywords(new Set());
   }, [report]);
+
+  const effectiveKeywords = useMemo(() => {
+    if (!report?.keywords) return null;
+    const skillsLower = new Set((currentSkills ?? []).map((s) => s.toLowerCase()));
+    const found = [...(report.keywords.found ?? [])];
+    const missing: string[] = [];
+    for (const kw of report.keywords.missing ?? []) {
+      if (skillsLower.has(kw.toLowerCase())) {
+        if (!found.some((f) => f.toLowerCase() === kw.toLowerCase())) {
+          found.push(kw);
+        }
+      } else {
+        missing.push(kw);
+      }
+    }
+    return { ...report.keywords, found, missing };
+  }, [report?.keywords, currentSkills]);
 
   useEffect(() => {
     if (!loading) return;
@@ -251,6 +292,48 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
   function handleFix(issue: { description: string; field_ref?: FieldRef }) {
     if (issue.field_ref) jumpToField(issue.field_ref);
+  }
+
+  function findOriginalText(ref: FieldRef): string {
+    if (!content) return "";
+    if (ref.section === "summary") return content.summary?.content ?? "";
+    if (ref.section === "experience" && ref.bulletText) {
+      for (const item of content.experience?.items ?? []) {
+        for (const bullet of item.bullets ?? []) {
+          if (bullet.toLowerCase().includes(ref.bulletText.toLowerCase().slice(0, 40))) {
+            return bullet;
+          }
+        }
+      }
+    }
+    if (ref.section === "experience" && ref.index != null) {
+      const bullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []);
+      return bullets[ref.index] ?? "";
+    }
+    return "";
+  }
+
+  function findSectionLabel(ref: FieldRef): string {
+    if (ref.section === "summary") return "Summary";
+    if (ref.section === "experience" && ref.bulletText && content) {
+      for (const item of content.experience?.items ?? []) {
+        for (const bullet of item.bullets ?? []) {
+          if (bullet.toLowerCase().includes(ref.bulletText.toLowerCase().slice(0, 40))) {
+            return `Work Experience · ${[item.role, item.company].filter(Boolean).join(" at ")}`;
+          }
+        }
+      }
+    }
+    return ref.section;
+  }
+
+  function handleRewrite(issue: { description: string; fix: string; field_ref?: FieldRef }, category: string) {
+    if (!issue.field_ref) return;
+    const original = findOriginalText(issue.field_ref);
+    if (!original) return;
+    setRewriteIssue({ ...issue, category });
+    setRewriteOriginal(original);
+    setRewriteOpen(true);
   }
 
   function handleAddKeyword(keyword: string) {
@@ -445,6 +528,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
                     name={name}
                     data={data as AtsCategoryScore}
                     onFix={handleFix}
+                    onRewrite={content ? handleRewrite : undefined}
                     estimatedCatScore={isEstimated && estCat ? estCat.score : undefined}
                     changed={changed && isEstimated}
                   />
@@ -453,13 +537,13 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           )}
 
-          {report.keywords && (
+          {effectiveKeywords && (
             <div className="space-y-3">
-              {report.keywords.missing && report.keywords.missing.length > 0 && (
+              {effectiveKeywords.missing.length > 0 && (
                 <div>
                   <h4 className="mb-2 text-sm font-semibold">Missing Keywords</h4>
                   <div className="flex flex-wrap gap-1.5">
-                    {report.keywords.missing.map((kw) => {
+                    {effectiveKeywords.missing.map((kw) => {
                       const added = addedKeywords.has(kw);
                       return (
                         <button
@@ -484,11 +568,11 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
                   </p>
                 </div>
               )}
-              {report.keywords.found && report.keywords.found.length > 0 && (
+              {effectiveKeywords.found.length > 0 && (
                 <div>
                   <h4 className="mb-2 text-sm font-semibold">Found Keywords</h4>
                   <div className="flex flex-wrap gap-1.5">
-                    {report.keywords.found.map((kw) => (
+                    {effectiveKeywords.found.map((kw) => (
                       <span key={kw} className="rounded-md bg-green-50 px-2 py-0.5 text-xs text-green-700 dark:bg-green-950 dark:text-green-400">
                         {kw}
                       </span>
@@ -527,6 +611,23 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             Scores are AI-generated estimates. Fix the issues above and re-analyse to see your updated score.
           </p>
         </>
+      )}
+
+      {rewriteIssue && (
+        <AiRewriteDrawer
+          open={rewriteOpen}
+          onClose={() => setRewriteOpen(false)}
+          issue={rewriteIssue}
+          originalText={rewriteOriginal}
+          targetRole={content?.targetTitle?.title ?? "General"}
+          sectionType={rewriteIssue.field_ref?.section ?? "experience"}
+          sectionLabel={rewriteIssue.field_ref ? findSectionLabel(rewriteIssue.field_ref) : ""}
+          isCurrent={true}
+          missingKeywords={effectiveKeywords?.missing ?? []}
+          onAccept={(text, ref) => {
+            onRewriteAccept?.(text, ref);
+          }}
+        />
       )}
     </div>
   );

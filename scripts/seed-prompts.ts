@@ -42,43 +42,163 @@ CV text:
   },
   {
     name: "job_match_v1",
-    content: `You are an expert job-CV matching analyser. Compare the CV against the job description and return ONLY valid JSON with no markdown formatting, no code fences, no explanation.
+    content: `You are an expert ATS and recruitment analyst.
+Compare this CV against the job description.
+Return ONLY valid JSON. No markdown.
 
-Return this exact JSON structure:
+TARGET ROLE: {{targetRole}}
+COMPANY: {{company}}
+JOB DESCRIPTION: {{jobDescription}}
+CV DATA: {{parsedJson}}
+KEYWORD LIST: {{keywordList}}
+SYNONYM MAP: {{synonymMap}}
+
+Analyse match across these dimensions:
+
+A. keyword_match (weight: 0.30)
+Compare JD requirements against CV content.
+Use synonym map for matching.
+Placement multipliers same as ATS:
+experience: 1.0, projects: 0.7, skills: 0.5
+
+B. experience_match (weight: 0.25)
+Compare years and type of experience
+required in JD vs CV.
+Check seniority alignment.
+
+C. skills_match (weight: 0.25)
+Hard skills match: exact + synonym match
+Soft skills match: presence check
+
+D. role_alignment (weight: 0.20)
+How well do previous role titles and
+responsibilities align with target role?
+
+For each issue: provide specific fix
+with field_ref pointing to exact location.
+
+Return ONLY:
 {
-  "match_score": <number 0-100>,
-  "missing_keywords": ["<keyword from job description not found in CV>"],
-  "matched_keywords": ["<keyword found in both>"],
-  "suggestions": ["<actionable suggestion to improve match>"]
-}
-
-CV text:
-{{rawText}}
-
-Job description:
-{{jobDescription}}`,
+  "match_score": number (0-100),
+  "match_status": "strong" | "good" | "weak",
+  "summary": string (2 sentences max),
+  "categories": {
+    "keyword_match": {
+      "score": number,
+      "weight": 0.30,
+      "issues": [
+        {
+          "description": string,
+          "fix": string,
+          "impact": "high"|"medium"|"low",
+          "field_ref": {
+            "section": string,
+            "field": string,
+            "index": number | null,
+            "bulletText": string | null
+          }
+        }
+      ],
+      "keywords_matched": [],
+      "keywords_missing": [],
+      "keywords_partial": []
+    },
+    "experience_match": {
+      "score": number,
+      "weight": 0.25,
+      "issues": []
+    },
+    "skills_match": {
+      "score": number,
+      "weight": 0.25,
+      "issues": [],
+      "hard_skills_matched": [],
+      "hard_skills_missing": [],
+      "soft_skills_matched": [],
+      "soft_skills_missing": []
+    },
+    "role_alignment": {
+      "score": number,
+      "weight": 0.20,
+      "issues": []
+    }
+  },
+  "top_fixes": [
+    {
+      "description": string,
+      "fix": string,
+      "score_impact": number,
+      "field_ref": {
+        "section": string,
+        "field": string,
+        "index": number | null,
+        "bulletText": string | null
+      }
+    }
+  ],
+  "quick_wins": [
+    "Single action that improves score most"
+  ],
+  "enhancements": [
+    {
+      "description": string,
+      "suggestion": string
+    }
+  ]
+}`,
   },
   {
     name: "cover_letter_v1",
-    content: `You are an expert cover letter writer. Write a cover letter for the candidate based on their CV and the target job.
+    content: `You are an expert cover letter writer.
+Write a compelling, personalised cover letter.
 
-Tone: {{tone}} — {{toneGuide}}
+TONE: {{tone}}
+TARGET ROLE: {{targetRole}}
+COMPANY: {{company}}
+CANDIDATE NAME: {{candidateName}}
+YEARS EXPERIENCE: {{yearsExperience}}
+JOB DESCRIPTION SUMMARY: {{jobDescriptionSummary}}
+KEY REQUIREMENTS FROM JD: {{keyRequirements}}
+CANDIDATE SUMMARY: {{candidateSummary}}
+TOP ACHIEVEMENTS: {{topAchievements}}
+SKILLS MATCH: {{skillsMatch}}
 
-Rules:
-- Return ONLY the cover letter text, no markdown, no code fences, no explanation
-- Do not include a date or addresses
-- Start with "Dear Hiring Manager," (or similar)
-- 3-4 paragraphs
-- Reference specific experience from the CV that matches the job
-- End with a professional sign-off
+TONE INSTRUCTIONS:
+professional: formal, respectful, confident
+conversational: warm, direct, human
+confident: bold, achievement-focused, assertive
 
-CV text:
-{{rawText}}
+STRUCTURE:
+Paragraph 1 (2-3 sentences):
+  Opening hook. Why this role at this company.
+  Reference something specific about the company
+  or role from the JD.
 
-Job title: {{jobTitle}}
+Paragraph 2 (3-4 sentences):
+  Most relevant experience and achievement.
+  Use specific metric from CV.
+  Connect directly to JD requirement.
 
-Job description:
-{{jobDescription}}`,
+Paragraph 3 (2-3 sentences):
+  Second relevant skill or achievement.
+  Show cultural or role fit.
+
+Paragraph 4 (2 sentences):
+  Call to action.
+  Express enthusiasm without desperation.
+
+RULES:
+- No "I am writing to apply for..."
+- No "Please find attached my CV"
+- No generic phrases
+- Use candidate's actual achievements
+- Reference specific JD requirements
+- Total length: 250-350 words
+- No placeholder brackets in output
+- If company name unknown use "your company"
+
+Return ONLY the cover letter text.
+No subject line. No formatting. Just the letter.`,
   },
   {
     name: "keyword_generate_v1",
@@ -92,6 +212,56 @@ Return ONLY valid JSON with no markdown formatting, no code fences:
 }
 Keywords should be skills, tools, and competencies that ATS systems scan for in this role.`,
   },
+  {
+    name: "bullet_rewrite_v1",
+    content: `You are rewriting a CV bullet point for a {{targetRole}} role.
+
+MODE: {{mode}}
+- ats: Optimize for ATS keyword matching and standard phrasing
+- impact: Add measurable results and quantified achievements
+- concise: Make shorter and more direct while keeping meaning
+- grammar: Fix grammar, spelling, punctuation only
+
+ISSUE: {{issueDescription}}
+FIX GUIDANCE: {{issueFix}}
+
+SECTION: {{sectionType}}
+IS CURRENT ROLE: {{isCurrent}}
+MISSING KEYWORDS TO INCORPORATE: {{missingKeywords}}
+
+ORIGINAL TEXT:
+{{originalText}}
+
+Rules:
+- Return ONLY the rewritten text, no explanation, no quotes
+- Never fabricate specific metrics — use [X] for unknown numbers
+- Keep the same general meaning and truthfulness
+- For impact mode: add quantified results where natural
+- For concise mode: target 120-180 characters
+- For ATS mode: naturally incorporate missing keywords where relevant
+- For grammar mode: minimal changes, fix errors only
+- Single paragraph, no bullet markers`,
+  },
+  {
+    name: "bullet_rewrite_debate_v1",
+    content: `You are refining a CV bullet point rewrite.
+
+ORIGINAL: {{originalText}}
+CURRENT SUGGESTION: {{currentSuggestion}}
+USER INSTRUCTION: {{userInstruction}}
+TARGET ROLE: {{targetRole}}
+SECTION TYPE: {{sectionType}}
+IS CURRENT ROLE: {{isCurrent}}
+
+Apply the user instruction to improve the current suggestion while:
+- Keeping improvements already made
+- Following section structure for {{sectionType}}
+- Maintaining ATS-friendly language
+- Never fabricating specific metrics
+- Using [X] for unknown numbers
+
+Return ONLY the refined text. No explanation. No quotes. Single line.`,
+  },
 ];
 
 const AI_SETTINGS = [
@@ -99,6 +269,7 @@ const AI_SETTINGS = [
   { feature: "job_match", max_tokens: 4096, temperature: 0, enabled: true },
   { feature: "cover_letter", max_tokens: 4096, temperature: 0.7, enabled: true },
   { feature: "keyword_generate", max_tokens: 4096, temperature: 0, enabled: true },
+  { feature: "bullet_rewrite", max_tokens: 2048, temperature: 0.5, enabled: true },
 ];
 
 async function seed() {

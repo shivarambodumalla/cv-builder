@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase/client";
@@ -26,7 +26,8 @@ import { TemplateRenderer } from "@/components/resume/template-renderer";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { DesignerPanel } from "@/components/resume/designer-panel";
 import { AtsPanel } from "@/components/shared/ats-panel";
-import { JobMatchPanel } from "@/components/shared/job-match-panel";
+import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
+import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/components/shared/job-match-panel";
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
 import { calculateClientScore, type ClientScoreResult } from "@/lib/ats/client-scorer";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
@@ -52,6 +53,10 @@ interface Cv {
   parsed_json: ResumeContent | null;
   design_settings: ResumeDesignSettings | null;
   updated_at?: string;
+  target_role?: string;
+  job_description?: string | null;
+  job_company?: string | null;
+  job_title_target?: string | null;
 }
 
 interface AtsReport {
@@ -70,7 +75,18 @@ interface AtsReport {
 interface JobMatch {
   id: string;
   job_title: string | null;
+  job_description?: string | null;
   match_score: number;
+  report_data?: Record<string, unknown> | null;
+  created_at: string;
+}
+
+interface CoverLetter {
+  id: string;
+  content: string;
+  tone: string;
+  version: number;
+  job_match_id: string | null;
   created_at: string;
 }
 
@@ -78,6 +94,7 @@ interface ResumeEditorProps {
   cv: Cv;
   latestReport: AtsReport | null;
   jobMatches: JobMatch[];
+  coverLetters: CoverLetter[];
   credits: {
     jobMatch: number;
     coverLetter: number;
@@ -103,7 +120,7 @@ function formatSavedTime(date: Date): string {
   return `${date.toLocaleDateString([], { month: "short", day: "numeric" })}, ${time}`;
 }
 
-export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan }: ResumeEditorProps) {
+export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credits, user, plan }: ResumeEditorProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
@@ -130,7 +147,17 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
   const [design, setDesign] = useState<ResumeDesignSettings>(
     cv.design_settings ? { ...DEFAULT_DESIGN, ...cv.design_settings } : DEFAULT_DESIGN
   );
-  const [activeTab, setActiveTab] = useState("editor");
+  const [activeTab, setActiveTabRaw] = useState("editor");
+  const prevTabRef = useRef("editor");
+
+  const setActiveTab = useCallback((tab: string) => {
+    if (tab === "cover-letter") {
+      sessionStorage.setItem(`cover_letter_source_${cv.id}`, prevTabRef.current);
+    }
+    prevTabRef.current = activeTab;
+    setRightPanelOverride(null); // clear override on manual tab switch
+    setActiveTabRaw(tab);
+  }, [activeTab, cv.id]);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [title, setTitle] = useState(cv.title || "Untitled CV");
@@ -143,6 +170,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
   const scorerDebounceRef = useRef<NodeJS.Timeout>();
   const [estimatedScore, setEstimatedScore] = useState<ClientScoreResult | null>(null);
 
+  // Job match state — lifted here so it survives tab switches and can be seeded from server
+  const [jobMatchResult, setJobMatchResult] = useState<JobMatchResult | null>(() => {
+    const latest = jobMatches[0];
+    if (!latest?.report_data) return null;
+    return latest.report_data as unknown as JobMatchResult;
+  });
+
+  // When "Fix" is clicked in job match, we show Content on the left but keep job match on the right
+  const [rightPanelOverride, setRightPanelOverride] = useState<string | null>(null);
+
   useEffect(() => {
     clearTimeout(scorerDebounceRef.current);
     scorerDebounceRef.current = setTimeout(() => {
@@ -152,6 +189,94 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
     }, 300);
     return () => clearTimeout(scorerDebounceRef.current);
   }, [content, latestReport]);
+
+  const currentSkills = useMemo(() => {
+    return (content.skills?.categories ?? []).flatMap((c) => c.skills);
+  }, [content.skills]);
+
+  // When Fix is clicked in job match: show content editor on left, keep job match right panel
+  function handleJobMatchFix(fieldRef: { section: string; field: string | null; index?: number; bulletText?: string }) {
+    setRightPanelOverride("job-match");
+    setActiveTabRaw("editor"); // switch left panel only — don't clear override
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("jump-to-field", { detail: fieldRef }));
+    }, 200);
+  }
+
+  function handleRewriteAccept(newText: string, fieldRef: { section: string; field?: string | null; index?: number; bulletText?: string }) {
+    window.dispatchEvent(new CustomEvent("rewrite-accept", { detail: { newText, fieldRef } }));
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("jump-to-field", { detail: fieldRef }));
+    }, 300);
+  }
+
+  // Handle add-skill when ContentEditor is not mounted (job-match / cover-letter tabs)
+  useEffect(() => {
+    function onAddSkill(e: Event) {
+      // Only handle if ContentEditor is NOT mounted (it has its own handler)
+      if (activeTab === "editor" || activeTab === "analyser") return;
+
+      const { skill } = (e as CustomEvent).detail;
+      if (!skill) return;
+
+      setContent((prev) => {
+        const cats = prev.skills?.categories ?? [];
+        if (cats.length > 0) {
+          const first = cats[0];
+          if (first.skills.some((s) => s.toLowerCase() === skill.toLowerCase())) return prev;
+          return {
+            ...prev,
+            skills: {
+              categories: [
+                { ...first, skills: [...first.skills, skill] },
+                ...cats.slice(1),
+              ],
+            },
+          };
+        }
+        return {
+          ...prev,
+          skills: { categories: [{ name: "Skills", skills: [skill] }] },
+        };
+      });
+
+      // Also persist to DB
+      const supabase = createClient();
+      supabase.from("cvs").select("parsed_json").eq("id", cv.id).single().then(({ data }) => {
+        if (!data) return;
+        const parsed = data.parsed_json as ResumeContent;
+        const cats = parsed.skills?.categories ?? [];
+        let updated;
+        if (cats.length > 0) {
+          const first = cats[0];
+          if (first.skills.some((s: string) => s.toLowerCase() === skill.toLowerCase())) return;
+          updated = { ...parsed, skills: { categories: [{ ...first, skills: [...first.skills, skill] }, ...cats.slice(1)] } };
+        } else {
+          updated = { ...parsed, skills: { categories: [{ name: "Skills", skills: [skill] }] } };
+        }
+        supabase.from("cvs").update({ parsed_json: updated as unknown as Record<string, unknown> }).eq("id", cv.id).then(() => {});
+      });
+    }
+
+    window.addEventListener("add-skill", onAddSkill);
+    return () => window.removeEventListener("add-skill", onAddSkill);
+  }, [activeTab, cv.id]);
+
+  // Inline rewrite drawer state
+  const [inlineRewriteOpen, setInlineRewriteOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [inlineRewriteData, setInlineRewriteData] = useState<{ originalText: string; fieldRef: any; sectionLabel: string; category: string } | null>(null);
+
+  useEffect(() => {
+    function onInlineRewrite(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (!detail?.originalText) return;
+      setInlineRewriteData(detail);
+      setInlineRewriteOpen(true);
+    }
+    window.addEventListener("inline-rewrite", onInlineRewrite);
+    return () => window.removeEventListener("inline-rewrite", onInlineRewrite);
+  }, []);
 
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -197,7 +322,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
     }
     window.addEventListener("switch-tab", onSwitchTab);
     return () => window.removeEventListener("switch-tab", onSwitchTab);
-  }, []);
+  }, [setActiveTab]);
 
   const saveTitle = useCallback(async (t: string) => {
     const supabase = createClient();
@@ -347,20 +472,18 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
           style={{ width: `${leftPanelWidth}%` }}
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
-            <div className="sticky top-0 z-10 bg-background border-b px-4 pt-4 pb-3">
-              <div className="w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <TabsList className="w-max min-w-full inline-flex">
-                  <TabsTrigger value="editor" className="flex-1 whitespace-nowrap px-3">Content</TabsTrigger>
-                  <TabsTrigger value="design" className="flex-1 whitespace-nowrap px-3">Design</TabsTrigger>
-                  <TabsTrigger value="analyser" className="flex-1 whitespace-nowrap px-3">Analyser</TabsTrigger>
-                  <TabsTrigger value="job-match" className="flex-1 whitespace-nowrap px-3">Job Match</TabsTrigger>
-                  <TabsTrigger value="cover-letter" className="flex-1 whitespace-nowrap px-3">Cover Letter</TabsTrigger>
-                </TabsList>
-              </div>
+            <div className="sticky top-0 z-10 bg-background px-2 pt-2 pb-0">
+              <TabsList className="w-full">
+                <TabsTrigger value="editor" className="flex-1 text-xs sm:text-sm">Content</TabsTrigger>
+                <TabsTrigger value="design" className="flex-1 text-xs sm:text-sm">Design</TabsTrigger>
+                <TabsTrigger value="analyser" className="flex-1 text-xs sm:text-sm">Analyser</TabsTrigger>
+                <TabsTrigger value="job-match" className="flex-1 text-xs sm:text-sm">Job Match</TabsTrigger>
+                <TabsTrigger value="cover-letter" className="flex-1 text-xs sm:text-sm">Cover Letter</TabsTrigger>
+              </TabsList>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
 
-            {/* Content + Analyser tabs: show content editor on left */}
+            {/* Content + Analyser tabs (or job-match fix mode): show content editor on left */}
             {(activeTab === "editor" || activeTab === "analyser") && (
               <ContentEditor cvId={cv.id} initialData={initialContent} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
             )}
@@ -372,12 +495,32 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
 
             {/* Job Match tab: show job match form on left */}
             {activeTab === "job-match" && (
-              <JobMatchPanel cvId={cv.id} />
+              <JobMatchPanel
+                cvId={cv.id}
+                initialJobDescription={cv.job_description ?? ""}
+                initialCompany={cv.job_company ?? ""}
+                initialJobTitle={cv.job_title_target ?? ""}
+                credits={credits.jobMatch}
+                plan={plan}
+                content={content}
+                result={jobMatchResult}
+                onResult={setJobMatchResult}
+                onFixField={handleJobMatchFix}
+              />
             )}
 
             {/* Cover Letter tab: show cover letter options on left */}
             {activeTab === "cover-letter" && (
-              <CoverLetterPanel cvId={cv.id} jobMatches={jobMatches} />
+              <CoverLetterPanel
+                cvId={cv.id}
+                jobMatches={jobMatches}
+                coverLetters={coverLetters}
+                hasJobDescription={!!cv.job_description}
+                jobTitle={cv.job_title_target ?? ""}
+                company={cv.job_company ?? ""}
+                credits={credits.coverLetter}
+                plan={plan}
+              />
             )}
             </div>
           </Tabs>
@@ -389,10 +532,23 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
           onMouseDown={handleResizeStart}
         />
 
-        {/* Right Panel — changes based on active tab */}
+        {/* Right Panel — changes based on active tab (with override support) */}
         <div className="flex-1 min-w-0 overflow-y-auto bg-muted/30 p-4 lg:p-6">
-          {/* Content + Design tabs: live preview */}
-          {(activeTab === "editor" || activeTab === "design") && (
+          {/* Job-match Fix mode: content editor on left, job match results on right */}
+          {rightPanelOverride === "job-match" && activeTab === "editor" && jobMatchResult && (
+            <div className="mx-auto max-w-2xl">
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">Editing CV — Job Match results shown for reference</p>
+                <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setRightPanelOverride(null); setActiveTab("job-match"); }}>
+                  Back to Job Match
+                </Button>
+              </div>
+              <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
+            </div>
+          )}
+
+          {/* Content + Design tabs: live preview (only when NOT in fix-override mode) */}
+          {(activeTab === "editor" || activeTab === "design") && rightPanelOverride !== "job-match" && (
             <div className="mx-auto w-full">
               <PaperPreview
                 paperSize={design.paperSize}
@@ -409,35 +565,89 @@ export function ResumeEditor({ cv, latestReport, jobMatches, credits, user, plan
             </div>
           )}
 
-          {/* Analyser tab: ATS report on right */}
+          {/* Analyser tab: ATS report on right — completely independent */}
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
             </div>
           )}
 
-          {/* Job Match tab: report on right */}
+          {/* Job Match tab: full results on right */}
           {activeTab === "job-match" && (
             <div className="mx-auto max-w-2xl">
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} />
+              {jobMatchResult ? (
+                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
+              ) : (
+                <div className="rounded-lg border bg-background p-6">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Run a job match analysis to see your match breakdown here.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Cover Letter tab: generated letter on right */}
-          {activeTab === "cover-letter" && (
-            <div className="mx-auto max-w-2xl p-8">
-              <div className="rounded-lg border bg-background p-6">
-                <p className="text-sm text-muted-foreground text-center">
-                  Generated cover letter will appear here after you click Generate.
-                </p>
+          {/* Cover Letter tab: context-dependent right panel */}
+          {activeTab === "cover-letter" && (() => {
+            const source = typeof window !== "undefined"
+              ? sessionStorage.getItem(`cover_letter_source_${cv.id}`)
+              : null;
+
+            if (source === "design" || source === "editor") {
+              return (
+                <div className="mx-auto w-full">
+                  <PaperPreview
+                    paperSize={design.paperSize}
+                    manualBreaks={design.pageBreaks ?? []}
+                    onRemoveManualBreak={(key) => {
+                      handleDesignChange({
+                        ...design,
+                        pageBreaks: (design.pageBreaks ?? []).filter((k) => k !== key),
+                      });
+                    }}
+                  >
+                    <TemplateRenderer content={getPreviewContent(content)} design={design} />
+                  </PaperPreview>
+                </div>
+              );
+            }
+
+            // Default: ATS panel
+            return (
+              <div className="mx-auto max-w-2xl">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
       </div>
+
+      {inlineRewriteData && (
+        <AiRewriteDrawer
+          open={inlineRewriteOpen}
+          onClose={() => setInlineRewriteOpen(false)}
+          issue={{
+            description: inlineRewriteData.fieldRef?.section === "summary"
+              ? "Strengthen your professional summary with stronger impact and keywords"
+              : "Improve this bullet point with measurable results and stronger action verbs",
+            fix: inlineRewriteData.fieldRef?.section === "summary"
+              ? "Rewrite to be concise, achievement-focused, and ATS-friendly"
+              : "Add metrics, use strong verbs, and align with target role",
+            category: inlineRewriteData.category,
+            field_ref: inlineRewriteData.fieldRef,
+          }}
+          originalText={inlineRewriteData.originalText}
+          targetRole={content.targetTitle?.title ?? "General"}
+          sectionType={inlineRewriteData.fieldRef?.section ?? "experience"}
+          sectionLabel={inlineRewriteData.sectionLabel}
+          isCurrent={true}
+          missingKeywords={[]}
+          onAccept={handleRewriteAccept}
+        />
+      )}
     </div>
   );
 }

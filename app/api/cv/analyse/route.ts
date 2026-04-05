@@ -3,8 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { analyseCV } from "@/lib/ai/ats-analyser";
 import { getDomainForRole } from "@/lib/resume/roles";
+import { checkRateLimit } from "@/lib/ai/rate-limiter";
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
 
   const {
@@ -13,6 +15,11 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = checkRateLimit(ip, true);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests. Try again later.", retry_after: rl.retryAfter }, { status: 429 });
   }
 
   const { cv_id } = await request.json();
@@ -33,7 +40,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const report = await analyseCV(cv_id);
+    const report = await analyseCV(cv_id, { userId: user.id, ip });
     return NextResponse.json(report);
   } catch (err: unknown) {
     const error = err as Error & { code?: string; role?: string };

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
+import { checkRateLimit as checkAIRateLimit } from "@/lib/ai/rate-limiter";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000;
@@ -51,6 +52,9 @@ export async function POST(request: NextRequest) {
     const pastedText = formData.get("text") as string | null;
     const role = formData.get("role") as string | null;
     const domain = (formData.get("domain") as string) || null;
+    const jobDescription = (formData.get("job_description") as string) || null;
+    const jobCompany = (formData.get("job_company") as string) || null;
+    const jobTitleTarget = (formData.get("job_title_target") as string) || null;
 
     if (!role?.trim()) {
       return NextResponse.json({ error: "Role is required" }, { status: 400 });
@@ -110,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     let parsedJson = null;
     try {
-      parsedJson = await structureCvText(rawText);
+      parsedJson = await structureCvText(rawText, { ip });
     } catch (err) {
       console.error("[cv/upload-public] Gemini structuring failed:", err);
     }
@@ -130,6 +134,9 @@ export async function POST(request: NextRequest) {
         target_domain: domain?.trim() || null,
         redirect_token: redirectToken,
         status: "pending_auth",
+        job_description: jobDescription?.trim() || null,
+        job_company: jobCompany?.trim() || null,
+        job_title_target: jobTitleTarget?.trim() || null,
       })
       .select("id")
       .single();

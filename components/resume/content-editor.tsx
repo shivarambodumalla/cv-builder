@@ -29,6 +29,7 @@ import {
   BookOpen,
   Target,
   AlignLeft,
+  Sparkles,
 } from "lucide-react";
 
 interface ContentEditorProps {
@@ -130,7 +131,7 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
 
   useEffect(() => {
     function onJumpToField(e: Event) {
-      const ref = (e as CustomEvent).detail as { section: string; field?: string | null };
+      const ref = (e as CustomEvent).detail as { section: string; field?: string | null; bulletText?: string };
       if (!ref?.section) return;
       const el = document.querySelector(`[data-section="${ref.section}"]`);
       if (el) {
@@ -138,13 +139,46 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
         const trigger = el.querySelector("[data-state=closed]") as HTMLElement;
         trigger?.click();
         setTimeout(() => {
-          const fieldEl = ref.field
-            ? el.querySelector(`[name*="${ref.field}"], [data-field="${ref.field}"]`) as HTMLElement
-            : el.querySelector("input, textarea") as HTMLElement;
+          let fieldEl: HTMLElement | null = null;
+
+          if (ref.bulletText && ref.field === "bullets") {
+            // Find the specific bullet textarea whose content matches
+            const textareas = el.querySelectorAll("textarea");
+            const needle = ref.bulletText.toLowerCase().slice(0, 40);
+            for (const ta of textareas) {
+              if ((ta as HTMLTextAreaElement).value.toLowerCase().includes(needle)) {
+                fieldEl = ta;
+                break;
+              }
+            }
+            // Also open the parent experience sub-accordion if collapsed
+            if (fieldEl) {
+              const expItem = fieldEl.closest("[data-section] .rounded-lg.border");
+              if (expItem && !expItem.querySelector(".border-t")) {
+                const header = expItem.querySelector("[role=button]") as HTMLElement;
+                header?.click();
+                setTimeout(() => {
+                  fieldEl!.focus();
+                  fieldEl!.scrollIntoView({ behavior: "smooth", block: "center" });
+                  fieldEl!.classList.add("ring-2", "ring-yellow-400");
+                  setTimeout(() => fieldEl!.classList.remove("ring-2", "ring-yellow-400"), 2000);
+                }, 200);
+                return;
+              }
+            }
+          }
+
+          if (!fieldEl) {
+            fieldEl = ref.field
+              ? el.querySelector(`[name*="${ref.field}"], [data-field="${ref.field}"]`) as HTMLElement
+              : el.querySelector("input, textarea") as HTMLElement;
+          }
+
           if (fieldEl) {
             fieldEl.focus();
+            fieldEl.scrollIntoView({ behavior: "smooth", block: "center" });
             fieldEl.classList.add("ring-2", "ring-yellow-400");
-            setTimeout(() => fieldEl.classList.remove("ring-2", "ring-yellow-400"), 2000);
+            setTimeout(() => fieldEl!.classList.remove("ring-2", "ring-yellow-400"), 2000);
           }
         }, 300);
       }
@@ -157,17 +191,61 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
       if (cats.length > 0) {
         const current: string[] = getValues("skills.categories.0.skills") || [];
         if (current.some((s) => s.toLowerCase() === skill.toLowerCase())) return;
-        setValue("skills.categories.0.skills", [...current, skill]);
+        setValue("skills.categories.0.skills", [...current, skill], { shouldDirty: true });
       } else {
-        setValue("skills.categories", [{ name: "", skills: [skill] }]);
+        setValue("skills.categories", [{ name: "", skills: [skill] }], { shouldDirty: true });
+      }
+
+      // Scroll to skills section and open it, then highlight the new chip
+      const el = document.querySelector('[data-section="skills"]');
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const trigger = el.querySelector("[data-state=closed]") as HTMLElement;
+        trigger?.click();
+        setTimeout(() => {
+          const chips = el.querySelectorAll("[data-skill]");
+          const chip = Array.from(chips).find(
+            (c) => c.textContent?.trim().toLowerCase().includes(skill.toLowerCase())
+          ) as HTMLElement | undefined;
+          if (chip) {
+            chip.classList.add("ring-2", "ring-green-400");
+            setTimeout(() => chip.classList.remove("ring-2", "ring-green-400"), 2000);
+          }
+        }, 200);
+      }
+    }
+
+    function onRewriteAccept(e: Event) {
+      const { newText, fieldRef } = (e as CustomEvent).detail;
+      if (!newText || !fieldRef) return;
+
+      if (fieldRef.section === "summary") {
+        setValue("summary.content", newText, { shouldDirty: true });
+        return;
+      }
+
+      if (fieldRef.section === "experience" && fieldRef.bulletText) {
+        const items = getValues("experience.items") || [];
+        const needle = fieldRef.bulletText.toLowerCase().slice(0, 40);
+        for (let ri = 0; ri < items.length; ri++) {
+          const bullets: string[] = items[ri].bullets || [];
+          for (let bi = 0; bi < bullets.length; bi++) {
+            if (bullets[bi]?.toLowerCase().includes(needle)) {
+              setValue(`experience.items.${ri}.bullets.${bi}` as any, newText, { shouldDirty: true });
+              return;
+            }
+          }
+        }
       }
     }
 
     window.addEventListener("jump-to-field", onJumpToField);
     window.addEventListener("add-skill", onAddSkill);
+    window.addEventListener("rewrite-accept", onRewriteAccept);
     return () => {
       window.removeEventListener("jump-to-field", onJumpToField);
       window.removeEventListener("add-skill", onAddSkill);
+      window.removeEventListener("rewrite-accept", onRewriteAccept);
     };
   }, [getValues, setValue]);
 
@@ -208,7 +286,7 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
               <CollapsibleContent className="border-t px-4 pb-4 pt-3">
                 {key === "contact" && <ContactFields register={register} />}
                 {key === "targetTitle" && <TargetTitleField register={register} />}
-                {key === "summary" && <SummaryField register={register} />}
+                {key === "summary" && <SummaryField register={register} watched={watched} />}
                 {key === "experience" && <ExperienceFields control={control} register={register} watched={watched} />}
                 {key === "education" && <EducationFields control={control} register={register} watched={watched} />}
                 {key === "skills" && <SkillsFields control={control} getValues={getValues} setValue={setValue} />}
@@ -267,8 +345,65 @@ function TargetTitleField({ register }: { register: any }) {
   );
 }
 
-function SummaryField({ register }: { register: any }) {
-  return <Textarea {...register("summary.content")} rows={4} placeholder="Professional summary..." />;
+function SummaryField({ register, watched }: { register: any; watched?: any }) {
+  const text = watched?.summary?.content || "";
+  return (
+    <div className="group/rewrite relative">
+      <Textarea {...register("summary.content")} rows={4} placeholder="Professional summary..." className="pb-8" />
+      {text.trim().length > 10 && (
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent("inline-rewrite", {
+              detail: {
+                originalText: text,
+                fieldRef: { section: "summary", field: null },
+                sectionLabel: "Summary",
+                category: "bullet_quality",
+              },
+            }));
+          }}
+          className="absolute bottom-1.5 right-1.5 rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground flex items-center gap-1 shadow-sm hover:bg-primary/90 transition-colors opacity-0 group-focus-within/rewrite:opacity-100 group-hover/rewrite:opacity-100"
+        >
+          <Sparkles className="h-3 w-3" /> Rewrite
+        </button>
+      )}
+    </div>
+  );
+}
+
+function BulletField({ register, name, roleIndex, bulletIndex, watched, onRemove }: { register: any; name: string; roleIndex: number; bulletIndex: number; watched?: any; onRemove: () => void }) {
+  const text = watched?.experience?.items?.[roleIndex]?.bullets?.[bulletIndex] || "";
+  return (
+    <div className="flex gap-2">
+      <div className="group/rewrite relative flex-1">
+        <Textarea {...register(name)} placeholder="Describe achievement..." rows={3} className="resize-y pb-8" />
+        {text.trim().length > 10 && (
+          <button
+            type="button"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("inline-rewrite", {
+                detail: {
+                  originalText: text,
+                  fieldRef: { section: "experience", field: "bullets", bulletText: text.slice(0, 60) },
+                  sectionLabel: "Work Experience",
+                  category: "bullet_quality",
+                },
+              }));
+            }}
+            className="absolute bottom-1.5 right-1.5 rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground flex items-center gap-1 shadow-sm hover:bg-primary/90 transition-colors opacity-0 group-focus-within/rewrite:opacity-100 group-hover/rewrite:opacity-100"
+          >
+            <Sparkles className="h-3 w-3" /> Rewrite
+          </button>
+        )}
+      </div>
+      <Button type="button" variant="ghost" size="icon" className="mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={onRemove}>
+        <X className="h-3.5 w-3.5" />
+      </Button>
+    </div>
+  );
 }
 
 function DateField({ control, name, label }: { control: any; name: string; label: string }) {
@@ -450,12 +585,15 @@ function ExpItem({ index, control, register, onRemove, watched }: { index: numbe
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">Bullet Points</Label>
             {bulletFields.map((bf, bi) => (
-              <div key={bf.id} className="flex gap-2">
-                <Textarea {...register(`experience.items.${index}.bullets.${bi}`)} placeholder="Describe achievement..." rows={3} className="flex-1 resize-y" />
-                <Button type="button" variant="ghost" size="icon" className="mt-1 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(bi)}>
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </div>
+              <BulletField
+                key={bf.id}
+                register={register}
+                name={`experience.items.${index}.bullets.${bi}`}
+                roleIndex={index}
+                bulletIndex={bi}
+                watched={watched}
+                onRemove={() => remove(bi)}
+              />
             ))}
             <Button type="button" variant="ghost" size="sm" onClick={() => append("" as any)}>
               <Plus className="mr-1 h-3 w-3" /> Add Bullet
@@ -594,7 +732,7 @@ function SkillsFields({ control, getValues, setValue }: { control: any; getValue
             render={({ field: f }) => (
               <div className="flex flex-wrap gap-1.5">
                 {(f.value as string[] || []).map((skill: string, si: number) => (
-                  <span key={si} className="flex items-center gap-1 rounded-md border bg-muted/50 px-2 py-0.5 text-sm">
+                  <span key={si} data-skill={skill} className="flex items-center gap-1 rounded-md border bg-muted/50 px-2 py-0.5 text-sm transition-all">
                     {skill}
                     <button type="button" onClick={() => removeSkill(ci, si)} className="text-muted-foreground hover:text-destructive">
                       <X className="h-3 w-3" />

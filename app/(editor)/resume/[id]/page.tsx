@@ -22,7 +22,7 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
 
   const { data: cv } = await supabase
     .from("cvs")
-    .select("id, title, raw_text, parsed_json, design_settings, updated_at")
+    .select("id, title, raw_text, parsed_json, design_settings, updated_at, target_role, job_description, job_company, job_title_target")
     .eq("id", params.id)
     .eq("user_id", user.id)
     .single();
@@ -38,6 +38,7 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
     .order("created_at", { ascending: false })
     .limit(1);
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const reports = rawReports?.map((r) => {
     const reportData = (r.report_data ?? r.issues) as Record<string, unknown> | null;
     const data = reportData ?? {};
@@ -80,6 +81,7 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
       fallback_type: (data as any).fallback_type,
     };
   });
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -89,15 +91,22 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
 
   const { data: jobMatches } = await supabase
     .from("job_matches")
-    .select("id, job_title, match_score, created_at")
+    .select("id, job_title, job_description, match_score, report_data, created_at")
     .eq("cv_id", cv.id)
     .order("created_at", { ascending: false });
+
+  const { data: coverLetters } = await supabase
+    .from("cover_letters")
+    .select("id, content, tone, version, job_match_id, created_at")
+    .eq("cv_id", cv.id)
+    .order("version", { ascending: false });
 
   return (
     <ResumeEditor
       cv={cv}
       latestReport={reports?.[0] ?? null}
       jobMatches={jobMatches ?? []}
+      coverLetters={coverLetters ?? []}
       credits={{
         jobMatch: profile?.credits_job_match ?? 0,
         coverLetter: profile?.credits_cover_letter ?? 0,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
+import { checkRateLimit } from "@/lib/ai/rate-limiter";
 
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
@@ -34,6 +35,7 @@ async function extractText(
 }
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
 
   const {
@@ -43,6 +45,9 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const rl = checkRateLimit(ip, true);
+  if (!rl.allowed) return NextResponse.json({ error: "Too many requests. Try again later." }, { status: 429 });
 
   let formData: FormData;
   try {
@@ -112,7 +117,7 @@ export async function POST(request: NextRequest) {
 
   let parsedJson = null;
   try {
-    parsedJson = await structureCvText(rawText);
+    parsedJson = await structureCvText(rawText, { userId: user.id, ip });
   } catch (err) {
     console.error("[cv/upload] AI structuring failed (non-blocking):", err);
   }

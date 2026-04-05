@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, Loader2, BarChart3, Search, Lightbulb, ArrowRight, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2 } from "lucide-react";
+import { Upload, Loader2, BarChart3, Search, Lightbulb, ArrowRight, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,10 @@ export function UploadResumeContent() {
   const [currentStep, setCurrentStep] = useState<AnalysisStep>("uploading");
   const [error, setError] = useState("");
   const [roleError, setRoleError] = useState(false);
+  const [jdOpen, setJdOpen] = useState(false);
+  const [jobCompany, setJobCompany] = useState("");
+  const [jobTitleTarget, setJobTitleTarget] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
 
   const roleSelected = role !== null && !!role.role;
 
@@ -87,6 +92,9 @@ export function UploadResumeContent() {
       }
       formData.append("role", role.role);
       formData.append("domain", role.domain);
+      if (jobDescription.trim()) formData.append("job_description", jobDescription.trim());
+      if (jobCompany.trim()) formData.append("job_company", jobCompany.trim());
+      if (jobTitleTarget.trim()) formData.append("job_title_target", jobTitleTarget.trim());
 
       const res = await fetch("/api/cv/upload-public", {
         method: "POST",
@@ -235,6 +243,43 @@ export function UploadResumeContent() {
             <p className="text-sm text-destructive">
               Please select a target role before uploading.
             </p>
+          )}
+        </div>
+
+        <div className={cn("space-y-3 transition-opacity", !roleSelected && "opacity-50 pointer-events-none")}>
+          <button
+            type="button"
+            onClick={() => setJdOpen(!jdOpen)}
+            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 px-4 py-3 text-sm text-muted-foreground hover:border-muted-foreground/50 hover:text-foreground transition-colors"
+          >
+            {jdOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <span className="font-medium">+ Add job description (recommended)</span>
+          </button>
+          {jdOpen && (
+            <div className="space-y-3 rounded-lg border bg-muted/30 p-4">
+              <p className="text-xs text-muted-foreground">
+                Adding a job description gives you a personalised match score and tailored cover letter — not just a generic ATS score
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Company name (optional)</Label>
+                  <Input placeholder="e.g. Google" value={jobCompany} onChange={(e) => setJobCompany(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Job title (optional)</Label>
+                  <Input placeholder="e.g. Senior Engineer" value={jobTitleTarget} onChange={(e) => setJobTitleTarget(e.target.value)} />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Job description</Label>
+                <Textarea
+                  placeholder="Paste the full job description here..."
+                  rows={4}
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                />
+              </div>
+            </div>
           )}
         </div>
 

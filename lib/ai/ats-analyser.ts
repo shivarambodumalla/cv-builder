@@ -165,10 +165,9 @@ function buildFieldRefs(report: AtsReportData): AtsReportData {
         }
       } else if (category === "keywords") {
         issue.field_ref = { section: "skills", field: "skills" };
-      } else if (category === "measurable_results") {
-        issue.field_ref = { section: "experience", field: "bullets", index: 0 };
-      } else if (category === "bullet_quality") {
-        issue.field_ref = { section: "experience", field: "bullets", bulletText: issue.description };
+      } else if (category === "measurable_results" || category === "bullet_quality") {
+        const quoted = (issue.description || "").match(/[''\u2018\u2019]([^''\u2018\u2019]{15,}?)[''\u2018\u2019]/);
+        issue.field_ref = { section: "experience", field: "bullets", bulletText: quoted?.[1] ?? undefined };
       } else {
         issue.field_ref = { section: category, field: null };
       }
@@ -345,7 +344,7 @@ function normaliseReport(raw: any): AtsReportData {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export async function analyseCV(cvId: string): Promise<AtsReportData & { id: string; created_at: string }> {
+export async function analyseCV(cvId: string, caller?: { userId?: string; ip?: string }): Promise<AtsReportData & { id: string; created_at: string }> {
   const supabase = createAdminClient();
 
   const { data: cv } = await supabase
@@ -416,6 +415,8 @@ export async function analyseCV(cvId: string): Promise<AtsReportData & { id: str
       parsedJson: payload,
     },
     feature: "ats_analysis",
+    userId: caller?.userId,
+    ip: caller?.ip,
   });
 
   const reportObj = rawReport as Record<string, unknown>;
