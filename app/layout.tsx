@@ -1,12 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { DevReload } from "./dev-reload";
 import "./globals.css";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: "CVedge — AI-Powered CV Builder",
+  title: "CVEdge — AI-Powered CV Builder",
   description: "Build professional CVs with AI assistance",
   icons: {
     icon: [

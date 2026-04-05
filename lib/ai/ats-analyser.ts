@@ -96,7 +96,7 @@ function buildCVMetadata(content: ResumeContent) {
     has_tables: false,
     is_multicolumn: false,
     uses_icons: false,
-    built_with_cvpilot: true,
+    built_with_cvedge: true,
     total_bullets: totalBullets,
     total_roles: totalRoles,
     total_words: totalWords,

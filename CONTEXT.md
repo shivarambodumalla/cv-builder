@@ -1,4 +1,8 @@
-# CVPilot — Project Context
+# CVEdge — Project Context
+
+- Product name: CVEdge
+- Domain: thecvedge.com
+- App URL: https://www.thecvedge.com
 
 ## Stack
 - Next.js 14 App Router + TypeScript

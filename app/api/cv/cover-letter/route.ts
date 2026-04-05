@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { sendEmailAsync } from "@/lib/email/sender";
 import type { ResumeContent } from "@/lib/resume/types";
 
 
@@ -216,6 +217,20 @@ export async function POST(request: NextRequest) {
 
     if (saveError) {
       return NextResponse.json({ error: saveError.message }, { status: 500 });
+    }
+
+    // Send cover letter email
+    if (user.email) {
+      sendEmailAsync({
+        to: user.email,
+        templateName: "cover_letter_ready",
+        variables: {
+          jobTitle: cv.job_title_target ?? "your target role",
+          company: cv.job_company ?? "the company",
+          cvId: cv_id,
+        },
+        userId: user.id,
+      });
     }
 
     // Deduct credit

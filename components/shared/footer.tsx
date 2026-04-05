@@ -21,8 +21,8 @@ const links = {
 export function Footer() {
   return (
     <footer className="border-t">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="grid gap-6 sm:gap-8 grid-cols-2 lg:grid-cols-4">
           <div>
             <Link href="/" className="flex items-center">
               <img src="/img/CV-Edge-Logo.svg" alt="CVedge" className="h-7" />
@@ -79,7 +79,7 @@ export function Footer() {
         </div>
         <Separator className="my-8" />
         <p className="text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} CVPilot. All rights reserved.
+          &copy; {new Date().getFullYear()} CVEdge. All rights reserved.
         </p>
       </div>
     </footer>

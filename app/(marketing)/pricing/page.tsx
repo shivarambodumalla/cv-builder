@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { PricingContent } from "./pricing-content";
 
 export const metadata: Metadata = {
-  title: "Pricing — CVPilot",
+  title: "Pricing — CVEdge",
   description:
     "Simple, transparent pricing. Start for free, upgrade to Starter ($12/mo) or Pro ($29/mo) when you need more power. Annual plans save 30%.",
   openGraph: {
-    title: "Pricing — CVPilot",
+    title: "Pricing — CVEdge",
     description:
       "Free, Starter, and Pro plans. Start building your CV today.",
   },

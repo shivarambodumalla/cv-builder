@@ -22,11 +22,11 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "CVPilot — AI-Powered CV Builder | Land More Interviews",
+  title: "CVEdge — AI-Powered CV Builder | Land More Interviews",
   description:
-    "Build professional, ATS-optimised CVs in minutes. CVPilot uses AI to score your resume, match you to jobs, and help you stand out to recruiters.",
+    "Build professional, ATS-optimised CVs in minutes. CVEdge uses AI to score your resume, match you to jobs, and help you stand out to recruiters.",
   openGraph: {
-    title: "CVPilot — AI-Powered CV Builder",
+    title: "CVEdge — AI-Powered CV Builder",
     description:
       "Build professional, ATS-optimised CVs in minutes with AI assistance.",
     type: "website",
@@ -156,7 +156,7 @@ export default function HomePage() {
           <span className="text-muted-foreground">Land more interviews.</span>
         </h1>
         <p className="max-w-[640px] text-lg text-muted-foreground">
-          CVPilot analyses your resume, scores it against ATS systems, matches
+          CVEdge analyses your resume, scores it against ATS systems, matches
           you to jobs, and helps you write a CV that gets you hired.
         </p>
         <div className="flex gap-4">

@@ -89,7 +89,7 @@ function LoginContent() {
         ) : (
           <>
             <CardTitle className="text-2xl">Sign In</CardTitle>
-            <CardDescription>Sign in to your CVPilot account</CardDescription>
+            <CardDescription>Sign in to your CVEdge account</CardDescription>
           </>
         )}
       </CardHeader>

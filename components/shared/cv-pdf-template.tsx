@@ -258,7 +258,7 @@ export function CvPdfTemplate({ data, watermark = false, pageBreaks = [] }: CvPd
               color: "#aaa",
             }}
           >
-            Built with CVPilot — cvpilot.com
+            Built with CVEdge — thecvedge.com
           </Text>
         )}
       </Page>

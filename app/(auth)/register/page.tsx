@@ -109,7 +109,7 @@ function RegisterContent() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Create Account</CardTitle>
-        <CardDescription>Get started with CVPilot</CardDescription>
+        <CardDescription>Get started with CVEdge</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <GoogleButton onClick={handleGoogleLogin} />

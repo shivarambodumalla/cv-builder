@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { analyseCV } from "@/lib/ai/ats-analyser";
 import { getDomainForRole } from "@/lib/resume/roles";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { sendEmailAsync } from "@/lib/email/sender";
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
@@ -41,6 +42,24 @@ export async function POST(request: NextRequest) {
 
   try {
     const report = await analyseCV(cv_id, { userId: user.id, ip });
+
+    // Send ATS report email
+    if (user.email) {
+      const issueCount = Object.values(report.category_scores ?? {}).reduce(
+        (sum, cat) => sum + ((cat as { issues?: unknown[] }).issues?.length ?? 0), 0
+      );
+      sendEmailAsync({
+        to: user.email,
+        templateName: "ats_report_ready",
+        variables: {
+          score: String(report.score ?? 0),
+          issueCount: String(issueCount),
+          cvId: cv_id,
+        },
+        userId: user.id,
+      });
+    }
+
     return NextResponse.json(report);
   } catch (err: unknown) {
     const error = err as Error & { code?: string; role?: string };

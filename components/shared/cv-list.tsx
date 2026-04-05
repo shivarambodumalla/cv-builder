@@ -104,16 +104,16 @@ export function CvList({ cvs }: { cvs: Cv[] }) {
       </div>
 
       {/* Recent Resumes Header */}
-      <div className="mt-10 flex items-center justify-between gap-4">
+      <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-lg font-semibold">Recent Resumes</h2>
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search Resumes"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 w-48 pl-8 text-sm"
+              className="h-9 w-full sm:w-48 pl-8 text-sm"
             />
           </div>
           <Button

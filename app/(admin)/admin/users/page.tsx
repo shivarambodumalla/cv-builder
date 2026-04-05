@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { AdminUsersTable } from "./users-table";
 
 export const metadata: Metadata = {
-  title: "Users — CVPilot Admin",
+  title: "Users — CVEdge Admin",
 };
 
 export const dynamic = "force-dynamic";

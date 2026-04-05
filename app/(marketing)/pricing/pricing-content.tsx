@@ -60,7 +60,7 @@ const comparisonFeatures = [
 
 const faqs = [
   {
-    question: "Can I try CVPilot before paying?",
+    question: "Can I try CVEdge before paying?",
     answer:
       "Yes. The Free plan lets you create one CV with basic templates and ATS scoring — no credit card required. Paid plans also include a 7-day free trial so you can explore every feature before committing.",
   },

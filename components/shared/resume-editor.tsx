@@ -44,6 +44,8 @@ import {
   CreditCard,
   Check,
   Loader2,
+  Eye,
+  PenLine,
 } from "lucide-react";
 
 interface Cv {
@@ -155,7 +157,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
       sessionStorage.setItem(`cover_letter_source_${cv.id}`, prevTabRef.current);
     }
     prevTabRef.current = activeTab;
-    setRightPanelOverride(null); // clear override on manual tab switch
+    setRightPanelOverride(null);
+    setMobilePreview(false);
     setActiveTabRaw(tab);
   }, [activeTab, cv.id]);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
@@ -163,6 +166,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
   const [title, setTitle] = useState(cv.title || "Untitled CV");
   const [editingTitle, setEditingTitle] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
+  const [mobilePreview, setMobilePreview] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const titleDebounceRef = useRef<NodeJS.Timeout>();
   const designDebounceRef = useRef<NodeJS.Timeout>();
@@ -394,7 +398,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
           )}
         </div>
 
-        <div className="flex items-center justify-center px-4">
+        <div className="hidden sm:flex items-center justify-center px-4">
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             {saveStatus === "saving" ? (
               <><Loader2 className="h-3 w-3 animate-spin" /> Saving...</>
@@ -404,7 +408,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
           </span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 lg:hidden"
+            onClick={() => setMobilePreview(!mobilePreview)}
+            title={mobilePreview ? "Back" : "Preview CV"}
+          >
+            {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </Button>
           <Button size="sm" className="h-8" onClick={async () => {
             try {
               const res = await fetch("/api/cv/export/pdf", {
@@ -468,24 +481,39 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
       <div ref={containerRef} className="relative flex flex-1 overflow-hidden">
         {/* Left Panel */}
         <div
-          className="shrink-0 border-r flex flex-col"
-          style={{ width: `${leftPanelWidth}%` }}
+          className={`editor-left-panel shrink-0 lg:border-r flex-col ${mobilePreview ? "hidden lg:flex" : "flex"}`}
+          style={{ ["--left-panel-width" as string]: `${leftPanelWidth}%` }}
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
-            <div className="sticky top-0 z-10 bg-background px-2 pt-2 pb-0">
-              <TabsList className="w-full">
-                <TabsTrigger value="editor" className="flex-1 text-xs sm:text-sm">Content</TabsTrigger>
-                <TabsTrigger value="design" className="flex-1 text-xs sm:text-sm">Design</TabsTrigger>
-                <TabsTrigger value="analyser" className="flex-1 text-xs sm:text-sm">Analyser</TabsTrigger>
-                <TabsTrigger value="job-match" className="flex-1 text-xs sm:text-sm">Job Match</TabsTrigger>
-                <TabsTrigger value="cover-letter" className="flex-1 text-xs sm:text-sm">Cover Letter</TabsTrigger>
+            <div className="sticky top-0 z-10 bg-background px-2 pt-2 pb-0 overflow-x-auto scrollbar-none">
+              <TabsList className="w-max min-w-full sm:w-full">
+                <TabsTrigger value="editor" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Content</TabsTrigger>
+                <TabsTrigger value="design" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Design</TabsTrigger>
+                <TabsTrigger value="analyser" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Analyser</TabsTrigger>
+                <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Job Match</TabsTrigger>
+                <TabsTrigger value="cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
               </TabsList>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
 
-            {/* Content + Analyser tabs (or job-match fix mode): show content editor on left */}
-            {(activeTab === "editor" || activeTab === "analyser") && (
+            {/* Content tab: always show editor */}
+            {activeTab === "editor" && (
               <ContentEditor cvId={cv.id} initialData={initialContent} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+            )}
+
+            {/* Analyser tab: editor on desktop, ATS panel on mobile */}
+            {activeTab === "analyser" && (
+              <>
+                {/* Desktop: content editor (right panel has ATS) */}
+                <div className="hidden lg:block">
+                  <ContentEditor cvId={cv.id} initialData={initialContent} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+                </div>
+                {/* Mobile: ATS panel inline (no right panel on mobile) */}
+                <div className="lg:hidden">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
+                </div>
+              </>
             )}
 
             {/* Design tab: show designer controls on left */}
@@ -493,20 +521,28 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
               <DesignerPanel design={design} onChange={handleDesignChange} />
             )}
 
-            {/* Job Match tab: show job match form on left */}
+            {/* Job Match tab: form + results inline on mobile, form-only on desktop */}
             {activeTab === "job-match" && (
-              <JobMatchPanel
-                cvId={cv.id}
-                initialJobDescription={cv.job_description ?? ""}
-                initialCompany={cv.job_company ?? ""}
-                initialJobTitle={cv.job_title_target ?? ""}
-                credits={credits.jobMatch}
-                plan={plan}
-                content={content}
-                result={jobMatchResult}
-                onResult={setJobMatchResult}
-                onFixField={handleJobMatchFix}
-              />
+              <>
+                <JobMatchPanel
+                  cvId={cv.id}
+                  initialJobDescription={cv.job_description ?? ""}
+                  initialCompany={cv.job_company ?? ""}
+                  initialJobTitle={cv.job_title_target ?? ""}
+                  credits={credits.jobMatch}
+                  plan={plan}
+                  content={content}
+                  result={jobMatchResult}
+                  onResult={setJobMatchResult}
+                  onFixField={handleJobMatchFix}
+                />
+                {/* Mobile: show job match results below the form */}
+                {jobMatchResult && (
+                  <div className="lg:hidden mt-6 border-t pt-6">
+                    <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
+                  </div>
+                )}
+              </>
             )}
 
             {/* Cover Letter tab: show cover letter options on left */}
@@ -526,14 +562,33 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
           </Tabs>
         </div>
 
-        {/* Resize Handle */}
+        {/* Resize Handle — desktop only */}
         <div
-          className="w-1.5 shrink-0 cursor-col-resize bg-border hover:bg-primary/30 active:bg-primary/50 transition-colors"
+          className="hidden lg:block w-1.5 shrink-0 cursor-col-resize bg-border hover:bg-primary/30 active:bg-primary/50 transition-colors"
           onMouseDown={handleResizeStart}
         />
 
         {/* Right Panel — changes based on active tab (with override support) */}
-        <div className="flex-1 min-w-0 overflow-y-auto bg-muted/30 p-4 lg:p-6">
+        <div className={`flex-1 min-w-0 overflow-y-auto bg-muted/30 p-4 lg:p-6 ${mobilePreview ? "flex" : "hidden lg:block"}`}>
+
+          {/* Mobile preview: always show CV preview regardless of tab */}
+          {mobilePreview && (
+            <div className="mx-auto w-full lg:hidden">
+              <PaperPreview
+                paperSize={design.paperSize}
+                manualBreaks={design.pageBreaks ?? []}
+                onRemoveManualBreak={(key) => {
+                  handleDesignChange({
+                    ...design,
+                    pageBreaks: (design.pageBreaks ?? []).filter((k) => k !== key),
+                  });
+                }}
+              >
+                <TemplateRenderer content={getPreviewContent(content)} design={design} />
+              </PaperPreview>
+            </div>
+          )}
+
           {/* Job-match Fix mode: content editor on left, job match results on right */}
           {rightPanelOverride === "job-match" && activeTab === "editor" && jobMatchResult && (
             <div className="mx-auto max-w-2xl">
@@ -547,7 +602,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
             </div>
           )}
 
-          {/* Content + Design tabs: live preview (only when NOT in fix-override mode) */}
+          {/* Content + Design tabs: live preview — desktop only (mobile uses mobilePreview above) */}
           {(activeTab === "editor" || activeTab === "design") && rightPanelOverride !== "job-match" && (
             <div className="mx-auto w-full">
               <PaperPreview

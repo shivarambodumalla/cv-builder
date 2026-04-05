@@ -21,11 +21,11 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Features — CVPilot",
+  title: "Features — CVEdge",
   description:
-    "Explore CVPilot's full feature set: AI resume builder, ATS scoring, job matching, cover letter generation, and more.",
+    "Explore CVEdge's full feature set: AI resume builder, ATS scoring, job matching, cover letter generation, and more.",
   openGraph: {
-    title: "Features — CVPilot",
+    title: "Features — CVEdge",
     description:
       "AI-powered CV builder with ATS scoring, job matching, and cover letter generation.",
   },
@@ -124,7 +124,7 @@ const categories = [
         icon: Shield,
         title: "Tone & Style Control",
         description:
-          "Adjust the tone from formal to conversational. CVPilot adapts the writing style to match company culture.",
+          "Adjust the tone from formal to conversational. CVEdge adapts the writing style to match company culture.",
       },
       {
         icon: Download,
@@ -145,7 +145,7 @@ export default function FeaturesPage() {
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
           From building your first CV to tailoring applications for specific
-          roles — CVPilot has you covered at every step.
+          roles — CVEdge has you covered at every step.
         </p>
       </div>
 

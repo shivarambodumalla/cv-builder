@@ -38,9 +38,9 @@ const SheetContent = React.forwardRef<
       className={cn(
         "fixed z-50 flex flex-col bg-background shadow-lg transition ease-in-out duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out",
         side === "right" &&
-          "inset-y-0 right-0 h-full w-[420px] border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+          "inset-y-0 right-0 h-full w-full sm:w-[420px] border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
         side === "left" &&
-          "inset-y-0 left-0 h-full w-[420px] border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+          "inset-y-0 left-0 h-full w-full sm:w-[420px] border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         className
       )}
       {...props}

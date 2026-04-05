@@ -108,7 +108,7 @@ export default async function AnalyticsPage() {
       {/* SECTION 1 — Today */}
       <div>
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">Today</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           <Card label="AI Calls" value={String(todayCalls)} />
           <Card label="Unique Users" value={String(todayUsers)} />
           <Card label="Total Tokens" value={todayTokens.toLocaleString()} />
@@ -128,7 +128,7 @@ export default async function AnalyticsPage() {
       {/* SECTION 2 — Month summary */}
       <div>
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">30-Day Summary</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Card label="Total (USD)" value={`$${fmt(totalMonth, 4)}`} />
           <Card label="Total (INR)" value={`₹${fmt(totalMonthInr, 2)}`} />
           <Card label="Daily Avg" value={`$${fmt(dailyAvg, 4)}`} />
@@ -140,7 +140,7 @@ export default async function AnalyticsPage() {
       <div>
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">Cost by Feature (30d)</h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead>
               <tr className="border-b text-left text-muted-foreground">
                 <th className="pb-2">Feature</th>
@@ -176,7 +176,7 @@ export default async function AnalyticsPage() {
       <div>
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">Top 20 Consumers (30d)</h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead>
               <tr className="border-b text-left text-muted-foreground">
                 <th className="pb-2">User</th>
@@ -211,7 +211,7 @@ export default async function AnalyticsPage() {
       <div>
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">Error Rate (7d)</h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead>
               <tr className="border-b text-left text-muted-foreground">
                 <th className="pb-2">Feature</th>

@@ -57,3 +57,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .editor-left-panel {
+    width: 100% !important;
+  }
+  @media (min-width: 1024px) {
+    .editor-left-panel {
+      width: var(--left-panel-width) !important;
+    }
+  }
+}

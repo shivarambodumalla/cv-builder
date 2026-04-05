@@ -9,7 +9,7 @@ import {
 import { Users, FileText, CreditCard, BarChart3 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard — CVPilot",
+  title: "Admin Dashboard — CVEdge",
 };
 
 export const dynamic = "force-dynamic";

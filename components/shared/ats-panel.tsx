@@ -438,29 +438,27 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold">ATS Analysis</h3>
-          {report && isEstimated && (
-            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-400">
-              Estimated
-            </span>
-          )}
-          {report && !isEstimated && !cvChanged && (
-            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-400">
-              Verified
-            </span>
-          )}
-          {report && !isEstimated && cvChanged && (
-            <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400">
-              Outdated
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          {report?.created_at && (
-            <span className="text-xs text-muted-foreground">{timeAgo(report.created_at)}</span>
-          )}
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="text-base sm:text-lg font-semibold">ATS Analysis</h3>
+        {report && isEstimated && (
+          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-400">
+            Estimated
+          </span>
+        )}
+        {report && !isEstimated && !cvChanged && (
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-400">
+            Verified
+          </span>
+        )}
+        {report && !isEstimated && cvChanged && (
+          <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400">
+            Outdated
+          </span>
+        )}
+        {report?.created_at && (
+          <span className="text-[10px] sm:text-xs text-muted-foreground">{timeAgo(report.created_at)}</span>
+        )}
+        <div className="ml-auto">
           {(!report || cvChanged || isEstimated) && (
             <Button
               size="sm"
@@ -468,11 +466,12 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
               onClick={handleAnalyse}
               disabled={loading}
               className={cn(
+                "text-xs",
                 isEstimated && Math.abs(scoreDelta) > 5 && "animate-pulse"
               )}
             >
-              <RefreshCw className="mr-2 h-3.5 w-3.5" />
-              {isEstimated ? "Get verified score" : report ? "Re-analyse" : "Analyse CV"}
+              <RefreshCw className="mr-1.5 h-3 w-3" />
+              {isEstimated ? "Verify" : report ? "Re-analyse" : "Analyse CV"}
             </Button>
           )}
         </div>
