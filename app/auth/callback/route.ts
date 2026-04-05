@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmailAsync } from "@/lib/email/sender";
+import { sendEmail } from "@/lib/email/sender";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -43,13 +43,16 @@ export async function GET(request: Request) {
         }
       }
 
-      // Send welcome email (fire and forget)
+      // Send welcome email
+      console.log("[callback] user:", data.session?.user?.email);
       if (data.session?.user?.email) {
-        sendEmailAsync({
+        console.log("[callback] calling sendEmail for welcome");
+        await sendEmail({
           to: data.session.user.email,
           templateName: "welcome",
           userId: data.session.user.id,
         });
+        console.log("[callback] welcome email sent");
       }
 
       return NextResponse.redirect(`${origin}${next}`);
