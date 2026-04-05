@@ -23,10 +23,10 @@ export function MobileNav() {
           </Link>
           <div className="flex gap-2 pt-2 border-t">
             <Link href="/login" onClick={() => setOpen(false)} className="flex-1">
-              <Button variant="outline" size="sm" className="w-full">Sign In</Button>
+              <Button variant="outline" size="sm" className="w-full">Sign in</Button>
             </Link>
-            <Link href="/register" onClick={() => setOpen(false)} className="flex-1">
-              <Button size="sm" className="w-full">Get Started</Button>
+            <Link href="/upload-resume" onClick={() => setOpen(false)} className="flex-1">
+              <Button size="sm" className="w-full">Get started</Button>
             </Link>
           </div>
         </div>

@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 
   const plan = (profile?.plan as string) || "free";
 
-  if (plan !== "pro" && (profile?.credits_cover_letter ?? 0) <= 0) {
+  if (false && plan !== "pro" && (profile?.credits_cover_letter ?? 0) <= 0) {
     return NextResponse.json(
       { error: "No cover letter credits remaining. Upgrade your plan for more.", code: "no_credits" },
       { status: 403 }

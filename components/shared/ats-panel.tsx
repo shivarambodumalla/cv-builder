@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ScoreRing } from "@/components/shared/score-ring";
+import { ScoreRing, getScoreMilestone } from "@/components/shared/score-ring";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -438,43 +438,21 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Title bar */}
+      <div className="flex items-center gap-2">
         <h3 className="text-base sm:text-lg font-semibold">ATS Analysis</h3>
         {report && isEstimated && (
-          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-400">
-            Estimated
-          </span>
+          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-400">Estimated</span>
         )}
         {report && !isEstimated && !cvChanged && (
-          <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-400">
-            Verified
-          </span>
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:bg-green-950 dark:text-green-400">Verified</span>
         )}
         {report && !isEstimated && cvChanged && (
-          <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400">
-            Outdated
-          </span>
+          <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400">Outdated</span>
         )}
         {report?.created_at && (
-          <span className="text-[10px] sm:text-xs text-muted-foreground">{timeAgo(report.created_at)}</span>
+          <span className="ml-auto text-[10px] text-muted-foreground">{timeAgo(report.created_at)}</span>
         )}
-        <div className="ml-auto">
-          {(!report || cvChanged || isEstimated) && (
-            <Button
-              size="sm"
-              variant={report ? "outline" : "default"}
-              onClick={handleAnalyse}
-              disabled={loading}
-              className={cn(
-                "text-xs",
-                isEstimated && Math.abs(scoreDelta) > 5 && "animate-pulse"
-              )}
-            >
-              <RefreshCw className="mr-1.5 h-3 w-3" />
-              {isEstimated ? "Verify" : report ? "Re-analyse" : "Analyse CV"}
-            </Button>
-          )}
-        </div>
       </div>
 
       {error && errorCode === "keyword_list_required" && (
@@ -498,21 +476,32 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       )}
 
       {!report && !loading && !error && (
-        <p className="text-sm text-muted-foreground">
-          Run an analysis to see your ATS score and improvement suggestions.
-        </p>
+        <div className="flex flex-col items-center gap-4 py-6">
+          <p className="text-sm text-muted-foreground text-center">
+            Run an analysis to see your ATS score and improvement suggestions.
+          </p>
+          <Button onClick={handleAnalyse} disabled={loading}>
+            Analyse CV
+          </Button>
+        </div>
       )}
 
       {report && (
         <>
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2">
             <ScoreRing score={displayScore} />
-            <Badge
-              variant="secondary"
-              className={confidenceColors[report.confidence ?? "medium"] || ""}
-            >
+            <p className="text-xs text-center text-muted-foreground max-w-xs">
+              {getScoreMilestone(displayScore).message}
+            </p>
+            <span className={cn("text-[10px]", confidenceColors[report.confidence ?? "medium"] || "")}>
               {report.confidence ?? "medium"} confidence
-            </Badge>
+            </span>
+            {/* CTA below score */}
+            {(isEstimated || cvChanged) && (
+              <Button variant="outline" size="sm" onClick={handleAnalyse} disabled={loading} className="mt-1 text-xs">
+                <RefreshCw className="mr-1.5 h-3 w-3" /> Re-analyse
+              </Button>
+            )}
           </div>
 
           {report.category_scores && (

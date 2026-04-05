@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ResumeEditor } from "@/components/shared/resume-editor";
+import type { ResumeContent } from "@/lib/resume/types";
 
 export const dynamic = "force-dynamic";
 
@@ -101,12 +102,26 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
     .eq("cv_id", cv.id)
     .order("version", { ascending: false });
 
+  // Fetch keyword list for target role (for real-time client-side scoring)
+  const targetRole = cv.target_role || (cv.parsed_json as ResumeContent)?.targetTitle?.title || "";
+  let keywordList = null;
+  if (targetRole) {
+    const { data: kwl } = await supabase
+      .from("keyword_lists")
+      .select("required, important, nice_to_have, synonym_map")
+      .ilike("role", targetRole)
+      .limit(1)
+      .single();
+    keywordList = kwl;
+  }
+
   return (
     <ResumeEditor
       cv={cv}
       latestReport={reports?.[0] ?? null}
       jobMatches={jobMatches ?? []}
       coverLetters={coverLetters ?? []}
+      keywordList={keywordList}
       credits={{
         jobMatch: profile?.credits_job_match ?? 0,
         coverLetter: profile?.credits_cover_letter ?? 0,

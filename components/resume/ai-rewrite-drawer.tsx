@@ -182,14 +182,16 @@ export function AiRewriteDrawer({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
-          {/* Issue context */}
-          <div className="rounded-lg border bg-muted/30 p-3 space-y-1">
-            <p className="text-xs font-medium text-muted-foreground">Issue</p>
-            <p className="text-sm">{issue.description}</p>
-            {issue.fix && (
-              <p className="text-xs text-muted-foreground">{issue.fix}</p>
-            )}
-          </div>
+          {/* Issue context — only show when there's an actual issue (not inline form rewrite) */}
+          {issue.description && (
+            <div className="rounded-lg border bg-muted/30 p-3 space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">Issue</p>
+              <p className="text-sm">{issue.description}</p>
+              {issue.fix && (
+                <p className="text-xs text-muted-foreground">{issue.fix}</p>
+              )}
+            </div>
+          )}
 
           {/* Original text */}
           <div className="space-y-1">

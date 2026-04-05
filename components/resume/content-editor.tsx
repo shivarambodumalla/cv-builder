@@ -361,6 +361,7 @@ function SummaryField({ register, watched }: { register: any; watched?: any }) {
                 fieldRef: { section: "summary", field: null },
                 sectionLabel: "Summary",
                 category: "bullet_quality",
+                isInline: true,
               },
             }));
           }}
@@ -390,6 +391,7 @@ function BulletField({ register, name, roleIndex, bulletIndex, watched, onRemove
                   fieldRef: { section: "experience", field: "bullets", bulletText: text.slice(0, 60) },
                   sectionLabel: "Work Experience",
                   category: "bullet_quality",
+                  isInline: true,
                 },
               }));
             }}

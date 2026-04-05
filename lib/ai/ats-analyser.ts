@@ -307,10 +307,12 @@ function normaliseReport(raw: any): AtsReportData {
   const normCats: Record<string, AtsCategoryScore> = {};
   for (const [key, val] of Object.entries(categories)) {
     const cat = val as any;
+    const score = cat.score ?? 0;
     normCats[key] = {
-      score: cat.score ?? 0,
+      score,
       weight: typeof cat.weight === "number" ? (cat.weight <= 1 ? cat.weight * 100 : cat.weight) : 0,
-      issues: (cat.issues ?? []).map((issue: any) => ({
+      // Strip issues if score is 90+ (AI sometimes reports issues even for near-perfect scores)
+      issues: score >= 90 ? [] : (cat.issues ?? []).map((issue: any) => ({
         description: issue.description ?? "",
         fix: issue.fix ?? "",
         impact: typeof issue.impact === "number" ? issue.impact : (issue.impact === "high" ? 8 : issue.impact === "medium" ? 5 : 3),

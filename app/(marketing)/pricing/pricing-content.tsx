@@ -3,223 +3,184 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Check, Minus } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const plans = [
-  {
-    name: "Free",
-    monthly: 0,
-    annual: 0,
-    description: "Get started with the basics",
-    cta: "Get Started",
-    href: "/register",
-    highlighted: false,
-  },
-  {
-    name: "Starter",
-    monthly: 12,
-    annual: 8,
-    description: "For active job seekers",
-    cta: "Start Free Trial",
-    href: "/register",
-    highlighted: true,
-  },
-  {
-    name: "Pro",
-    monthly: 29,
-    annual: 20,
-    description: "For power users and career changers",
-    cta: "Start Free Trial",
-    href: "/register",
-    highlighted: false,
-  },
+type BillingPeriod = "weekly" | "monthly" | "yearly";
+
+const PRO_PRICING: Record<BillingPeriod, { original: number; sale: number; save: string; perWeek?: string; period: string; urgency?: string }> = {
+  weekly: { original: 10, sale: 5, save: "SAVE 50%", period: "/week" },
+  monthly: { original: 35, sale: 14, save: "SAVE 60%", perWeek: "$3.50/week", period: "/month" },
+  yearly: { original: 420, sale: 120, save: "SAVE 71%", perWeek: "$2.30/week", period: "/year", urgency: "Launch pricing — increases soon" },
+};
+
+const FREE_FEATURES = [
+  "1 CV",
+  "3 ATS scans/month",
+  "Basic ATS report",
+  "1 template (Classic)",
+  "PDF export (watermarked)",
 ];
 
-const comparisonFeatures = [
-  { name: "CV versions", free: "1", starter: "5", pro: "Unlimited" },
-  { name: "Templates", free: "Basic", starter: "All", pro: "All + Custom" },
-  { name: "PDF export", free: true, starter: true, pro: true },
-  { name: "ATS score checker", free: true, starter: true, pro: true },
-  { name: "AI writing assistant", free: false, starter: true, pro: true },
-  { name: "Job description matching", free: false, starter: true, pro: true },
-  { name: "Cover letter generator", free: false, starter: true, pro: true },
-  { name: "Keyword analysis", free: false, starter: true, pro: true },
-  { name: "Gap analysis", free: false, starter: false, pro: true },
-  { name: "Advanced AI rewriting", free: false, starter: false, pro: true },
-  { name: "Analytics dashboard", free: false, starter: false, pro: true },
-  { name: "1-on-1 review session", free: false, starter: false, pro: true },
-  { name: "Priority support", free: false, starter: true, pro: true },
+const PRO_FEATURES = [
+  "Unlimited CVs",
+  "Unlimited ATS scans",
+  "Full ATS report + fixes",
+  "AI bullet rewrites (50/month)",
+  "5 templates",
+  "Job matcher (15/month)",
+  "Cover letter AI (10/month)",
+  "Clean PDF + HTML export",
+  "CV version history",
+  "Priority support",
 ];
 
-const faqs = [
-  {
-    question: "Can I try CVEdge before paying?",
-    answer:
-      "Yes. The Free plan lets you create one CV with basic templates and ATS scoring — no credit card required. Paid plans also include a 7-day free trial so you can explore every feature before committing.",
-  },
-  {
-    question: "What happens to my CVs if I downgrade?",
-    answer:
-      "Your existing CVs are never deleted. If you downgrade from Pro to Starter, you keep access to your first 5 CVs. Downgrading to Free keeps your most recent CV. You can upgrade again at any time to regain full access.",
-  },
-  {
-    question: "How does annual billing work?",
-    answer:
-      "Annual plans are billed once per year at a 30% discount compared to monthly pricing. Starter is $96/year (instead of $144) and Pro is $240/year (instead of $348). You can switch between monthly and annual at any time.",
-  },
-  {
-    question: "Is my data private and secure?",
-    answer:
-      "Absolutely. Your CVs and personal data are encrypted at rest and in transit. We never share your information with third parties or use your data to train AI models. You can delete your account and all associated data at any time.",
-  },
-  {
-    question: "Can I cancel my subscription at any time?",
-    answer:
-      "Yes, you can cancel from your account settings at any time. You will continue to have access to paid features until the end of your current billing period. No questions asked, no cancellation fees.",
-  },
+const FAQS = [
+  { q: "Can I cancel anytime?", a: "Yes. Cancel with one click, no questions asked." },
+  { q: "What payment methods do you accept?", a: "All major credit/debit cards via Lemon Squeezy." },
+  { q: "Is my CV data secure?", a: "Yes. Your data is encrypted and never shared." },
+  { q: "Can I switch plans?", a: "Yes, upgrade or downgrade anytime." },
+  { q: "Do you offer refunds?", a: "Yes, 7-day money back guarantee." },
 ];
-
-function CellValue({ value }: { value: boolean | string }) {
-  if (typeof value === "string") {
-    return <span className="text-sm">{value}</span>;
-  }
-  return value ? (
-    <Check className="mx-auto h-4 w-4" />
-  ) : (
-    <Minus className="mx-auto h-4 w-4 text-muted-foreground/40" />
-  );
-}
 
 export function PricingContent() {
-  const [annual, setAnnual] = useState(false);
+  const [billing, setBilling] = useState<BillingPeriod>("yearly");
+  const pro = PRO_PRICING[billing];
 
   return (
     <>
-      <div className="mb-12 flex items-center justify-center gap-3">
-        <span
-          className={`text-sm font-medium ${!annual ? "text-foreground" : "text-muted-foreground"}`}
-        >
-          Monthly
-        </span>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={annual}
-          onClick={() => setAnnual(!annual)}
-          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${annual ? "bg-primary" : "bg-muted"}`}
-        >
-          <span
-            className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-sm ring-0 transition-transform ${annual ? "translate-x-5" : "translate-x-0"}`}
-          />
-        </button>
-        <span
-          className={`text-sm font-medium ${annual ? "text-foreground" : "text-muted-foreground"}`}
-        >
-          Annual{" "}
-          <span className="text-xs font-normal text-muted-foreground">
-            (save 30%)
-          </span>
-        </span>
-      </div>
-
-      <div className="mx-auto mb-24 grid max-w-5xl gap-6 lg:grid-cols-3">
-        {plans.map((plan) => {
-          const price = annual ? plan.annual : plan.monthly;
-          const period = price === 0 ? "forever" : annual ? "/yr" : "/mo";
-          const displayPrice =
-            price === 0
-              ? "$0"
-              : annual
-                ? `$${price * 12}`
-                : `$${price}`;
-
-          return (
-            <Card
-              key={plan.name}
-              className={plan.highlighted ? "border-primary shadow-md" : ""}
+      {/* Billing toggle */}
+      <div className="mb-12 flex items-center justify-center">
+        <div className="inline-flex rounded-lg bg-muted p-1">
+          {(["weekly", "monthly", "yearly"] as const).map((period) => (
+            <button
+              key={period}
+              type="button"
+              onClick={() => setBilling(period)}
+              className={cn(
+                "relative rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                billing === period
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <CardHeader>
-                <CardTitle>{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">{displayPrice}</span>
-                  <span className="text-muted-foreground">{period}</span>
-                </div>
-              </CardHeader>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  variant={plan.highlighted ? "default" : "outline"}
-                  asChild
-                >
-                  <Link href={plan.href}>{plan.cta}</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
-      </div>
-
-      <div className="mx-auto max-w-5xl">
-        <h2 className="mb-8 text-center text-2xl font-bold tracking-tight">
-          Compare plans
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="pb-4 pr-4 text-left font-medium text-muted-foreground">
-                  Feature
-                </th>
-                {plans.map((p) => (
-                  <th key={p.name} className="pb-4 text-center font-medium">
-                    {p.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {comparisonFeatures.map((row) => (
-                <tr key={row.name} className="border-b last:border-0">
-                  <td className="py-3 pr-4 text-muted-foreground">
-                    {row.name}
-                  </td>
-                  <td className="py-3 text-center">
-                    <CellValue value={row.free} />
-                  </td>
-                  <td className="py-3 text-center">
-                    <CellValue value={row.starter} />
-                  </td>
-                  <td className="py-3 text-center">
-                    <CellValue value={row.pro} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              {period === "yearly" ? "Yearly" : period === "monthly" ? "Monthly" : "Weekly"}
+              {period === "yearly" && (
+                <span className="ml-1.5 text-[10px]">Best value</span>
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="mx-auto mt-24 max-w-2xl">
-        <h2 className="mb-10 text-center text-2xl font-bold tracking-tight">
-          Frequently asked questions
-        </h2>
-        <div className="space-y-6">
-          {faqs.map((faq) => (
-            <div key={faq.question}>
-              <h3 className="font-semibold">{faq.question}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{faq.answer}</p>
-            </div>
+      {/* Plan cards */}
+      <div className="mx-auto mb-16 grid max-w-4xl gap-6 lg:grid-cols-2">
+        {/* Free card */}
+        <div className="rounded-xl border bg-card p-6 sm:p-8 flex flex-col">
+          <span className="mb-4 inline-block w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium">Forever free</span>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">$0</span>
+          </div>
+          <ul className="mb-8 flex-1 space-y-3">
+            {FREE_FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <Button variant="outline" className="w-full" asChild>
+            <Link href="/upload-resume">Get started free</Link>
+          </Button>
+        </div>
+
+        {/* Pro card */}
+        <div className="rounded-xl border-2 border-primary bg-card p-6 sm:p-8 flex flex-col relative">
+          <span className="mb-4 inline-block w-fit rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+            Most popular
+          </span>
+          <div className="mb-2">
+            <span className="text-lg text-muted-foreground line-through mr-2">${pro.original}</span>
+            <span className="text-4xl font-bold">${pro.sale}</span>
+            <span className="text-muted-foreground">{pro.period}</span>
+          </div>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700 dark:bg-green-900 dark:text-green-300">
+              {pro.save}{billing === "yearly" ? " " : ""}
+            </span>
+            {pro.perWeek && (
+              <span className="text-xs text-muted-foreground">{pro.perWeek}</span>
+            )}
+          </div>
+          {pro.urgency && (
+            <p className="mb-4 text-xs font-medium text-amber-600 dark:text-amber-400">{pro.urgency}</p>
+          )}
+          <ul className="mb-8 flex-1 space-y-3">
+            {PRO_FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <Button className="w-full" asChild>
+            <Link href="#">Get Pro &rarr;</Link>
+          </Button>
+          <p className="mt-3 text-center text-xs text-muted-foreground">No commitment. Cancel anytime.</p>
+        </div>
+      </div>
+
+      {/* Per-week comparison */}
+      <div className="mx-auto mb-20 max-w-2xl">
+        <h3 className="mb-4 text-center text-sm font-semibold text-muted-foreground uppercase tracking-wider">Cost per week</h3>
+        <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="rounded-lg border p-4">
+            <p className="text-lg font-bold">$5.00</p>
+            <p className="text-xs text-muted-foreground">Weekly</p>
+          </div>
+          <div className="rounded-lg border p-4">
+            <p className="text-lg font-bold">$3.50</p>
+            <p className="text-xs text-muted-foreground">Monthly</p>
+            <p className="mt-1 text-[10px] font-medium text-green-600">better</p>
+          </div>
+          <div className="rounded-lg border-2 border-primary p-4">
+            <p className="text-lg font-bold">$2.30</p>
+            <p className="text-xs text-muted-foreground">Yearly</p>
+            <p className="mt-1 text-[10px] font-bold text-green-600">best</p>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ */}
+      <div className="mx-auto max-w-2xl">
+        <h2 className="mb-8 text-center text-2xl font-bold tracking-tight">Frequently asked questions</h2>
+        <div className="space-y-4">
+          {FAQS.map((faq) => (
+            <FaqItem key={faq.q} question={faq.q} answer={faq.a} />
           ))}
         </div>
       </div>
     </>
+  );
+}
+
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-lg border">
+      <button
+        type="button"
+        className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold"
+        onClick={() => setOpen(!open)}
+      >
+        {question}
+        <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
+      </button>
+      {open && (
+        <div className="px-4 pb-3">
+          <p className="text-sm text-muted-foreground">{answer}</p>
+        </div>
+      )}
+    </div>
   );
 }

@@ -29,7 +29,7 @@ import { AtsPanel } from "@/components/shared/ats-panel";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
 import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/components/shared/job-match-panel";
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
-import { calculateClientScore, type ClientScoreResult } from "@/lib/ats/client-scorer";
+import { calculateClientScore, type ClientScoreResult, type KeywordList } from "@/lib/ats/client-scorer";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_CONTENT, DEFAULT_DESIGN } from "@/lib/resume/defaults";
 import { getPreviewContent } from "@/lib/resume/placeholder";
@@ -97,6 +97,7 @@ interface ResumeEditorProps {
   latestReport: AtsReport | null;
   jobMatches: JobMatch[];
   coverLetters: CoverLetter[];
+  keywordList?: KeywordList | null;
   credits: {
     jobMatch: number;
     coverLetter: number;
@@ -122,7 +123,7 @@ function formatSavedTime(date: Date): string {
   return `${date.toLocaleDateString([], { month: "short", day: "numeric" })}, ${time}`;
 }
 
-export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credits, user, plan }: ResumeEditorProps) {
+export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan }: ResumeEditorProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
 
@@ -157,7 +158,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
       sessionStorage.setItem(`cover_letter_source_${cv.id}`, prevTabRef.current);
     }
     prevTabRef.current = activeTab;
-    setRightPanelOverride(null);
+    setJobMatchEditing(false);
     setMobilePreview(false);
     setActiveTabRaw(tab);
   }, [activeTab, cv.id]);
@@ -181,27 +182,50 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
     return latest.report_data as unknown as JobMatchResult;
   });
 
-  // When "Fix" is clicked in job match, we show Content on the left but keep job match on the right
-  const [rightPanelOverride, setRightPanelOverride] = useState<string | null>(null);
+  const [rematching, setRematching] = useState(false);
+
+  async function handleRematch() {
+    if (!cv.job_description || rematching) return;
+    setRematching(true);
+    try {
+      const res = await fetch("/api/cv/job-match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cv_id: cv.id,
+          job_description: cv.job_description,
+          job_title: cv.job_title_target || "",
+          company: cv.job_company || "",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setJobMatchResult(data as JobMatchResult);
+      }
+    } catch { /* ignore */ }
+    setRematching(false);
+  }
+
+  // Job match left panel: false = JD form, true = content editor (after Fix/Rewrite/Add keyword)
+  const [jobMatchEditing, setJobMatchEditing] = useState(false);
 
   useEffect(() => {
     clearTimeout(scorerDebounceRef.current);
     scorerDebounceRef.current = setTimeout(() => {
       if (!latestReport) return;
-      const result = calculateClientScore(content, latestReport, null);
+      const result = calculateClientScore(content, latestReport, keywordList ?? null);
       setEstimatedScore(result);
     }, 300);
     return () => clearTimeout(scorerDebounceRef.current);
-  }, [content, latestReport]);
+  }, [content, latestReport, keywordList]);
 
   const currentSkills = useMemo(() => {
     return (content.skills?.categories ?? []).flatMap((c) => c.skills);
   }, [content.skills]);
 
-  // When Fix is clicked in job match: show content editor on left, keep job match right panel
+  // When Fix/Rewrite/Add keyword is clicked in job match: switch left to content editor
   function handleJobMatchFix(fieldRef: { section: string; field: string | null; index?: number; bulletText?: string }) {
-    setRightPanelOverride("job-match");
-    setActiveTabRaw("editor"); // switch left panel only — don't clear override
+    setJobMatchEditing(true);
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent("jump-to-field", { detail: fieldRef }));
     }, 200);
@@ -214,10 +238,60 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
     }, 300);
   }
 
+  // Handle rewrite-accept when ContentEditor is not mounted (job-match / cover-letter tabs)
+  useEffect(() => {
+    function onRewriteAcceptFallback(e: Event) {
+      if (activeTab === "editor" || activeTab === "analyser") return;
+
+      const { newText, fieldRef } = (e as CustomEvent).detail;
+      if (!newText || !fieldRef) return;
+
+      setContent((prev) => {
+        if (fieldRef.section === "summary") {
+          return { ...prev, summary: { ...prev.summary, content: newText } };
+        }
+        if (fieldRef.section === "experience" && fieldRef.bulletText) {
+          const items = (prev.experience?.items ?? []).map((item) => ({
+            ...item,
+            bullets: (item.bullets ?? []).map((b: string) =>
+              b.toLowerCase().includes(fieldRef.bulletText.toLowerCase().slice(0, 40)) ? newText : b
+            ),
+          }));
+          return { ...prev, experience: { items } };
+        }
+        return prev;
+      });
+
+      // Persist to DB
+      const supabase = createClient();
+      supabase.from("cvs").select("parsed_json").eq("id", cv.id).single().then(({ data }) => {
+        if (!data) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const parsed = data.parsed_json as any;
+        let updated = parsed;
+        if (fieldRef.section === "summary") {
+          updated = { ...parsed, summary: { ...parsed.summary, content: newText } };
+        } else if (fieldRef.section === "experience" && fieldRef.bulletText) {
+          const needle = fieldRef.bulletText.toLowerCase().slice(0, 40);
+          const items = (parsed.experience?.items ?? []).map((item: any) => ({
+            ...item,
+            bullets: (item.bullets ?? []).map((b: string) =>
+              b.toLowerCase().includes(needle) ? newText : b
+            ),
+          }));
+          updated = { ...parsed, experience: { items } };
+        }
+        supabase.from("cvs").update({ parsed_json: updated }).eq("id", cv.id).then(() => {});
+      });
+    }
+
+    window.addEventListener("rewrite-accept", onRewriteAcceptFallback);
+    return () => window.removeEventListener("rewrite-accept", onRewriteAcceptFallback);
+  }, [activeTab, cv.id]);
+
   // Handle add-skill when ContentEditor is not mounted (job-match / cover-letter tabs)
   useEffect(() => {
     function onAddSkill(e: Event) {
-      // Only handle if ContentEditor is NOT mounted (it has its own handler)
       if (activeTab === "editor" || activeTab === "analyser") return;
 
       const { skill } = (e as CustomEvent).detail;
@@ -269,7 +343,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
   // Inline rewrite drawer state
   const [inlineRewriteOpen, setInlineRewriteOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [inlineRewriteData, setInlineRewriteData] = useState<{ originalText: string; fieldRef: any; sectionLabel: string; category: string } | null>(null);
+  const [inlineRewriteData, setInlineRewriteData] = useState<{ originalText: string; fieldRef: any; sectionLabel: string; category: string; isInline?: boolean } | null>(null);
 
   useEffect(() => {
     function onInlineRewrite(e: Event) {
@@ -490,7 +564,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
                 <TabsTrigger value="editor" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Content</TabsTrigger>
                 <TabsTrigger value="design" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Design</TabsTrigger>
                 <TabsTrigger value="analyser" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Analyser</TabsTrigger>
-                <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Job Match</TabsTrigger>
+                <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap" onClick={() => setJobMatchEditing(false)}>Job Match</TabsTrigger>
                 <TabsTrigger value="cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
               </TabsList>
             </div>
@@ -519,26 +593,48 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
               <DesignerPanel design={design} onChange={handleDesignChange} />
             )}
 
-            {/* Job Match tab */}
+            {/* Job Match tab: default=JD form, after Fix/Rewrite=Content editor */}
             {activeTab === "job-match" && (
               <>
-                <JobMatchPanel
-                  cvId={cv.id}
-                  initialJobDescription={cv.job_description ?? ""}
-                  initialCompany={cv.job_company ?? ""}
-                  initialJobTitle={cv.job_title_target ?? ""}
-                  credits={credits.jobMatch}
-                  plan={plan}
-                  content={content}
-                  result={jobMatchResult}
-                  onResult={setJobMatchResult}
-                  onFixField={handleJobMatchFix}
-                />
-                {jobMatchResult && (
-                  <div className="lg:hidden mt-6 border-t pt-6">
-                    <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
-                  </div>
-                )}
+                {/* Desktop: JD form or Content editor based on jobMatchEditing */}
+                <div className="hidden lg:block">
+                  {jobMatchEditing ? (
+                    <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+                  ) : (
+                    <JobMatchPanel
+                      cvId={cv.id}
+                      initialJobDescription={cv.job_description ?? ""}
+                      initialCompany={cv.job_company ?? ""}
+                      initialJobTitle={cv.job_title_target ?? ""}
+                      credits={credits.jobMatch}
+                      plan={plan}
+                      content={content}
+                      result={jobMatchResult}
+                      onResult={setJobMatchResult}
+                      onFixField={handleJobMatchFix}
+                    />
+                  )}
+                </div>
+                {/* Mobile: JD form + results inline */}
+                <div className="lg:hidden">
+                  <JobMatchPanel
+                    cvId={cv.id}
+                    initialJobDescription={cv.job_description ?? ""}
+                    initialCompany={cv.job_company ?? ""}
+                    initialJobTitle={cv.job_title_target ?? ""}
+                    credits={credits.jobMatch}
+                    plan={plan}
+                    content={content}
+                    result={jobMatchResult}
+                    onResult={setJobMatchResult}
+                    onFixField={handleJobMatchFix}
+                  />
+                  {jobMatchResult && (
+                    <div className="mt-6 border-t pt-6">
+                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} />
+                    </div>
+                  )}
+                </div>
               </>
             )}
 
@@ -586,21 +682,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
             </div>
           )}
 
-          {/* Job-match Fix mode: content editor on left, job match results on right */}
-          {rightPanelOverride === "job-match" && activeTab === "editor" && jobMatchResult && (
-            <div className="mx-auto max-w-2xl">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">Editing CV — Job Match results shown for reference</p>
-                <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setRightPanelOverride(null); setActiveTab("job-match"); }}>
-                  Back to Job Match
-                </Button>
-              </div>
-              <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
-            </div>
-          )}
-
           {/* Content + Design tabs: live preview — desktop only (mobile uses mobilePreview above) */}
-          {(activeTab === "editor" || activeTab === "design") && rightPanelOverride !== "job-match" && (
+          {(activeTab === "editor" || activeTab === "design") && (
             <div className="mx-auto w-full">
               <PaperPreview
                 paperSize={design.paperSize}
@@ -625,15 +708,21 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
             </div>
           )}
 
-          {/* Job Match tab: full results on right */}
+          {/* Job Match tab: results on right, with back button when editing */}
           {activeTab === "job-match" && (
-            <div className="mx-auto max-w-2xl">
+            <div className="mx-auto max-w-2xl space-y-4">
+              {/* Back to JD form button when in editing mode */}
+              {jobMatchEditing && (
+                <Button variant="ghost" size="sm" className="text-xs" onClick={() => setJobMatchEditing(false)}>
+                  <ArrowLeft className="mr-1 h-3 w-3" /> Back to Job Details
+                </Button>
+              )}
               {jobMatchResult ? (
-                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
+                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} />
               ) : (
                 <div className="rounded-lg border bg-background p-6">
                   <p className="text-sm text-muted-foreground text-center">
-                    Run a job match analysis to see your match breakdown here.
+                    Paste a job description and click Analyse Match.
                   </p>
                 </div>
               )}
@@ -682,12 +771,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
           open={inlineRewriteOpen}
           onClose={() => setInlineRewriteOpen(false)}
           issue={{
-            description: inlineRewriteData.fieldRef?.section === "summary"
-              ? "Strengthen your professional summary with stronger impact and keywords"
-              : "Improve this bullet point with measurable results and stronger action verbs",
-            fix: inlineRewriteData.fieldRef?.section === "summary"
-              ? "Rewrite to be concise, achievement-focused, and ATS-friendly"
-              : "Add metrics, use strong verbs, and align with target role",
+            description: inlineRewriteData.isInline ? "" : (
+              inlineRewriteData.fieldRef?.section === "summary"
+                ? "Strengthen your professional summary with stronger impact and keywords"
+                : "Improve this bullet point with measurable results and stronger action verbs"
+            ),
+            fix: inlineRewriteData.isInline ? "" : (
+              inlineRewriteData.fieldRef?.section === "summary"
+                ? "Rewrite to be concise, achievement-focused, and ATS-friendly"
+                : "Add metrics, use strong verbs, and align with target role"
+            ),
             category: inlineRewriteData.category,
             field_ref: inlineRewriteData.fieldRef,
           }}

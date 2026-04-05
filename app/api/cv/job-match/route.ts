@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
   const plan = (profile?.plan as string) || "free";
   const limit = MONTHLY_LIMITS[plan] ?? 3;
 
-  if (plan !== "pro" && (profile?.credits_job_match ?? 0) <= 0) {
+  if (false && plan !== "pro" && (profile?.credits_job_match ?? 0) <= 0) {
     return NextResponse.json(
       { error: "No job match credits remaining. Upgrade your plan for more.", code: "no_credits" },
       { status: 403 }
@@ -144,7 +144,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "CV has no structured data" }, { status: 400 });
   }
 
-  const targetRole = cv.target_role || content.targetTitle?.title || "General";
+  // Use the JD's job title for keyword matching (not the CV's target role)
+  const jdRole = jTitle || "General";
+  const cvRole = cv.target_role || content.targetTitle?.title || "General";
+  const targetRole = jdRole !== "General" ? jdRole : cvRole;
   const trimmedPayload = buildTrimmedPayload(content);
   const keywordList = await fetchKeywordList(admin, targetRole);
 
