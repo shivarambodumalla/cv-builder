@@ -13,7 +13,6 @@ import {
   ChevronUp,
   Crosshair,
   Loader2,
-  Pencil,
   Plus,
   RefreshCw,
   Sparkles,
@@ -87,8 +86,6 @@ export function JobMatchPanel({
   initialJobDescription,
   initialCompany,
   initialJobTitle,
-  credits,
-  plan,
   result,
   onResult,
 }: JobMatchPanelProps) {
@@ -490,12 +487,6 @@ function scoreColor(score: number) {
   if (score >= 80) return "bg-green-500";
   if (score >= 50) return "bg-yellow-500";
   return "bg-red-500";
-}
-
-function statusBadge(status: string) {
-  if (status === "strong") return { label: "Strong Match", className: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400" };
-  if (status === "good") return { label: "Good Match", className: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400" };
-  return { label: "Weak Match", className: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400" };
 }
 
 // Normalize keyword that might be string or object like {keyword, placement, score_multiplier}

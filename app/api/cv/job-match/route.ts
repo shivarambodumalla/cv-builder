@@ -8,11 +8,7 @@ import { sendEmailAsync } from "@/lib/email/sender";
 import { resolveRole, getDomainForRole } from "@/lib/resume/roles";
 import type { ResumeContent } from "@/lib/resume/types";
 
-const MONTHLY_LIMITS: Record<string, number> = {
-  free: 3,
-  starter: 10,
-  pro: Infinity,
-};
+
 
 function buildTrimmedPayload(content: ResumeContent): string {
   const stripped: Record<string, unknown> = {};

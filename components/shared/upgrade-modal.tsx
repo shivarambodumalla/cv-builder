@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
 import { createClient } from "@/lib/supabase/client";
@@ -41,8 +41,8 @@ const FEATURES_BY_TRIGGER: Record<UpgradeTrigger, string[]> = {
 export function UpgradeModal() {
   const { isOpen, trigger, closeUpgradeModal } = useUpgradeModal();
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
-  const [userEmail, setUserEmail] = useState("");
-  const [userId, setUserId] = useState("");
+  const [, setUserEmail] = useState("");
+  const [, setUserId] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -96,7 +96,7 @@ export function UpgradeModal() {
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-950">
               <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
-            <h2 className="text-xl font-bold">You're on Pro!</h2>
+            <h2 className="text-xl font-bold">You&apos;re on Pro!</h2>
             <p className="text-sm text-muted-foreground text-center max-w-xs">
               All features unlocked. Refreshing...
             </p>
