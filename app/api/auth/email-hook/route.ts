@@ -12,23 +12,26 @@ export async function POST(request: Request) {
   }
 
   const rawBody = await request.text();
-  const webhookSignature = request.headers.get("webhook-signature") ?? "";
-  const webhookTimestamp = request.headers.get("webhook-timestamp") ?? "";
   const webhookId = request.headers.get("webhook-id") ?? "";
+  const webhookTimestamp = request.headers.get("webhook-timestamp") ?? "";
+  const webhookSignature = request.headers.get("webhook-signature") ?? "";
 
   const secret = process.env.SUPABASE_HOOK_SECRET ?? "";
-  const actualSecret = secret.replace("v1,whsec_", "");
-  const decodedSecret = Buffer.from(actualSecret, "base64");
+  const secretBytes = Buffer.from(secret.replace("v1,whsec_", ""), "base64");
 
-  const signedContent = `${webhookId}\n${webhookTimestamp}\n${rawBody}`;
+  const toSign = `${webhookId}.${webhookTimestamp}.${rawBody}`;
 
-  const hmac = crypto.createHmac("sha256", decodedSecret);
-  hmac.update(signedContent);
-  const computedSignature = `v1,${hmac.digest("base64")}`;
+  const hmac = crypto.createHmac("sha256", secretBytes);
+  hmac.update(toSign);
+  const digest = hmac.digest("base64");
+  const computed = `v1,${digest}`;
 
-  if (webhookSignature !== computedSignature) {
-    console.log("[email-hook] signature mismatch");
-    console.log("expected:", computedSignature);
+  const signatures = webhookSignature.split(" ");
+  const valid = signatures.some((sig) => sig === computed);
+
+  if (!valid) {
+    console.log("[email-hook] invalid signature");
+    console.log("computed:", computed);
     console.log("received:", webhookSignature);
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
