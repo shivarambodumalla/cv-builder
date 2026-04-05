@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/admin/users", label: "Users" },
   { href: "/admin/prompts", label: "Prompts" },
   { href: "/admin/keywords", label: "Keywords" },
+  { href: "/admin/pricing", label: "Pricing" },
   { href: "/admin/ai-settings", label: "AI Settings" },
   { href: "/admin/missing-roles", label: "Missing Roles" },
   { href: "/admin/emails", label: "Emails" },

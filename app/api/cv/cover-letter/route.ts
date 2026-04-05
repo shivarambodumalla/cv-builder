@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { sendEmailAsync } from "@/lib/email/sender";
 import type { ResumeContent } from "@/lib/resume/types";
 
@@ -71,20 +72,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "tone must be professional, conversational, or confident" }, { status: 400 });
   }
 
-  // Check credits
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits_cover_letter, plan")
-    .eq("id", user.id)
-    .single();
-
-  const plan = (profile?.plan as string) || "free";
-
-  if (false && plan !== "pro" && (profile?.credits_cover_letter ?? 0) <= 0) {
-    return NextResponse.json(
-      { error: "No cover letter credits remaining. Upgrade your plan for more.", code: "no_credits" },
-      { status: 403 }
-    );
+  // Check feature limit
+  const access = await checkFeatureAccess(user.id, "cover_letter");
+  if (!access.allowed) {
+    return NextResponse.json({ error: "You've used all free cover letters this month. Upgrade for more.", code: access.reason, used: access.used, limit: access.limit }, { status: 403 });
   }
 
   const { data: cv } = await supabase
@@ -233,18 +224,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Deduct credit
-    if (plan !== "pro") {
-      await admin.rpc("decrement_credit", {
-        user_id: user.id,
-        credit_column: "credits_cover_letter",
-      });
-    }
+    // Increment usage
+    incrementUsage(user.id, "cover_letter").catch(() => {});
 
-    return NextResponse.json({
-      ...saved,
-      credits_remaining: plan === "pro" ? Infinity : Math.max(0, (profile?.credits_cover_letter ?? 1) - 1),
-    });
+    return NextResponse.json(saved);
   } catch (err) {
     console.error("[cover-letter] AI generation failed:", err);
     return NextResponse.json(

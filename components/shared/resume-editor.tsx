@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase/client";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -126,6 +127,7 @@ function formatSavedTime(date: Date): string {
 export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan }: ResumeEditorProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const { openUpgradeModal } = useUpgradeModal();
 
   const initialContent: ResumeContent = cv.parsed_json
     ? {
@@ -273,6 +275,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           updated = { ...parsed, summary: { ...parsed.summary, content: newText } };
         } else if (fieldRef.section === "experience" && fieldRef.bulletText) {
           const needle = fieldRef.bulletText.toLowerCase().slice(0, 40);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const items = (parsed.experience?.items ?? []).map((item: any) => ({
             ...item,
             bullets: (item.bullets ?? []).map((b: string) =>
@@ -499,6 +502,10 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ content, design, title }),
               });
+              if (res.status === 403) {
+                openUpgradeModal("download");
+                return;
+              }
               if (!res.ok) throw new Error("PDF export failed");
               const blob = await res.blob();
               const url = URL.createObjectURL(blob);
@@ -511,6 +518,11 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           }}>
             <Download className="mr-1.5 h-3.5 w-3.5" /> Resume
           </Button>
+          {plan !== "pro" && (
+            <Button size="sm" className="h-8 bg-amber-500 hover:bg-amber-600 text-white" onClick={() => openUpgradeModal("generic")}>
+              Upgrade
+            </Button>
+          )}
 
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">

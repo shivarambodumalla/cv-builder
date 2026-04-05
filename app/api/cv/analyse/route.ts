@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { analyseCV } from "@/lib/ai/ats-analyser";
 import { getDomainForRole } from "@/lib/resume/roles";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { sendEmailAsync } from "@/lib/email/sender";
 
 export async function POST(request: NextRequest) {
@@ -21,6 +22,12 @@ export async function POST(request: NextRequest) {
   const rl = checkRateLimit(ip, true);
   if (!rl.allowed) {
     return NextResponse.json({ error: "Too many requests. Try again later.", retry_after: rl.retryAfter }, { status: 429 });
+  }
+
+  // Check feature limit
+  const access = await checkFeatureAccess(user.id, "ats_scan");
+  if (!access.allowed) {
+    return NextResponse.json({ error: "You've used all free ATS scans this month. Upgrade for more.", code: access.reason, used: access.used, limit: access.limit }, { status: 403 });
   }
 
   const { cv_id } = await request.json();
@@ -59,6 +66,9 @@ export async function POST(request: NextRequest) {
         userId: user.id,
       });
     }
+
+    // Increment usage after success
+    incrementUsage(user.id, "ats_scan").catch(() => {});
 
     return NextResponse.json(report);
   } catch (err: unknown) {

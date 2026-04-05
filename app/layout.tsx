@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { UpgradeModalProvider } from "@/context/upgrade-modal-context";
+import { UpgradeModal } from "@/components/shared/upgrade-modal";
 import { DevReload } from "./dev-reload";
 import "./globals.css";
 
@@ -37,8 +39,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <DevReload />
-          {children}
+          <UpgradeModalProvider>
+            <DevReload />
+            {children}
+            <UpgradeModal />
+          </UpgradeModalProvider>
         </ThemeProvider>
       </body>
     </html>

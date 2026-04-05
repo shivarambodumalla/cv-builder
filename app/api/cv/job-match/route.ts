@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { sendEmailAsync } from "@/lib/email/sender";
 import { resolveRole, getDomainForRole } from "@/lib/resume/roles";
 import type { ResumeContent } from "@/lib/resume/types";
@@ -91,21 +92,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "cv_id is required" }, { status: 400 });
   }
 
-  // Check credits
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits_job_match, plan")
-    .eq("id", user.id)
-    .single();
-
-  const plan = (profile?.plan as string) || "free";
-  const limit = MONTHLY_LIMITS[plan] ?? 3;
-
-  if (false && plan !== "pro" && (profile?.credits_job_match ?? 0) <= 0) {
-    return NextResponse.json(
-      { error: "No job match credits remaining. Upgrade your plan for more.", code: "no_credits" },
-      { status: 403 }
-    );
+  // Check feature limit
+  const access = await checkFeatureAccess(user.id, "job_match");
+  if (!access.allowed) {
+    return NextResponse.json({ error: "You've used all free job matches this month. Upgrade for more.", code: access.reason, used: access.used, limit: access.limit }, { status: 403 });
   }
 
   const { data: cv } = await supabase
@@ -206,19 +196,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Deduct credit
-    if (plan !== "pro") {
-      await admin.rpc("decrement_credit", {
-        user_id: user.id,
-        credit_column: "credits_job_match",
-      });
-    }
+    // Increment usage
+    incrementUsage(user.id, "job_match").catch(() => {});
 
     return NextResponse.json({
       ...report,
       id: saved.id,
       created_at: saved.created_at,
-      credits_remaining: plan === "pro" ? limit : Math.max(0, (profile?.credits_job_match ?? 1) - 1),
     });
   } catch (err) {
     console.error("[job-match] AI matching failed:", err);
