@@ -118,14 +118,18 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
     console.error(`[email] Failed to send "${templateName}" to ${to}:`, (err as Error).message);
 
     // Log failure
-    await supabase.from("email_logs").insert({
-      user_id: userId || null,
-      template_name: templateName,
-      to_email: to,
-      subject: templateName,
-      status: "error",
-      error: (err as Error).message,
-    }).catch(() => {});
+    try {
+      await supabase.from("email_logs").insert({
+        user_id: userId || null,
+        template_name: templateName,
+        to_email: to,
+        subject: templateName,
+        status: "error",
+        error: (err as Error).message,
+      });
+    } catch {
+      // ignore logging errors
+    }
   }
 }
 
