@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { sendEmail } from "@/lib/email/sender";
 
 export async function GET() {
@@ -10,12 +11,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Email hook skipped in development" }, { status: 200 });
   }
 
-  const secret = request.headers.get("authorization")?.replace("Bearer ", "");
-  if (!secret || secret !== process.env.SUPABASE_HOOK_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const rawBody = await request.text();
+  const signature = request.headers.get("x-supabase-signature");
+  const secret = process.env.SUPABASE_HOOK_SECRET ?? "";
+
+  const actualSecret = secret.replace("v1,whsec_", "");
+  const decodedSecret = Buffer.from(actualSecret, "base64");
+
+  const hmac = crypto.createHmac("sha256", decodedSecret);
+  hmac.update(rawBody);
+  const computedSignature = hmac.digest("hex");
+
+  if (signature !== `v1,${computedSignature}`) {
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  const body = await request.json();
+  const body = JSON.parse(rawBody);
   const { type, email, data } = body;
 
   if (type === "signup" && data?.confirmation_url) {
