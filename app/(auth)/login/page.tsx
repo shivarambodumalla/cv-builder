@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,14 @@ import { Separator } from "@/components/ui/separator";
 import { GoogleButton } from "@/components/shared/google-button";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div />}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
