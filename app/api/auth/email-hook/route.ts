@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email/sender";
 
+export async function GET() {
+  return NextResponse.json({ status: "email hook active" });
+}
+
 export async function POST(request: NextRequest) {
+  if (process.env.NEXT_PUBLIC_ENV !== "production") {
+    return NextResponse.json({ message: "Email hook skipped in development" }, { status: 200 });
+  }
+
   const secret = request.headers.get("authorization")?.replace("Bearer ", "");
   if (!secret || secret !== process.env.SUPABASE_HOOK_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

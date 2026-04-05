@@ -40,5 +40,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/resume/:path*", "/billing/:path*", "/admin/:path*", "/api/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/resume/:path*",
+    "/billing/:path*",
+    "/admin/:path*",
+    "/api/((?!auth/email-hook|cron/).)*",
+  ],
 };
