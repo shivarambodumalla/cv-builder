@@ -41,12 +41,36 @@ export async function PUT(request: NextRequest) {
   return NextResponse.json({ ok: true });
 }
 
-// Test send
 export async function POST(request: NextRequest) {
   const user = await checkAdmin(request);
   if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { templateName } = await request.json();
+  const body = await request.json();
+
+  // Create new template
+  if (body.action === "create") {
+    const admin = createAdminClient();
+    const { data, error } = await admin
+      .from("email_templates")
+      .insert({
+        name: body.name,
+        subject: body.subject || body.name,
+        heading: body.heading || body.name,
+        subheading: body.subheading || "",
+        cta_text: body.cta_text || null,
+        cta_url: body.cta_url || null,
+        body_html: body.body_html || null,
+        enabled: true,
+      })
+      .select("*")
+      .single();
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(data);
+  }
+
+  // Test send
+  const { templateName } = body;
   await sendEmail({
     to: user.email!,
     templateName,

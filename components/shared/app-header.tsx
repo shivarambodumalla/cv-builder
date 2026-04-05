@@ -26,6 +26,7 @@ import {
   Monitor,
   LayoutDashboard,
   CreditCard,
+  Shield,
 } from "lucide-react";
 
 interface AppHeaderProps {
@@ -101,6 +102,12 @@ export function AppHeader({ user }: AppHeaderProps) {
                 <CreditCard className="mr-2 h-4 w-4" />
                 Billing
               </DropdownMenuItem>
+              {user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
+                <DropdownMenuItem onClick={() => router.push("/admin")}>
+                  <Shield className="mr-2 h-4 w-4" />
+                  Admin
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuSub>

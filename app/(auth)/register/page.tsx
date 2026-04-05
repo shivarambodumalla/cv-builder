@@ -1,17 +1,10 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { GoogleButton } from "@/components/shared/google-button";
 
 export default function RegisterPage() {
@@ -23,59 +16,8 @@ export default function RegisterPage() {
 }
 
 function RegisterContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
-  const [authError, setAuthError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
-  });
-
-  async function onSubmit(data: RegisterFormData) {
-    setAuthError("");
-    const supabase = createClient();
-    const { data: result, error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: { full_name: data.fullName },
-      },
-    });
-
-    if (error) {
-      setAuthError(error.message);
-      return;
-    }
-
-    if (result.user && !result.session) {
-      setSuccess(true);
-      return;
-    }
-
-    if (ref) {
-      try {
-        const res = await fetch("/api/cv/claim", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ redirect_token: ref }),
-        });
-        const claimResult = await res.json();
-        if (claimResult.cv_id) {
-          router.push(`/resume/${claimResult.cv_id}`);
-          router.refresh();
-          return;
-        }
-      } catch {}
-    }
-
-    router.push("/dashboard");
-    router.refresh();
-  }
 
   async function handleGoogleLogin() {
     const supabase = createClient();
@@ -87,100 +29,28 @@ function RegisterContent() {
     });
   }
 
-  if (success) {
-    return (
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Check your email</CardTitle>
-          <CardDescription>
-            We sent a confirmation link to your email. Click it to activate your account, then come back to sign in.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter className="justify-center">
-          <Link href="/login" className="text-primary hover:underline text-sm">
-            Back to Sign In
-          </Link>
-        </CardFooter>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Create Account</CardTitle>
-        <CardDescription>Get started with CVEdge</CardDescription>
+    <Card className="w-full max-w-sm">
+      <CardHeader className="text-center space-y-1 pb-2">
+        <Link href="/" className="flex justify-center mb-4">
+          <img src="/img/CV-Edge-Logo.svg" alt="CVEdge" className="h-8" />
+        </Link>
+        <h1 className="text-xl font-semibold">Create your CVEdge account</h1>
+        <p className="text-sm text-muted-foreground">Get started in seconds with Google</p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 pt-4">
         <GoogleButton onClick={handleGoogleLogin} />
-        <div className="relative">
-          <Separator />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
-            or
-          </span>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
-            <Input
-              id="fullName"
-              placeholder="John Doe"
-              {...register("fullName")}
-            />
-            {errors.fullName && (
-              <p className="text-sm text-destructive">{errors.fullName.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              {...register("confirmPassword")}
-            />
-            {errors.confirmPassword && (
-              <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
-            )}
-          </div>
-          {authError && (
-            <p className="text-sm text-destructive">{authError}</p>
-          )}
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account..." : "Create Account"}
-          </Button>
-        </form>
+        <button
+          disabled
+          className="flex w-full items-center justify-center gap-2 rounded-md border bg-muted/50 px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-not-allowed"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn — Coming soon
+        </button>
       </CardContent>
-      <CardFooter className="justify-center">
-        <p className="text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Sign in
-          </Link>
+      <CardFooter className="pt-2">
+        <p className="text-[11px] text-muted-foreground/60 text-center w-full">
+          By continuing, you agree to our Terms of Service and Privacy Policy.
         </p>
       </CardFooter>
     </Card>

@@ -1,17 +1,10 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginFormData } from "@/lib/validations/auth";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { GoogleButton } from "@/components/shared/google-button";
 
 export default function LoginPage() {
@@ -23,50 +16,8 @@ export default function LoginPage() {
 }
 
 function LoginContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
-  const [authError, setAuthError] = useState("");
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  async function onSubmit(data: LoginFormData) {
-    setAuthError("");
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
-
-    if (error) {
-      setAuthError(error.message);
-      return;
-    }
-
-    if (ref) {
-      try {
-        const res = await fetch("/api/cv/claim", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ redirect_token: ref }),
-        });
-        const result = await res.json();
-        if (result.cv_id) {
-          router.push(`/resume/${result.cv_id}`);
-          router.refresh();
-          return;
-        }
-      } catch {}
-    }
-
-    router.push("/dashboard");
-    router.refresh();
-  }
 
   async function handleGoogleLogin() {
     const supabase = createClient();
@@ -79,67 +30,36 @@ function LoginContent() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
+    <Card className="w-full max-w-sm">
+      <CardHeader className="text-center space-y-1 pb-2">
+        <Link href="/" className="flex justify-center mb-4">
+          <img src="/img/CV-Edge-Logo.svg" alt="CVEdge" className="h-8" />
+        </Link>
         {ref ? (
           <>
-            <CardTitle className="text-2xl">Your CV has been analysed!</CardTitle>
-            <CardDescription>Sign in or create an account to see your results.</CardDescription>
+            <h1 className="text-xl font-semibold">Your CV has been analysed!</h1>
+            <p className="text-sm text-muted-foreground">Sign in to see your results.</p>
           </>
         ) : (
           <>
-            <CardTitle className="text-2xl">Sign In</CardTitle>
-            <CardDescription>Sign in to your CVEdge account</CardDescription>
+            <h1 className="text-xl font-semibold">Sign in to CVEdge</h1>
+            <p className="text-sm text-muted-foreground">Continue with your Google account</p>
           </>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 pt-4">
         <GoogleButton onClick={handleGoogleLogin} />
-        <div className="relative">
-          <Separator />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
-            or
-          </span>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
-          {authError && (
-            <p className="text-sm text-destructive">{authError}</p>
-          )}
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign In"}
-          </Button>
-        </form>
+        <button
+          disabled
+          className="flex w-full items-center justify-center gap-2 rounded-md border bg-muted/50 px-4 py-2.5 text-sm font-medium text-muted-foreground cursor-not-allowed"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn — Coming soon
+        </button>
       </CardContent>
-      <CardFooter className="justify-center">
-        <p className="text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Sign up
-          </Link>
+      <CardFooter className="pt-2">
+        <p className="text-[11px] text-muted-foreground/60 text-center w-full">
+          By continuing, you agree to our Terms of Service and Privacy Policy.
         </p>
       </CardFooter>
     </Card>

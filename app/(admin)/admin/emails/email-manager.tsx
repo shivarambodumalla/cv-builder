@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Send, Pencil, Check, X } from "lucide-react";
+import { Send, Pencil, Check, X, Plus } from "lucide-react";
 
 interface Template {
   id: string;
@@ -29,12 +30,16 @@ interface Brand {
 }
 
 export function EmailManager({ templates: initial, brand: initialBrand }: { templates: Template[]; brand: Brand }) {
+  const router = useRouter();
   const [templates, setTemplates] = useState(initial);
   const [brand, setBrand] = useState(initialBrand);
-  const [editing, setEditing] = useState<Template | null>(null);
-  const [saving, setSaving] = useState(false);
   const [brandSaving, setBrandSaving] = useState(false);
   const [testSending, setTestSending] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newSubject, setNewSubject] = useState("");
+  const [newHtml, setNewHtml] = useState("");
+  const [creating, setCreating] = useState(false);
 
   async function saveBrand() {
     setBrandSaving(true);
@@ -46,19 +51,6 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
     setBrandSaving(false);
   }
 
-  async function saveTemplate() {
-    if (!editing) return;
-    setSaving(true);
-    await fetch("/api/admin/emails", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editing),
-    });
-    setTemplates((prev) => prev.map((t) => (t.id === editing.id ? editing : t)));
-    setSaving(false);
-    setEditing(null);
-  }
-
   async function toggleEnabled(t: Template) {
     const updated = { ...t, enabled: !t.enabled };
     await fetch("/api/admin/emails", {
@@ -67,6 +59,32 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
       body: JSON.stringify(updated),
     });
     setTemplates((prev) => prev.map((x) => (x.id === t.id ? updated : x)));
+  }
+
+  async function handleCreate() {
+    if (!newName.trim()) return;
+    setCreating(true);
+    const res = await fetch("/api/admin/emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "create",
+        name: newName.trim().toLowerCase().replace(/\s+/g, "_"),
+        subject: newSubject || newName,
+        heading: newName,
+        subheading: "",
+        body_html: newHtml || null,
+      }),
+    });
+    const data = await res.json();
+    if (data.id) {
+      setNewName("");
+      setNewSubject("");
+      setNewHtml("");
+      setShowCreate(false);
+      router.push(`/admin/emails/${data.id}`);
+    }
+    setCreating(false);
   }
 
   async function sendTest(name: string) {
@@ -110,6 +128,39 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
         </Button>
       </div>
 
+      {/* Create template */}
+      {!showCreate ? (
+        <Button variant="outline" size="sm" onClick={() => setShowCreate(true)}>
+          <Plus className="h-3.5 w-3.5 mr-1" /> New Template
+        </Button>
+      ) : (
+        <div className="rounded-lg border p-4 space-y-4">
+          <h2 className="text-sm font-semibold">Create Custom Template</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-xs">Template Name</Label>
+              <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. April Launch Announcement" />
+            </div>
+            <div>
+              <Label className="text-xs">Subject Line</Label>
+              <Input value={newSubject} onChange={(e) => setNewSubject(e.target.value)} placeholder="e.g. Big news from CVEdge" />
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Raw HTML (paste your email HTML here, or leave blank to use the visual editor after creating)</Label>
+            <Textarea value={newHtml} onChange={(e) => setNewHtml(e.target.value)} rows={8} className="font-mono text-xs" placeholder="<h2>Your custom email content...</h2>" />
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={handleCreate} disabled={creating || !newName.trim()}>
+              {creating ? "Creating..." : "Create & Edit"}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => { setShowCreate(false); setNewName(""); setNewSubject(""); setNewHtml(""); }}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Templates table */}
       <div className="overflow-x-auto">
         <table className="w-full text-xs sm:text-sm">
@@ -133,9 +184,11 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
                 </td>
                 <td className="py-2 text-right">
                   <div className="flex items-center justify-end gap-1">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setEditing(t)}>
-                      <Pencil className="h-3 w-3 mr-1" /> Edit
-                    </Button>
+                    <Link href={`/admin/emails/${t.id}`}>
+                      <Button variant="ghost" size="sm" className="h-7 text-xs">
+                        <Pencil className="h-3 w-3 mr-1" /> Edit
+                      </Button>
+                    </Link>
                     <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => sendTest(t.name)} disabled={testSending === t.name}>
                       <Send className="h-3 w-3 mr-1" /> {testSending === t.name ? "Sending..." : "Test"}
                     </Button>
@@ -147,49 +200,6 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
         </table>
       </div>
 
-      {/* Edit drawer */}
-      <Sheet open={!!editing} onOpenChange={(v) => { if (!v) setEditing(null); }}>
-        <SheetContent>
-          {editing && (
-            <div className="flex flex-col h-full">
-              <SheetHeader>
-                <SheetTitle>Edit: {editing.name}</SheetTitle>
-              </SheetHeader>
-              <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4 mt-4">
-                <div>
-                  <Label className="text-xs">Subject</Label>
-                  <Input value={editing.subject} onChange={(e) => setEditing({ ...editing, subject: e.target.value })} />
-                </div>
-                <div>
-                  <Label className="text-xs">Heading</Label>
-                  <Input value={editing.heading} onChange={(e) => setEditing({ ...editing, heading: e.target.value })} />
-                </div>
-                <div>
-                  <Label className="text-xs">Subheading</Label>
-                  <Textarea value={editing.subheading} onChange={(e) => setEditing({ ...editing, subheading: e.target.value })} rows={3} />
-                </div>
-                <div>
-                  <Label className="text-xs">CTA Text</Label>
-                  <Input value={editing.cta_text ?? ""} onChange={(e) => setEditing({ ...editing, cta_text: e.target.value })} />
-                </div>
-                <div>
-                  <Label className="text-xs">CTA URL</Label>
-                  <Input value={editing.cta_url ?? ""} onChange={(e) => setEditing({ ...editing, cta_url: e.target.value })} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <input type="checkbox" checked={editing.enabled} onChange={(e) => setEditing({ ...editing, enabled: e.target.checked })} />
-                  <Label className="text-xs">Enabled</Label>
-                </div>
-              </div>
-              <div className="border-t p-4">
-                <Button className="w-full" onClick={saveTemplate} disabled={saving}>
-                  {saving ? "Saving..." : "Save Template"}
-                </Button>
-              </div>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
     </>
   );
 }

@@ -22,17 +22,22 @@ export async function PUT(request: NextRequest) {
   const body = await request.json();
   const admin = createAdminClient();
 
-  const { error } = await admin
-    .from("brand_settings")
-    .update({
-      primary_color: body.primary_color,
-      logo_text: body.logo_text,
-      support_email: body.support_email,
-      app_url: body.app_url,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", body.id);
+  const row = {
+    primary_color: body.primary_color,
+    logo_text: body.logo_text,
+    support_email: body.support_email,
+    app_url: body.app_url,
+    updated_at: new Date().toISOString(),
+  };
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (body.id) {
+    const { error } = await admin.from("brand_settings").update(row).eq("id", body.id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  } else {
+    // No existing row — insert
+    const { error } = await admin.from("brand_settings").insert(row);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
   return NextResponse.json({ ok: true });
 }
