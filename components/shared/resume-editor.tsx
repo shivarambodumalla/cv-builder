@@ -496,19 +496,17 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
             </div>
             <div className="flex-1 overflow-y-auto p-4">
 
-            {/* Content tab: always show editor */}
+            {/* Content tab: show editor */}
             {activeTab === "editor" && (
-              <ContentEditor cvId={cv.id} initialData={initialContent} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+              <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
             )}
 
             {/* Analyser tab: editor on desktop, ATS panel on mobile */}
             {activeTab === "analyser" && (
               <>
-                {/* Desktop: content editor (right panel has ATS) */}
                 <div className="hidden lg:block">
-                  <ContentEditor cvId={cv.id} initialData={initialContent} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+                  <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
                 </div>
-                {/* Mobile: ATS panel inline (no right panel on mobile) */}
                 <div className="lg:hidden">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
@@ -516,12 +514,12 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
               </>
             )}
 
-            {/* Design tab: show designer controls on left */}
+            {/* Design tab */}
             {activeTab === "design" && (
               <DesignerPanel design={design} onChange={handleDesignChange} />
             )}
 
-            {/* Job Match tab: form + results inline on mobile, form-only on desktop */}
+            {/* Job Match tab */}
             {activeTab === "job-match" && (
               <>
                 <JobMatchPanel
@@ -536,7 +534,6 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
                   onResult={setJobMatchResult}
                   onFixField={handleJobMatchFix}
                 />
-                {/* Mobile: show job match results below the form */}
                 {jobMatchResult && (
                   <div className="lg:hidden mt-6 border-t pt-6">
                     <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} />
@@ -545,13 +542,13 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, credi
               </>
             )}
 
-            {/* Cover Letter tab: show cover letter options on left */}
+            {/* Cover Letter tab */}
             {activeTab === "cover-letter" && (
               <CoverLetterPanel
                 cvId={cv.id}
                 jobMatches={jobMatches}
                 coverLetters={coverLetters}
-                hasJobDescription={!!cv.job_description}
+                hasJobDescription={!!cv.job_description || !!jobMatchResult}
                 jobTitle={cv.job_title_target ?? ""}
                 company={cv.job_company ?? ""}
                 credits={credits.coverLetter}
