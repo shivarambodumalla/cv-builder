@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 import { sendEmail } from "@/lib/email/sender";
 
 export async function GET() {
@@ -10,17 +11,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "skipped in dev" });
   }
 
-  // Log all headers for debugging
-  const headers: Record<string, string> = {};
-  request.headers.forEach((value, key) => {
-    headers[key] = value;
-  });
-  console.log("[email-hook] headers:", JSON.stringify(headers));
-
   const rawBody = await request.text();
-  console.log("[email-hook] body:", rawBody);
+  const webhookSignature = request.headers.get("webhook-signature") ?? "";
+  const webhookTimestamp = request.headers.get("webhook-timestamp") ?? "";
+  const webhookId = request.headers.get("webhook-id") ?? "";
 
-  // Skip verification temporarily — just process
+  const secret = process.env.SUPABASE_HOOK_SECRET ?? "";
+  const actualSecret = secret.replace("v1,whsec_", "");
+  const decodedSecret = Buffer.from(actualSecret, "base64");
+
+  const signedContent = `${webhookId}\n${webhookTimestamp}\n${rawBody}`;
+
+  const hmac = crypto.createHmac("sha256", decodedSecret);
+  hmac.update(signedContent);
+  const computedSignature = `v1,${hmac.digest("base64")}`;
+
+  if (webhookSignature !== computedSignature) {
+    console.log("[email-hook] signature mismatch");
+    console.log("expected:", computedSignature);
+    console.log("received:", webhookSignature);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+  }
+
   const body = JSON.parse(rawBody);
   const { type, email, data } = body;
 
