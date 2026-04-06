@@ -24,12 +24,6 @@ export default async function BillingPage() {
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id);
 
-  // Count total PDF downloads
-  const { count: totalDownloads } = await supabase
-    .from("ats_reports")
-    .select("id", { count: "exact", head: true })
-    .eq("cv_id", user.id);
-
   // Count total ATS reports
   const { data: cvIds } = await supabase
     .from("cvs")

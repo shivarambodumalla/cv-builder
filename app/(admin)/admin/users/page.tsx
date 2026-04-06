@@ -18,7 +18,7 @@ export default async function AdminUsersPage() {
 
   // Get last activity for each user (latest CV updated_at)
   const userIds = (users ?? []).map((u) => u.id);
-  let lastActivityMap: Record<string, string> = {};
+  const lastActivityMap: Record<string, string> = {};
 
   if (userIds.length > 0) {
     const { data: cvs } = await supabase

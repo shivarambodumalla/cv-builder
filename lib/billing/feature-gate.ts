@@ -12,9 +12,7 @@ export async function checkFeatureAccess(
   return checkAndConsumeLimit(supabase, userId, feature);
 }
 
-export async function incrementUsage(
-  _userId: string,
-  _feature: string
-) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function incrementUsage(_userId: string, _feature: string) {
   // No-op — checkAndConsumeLimit now handles both check + increment
 }

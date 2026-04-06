@@ -36,7 +36,7 @@ const FEATURES = [
 ];
 
 export function UpgradeModal() {
-  const { isOpen, trigger, daysUntilReset, closeUpgradeModal } = useUpgradeModal();
+  const { isOpen, trigger, closeUpgradeModal } = useUpgradeModal();
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [success, setSuccess] = useState(false);
