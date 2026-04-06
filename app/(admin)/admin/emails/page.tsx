@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Metadata } from "next";
 import { EmailManager } from "./email-manager";
 
-export const metadata: Metadata = { title: "Emails — CVEdge Admin" };
+export const metadata: Metadata = { title: "Emails | CVEdge Admin" };
 export const dynamic = "force-dynamic";
 
 export default async function EmailsPage() {

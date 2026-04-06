@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 
 const SEGMENTS = [
   { value: "never_uploaded", label: "Never uploaded CV" },
-  { value: "free_active_upgrade", label: "Free users — upgrade prompt" },
+  { value: "free_active_upgrade", label: "Free users | upgrade prompt" },
   { value: "all_users", label: "All users" },
   { value: "paid_users", label: "Paid users only" },
 ];

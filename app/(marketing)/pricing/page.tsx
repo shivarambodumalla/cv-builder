@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { PricingContent } from "./pricing-content";
 
 export const metadata: Metadata = {
-  title: "Pricing — CVEdge | Simple, Transparent Pricing",
+  title: "Pricing | CVEdge | Simple, Transparent Pricing",
   description:
     "One plan. Full access. Cancel anytime. Start free, upgrade to Pro for unlimited CVs, ATS scans, AI rewrites, job matching, and cover letters.",
   openGraph: {
-    title: "Pricing — CVEdge",
+    title: "Pricing | CVEdge",
     description: "Simple, transparent pricing. Start free, go Pro when ready.",
   },
 };

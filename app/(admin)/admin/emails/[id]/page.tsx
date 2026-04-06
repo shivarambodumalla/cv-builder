@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Metadata } from "next";
 import { EmailEditor } from "./email-editor";
 
-export const metadata: Metadata = { title: "Edit Template — CVEdge Admin" };
+export const metadata: Metadata = { title: "Edit Template | CVEdge Admin" };
 export const dynamic = "force-dynamic";
 
 interface Props {

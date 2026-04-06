@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { UserMenu } from "@/components/shared/user-menu";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { FileText } from "lucide-react";
 
 interface UserData {
   email: string;
@@ -51,17 +52,57 @@ export function HeaderAuth() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Inject nav links into header-nav element based on auth state
+  useEffect(() => {
+    const nav = document.getElementById("header-nav");
+    if (!nav) return;
+
+    if (loading) {
+      nav.innerHTML = "";
+      return;
+    }
+
+    nav.innerHTML = "";
+
+    // Always show marketing links
+    const links = [
+      { href: "/#how-it-works", label: "How it works" },
+      { href: "/#features", label: "Features" },
+      { href: "/pricing", label: "Pricing" },
+    ];
+
+    // Add "My Resumes" first if logged in
+    if (user) {
+      const myResumes = document.createElement("a");
+      myResumes.href = "/dashboard";
+      myResumes.className = "text-sm font-medium text-foreground hover:text-primary transition-colors";
+      myResumes.textContent = "My Resumes";
+      nav.appendChild(myResumes);
+    }
+
+    for (const l of links) {
+      const a = document.createElement("a");
+      a.href = l.href;
+      a.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      a.textContent = l.label;
+      nav.appendChild(a);
+    }
+  }, [user, loading]);
+
   if (loading) {
     return <ThemeToggle />;
   }
 
   if (user) {
     return (
-      <UserMenu
-        email={user.email}
-        fullName={user.fullName}
-        avatarUrl={user.avatarUrl}
-      />
+      <>
+        <ThemeToggle />
+        <UserMenu
+          email={user.email}
+          fullName={user.fullName}
+          avatarUrl={user.avatarUrl}
+        />
+      </>
     );
   }
 

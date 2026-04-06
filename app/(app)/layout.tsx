@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { AppHeader } from "@/components/shared/app-header";
+import { Header } from "@/components/shared/header";
+import { Footer } from "@/components/shared/footer";
 
 export default async function AppLayout({
   children,
@@ -16,22 +17,11 @@ export default async function AppLayout({
     redirect("/login");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, avatar_url")
-    .eq("id", user.id)
-    .single();
-
   return (
-    <div className="min-h-screen">
-      <AppHeader
-        user={{
-          email: user.email || "",
-          full_name: profile?.full_name,
-          avatar_url: profile?.avatar_url,
-        }}
-      />
-      {children}
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
     </div>
   );
 }

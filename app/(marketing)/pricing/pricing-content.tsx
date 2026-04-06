@@ -138,7 +138,7 @@ export function PricingContent() {
           </div>
 
           <Button className="w-full h-12 text-base font-semibold shadow-lg shadow-primary/20" asChild>
-            <Link href="#">Get Pro &mdash; ${selected.sale}/{selected.per}</Link>
+            <Link href="#">Get Pro - ${selected.sale}/{selected.per}</Link>
           </Button>
           <p className="mt-3 text-center text-[11px] text-muted-foreground">
             7-day money back guarantee &middot; Cancel anytime

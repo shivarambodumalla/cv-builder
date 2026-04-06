@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          error: `No keyword list found for role: "${error.role}". We've recorded this request — keywords will be added soon.`,
+          error: `No keyword list found for role: "${error.role}". We've recorded this request | keywords will be added soon.`,
           code: "keyword_list_required",
           role: error.role,
         },

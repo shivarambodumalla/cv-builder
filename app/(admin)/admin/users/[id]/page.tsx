@@ -14,7 +14,7 @@ import { ArrowLeft } from "lucide-react";
 import { UserActions } from "./user-actions";
 
 export const metadata: Metadata = {
-  title: "User Detail — CVEdge Admin",
+  title: "User Detail | CVEdge Admin",
 };
 
 export const dynamic = "force-dynamic";

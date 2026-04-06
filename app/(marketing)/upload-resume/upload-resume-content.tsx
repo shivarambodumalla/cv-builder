@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, Loader2, BarChart3, Search, Lightbulb, ArrowRight, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { Upload, Loader2, BarChart3, Search, Lightbulb, ArrowRight, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, ChevronDown, ChevronUp, Sparkles, Shield, Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,11 +16,11 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 type AnalysisStep = "uploading" | "parsing" | "analysing" | "done";
 
-const STEPS: { key: AnalysisStep; label: string; icon: React.ElementType }[] = [
-  { key: "uploading", label: "Uploading your CV", icon: Upload },
-  { key: "parsing", label: "Extracting text", icon: FileText },
-  { key: "analysing", label: "AI is analysing your CV", icon: Brain },
-  { key: "done", label: "Analysis complete", icon: CheckCircle2 },
+const STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.ElementType }[] = [
+  { key: "uploading", label: "Uploading your CV", sub: "Securely transferring your file", icon: Upload },
+  { key: "parsing", label: "Extracting content", sub: "Reading every section of your CV", icon: FileText },
+  { key: "analysing", label: "AI is scoring your CV", sub: "Checking keywords, formatting, impact", icon: Brain },
+  { key: "done", label: "Analysis complete!", sub: "Your ATS report is ready", icon: CheckCircle2 },
 ];
 
 export function UploadResumeContent() {
@@ -142,18 +142,30 @@ export function UploadResumeContent() {
     setCurrentStep("uploading");
   }
 
+  // ─── ANALYSING SCREEN ───
   if (loading) {
     const stepIndex = STEPS.findIndex((s) => s.key === currentStep);
+    const progress = Math.min(100, ((stepIndex + 0.5) / STEPS.length) * 100);
 
     return (
-      <div className="container mx-auto max-w-md px-4 py-20">
-        <div className="flex flex-col items-center gap-8">
-          <div className="relative flex h-20 w-20 items-center justify-center">
-            <div className="absolute inset-0 animate-spin rounded-full border-2 border-muted border-t-primary" />
-            <Brain className="h-8 w-8 text-primary" />
+      <div className="container mx-auto max-w-lg px-4 py-16 md:py-28">
+        <div className="flex flex-col items-center gap-10">
+          {/* Animated brain icon */}
+          <div className="relative flex h-28 w-28 items-center justify-center">
+            <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-muted border-t-primary" style={{ animationDuration: "1.5s" }} />
+            <div className="absolute inset-3 animate-spin rounded-full border-2 border-muted border-b-primary/50" style={{ animationDuration: "2.5s", animationDirection: "reverse" }} />
+            <Brain className="h-10 w-10 text-primary" />
           </div>
 
-          <div className="w-full space-y-3">
+          {/* Progress bar */}
+          <div className="w-full">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div className="h-full rounded-full bg-primary transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+
+          {/* Steps */}
+          <div className="w-full space-y-2">
             {STEPS.map((step, i) => {
               const StepIcon = step.icon;
               const isActive = i === stepIndex;
@@ -163,29 +175,36 @@ export function UploadResumeContent() {
                 <div
                   key={step.key}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all duration-500",
-                    isActive && "bg-primary/10 text-foreground font-semibold",
-                    isDone && "text-muted-foreground font-medium",
-                    !isActive && !isDone && "text-muted-foreground/50 font-medium"
+                    "flex items-center gap-4 rounded-xl px-5 py-4 transition-all duration-500",
+                    isActive && "bg-primary/10 shadow-sm",
+                    isDone && "opacity-60",
+                    !isActive && !isDone && "opacity-30"
                   )}
                 >
-                  {isDone ? (
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
-                  ) : isActive ? (
-                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
-                  ) : (
-                    <StepIcon className="h-4 w-4 shrink-0" />
-                  )}
-                  {step.label}
-                  {isActive && currentStep === "analysing" && (
-                    <span className="ml-auto text-xs text-muted-foreground">This may take a moment</span>
-                  )}
+                  <div className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all",
+                    isDone && "bg-green-100 dark:bg-green-900/30",
+                    isActive && "bg-primary/20",
+                    !isActive && !isDone && "bg-muted"
+                  )}>
+                    {isDone ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    ) : isActive ? (
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    ) : (
+                      <StepIcon className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div>
+                    <p className={cn("text-sm font-semibold", isActive && "text-foreground", !isActive && "text-muted-foreground")}>{step.label}</p>
+                    <p className="text-xs text-muted-foreground">{step.sub}</p>
+                  </div>
                 </div>
               );
             })}
           </div>
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Please don&apos;t close this tab while we analyse your CV.
           </p>
         </div>
@@ -193,24 +212,21 @@ export function UploadResumeContent() {
     );
   }
 
+  // ─── ERROR SCREEN ───
   if (error) {
     return (
       <div className="container mx-auto max-w-md px-4 py-20">
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-            <AlertCircle className="h-8 w-8 text-destructive" />
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10">
+            <AlertCircle className="h-10 w-10 text-destructive" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold">Something went wrong</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{error}</p>
+            <h2 className="text-2xl font-bold">Something went wrong</h2>
+            <p className="mt-2 text-muted-foreground">{error}</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={handleRetry}>
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Try again
-            </Button>
-            <Button onClick={handleSubmit}>
-              Retry upload
+            <Button variant="outline" size="lg" onClick={handleRetry}>
+              <RotateCcw className="mr-2 h-4 w-4" /> Try again
             </Button>
           </div>
         </div>
@@ -218,18 +234,26 @@ export function UploadResumeContent() {
     );
   }
 
+  // ─── UPLOAD FORM ───
   return (
-    <div className="container mx-auto max-w-xl px-4 py-12 md:py-20">
-      <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Get your free ATS score</h1>
-          <p className="mt-2 text-muted-foreground">
-            Upload your CV, we&apos;ll tell you exactly what&apos;s holding you back
+    <div className="container mx-auto max-w-2xl px-4 py-12 md:py-20">
+      <div className="space-y-10">
+        {/* Header */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
+            <Sparkles className="h-4 w-4" /> Free ATS Analysis
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            Get your ATS score
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-md mx-auto">
+            Upload your CV and see exactly what&apos;s holding you back. Takes under 60 seconds.
           </p>
         </div>
 
-        <div className="space-y-3">
-          <Label>
+        {/* Role selector */}
+        <div className="space-y-2">
+          <Label className="text-base font-semibold">
             What role are you targeting?
             <span className="text-destructive"> *</span>
           </Label>
@@ -246,49 +270,52 @@ export function UploadResumeContent() {
           )}
         </div>
 
-        <div className={cn("space-y-3 transition-opacity", !roleSelected && "opacity-50 pointer-events-none")}>
+        {/* Job description (collapsible) */}
+        <div className={cn("transition-opacity duration-300", !roleSelected && "opacity-40 pointer-events-none")}>
           <button
             type="button"
             onClick={() => setJdOpen(!jdOpen)}
-            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 px-4 py-3 text-sm text-muted-foreground hover:border-muted-foreground/50 hover:text-foreground transition-colors"
+            className="flex w-full items-center gap-2 rounded-xl border border-dashed border-foreground/20 px-5 py-4 text-sm text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all"
           >
             {jdOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             <span className="font-medium">+ Add job description (recommended)</span>
           </button>
           {jdOpen && (
-            <div className="space-y-3 rounded-lg border bg-muted/30 p-4">
+            <div className="mt-3 space-y-4 rounded-xl border bg-card p-5">
               <p className="text-xs text-muted-foreground">
-                Adding a job description gives you a personalised match score and tailored cover letter — not just a generic ATS score
+                Adding a job description gives you a personalised match score and tailored keywords.
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Company name (optional)</Label>
-                  <Input placeholder="e.g. Google" value={jobCompany} onChange={(e) => setJobCompany(e.target.value)} />
+                  <Label className="text-xs font-medium">Company</Label>
+                  <Input placeholder="e.g. Google" value={jobCompany} onChange={(e) => setJobCompany(e.target.value)} className="h-12 text-base border-foreground/20" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Job title (optional)</Label>
-                  <Input placeholder="e.g. Senior Engineer" value={jobTitleTarget} onChange={(e) => setJobTitleTarget(e.target.value)} />
+                  <Label className="text-xs font-medium">Job title</Label>
+                  <Input placeholder="e.g. Senior Engineer" value={jobTitleTarget} onChange={(e) => setJobTitleTarget(e.target.value)} className="h-12 text-base border-foreground/20" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs">Job description</Label>
+                <Label className="text-xs font-medium">Job description</Label>
                 <Textarea
                   placeholder="Paste the full job description here..."
-                  rows={4}
+                  rows={5}
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
+                  className="text-base border-foreground/20"
                 />
               </div>
             </div>
           )}
         </div>
 
-        <div className={cn("space-y-3 transition-opacity", !roleSelected && "opacity-50 pointer-events-none")}>
-          <Label>Your CV</Label>
+        {/* CV upload */}
+        <div className={cn("space-y-3 transition-opacity duration-300", !roleSelected && "opacity-40 pointer-events-none")}>
+          <Label className="text-base font-semibold">Your CV</Label>
           <Tabs value={uploadTab} onValueChange={setUploadTab}>
-            <TabsList className="w-full">
-              <TabsTrigger value="upload" className="flex-1">Upload PDF</TabsTrigger>
-              <TabsTrigger value="paste" className="flex-1">Paste Text</TabsTrigger>
+            <TabsList className="w-full h-13 p-1">
+              <TabsTrigger value="upload" className="flex-1 text-sm h-11">Upload PDF</TabsTrigger>
+              <TabsTrigger value="paste" className="flex-1 text-sm h-11">Paste Text</TabsTrigger>
             </TabsList>
             <TabsContent value="upload">
               <div
@@ -297,38 +324,58 @@ export function UploadResumeContent() {
                 onDragLeave={() => setDragOver(false)}
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  "flex min-h-[140px] cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors",
-                  dragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-muted-foreground/50"
+                  "flex min-h-[180px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 transition-all",
+                  dragOver ? "border-primary bg-primary/5 scale-[1.01]" : "border-foreground/20 hover:border-primary/50 hover:bg-muted/30",
+                  file && "border-green-500/50 bg-green-50 dark:bg-green-950/20"
                 )}
               >
-                <Upload className="h-6 w-6 text-muted-foreground" />
                 {file ? (
-                  <p className="text-sm font-medium">{file.name}</p>
+                  <>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                      <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <p className="text-sm font-semibold">{file.name}</p>
+                    <p className="text-xs text-muted-foreground">Click to change file</p>
+                  </>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Drag & drop or click to select (PDF, max 5 MB)</p>
+                  <>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                      <Upload className="h-6 w-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm font-medium">Drag & drop or click to select</p>
+                    <p className="text-xs text-muted-foreground">PDF, max 5 MB</p>
+                  </>
                 )}
                 <input ref={fileInputRef} type="file" accept=".pdf" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} className="hidden" />
               </div>
             </TabsContent>
             <TabsContent value="paste">
-              <Textarea placeholder="Paste your CV text here..." rows={6} value={pastedText} onChange={(e) => setPastedText(e.target.value)} />
+              <Textarea placeholder="Paste your CV text here..." rows={8} value={pastedText} onChange={(e) => setPastedText(e.target.value)} className="text-base border-foreground/20" />
             </TabsContent>
           </Tabs>
         </div>
 
+        {/* Submit */}
         <Button
-          className="w-full h-12"
+          size="lg"
+          className="w-full h-14 text-base font-semibold"
           disabled={!roleSelected || (uploadTab === "upload" ? !file : !pastedText.trim())}
           onClick={handleSubmit}
         >
           Analyse my CV
-          <ArrowRight className="ml-2 h-4 w-4" />
+          <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
 
-        <div className="flex justify-center gap-6 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> ATS score breakdown</span>
-          <span className="flex items-center gap-1.5"><Search className="h-3.5 w-3.5" /> Missing keywords</span>
-          <span className="flex items-center gap-1.5"><Lightbulb className="h-3.5 w-3.5" /> Actionable fixes</span>
+        {/* Trust indicators */}
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+          <span className="flex items-center gap-2"><BarChart3 className="h-4 w-4 text-primary" /> ATS score breakdown</span>
+          <span className="flex items-center gap-2"><Search className="h-4 w-4 text-primary" /> Missing keywords</span>
+          <span className="flex items-center gap-2"><Lightbulb className="h-4 w-4 text-primary" /> Actionable fixes</span>
+        </div>
+
+        <div className="flex justify-center gap-6 text-xs text-muted-foreground/60">
+          <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> Your data stays private</span>
+          <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Results in under 60s</span>
         </div>
       </div>
     </div>

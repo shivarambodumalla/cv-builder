@@ -34,7 +34,7 @@ export async function PUT(request: NextRequest) {
     const { error } = await admin.from("brand_settings").update(row).eq("id", body.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   } else {
-    // No existing row — insert
+    // No existing row | insert
     const { error } = await admin.from("brand_settings").insert(row);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }

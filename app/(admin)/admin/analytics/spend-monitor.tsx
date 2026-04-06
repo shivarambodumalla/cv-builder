@@ -94,7 +94,7 @@ export function SpendMonitor({ currentSpend, currentCap, currentRate }: Props) {
               {saving ? "Saving..." : "Save Settings"}
             </Button>
             {status === "saved" && <span className="text-xs text-green-600">Saved</span>}
-            {status === "error" && <span className="text-xs text-red-600">Failed to save — check console</span>}
+            {status === "error" && <span className="text-xs text-red-600">Failed to save | check console</span>}
           </div>
         </div>
       </div>
@@ -140,7 +140,7 @@ export function SpendMonitor({ currentSpend, currentCap, currentRate }: Props) {
             </tbody>
           </table>
           <div className="px-3 py-2 bg-muted/30 text-[11px] text-muted-foreground">
-            Active model set via AI_MODEL env var. Current: gemini-2.5-flash. At ₹{currentRate}/$ — input costs ₹{(0.15 * currentRate / 1000).toFixed(4)}/K tokens, output costs ₹{(0.60 * currentRate / 1000).toFixed(4)}/K tokens.
+            Active model set via AI_MODEL env var. Current: gemini-2.5-flash. At ₹{currentRate}/$ | input costs ₹{(0.15 * currentRate / 1000).toFixed(4)}/K tokens, output costs ₹{(0.60 * currentRate / 1000).toFixed(4)}/K tokens.
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { invalidateExchangeRateCache } from "@/lib/ai/limits";
 
 // Admin check is done by middleware for /api/admin/* routes
-// No need to double-check here — middleware already redirects non-admins
+// No need to double-check here | middleware already redirects non-admins
 
 export async function GET() {
   const admin = createAdminClient();

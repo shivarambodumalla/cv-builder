@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { MissingRolesTable } from "./missing-roles-table";
 
 export const metadata: Metadata = {
-  title: "Missing Roles — CVEdge Admin",
+  title: "Missing Roles | CVEdge Admin",
 };
 
 export const dynamic = "force-dynamic";

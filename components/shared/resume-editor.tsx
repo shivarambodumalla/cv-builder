@@ -582,8 +582,22 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               <TabsList className="w-max min-w-full sm:w-full">
                 <TabsTrigger value="editor" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Content</TabsTrigger>
                 <TabsTrigger value="design" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Design</TabsTrigger>
-                <TabsTrigger value="analyser" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Analyser</TabsTrigger>
-                <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap" onClick={() => setJobMatchEditing(false)}>Job Match</TabsTrigger>
+                <TabsTrigger value="analyser" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm gap-1.5">
+                  ATS
+                  {latestReport?.score != null && (
+                    <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${latestReport.score >= 70 ? "bg-green-500" : latestReport.score >= 40 ? "bg-yellow-500" : "bg-red-500"}`}>
+                      {latestReport.score}
+                    </span>
+                  )}
+                </TabsTrigger>
+                <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5" onClick={() => setJobMatchEditing(false)}>
+                  Match
+                  {jobMatchResult?.match_score != null && (
+                    <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${jobMatchResult.match_score >= 70 ? "bg-green-500" : jobMatchResult.match_score >= 40 ? "bg-yellow-500" : "bg-red-500"}`}>
+                      {jobMatchResult.match_score}
+                    </span>
+                  )}
+                </TabsTrigger>
                 <TabsTrigger value="cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
               </TabsList>
             </div>

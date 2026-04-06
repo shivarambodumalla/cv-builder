@@ -257,7 +257,7 @@ export function UsageHistory() {
                   const max = Math.max(...Object.values(data.byHour), 1);
                   const pct = (count / max) * 100;
                   return (
-                    <div key={h} className="flex-1 flex flex-col items-center gap-0.5" title={`${h}:00 UTC — ${count} calls`}>
+                    <div key={h} className="flex-1 flex flex-col items-center gap-0.5" title={`${h}:00 UTC | ${count} calls`}>
                       <div className="w-full bg-primary/70 rounded-sm transition-all" style={{ height: `${Math.max(pct, 2)}%` }} />
                       {h % 6 === 0 && <span className="text-[8px] text-muted-foreground">{h}</span>}
                     </div>

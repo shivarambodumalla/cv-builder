@@ -38,7 +38,7 @@ export default async function AnalyticsPage() {
     <div className="space-y-10">
       <h1 className="text-2xl font-bold">AI Analytics</h1>
 
-      {/* Today — real-time, auto-refreshes every 30s */}
+      {/* Today | real-time, auto-refreshes every 30s */}
       <TodayOverview initial={{
         calls: today.length,
         users: new Set(today.map((r) => r.user_id).filter(Boolean)).size,

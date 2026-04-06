@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CVEdge — AI-Powered CV Builder",
+  title: "CVEdge | AI-Powered CV Builder",
   description: "Build professional CVs with AI assistance",
   icons: {
     icon: [

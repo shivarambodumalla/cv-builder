@@ -45,11 +45,11 @@ interface AtsPanelProps {
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
 
-const ANALYSIS_STEPS: { key: AnalysisStep; label: string; icon: React.ElementType }[] = [
-  { key: "reading", label: "Reading your CV", icon: FileText },
-  { key: "keywords", label: "Checking keywords for your role", icon: Search },
-  { key: "scoring", label: "AI is scoring your resume", icon: Brain },
-  { key: "done", label: "Analysis complete", icon: CheckCircle2 },
+const ANALYSIS_STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.ElementType }[] = [
+  { key: "reading", label: "Reading your CV", sub: "Parsing sections and content", icon: FileText },
+  { key: "keywords", label: "Checking keywords", sub: "Matching against role-specific lists", icon: Search },
+  { key: "scoring", label: "AI is scoring", sub: "Evaluating bullets, formatting, impact", icon: Brain },
+  { key: "done", label: "Analysis complete!", sub: "Your ATS report is ready", icon: CheckCircle2 },
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -62,9 +62,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const confidenceColors: Record<string, string> = {
-  high: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400",
-  medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400",
-  low: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400",
+  high: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  low: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
 function scoreColor(score: number) {
@@ -384,39 +384,64 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
   if (loading) {
     const stepIndex = ANALYSIS_STEPS.findIndex((s) => s.key === currentStep);
+    const progress = Math.min(100, ((stepIndex + 0.5) / ANALYSIS_STEPS.length) * 100);
+
     return (
-      <div className="flex flex-col items-center gap-6 py-8">
-        <div className="relative flex h-16 w-16 items-center justify-center">
-          <div className="absolute inset-0 animate-spin rounded-full border-2 border-muted border-t-primary" />
-          <Brain className="h-7 w-7 text-primary" />
+      <div className="flex flex-col items-center gap-8 py-10">
+        {/* Animated icon */}
+        <div className="relative flex h-24 w-24 items-center justify-center">
+          <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-muted border-t-primary" style={{ animationDuration: "1.5s" }} />
+          <div className="absolute inset-3 animate-spin rounded-full border-2 border-muted border-b-primary/50" style={{ animationDuration: "2.5s", animationDirection: "reverse" }} />
+          <Brain className="h-9 w-9 text-primary" />
         </div>
-        <div className="w-full max-w-xs space-y-2">
+
+        {/* Progress bar */}
+        <div className="w-full max-w-sm">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full rounded-full bg-primary transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+
+        {/* Steps */}
+        <div className="w-full space-y-2">
           {ANALYSIS_STEPS.map((step, i) => {
             const StepIcon = step.icon;
             const isActive = i === stepIndex;
             const isDone = i < stepIndex;
+
             return (
               <div
                 key={step.key}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-500",
-                  isActive && "bg-primary/10 text-foreground font-semibold",
-                  isDone && "text-muted-foreground font-medium",
-                  !isActive && !isDone && "text-muted-foreground/50 font-medium"
+                  "flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-500",
+                  isActive && "bg-primary/10 shadow-sm",
+                  isDone && "opacity-60",
+                  !isActive && !isDone && "opacity-25"
                 )}
               >
-                {isDone ? (
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
-                ) : isActive ? (
-                  <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
-                ) : (
-                  <StepIcon className="h-4 w-4 shrink-0" />
-                )}
-                {step.label}
+                <div className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all",
+                  isDone && "bg-green-100 dark:bg-green-900/30",
+                  isActive && "bg-primary/20",
+                  !isActive && !isDone && "bg-muted"
+                )}>
+                  {isDone ? (
+                    <CheckCircle2 className="h-4.5 w-4.5 text-green-600 dark:text-green-400" />
+                  ) : isActive ? (
+                    <Loader2 className="h-4.5 w-4.5 animate-spin text-primary" />
+                  ) : (
+                    <StepIcon className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <p className={cn("text-sm font-semibold", isActive ? "text-foreground" : "text-muted-foreground")}>{step.label}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">{step.sub}</p>
+                </div>
               </div>
             );
           })}
         </div>
+
         <p className="text-xs text-muted-foreground">This usually takes 10–20 seconds</p>
       </div>
     );
@@ -445,13 +470,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       {/* Title bar */}
       <div className="flex items-center gap-2">
         <h3 className="text-base sm:text-lg font-semibold">ATS Analysis</h3>
-        {report && isEstimated && (
-          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-400">Estimated</span>
-        )}
-        {report && !isEstimated && !cvChanged && (
-          <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:bg-green-950 dark:text-green-400">Verified</span>
-        )}
-        {report && !isEstimated && cvChanged && (
+        {report && cvChanged && (
           <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400">Outdated</span>
         )}
         {report?.created_at && (
@@ -501,16 +520,30 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
       {report && (
         <>
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-3">
             <ScoreRing score={displayScore} />
+            {displayScore >= 80 && (
+              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                Interview Ready
+              </span>
+            )}
+            {displayScore >= 50 && displayScore < 80 && (
+              <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                Needs Improvement
+              </span>
+            )}
+            {displayScore > 0 && displayScore < 50 && (
+              <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                Major Issues Found
+              </span>
+            )}
             <p className="text-xs text-center text-muted-foreground max-w-xs">
               {getScoreMilestone(displayScore).message}
             </p>
-            <span className={cn("text-[10px]", confidenceColors[report.confidence ?? "medium"] || "")}>
+            <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", confidenceColors[report.confidence ?? "medium"] || "")}>
               {report.confidence ?? "medium"} confidence
             </span>
-            {/* CTA below score */}
-            {(isEstimated || cvChanged) && (
+            {cvChanged && (
               <Button variant="outline" size="sm" onClick={handleAnalyse} disabled={loading} className="mt-1 text-xs">
                 <RefreshCw className="mr-1.5 h-3 w-3" /> Re-analyse
               </Button>

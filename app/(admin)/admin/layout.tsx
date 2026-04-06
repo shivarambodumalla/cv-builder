@@ -23,7 +23,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar — desktop only */}
+      {/* Sidebar | desktop only */}
       <aside className="hidden lg:block w-64 shrink-0 border-r bg-muted/30">
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/admin" className="text-lg font-bold">

@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Metadata } from "next";
 import { CampaignManager } from "./campaign-manager";
 
-export const metadata: Metadata = { title: "Campaigns — CVEdge Admin" };
+export const metadata: Metadata = { title: "Campaigns | CVEdge Admin" };
 export const dynamic = "force-dynamic";
 
 export default async function CampaignsPage() {
