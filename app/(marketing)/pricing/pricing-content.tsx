@@ -3,20 +3,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type BillingPeriod = "weekly" | "monthly" | "yearly";
 
-const PRO_PRICING: Record<BillingPeriod, { original: number; sale: number; save: string; perWeek?: string; period: string; urgency?: string }> = {
-  weekly: { original: 10, sale: 5, save: "SAVE 50%", period: "/week" },
-  monthly: { original: 35, sale: 14, save: "SAVE 60%", perWeek: "$3.50/week", period: "/month" },
-  yearly: { original: 420, sale: 120, save: "SAVE 71%", perWeek: "$2.30/week", period: "/year", urgency: "Launch pricing — increases soon" },
-};
+const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: number; per: string; perWeek: string; savePercent: number; popular?: boolean }[] = [
+  { period: "weekly", label: "Weekly", original: 10, sale: 5, per: "week", perWeek: "$5.00", savePercent: 50 },
+  { period: "monthly", label: "Monthly", original: 35, sale: 14, per: "month", perWeek: "$3.50", savePercent: 60 },
+  { period: "yearly", label: "Yearly", original: 420, sale: 120, per: "year", perWeek: "$2.30", savePercent: 71, popular: true },
+];
 
 const FREE_FEATURES = [
   "1 CV",
-  "3 ATS scans/month",
+  "3 ATS scans per week",
   "Basic ATS report",
   "1 template (Classic)",
   "PDF export (watermarked)",
@@ -25,14 +25,11 @@ const FREE_FEATURES = [
 const PRO_FEATURES = [
   "Unlimited CVs",
   "Unlimited ATS scans",
-  "Full ATS report + fixes",
-  "AI bullet rewrites (50/month)",
-  "5 templates",
-  "Job matcher (15/month)",
-  "Cover letter AI (10/month)",
-  "Clean PDF + HTML export",
-  "CV version history",
-  "Priority support",
+  "Unlimited job matches",
+  "Unlimited cover letters",
+  "Unlimited AI rewrites",
+  "All 5 templates",
+  "Clean PDF exports",
 ];
 
 const FAQS = [
@@ -45,36 +42,11 @@ const FAQS = [
 
 export function PricingContent() {
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
-  const pro = PRO_PRICING[billing];
+  const selected = OPTIONS.find((o) => o.period === billing)!;
 
   return (
     <>
-      {/* Billing toggle */}
-      <div className="mb-12 flex items-center justify-center">
-        <div className="inline-flex rounded-lg bg-muted p-1">
-          {(["weekly", "monthly", "yearly"] as const).map((period) => (
-            <button
-              key={period}
-              type="button"
-              onClick={() => setBilling(period)}
-              className={cn(
-                "relative rounded-md px-4 py-2 text-sm font-medium transition-colors",
-                billing === period
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {period === "yearly" ? "Yearly" : period === "monthly" ? "Monthly" : "Weekly"}
-              {period === "yearly" && (
-                <span className="ml-1.5 text-[10px]">Best value</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Plan cards */}
-      <div className="mx-auto mb-16 grid max-w-4xl gap-6 lg:grid-cols-2">
+      <div className="mx-auto max-w-4xl grid gap-6 lg:grid-cols-2 mb-16">
         {/* Free card */}
         <div className="rounded-xl border bg-card p-6 sm:p-8 flex flex-col">
           <span className="mb-4 inline-block w-fit rounded-full bg-muted px-3 py-1 text-xs font-medium">Forever free</span>
@@ -95,66 +67,89 @@ export function PricingContent() {
         </div>
 
         {/* Pro card */}
-        <div className="rounded-xl border-2 border-primary bg-card p-6 sm:p-8 flex flex-col relative">
-          <span className="mb-4 inline-block w-fit rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-            Most popular
-          </span>
-          <div className="mb-2">
-            <span className="text-lg text-muted-foreground line-through mr-2">${pro.original}</span>
-            <span className="text-4xl font-bold">${pro.sale}</span>
-            <span className="text-muted-foreground">{pro.period}</span>
+        <div className="rounded-xl border-2 border-primary bg-card p-6 sm:p-8 flex flex-col">
+          <div className="flex items-center gap-2 mb-4">
+            <Crown className="h-5 w-5 text-amber-500" />
+            <span className="text-lg font-bold">Pro</span>
           </div>
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700 dark:bg-green-900 dark:text-green-300">
-              {pro.save}{billing === "yearly" ? " " : ""}
-            </span>
-            {pro.perWeek && (
-              <span className="text-xs text-muted-foreground">{pro.perWeek}</span>
-            )}
-          </div>
-          {pro.urgency && (
-            <p className="mb-4 text-xs font-medium text-amber-600 dark:text-amber-400">{pro.urgency}</p>
-          )}
-          <ul className="mb-8 flex-1 space-y-3">
-            {PRO_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                {f}
-              </li>
-            ))}
-          </ul>
-          <Button className="w-full" asChild>
-            <Link href="#">Get Pro &rarr;</Link>
-          </Button>
-          <p className="mt-3 text-center text-xs text-muted-foreground">No commitment. Cancel anytime.</p>
-        </div>
-      </div>
 
-      {/* Per-week comparison */}
-      <div className="mx-auto mb-20 max-w-2xl">
-        <h3 className="mb-4 text-center text-sm font-semibold text-muted-foreground uppercase tracking-wider">Cost per week</h3>
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="rounded-lg border p-4">
-            <p className="text-lg font-bold">$5.00</p>
-            <p className="text-xs text-muted-foreground">Weekly</p>
+          {/* Pricing rows */}
+          <div className="space-y-2.5 mb-6">
+            {OPTIONS.map((opt) => {
+              const isSelected = billing === opt.period;
+              return (
+                <button
+                  key={opt.period}
+                  type="button"
+                  onClick={() => setBilling(opt.period)}
+                  className={cn(
+                    "relative flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-all",
+                    isSelected
+                      ? "border-primary bg-primary/5 shadow-sm"
+                      : "border-border hover:border-muted-foreground/40"
+                  )}
+                >
+                  <div className={cn(
+                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                    isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                  )}>
+                    {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold">{opt.label}</span>
+                      {opt.popular && (
+                        <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                          BEST VALUE
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{opt.perWeek}/week</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xs text-muted-foreground/50 line-through">${opt.original}</span>
+                      <span className="text-xl font-bold">${opt.sale}</span>
+                    </div>
+                    <span className="inline-block rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900 dark:text-green-300 leading-none mt-0.5">
+                      SAVE {opt.savePercent}%
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
-          <div className="rounded-lg border p-4">
-            <p className="text-lg font-bold">$3.50</p>
-            <p className="text-xs text-muted-foreground">Monthly</p>
-            <p className="mt-1 text-[10px] font-medium text-green-600">better</p>
+
+          <p className="text-[10px] text-muted-foreground/60 text-center mb-4">
+            Prices exclude applicable taxes (GST/VAT). Tax will be calculated at checkout.
+          </p>
+
+          {/* Pro features */}
+          <div className="mb-6">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Everything included</p>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+              {PRO_FEATURES.map((f) => (
+                <div key={f} className="flex items-center gap-1.5 text-[13px]">
+                  <Check className="h-3.5 w-3.5 shrink-0 text-green-500" />
+                  <span>{f}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="rounded-lg border-2 border-primary p-4">
-            <p className="text-lg font-bold">$2.30</p>
-            <p className="text-xs text-muted-foreground">Yearly</p>
-            <p className="mt-1 text-[10px] font-bold text-green-600">best</p>
-          </div>
+
+          <Button className="w-full h-12 text-base font-semibold shadow-lg shadow-primary/20" asChild>
+            <Link href="#">Get Pro &mdash; ${selected.sale}/{selected.per}</Link>
+          </Button>
+          <p className="mt-3 text-center text-[11px] text-muted-foreground">
+            7-day money back guarantee &middot; Cancel anytime
+          </p>
         </div>
       </div>
 
       {/* FAQ */}
       <div className="mx-auto max-w-2xl">
         <h2 className="mb-8 text-center text-2xl font-bold tracking-tight">Frequently asked questions</h2>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {FAQS.map((faq) => (
             <FaqItem key={faq.q} question={faq.q} answer={faq.a} />
           ))}

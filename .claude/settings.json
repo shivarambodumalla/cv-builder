@@ -4,7 +4,8 @@
       "Bash(node -e ':*)",
       "Bash(grep -o \"content: \\\\`\" scripts/seed-prompts.ts)",
       "Bash(grep -E \"\\\\.\\(ts|tsx|js\\)$\")",
-      "Bash(grep -A 30 \"create table.*cvs\" /Users/sivaramireddy/work/cv-builder/supabase/migrations/*.sql)"
+      "Bash(grep -A 30 \"create table.*cvs\" /Users/sivaramireddy/work/cv-builder/supabase/migrations/*.sql)",
+      "Bash(curl -s http://localhost:3000/api/cv/analyse -X POST -H \"Content-Type: application/json\" -d '{\"cv_id\":\"test\"}')"
     ]
   }
 }

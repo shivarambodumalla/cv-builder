@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #0d1117;
-    --card: #f6f8fa;
-    --card-foreground: #0d1117;
-    --popover: #f6f8fa;
-    --popover-foreground: #0d1117;
-    --primary: #0891b2;
+    --background: #f5f0e8;
+    --foreground: #2d3a2e;
+    --card: #ece5d8;
+    --card-foreground: #2d3a2e;
+    --popover: #ece5d8;
+    --popover-foreground: #1a2e1e;
+    --primary: #1a7a6d;
     --primary-foreground: #ffffff;
-    --secondary: #f1f5f9;
-    --secondary-foreground: #0d1117;
-    --muted: #f1f5f9;
-    --muted-foreground: #64748b;
-    --accent: #0891b2;
-    --accent-foreground: #ffffff;
-    --destructive: #dc2626;
+    --secondary: #d4f0e8;
+    --secondary-foreground: #1a5c52;
+    --muted: #ece5d8;
+    --muted-foreground: #6b5e4f;
+    --accent: #d4f0e8;
+    --accent-foreground: #1a5c52;
+    --destructive: #8b2525;
     --destructive-foreground: #ffffff;
-    --border: #e2e8f0;
-    --input: #e2e8f0;
-    --ring: #0891b2;
+    --border: #d9cfc0;
+    --input: #d9cfc0;
+    --ring: #1a7a6d;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: #0d1117;
-    --foreground: #e6edf3;
-    --card: #161b22;
-    --card-foreground: #e6edf3;
-    --popover: #161b22;
-    --popover-foreground: #e6edf3;
-    --primary: #06b6d4;
-    --primary-foreground: #000000;
-    --secondary: #161b22;
-    --secondary-foreground: #e6edf3;
-    --muted: #30363d;
-    --muted-foreground: #8b949e;
-    --accent: #06b6d4;
-    --accent-foreground: #000000;
-    --destructive: #f85149;
+    --background: #141f1e;
+    --foreground: #e0f0ec;
+    --card: #1a2b28;
+    --card-foreground: #e0f0ec;
+    --popover: #1a2b28;
+    --popover-foreground: #e8f5f0;
+    --primary: #1a7a6d;
+    --primary-foreground: #ffffff;
+    --secondary: #1e3530;
+    --secondary-foreground: #e8f5f0;
+    --muted: #243a36;
+    --muted-foreground: #7a8fa0;
+    --accent: #1a7a6d;
+    --accent-foreground: #e8f5f0;
+    --destructive: #6b2020;
     --destructive-foreground: #ffffff;
-    --border: #21262d;
-    --input: #21262d;
-    --ring: #06b6d4;
+    --border: #243a36;
+    --input: #243a36;
+    --ring: #1a7a6d;
   }
 }
 
@@ -55,6 +55,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    letter-spacing: -0.01em;
   }
 }
 

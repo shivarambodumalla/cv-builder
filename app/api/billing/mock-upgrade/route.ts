@@ -43,11 +43,12 @@ export async function POST(request: NextRequest) {
     subscription_period: period,
     subscription_id: subId,
     current_period_end: periodEnd.toISOString(),
-    ats_scans_this_month: 0,
-    job_matches_this_month: 0,
-    cover_letters_this_month: 0,
-    ai_rewrites_this_month: 0,
-    pdf_downloads_this_week: 0,
+    ats_scans_this_window: 0,
+    job_matches_this_window: 0,
+    cover_letters_this_window: 0,
+    ai_rewrites_this_window: 0,
+    pdf_downloads_this_window: 0,
+    usage_window_start: new Date().toISOString(),
   }).eq("id", user.id);
 
   await admin.from("subscription_history").insert({

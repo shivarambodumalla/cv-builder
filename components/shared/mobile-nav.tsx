@@ -15,9 +15,6 @@ export function MobileNav() {
       </Button>
       {open && (
         <div className="absolute inset-x-0 top-14 z-50 border-b bg-background p-4 space-y-3 animate-in slide-in-from-top-2">
-          <Link href="/features" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors">
-            Features
-          </Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors">
             Pricing
           </Link>

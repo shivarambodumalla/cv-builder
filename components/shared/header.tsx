@@ -11,9 +11,6 @@ export function Header() {
           <Image src="/img/CV-Edge-Logo.svg" alt="CVedge" width={100} height={24} priority className="sm:w-[130px]" />
         </Link>
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Features
-          </Link>
           <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Pricing
           </Link>
