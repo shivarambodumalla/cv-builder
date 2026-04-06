@@ -108,7 +108,7 @@ export async function checkAndConsumeLimit(
       })
       .eq("id", userId);
 
-    for (const col of Object.values(COLUMN_MAP)) {
+    for (const { column: col } of Object.values(COLUMN_MAP)) {
       profile[col] = 0;
     }
     profile.usage_window_start = new Date().toISOString();
