@@ -15,13 +15,15 @@ export type UpgradeTrigger =
 interface UpgradeModalContextType {
   isOpen: boolean;
   trigger: UpgradeTrigger;
-  openUpgradeModal: (trigger: UpgradeTrigger) => void;
+  daysUntilReset: number | null;
+  openUpgradeModal: (trigger: UpgradeTrigger, daysUntilReset?: number) => void;
   closeUpgradeModal: () => void;
 }
 
 const UpgradeModalContext = createContext<UpgradeModalContextType>({
   isOpen: false,
   trigger: "generic",
+  daysUntilReset: null,
   openUpgradeModal: () => {},
   closeUpgradeModal: () => {},
 });
@@ -29,9 +31,11 @@ const UpgradeModalContext = createContext<UpgradeModalContextType>({
 export function UpgradeModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [trigger, setTrigger] = useState<UpgradeTrigger>("generic");
+  const [daysUntilReset, setDaysUntilReset] = useState<number | null>(null);
 
-  function openUpgradeModal(t: UpgradeTrigger) {
+  function openUpgradeModal(t: UpgradeTrigger, days?: number) {
     setTrigger(t);
+    setDaysUntilReset(days ?? null);
     setIsOpen(true);
   }
 
@@ -40,7 +44,7 @@ export function UpgradeModalProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <UpgradeModalContext.Provider value={{ isOpen, trigger, openUpgradeModal, closeUpgradeModal }}>
+    <UpgradeModalContext.Provider value={{ isOpen, trigger, daysUntilReset, openUpgradeModal, closeUpgradeModal }}>
       {children}
     </UpgradeModalContext.Provider>
   );

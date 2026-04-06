@@ -265,11 +265,13 @@ Return ONLY the refined text. No explanation. No quotes. Single line.`,
 ];
 
 const AI_SETTINGS = [
-  { feature: "cv_parse", max_tokens: 8192, temperature: 0, enabled: true },
-  { feature: "job_match", max_tokens: 4096, temperature: 0, enabled: true },
-  { feature: "cover_letter", max_tokens: 4096, temperature: 0.7, enabled: true },
-  { feature: "keyword_generate", max_tokens: 4096, temperature: 0, enabled: true },
-  { feature: "bullet_rewrite", max_tokens: 2048, temperature: 0.5, enabled: true },
+  { feature: "cv_parse", max_tokens: 4096, temperature: 0, enabled: true },
+  { feature: "ats_analysis", max_tokens: 2048, temperature: 0, enabled: true },
+  { feature: "job_match", max_tokens: 2048, temperature: 0, enabled: true },
+  { feature: "cover_letter", max_tokens: 1024, temperature: 0.7, enabled: true },
+  { feature: "keyword_generate", max_tokens: 512, temperature: 0, enabled: true },
+  { feature: "bullet_rewrite", max_tokens: 512, temperature: 0.5, enabled: true },
+  { feature: "bullet_rewrite_debate", max_tokens: 512, temperature: 0.5, enabled: true },
 ];
 
 async function seed() {

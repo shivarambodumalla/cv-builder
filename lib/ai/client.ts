@@ -56,7 +56,7 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
   const model = genAI.getGenerativeModel({
     model: modelName,
     generationConfig: {
-      maxOutputTokens: 8192,
+      maxOutputTokens: settings.max_tokens || 4096,
       temperature: settings.temperature,
       // @ts-expect-error - thinkingConfig not in types yet
       thinkingConfig: { thinkingBudget: 0 },

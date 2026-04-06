@@ -218,18 +218,21 @@ function inferDomainFromText(role: string): string | null {
   return null;
 }
 
-async function generateKeywordList(role: string, domain: string): Promise<KeywordListRow | null> {
+async function generateKeywordList(role: string, domain: string, caller?: { userId?: string; ip?: string }): Promise<KeywordListRow | null> {
   const result = await callAI({
     promptName: "keyword_generate_v1",
     variables: { role, domain },
     feature: "keyword_generate",
+    userId: caller?.userId,
+    ip: caller?.ip,
   });
   return result as KeywordListRow;
 }
 
 async function fetchKeywordList(
   supabase: ReturnType<typeof createAdminClient>,
-  targetRole: string
+  targetRole: string,
+  caller?: { userId?: string; ip?: string }
 ): Promise<KeywordListRow | null> {
   const { data: exact } = await supabase
     .from("keyword_lists")
@@ -280,7 +283,7 @@ async function fetchKeywordList(
 
   try {
     const genDomain = domain || inferredDomain || "General";
-    const generated = await generateKeywordList(targetRole, genDomain);
+    const generated = await generateKeywordList(targetRole, genDomain, caller);
     if (generated) {
       await supabase.from("keyword_lists").upsert({
         role: targetRole,
@@ -387,7 +390,7 @@ export async function analyseCV(cvId: string, caller?: { userId?: string; ip?: s
   const targetTitle = content.targetTitle?.title || "General";
   const inferredIndustry = inferIndustry(targetTitle);
 
-  let keywordList = await fetchKeywordList(supabase, targetTitle);
+  let keywordList = await fetchKeywordList(supabase, targetTitle, caller);
 
   if (!keywordList) {
     keywordList = {

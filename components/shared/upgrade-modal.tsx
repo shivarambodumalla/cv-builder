@@ -1,179 +1,199 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Crown, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
-import { createClient } from "@/lib/supabase/client";
 
 type BillingPeriod = "weekly" | "monthly" | "yearly";
 
-const PRICING: Record<BillingPeriod, { original: number; sale: number; save: string; perWeek?: string; period: string; urgency?: string }> = {
-  weekly: { original: 10, sale: 5, save: "50%", period: "/week" },
-  monthly: { original: 35, sale: 14, save: "60%", perWeek: "$3.50/week", period: "/month" },
-  yearly: { original: 420, sale: 120, save: "71%", perWeek: "$2.30/week", period: "/year", urgency: "Launch pricing — increases soon" },
+const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: number; per: string; perWeek: string; savePercent: number; popular?: boolean }[] = [
+  { period: "weekly", label: "Weekly", original: 10, sale: 5, per: "week", perWeek: "$5.00", savePercent: 50 },
+  { period: "monthly", label: "Monthly", original: 35, sale: 14, per: "month", perWeek: "$3.50", savePercent: 60 },
+  { period: "yearly", label: "Yearly", original: 420, sale: 120, per: "year", perWeek: "$2.30", savePercent: 71, popular: true },
+];
+
+const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
+  download: { title: "Download your CV", subtitle: "Clean, watermark-free PDFs anytime", icon: "zap" },
+  ats_limit: { title: "You need more ATS scans", subtitle: "Unlimited analysis to fix every issue", icon: "zap" },
+  job_match_limit: { title: "Unlock job matching", subtitle: "Match your CV to any job description", icon: "sparkles" },
+  cover_letter_limit: { title: "Generate more cover letters", subtitle: "Tailored letters for every application", icon: "sparkles" },
+  ai_rewrite_limit: { title: "More AI rewrites", subtitle: "Polish every bullet point with AI", icon: "sparkles" },
+  template_locked: { title: "Unlock all templates", subtitle: "5 professional templates to stand out", icon: "crown" },
+  cv_limit: { title: "Create more CVs", subtitle: "Unlimited CVs for different roles", icon: "crown" },
+  generic: { title: "Go Pro", subtitle: "Everything you need to land interviews", icon: "crown" },
 };
 
-const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string }> = {
-  download: { title: "Download your CV", subtitle: "Upgrade to download clean, watermark-free PDFs anytime" },
-  ats_limit: { title: "You've used all free ATS scans", subtitle: "Get unlimited ATS analysis and fix every issue holding you back" },
-  job_match_limit: { title: "Unlock job matching", subtitle: "Match your CV to any job description and close the gap fast" },
-  cover_letter_limit: { title: "Generate more cover letters", subtitle: "Create tailored cover letters for every application" },
-  ai_rewrite_limit: { title: "More AI rewrites", subtitle: "Polish every bullet point with AI-powered suggestions" },
-  template_locked: { title: "Unlock all templates", subtitle: "Access all 5 professional templates to stand out" },
-  cv_limit: { title: "Create more CVs", subtitle: "Build unlimited CVs for different roles and opportunities" },
-  generic: { title: "Upgrade to CVEdge Pro", subtitle: "Unlock the full power of AI-driven CV optimization" },
-};
-
-const FEATURES_BY_TRIGGER: Record<UpgradeTrigger, string[]> = {
-  ats_limit: ["Unlimited ATS scans", "100 job matches/month", "AI bullet rewrites (200/month)", "All 5 templates", "Clean PDF downloads", "100 cover letters/month"],
-  job_match_limit: ["100 job matches/month", "Unlimited ATS scans", "100 cover letters/month", "AI bullet rewrites (200/month)", "All 5 templates", "Clean PDF downloads"],
-  cover_letter_limit: ["100 cover letters/month", "100 job matches/month", "Unlimited ATS scans", "AI bullet rewrites (200/month)", "All 5 templates", "Clean PDF downloads"],
-  ai_rewrite_limit: ["AI bullet rewrites (200/month)", "Unlimited ATS scans", "100 job matches/month", "100 cover letters/month", "All 5 templates", "Clean PDF downloads"],
-  template_locked: ["All 5 templates", "Unlimited ATS scans", "100 job matches/month", "Clean PDF downloads", "AI bullet rewrites (200/month)", "100 cover letters/month"],
-  download: ["Clean PDF downloads", "Unlimited ATS scans", "All 5 templates", "100 job matches/month", "AI bullet rewrites (200/month)", "100 cover letters/month"],
-  cv_limit: ["Unlimited CVs", "Unlimited ATS scans", "100 job matches/month", "All 5 templates", "Clean PDF downloads", "100 cover letters/month"],
-  generic: ["Unlimited ATS scans", "100 job matches/month", "100 cover letters/month", "AI bullet rewrites (200/month)", "All 5 templates", "Clean PDF downloads"],
-};
+const FEATURES = [
+  "Unlimited ATS scans",
+  "Unlimited job matches",
+  "Unlimited cover letters",
+  "Unlimited AI rewrites",
+  "All 5 templates",
+  "Clean PDF exports",
+];
 
 export function UpgradeModal() {
-  const { isOpen, trigger, closeUpgradeModal } = useUpgradeModal();
+  const { isOpen, trigger, daysUntilReset, closeUpgradeModal } = useUpgradeModal();
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
-  const [, setUserEmail] = useState("");
-  const [, setUserId] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUserEmail(user.email || "");
-        setUserId(user.id);
-      }
-    });
-  }, []);
-
-  // Reset success when modal reopens
-  useEffect(() => {
-    if (isOpen) setSuccess(false);
+    if (isOpen) { setSuccess(false); setBilling("yearly"); }
   }, [isOpen]);
 
-  const pro = PRICING[billing];
   const headline = HEADLINES[trigger];
-  const features = FEATURES_BY_TRIGGER[trigger];
+  const selected = OPTIONS.find((o) => o.period === billing)!;
+  const HeadlineIcon = headline.icon === "crown" ? Crown : headline.icon === "zap" ? Zap : Sparkles;
 
   async function handleCheckout() {
     setCheckoutLoading(true);
     try {
-      // TODO: Replace with real Lemon Squeezy checkout when ready
-      // For now: mock purchase — directly upgrade user in DB
-      const res = await fetch("/api/billing/mock-upgrade", {
+      // Try real Lemon Squeezy checkout first
+      const res = await fetch("/api/billing/checkout-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ period: billing }),
       });
-      if (res.ok) {
-        setSuccess(true);
-        // Refresh page data after short delay
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+      const data = await res.json();
+
+      if (data.url && data.url !== "/pricing") {
+        // Real checkout URL — redirect to Lemon Squeezy
+        window.location.href = data.url;
+        return;
       }
-    } catch {
-      // ignore
-    }
+
+      // Fallback: mock upgrade for development/testing
+      const mockRes = await fetch("/api/billing/mock-upgrade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ period: billing }),
+      });
+      if (mockRes.ok) {
+        setSuccess(true);
+        setTimeout(() => window.location.reload(), 2000);
+      }
+    } catch { /* ignore */ }
     setCheckoutLoading(false);
   }
 
   return (
     <Sheet open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
-      <SheetContent className="w-full sm:max-w-[480px] overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-[440px] overflow-y-auto p-0">
         {success ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-20">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-950">
-              <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
+          <div className="flex flex-col items-center justify-center gap-4 py-24 px-6">
+            <div className="relative">
+              <div className="absolute inset-0 animate-ping rounded-full bg-green-400/30" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-green-500">
+                <Check className="h-8 w-8 text-white" />
+              </div>
             </div>
-            <h2 className="text-xl font-bold">You&apos;re on Pro!</h2>
-            <p className="text-sm text-muted-foreground text-center max-w-xs">
+            <h2 className="text-2xl font-bold">You&apos;re on Pro!</h2>
+            <p className="text-sm text-muted-foreground text-center">
               All features unlocked. Refreshing...
             </p>
           </div>
         ) : (
-        <>
-        <SheetHeader className="pr-6">
-          <SheetTitle className="text-xl">{headline.title}</SheetTitle>
-          <p className="text-sm text-muted-foreground">{headline.subtitle}</p>
-        </SheetHeader>
-
-        <div className="mt-6 space-y-6 px-1">
-          {/* Billing toggle */}
-          <div className="flex rounded-lg bg-muted p-1">
-            {(["weekly", "monthly", "yearly"] as const).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setBilling(p)}
-                className={cn(
-                  "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  billing === p
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {p === "yearly" ? "Yearly" : p === "monthly" ? "Monthly" : "Weekly"}
-                {p === "yearly" && <span className="ml-1 text-[10px]">Best</span>}
-              </button>
-            ))}
-          </div>
-
-          {/* Price */}
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-lg text-muted-foreground line-through">${pro.original}</span>
-              <span className="text-3xl font-bold">${pro.sale}</span>
-              <span className="text-muted-foreground">{pro.period}</span>
+        <div className="flex flex-col">
+          {/* Header */}
+          <div className="px-6 pt-8 pb-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <HeadlineIcon className="h-5 w-5 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight">{headline.title}</h2>
             </div>
-            <div className="mt-1 flex items-center justify-center gap-2">
-              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700 dark:bg-green-900 dark:text-green-300">
-                SAVE {pro.save}
-              </span>
-              {pro.perWeek && (
-                <span className="text-xs text-muted-foreground">{pro.perWeek}</span>
-              )}
+            <p className="text-sm text-muted-foreground">{headline.subtitle}</p>
+          </div>
+
+          <div className="px-6 pb-6 space-y-5">
+            {/* Pricing rows — all with borders */}
+            <div className="space-y-2.5">
+              {OPTIONS.map((opt) => {
+                const isSelected = billing === opt.period;
+                return (
+                  <button
+                    key={opt.period}
+                    type="button"
+                    onClick={() => setBilling(opt.period)}
+                    className={cn(
+                      "relative flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3.5 text-left transition-all",
+                      isSelected
+                        ? "border-primary bg-primary/5 shadow-sm"
+                        : "border-border hover:border-muted-foreground/40"
+                    )}
+                  >
+                    {/* Radio */}
+                    <div className={cn(
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                      isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                    )}>
+                      {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                    </div>
+
+                    {/* Label */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold">{opt.label}</span>
+                        {opt.popular && (
+                          <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                            BEST VALUE
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">{opt.perWeek}/week</p>
+                    </div>
+
+                    {/* Price */}
+                    <div className="text-right shrink-0">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-xs text-muted-foreground/50 line-through">${opt.original}</span>
+                        <span className="text-xl font-bold">${opt.sale}</span>
+                      </div>
+                      <span className="inline-block rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900 dark:text-green-300 leading-none mt-0.5">
+                        SAVE {opt.savePercent}%
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-            {pro.urgency && (
-              <p className="mt-2 text-xs font-medium text-amber-600 dark:text-amber-400">{pro.urgency}</p>
-            )}
-          </div>
 
-          {/* Features */}
-          <ul className="space-y-2.5">
-            {features.map((f) => (
-              <li key={f} className="flex items-center gap-2 text-sm">
-                <Check className="h-4 w-4 shrink-0 text-primary" />
-                {f}
-              </li>
-            ))}
-          </ul>
+            {/* Tax note */}
+            <p className="text-[10px] text-muted-foreground/60 text-center">
+              Prices exclude applicable taxes (GST/VAT). Tax will be calculated at checkout.
+            </p>
 
-          {/* CTA */}
-          <Button className="w-full h-11 text-base" onClick={handleCheckout} disabled={checkoutLoading}>
-            {checkoutLoading ? "Loading..." : "Get Pro →"}
-          </Button>
+            {/* Features */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Everything included</p>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                {FEATURES.map((f) => (
+                  <div key={f} className="flex items-center gap-1.5 text-[13px]">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-green-500" />
+                    <span>{f}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          <div className="text-center space-y-1">
-            <p className="text-xs text-muted-foreground">7-day money back guarantee</p>
-            <p className="text-xs text-muted-foreground">Cancel anytime</p>
-          </div>
+            {/* CTA */}
+            <Button
+              className="w-full h-12 text-base font-semibold shadow-lg shadow-primary/20"
+              onClick={handleCheckout}
+              disabled={checkoutLoading}
+            >
+              {checkoutLoading ? "Processing..." : `Get Pro \u2014 $${selected.sale}/${selected.per}`}
+            </Button>
 
-          <div className="border-t pt-4 text-center text-xs text-muted-foreground">
-            <p>Questions? <a href="mailto:hello@thecvedge.com" className="text-primary hover:underline">hello@thecvedge.com</a></p>
+            <p className="text-center text-[11px] text-muted-foreground">
+              7-day money back guarantee &middot; Cancel anytime
+            </p>
           </div>
         </div>
-        </>
         )}
       </SheetContent>
     </Sheet>

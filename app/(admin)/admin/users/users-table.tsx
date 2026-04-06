@@ -15,7 +15,22 @@ interface Profile {
   email: string;
   full_name: string | null;
   plan: string;
+  subscription_status?: string;
   created_at: string;
+  last_active: string | null;
+}
+
+function timeAgo(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 const planColors: Record<string, string> = {
@@ -67,6 +82,9 @@ export function AdminUsersTable({ users }: { users: Profile[] }) {
                     Plan
                   </th>
                   <th className="px-6 py-3 text-left font-medium text-muted-foreground">
+                    Last Active
+                  </th>
+                  <th className="px-6 py-3 text-left font-medium text-muted-foreground">
                     Joined
                   </th>
                 </tr>
@@ -96,6 +114,9 @@ export function AdminUsersTable({ users }: { users: Profile[] }) {
                       </span>
                     </td>
                     <td className="px-6 py-3 text-muted-foreground">
+                      {user.last_active ? timeAgo(user.last_active) : "Never"}
+                    </td>
+                    <td className="px-6 py-3 text-muted-foreground">
                       {new Date(user.created_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -107,7 +128,7 @@ export function AdminUsersTable({ users }: { users: Profile[] }) {
                 {filtered.length === 0 && (
                   <tr>
                     <td
-                      colSpan={4}
+                      colSpan={5}
                       className="px-6 py-8 text-center text-muted-foreground"
                     >
                       No users match that email.

@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "job_match");
   if (!access.allowed) {
-    return NextResponse.json({ error: "You've used all free job matches this month. Upgrade for more.", code: access.reason, used: access.used, limit: access.limit }, { status: 403 });
+    return NextResponse.json({ error: "You've used all free job matches. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 
   const { data: cv } = await supabase
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Save JD to cvs table if provided
-  const jd = job_description || cv.job_description;
+  const jd = (job_description || cv.job_description || "").slice(0, 3000);
   const comp = company || cv.job_company || "";
   const jTitle = job_title || cv.job_title_target || "";
 

@@ -10,6 +10,10 @@ export const COST_PER_TOKEN: Record<string, { input: number; output: number }> =
 
 let cachedRate: { value: number; fetchedAt: number } | null = null;
 
+export function invalidateExchangeRateCache(): void {
+  cachedRate = null;
+}
+
 async function getExchangeRate(): Promise<number> {
   if (cachedRate && Date.now() - cachedRate.fetchedAt < 3600_000) return cachedRate.value;
   const supabase = createAdminClient();

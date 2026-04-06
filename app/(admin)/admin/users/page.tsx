@@ -13,8 +13,33 @@ export default async function AdminUsersPage() {
 
   const { data: users } = await supabase
     .from("profiles")
-    .select("id, email, full_name, plan, created_at")
+    .select("id, email, full_name, plan, subscription_status, created_at")
     .order("created_at", { ascending: false });
 
-  return <AdminUsersTable users={users ?? []} />;
+  // Get last activity for each user (latest CV updated_at)
+  const userIds = (users ?? []).map((u) => u.id);
+  let lastActivityMap: Record<string, string> = {};
+
+  if (userIds.length > 0) {
+    const { data: cvs } = await supabase
+      .from("cvs")
+      .select("user_id, updated_at")
+      .in("user_id", userIds)
+      .order("updated_at", { ascending: false });
+
+    if (cvs) {
+      for (const cv of cvs) {
+        if (!lastActivityMap[cv.user_id]) {
+          lastActivityMap[cv.user_id] = cv.updated_at;
+        }
+      }
+    }
+  }
+
+  const usersWithActivity = (users ?? []).map((u) => ({
+    ...u,
+    last_active: lastActivityMap[u.id] || null,
+  }));
+
+  return <AdminUsersTable users={usersWithActivity} />;
 }

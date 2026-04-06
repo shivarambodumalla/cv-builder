@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "ai_rewrite");
   if (!access.allowed) {
-    return NextResponse.json({ error: "You've used all free AI rewrites this month. Upgrade for more.", code: access.reason, used: access.used, limit: access.limit }, { status: 403 });
+    return NextResponse.json({ error: "You've used all free AI rewrites. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 
   const { originalText, mode, sectionType, targetRole, isCurrent, missingKeywords, issueDescription, issueFix } = await request.json();

@@ -27,6 +27,7 @@ import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-ana
 import type { ClientScoreResult } from "@/lib/ats/client-scorer";
 import type { ResumeContent } from "@/lib/resume/types";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
+import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
 
@@ -240,12 +241,14 @@ function CategoryRow({
 
 export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept }: AtsPanelProps) {
   const router = useRouter();
+  const { openUpgradeModal } = useUpgradeModal();
   const [report, setReport] = useState<AtsPanelReport | null>(initialReport);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState<AnalysisStep>("reading");
   const [error, setError] = useState("");
   const [errorCode, setErrorCode] = useState("");
   const [errorRole, setErrorRole] = useState("");
+  const [limitDaysReset, setLimitDaysReset] = useState<number | null>(null);
   const [enhancementsOpen, setEnhancementsOpen] = useState(false);
   const [rewriteOpen, setRewriteOpen] = useState(false);
   const [rewriteIssue, setRewriteIssue] = useState<{ description: string; fix: string; category: string; field_ref?: FieldRef } | null>(null);
@@ -363,6 +366,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
         setError(data.error);
         setErrorCode(data.code || "");
         setErrorRole(data.role || "");
+        setLimitDaysReset(data.daysUntilReset ?? null);
         setLoading(false);
         return;
       }
@@ -471,7 +475,16 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
         </div>
       )}
 
-      {error && errorCode !== "keyword_list_required" && (
+      {error && errorCode?.endsWith("_limit") && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/30">
+          <p className="text-sm font-medium">{error}</p>
+          <Button size="sm" className="mt-3" onClick={() => openUpgradeModal("ats_limit" as UpgradeTrigger, limitDaysReset ?? undefined)}>
+            Upgrade for unlimited
+          </Button>
+        </div>
+      )}
+
+      {error && errorCode !== "keyword_list_required" && !errorCode?.endsWith("_limit") && (
         <p className="text-sm text-destructive">{error}</p>
       )}
 

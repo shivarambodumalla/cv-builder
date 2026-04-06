@@ -45,6 +45,32 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS job_matches_this_month int DEFAULT
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS cover_letters_this_month int DEFAULT 0;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS ai_rewrites_this_month int DEFAULT 0;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS usage_reset_date date DEFAULT CURRENT_DATE;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS timezone text DEFAULT 'UTC';
+
+-- Subscription history
+CREATE TABLE IF NOT EXISTS subscription_history (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  plan text NOT NULL,
+  period text NOT NULL,
+  amount numeric(8,2) NOT NULL,
+  currency text DEFAULT 'USD',
+  status text NOT NULL, -- 'active' | 'cancelled' | 'expired' | 'mock'
+  started_at timestamptz DEFAULT now(),
+  ended_at timestamptz DEFAULT null,
+  subscription_id text
+);
+
+ALTER TABLE subscription_history ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "users_read_own_history" ON subscription_history
+  FOR SELECT USING (user_id = auth.uid());
+
+CREATE POLICY "service_write_history" ON subscription_history
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "service_update_history" ON subscription_history
+  FOR UPDATE USING (true);
 
 -- Increment usage counter function
 CREATE OR REPLACE FUNCTION public.increment_usage(user_id uuid, column_name text)

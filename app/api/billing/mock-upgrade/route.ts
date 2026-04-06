@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // TODO: Remove this endpoint when real Lemon Squeezy is integrated
-// This is a mock endpoint for testing the upgrade flow
+// SECURITY: Only works in development or for admin users in production
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -19,32 +19,48 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid period" }, { status: 400 });
   }
 
-  // Calculate mock period end
-  const now = new Date();
-  let periodEnd: Date;
-  if (period === "weekly") {
-    periodEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-  } else if (period === "monthly") {
-    periodEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-  } else {
-    periodEnd = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+  // Block in production unless user is admin
+  if (process.env.NODE_ENV === "production" || process.env.NEXT_PUBLIC_ENV === "production") {
+    const adminEmails = (process.env.ADMIN_EMAIL || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+    if (!adminEmails.includes(user.email?.toLowerCase() || "")) {
+      return NextResponse.json({ error: "Mock upgrade not available" }, { status: 403 });
+    }
   }
 
+  // Expiry: start of the day after the Nth day, UTC
+  // E.g. bought Apr 6 monthly → expires May 6 00:00:00 UTC
+  const now = new Date();
+  const days = period === "weekly" ? 7 : period === "monthly" ? 30 : 365;
+  const periodEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + days));
+
   const admin = createAdminClient();
+  const subId = `mock_${Date.now()}`;
+  const salePrice = period === "weekly" ? 5 : period === "monthly" ? 14 : 120;
 
   await admin.from("profiles").update({
     plan: "pro",
     subscription_status: "active",
     subscription_period: period,
-    subscription_id: `mock_${Date.now()}`,
+    subscription_id: subId,
     current_period_end: periodEnd.toISOString(),
-    // Reset usage counters on upgrade
     ats_scans_this_month: 0,
     job_matches_this_month: 0,
     cover_letters_this_month: 0,
     ai_rewrites_this_month: 0,
     pdf_downloads_this_week: 0,
   }).eq("id", user.id);
+
+  await admin.from("subscription_history").insert({
+    user_id: user.id,
+    plan: "pro",
+    period,
+    amount: salePrice,
+    currency: "USD",
+    status: "mock",
+    subscription_id: subId,
+    started_at: now.toISOString(),
+    ended_at: periodEnd.toISOString(),
+  });
 
   return NextResponse.json({ ok: true, plan: "pro", period });
 }

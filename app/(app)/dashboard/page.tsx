@@ -22,15 +22,21 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("plan, subscription_status")
+    .eq("id", user.id)
+    .single();
+
   // Send welcome email on first dashboard visit
   const admin = createAdminClient();
-  const { data: profile } = await admin
+  const { data: welcomeCheck } = await admin
     .from("profiles")
     .select("welcome_email_sent")
     .eq("id", user.id)
     .single();
 
-  if (profile && !profile.welcome_email_sent && user.email) {
+  if (welcomeCheck && !welcomeCheck.welcome_email_sent && user.email) {
     sendEmail({
       to: user.email,
       templateName: "welcome",
@@ -42,7 +48,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <CvList cvs={cvs ?? []} />
+      <CvList cvs={cvs ?? []} isPro={profile?.subscription_status === "active"} />
     </div>
   );
 }

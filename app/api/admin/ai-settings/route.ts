@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { invalidateExchangeRateCache } from "@/lib/ai/limits";
 
-async function checkAdmin(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== process.env.ADMIN_EMAIL) {
-    return null;
-  }
-  return user;
-}
+// Admin check is done by middleware for /api/admin/* routes
+// No need to double-check here — middleware already redirects non-admins
 
 export async function GET() {
   const admin = createAdminClient();
@@ -18,25 +12,33 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  if (!(await checkAdmin(request))) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
   const body = await request.json();
   const admin = createAdminClient();
 
   // Handle global settings update (from spend monitor)
   if (body.global) {
-    const { error } = await admin
+    const { data, error } = await admin
       .from("ai_settings")
-      .update({
+      .upsert({
+        feature: "global",
+        max_tokens: 0,
+        temperature: 0,
+        enabled: true,
         daily_spend_cap_usd: body.global.daily_spend_cap_usd,
         usd_to_inr_rate: body.global.usd_to_inr_rate,
         updated_at: new Date().toISOString(),
-      })
-      .eq("feature", "global");
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ ok: true });
+      }, { onConflict: "feature" })
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("[ai-settings] upsert error:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    console.log("[ai-settings] saved global:", data);
+    invalidateExchangeRateCache();
+    return NextResponse.json({ ok: true, saved: data });
   }
 
   // Handle bulk settings update

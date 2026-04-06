@@ -168,6 +168,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [title, setTitle] = useState(cv.title || "Untitled CV");
   const [editingTitle, setEditingTitle] = useState(false);
+  const [pdfToast, setPdfToast] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
   const [mobilePreview, setMobilePreview] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -503,7 +504,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 body: JSON.stringify({ content, design, title }),
               });
               if (res.status === 403) {
-                openUpgradeModal("download");
+                const errData = await res.json();
+                openUpgradeModal("download", errData.daysUntilReset);
                 return;
               }
               if (!res.ok) throw new Error("PDF export failed");
@@ -514,6 +516,11 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               a.download = `${(title || "resume").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
               a.click();
               URL.revokeObjectURL(url);
+              // Toast for free plan watermark
+              if (plan !== "pro") {
+                setPdfToast(true);
+                setTimeout(() => setPdfToast(false), 5000);
+              }
             } catch { /* ignore */ }
           }}>
             <Download className="mr-1.5 h-3.5 w-3.5" /> Resume
@@ -804,6 +811,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           missingKeywords={[]}
           onAccept={handleRewriteAccept}
         />
+      )}
+
+      {/* PDF watermark toast */}
+      {pdfToast && (
+        <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-4 rounded-lg border bg-background p-3 shadow-lg max-w-xs">
+          <p className="text-sm font-medium">Downloaded with CVEdge watermark</p>
+          <button onClick={() => { setPdfToast(false); openUpgradeModal("download"); }} className="text-xs text-primary hover:underline mt-1">
+            Upgrade to remove watermark
+          </button>
+        </div>
       )}
     </div>
   );

@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "cover_letter");
   if (!access.allowed) {
-    return NextResponse.json({ error: "You've used all free cover letters this month. Upgrade for more.", code: access.reason, used: access.used, limit: access.limit }, { status: 403 });
+    return NextResponse.json({ error: "You've used all free cover letters. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 
   const { data: cv } = await supabase
