@@ -49,7 +49,7 @@ const FAQS = [
 
 export function PricingContent() {
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set());
   const selected = OPTIONS.find((o) => o.period === billing)!;
 
   const nudge = billing === "weekly" ? "Switch to monthly, 3x cheaper than weekly" : billing === "monthly" ? "Switch to yearly and save $48" : null;
@@ -186,20 +186,26 @@ export function PricingContent() {
       </div>
 
       {/* FAQ */}
-      <div className="mx-auto max-w-2xl mb-16">
-        <h2 className="mb-8 text-center text-2xl font-bold tracking-tight">Frequently asked questions</h2>
-        <div className="space-y-0">
+      <div className="mx-auto max-w-[720px] mb-16">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold tracking-tight">Frequently asked questions</h2>
+          <p className="mt-3 text-base text-[#78716C]">Everything you need to know about pricing.</p>
+        </div>
+        <div>
           {FAQS.map((faq, i) => (
-            <div key={i} className="border-b">
+            <div key={i} className="border-b border-[#E0D8CC] dark:border-border">
               <button
                 type="button"
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="flex w-full items-center justify-between py-4 text-left text-sm font-medium hover:text-primary transition-colors"
+                onClick={() => setOpenFaqs((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
+                className={cn(
+                  "flex w-full items-center justify-between py-5 text-left text-base font-medium transition-colors",
+                  openFaqs.has(i) ? "text-[#065F46]" : "text-[#0C1A0E] dark:text-foreground hover:text-[#065F46]"
+                )}
               >
                 {faq.q}
-                <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", openFaq === i && "rotate-180")} />
+                <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#065F46] transition-transform duration-200", openFaqs.has(i) && "rotate-180")} />
               </button>
-              {openFaq === i && <p className="pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>}
+              {openFaqs.has(i) && <p className="pb-5 text-[15px] text-[#78716C] dark:text-muted-foreground leading-[1.8]">{faq.a}</p>}
             </div>
           ))}
         </div>

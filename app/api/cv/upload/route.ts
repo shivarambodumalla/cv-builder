@@ -58,7 +58,13 @@ export async function POST(request: NextRequest) {
 
   const file = formData.get("file") as File | null;
   const pastedText = formData.get("text") as string | null;
-  const title = (formData.get("title") as string) || "Untitled CV";
+  let title = (formData.get("title") as string) || "Untitled CV";
+
+  // Auto-increment title if default
+  if (title === "Untitled CV") {
+    const { count } = await supabase.from("cvs").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    if (count && count > 0) title = `Untitled CV ${count + 1}`;
+  }
 
   let rawText = "";
   let fileBuffer: Buffer | null = null;

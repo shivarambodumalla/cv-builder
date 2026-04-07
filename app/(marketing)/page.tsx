@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowRight,
   BarChart3,
   Brain,
   Check,
@@ -21,6 +20,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { Chip } from "@/components/ui/chip";
 import { LiveCounter } from "./live-counter";
 import { FaqSection } from "./faq-section";
+import { CtaSection } from "@/components/shared/cta-section";
+import AtsAnalysisVisual from "@/components/marketing/ats-analysis-visual";
+import AiRewriteVisual from "@/components/marketing/ai-rewrite-visual";
+import JobMatchVisual from "@/components/marketing/job-match-visual";
 
 export const metadata: Metadata = {
   title: "CVEdge | AI-Powered CV Builder | Land More Interviews",
@@ -95,7 +98,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Button size="lg" className="h-12 px-8 text-base" asChild>
               <Link href="/upload-resume">
-                Score My CV Free <ArrowRight className="ml-2 h-4 w-4" />
+                Score My CV Free
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
@@ -138,41 +141,71 @@ export default async function HomePage() {
 
 
       {/* ─── ATS ANALYSIS ─── */}
-      <section className="container mx-auto px-4 py-20 md:py-28">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-              <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">ATS Analysis</span>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Know your score before recruiters do</h2>
-              <p className="mt-4 text-muted-foreground">75% of resumes are rejected by ATS software before a human sees them. CVEdge scores your CV the same way ATS systems do, then shows you exactly what to fix.</p>
-              <ul className="mt-6 space-y-3">
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Score breakdown across 6 categories with per-issue impact points</span></li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Checks against 2,400+ role-specific keywords across 130+ job roles</span></li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Supports 12 domains from Engineering and Design to Finance and Operations</span></li>
-                <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">One-click keyword add: tap a missing keyword and it goes straight into your skills</span></li>
-              </ul>
-              <Button className="mt-6" asChild><Link href="/upload-resume">Analyse My CV Free <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+      <section className="py-20 md:py-28">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
+              <div>
+                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">ATS Analysis</span>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Know your score before recruiters do</h2>
+                <p className="mt-4 text-muted-foreground">75% of resumes are rejected by ATS software before a human sees them. CVEdge scores your CV the same way ATS systems do, then shows you exactly what to fix.</p>
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Score breakdown across 6 categories with per-issue impact points</span></li>
+                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Checks against 2,400+ role-specific keywords across 130+ job roles</span></li>
+                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Real-time estimated score updates as you edit your content</span></li>
+                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">One-click keyword add: tap a missing keyword and it goes into your skills</span></li>
+                </ul>
+                <Button className="mt-6" asChild><Link href="/upload-resume">Analyse My CV Free</Link></Button>
+              </div>
+              <div className="hidden lg:block" style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.06))" }}>
+                <AtsAnalysisVisual />
+              </div>
             </div>
-            <div className="rounded-xl border overflow-hidden"><img src="/img/ats-1.png" alt="ATS Score breakdown" className="w-full h-auto" /></div>
           </div>
         </div>
       </section>
 
       {/* ─── AI REWRITE ─── */}
-      <section className="bg-muted/30">
-        <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto max-w-5xl">
-            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-              <div className="rounded-xl border overflow-hidden order-2 lg:order-1"><img src="/img/rewrite.png" alt="AI Rewrite drawer" className="w-full h-auto" /></div>
+      <section className="bg-muted/30 py-20 md:py-28">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
+              {/* Visual — left on desktop, first on mobile */}
+              <div className="hidden lg:block order-2 lg:order-1" style={{ filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.12))", borderRadius: 16, overflow: "hidden" }}>
+                <AiRewriteVisual />
+              </div>
+              {/* Text — right on desktop */}
               <div className="order-1 lg:order-2">
                 <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">AI Rewrite</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Rewrite weak bullets with AI in seconds</h2>
-                <p className="mt-4 text-muted-foreground">Every bullet point has a &quot;Rewrite&quot; button. Pick a mode (ATS, Impact, Concise, or Grammar), get a suggestion, refine it with instructions, and insert it with one click.</p>
-                <ul className="mt-6 space-y-3">
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">4 rewrite modes: ATS keywords, measurable impact, concise phrasing, grammar fix</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Refine with natural language: &quot;make it shorter&quot;, &quot;add React&quot;, &quot;more confident&quot;</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Never fabricates metrics, uses [X] placeholders for numbers you fill in</span></li>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Rewrite weak bullets with AI in seconds</h2>
+                <p className="mt-4 text-muted-foreground leading-relaxed">Every bullet point has a Rewrite button. Pick a mode, get a suggestion, refine it with plain instructions, and insert it with one click.</p>
+                <ul className="mt-6 space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">4 rewrite modes: ATS keywords, measurable impact, concise phrasing, grammar fix</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">Refine with natural language: &quot;make it shorter&quot;, &quot;add React&quot;, &quot;more confident&quot;</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">Never fabricates metrics, uses [X] placeholders for numbers you fill in</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">One click to accept and insert directly into your CV</span>
+                  </li>
                 </ul>
+                <Button className="mt-6" asChild><Link href="/upload-resume">Try AI Rewrite free</Link></Button>
               </div>
             </div>
           </div>
@@ -203,27 +236,45 @@ export default async function HomePage() {
           </div>
           <p className="mt-10 text-center text-sm text-muted-foreground">Every category has specific, fixable rules. Fix one issue at a time and watch your score rise.</p>
           <div className="mt-5 text-center">
-            <Button asChild><Link href="/upload-resume">See my score <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+            <Button asChild><Link href="/upload-resume">See my score</Link></Button>
           </div>
         </div>
       </section>
 
       {/* ─── JOB MATCH + COVER LETTER ─── */}
-      <section className="bg-muted/30">
-        <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto max-w-5xl">
-            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <section className="bg-muted/30 py-20 md:py-28">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
               <div>
                 <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Job Search</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Match your CV to any job. Generate a cover letter.</h2>
-                <p className="mt-4 text-muted-foreground">Paste a job description and see exactly how well your CV matches. Then generate a tailored cover letter that references your actual experience.</p>
-                <ul className="mt-6 space-y-3">
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Match score with missing vs matched keywords highlighted</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Fix mode: switch to editor with job match results side-by-side</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Cover letter in 3 tones: Professional, Conversational, Confident</span></li>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Match your CV to any job. Generate a cover letter.</h2>
+                <p className="mt-4 text-muted-foreground leading-relaxed">Paste a job description and see exactly how well your CV matches. Then generate a tailored cover letter that references your actual experience.</p>
+                <ul className="mt-6 space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">Match score with missing vs matched keywords highlighted</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">Fix mode: switch to editor with job match results side-by-side</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm leading-relaxed">Cover letter in 3 tones: Professional, Conversational, Confident</span>
+                  </li>
                 </ul>
+                <Button className="mt-6" asChild><Link href="/upload-resume">Try job matching free</Link></Button>
               </div>
-              <div className="rounded-xl border overflow-hidden"><img src="/img/jobmatch.png" alt="Job match score" className="w-full h-auto" /></div>
+              <div className="hidden lg:block" style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.06))", borderRadius: 16, overflow: "hidden" }}>
+                <JobMatchVisual />
+              </div>
             </div>
           </div>
         </div>
@@ -234,7 +285,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 py-20 md:py-28">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Everything you need to land interviews</h2>
-            <p className="mt-4 text-muted-foreground">Built by job seekers who were tired of getting ghosted</p>
+            <p className="mt-4 text-muted-foreground">10 tools in one place. Upload your CV and get started in 60 seconds.</p>
           </div>
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -400,8 +451,8 @@ export default async function HomePage() {
 
               <div className="space-y-4 pt-2">
                 <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCFCE7]">
-                    <Shield className="h-4 w-4 text-[#065F46]" />
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46]">
+                    <Shield className="h-4 w-4 text-white" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold">We never fabricate metrics</p>
@@ -409,8 +460,8 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCFCE7]">
-                    <FileText className="h-4 w-4 text-[#065F46]" />
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46]">
+                    <FileText className="h-4 w-4 text-white" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold">Your experience stays yours</p>
@@ -418,8 +469,8 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#DCFCE7]">
-                    <Zap className="h-4 w-4 text-[#065F46]" />
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46]">
+                    <Zap className="h-4 w-4 text-white" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold">Full transparency</p>
@@ -433,10 +484,13 @@ export default async function HomePage() {
       </section>
 
       {/* ─── FAQ ─── */}
-      <section className="bg-muted/30">
-        <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto max-w-2xl">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">Common questions</h2>
+      <section className="py-20 md:py-28">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-[720px]">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Common questions</h2>
+              <p className="mt-3 text-base text-[#78716C]">Everything you need to know before getting started.</p>
+            </div>
             <FaqSection />
           </div>
         </div>
@@ -444,19 +498,8 @@ export default async function HomePage() {
 
       {/* ─── CTA ─── */}
       <section>
-        <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto max-w-2xl rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border p-8 sm:p-12 text-center space-y-5">
-            <h2 className="text-2xl font-bold sm:text-3xl">Ready to see your ATS score?</h2>
-            <p className="text-muted-foreground">Upload your CV and get a detailed analysis in under 60 seconds. Free, no sign-up required.</p>
-            <Button size="lg" className="h-12 px-8 text-base" asChild>
-              <Link href="/upload-resume">Analyse My CV Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
-            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground pt-2">
-              <span className="flex items-center gap-1"><Check className="h-3 w-3" /> Free to start</span>
-              <span className="flex items-center gap-1"><Check className="h-3 w-3" /> No credit card required</span>
-              <span className="flex items-center gap-1"><Check className="h-3 w-3" /> Cancel anytime</span>
-            </div>
-          </div>
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <CtaSection />
         </div>
       </section>
     </>
