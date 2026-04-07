@@ -62,8 +62,8 @@ export async function renderCvPdf(
   const namePt = res(ds.nameSize, NAME_PT, 24);
   const headingPt = res(ds.sectionHeadingSize, HEADING_PT, 9);
   const lineH = ds.lineSpacing || 1.2;
-  const mx = ds.marginX ?? 40;
-  const my = ds.marginY ?? 40;
+  const mx = Math.max((ds.marginX ?? 0.75), 0.5) * 72;  // Convert inches to points, min 0.5in
+  const my = Math.max((ds.marginY ?? 0.5), 0.4) * 72;   // Convert inches to points, min 0.4in
   const secSpacing = ds.sectionSpacing ?? 12;
   const dateFmt = ds.dateFormat || "short";
   const dateSep = "-";
