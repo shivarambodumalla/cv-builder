@@ -28,6 +28,7 @@ import { PaperPreview } from "@/components/resume/paper-preview";
 import { DesignerPanel } from "@/components/resume/designer-panel";
 import { AtsPanel } from "@/components/shared/ats-panel";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
+import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/components/shared/job-match-panel";
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
 import { calculateClientScore, type ClientScoreResult, type KeywordList } from "@/lib/ats/client-scorer";
@@ -188,6 +189,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   });
 
   const [rematching, setRematching] = useState(false);
+  const [jobMatchLimitReached, setJobMatchLimitReached] = useState(false);
 
   async function handleRematch() {
     if (!cv.job_description || rematching) return;
@@ -653,6 +655,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                       result={jobMatchResult}
                       onResult={setJobMatchResult}
                       onFixField={handleJobMatchFix}
+                      onLimitReached={() => setJobMatchLimitReached(true)}
                     />
                   )}
                 </div>
@@ -672,7 +675,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   />
                   {jobMatchResult && (
                     <div className="mt-6 border-t pt-6">
-                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} />
+                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} />
                     </div>
                   )}
                 </div>
@@ -759,7 +762,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </Button>
               )}
               {jobMatchResult ? (
-                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} />
+                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} />
               ) : (
                 <div className="space-y-6">
                   <div className="rounded-lg border bg-background p-6">
@@ -768,25 +771,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                     </p>
                   </div>
                   {plan !== "pro" && (
-                    <div className="relative rounded-2xl overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#0F2A4A]" />
-                      <div className="relative p-6 sm:p-8 text-center space-y-4">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur">
-                          <Briefcase className="h-6 w-6 text-white" />
-                        </div>
-                        <h3 className="text-lg font-bold text-white">Unlimited job matching</h3>
-                        <p className="text-sm text-white/70 max-w-xs mx-auto">
-                          Match your CV to any job description. See keyword gaps, get fixes, and generate tailored cover letters.
-                        </p>
-                        <Button
-                          onClick={() => openUpgradeModal("job_match_limit")}
-                          className="bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
-                        >
-                          Upgrade to Pro
-                        </Button>
-                        <p className="text-[10px] text-white/50">From $2.30/week &middot; Cancel anytime</p>
-                      </div>
-                    </div>
+                    <UpgradeBanner trigger="job_match" onUpgrade={() => openUpgradeModal("job_match_limit")} />
                   )}
                 </div>
               )}

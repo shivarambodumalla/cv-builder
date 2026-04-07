@@ -14,6 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
+import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 
 interface JobMatch {
   id: string;
@@ -70,6 +71,7 @@ export function CoverLetterPanel({
   const [tone, setTone] = useState<string>("professional");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [limitReached, setLimitReached] = useState(false);
   const [content, setContent] = useState("");
   const [copied, setCopied] = useState(false);
   const [coverLetters, setCoverLetters] = useState(initialCoverLetters);
@@ -116,7 +118,7 @@ export function CoverLetterPanel({
 
       if (!res.ok) {
         if (res.status === 403) {
-          openUpgradeModal("cover_letter_limit");
+          setLimitReached(true);
           setLoading(false);
           return;
         }
@@ -275,6 +277,14 @@ export function CoverLetterPanel({
   const versions = coverLetters.filter(
     (cl) => !selectedMatchId || cl.job_match_id === selectedMatchId || cl.job_match_id === null
   );
+
+  if (limitReached) {
+    return (
+      <div className="space-y-4">
+        <UpgradeBanner trigger="cover_letter" onUpgrade={() => openUpgradeModal("cover_letter_limit")} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

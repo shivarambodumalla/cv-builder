@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Check, Crown, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -69,7 +69,8 @@ export function UpgradeModal() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
-      <SheetContent className="w-full sm:max-w-[440px] overflow-y-auto p-0">
+      <SheetContent className="w-full sm:max-w-[440px] overflow-y-auto p-0" aria-describedby={undefined}>
+        <SheetTitle className="sr-only">Upgrade to Pro</SheetTitle>
         {success ? (
           <div className="flex flex-col items-center justify-center gap-4 py-24 px-6">
             <div className="relative">

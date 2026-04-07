@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
+import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import type { ResumeContent } from "@/lib/resume/types";
 import type { FieldRef } from "@/lib/ai/ats-analyser";
 
@@ -79,6 +80,7 @@ interface JobMatchPanelProps {
   onFixField: (ref: FieldRef) => void;
   rematching?: boolean;
   onRematch?: () => void;
+  onLimitReached?: () => void;
 }
 
 /* ── Left Panel — ONLY job description form ────────── */
@@ -90,6 +92,7 @@ export function JobMatchPanel({
   initialJobTitle,
   result,
   onResult,
+  onLimitReached,
 }: JobMatchPanelProps) {
   const { openUpgradeModal } = useUpgradeModal();
   const [jobDescription, setJobDescription] = useState(initialJobDescription);
@@ -124,6 +127,7 @@ export function JobMatchPanel({
       if (!res.ok) {
         if (res.status === 403) {
           openUpgradeModal("job_match_limit");
+          onLimitReached?.();
           setLoading(false);
           return;
         }
@@ -195,6 +199,7 @@ export function JobMatchRightPanel({
   rematching,
   onRematch,
   plan = "free",
+  forcePaywall,
 }: {
   result: JobMatchResult;
   cvId: string;
@@ -203,6 +208,7 @@ export function JobMatchRightPanel({
   rematching?: boolean;
   onRematch?: () => void;
   plan?: string;
+  forcePaywall?: boolean;
 }) {
   const { openUpgradeModal } = useUpgradeModal();
   const [limitReached, setLimitReached] = useState(false);
@@ -220,7 +226,7 @@ export function JobMatchRightPanel({
     }).catch(() => {});
   }, [plan]);
 
-  const isPaidContent = plan === "pro" || !limitReached;
+  const isPaidContent = plan === "pro" || (!limitReached && !forcePaywall);
 
   // Build full text from current content for fix checking
   const currentText = useMemo(() => {
@@ -350,25 +356,7 @@ export function JobMatchRightPanel({
 
       {/* Paywall for free users who hit limit */}
       {!isPaidContent && (
-        <div className="relative rounded-2xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#0F2A4A]" />
-          <div className="relative p-6 sm:p-8 text-center space-y-4">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur">
-              <Target className="h-6 w-6 text-white" />
-            </div>
-            <h3 className="text-lg font-bold text-white">Unlock full match report</h3>
-            <p className="text-sm text-white/70 max-w-xs mx-auto">
-              See detailed fixes, missing keywords, skill gaps, and get AI-powered rewrites to improve your match score.
-            </p>
-            <Button
-              onClick={() => openUpgradeModal("job_match_limit")}
-              className="bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
-            >
-              Upgrade to Pro
-            </Button>
-            <p className="text-[10px] text-white/50">From $2.30/week &middot; Cancel anytime</p>
-          </div>
-        </div>
+        <UpgradeBanner trigger="job_match" onUpgrade={() => openUpgradeModal("job_match_limit")} />
       )}
 
       {/* Category bars — only for paid/unlocked */}

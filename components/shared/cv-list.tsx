@@ -67,7 +67,7 @@ export function CvList({ cvs, isPro }: { cvs: Cv[]; isPro?: boolean }) {
     <div className="space-y-8">
       {/* Pro banner */}
       {!isPro && (
-        <div className="relative overflow-hidden rounded-2xl border border-[#1E3A5F]/20 bg-[#1E3A5F] p-6 sm:p-8">
+        <div className="relative overflow-hidden rounded-2xl border border-[#065F46]/20 bg-[#065F46] p-6 sm:p-8">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
@@ -92,7 +92,7 @@ export function CvList({ cvs, isPro }: { cvs: Cv[]; isPro?: boolean }) {
             <Button
               variant="secondary"
               size="lg"
-              className="shrink-0 sm:self-center bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
+              className="shrink-0 sm:self-center bg-white text-[#065F46] hover:bg-white/90 font-semibold h-11 px-6"
               onClick={() => openUpgradeModal("generic")}
             >
               <Crown className="mr-1.5 h-4 w-4" /> Go Pro

@@ -29,6 +29,7 @@ import type { ClientScoreResult } from "@/lib/ats/client-scorer";
 import type { ResumeContent } from "@/lib/resume/types";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
 import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
+import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
 
@@ -590,25 +591,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
           {/* Paywall: show above breakdown, hide everything below */}
           {!isPaidContent && (
-            <div className="relative rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#0F2A4A]" />
-              <div className="relative p-6 sm:p-8 text-center space-y-4">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur">
-                  <BarChart3 className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white">Unlock full ATS report</h3>
-                <p className="text-sm text-white/70 max-w-xs mx-auto">
-                  See your score breakdown, missing keywords, fix every issue, and get AI-powered rewrites to boost your score.
-                </p>
-                <Button
-                  onClick={() => openUpgradeModal("ats_limit")}
-                  className="bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
-                >
-                  Upgrade to Pro
-                </Button>
-                <p className="text-[10px] text-white/50">From $2.30/week &middot; Cancel anytime</p>
-              </div>
-            </div>
+            <UpgradeBanner trigger="ats" onUpgrade={() => openUpgradeModal("ats_limit")} />
           )}
 
           {isPaidContent && report.category_scores && (
