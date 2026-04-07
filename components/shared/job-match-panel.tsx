@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,9 +16,11 @@ import {
   Plus,
   RefreshCw,
   Sparkles,
+  Target,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import type { ResumeContent } from "@/lib/resume/types";
 import type { FieldRef } from "@/lib/ai/ats-analyser";
 
@@ -89,6 +91,7 @@ export function JobMatchPanel({
   result,
   onResult,
 }: JobMatchPanelProps) {
+  const { openUpgradeModal } = useUpgradeModal();
   const [jobDescription, setJobDescription] = useState(initialJobDescription);
   const [company, setCompany] = useState(initialCompany);
   const [jobTitle, setJobTitle] = useState(initialJobTitle);
@@ -119,6 +122,11 @@ export function JobMatchPanel({
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 403) {
+          openUpgradeModal("job_match_limit");
+          setLoading(false);
+          return;
+        }
         setError(data.error);
         setLoading(false);
         return;
@@ -186,6 +194,7 @@ export function JobMatchRightPanel({
   onFixField,
   rematching,
   onRematch,
+  plan = "free",
 }: {
   result: JobMatchResult;
   cvId: string;
@@ -193,8 +202,25 @@ export function JobMatchRightPanel({
   onFixField: (ref: FieldRef) => void;
   rematching?: boolean;
   onRematch?: () => void;
+  plan?: "free" | "pro";
 }) {
+  const { openUpgradeModal } = useUpgradeModal();
+  const [limitReached, setLimitReached] = useState(false);
   const categories = result.categories ?? {};
+
+  // Check limit on mount for free plan
+  useEffect(() => {
+    if (plan !== "free") return;
+    fetch("/api/billing/check-limit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ feature: "job_match" }),
+    }).then((r) => r.json()).then((data) => {
+      if (data.limitReached) setLimitReached(true);
+    }).catch(() => {});
+  }, [plan]);
+
+  const isPaidContent = plan === "pro" || !limitReached;
 
   // Build full text from current content for fix checking
   const currentText = useMemo(() => {
@@ -322,8 +348,31 @@ export function JobMatchRightPanel({
         </div>
       )}
 
-      {/* Category bars */}
-      <div className="space-y-3">
+      {/* Paywall for free users who hit limit */}
+      {!isPaidContent && (
+        <div className="relative rounded-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#0F2A4A]" />
+          <div className="relative p-6 sm:p-8 text-center space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur">
+              <Target className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Unlock full match report</h3>
+            <p className="text-sm text-white/70 max-w-xs mx-auto">
+              See detailed fixes, missing keywords, skill gaps, and get AI-powered rewrites to improve your match score.
+            </p>
+            <Button
+              onClick={() => openUpgradeModal("job_match_limit")}
+              className="bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
+            >
+              Upgrade to Pro
+            </Button>
+            <p className="text-[10px] text-white/50">From $2.30/week &middot; Cancel anytime</p>
+          </div>
+        </div>
+      )}
+
+      {/* Category bars — only for paid/unlocked */}
+      {isPaidContent && <div className="space-y-3">
         <h4 className="text-sm font-semibold">Score Breakdown</h4>
         {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
           const cat = categories[key];
@@ -343,10 +392,10 @@ export function JobMatchRightPanel({
             </div>
           );
         })}
-      </div>
+      </div>}
 
       {/* Quick Wins */}
-      {result.quick_wins?.length > 0 && (
+      {isPaidContent && result.quick_wins?.length > 0 && (
         <div className="space-y-2">
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">
             <Zap className="h-4 w-4 text-amber-500" /> Quick Wins
@@ -362,7 +411,7 @@ export function JobMatchRightPanel({
       )}
 
       {/* Top Fixes — with addressed tracking */}
-      {result.top_fixes?.length > 0 && (
+      {isPaidContent && result.top_fixes?.length > 0 && (
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">Top Fixes</h4>
           {result.top_fixes.map((fix, i) => {
@@ -417,17 +466,17 @@ export function JobMatchRightPanel({
       )}
 
       {/* Keywords */}
-      {categories.keyword_match && (
+      {isPaidContent && categories.keyword_match && (
         <KeywordsSection category={categories.keyword_match} />
       )}
 
       {/* Skills */}
-      {categories.skills_match && (
+      {isPaidContent && categories.skills_match && (
         <SkillsSection category={categories.skills_match} />
       )}
 
       {/* Enhancements */}
-      {result.enhancements?.length > 0 && (
+      {isPaidContent && result.enhancements?.length > 0 && (
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">Enhancements</h4>
           <ul className="space-y-2 text-sm">
@@ -442,7 +491,7 @@ export function JobMatchRightPanel({
       )}
 
       {/* Summary */}
-      {result.summary && (
+      {isPaidContent && result.summary && (
         <p className="text-sm text-muted-foreground border-t pt-4">{result.summary}</p>
       )}
 

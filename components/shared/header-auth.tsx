@@ -95,14 +95,11 @@ export function HeaderAuth() {
 
   if (user) {
     return (
-      <>
-        <ThemeToggle />
-        <UserMenu
-          email={user.email}
-          fullName={user.fullName}
-          avatarUrl={user.avatarUrl}
-        />
-      </>
+      <UserMenu
+        email={user.email}
+        fullName={user.fullName}
+        avatarUrl={user.avatarUrl}
+      />
     );
   }
 

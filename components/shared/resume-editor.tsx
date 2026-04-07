@@ -36,6 +36,7 @@ import { DEFAULT_CONTENT, DEFAULT_DESIGN } from "@/lib/resume/defaults";
 import { getPreviewContent } from "@/lib/resume/placeholder";
 import {
   ArrowLeft,
+  Briefcase,
   Download,
   LogOut,
   Sun,
@@ -214,14 +215,17 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [jobMatchEditing, setJobMatchEditing] = useState(false);
 
   useEffect(() => {
+    // Pro users get real-time score updates; free users see frozen verified score
+    if (plan !== "pro") return;
+
     clearTimeout(scorerDebounceRef.current);
     scorerDebounceRef.current = setTimeout(() => {
-      if (!latestReport) return;
-      const result = calculateClientScore(content, latestReport, keywordList ?? null);
+      const report = latestReport ?? { score: 0, category_scores: {} };
+      const result = calculateClientScore(content, report, keywordList ?? null);
       setEstimatedScore(result);
     }, 300);
     return () => clearTimeout(scorerDebounceRef.current);
-  }, [content, latestReport, keywordList]);
+  }, [content, latestReport, keywordList, plan]);
 
   const currentSkills = useMemo(() => {
     return (content.skills?.categories ?? []).flatMap((c) => c.skills);
@@ -585,11 +589,14 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <TabsTrigger value="design" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Design</TabsTrigger>
                 <TabsTrigger value="analyser" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm gap-1.5">
                   ATS
-                  {latestReport?.score != null && (
-                    <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${latestReport.score >= 70 ? "bg-green-500" : latestReport.score >= 40 ? "bg-yellow-500" : "bg-red-500"}`}>
-                      {latestReport.score}
-                    </span>
-                  )}
+                  {(estimatedScore || latestReport?.score != null) && (() => {
+                    const score = estimatedScore?.estimated_score ?? latestReport?.score ?? 0;
+                    return (
+                      <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${score >= 70 ? "bg-green-500" : score >= 40 ? "bg-yellow-500" : "bg-red-500"}`}>
+                        {score}
+                      </span>
+                    );
+                  })()}
                 </TabsTrigger>
                 <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5" onClick={() => setJobMatchEditing(false)}>
                   Match
@@ -617,7 +624,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </div>
                 <div className="lg:hidden">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
+                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
                 </div>
               </>
             )}
@@ -665,7 +672,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   />
                   {jobMatchResult && (
                     <div className="mt-6 border-t pt-6">
-                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} />
+                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} />
                     </div>
                   )}
                 </div>
@@ -738,7 +745,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
             </div>
           )}
 
@@ -752,12 +759,35 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </Button>
               )}
               {jobMatchResult ? (
-                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} />
+                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} />
               ) : (
-                <div className="rounded-lg border bg-background p-6">
-                  <p className="text-sm text-muted-foreground text-center">
-                    Paste a job description and click Analyse Match.
-                  </p>
+                <div className="space-y-6">
+                  <div className="rounded-lg border bg-background p-6">
+                    <p className="text-sm text-muted-foreground text-center">
+                      Paste a job description and click Analyse Match.
+                    </p>
+                  </div>
+                  {plan !== "pro" && (
+                    <div className="relative rounded-2xl overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#0F2A4A]" />
+                      <div className="relative p-6 sm:p-8 text-center space-y-4">
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur">
+                          <Briefcase className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="text-lg font-bold text-white">Unlimited job matching</h3>
+                        <p className="text-sm text-white/70 max-w-xs mx-auto">
+                          Match your CV to any job description. See keyword gaps, get fixes, and generate tailored cover letters.
+                        </p>
+                        <Button
+                          onClick={() => openUpgradeModal("job_match_limit")}
+                          className="bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
+                        >
+                          Upgrade to Pro
+                        </Button>
+                        <p className="text-[10px] text-white/50">From $2.30/week &middot; Cancel anytime</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -792,7 +822,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             return (
               <div className="mx-auto max-w-2xl">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} />
+                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
               </div>
             );
           })()}

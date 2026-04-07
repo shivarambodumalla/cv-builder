@@ -1,4 +1,5 @@
 "use client";
+import { ThemeLogo } from "@/components/shared/theme-logo";
 
 import { Suspense } from "react";
 import Link from "next/link";
@@ -33,7 +34,7 @@ function LoginContent() {
     <Card className="w-full max-w-sm">
       <CardHeader className="text-center space-y-1 pb-2">
         <Link href="/" className="flex justify-center mb-4">
-          <img src="/img/CV-Edge-Logo.svg" alt="CVEdge" className="h-8" />
+          <ThemeLogo className="h-8" />
         </Link>
         {ref ? (
           <>

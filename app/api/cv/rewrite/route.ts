@@ -4,6 +4,7 @@ import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 
+import { alertAdmin } from "@/lib/email/alert";
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();

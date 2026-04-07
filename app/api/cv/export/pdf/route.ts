@@ -8,6 +8,7 @@ import { sendEmailAsync } from "@/lib/email/sender";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
 
+import { alertAdmin } from "@/lib/email/alert";
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
@@ -76,6 +77,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("[pdf export]", err);
+    alertAdmin("PDF Export", (err as Error).message, { userId: user.id });
     return NextResponse.json({ error: "PDF generation failed" }, { status: 500 });
   }
 }

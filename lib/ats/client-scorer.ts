@@ -16,6 +16,8 @@ export interface ClientScoreResult {
   estimated_score: number;
   category_scores: Record<string, ClientCategoryScore>;
   changed_categories: string[];
+  keywords_matched?: string[];
+  keywords_missing?: string[];
 }
 
 const WEIGHTS: Record<string, number> = {
@@ -36,18 +38,75 @@ const BANNED_STARTS = [
   "tasked with",
 ];
 
-const METRIC_RE = /\d+\s*%|\$\s*\d|(?:reduced|increased|improved|grew|saved|cut|boosted|generated|delivered|achieved|managed|led)\s+.*?\d/i;
+// Expanded metric detection — matches percentages, currency, multipliers, user counts, time, satisfaction scores, and action verbs with numbers
+const METRIC_RE = /\d+\s*%|\$[\d,]+|₹[\d,]+|\d+[xX]\b|\d+\s*(?:users|customers|clients|teams|people|members|projects|requests|sessions)\b|\d+\s*(?:hours|days|weeks|months|years)\b|(?:NPS|CSAT|satisfaction|rating)\s*\d|(?:reduced|increased|improved|grew|saved|cut|boosted|generated|delivered|achieved|managed|led|scaled|launched|drove|mentored|established)\s+.*?\d/i;
 
 function wordCount(text: string): number {
   return text.trim() ? text.trim().split(/\s+/).length : 0;
 }
 
-function textContainsKeyword(text: string, keyword: string, synonymMap?: Record<string, string[]>): boolean {
-  const lower = text.toLowerCase();
-  if (lower.includes(keyword.toLowerCase())) return true;
-  const synonyms = synonymMap?.[keyword] ?? [];
-  return synonyms.some((s) => lower.includes(s.toLowerCase()));
+// ── Keyword matching helpers ──
+
+function normalize(str: string): string {
+  return (str ?? "").toLowerCase().trim();
 }
+
+function keywordMatches(keyword: string, text: string, synonymMap?: Record<string, string[]>): boolean {
+  const normalText = normalize(text);
+  const normalKw = normalize(keyword);
+  if (!normalText || !normalKw) return false;
+
+  // Full phrase match
+  if (normalText.includes(normalKw)) return true;
+
+  // Multi-word: all words present
+  const words = normalKw.split(/\s+/);
+  if (words.length > 1 && words.every((w) => normalText.includes(w))) return true;
+
+  // Synonym match
+  const synonyms = synonymMap?.[keyword] ?? [];
+  for (const syn of synonyms) {
+    const normalSyn = normalize(syn);
+    if (normalText.includes(normalSyn)) return true;
+    const synWords = normalSyn.split(/\s+/);
+    if (synWords.length > 1 && synWords.every((w) => normalText.includes(w))) return true;
+  }
+
+  return false;
+}
+
+function buildSearchCorpus(content: ResumeContent): string {
+  const parts: string[] = [];
+
+  // Skills (all categories)
+  for (const cat of content.skills?.categories ?? []) {
+    parts.push(...(cat.skills ?? []));
+  }
+
+  // Experience: role titles + bullets
+  for (const exp of content.experience?.items ?? []) {
+    if (exp.role) parts.push(exp.role);
+    if (exp.company) parts.push(exp.company);
+    for (const bullet of exp.bullets?.filter(Boolean) ?? []) {
+      parts.push(bullet);
+    }
+  }
+
+  // Summary
+  if (content.summary?.content) parts.push(content.summary.content);
+
+  // Projects
+  for (const proj of content.projects?.items ?? []) {
+    if ((proj as { description?: string }).description) parts.push((proj as { description?: string }).description!);
+    for (const bullet of (proj as { bullets?: string[] }).bullets?.filter(Boolean) ?? []) {
+      parts.push(bullet);
+    }
+  }
+
+  return parts.join(" ");
+}
+
+// ── Scoring functions ──
 
 function scoreContact(content: ResumeContent): number {
   const c = content.contact;
@@ -74,31 +133,50 @@ function scoreSections(content: ResumeContent): number {
   return Math.max(0, Math.min(100, score));
 }
 
-function scoreKeywords(content: ResumeContent, keywordList: KeywordList | null): number | null {
-  if (!keywordList) return null;
+function scoreKeywords(
+  content: ResumeContent,
+  keywordList: KeywordList | null
+): { score: number | null; matched: string[]; missing: string[] } {
+  if (!keywordList) return { score: null, matched: [], missing: [] };
 
-  const allSkills = (content.skills?.categories ?? []).flatMap((c) => c.skills).join(" ");
-  const allBullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []).join(" ");
-  const fullText = `${allSkills} ${allBullets}`;
+  const corpus = buildSearchCorpus(content);
   const map = keywordList.synonym_map;
 
   let found = 0;
   let total = 0;
+  const matched: string[] = [];
+  const missing: string[] = [];
 
   for (const kw of keywordList.required) {
     total += 3;
-    if (textContainsKeyword(fullText, kw, map)) found += 3;
+    if (keywordMatches(kw, corpus, map)) {
+      found += 3;
+      matched.push(kw);
+    } else {
+      missing.push(kw);
+    }
   }
   for (const kw of keywordList.important) {
     total += 2;
-    if (textContainsKeyword(fullText, kw, map)) found += 2;
+    if (keywordMatches(kw, corpus, map)) {
+      found += 2;
+      matched.push(kw);
+    } else {
+      missing.push(kw);
+    }
   }
   for (const kw of keywordList.nice_to_have) {
     total += 1;
-    if (textContainsKeyword(fullText, kw, map)) found += 1;
+    if (keywordMatches(kw, corpus, map)) {
+      found += 1;
+      matched.push(kw);
+    } else {
+      missing.push(kw);
+    }
   }
 
-  return total > 0 ? Math.round((found / total) * 100) : 50;
+  const score = total > 0 ? Math.round((found / total) * 100) : 50;
+  return { score, matched, missing };
 }
 
 function scoreMeasurableResults(content: ResumeContent): number {
@@ -123,6 +201,8 @@ function scoreBulletQuality(content: ResumeContent): number {
   return Math.round((passing / bullets.length) * 100);
 }
 
+// ── Main scorer ──
+
 export function calculateClientScore(
   content: ResumeContent,
   lastReport: { score: number; category_scores?: Record<string, { score: number; weight: number }> } | null,
@@ -130,11 +210,11 @@ export function calculateClientScore(
 ): ClientScoreResult {
   const lastCats = lastReport?.category_scores ?? {};
 
-  const keywordScore = scoreKeywords(content, keywordList);
+  const kwResult = scoreKeywords(content, keywordList);
   const scores: Record<string, number> = {
     contact: scoreContact(content),
     sections: scoreSections(content),
-    keywords: keywordScore ?? (lastCats.keywords as { score: number })?.score ?? 50,
+    keywords: kwResult.score ?? (lastCats.keywords as { score: number })?.score ?? 50,
     measurable_results: scoreMeasurableResults(content),
     bullet_quality: scoreBulletQuality(content),
     formatting: (lastCats.formatting as { score: number })?.score ?? 80,
@@ -150,8 +230,8 @@ export function calculateClientScore(
     overall += score * w;
 
     const lastScore = (lastCats[name] as { score: number })?.score;
-    const isFallback = name === "keywords" && keywordScore === null;
-    if (!isFallback && lastScore !== undefined && Math.abs(score - lastScore) > 3) {
+    if (name === "keywords" && kwResult.score === null) continue;
+    if (lastScore !== undefined && score !== lastScore) {
       changed.push(name);
     }
   }
@@ -160,5 +240,7 @@ export function calculateClientScore(
     estimated_score: Math.round(overall),
     category_scores: categoryScores,
     changed_categories: changed,
+    keywords_matched: kwResult.matched,
+    keywords_missing: kwResult.missing,
   };
 }

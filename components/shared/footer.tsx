@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeLogo } from "@/components/shared/theme-logo";
 
 export function Footer() {
   return (
@@ -7,7 +8,7 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <Link href="/" className="flex items-center">
-              <img src="/img/CV-Edge-Logo.svg" alt="CVEdge" className="h-7" />
+              <ThemeLogo className="h-7" />
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               Your CV, your edge.

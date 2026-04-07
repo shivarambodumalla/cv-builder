@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, RotateCcw, Send, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef } from "@/lib/ai/ats-analyser";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 
 type RewriteMode = "ats" | "impact" | "concise" | "grammar";
 
@@ -68,6 +69,7 @@ export function AiRewriteDrawer({
   missingKeywords,
   onAccept,
 }: AiRewriteDrawerProps) {
+  const { openUpgradeModal } = useUpgradeModal();
   const [mode, setMode] = useState<RewriteMode>(defaultMode(issue.category));
   const [suggestedText, setSuggestedText] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,6 +98,11 @@ export function AiRewriteDrawer({
         }),
       });
       const data = await res.json();
+      if (res.status === 403) {
+        openUpgradeModal("ai_rewrite_limit");
+        onClose();
+        return;
+      }
       if (!res.ok) throw new Error(data.error);
       setSuggestedText(data.rewritten);
     } catch (err) {

@@ -5,6 +5,8 @@ import { analyseCV } from "@/lib/ai/ats-analyser";
 import { getDomainForRole } from "@/lib/resume/roles";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { alertAdmin } from "@/lib/email/alert";
+
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
@@ -74,6 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.error("[cv/analyse]", error.message, error.stack);
+    alertAdmin("ATS Analysis", error.message, { userId: user.id, cvId: cv_id });
     return NextResponse.json(
       { error: "AI analysis failed. Please try again.", detail: error.message },
       { status: 502 }

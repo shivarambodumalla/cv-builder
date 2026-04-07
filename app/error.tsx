@@ -1,4 +1,5 @@
 "use client";
+import { ThemeLogo } from "@/components/shared/theme-logo";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -23,7 +24,7 @@ export default function Error({
     <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center bg-[#F7F5F0] dark:bg-background">
       {/* Logo */}
       <Link href="/" className="mb-12">
-        <img src="/img/CV-Edge-Logo.svg" alt="CVEdge" className="h-8" />
+        <ThemeLogo className="h-8" />
       </Link>
 
       {/* Illustration */}

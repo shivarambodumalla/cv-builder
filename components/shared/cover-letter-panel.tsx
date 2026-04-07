@@ -13,6 +13,7 @@ import {
   Loader2,
   ArrowRight,
 } from "lucide-react";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 
 interface JobMatch {
   id: string;
@@ -62,6 +63,7 @@ export function CoverLetterPanel({
   credits,
   plan,
 }: CoverLetterPanelProps) {
+  const { openUpgradeModal } = useUpgradeModal();
   const [selectedMatchId, setSelectedMatchId] = useState(
     jobMatches.length > 0 ? jobMatches[0].id : ""
   );
@@ -113,6 +115,11 @@ export function CoverLetterPanel({
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 403) {
+          openUpgradeModal("cover_letter_limit");
+          setLoading(false);
+          return;
+        }
         setError(data.error);
         setLoading(false);
         return;

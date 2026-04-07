@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
 import { checkRateLimit as checkAIRateLimit } from "@/lib/ai/rate-limiter";
+import { alertAdmin } from "@/lib/email/alert";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000;
@@ -96,6 +97,7 @@ export async function POST(request: NextRequest) {
         rawText = parsed.text;
       } catch (err) {
         console.error("[cv/upload-public] PDF parse failed:", err);
+        alertAdmin("PDF Parsing (public)", (err as Error).message, { ip });
         return NextResponse.json(
           { error: "Could not read this PDF. Please try a different file." },
           { status: 422 }
@@ -155,6 +157,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("[cv/upload-public] Unexpected error:", err);
+    alertAdmin("CV Upload (public)", (err as Error).message, { ip });
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

@@ -142,13 +142,18 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
           let fieldEl: HTMLElement | null = null;
 
           if (ref.bulletText && ref.field === "bullets") {
-            // Find the specific bullet textarea whose content matches
+            // Find the specific bullet textarea matching the full bullet text
             const textareas = el.querySelectorAll("textarea");
-            const needle = ref.bulletText.toLowerCase().slice(0, 40);
+            const needleFull = ref.bulletText.toLowerCase().trim();
+            const needleShort = needleFull.slice(0, 40);
+            // Try full match first, then partial
             for (const ta of textareas) {
-              if ((ta as HTMLTextAreaElement).value.toLowerCase().includes(needle)) {
-                fieldEl = ta;
-                break;
+              const val = (ta as HTMLTextAreaElement).value.toLowerCase().trim();
+              if (val === needleFull || val.includes(needleFull)) { fieldEl = ta; break; }
+            }
+            if (!fieldEl) {
+              for (const ta of textareas) {
+                if ((ta as HTMLTextAreaElement).value.toLowerCase().includes(needleShort)) { fieldEl = ta; break; }
               }
             }
             // Also open the parent experience sub-accordion if collapsed
@@ -220,18 +225,24 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
       if (!newText || !fieldRef) return;
 
       if (fieldRef.section === "summary") {
-        setValue("summary.content", newText, { shouldDirty: true });
+        setValue("summary.content", newText, { shouldDirty: true, shouldTouch: true });
+        // Force content change callback after programmatic setValue
+        setTimeout(() => onChangeRef.current(getValues()), 50);
         return;
       }
 
       if (fieldRef.section === "experience" && fieldRef.bulletText) {
         const items = getValues("experience.items") || [];
-        const needle = fieldRef.bulletText.toLowerCase().slice(0, 40);
+        const needleFull = fieldRef.bulletText.toLowerCase().trim();
+        const needleShort = needleFull.slice(0, 40);
         for (let ri = 0; ri < items.length; ri++) {
           const bullets: string[] = items[ri].bullets || [];
           for (let bi = 0; bi < bullets.length; bi++) {
-            if (bullets[bi]?.toLowerCase().includes(needle)) {
-              setValue(`experience.items.${ri}.bullets.${bi}` as any, newText, { shouldDirty: true });
+            const val = (bullets[bi] ?? "").toLowerCase().trim();
+            if (val === needleFull || val.includes(needleFull) || val.includes(needleShort)) {
+              setValue(`experience.items.${ri}.bullets.${bi}` as any, newText, { shouldDirty: true, shouldTouch: true });
+              // Force content change callback
+              setTimeout(() => onChangeRef.current(getValues()), 50);
               return;
             }
           }

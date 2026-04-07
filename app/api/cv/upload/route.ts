@@ -34,6 +34,7 @@ async function extractText(
   return result.value;
 }
 
+import { alertAdmin } from "@/lib/email/alert";
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
@@ -100,6 +101,7 @@ export async function POST(request: NextRequest) {
       rawText = await extractText(fileBuffer, fileExtension);
     } catch (err) {
       console.error("[cv/upload] File parse failed:", err);
+      alertAdmin("PDF Parsing", (err as Error).message, { userId: user.id });
       return NextResponse.json(
         { error: "Could not read this file. Try copy-pasting your CV instead" },
         { status: 422 }

@@ -43,6 +43,7 @@ function getYearsExperience(content: ResumeContent): string {
   return earliestYear ? String(Math.max(0, new Date().getFullYear() - earliestYear)) : "several";
 }
 
+import { alertAdmin } from "@/lib/email/alert";
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
@@ -214,6 +215,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(saved);
   } catch (err) {
     console.error("[cover-letter] AI generation failed:", err);
+    alertAdmin("Cover Letter", (err as Error).message, { userId: user.id });
     return NextResponse.json(
       { error: "AI generation failed. Please try again." },
       { status: 502 }

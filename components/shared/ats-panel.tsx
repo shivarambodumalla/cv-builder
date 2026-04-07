@@ -6,6 +6,7 @@ import { ScoreRing, getScoreMilestone } from "@/components/shared/score-ring";
 import { Button } from "@/components/ui/button";
 // import { Badge } from "@/components/ui/badge";
 import {
+  BarChart3,
   RefreshCw,
   ChevronDown,
   Lightbulb,
@@ -41,6 +42,7 @@ interface AtsPanelProps {
   currentSkills?: string[];
   content?: ResumeContent;
   onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
+  plan?: "free" | "pro";
 }
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
@@ -109,7 +111,7 @@ function CategoryRow({
 
   if (name === "keywords") {
     return (
-      <div className={cn("rounded-lg border", changed && "border-amber-400 dark:border-amber-600")}>
+      <div className={cn("rounded-lg border", changed && "border-green-400 dark:border-green-600 animate-[pulse_0.6s_ease]")}>
         <button
           type="button"
           className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-muted/40 transition-colors"
@@ -160,7 +162,7 @@ function CategoryRow({
   }
 
   return (
-    <div className={cn("rounded-lg border", changed && "border-amber-400 dark:border-amber-600")}>
+    <div className={cn("rounded-lg border", changed && "border-green-400 dark:border-green-600 animate-[pulse_0.6s_ease]")}>
       <button
         type="button"
         className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-muted/40 transition-colors"
@@ -239,7 +241,7 @@ function CategoryRow({
   );
 }
 
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept }: AtsPanelProps) {
+export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
   const [report, setReport] = useState<AtsPanelReport | null>(initialReport);
@@ -254,11 +256,26 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const [rewriteIssue, setRewriteIssue] = useState<{ description: string; fix: string; category: string; field_ref?: FieldRef } | null>(null);
   const [rewriteOriginal, setRewriteOriginal] = useState("");
   const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
+  const [limitReached, setLimitReached] = useState(false);
 
-  const hasEstimate = !!estimatedScore && !!report;
-  const scoreDelta = hasEstimate ? estimatedScore.estimated_score - report.score : 0;
-  const isEstimated = hasEstimate && Math.abs(scoreDelta) > 2;
-  const displayScore = isEstimated ? estimatedScore.estimated_score : (report?.score ?? 0);
+  // Check limit on mount for free plan
+  useEffect(() => {
+    if (plan !== "free") return;
+    fetch("/api/billing/check-limit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ feature: "ats_scan" }),
+    }).then((r) => r.json()).then((data) => {
+      if (data.limitReached) setLimitReached(true);
+    }).catch(() => {});
+  }, [plan]);
+
+  const isPaidContent = plan === "pro" || !limitReached;
+
+  const hasEstimate = !!estimatedScore;
+  const verifiedScore = report?.score ?? 0;
+  const displayScore = hasEstimate ? estimatedScore.estimated_score : verifiedScore;
+  const isEstimated = hasEstimate && estimatedScore.estimated_score !== verifiedScore;
 
   useEffect(() => {
     setAddedKeywords(new Set());
@@ -266,6 +283,15 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
   const effectiveKeywords = useMemo(() => {
     if (!report?.keywords) return null;
+
+    // If we have real-time keyword data from client scorer, use it
+    if (estimatedScore?.keywords_matched || estimatedScore?.keywords_missing) {
+      const matched = estimatedScore.keywords_matched ?? [];
+      const missing = estimatedScore.keywords_missing ?? [];
+      return { ...report.keywords, found: matched, missing };
+    }
+
+    // Fallback: check skills against report's missing keywords
     const skillsLower = new Set((currentSkills ?? []).map((s) => s.toLowerCase()));
     const found = [...(report.keywords.found ?? [])];
     const missing: string[] = [];
@@ -363,6 +389,12 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 403 && data.code?.includes("limit")) {
+          setLimitReached(true);
+          openUpgradeModal("ats_limit");
+          setLoading(false);
+          return;
+        }
         setError(data.error);
         setErrorCode(data.code || "");
         setErrorRole(data.role || "");
@@ -470,8 +502,14 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       {/* Title bar */}
       <div className="flex items-center gap-2">
         <h3 className="text-base sm:text-lg font-semibold">ATS Analysis</h3>
-        {report && cvChanged && (
-          <span className="inline-flex items-center rounded-full border-[1.5px] bg-[#FEF3C7] text-[#B45309] border-transparent px-3 py-1 text-xs font-medium dark:bg-amber-950/30 dark:text-amber-400">Outdated</span>
+        {isEstimated && (
+          <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold" style={{ background: "#FEF3C7", color: "#92400E" }}>Estimated</span>
+        )}
+        {report && !isEstimated && !cvChanged && (
+          <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold" style={{ background: "#DCFCE7", color: "#065F46" }}>Verified</span>
+        )}
+        {report && cvChanged && !isEstimated && (
+          <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold" style={{ background: "#FEF3C7", color: "#B45309" }}>Outdated</span>
         )}
         {report?.created_at && (
           <span className="ml-auto text-[10px] text-muted-foreground">{timeAgo(report.created_at)}</span>
@@ -550,7 +588,30 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             )}
           </div>
 
-          {report.category_scores && (
+          {/* Paywall: show above breakdown, hide everything below */}
+          {!isPaidContent && (
+            <div className="relative rounded-2xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#0F2A4A]" />
+              <div className="relative p-6 sm:p-8 text-center space-y-4">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur">
+                  <BarChart3 className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-white">Unlock full ATS report</h3>
+                <p className="text-sm text-white/70 max-w-xs mx-auto">
+                  See your score breakdown, missing keywords, fix every issue, and get AI-powered rewrites to boost your score.
+                </p>
+                <Button
+                  onClick={() => openUpgradeModal("ats_limit")}
+                  className="bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
+                >
+                  Upgrade to Pro
+                </Button>
+                <p className="text-[10px] text-white/50">From $2.30/week &middot; Cancel anytime</p>
+              </div>
+            </div>
+          )}
+
+          {isPaidContent && report.category_scores && (
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Score Breakdown</h4>
               {Object.entries(report.category_scores).map(([name, data]) => {
@@ -571,7 +632,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           )}
 
-          {effectiveKeywords && (
+          {isPaidContent && effectiveKeywords && (
             <div className="space-y-3">
               {effectiveKeywords.missing.length > 0 && (
                 <div>
@@ -617,7 +678,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           )}
 
-          {report.enhancements && report.enhancements.length > 0 && (
+          {isPaidContent && report.enhancements && report.enhancements.length > 0 && (
             <div>
               <button
                 type="button"
@@ -641,9 +702,11 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           )}
 
-          <p className="text-[11px] text-muted-foreground/60 pt-2">
-            Scores are AI-generated estimates. Fix the issues above and re-analyse to see your updated score.
-          </p>
+          {isPaidContent && (
+            <p className="text-[11px] text-muted-foreground/60 pt-2">
+              Scores are AI-generated estimates. Fix the issues above and re-analyse to see your updated score.
+            </p>
+          )}
         </>
       )}
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { HeaderAuth } from "@/components/shared/header-auth";
+import { ThemeLogo } from "@/components/shared/theme-logo";
 import { MobileNav } from "@/components/shared/mobile-nav";
 
 export function Header() {
@@ -9,7 +9,7 @@ export function Header() {
       <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center shrink-0">
-            <Image src="/img/CV-Edge-Logo.svg" alt="CVEdge" width={100} height={24} priority className="sm:w-[130px]" />
+            <ThemeLogo className="h-6 sm:h-7" />
           </Link>
           <HeaderNav />
         </div>

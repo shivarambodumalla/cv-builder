@@ -65,6 +65,7 @@ async function fetchKeywordList(admin: ReturnType<typeof createAdminClient>, tar
   return { required: [], important: [], nice_to_have: [], synonym_map: {} };
 }
 
+import { alertAdmin } from "@/lib/email/alert";
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
@@ -188,6 +189,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("[job-match] AI matching failed:", err);
+    alertAdmin("Job Match", (err as Error).message, { userId: user.id });
     return NextResponse.json(
       { error: "AI matching failed. Please try again." },
       { status: 502 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ThemeLogo } from "@/components/shared/theme-logo";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase/client";
@@ -62,7 +63,7 @@ export function AppHeader({ user }: AppHeaderProps) {
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="flex items-center">
-            <img src="/img/CV-Edge-Logo.svg" alt="CVedge" className="h-7" />
+            <ThemeLogo className="h-7" />
           </Link>
           <nav className="flex items-center gap-4">
             <Link

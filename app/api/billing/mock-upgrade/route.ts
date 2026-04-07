@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { alertAdmin } from "@/lib/email/alert";
 
 // TODO: Remove this endpoint when real Lemon Squeezy is integrated
 // SECURITY: Only works in development or for admin users in production
@@ -37,6 +38,7 @@ export async function POST(request: NextRequest) {
   const subId = `mock_${Date.now()}`;
   const salePrice = period === "weekly" ? 5 : period === "monthly" ? 14 : 120;
 
+  try {
   await admin.from("profiles").update({
     plan: "pro",
     subscription_status: "active",
@@ -64,4 +66,9 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({ ok: true, plan: "pro", period });
+  } catch (err) {
+    console.error("[mock-upgrade] failed:", err);
+    alertAdmin("Payment/Upgrade", (err as Error).message, { userId: user.id, period });
+    return NextResponse.json({ error: "Upgrade failed" }, { status: 500 });
+  }
 }
