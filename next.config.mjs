@@ -1,10 +1,5 @@
-import path from "path";
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingIncludes: {
-    "/api/cv/export/pdf": ["./lib/pdf/worker.js"],
-  },
   async headers() {
     return [
       {

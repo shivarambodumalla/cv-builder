@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   const design: ResumeDesignSettings = { ...DEFAULT_DESIGN, ...clientDesign };
 
   try {
-    const buffer = renderCvPdf(content, design, watermark);
+    const buffer = await renderCvPdf(content, design, watermark);
     const filename = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
 
     // Increment usage after success

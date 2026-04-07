@@ -92,9 +92,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error("[cv/analyse]", error.message);
+    console.error("[cv/analyse]", error.message, error.stack);
     return NextResponse.json(
-      { error: "AI analysis failed. Please try again." },
+      { error: "AI analysis failed. Please try again.", detail: error.message },
       { status: 502 }
     );
   }
