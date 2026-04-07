@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("[cv/upload-public] Unexpected error:", err);
-    alertAdmin("CV Upload (public)", (err as Error).message, { ip });
+    alertAdmin("CV Upload (public)", (err as Error).message);
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }
