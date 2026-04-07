@@ -202,7 +202,7 @@ export function JobMatchRightPanel({
   onFixField: (ref: FieldRef) => void;
   rematching?: boolean;
   onRematch?: () => void;
-  plan?: "free" | "pro";
+  plan?: string;
 }) {
   const { openUpgradeModal } = useUpgradeModal();
   const [limitReached, setLimitReached] = useState(false);
