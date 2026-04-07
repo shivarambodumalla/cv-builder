@@ -205,17 +205,17 @@ export function AiRewriteDrawer({
           </div>
 
           {/* Mode selector */}
-          <div className="flex gap-1 rounded-lg bg-muted p-1">
+          <div className="flex gap-1.5 flex-wrap">
             {MODES.map((m) => (
               <button
                 key={m.key}
                 type="button"
                 onClick={() => handleModeChange(m.key)}
                 className={cn(
-                  "flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                  "rounded-full border-[1.5px] px-3.5 py-1.5 text-xs font-medium transition-all",
                   mode === m.key
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-[#065F46] text-white border-transparent"
+                    : "bg-transparent text-[#065F46] border-[#065F46] hover:bg-[#065F46]/5 dark:text-primary dark:border-primary"
                 )}
               >
                 {m.label}

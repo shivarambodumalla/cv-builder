@@ -62,9 +62,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const confidenceColors: Record<string, string> = {
-  high: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  low: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  high: "bg-emerald-600 text-white dark:bg-emerald-700",
+  medium: "bg-[#FEF3C7] text-[#B45309]",
+  low: "bg-transparent text-red-700 border-red-300 dark:text-red-400 dark:border-red-800",
 };
 
 function scoreColor(score: number) {
@@ -471,7 +471,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       <div className="flex items-center gap-2">
         <h3 className="text-base sm:text-lg font-semibold">ATS Analysis</h3>
         {report && cvChanged && (
-          <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-medium text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400">Outdated</span>
+          <span className="inline-flex items-center rounded-full border-[1.5px] bg-[#FEF3C7] text-[#B45309] border-transparent px-3 py-1 text-xs font-medium dark:bg-amber-950/30 dark:text-amber-400">Outdated</span>
         )}
         {report?.created_at && (
           <span className="ml-auto text-[10px] text-muted-foreground">{timeAgo(report.created_at)}</span>
@@ -523,24 +523,24 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
           <div className="flex flex-col items-center gap-3">
             <ScoreRing score={displayScore} />
             {displayScore >= 80 && (
-              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+              <span className="inline-flex items-center rounded-full border-[1.5px] bg-[#065F46] text-white border-transparent px-3.5 py-1.5 text-xs font-semibold">
                 Interview Ready
               </span>
             )}
             {displayScore >= 50 && displayScore < 80 && (
-              <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+              <span className="inline-flex items-center rounded-full border-[1.5px] bg-[#FEF3C7] text-[#B45309] border-transparent px-3.5 py-1.5 text-xs font-semibold">
                 Needs Improvement
               </span>
             )}
             {displayScore > 0 && displayScore < 50 && (
-              <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+              <span className="inline-flex items-center rounded-full border-[1.5px] bg-transparent text-red-700 border-red-300 px-3.5 py-1.5 text-xs font-semibold dark:text-red-400 dark:border-red-800">
                 Major Issues Found
               </span>
             )}
             <p className="text-xs text-center text-muted-foreground max-w-xs">
               {getScoreMilestone(displayScore).message}
             </p>
-            <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", confidenceColors[report.confidence ?? "medium"] || "")}>
+            <span className={cn("inline-flex items-center rounded-full border-[1.5px] border-transparent px-3.5 py-1.5 text-xs font-medium", confidenceColors[report.confidence ?? "medium"] || "")}>
               {report.confidence ?? "medium"} confidence
             </span>
             {cvChanged && (
@@ -585,10 +585,10 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
                           disabled={added}
                           onClick={() => handleAddKeyword(kw)}
                           className={cn(
-                            "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs transition-colors",
+                            "inline-flex items-center gap-1 rounded-full border-[1.5px] px-3 py-1 text-xs font-medium transition-all",
                             added
-                              ? "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400 cursor-default"
-                              : "bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-400"
+                              ? "bg-[#065F46] text-white border-transparent cursor-default"
+                              : "bg-transparent text-red-700 border-red-300 hover:bg-red-50 dark:text-red-400 dark:border-red-800"
                           )}
                         >
                           {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
@@ -607,7 +607,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
                   <h4 className="mb-2 text-sm font-semibold">Found Keywords</h4>
                   <div className="flex flex-wrap gap-1.5">
                     {effectiveKeywords.found.map((kw) => (
-                      <span key={kw} className="rounded-md bg-green-50 px-2 py-0.5 text-xs text-green-700 dark:bg-green-950 dark:text-green-400">
+                      <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-[#065F46] bg-transparent px-3 py-1 text-xs font-medium text-[#065F46] dark:text-primary dark:border-primary">
                         {kw}
                       </span>
                     ))}

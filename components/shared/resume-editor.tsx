@@ -44,6 +44,7 @@ import {
   LayoutDashboard,
   CreditCard,
   Check,
+  Crown,
   Loader2,
   Eye,
   PenLine,
@@ -526,8 +527,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             <Download className="mr-1.5 h-3.5 w-3.5" /> Resume
           </Button>
           {plan !== "pro" && (
-            <Button size="sm" className="h-8 bg-amber-500 hover:bg-amber-600 text-white" onClick={() => openUpgradeModal("generic")}>
-              Upgrade
+            <Button size="sm" variant="secondary" className="h-8 gap-1.5" onClick={() => openUpgradeModal("generic")}>
+              <Crown className="h-3.5 w-3.5" /> Go Pro
             </Button>
           )}
 

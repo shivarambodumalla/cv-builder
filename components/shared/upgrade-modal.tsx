@@ -126,7 +126,7 @@ export function UpgradeModal() {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold">{opt.label}</span>
                         {opt.popular && (
-                          <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                          <span className="rounded-full bg-[#065F46] px-2 py-0.5 text-[10px] font-bold text-white leading-none">
                             BEST VALUE
                           </span>
                         )}
@@ -177,7 +177,7 @@ export function UpgradeModal() {
             </Button>
 
             <p className="text-center text-[11px] text-muted-foreground">
-              7-day money back guarantee &middot; Cancel anytime
+              &#10003; Cancel anytime &middot; &#10003; Instant access after payment
             </p>
           </div>
         </div>

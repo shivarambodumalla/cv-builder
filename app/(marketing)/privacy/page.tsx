@@ -31,13 +31,13 @@ const sections = [
   {
     title: "4. AI processing",
     content:
-      "Your CV text is sent to Google Gemini AI for analysis. It is not stored by Google beyond the API call. We process your data only to provide the service you requested.",
+      "Your CV text is sent to our AI provider for analysis. It is not stored beyond the API call. We process your data only to provide the service you requested.",
   },
   {
     title: "5. Third party services",
     list: [
       "Supabase (database and auth)",
-      "Google Gemini (AI analysis)",
+      "AI provider (CV analysis)",
       "Resend (email delivery)",
       "PostHog (analytics)",
       "Lemon Squeezy (payments)",

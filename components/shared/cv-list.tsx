@@ -65,27 +65,37 @@ export function CvList({ cvs, isPro }: { cvs: Cv[]; isPro?: boolean }) {
 
   return (
     <div className="space-y-8">
-      {/* Pro marketing banner — only for free users */}
+      {/* Pro banner */}
       {!isPro && (
-        <div className="rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-amber-500/5 border border-primary/20 p-5 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900">
-              <Crown className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+        <div className="relative overflow-hidden rounded-2xl border border-[#1E3A5F]/20 bg-[#1E3A5F] p-6 sm:p-8">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
+
+          <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
+              <Crown className="h-7 w-7 text-white" />
             </div>
-            <div className="flex-1">
-              <h2 className="text-lg font-bold">Upgrade to CVEdge Pro</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">
-                Unlimited CVs, ATS scans, job matching, cover letters, and all 5 templates.
+            <div className="flex-1 space-y-2">
+              <h2 className="text-lg font-bold text-white">Unlock the full power of CVEdge</h2>
+              <p className="text-sm text-white/70">
+                Unlimited ATS scans, AI rewrites, job matching, cover letters, and all 5 templates.
               </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Check className="h-3 w-3 text-green-500" /> Unlimited ATS scans</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Check className="h-3 w-3 text-green-500" /> 100 job matches</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Check className="h-3 w-3 text-green-500" /> All templates</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Check className="h-3 w-3 text-green-500" /> From $2.30/week</span>
+              <div className="flex flex-wrap gap-3 pt-1">
+                {["Unlimited scans", "AI rewrites", "All templates", "From $2.30/week"].map((t) => (
+                  <span key={t} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/90">
+                    <Check className="h-3 w-3 text-emerald-400" /> {t}
+                  </span>
+                ))}
               </div>
             </div>
-            <Button onClick={() => openUpgradeModal("generic")} className="shrink-0 sm:self-center">
-              <Sparkles className="mr-1.5 h-4 w-4" /> Upgrade
+            <Button
+              variant="secondary"
+              size="lg"
+              className="shrink-0 sm:self-center bg-white text-[#1E3A5F] hover:bg-white/90 font-semibold h-11 px-6"
+              onClick={() => openUpgradeModal("generic")}
+            >
+              <Crown className="mr-1.5 h-4 w-4" /> Go Pro
             </Button>
           </div>
         </div>

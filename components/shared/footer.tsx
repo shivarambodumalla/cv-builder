@@ -39,6 +39,16 @@ export function Footer() {
             </a>
           </div>
         </div>
+
+        {/* Powered by */}
+        <div className="mt-8 pt-6 border-t flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <span className="text-[11px] text-muted-foreground/50">Powered by</span>
+          {["Supabase", "Vercel"].map((t) => (
+            <span key={t} className="rounded border border-border/50 px-2 py-0.5 text-[11px] text-muted-foreground/60">{t}</span>
+          ))}
+          <span className="text-[11px] text-muted-foreground/50">Payments by</span>
+          <span className="rounded border border-border/50 px-2 py-0.5 text-[11px] text-muted-foreground/60">Lemon Squeezy</span>
+        </div>
       </div>
     </footer>
   );

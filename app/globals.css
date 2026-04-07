@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Primary #065F46 — core actions: Analyse CV, Download, Save */
+/* Secondary #1E3A5F — feature actions: Job Match, Cover Letter, View Report */
+/* Use shadcn Button variant="secondary" for navy buttons */
+
 @layer base {
   :root {
     --background: #f5f0e8;
@@ -12,12 +16,12 @@
     --popover-foreground: #1a2e1e;
     --primary: #1a7a6d;
     --primary-foreground: #ffffff;
-    --secondary: #d4f0e8;
-    --secondary-foreground: #1a5c52;
+    --secondary: #1E3A5F;
+    --secondary-foreground: #ffffff;
     --muted: #ece5d8;
     --muted-foreground: #6b5e4f;
-    --accent: #d4f0e8;
-    --accent-foreground: #1a5c52;
+    --accent: #1E3A5F;
+    --accent-foreground: #ffffff;
     --destructive: #8b2525;
     --destructive-foreground: #ffffff;
     --border: #d9cfc0;
@@ -35,12 +39,12 @@
     --popover-foreground: #e8f5f0;
     --primary: #1a7a6d;
     --primary-foreground: #ffffff;
-    --secondary: #1e3530;
-    --secondary-foreground: #e8f5f0;
+    --secondary: #2A4F7A;
+    --secondary-foreground: #ffffff;
     --muted: #243a36;
     --muted-foreground: #7a8fa0;
-    --accent: #1a7a6d;
-    --accent-foreground: #e8f5f0;
+    --accent: #2A4F7A;
+    --accent-foreground: #ffffff;
     --destructive: #6b2020;
     --destructive-foreground: #ffffff;
     --border: #243a36;
