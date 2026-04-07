@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { name, templateName, segment, sendNow, scheduledAt } = await request.json();
+  const { name, templateName, segment, sendNow, scheduledAt, customEmails } = await request.json();
   const admin = createAdminClient();
 
   // Create campaign record
@@ -65,9 +65,26 @@ export async function POST(request: NextRequest) {
   if (createError) return NextResponse.json({ error: createError.message }, { status: 500 });
 
   if (sendNow) {
-    // Send immediately
-    const userIds = await getSegmentUsers(admin, segment);
     let sentCount = 0;
+
+    // Custom email list
+    if (segment === "custom_emails" && customEmails) {
+      const emails = (customEmails as string).split(",").map((e: string) => e.trim()).filter(Boolean);
+      for (const email of emails) {
+        await sendEmail({ to: email, templateName });
+        sentCount++;
+      }
+
+      await admin
+        .from("campaigns")
+        .update({ status: "sent", sent_count: sentCount, sent_at: new Date().toISOString() })
+        .eq("id", campaign.id);
+
+      return NextResponse.json({ ok: true, sent: sentCount });
+    }
+
+    // Segment-based
+    const userIds = await getSegmentUsers(admin, segment);
 
     for (const userId of userIds) {
       const { data: authUser } = await admin.auth.admin.getUserById(userId);

@@ -4,7 +4,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
-import { sendEmailAsync } from "@/lib/email/sender";
 import { resolveRole, getDomainForRole } from "@/lib/resume/roles";
 import type { ResumeContent } from "@/lib/resume/types";
 
@@ -177,19 +176,6 @@ export async function POST(request: NextRequest) {
 
     if (saveError) {
       return NextResponse.json({ error: saveError.message }, { status: 500 });
-    }
-
-    // Send job match email
-    if (user.email) {
-      sendEmailAsync({
-        to: user.email,
-        templateName: "job_match_ready",
-        variables: {
-          matchScore: String(report.match_score ?? 0),
-          cvId: cv_id,
-        },
-        userId: user.id,
-      });
     }
 
     // Increment usage

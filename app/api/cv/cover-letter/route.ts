@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
-import { sendEmailAsync } from "@/lib/email/sender";
 import type { ResumeContent } from "@/lib/resume/types";
 
 
@@ -208,19 +207,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: saveError.message }, { status: 500 });
     }
 
-    // Send cover letter email
-    if (user.email) {
-      sendEmailAsync({
-        to: user.email,
-        templateName: "cover_letter_ready",
-        variables: {
-          jobTitle: cv.job_title_target ?? "your target role",
-          company: cv.job_company ?? "the company",
-          cvId: cv_id,
-        },
-        userId: user.id,
-      });
-    }
 
     // Increment usage
     incrementUsage(user.id, "cover_letter").catch(() => {});

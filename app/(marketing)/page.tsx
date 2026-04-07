@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BarChart3,
   Brain,
-  Briefcase,
   Check,
   Download,
   FileText,
@@ -14,7 +13,6 @@ import {
   PenTool,
   Search,
   Shield,
-  Sparkles,
   Target,
   Upload,
   Zap,
@@ -62,19 +60,13 @@ export default function HomePage() {
           </div>
 
           {/* Hero visual */}
-          <div className="mt-8 w-full max-w-5xl rounded-xl border bg-muted/30 shadow-2xl overflow-hidden">
-            <div className="flex items-center gap-1.5 border-b bg-muted/50 px-4 py-2">
-              <div className="h-3 w-3 rounded-full bg-red-400" />
-              <div className="h-3 w-3 rounded-full bg-yellow-400" />
-              <div className="h-3 w-3 rounded-full bg-green-400" />
-              <span className="ml-3 text-xs text-muted-foreground">CVEdge Resume Editor</span>
-            </div>
-            <div className="flex items-center justify-center py-32 sm:py-48 text-muted-foreground">
-              <div className="text-center">
-                <Layout className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
-                <p className="text-sm font-medium">[Product screenshot]</p>
-              </div>
-            </div>
+          <div className="mt-8 w-full max-w-5xl rounded-xl border overflow-hidden">
+            <img
+              src="/img/cover.png"
+              alt="CVEdge Resume Editor showing ATS score of 89 with score breakdown"
+              className="w-full h-auto"
+              loading="eager"
+            />
           </div>
         </div>
       </section>
@@ -152,13 +144,8 @@ export default function HomePage() {
                 <Link href="/upload-resume">Analyse My CV Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </div>
-            <div className="rounded-xl border bg-muted/30 shadow-lg overflow-hidden">
-              <div className="flex items-center justify-center py-48">
-                <div className="text-center">
-                  <BarChart3 className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
-                  <p className="text-sm font-medium text-muted-foreground">[Screenshot: ATS Score Panel]</p>
-                </div>
-              </div>
+            <div className="rounded-xl border overflow-hidden">
+              <img src="/img/ats-1.png" alt="ATS Score breakdown showing category scores" className="w-full h-auto" />
             </div>
           </div>
         </div>
@@ -169,13 +156,8 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-20 md:py-28">
           <div className="mx-auto max-w-5xl">
             <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-              <div className="rounded-xl border bg-background shadow-lg overflow-hidden order-2 lg:order-1">
-                <div className="flex items-center justify-center py-48">
-                  <div className="text-center">
-                    <Sparkles className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
-                    <p className="text-sm font-medium text-muted-foreground">[Screenshot: AI Rewrite Drawer]</p>
-                  </div>
-                </div>
+              <div className="rounded-xl border overflow-hidden order-2 lg:order-1">
+                <img src="/img/rewrite.png" alt="AI Rewrite drawer with mode selector and suggestion" className="w-full h-auto" />
               </div>
               <div className="order-1 lg:order-2">
                 <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
@@ -236,13 +218,8 @@ export default function HomePage() {
                 </li>
               </ul>
             </div>
-            <div className="rounded-xl border bg-muted/30 shadow-lg overflow-hidden">
-              <div className="flex items-center justify-center py-48">
-                <div className="text-center">
-                  <Briefcase className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
-                  <p className="text-sm font-medium text-muted-foreground">[Screenshot: Job Match & Cover Letter]</p>
-                </div>
-              </div>
+            <div className="rounded-xl border overflow-hidden">
+              <img src="/img/jobmatch.png" alt="Job match score with missing and matched keywords" className="w-full h-auto" />
             </div>
           </div>
         </div>

@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const SEGMENTS = [
+  { value: "custom_emails", label: "Custom email list" },
   { value: "never_uploaded", label: "Never uploaded CV" },
-  { value: "free_active_upgrade", label: "Free users | upgrade prompt" },
+  { value: "free_active_upgrade", label: "Free users" },
   { value: "all_users", label: "All users" },
   { value: "paid_users", label: "Paid users only" },
 ];
@@ -29,15 +31,23 @@ export function CampaignManager({ campaigns, templateNames }: { campaigns: Campa
   const [name, setName] = useState("");
   const [templateName, setTemplateName] = useState(templateNames[0] ?? "");
   const [segment, setSegment] = useState(SEGMENTS[0].value);
+  const [customEmails, setCustomEmails] = useState("");
   const [sending, setSending] = useState(false);
 
   async function handleSend() {
     if (!name.trim() || !templateName) return;
+    if (segment === "custom_emails" && !customEmails.trim()) return;
     setSending(true);
     await fetch("/api/admin/campaigns", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, templateName, segment, sendNow: true }),
+      body: JSON.stringify({
+        name,
+        templateName,
+        segment,
+        sendNow: true,
+        customEmails: segment === "custom_emails" ? customEmails : undefined,
+      }),
     });
     setSending(false);
     setName("");
@@ -67,7 +77,19 @@ export function CampaignManager({ campaigns, templateNames }: { campaigns: Campa
             </select>
           </div>
         </div>
-        <Button onClick={handleSend} disabled={sending || !name.trim()}>
+        {segment === "custom_emails" && (
+          <div>
+            <Label className="text-xs">Email addresses (comma-separated)</Label>
+            <Textarea
+              value={customEmails}
+              onChange={(e) => setCustomEmails(e.target.value)}
+              placeholder="user1@example.com, user2@example.com"
+              rows={3}
+              className="text-sm"
+            />
+          </div>
+        )}
+        <Button onClick={handleSend} disabled={sending || !name.trim() || (segment === "custom_emails" && !customEmails.trim())}>
           {sending ? "Sending..." : "Send Now"}
         </Button>
       </div>
