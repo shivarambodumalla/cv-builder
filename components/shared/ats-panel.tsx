@@ -42,7 +42,7 @@ interface AtsPanelProps {
   currentSkills?: string[];
   content?: ResumeContent;
   onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
-  plan?: "free" | "pro";
+  plan?: string;
 }
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
