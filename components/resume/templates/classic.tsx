@@ -121,7 +121,6 @@ export function ClassicTemplate({
     summary: () =>
       summary.content ? (
         <div key="summary">
-          {renderSectionTitle("Summary")}
           <p
             style={{
               fontFamily: "var(--resume-font)",

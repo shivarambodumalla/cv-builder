@@ -33,6 +33,7 @@ export const DEFAULT_DESIGN: ResumeDesignSettings = {
   sectionHeadingWeight: "bold",
   sectionHeadingCase: "uppercase",
   contactSeparator: "pipe",
+  sidebarSections: ["contact", "targetTitle", "skills", "education", "certifications"],
 };
 
 export const DEFAULT_CONTENT: ResumeContent = {

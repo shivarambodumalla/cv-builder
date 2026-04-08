@@ -20,7 +20,13 @@ import { ClassicTemplate } from "./templates/classic";
 import { SharpTemplate } from "./templates/sharp";
 import { MinimalTemplate } from "./templates/minimal";
 import { ExecutiveTemplate } from "./templates/executive";
-import { SidebarTemplate } from "./templates/sidebar";
+import { SidebarTemplate, SidebarRightTemplate } from "./templates/sidebar";
+import { TwoColumnTemplate } from "./templates/two-column";
+import { DivideTemplate } from "./templates/divide";
+import { FolioTemplate } from "./templates/folio";
+import { MetroTemplate } from "./templates/metro";
+import { HarvardTemplate } from "./templates/harvard";
+import { LedgerTemplate } from "./templates/ledger";
 
 const MONTH_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -127,6 +133,13 @@ const TEMPLATE_MAP = {
   minimal: MinimalTemplate,
   executive: ExecutiveTemplate,
   sidebar: SidebarTemplate,
+  "sidebar-right": SidebarRightTemplate,
+  "two-column": TwoColumnTemplate,
+  divide: DivideTemplate,
+  folio: FolioTemplate,
+  metro: MetroTemplate,
+  harvard: HarvardTemplate,
+  ledger: LedgerTemplate,
 } as const;
 
 interface TemplateRendererProps {

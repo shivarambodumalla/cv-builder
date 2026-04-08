@@ -19,7 +19,7 @@ export const PLAN_LIMITS = {
     cover_letters: -1,
     ai_rewrites: -1,
     pdf_downloads: -1,
-    templates: ["classic", "sharp", "minimal", "executive", "sidebar"],
+    templates: ["classic", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
     watermark: false,
     can_download: true,
   },

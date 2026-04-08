@@ -243,9 +243,10 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
 
   function handleRewriteAccept(newText: string, fieldRef: { section: string; field?: string | null; index?: number; bulletText?: string }) {
     window.dispatchEvent(new CustomEvent("rewrite-accept", { detail: { newText, fieldRef } }));
+    // Allow drawer close animation + React re-render before jumping to the updated field
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent("jump-to-field", { detail: fieldRef }));
-    }, 300);
+    }, 500);
   }
 
   // Handle rewrite-accept when ContentEditor is not mounted (job-match / cover-letter tabs)

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AlignLeft, AlignCenter, AlignRight, GripVertical } from "lucide-react";
+import { AlignLeft, AlignCenter, AlignRight, GripVertical, ChevronLeft, ChevronRight } from "lucide-react";
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -45,7 +45,14 @@ const TEMPLATES: { name: TemplateName; label: string }[] = [
   { name: "sharp", label: "Sharp" },
   { name: "minimal", label: "Minimal" },
   { name: "executive", label: "Executive" },
-  { name: "sidebar", label: "Sidebar" },
+  { name: "sidebar", label: "Slate" },
+  { name: "sidebar-right", label: "Onyx" },
+  { name: "two-column", label: "Horizon" },
+  { name: "divide", label: "Divide" },
+  { name: "folio", label: "Folio" },
+  { name: "metro", label: "Metro" },
+  { name: "harvard", label: "Harvard" },
+  { name: "ledger", label: "Ledger" },
 ];
 
 const FONTS: { name: FontFamily; label: string }[] = [
@@ -149,15 +156,237 @@ function TemplatePreview({ template }: { template: TemplateName }) {
       );
     case "sidebar":
       return (
-        <div className="flex h-full gap-1 p-1">
-          <div className="w-1/3 rounded-sm bg-slate-600" />
-          <div className="flex flex-1 flex-col gap-0.5 py-0.5">
-            <div className="h-1.5 w-3/4 rounded-sm bg-slate-400" />
-            <div className="h-1 w-full rounded-sm bg-slate-200" />
-            <div className="h-1 w-5/6 rounded-sm bg-slate-200" />
-            <div className="h-1 w-full rounded-sm bg-slate-200" />
-          </div>
-        </div>
+        <svg viewBox="0 0 120 170" className="h-full w-full"><rect width="120" height="170" fill="white"/>
+          <rect width="40" height="170" fill="#065F46"/>
+          <rect x="6" y="10" width="28" height="4" rx="1" fill="white"/><rect x="6" y="16" width="20" height="2" rx="1" fill="white" opacity="0.6"/>
+          <rect x="6" y="22" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/><rect x="6" y="25" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/>
+          <rect x="6" y="34" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="6" y="39" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="6" y="42" width="25" height="1.5" rx="1" fill="white" opacity="0.3"/>
+          <rect x="6" y="55" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="6" y="60" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="6" y="63" width="22" height="1.5" rx="1" fill="white" opacity="0.3"/>
+          <rect x="48" y="10" width="30" height="3" rx="1" fill="#065F46"/><rect x="48" y="16" width="60" height="2" rx="1" fill="#F3F4F6"/><rect x="48" y="20" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="48" y="32" width="30" height="3" rx="1" fill="#065F46"/><rect x="48" y="38" width="40" height="2.5" rx="1" fill="#555"/>
+          <rect x="50" y="43" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="50" y="47" width="50" height="2" rx="1" fill="#F3F4F6"/><rect x="50" y="51" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="48" y="58" width="35" height="2.5" rx="1" fill="#555"/><rect x="50" y="63" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="50" y="67" width="45" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="48" y="76" width="30" height="3" rx="1" fill="#065F46"/><rect x="48" y="82" width="55" height="2" rx="1" fill="#F3F4F6"/>
+        </svg>
+      );
+    case "sidebar-right":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full"><rect width="120" height="170" fill="white"/>
+          <rect x="80" width="40" height="170" fill="#065F46"/>
+          <rect x="10" y="10" width="30" height="3" rx="1" fill="#065F46"/><rect x="10" y="16" width="60" height="2" rx="1" fill="#F3F4F6"/><rect x="10" y="20" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="10" y="32" width="30" height="3" rx="1" fill="#065F46"/><rect x="10" y="38" width="40" height="2.5" rx="1" fill="#555"/>
+          <rect x="12" y="43" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="12" y="47" width="50" height="2" rx="1" fill="#F3F4F6"/><rect x="12" y="51" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="10" y="58" width="35" height="2.5" rx="1" fill="#555"/><rect x="12" y="63" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="12" y="67" width="45" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="10" y="76" width="30" height="3" rx="1" fill="#065F46"/><rect x="10" y="82" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="86" y="10" width="28" height="4" rx="1" fill="white"/><rect x="86" y="16" width="20" height="2" rx="1" fill="white" opacity="0.6"/>
+          <rect x="86" y="22" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/><rect x="86" y="25" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/>
+          <rect x="86" y="34" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="86" y="39" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="86" y="42" width="25" height="1.5" rx="1" fill="white" opacity="0.3"/>
+          <rect x="86" y="55" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="86" y="60" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="86" y="63" width="22" height="1.5" rx="1" fill="white" opacity="0.3"/>
+        </svg>
+      );
+    case "two-column":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect width="120" height="32" fill="#E6F4F3"/>
+          <rect x="8" y="6" width="35" height="5" rx="1" fill="#111827"/>
+          <rect x="8" y="13" width="22" height="2" rx="1" fill="#0D9488"/>
+          <rect x="8" y="18" width="50" height="1.5" rx="1" fill="#999" opacity="0.5"/>
+          <rect x="8" y="21" width="45" height="1.5" rx="1" fill="#999" opacity="0.5"/>
+          <rect x="8" y="24" width="40" height="1.5" rx="1" fill="#999" opacity="0.5"/>
+          <rect x="80" y="7" width="12" height="1.5" rx="1" fill="#888" opacity="0.5"/>
+          <rect x="80" y="10" width="30" height="2" rx="1" fill="#0D9488"/>
+          <rect x="80" y="15" width="12" height="1.5" rx="1" fill="#888" opacity="0.5"/>
+          <rect x="80" y="18" width="28" height="2" rx="1" fill="#0D9488"/>
+          <rect x="80" y="23" width="12" height="1.5" rx="1" fill="#888" opacity="0.5"/>
+          <rect x="80" y="26" width="25" height="2" rx="1" fill="#0D9488"/>
+          <rect x="8" y="40" width="28" height="2.5" rx="1" fill="#0D9488"/>
+          <rect x="8" y="46" width="40" height="2" rx="1" fill="#555"/>
+          <rect x="8" y="50" width="55" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="8" y="53" width="50" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="8" y="56" width="52" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="8" y="62" width="38" height="2" rx="1" fill="#555"/>
+          <rect x="8" y="66" width="55" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="8" y="69" width="48" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="80" y="40" width="28" height="2.5" rx="1" fill="#0D9488"/>
+          <rect x="80" y="46" width="32" height="2" rx="1" fill="#111827"/>
+          <rect x="80" y="50" width="28" height="1.5" rx="1" fill="#777"/>
+          <rect x="80" y="53" width="22" height="1.5" rx="1" fill="#999"/>
+          <rect x="80" y="60" width="32" height="2" rx="1" fill="#111827"/>
+          <rect x="80" y="64" width="28" height="1.5" rx="1" fill="#777"/>
+          <rect x="80" y="67" width="22" height="1.5" rx="1" fill="#999"/>
+          <rect x="80" y="76" width="20" height="2.5" rx="1" fill="#0D9488"/>
+          <rect x="80" y="82" width="35" height="1.5" rx="1" fill="#444"/>
+          <rect x="80" y="85" width="32" height="1.5" rx="1" fill="#444"/>
+        </svg>
+      );
+    case "divide":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect width="45" height="170" fill="white"/>
+          <line x1="45" y1="0" x2="45" y2="170" stroke="#E2E8F0" strokeWidth="0.8"/>
+          <rect x="6" y="10" width="28" height="5" rx="1" fill="#0F172A"/>
+          <rect x="6" y="16" width="28" height="5" rx="1" fill="#0F172A"/>
+          <rect x="6" y="24" width="24" height="2" rx="1" fill="#334155"/>
+          <rect x="6" y="34" width="20" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="6" y="38" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="38" width="28" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="42" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="42" width="25" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="46" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="46" width="22" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="56" width="18" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="6" y="60" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="60" width="24" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="64" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="64" width="20" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="68" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="68" width="26" height="1.5" rx="1" fill="#475569"/>
+          <rect x="52" y="10" width="22" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="52" y="15" width="60" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="52" y="18" width="55" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="52" y="28" width="28" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="52" y="33" width="18" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="52" y="37" width="40" height="2" rx="1" fill="#0F172A"/>
+          <rect x="52" y="41" width="30" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="54" y="45" width="58" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="54" y="48" width="50" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="54" y="51" width="55" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="52" y="57" width="18" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="52" y="61" width="38" height="2" rx="1" fill="#0F172A"/>
+          <rect x="52" y="65" width="28" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="54" y="69" width="58" height="1.5" rx="1" fill="#F3F4F6"/>
+          <rect x="54" y="72" width="45" height="1.5" rx="1" fill="#F3F4F6"/>
+        </svg>
+      );
+    case "folio":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect width="45" height="170" fill="#F1F5F9"/>
+          <rect x="6" y="10" width="28" height="5" rx="1" fill="#0F172A"/>
+          <rect x="6" y="16" width="28" height="5" rx="1" fill="#0F172A"/>
+          <rect x="6" y="24" width="24" height="2" rx="1" fill="#334155"/>
+          <rect x="6" y="34" width="20" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="6" y="38" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="38" width="28" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="42" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="42" width="25" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="46" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="46" width="22" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="56" width="18" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="6" y="60" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="60" width="24" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="64" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="64" width="20" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="68" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="68" width="26" height="1.5" rx="1" fill="#475569"/>
+          <rect x="52" y="10" width="22" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="52" y="15" width="60" height="1.5" rx="1" fill="#E2E8F0"/>
+          <rect x="52" y="18" width="55" height="1.5" rx="1" fill="#E2E8F0"/>
+          <rect x="52" y="28" width="28" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="52" y="33" width="18" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="52" y="37" width="40" height="2" rx="1" fill="#0F172A"/>
+          <rect x="52" y="41" width="30" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="54" y="45" width="58" height="1.5" rx="1" fill="#E2E8F0"/>
+          <rect x="54" y="48" width="50" height="1.5" rx="1" fill="#E2E8F0"/>
+          <rect x="54" y="51" width="55" height="1.5" rx="1" fill="#E2E8F0"/>
+          <rect x="52" y="57" width="18" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="52" y="61" width="38" height="2" rx="1" fill="#0F172A"/>
+          <rect x="52" y="65" width="28" height="1.5" rx="1" fill="#64748B"/>
+          <rect x="54" y="69" width="58" height="1.5" rx="1" fill="#E2E8F0"/>
+          <rect x="54" y="72" width="45" height="1.5" rx="1" fill="#E2E8F0"/>
+        </svg>
+      );
+    case "metro":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          {/* Target title */}
+          <rect x="8" y="8" width="30" height="2" rx="1" fill="#2563EB"/>
+          {/* Name */}
+          <rect x="8" y="12" width="50" height="6" rx="1" fill="#0F172A"/>
+          {/* Contact dots */}
+          <circle cx="12" cy="24" r="2" fill="none" stroke="#2563EB" strokeWidth="0.8"/>
+          <rect x="16" y="23" width="30" height="1.5" rx="1" fill="#374151"/>
+          <circle cx="12" cy="29" r="2" fill="none" stroke="#2563EB" strokeWidth="0.8"/>
+          <rect x="16" y="28" width="25" height="1.5" rx="1" fill="#374151"/>
+          <circle cx="12" cy="34" r="2" fill="none" stroke="#2563EB" strokeWidth="0.8"/>
+          <rect x="16" y="33" width="28" height="1.5" rx="1" fill="#374151"/>
+          {/* Rule */}
+          <rect x="8" y="40" width="104" height="0.5" fill="#E2E8F0"/>
+          {/* Two-column: Profile + Skills */}
+          <rect x="8" y="44" width="18" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="48" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="8" y="51" width="50" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="8" y="54" width="48" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="72" y="44" width="14" height="2" rx="1" fill="#111"/>
+          <circle cx="74" cy="49" r="1.5" fill="none" stroke="#2563EB" strokeWidth="0.6"/>
+          <rect x="78" y="48" width="28" height="1.5" rx="1" fill="#374151"/>
+          <circle cx="74" cy="53" r="1.5" fill="none" stroke="#2563EB" strokeWidth="0.6"/>
+          <rect x="78" y="52" width="24" height="1.5" rx="1" fill="#374151"/>
+          <circle cx="74" cy="57" r="1.5" fill="none" stroke="#2563EB" strokeWidth="0.6"/>
+          <rect x="78" y="56" width="26" height="1.5" rx="1" fill="#374151"/>
+          {/* Rule */}
+          <rect x="8" y="62" width="104" height="0.5" fill="#E2E8F0"/>
+          {/* Education */}
+          <rect x="8" y="66" width="22" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="71" width="16" height="1.5" rx="1" fill="#2563EB"/>
+          <rect x="28" y="70" width="35" height="2" rx="1" fill="#111"/>
+          <rect x="28" y="74" width="28" height="1.5" rx="1" fill="#555"/>
+          {/* Rule */}
+          <rect x="8" y="80" width="104" height="0.5" fill="#E2E8F0"/>
+          {/* Employment */}
+          <rect x="8" y="84" width="26" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="89" width="16" height="1.5" rx="1" fill="#2563EB"/>
+          <rect x="28" y="88" width="40" height="2" rx="1" fill="#111"/>
+          <rect x="28" y="92" width="60" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="28" y="95" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+        </svg>
+      );
+    case "harvard":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <line x1="8" y1="14" x2="35" y2="14" stroke="#111" strokeWidth="0.8"/>
+          <rect x="37" y="10" width="46" height="6" rx="1" fill="#111"/>
+          <line x1="85" y1="14" x2="112" y2="14" stroke="#111" strokeWidth="0.8"/>
+          <rect x="25" y="20" width="70" height="1.5" rx="1" fill="#333" opacity="0.6"/>
+          <rect x="35" y="30" width="50" height="2.5" rx="1" fill="#111"/>
+          <rect x="8" y="37" width="50" height="2" rx="1" fill="#111"/>
+          <rect x="80" y="37" width="30" height="1.5" rx="1" fill="#111"/>
+          <rect x="8" y="41" width="40" height="1.5" rx="1" fill="#666"/>
+          <rect x="80" y="41" width="25" height="1.5" rx="1" fill="#666"/>
+          <rect x="35" y="50" width="50" height="2.5" rx="1" fill="#111"/>
+          <rect x="8" y="57" width="55" height="2" rx="1" fill="#111"/>
+          <rect x="80" y="57" width="28" height="1.5" rx="1" fill="#111"/>
+          <rect x="8" y="61" width="35" height="1.5" rx="1" fill="#666"/>
+          <rect x="80" y="61" width="25" height="1.5" rx="1" fill="#666"/>
+          <rect x="12" y="66" width="90" height="1.5" rx="1" fill="#E5E5E5"/>
+          <rect x="12" y="69" width="85" height="1.5" rx="1" fill="#E5E5E5"/>
+          <rect x="12" y="72" width="88" height="1.5" rx="1" fill="#E5E5E5"/>
+          <rect x="35" y="80" width="50" height="2.5" rx="1" fill="#111"/>
+          <rect x="8" y="87" width="50" height="1.5" rx="1" fill="#111"/>
+          <rect x="60" y="87" width="45" height="1.5" rx="1" fill="#E5E5E5"/>
+        </svg>
+      );
+    case "ledger":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="25" y="8" width="70" height="5" rx="1" fill="#111"/>
+          <rect x="30" y="16" width="60" height="1.5" rx="1" fill="#6B7280"/>
+          <rect x="8" y="28" width="22" height="2" rx="1" fill="#111"/>
+          <line x1="34" y1="28" x2="112" y2="28" stroke="#CBD5E1" strokeWidth="0.5"/>
+          <rect x="34" y="30" width="70" height="1.5" rx="1" fill="#374151"/>
+          <rect x="34" y="33" width="65" height="1.5" rx="1" fill="#374151"/>
+          <rect x="8" y="44" width="22" height="2" rx="1" fill="#111"/>
+          <line x1="34" y1="44" x2="112" y2="44" stroke="#CBD5E1" strokeWidth="0.5"/>
+          <rect x="34" y="46" width="18" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="34" y="49" width="50" height="2" rx="1" fill="#111"/>
+          <rect x="34" y="53" width="35" height="1.5" rx="1" fill="#555"/>
+          <rect x="8" y="64" width="26" height="2" rx="1" fill="#111"/>
+          <line x1="34" y1="64" x2="112" y2="64" stroke="#CBD5E1" strokeWidth="0.5"/>
+          <rect x="34" y="66" width="16" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="34" y="69" width="55" height="2" rx="1" fill="#111"/>
+          <rect x="34" y="73" width="70" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="34" y="76" width="65" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="8" y="87" width="18" height="2" rx="1" fill="#111"/>
+          <line x1="34" y1="87" x2="112" y2="87" stroke="#CBD5E1" strokeWidth="0.5"/>
+          <rect x="34" y="89" width="35" height="1.5" rx="1" fill="#111"/>
+          <rect x="73" y="89" width="30" height="1.5" rx="1" fill="#111"/>
+          <rect x="34" y="92" width="32" height="1.5" rx="1" fill="#111"/>
+          <rect x="73" y="92" width="28" height="1.5" rx="1" fill="#111"/>
+        </svg>
       );
   }
 }
@@ -186,6 +415,22 @@ function SortableItem({ id }: { id: string }) {
   );
 }
 
+function ColumnItem({ id, direction, onMove }: { id: string; direction: "toMain" | "toSidebar"; onMove: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const style: React.CSSProperties = { transform: CSS.Transform.toString(transform), transition };
+  const Arrow = direction === "toMain" ? ChevronRight : ChevronLeft;
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center gap-1 rounded-md border bg-background px-2 py-1.5 text-xs">
+      <GripVertical className="h-3 w-3 shrink-0 cursor-grab text-muted-foreground" {...attributes} {...listeners} />
+      <span className="flex-1 truncate">{SECTION_LABELS[id] ?? id}</span>
+      <button type="button" onClick={(e) => { e.stopPropagation(); onMove(); }} className="shrink-0 rounded p-0.5 hover:bg-muted" title={direction === "toMain" ? "Move to main" : "Move to sidebar"}>
+        <Arrow className="h-3 w-3 text-muted-foreground" />
+      </button>
+    </div>
+  );
+}
+
 export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
   function update<K extends keyof ResumeDesignSettings>(
     key: K,
@@ -209,6 +454,86 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
     typeof design.nameSize === "string" ? NAME_SIZE_PT[design.nameSize] : design.nameSize;
 
   const currentHex = resolveAccentHex(design.accentColor);
+
+  const isSidebar = design.template === "sidebar" || design.template === "sidebar-right";
+  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio";
+  const isTwoCol = isSidebar || isColumnBased;
+
+  const SIDEBAR_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
+  const HORIZON_RIGHT_DEFAULT = ["education", "certifications", "skills"];
+  const HORIZON_HEADER = new Set(["contact", "targetTitle", "summary"]);
+
+  const COLUMN_LEFT_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
+  // For sidebar & divide/folio: sidebarSections = left column. For horizon: sidebarSections = right column.
+  const secondarySections = design.sidebarSections ?? (isColumnBased && design.template === "two-column" ? HORIZON_RIGHT_DEFAULT : COLUMN_LEFT_DEFAULT);
+  const secondarySet = new Set(secondarySections);
+
+  let displayLeft: string[] = [], displayRight: string[] = [];
+  let labelLeft = "", labelRight = "";
+
+  if (isSidebar || design.template === "divide" || design.template === "folio") {
+    // sidebarSections = left column sections
+    displayLeft = [...secondarySections];
+    displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k));
+    labelLeft = isSidebar ? "Sidebar" : "Left";
+    labelRight = isSidebar ? "Main" : "Right";
+  } else if (design.template === "two-column") {
+    // sidebarSections = right column sections (Horizon header is fixed)
+    displayLeft = design.sectionOrder.filter((k) => !secondarySet.has(k) && !HORIZON_HEADER.has(k));
+    displayRight = secondarySections.filter((k) => !HORIZON_HEADER.has(k));
+    labelLeft = "Left";
+    labelRight = "Right";
+  }
+
+  // For sidebar/divide/folio: sidebarSections IS the left column, so "left→right" = remove from it
+  // For horizon: sidebarSections IS the right column, so "left→right" = add to it
+  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio";
+
+  function moveLeftToRight(id: string) {
+    if (leftIsSecondary) {
+      onChange({ ...design, sidebarSections: secondarySections.filter((k) => k !== id) });
+    } else {
+      onChange({ ...design, sidebarSections: [...secondarySections, id] });
+    }
+  }
+
+  function moveRightToLeft(id: string) {
+    if (leftIsSecondary) {
+      onChange({ ...design, sidebarSections: [...secondarySections, id] });
+    } else {
+      onChange({ ...design, sidebarSections: secondarySections.filter((k) => k !== id) });
+    }
+  }
+
+  function handleLeftColDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      if (leftIsSecondary) {
+        const oldIdx = secondarySections.indexOf(active.id as string);
+        const newIdx = secondarySections.indexOf(over.id as string);
+        onChange({ ...design, sidebarSections: arrayMove(secondarySections, oldIdx, newIdx) });
+      } else {
+        const oldIdx = design.sectionOrder.indexOf(active.id as string);
+        const newIdx = design.sectionOrder.indexOf(over.id as string);
+        update("sectionOrder", arrayMove(design.sectionOrder, oldIdx, newIdx));
+      }
+    }
+  }
+
+  function handleRightColDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      if (leftIsSecondary) {
+        const oldIdx = design.sectionOrder.indexOf(active.id as string);
+        const newIdx = design.sectionOrder.indexOf(over.id as string);
+        update("sectionOrder", arrayMove(design.sectionOrder, oldIdx, newIdx));
+      } else {
+        const oldIdx = secondarySections.indexOf(active.id as string);
+        const newIdx = secondarySections.indexOf(over.id as string);
+        onChange({ ...design, sidebarSections: arrayMove(secondarySections, oldIdx, newIdx) });
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -292,6 +617,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
       <section>
         <Label className="mb-3 block text-sm font-semibold">Layout</Label>
         <div className="space-y-3">
+          {!isTwoCol && (
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">Header alignment</span>
             <div className="flex gap-1">
@@ -311,6 +637,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
               ))}
             </div>
           </div>
+          )}
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">Paper size</span>
             <div className="flex gap-1">
@@ -356,6 +683,8 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
               </span>
             </div>
           </div>
+          {!isSidebar && (
+          <>
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">
               Left & Right margins
@@ -394,6 +723,8 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
               </span>
             </div>
           </div>
+          </>
+          )}
         </div>
       </section>
 
@@ -609,6 +940,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
               ))}
             </div>
           </div>
+          {!isTwoCol && (
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">Contact separator</span>
             <div className="flex gap-1">
@@ -631,24 +963,54 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
               ))}
             </div>
           </div>
+          )}
         </div>
       </section>
 
       {/* Section Order */}
       <section>
         <Label className="mb-3 block text-sm font-semibold">Section Order</Label>
-        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext
-            items={design.sectionOrder}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="flex flex-col gap-1.5">
-              {design.sectionOrder.map((id) => (
-                <SortableItem key={id} id={id} />
-              ))}
+        {isTwoCol ? (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <span className="mb-2 block text-xs font-medium text-muted-foreground">{labelLeft}</span>
+              <DndContext id="left-col-reorder" collisionDetection={closestCenter} onDragEnd={handleLeftColDragEnd}>
+                <SortableContext items={displayLeft} strategy={verticalListSortingStrategy}>
+                  <div className="flex flex-col gap-1">
+                    {displayLeft.map((id) => (
+                      <ColumnItem key={id} id={id} direction="toMain" onMove={() => moveLeftToRight(id)} />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
             </div>
-          </SortableContext>
-        </DndContext>
+            <div>
+              <span className="mb-2 block text-xs font-medium text-muted-foreground">{labelRight}</span>
+              <DndContext id="right-col-reorder" collisionDetection={closestCenter} onDragEnd={handleRightColDragEnd}>
+                <SortableContext items={displayRight} strategy={verticalListSortingStrategy}>
+                  <div className="flex flex-col gap-1">
+                    {displayRight.map((id) => (
+                      <ColumnItem key={id} id={id} direction="toSidebar" onMove={() => moveRightToLeft(id)} />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </div>
+          </div>
+        ) : (
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext
+              items={design.sectionOrder}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="flex flex-col gap-1.5">
+                {design.sectionOrder.map((id) => (
+                  <SortableItem key={id} id={id} />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
       </section>
 
       {/* Template */}

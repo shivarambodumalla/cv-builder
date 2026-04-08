@@ -128,7 +128,6 @@ export function MinimalTemplate({
     summary: () =>
       summary.content ? (
         <div key="summary">
-          {renderSectionTitle("Summary")}
           <p
             style={{
               fontFamily: "var(--resume-font)",

@@ -122,6 +122,8 @@ export function SharpTemplate({
     ),
 
     targetTitle: () =>
+      // Already rendered inside the contact header block
+      visibleSections.includes("contact") ? null :
       targetTitle.title ? (
         <div
           key="targetTitle"
@@ -142,7 +144,6 @@ export function SharpTemplate({
     summary: () =>
       summary.content ? (
         <div key="summary">
-          {renderSectionTitle("Summary")}
           <p
             style={{
               fontFamily: "var(--resume-font)",

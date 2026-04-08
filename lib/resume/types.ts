@@ -1,4 +1,4 @@
-export type TemplateName = "classic" | "sharp" | "minimal" | "executive" | "sidebar";
+export type TemplateName = "classic" | "sharp" | "minimal" | "executive" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger";
 export type FontFamily = "classic" | "clean" | "elegant" | "strong";
 export type AccentColor = "slate" | "teal" | "navy" | "rust" | "plum" | "deepRed" | "darkGold" | "forestGreen" | "steelBlue" | "softPurple" | "lavender" | "warmOrange" | "slateGray";
 export type HeaderAlignment = "left" | "center" | "right";
@@ -50,6 +50,7 @@ export interface ResumeDesignSettings {
   sectionHeadingWeight: FontWeight;
   sectionHeadingCase: TextCase;
   contactSeparator: ContactSeparator;
+  sidebarSections?: string[];
 }
 
 export const FONT_STACKS: Record<FontFamily, string> = {

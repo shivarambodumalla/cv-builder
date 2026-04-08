@@ -130,63 +130,81 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
   }
 
   useEffect(() => {
+    function highlightEl(el: HTMLElement) {
+      el.focus();
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("ring-2", "ring-yellow-400");
+      setTimeout(() => el.classList.remove("ring-2", "ring-yellow-400"), 2000);
+    }
+
+    function findBulletTextarea(container: Element, bulletText: string): HTMLElement | null {
+      const textareas = container.querySelectorAll("textarea");
+      const needleFull = bulletText.toLowerCase().trim();
+      const needleShort = needleFull.slice(0, 40);
+      for (const ta of textareas) {
+        const val = (ta as HTMLTextAreaElement).value.toLowerCase().trim();
+        if (val === needleFull || val.includes(needleFull)) return ta;
+      }
+      for (const ta of textareas) {
+        if ((ta as HTMLTextAreaElement).value.toLowerCase().includes(needleShort)) return ta;
+      }
+      return null;
+    }
+
     function onJumpToField(e: Event) {
       const ref = (e as CustomEvent).detail as { section: string; field?: string | null; bulletText?: string };
       if (!ref?.section) return;
       const el = document.querySelector(`[data-section="${ref.section}"]`);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        const trigger = el.querySelector("[data-state=closed]") as HTMLElement;
-        trigger?.click();
-        setTimeout(() => {
-          let fieldEl: HTMLElement | null = null;
+      if (!el) return;
 
-          if (ref.bulletText && ref.field === "bullets") {
-            // Find the specific bullet textarea matching the full bullet text
-            const textareas = el.querySelectorAll("textarea");
-            const needleFull = ref.bulletText.toLowerCase().trim();
-            const needleShort = needleFull.slice(0, 40);
-            // Try full match first, then partial
-            for (const ta of textareas) {
-              const val = (ta as HTMLTextAreaElement).value.toLowerCase().trim();
-              if (val === needleFull || val.includes(needleFull)) { fieldEl = ta; break; }
-            }
-            if (!fieldEl) {
-              for (const ta of textareas) {
-                if ((ta as HTMLTextAreaElement).value.toLowerCase().includes(needleShort)) { fieldEl = ta; break; }
-              }
-            }
-            // Also open the parent experience sub-accordion if collapsed
-            if (fieldEl) {
-              const expItem = fieldEl.closest("[data-section] .rounded-lg.border");
-              if (expItem && !expItem.querySelector(".border-t")) {
-                const header = expItem.querySelector("[role=button]") as HTMLElement;
-                header?.click();
-                setTimeout(() => {
-                  fieldEl!.focus();
-                  fieldEl!.scrollIntoView({ behavior: "smooth", block: "center" });
-                  fieldEl!.classList.add("ring-2", "ring-yellow-400");
-                  setTimeout(() => fieldEl!.classList.remove("ring-2", "ring-yellow-400"), 2000);
-                }, 200);
-                return;
-              }
-            }
-          }
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
 
-          if (!fieldEl) {
-            fieldEl = ref.field
-              ? el.querySelector(`[name*="${ref.field}"], [data-field="${ref.field}"]`) as HTMLElement
-              : el.querySelector("input, textarea") as HTMLElement;
-          }
+      // Open the main section accordion if collapsed
+      const trigger = el.querySelector("[data-state=closed]") as HTMLElement;
+      trigger?.click();
 
+      setTimeout(() => {
+        if (ref.bulletText && ref.field === "bullets") {
+          // First try to find the textarea (works if items are already open)
+          let fieldEl = findBulletTextarea(el, ref.bulletText);
           if (fieldEl) {
-            fieldEl.focus();
-            fieldEl.scrollIntoView({ behavior: "smooth", block: "center" });
-            fieldEl.classList.add("ring-2", "ring-yellow-400");
-            setTimeout(() => fieldEl!.classList.remove("ring-2", "ring-yellow-400"), 2000);
+            highlightEl(fieldEl);
+            return;
           }
-        }, 300);
-      }
+
+          // Textareas not in DOM — expand all collapsed sub-items first
+          const collapsedItems = el.querySelectorAll(".rounded-lg.border");
+          let expandedAny = false;
+          for (const item of collapsedItems) {
+            // If no .border-t child, the item is collapsed
+            if (!item.querySelector(".border-t")) {
+              const header = item.querySelector("[role=button]") as HTMLElement;
+              if (header) { header.click(); expandedAny = true; }
+            }
+          }
+
+          if (expandedAny) {
+            // Wait for React to render the expanded content, then search again
+            setTimeout(() => {
+              fieldEl = findBulletTextarea(el, ref.bulletText!);
+              if (fieldEl) {
+                highlightEl(fieldEl);
+              } else {
+                // Fallback: focus first textarea in the section
+                const fallback = el.querySelector("textarea") as HTMLElement;
+                if (fallback) highlightEl(fallback);
+              }
+            }, 350);
+          }
+          return;
+        }
+
+        const fieldEl = ref.field
+          ? el.querySelector(`[name*="${ref.field}"], [data-field="${ref.field}"]`) as HTMLElement
+          : el.querySelector("input, textarea") as HTMLElement;
+
+        if (fieldEl) highlightEl(fieldEl);
+      }, 300);
     }
 
     function onAddSkill(e: Event) {

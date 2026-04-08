@@ -7,7 +7,10 @@
       "Bash(grep -A 30 \"create table.*cvs\" /Users/sivaramireddy/work/cv-builder/supabase/migrations/*.sql)",
       "Bash(curl -s http://localhost:3000/api/cv/analyse -X POST -H \"Content-Type: application/json\" -d '{\"cv_id\":\"test\"}')",
       "Bash(xargs sed:*)",
-      "Bash(find /Users/sivaramireddy/work/cv-builder/app -name \"page.tsx\" -exec dirname {} \\\\;)"
+      "Bash(find /Users/sivaramireddy/work/cv-builder/app -name \"page.tsx\" -exec dirname {} \\\\;)",
+      "Bash(wc -l /Users/sivaramireddy/work/cv-builder/components/resume/templates/*.tsx)",
+      "Bash(grep -n \"job-match-panel\" /Users/sivaramireddy/work/cv-builder/components/shared/*.tsx)",
+      "Bash(lsof -ti:3000)"
     ]
   }
 }

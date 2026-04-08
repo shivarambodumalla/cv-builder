@@ -314,8 +314,8 @@ function normaliseReport(raw: any): AtsReportData {
     normCats[key] = {
       score,
       weight: typeof cat.weight === "number" ? (cat.weight <= 1 ? cat.weight * 100 : cat.weight) : 0,
-      // Strip issues if score is 90+ (AI sometimes reports issues even for near-perfect scores)
-      issues: score >= 90 ? [] : (cat.issues ?? []).map((issue: any) => ({
+      // Only strip issues at a perfect 100 — scores below 100 should show actionable feedback
+      issues: score >= 100 ? [] : (cat.issues ?? []).map((issue: any) => ({
         description: issue.description ?? "",
         fix: issue.fix ?? "",
         impact: typeof issue.impact === "number" ? issue.impact : (issue.impact === "high" ? 8 : issue.impact === "medium" ? 5 : 3),
