@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { AdminMobileNav } from "./admin-mobile-nav";
+import { AdminSidebarNav } from "./admin-sidebar-nav";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/analytics", label: "Analytics" },
   { href: "/admin/users", label: "Users" },
+  { href: "/admin/pricing", label: "Pricing" },
   { href: "/admin/prompts", label: "Prompts" },
   { href: "/admin/keywords", label: "Keywords" },
-  { href: "/admin/pricing", label: "Pricing" },
-  { href: "/admin/ai-settings", label: "AI Settings" },
   { href: "/admin/missing-roles", label: "Missing Roles" },
+  { href: "/admin/ai-settings", label: "AI Settings" },
   { href: "/admin/emails", label: "Emails" },
   { href: "/admin/campaigns", label: "Campaigns" },
   { href: "/admin/email-logs", label: "Email Logs" },
@@ -30,17 +31,7 @@ export default function AdminLayout({
             CVEdge Admin
           </Link>
         </div>
-        <nav className="space-y-1 p-4">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <AdminSidebarNav links={NAV_LINKS} />
       </aside>
       <div className="flex flex-1 flex-col min-w-0">
         <header className="flex h-14 lg:h-16 items-center justify-between border-b px-4 lg:px-6 gap-2">

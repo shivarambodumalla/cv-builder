@@ -489,7 +489,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             {saveStatus === "saving" ? (
               <><Loader2 className="h-3 w-3 animate-spin" /> Saving...</>
             ) : lastSavedAt ? (
-              <><Check className="h-3 w-3 text-green-500" /> Saved {formatSavedTime(lastSavedAt)}</>
+              <><Check className="h-3 w-3 text-success" /> Saved {formatSavedTime(lastSavedAt)}</>
             ) : null}
           </span>
         </div>
@@ -595,7 +595,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   {(estimatedScore || latestReport?.score != null) && (() => {
                     const score = estimatedScore?.estimated_score ?? latestReport?.score ?? 0;
                     return (
-                      <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${score >= 70 ? "bg-green-500" : score >= 40 ? "bg-yellow-500" : "bg-red-500"}`}>
+                      <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${score >= 70 ? "bg-success" : score >= 40 ? "bg-warning" : "bg-error"}`}>
                         {score}
                       </span>
                     );
@@ -604,7 +604,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5" onClick={() => setJobMatchEditing(false)}>
                   Match
                   {jobMatchResult?.match_score != null && (
-                    <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${jobMatchResult.match_score >= 70 ? "bg-green-500" : jobMatchResult.match_score >= 40 ? "bg-yellow-500" : "bg-red-500"}`}>
+                    <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${jobMatchResult.match_score >= 70 ? "bg-success" : jobMatchResult.match_score >= 40 ? "bg-warning" : "bg-error"}`}>
                       {jobMatchResult.match_score}
                     </span>
                   )}

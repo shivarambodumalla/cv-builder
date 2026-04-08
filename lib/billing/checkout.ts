@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createCheckout } from "@/lib/lemonsqueezy";
 
 export async function getCheckoutUrl(
   period: "weekly" | "monthly" | "yearly",
@@ -19,10 +20,7 @@ export async function getCheckoutUrl(
     return "/pricing";
   }
 
-  const variantId = data.lemon_squeezy_variant_id;
-  const email = encodeURIComponent(userEmail);
-
-  return `https://checkout.lemonsqueezy.com/buy/${variantId}?checkout[email]=${email}&checkout[custom][user_id]=${userId}`;
+  return createCheckout(userId, userEmail, data.lemon_squeezy_variant_id, period);
 }
 
 export async function getPricingConfig() {

@@ -18,7 +18,7 @@ export default async function DashboardPage() {
 
   const { data: cvs } = await supabase
     .from("cvs")
-    .select("id, title, created_at, ats_reports(score)")
+    .select("id, title, created_at, parsed_json, design_settings, target_role, ats_reports(score), job_matches(match_score), cover_letters(id)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 

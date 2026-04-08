@@ -47,6 +47,15 @@ const config: Config = {
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
         },
+        success: {
+          DEFAULT: "var(--success)",
+        },
+        warning: {
+          DEFAULT: "var(--warning)",
+        },
+        error: {
+          DEFAULT: "var(--error)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

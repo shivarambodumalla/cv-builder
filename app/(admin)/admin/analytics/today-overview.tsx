@@ -24,9 +24,9 @@ function fmtTokens(n: number): string {
 }
 
 function capColor(p: number) {
-  if (p < 50) return "bg-green-500";
-  if (p < 80) return "bg-yellow-500";
-  return "bg-red-500";
+  if (p < 50) return "bg-success";
+  if (p < 80) return "bg-warning";
+  return "bg-error";
 }
 
 export function TodayOverview({ initial }: { initial: TodayData }) {

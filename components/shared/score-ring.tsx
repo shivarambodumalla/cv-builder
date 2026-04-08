@@ -11,10 +11,10 @@ export interface ScoreMilestone {
 }
 
 export function getScoreMilestone(score: number): ScoreMilestone {
-  if (score >= 80) return { tier: "interview-ready", label: "Interview Ready", color: "text-green-500", textColor: "text-green-600 dark:text-green-400", message: "Your resume is ready for most ATS systems" };
+  if (score >= 80) return { tier: "interview-ready", label: "Interview Ready", color: "text-success", textColor: "text-success", message: "Your resume is ready for most ATS systems" };
   if (score >= 70) return { tier: "good-match", label: "Good Match", color: "text-blue-500", textColor: "text-blue-600 dark:text-blue-400", message: "A few tweaks could push you over the top" };
-  if (score >= 50) return { tier: "needs-work", label: "Needs Work", color: "text-amber-500", textColor: "text-amber-600 dark:text-amber-400", message: "Fix the issues below to improve your chances" };
-  return { tier: "needs-attention", label: "Needs Attention", color: "text-red-500", textColor: "text-red-600 dark:text-red-400", message: "Focus on the high-impact fixes first" };
+  if (score >= 50) return { tier: "needs-work", label: "Needs Work", color: "text-warning", textColor: "text-warning", message: "Fix the issues below to improve your chances" };
+  return { tier: "needs-attention", label: "Needs Attention", color: "text-error", textColor: "text-error", message: "Focus on the high-impact fixes first" };
 }
 
 interface ScoreRingProps {

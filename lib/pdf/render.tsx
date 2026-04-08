@@ -1,5 +1,5 @@
 import React from "react";
-import { renderToBuffer, Document, Page, Text, View } from "@react-pdf/renderer";
+import { renderToBuffer, Document, Page, Text, View, Link } from "@react-pdf/renderer";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 
 const BODY_PT: Record<string, number> = { S: 9, M: 10, L: 11 };
@@ -101,16 +101,44 @@ export async function renderCvPdf(
   const c = data.contact || {} as ResumeContent["contact"];
   if (c.name) children.push(e(Text, { key: "name", style: nameStyle }, c.name));
   if (data.targetTitle?.title) children.push(e(Text, { key: "title", style: titleStyle }, data.targetTitle.title));
-  const parts: string[] = [];
-  if (c.email) parts.push(c.email);
-  if (c.phone) parts.push(c.phone);
-  if (c.location) parts.push(c.location);
-  if (c.linkedin) parts.push(c.linkedin);
-  if (c.website) parts.push(c.website);
-  if (parts.length) {
-    const contactParts = parts.length <= 3 ? [parts.join(sep)] : [parts.slice(0, Math.ceil(parts.length/2)).join(sep), parts.slice(Math.ceil(parts.length/2)).join(sep)];
-    for (let ci = 0; ci < contactParts.length; ci++) {
-      children.push(e(Text, { key: `contact${ci}`, style: contactStyle }, contactParts[ci]));
+  const contactLinkStyle = { ...contactStyle, textDecoration: "none" as const, color: contactStyle.color };
+  const contactFields: { text: string; href?: string }[] = [];
+  if (c.email) contactFields.push({ text: c.email, href: `mailto:${c.email}` });
+  if (c.phone) contactFields.push({ text: c.phone, href: `tel:${c.phone}` });
+  if (c.location) contactFields.push({ text: c.location });
+  if (c.linkedin) contactFields.push({ text: c.linkedin, href: c.linkedin.startsWith("http") ? c.linkedin : `https://${c.linkedin}` });
+  if (c.website) contactFields.push({ text: c.website, href: c.website.startsWith("http") ? c.website : `https://${c.website}` });
+  if (contactFields.length) {
+    const renderContactItem = (f: { text: string; href?: string }, i: number) =>
+      f.href
+        ? e(Link, { key: `cl${i}`, src: f.href, style: contactLinkStyle }, f.text)
+        : e(Text, { key: `ct${i}`, style: contactStyle }, f.text);
+
+    if (contactFields.length <= 3) {
+      children.push(
+        e(Text, { key: "contact0", style: contactStyle },
+          ...contactFields.flatMap((f, i) => {
+            const items: React.ReactNode[] = [];
+            if (i > 0) items.push(e(Text, { key: `sep${i}` }, sep));
+            items.push(renderContactItem(f, i));
+            return items;
+          })
+        )
+      );
+    } else {
+      const mid = Math.ceil(contactFields.length / 2);
+      [contactFields.slice(0, mid), contactFields.slice(mid)].forEach((row, ri) => {
+        children.push(
+          e(Text, { key: `contact${ri}`, style: contactStyle },
+            ...row.flatMap((f, i) => {
+              const items: React.ReactNode[] = [];
+              if (i > 0) items.push(e(Text, { key: `sep${ri}${i}` }, sep));
+              items.push(renderContactItem(f, ri * 10 + i));
+              return items;
+            })
+          )
+        );
+      });
     }
   }
 

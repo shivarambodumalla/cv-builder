@@ -14,11 +14,14 @@ export function configureLemonSqueezy() {
 export async function createCheckout(
   userId: string,
   email: string,
-  variantId: string
+  variantId: string,
+  period?: string
 ) {
   configureLemonSqueezy();
 
   const storeId = process.env.LEMONSQUEEZY_STORE_ID!;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const redirectUrl = `${appUrl}/api/billing/success${period ? `?period=${period}` : ""}`;
 
   const { data, error } = await lsCreateCheckout(storeId, variantId, {
     checkoutData: {
@@ -26,7 +29,7 @@ export async function createCheckout(
       custom: { user_id: userId },
     },
     productOptions: {
-      redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/billing`,
+      redirectUrl,
     },
   });
 

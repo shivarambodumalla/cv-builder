@@ -28,6 +28,9 @@
     --input: #d9cfc0;
     --ring: #1a7a6d;
     --radius: 0.5rem;
+    --success: #059669;
+    --warning: #D97706;
+    --error: #DC2626;
   }
 
   .dark {
@@ -50,6 +53,9 @@
     --border: #243a36;
     --input: #243a36;
     --ring: #1a7a6d;
+    --success: #34D399;
+    --warning: #FBBF24;
+    --error: #F87171;
   }
 }
 

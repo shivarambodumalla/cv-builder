@@ -52,16 +52,14 @@ export function UpgradeModal() {
   async function handleCheckout() {
     setCheckoutLoading(true);
     try {
-      // Mock upgrade for testing — skip Lemon Squeezy
-      // TODO: Replace with real Lemon Squeezy checkout when ready
-      const res = await fetch("/api/billing/mock-upgrade", {
+      const res = await fetch("/api/billing/checkout-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ period: billing }),
       });
-      if (res.ok) {
-        setSuccess(true);
-        setTimeout(() => window.location.reload(), 2000);
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
       }
     } catch { /* ignore */ }
     setCheckoutLoading(false);

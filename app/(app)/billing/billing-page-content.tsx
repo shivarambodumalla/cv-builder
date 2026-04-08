@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getPlan } from "@/lib/billing/limits";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
-import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt } from "lucide-react";
+import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt, AlertTriangle } from "lucide-react";
 
 interface ProfileData {
   plan?: string;
@@ -50,6 +51,19 @@ function StatCard({ icon: Icon, label, value }: { icon: React.ElementType; label
 export function BillingPageContent({ profile, stats, history }: { profile: ProfileData; stats: Stats; history: HistoryEntry[] }) {
   const plan = getPlan(profile);
   const { openUpgradeModal } = useUpgradeModal();
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  async function handleCancel() {
+    setCancelLoading(true);
+    try {
+      const res = await fetch("/api/billing/cancel", { method: "POST" });
+      if (res.ok) {
+        window.location.reload();
+      }
+    } catch { /* ignore */ }
+    setCancelLoading(false);
+  }
 
   const periodLabel = profile.subscription_period
     ? profile.subscription_period.charAt(0).toUpperCase() + profile.subscription_period.slice(1)
@@ -147,13 +161,61 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           )}
         </div>
 
-        {/* Invoice note */}
+        {/* Invoice note + Cancel */}
         {plan === "pro" && (
-          <div className="border-t pt-4 mt-2">
+          <div className="border-t pt-4 mt-2 space-y-4">
             <p className="text-xs text-muted-foreground">
               Invoices are sent to your email after each payment. For billing questions, contact{" "}
               <a href="mailto:hello@thecvedge.com" className="text-primary hover:underline">hello@thecvedge.com</a>
             </p>
+
+            {profile.subscription_status === "active" && !showCancelConfirm && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+                onClick={() => setShowCancelConfirm(true)}
+              >
+                Cancel subscription
+              </Button>
+            )}
+
+            {profile.subscription_status === "active" && showCancelConfirm && (
+              <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium">Cancel your subscription?</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      You&apos;ll keep Pro access until {renewalDate}. After that, your account will revert to the free plan.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleCancel}
+                    disabled={cancelLoading}
+                  >
+                    {cancelLoading ? "Cancelling..." : "Yes, cancel"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowCancelConfirm(false)}
+                  >
+                    Keep subscription
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {profile.subscription_status === "cancelled" && renewalDate && (
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                Your subscription has been cancelled. You have Pro access until {renewalDate}.
+              </p>
+            )}
           </div>
         )}
       </div>

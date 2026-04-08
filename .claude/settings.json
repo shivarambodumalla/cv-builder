@@ -10,7 +10,8 @@
       "Bash(find /Users/sivaramireddy/work/cv-builder/app -name \"page.tsx\" -exec dirname {} \\\\;)",
       "Bash(wc -l /Users/sivaramireddy/work/cv-builder/components/resume/templates/*.tsx)",
       "Bash(grep -n \"job-match-panel\" /Users/sivaramireddy/work/cv-builder/components/shared/*.tsx)",
-      "Bash(lsof -ti:3000)"
+      "Bash(lsof -ti:3000)",
+      "Bash(find /Users/sivaramireddy/work/cv-builder -type f -name \"*.tsx\" -exec grep -l \"Content.*Design\\\\|tabs\\\\|navigation\" {} \\\\;)"
     ]
   }
 }

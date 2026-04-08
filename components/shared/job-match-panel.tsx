@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ScoreRing, getScoreMilestone } from "@/components/shared/score-ring";
 import {
   Check,
   ChevronDown,
@@ -16,7 +15,6 @@ import {
   Plus,
   RefreshCw,
   Sparkles,
-  Target,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,6 +22,7 @@ import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import type { ResumeContent } from "@/lib/resume/types";
 import type { FieldRef } from "@/lib/ai/ats-analyser";
+import { ConfidenceChip } from "@/components/shared/confidence-chip";
 
 /* ── Types ─────────────────────────────────────────── */
 
@@ -312,87 +311,169 @@ export function JobMatchRightPanel({
     return "";
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Score + Milestone */}
-      <div className="flex flex-col items-center gap-2">
-        <ScoreRing score={result.match_score} label="Job Match" />
-        <p className="text-xs text-center text-muted-foreground max-w-xs">
-          {getScoreMilestone(result.match_score).message}
-        </p>
+  const matchScore = result.match_score;
+  const kwCat = categories.keyword_match;
+  const matchedKeywords = kwCat?.keywords_matched?.length ?? 0;
+  const missingKeywords = kwCat?.keywords_missing?.length ?? 0;
+  const totalKeywords = matchedKeywords + missingKeywords;
+  const expScore = categories.experience_match?.score ?? 0;
+  const experienceFitLabel = expScore >= 90 ? "Strong" : expScore >= 70 ? "Good" : expScore >= 50 ? "Fair" : "Weak";
 
-        {/* CTA below score — only when changes detected */}
-        {hasChanges && onRematch && (
-          <Button
-            variant="outline"
-            size="sm"
+  const topFixesRef = (el: HTMLDivElement | null) => { topFixesElRef.current = el; };
+  const topFixesElRef = { current: null as HTMLDivElement | null };
+  function scrollToTopFixes() {
+    topFixesElRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  return (
+    <div>
+      {/* PART 1: Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+        <div>
+          <div style={{ fontSize: "14px", fontWeight: 700, color: "#0C1A0E", letterSpacing: "-0.2px" }}>
+            Job Match
+          </div>
+          {result.created_at && (
+            <div style={{ fontSize: "10px", color: "#9CA3AF", marginTop: "1px" }}>
+              {result.match_score}% match
+            </div>
+          )}
+        </div>
+        {onRematch && (
+          <button
             onClick={onRematch}
             disabled={rematching}
-            className="mt-1 text-xs"
+            style={{
+              background: "white", border: "1px solid #E0D8CC", padding: "6px 12px",
+              borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "#3D3830",
+              cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.04)", opacity: rematching ? 0.5 : 1,
+            }}
           >
-            {rematching ? (
-              <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Updating...</>
-            ) : (
-              <><RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Update Match Score</>
-            )}
-          </Button>
+            {rematching ? <Loader2 size={11} className="animate-spin" /> : <RefreshCw size={11} color="#3D3830" />}
+            Re-match
+          </button>
         )}
       </div>
 
-      {/* Progress banner — informational only */}
+      {/* PART 2: Score Card */}
+      <div className="rounded-xl border bg-background p-4 mb-3 flex items-center gap-4" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
+          <circle cx="40" cy="40" r="32" strokeWidth="7" fill="none" className="stroke-muted" />
+          <circle cx="40" cy="40" r="32"
+            stroke={matchScore >= 70 ? "var(--success)" : matchScore >= 50 ? "var(--warning)" : "var(--error)"}
+            strokeWidth="7" fill="none"
+            strokeLinecap="round"
+            strokeDasharray={`${(matchScore / 100) * 2 * Math.PI * 32} ${2 * Math.PI * 32}`}
+            transform="rotate(-90 40 40)"
+            style={{ transition: "stroke-dasharray 0.6s ease" }}
+          />
+          <text x="40" y="37" fontFamily="system-ui" fontSize="18" fontWeight="800" textAnchor="middle" className="fill-foreground">
+            {matchScore}
+          </text>
+          <text x="40" y="50" fontFamily="system-ui" fontSize="8" textAnchor="middle" className="fill-muted-foreground">
+            Match
+          </text>
+        </svg>
+
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: "15px", fontWeight: 700, color: "#0C1A0E", marginBottom: "4px", lineHeight: 1.2 }}>
+            {getMatchLabel(matchScore)}
+          </div>
+          <div style={{ fontSize: "11px", color: "#78716C", lineHeight: 1.5, marginBottom: "8px" }}>
+            {getMatchDescription(matchScore)}
+          </div>
+          <ConfidenceChip level={matchScore >= 75 ? "high" : matchScore >= 50 ? "medium" : "low"} size="sm" />
+        </div>
+      </div>
+
+      {/* PART 3: Three stat chips */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", marginBottom: "12px" }}>
+        <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: "0.5px solid #EDE8E0" }}>
+          <div style={{ fontSize: "14px", fontWeight: 800, color: "#15803d" }}>{matchedKeywords}/{totalKeywords}</div>
+          <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Keywords</div>
+        </div>
+        <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: missingKeywords > 0 ? "0.5px solid #FECACA" : "0.5px solid #EDE8E0" }}>
+          <div style={{ fontSize: "14px", fontWeight: 800, color: missingKeywords > 0 ? "#DC2626" : "#065F46" }}>{missingKeywords}</div>
+          <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Missing</div>
+        </div>
+        <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: "0.5px solid #EDE8E0" }}>
+          <div style={{ fontSize: "13px", fontWeight: 800, color: "#15803d" }}>{experienceFitLabel}</div>
+          <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Exp. fit</div>
+        </div>
+      </div>
+
+      {/* Progress banner */}
       {hasChanges && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 dark:border-green-900 dark:bg-green-950/30">
-          <p className="text-sm font-medium text-green-800 dark:text-green-300">
+        <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3 dark:border-green-900 dark:bg-green-950/30" style={{ marginBottom: "12px" }}>
+          <p className="text-sm font-medium text-success dark:text-green-300">
             {fixStatus.addressed}/{fixStatus.total} fixes addressed
             {missingKeywordsAdded.length > 0 && ` + ${missingKeywordsAdded.length} keywords added`}
           </p>
           {fixStatus.potentialGain > 0 && (
-            <p className="text-xs text-green-600 dark:text-green-400">
-              +{fixStatus.potentialGain} pts potential improvement
-            </p>
+            <p className="text-xs text-success dark:text-green-400">+{fixStatus.potentialGain} pts potential improvement</p>
           )}
         </div>
       )}
 
-      {/* Paywall for free users who hit limit */}
+      {/* Paywall */}
       {!isPaidContent && (
-        <UpgradeBanner trigger="job_match" onUpgrade={() => openUpgradeModal("job_match_limit")} />
+        <div style={{ marginBottom: "12px" }}>
+          <UpgradeBanner trigger="job_match" onUpgrade={() => openUpgradeModal("job_match_limit")} />
+        </div>
       )}
 
-      {/* Category bars — only for paid/unlocked */}
-      {isPaidContent && <div className="space-y-3">
-        <h4 className="text-sm font-semibold">Score Breakdown</h4>
-        {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
-          const cat = categories[key];
-          if (!cat) return null;
-          return (
-            <div key={key} className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
-                <span>{label} <span className="text-xs text-muted-foreground">({CATEGORY_WEIGHTS[key]})</span></span>
-                <span className="font-bold tabular-nums">{cat.score}</span>
+      {/* PART 4: Category bars */}
+      {isPaidContent && (
+        <div style={{ marginBottom: "14px" }}>
+          <h4 className="text-sm font-semibold" style={{ marginBottom: "10px" }}>Score Breakdown</h4>
+          {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+            const cat = categories[key];
+            if (!cat) return null;
+            const color = getCategoryColor(cat.score);
+            return (
+              <div key={key} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                <div style={{ fontSize: "13px", color: "#3D3830", flex: 1 }}>
+                  {label}
+                  <span style={{ color: "#C4B8A8", fontSize: "11px", marginLeft: "4px" }}>{CATEGORY_WEIGHTS[key]}</span>
+                </div>
+                <div style={{ width: "100px", height: "6px", background: "#EDE8E0", borderRadius: "100px", overflow: "hidden" }}>
+                  <div style={{ width: `${cat.score}%`, height: "100%", borderRadius: "100px", background: color, transition: "width 0.4s ease" }} />
+                </div>
+                <div style={{ fontSize: "13px", fontWeight: 700, color, width: "26px", textAlign: "right" }}>
+                  {cat.score}
+                </div>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className={cn("h-full rounded-full transition-all duration-700", scoreColor(cat.score))}
-                  style={{ width: `${cat.score}%` }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>}
+            );
+          })}
+        </div>
+      )}
+
+      {/* PART 5: Footer divider */}
+      {isPaidContent && (
+        <>
+          <div style={{ height: "0.5px", background: "#E0D8CC", margin: "14px 0" }} />
+          <div style={{ textAlign: "center", marginBottom: "14px" }}>
+            <button
+              type="button"
+              onClick={scrollToTopFixes}
+              className="inline-flex items-center justify-center rounded-md border border-success/30 bg-success/10 px-4 py-2 text-sm font-medium text-success hover:bg-success/20 dark:bg-green-950/30 dark:text-green-400 dark:border-green-700/30 dark:hover:bg-green-950/50 transition-colors"
+            >
+              View top fixes
+            </button>
+          </div>
+        </>
+      )}
 
       {/* Quick Wins */}
       {isPaidContent && result.quick_wins?.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2" style={{ marginBottom: "14px" }}>
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">
             <Zap className="h-4 w-4 text-amber-500" /> Quick Wins
           </h4>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
             {result.quick_wins.slice(0, 3).map((w, i) => (
-              <li key={i} className="flex gap-2">
-                <span>•</span> {w}
-              </li>
+              <li key={i} className="flex gap-2"><span>•</span> {w}</li>
             ))}
           </ul>
         </div>
@@ -400,17 +481,17 @@ export function JobMatchRightPanel({
 
       {/* Top Fixes — with addressed tracking */}
       {isPaidContent && result.top_fixes?.length > 0 && (
-        <div className="space-y-2">
+        <div ref={topFixesRef} className="space-y-2" style={{ marginBottom: "14px" }}>
           <h4 className="text-sm font-semibold">Top Fixes</h4>
           {result.top_fixes.map((fix, i) => {
             const isAddressed = fixStatus.items[i];
             return (
-              <div key={i} className={cn("rounded-lg border p-3 space-y-1 transition-colors", isAddressed && "border-green-200 bg-green-50/50 dark:border-green-900 dark:bg-green-950/20")}>
+              <div key={i} className={cn("rounded-lg border p-3 space-y-1 transition-colors", isAddressed && "border-success/30 bg-success/10/50 dark:border-green-900 dark:bg-green-950/20")}>
                 <div className="flex items-start gap-2">
                   <div className="flex-1">
                     <p className={cn("text-sm", isAddressed && "line-through text-muted-foreground")}>{fix.description}</p>
                     {isAddressed ? (
-                      <p className="text-xs font-medium text-green-600 flex items-center gap-1 mt-0.5">
+                      <p className="text-xs font-medium text-success flex items-center gap-1 mt-0.5">
                         <Check className="h-3 w-3" /> Addressed
                       </p>
                     ) : (
@@ -419,28 +500,19 @@ export function JobMatchRightPanel({
                   </div>
                   {!isAddressed && (
                     <div className="flex shrink-0 items-center gap-1.5">
-                      <span className="text-xs font-medium text-green-600">+{fix.score_impact}pts</span>
+                      <span className="text-xs font-medium text-success">+{fix.score_impact}pts</span>
                       {fix.field_ref && REWRITABLE_SECTIONS.has(fix.field_ref.section) && (() => {
                         const original = findOriginalText(fix.field_ref!);
                         if (!original) return null;
                         return (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 px-2 text-xs text-primary"
-                            onClick={() => openRewriteDrawer(original, fix.field_ref!, "job_match")}
-                          >
+                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-success dark:text-green-400"
+                            onClick={() => openRewriteDrawer(original, fix.field_ref!, "job_match")}>
                             <Sparkles className="mr-1 h-3 w-3" /> Rewrite
                           </Button>
                         );
                       })()}
                       {fix.field_ref && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 px-2 text-xs"
-                          onClick={() => onFixField(fix.field_ref!)}
-                        >
+                        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onFixField(fix.field_ref!)}>
                           <Crosshair className="mr-1 h-3 w-3" /> Fix
                         </Button>
                       )}
@@ -455,17 +527,21 @@ export function JobMatchRightPanel({
 
       {/* Keywords */}
       {isPaidContent && categories.keyword_match && (
-        <KeywordsSection category={categories.keyword_match} />
+        <div style={{ marginBottom: "14px" }}>
+          <KeywordsSection category={categories.keyword_match} />
+        </div>
       )}
 
       {/* Skills */}
       {isPaidContent && categories.skills_match && (
-        <SkillsSection category={categories.skills_match} />
+        <div style={{ marginBottom: "14px" }}>
+          <SkillsSection category={categories.skills_match} />
+        </div>
       )}
 
       {/* Enhancements */}
       {isPaidContent && result.enhancements?.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2" style={{ marginBottom: "14px" }}>
           <h4 className="text-sm font-semibold">Enhancements</h4>
           <ul className="space-y-2 text-sm">
             {result.enhancements.map((e, i) => (
@@ -480,7 +556,7 @@ export function JobMatchRightPanel({
 
       {/* Summary */}
       {isPaidContent && result.summary && (
-        <p className="text-sm text-muted-foreground border-t pt-4">{result.summary}</p>
+        <p className="text-sm text-muted-foreground border-t pt-4" style={{ marginBottom: "14px" }}>{result.summary}</p>
       )}
 
       {/* Cover Letter CTA */}
@@ -488,13 +564,10 @@ export function JobMatchRightPanel({
         <p className="text-sm text-muted-foreground mb-2">
           Ready to apply? Generate a tailored cover letter based on this match.
         </p>
-        <Button
-          variant="outline"
-          onClick={() => {
-            sessionStorage.setItem(`cover_letter_source_${cvId}`, "job-match");
-            window.dispatchEvent(new CustomEvent("switch-tab", { detail: "cover-letter" }));
-          }}
-        >
+        <Button variant="outline" onClick={() => {
+          sessionStorage.setItem(`cover_letter_source_${cvId}`, "job-match");
+          window.dispatchEvent(new CustomEvent("switch-tab", { detail: "cover-letter" }));
+        }}>
           Generate Cover Letter
         </Button>
       </div>
@@ -520,10 +593,25 @@ const CATEGORY_WEIGHTS: Record<string, string> = {
   role_alignment: "20%",
 };
 
-function scoreColor(score: number) {
-  if (score >= 80) return "bg-green-500";
-  if (score >= 50) return "bg-yellow-500";
-  return "bg-red-500";
+function getCategoryColor(score: number): string {
+  if (score >= 90) return "#15803d";
+  if (score >= 70) return "#16a34a";
+  if (score >= 50) return "#d97706";
+  return "#dc2626";
+}
+
+function getMatchLabel(score: number): string {
+  if (score >= 85) return "Strong Match";
+  if (score >= 70) return "Good Match";
+  if (score >= 55) return "Partial Match";
+  return "Low Match";
+}
+
+function getMatchDescription(score: number): string {
+  if (score >= 85) return "Your CV aligns well with this role";
+  if (score >= 70) return "Good fit with some gaps to address";
+  if (score >= 55) return "Several skill gaps need attention";
+  return "Significant gaps detected for this role";
 }
 
 // Normalize keyword that might be string or object like {keyword, placement, score_multiplier}
@@ -544,7 +632,6 @@ function openRewriteDrawer(originalText: string, fieldRef: FieldRef, category: s
 /* ── Sub-components ────────────────────────────────── */
 
 function KeywordsSection({ category }: { category: JobMatchCategory }) {
-  const [open, setOpen] = useState(true);
   const [added, setAdded] = useState<Set<string>>(new Set());
   const matched = (category.keywords_matched ?? []).map(normalizeKeyword);
   const missing = (category.keywords_missing ?? []).map(normalizeKeyword);
@@ -560,26 +647,22 @@ function KeywordsSection({ category }: { category: JobMatchCategory }) {
 
   return (
     <div className="space-y-2">
-      <button type="button" className="flex items-center gap-2 text-sm font-semibold" onClick={() => setOpen(!open)}>
-        Keywords
-        {open ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-      </button>
-      {open && (
-        <div className="space-y-3">
+      <h4 className="text-sm font-semibold">Keywords</h4>
+      <div className="space-y-3">
           {matched.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Matched</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-xs font-medium text-muted-foreground mb-1.5">Matched</p>
+              <div className="flex flex-wrap gap-2">
                 {matched.map((kw) => (
-                  <Badge key={kw} variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400">{kw}</Badge>
+                  <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success dark:text-green-400 dark:border-green-700">{kw}</span>
                 ))}
               </div>
             </div>
           )}
           {missing.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Missing</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-xs font-medium text-muted-foreground mb-1.5">Missing</p>
+              <div className="flex flex-wrap gap-2">
                 {missing.map((kw) => {
                   const isAdded = added.has(kw);
                   return (
@@ -587,10 +670,10 @@ function KeywordsSection({ category }: { category: JobMatchCategory }) {
                       key={kw}
                       disabled={isAdded}
                       className={cn(
-                        "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs transition-colors",
+                        "inline-flex items-center gap-1 rounded-full border-[1.5px] px-3 py-1 text-xs font-medium transition-all",
                         isAdded
-                          ? "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400 cursor-default"
-                          : "bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-400"
+                          ? "border-success text-success dark:text-green-400 dark:border-green-700 cursor-default"
+                          : "border-red-400 text-red-700 hover:bg-red-50 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-950"
                       )}
                       onClick={() => handleAdd(kw)}
                     >
@@ -603,22 +686,20 @@ function KeywordsSection({ category }: { category: JobMatchCategory }) {
           )}
           {partial.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Partial</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-xs font-medium text-muted-foreground mb-1.5">Partial</p>
+              <div className="flex flex-wrap gap-2">
                 {partial.map((kw) => (
-                  <Badge key={kw} variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400">{kw}</Badge>
+                  <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-amber-500 bg-transparent px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-400 dark:border-amber-600">{kw}</span>
                 ))}
               </div>
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }
 
 function SkillsSection({ category }: { category: JobMatchCategory }) {
-  const [open, setOpen] = useState(true);
   const hardMatched = (category.hard_skills_matched ?? []).map(normalizeKeyword);
   const hardMissing = (category.hard_skills_missing ?? []).map(normalizeKeyword);
   const softMatched = (category.soft_skills_matched ?? []).map(normalizeKeyword);
@@ -628,40 +709,35 @@ function SkillsSection({ category }: { category: JobMatchCategory }) {
 
   return (
     <div className="space-y-2">
-      <button type="button" className="flex items-center gap-2 text-sm font-semibold" onClick={() => setOpen(!open)}>
-        Skills Match
-        {open ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-      </button>
-      {open && (
-        <div className="space-y-3">
+      <h4 className="text-sm font-semibold">Skills Match</h4>
+      <div className="space-y-3">
           {(hardMatched.length > 0 || hardMissing.length > 0) && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Hard Skills</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-xs font-medium text-muted-foreground mb-1.5">Hard Skills</p>
+              <div className="flex flex-wrap gap-2">
                 {hardMatched.map((s) => (
-                  <Badge key={s} variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400">{s}</Badge>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success dark:text-green-400 dark:border-green-700">{s}</span>
                 ))}
                 {hardMissing.map((s) => (
-                  <Badge key={s} variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400">{s}</Badge>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-red-400 bg-transparent px-3 py-1 text-xs font-medium text-red-700 dark:text-red-400 dark:border-red-700">{s}</span>
                 ))}
               </div>
             </div>
           )}
           {(softMatched.length > 0 || softMissing.length > 0) && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Soft Skills</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-xs font-medium text-muted-foreground mb-1.5">Soft Skills</p>
+              <div className="flex flex-wrap gap-2">
                 {softMatched.map((s) => (
-                  <Badge key={s} variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400">{s}</Badge>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success dark:text-green-400 dark:border-green-700">{s}</span>
                 ))}
                 {softMissing.map((s) => (
-                  <Badge key={s} variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400">{s}</Badge>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-red-400 bg-transparent px-3 py-1 text-xs font-medium text-red-700 dark:text-red-400 dark:border-red-700">{s}</span>
                 ))}
               </div>
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }

@@ -31,7 +31,7 @@ export function SpendMonitor({ currentSpend, currentCap, currentRate }: Props) {
   }, []);
 
   const pct = currentCap > 0 ? Math.min(100, Math.round((currentSpend / currentCap) * 100)) : 0;
-  const barColor = pct < 50 ? "bg-green-500" : pct < 80 ? "bg-yellow-500" : "bg-red-500";
+  const barColor = pct < 50 ? "bg-success" : pct < 80 ? "bg-warning" : "bg-error";
 
   async function handleSave() {
     setSaving(true);
