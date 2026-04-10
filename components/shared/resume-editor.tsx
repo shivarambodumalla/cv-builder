@@ -620,9 +620,15 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               <TabsList className="w-max min-w-full sm:w-full">
                 <TabsTrigger value="editor" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Content</TabsTrigger>
                 <TabsTrigger value="design" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Design</TabsTrigger>
-                <TabsTrigger value="analyser" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm gap-1.5">
+                <TabsTrigger value="analyser" data-testid="tab-ats" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm gap-1.5">
                   ATS
-                  {(estimatedScore || latestReport?.score != null) && (() => {
+                  {(() => {
+                    // Only show badge if report is current (not stale from before CV was updated)
+                    const reportIsCurrent = latestReport?.created_at && cv.updated_at
+                      ? new Date(latestReport.created_at) >= new Date(cv.updated_at)
+                      : false;
+                    const hasScore = estimatedScore || (reportIsCurrent && latestReport?.score != null);
+                    if (!hasScore) return null;
                     const score = estimatedScore?.estimated_score ?? latestReport?.score ?? 0;
                     return (
                       <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${score >= 70 ? "bg-success" : score >= 40 ? "bg-warning" : "bg-error"}`}>
@@ -631,7 +637,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                     );
                   })()}
                 </TabsTrigger>
-                <TabsTrigger value="job-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5" onClick={() => setJobMatchEditing(false)}>
+                <TabsTrigger value="job-match" data-testid="tab-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5" onClick={() => setJobMatchEditing(false)}>
                   Match
                   {jobMatchResult?.match_score != null && (
                     <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${jobMatchResult.match_score >= 70 ? "bg-success" : jobMatchResult.match_score >= 40 ? "bg-warning" : "bg-error"}`}>
@@ -639,7 +645,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                     </span>
                   )}
                 </TabsTrigger>
-                <TabsTrigger value="cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
+                <TabsTrigger value="cover-letter" data-testid="tab-cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
               </TabsList>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
@@ -706,7 +712,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   />
                   {jobMatchResult && (
                     <div className="mt-6 border-t pt-6">
-                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} />
+                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} jdText={cv.job_description ?? ""} />
                     </div>
                   )}
                 </div>
@@ -793,7 +799,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </Button>
               )}
               {jobMatchResult ? (
-                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} />
+                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} jdText={cv.job_description ?? ""} />
               ) : (
                 <div className="space-y-6">
                   <div className="rounded-lg border bg-background p-6">

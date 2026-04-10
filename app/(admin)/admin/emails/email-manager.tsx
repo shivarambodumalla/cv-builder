@@ -179,7 +179,7 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
                 <td className="py-2 text-muted-foreground max-w-[200px] truncate">{t.subject}</td>
                 <td className="py-2 text-center">
                   <button onClick={() => toggleEnabled(t)} className="text-sm">
-                    {t.enabled ? <Check className="h-4 w-4 text-green-600 mx-auto" /> : <X className="h-4 w-4 text-red-500 mx-auto" />}
+                    {t.enabled ? <Check className="h-4 w-4 text-success mx-auto" /> : <X className="h-4 w-4 text-error mx-auto" />}
                   </button>
                 </td>
                 <td className="py-2 text-right">

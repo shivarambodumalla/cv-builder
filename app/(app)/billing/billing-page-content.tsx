@@ -119,9 +119,9 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           </div>
           <Badge variant="secondary" className={
             profile.subscription_status === "cancelled"
-              ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+              ? "bg-error/15 text-error"
               : plan === "pro"
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                ? "bg-success/15 text-success"
                 : ""
           }>
             {profile.subscription_status === "cancelled" ? "Cancelled" : plan === "pro" ? "Active" : "Free"}
@@ -296,9 +296,9 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
               const startDate = new Date(h.started_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
               const endDate = h.ended_at ? new Date(h.ended_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : null;
               const statusColor = h.status === "active" || h.status === "mock"
-                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                ? "bg-success/15 text-success"
                 : h.status === "cancelled"
-                  ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                  ? "bg-error/15 text-error"
                   : "bg-muted text-muted-foreground";
               return (
                 <div key={h.id} className="flex items-center justify-between py-3">

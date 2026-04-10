@@ -34,7 +34,7 @@ export default async function EmailLogsPage() {
                 <td className="py-2 text-muted-foreground max-w-[200px] truncate">{log.subject}</td>
                 <td className="py-2">
                   <span
-                    className={`text-xs px-1.5 py-0.5 rounded ${log.status === "sent" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                    className={`text-xs px-1.5 py-0.5 rounded ${log.status === "sent" ? "bg-success/15 text-success" : "bg-error/15 text-error"}`}
                     title={log.error || undefined}
                   >
                     {log.status}

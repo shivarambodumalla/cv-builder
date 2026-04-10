@@ -20,6 +20,7 @@ import {
   AlertCircle,
   Check,
   Sparkles,
+  Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
@@ -29,6 +30,8 @@ import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
 import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
 import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import { ConfidenceChip } from "@/components/shared/confidence-chip";
+import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
+import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
 
@@ -200,6 +203,10 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const [rewriteOriginal, setRewriteOriginal] = useState("");
   const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
   const [limitReached, setLimitReached] = useState(false);
+  const [fixAllLoading, setFixAllLoading] = useState(false);
+  const [fixAllStep, setFixAllStep] = useState(0);
+  const [fixAllResult, setFixAllResult] = useState<FixAllResult | null>(null);
+  const [fixAllOpen, setFixAllOpen] = useState(false);
 
   useEffect(() => {
     if (plan !== "free") return;
@@ -301,6 +308,66 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
     setAddedKeywords(newAdded);
   }
 
+  async function handleFixAll() {
+    setFixAllLoading(true);
+    setFixAllStep(0);
+    const t1 = setTimeout(() => setFixAllStep(1), 2500);
+    const t2 = setTimeout(() => setFixAllStep(2), 5000);
+    try {
+      const res = await fetch("/api/cv/fix-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cv_id: cvId }),
+      });
+      if (res.status === 403) {
+        const data = await res.json();
+        if (data.code === "fix_all_limit") {
+          openUpgradeModal("generic");
+        }
+        setFixAllLoading(false);
+        return;
+      }
+      if (!res.ok) { setFixAllLoading(false); return; }
+      const data = await res.json();
+      setFixAllResult(data as FixAllResult);
+      setFixAllOpen(true);
+    } catch { /* ignore */ }
+    clearTimeout(t1);
+    clearTimeout(t2);
+    setFixAllLoading(false);
+  }
+
+  function handleFixAllApply(changes: { fieldPath: string; value: string }[]) {
+    for (const change of changes) {
+      if (change.fieldPath === "skills.add") {
+        window.dispatchEvent(new CustomEvent("add-skill", { detail: { skill: change.value } }));
+      } else {
+        window.dispatchEvent(new CustomEvent("rewrite-accept", {
+          detail: {
+            newText: change.value,
+            fieldRef: parseFieldPath(change.fieldPath),
+          },
+        }));
+      }
+    }
+    // Re-analyse after applying fixes to refresh score and clear issues
+    setTimeout(() => {
+      handleAnalyse();
+    }, 1000);
+  }
+
+  function parseFieldPath(path: string): { section: string; field?: string; bulletText?: string } {
+    if (path === "summary.content") return { section: "summary" };
+    const match = path.match(/^experience\.items\.(\d+)\.bullets\.(\d+)$/);
+    if (match && content) {
+      const expIdx = parseInt(match[1], 10);
+      const bulletIdx = parseInt(match[2], 10);
+      const bullet = content.experience?.items?.[expIdx]?.bullets?.[bulletIdx];
+      return { section: "experience", field: "bullets", bulletText: bullet || undefined };
+    }
+    return { section: "experience" };
+  }
+
   async function handleAnalyse() {
     setLoading(true);
     setCurrentStep("reading");
@@ -347,37 +414,12 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
     const progress = Math.min(100, ((stepIndex + 0.5) / ANALYSIS_STEPS.length) * 100);
 
     return (
-      <div className="flex flex-col items-center gap-8 py-10">
-        <div className="relative flex h-24 w-24 items-center justify-center">
-          <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-muted border-t-primary" style={{ animationDuration: "1.5s" }} />
-          <div className="absolute inset-3 animate-spin rounded-full border-2 border-muted border-b-primary/50" style={{ animationDuration: "2.5s", animationDirection: "reverse" }} />
-          <Brain className="h-9 w-9 text-success" />
-        </div>
-        <div className="w-full max-w-sm">
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-success transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
-          </div>
-        </div>
-        <div className="w-full space-y-2">
-          {ANALYSIS_STEPS.map((step, i) => {
-            const StepIcon = step.icon;
-            const isActive = i === stepIndex;
-            const isDone = i < stepIndex;
-            return (
-              <div key={step.key} className={cn("flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-500", isActive && "bg-success/10 shadow-sm", isDone && "opacity-60", !isActive && !isDone && "opacity-25")}>
-                <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all", isDone && "bg-success/20", isActive && "bg-success/20", !isActive && !isDone && "bg-muted")}>
-                  {isDone ? <CheckCircle2 className="h-4.5 w-4.5 text-success" /> : isActive ? <Loader2 className="h-4.5 w-4.5 animate-spin text-success" /> : <StepIcon className="h-4 w-4 text-muted-foreground" />}
-                </div>
-                <div className="min-w-0">
-                  <p className={cn("text-sm font-semibold", isActive ? "text-foreground" : "text-muted-foreground")}>{step.label}</p>
-                  <p className="text-[11px] text-muted-foreground truncate">{step.sub}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <p className="text-xs text-muted-foreground">This usually takes 10–20 seconds</p>
-      </div>
+      <StepLoader
+        steps={ANALYSIS_STEPS as LoaderStep[]}
+        currentStep={stepIndex}
+        centerIcon={Brain}
+        footerText="Please don't close this tab while we analyse your CV."
+      />
     );
   }
 
@@ -416,19 +458,37 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
           )}
         </div>
         {report && (
-          <button
-            onClick={handleAnalyse}
-            disabled={loading}
-            style={{
-              background: "white", border: "1px solid #E0D8CC", padding: "6px 12px",
-              borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "#3D3830",
-              cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-            }}
-          >
-            <RefreshCw size={11} color="#3D3830" />
-            Re-analyse
-          </button>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button
+              onClick={handleFixAll}
+              disabled={fixAllLoading || loading || displayScore >= 95}
+              data-testid="btn-fix-all"
+              style={{
+                background: "#15803d", border: "none", padding: "6px 12px",
+                borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "white",
+                cursor: displayScore >= 95 ? "not-allowed" : "pointer",
+                display: "flex", alignItems: "center", gap: "5px",
+                opacity: displayScore >= 95 ? 0.5 : 1,
+              }}
+            >
+              {fixAllLoading ? <Loader2 size={11} className="animate-spin" /> : <Wand2 size={11} />}
+              Fix using AI
+            </button>
+            <button
+              onClick={handleAnalyse}
+              disabled={loading}
+              data-testid="btn-reanalyse"
+              style={{
+                background: "white", border: "1px solid #E0D8CC", padding: "6px 12px",
+                borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "#3D3830",
+                cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+              }}
+            >
+              <RefreshCw size={11} color="#3D3830" />
+              Re-analyse
+            </button>
+          </div>
         )}
       </div>
 
@@ -474,7 +534,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
           {/* PART 1: Score Card */}
           <div className="rounded-xl border bg-background p-4 mb-3 flex items-center gap-4" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
             {/* Score ring */}
-            <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
+            <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }} data-testid="ats-score">
               <circle cx="40" cy="40" r="32" strokeWidth="7" fill="none" className="stroke-muted" />
               <circle cx="40" cy="40" r="32"
                 stroke={displayScore >= 70 ? "var(--success)" : displayScore >= 50 ? "var(--warning)" : "var(--error)"}
@@ -510,6 +570,8 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
               <UpgradeBanner trigger="ats" onUpgrade={() => openUpgradeModal("ats_limit")} />
             </div>
           )}
+
+          {/* Fix All Skeleton Loader is rendered as full-screen overlay below */}
 
           {/* PART 3: Category Bars */}
           {isPaidContent && report.category_scores && (
@@ -629,6 +691,31 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
           isCurrent={true}
           missingKeywords={effectiveKeywords?.missing ?? []}
           onAccept={(text, ref) => { onRewriteAccept?.(text, ref); }}
+        />
+      )}
+
+      {fixAllResult && (
+        <FixAllDrawer
+          open={fixAllOpen}
+          onClose={() => setFixAllOpen(false)}
+          result={fixAllResult}
+          currentScore={displayScore}
+          onApply={handleFixAllApply}
+        />
+      )}
+
+      {/* Full-screen Fix All loader overlay */}
+      {fixAllLoading && (
+        <StepLoader
+          fullScreen
+          steps={[
+            { label: "Reading your CV", sub: "Parsing sections and bullets", icon: FileText },
+            { label: "Analysing ATS issues", sub: "Checking keywords and formatting", icon: Search },
+            { label: "Generating fixes", sub: "Rewriting bullets for maximum impact", icon: Wand2 },
+          ]}
+          currentStep={fixAllStep}
+          centerIcon={Wand2}
+          footerText="Please don't close this tab while we fix your CV."
         />
       )}
     </div>

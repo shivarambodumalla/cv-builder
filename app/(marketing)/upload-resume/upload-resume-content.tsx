@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RoleSelector } from "@/components/shared/role-selector";
 import { cn } from "@/lib/utils";
+import { StepLoader } from "@/components/shared/step-loader";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -145,69 +146,15 @@ export function UploadResumeContent() {
   // ─── ANALYSING SCREEN ───
   if (loading) {
     const stepIndex = STEPS.findIndex((s) => s.key === currentStep);
-    const progress = Math.min(100, ((stepIndex + 0.5) / STEPS.length) * 100);
 
     return (
       <div className="container mx-auto max-w-lg px-4 py-16 md:py-28">
-        <div className="flex flex-col items-center gap-10">
-          {/* Animated brain icon */}
-          <div className="relative flex h-28 w-28 items-center justify-center">
-            <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-muted border-t-primary" style={{ animationDuration: "1.5s" }} />
-            <div className="absolute inset-3 animate-spin rounded-full border-2 border-muted border-b-primary/50" style={{ animationDuration: "2.5s", animationDirection: "reverse" }} />
-            <Brain className="h-10 w-10 text-primary" />
-          </div>
-
-          {/* Progress bar */}
-          <div className="w-full">
-            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full rounded-full bg-primary transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
-            </div>
-          </div>
-
-          {/* Steps */}
-          <div className="w-full space-y-2">
-            {STEPS.map((step, i) => {
-              const StepIcon = step.icon;
-              const isActive = i === stepIndex;
-              const isDone = i < stepIndex;
-
-              return (
-                <div
-                  key={step.key}
-                  className={cn(
-                    "flex items-center gap-4 rounded-xl px-5 py-4 transition-all duration-500",
-                    isActive && "bg-primary/10 shadow-sm",
-                    isDone && "opacity-60",
-                    !isActive && !isDone && "opacity-30"
-                  )}
-                >
-                  <div className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all",
-                    isDone && "bg-green-100 dark:bg-green-900/30",
-                    isActive && "bg-primary/20",
-                    !isActive && !isDone && "bg-muted"
-                  )}>
-                    {isDone ? (
-                      <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    ) : isActive ? (
-                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                    ) : (
-                      <StepIcon className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div>
-                    <p className={cn("text-sm font-semibold", isActive && "text-foreground", !isActive && "text-muted-foreground")}>{step.label}</p>
-                    <p className="text-xs text-muted-foreground">{step.sub}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <p className="text-center text-sm text-muted-foreground">
-            Please don&apos;t close this tab while we analyse your CV.
-          </p>
-        </div>
+        <StepLoader
+          steps={STEPS}
+          currentStep={stepIndex}
+          centerIcon={Brain}
+          footerText="Please don't close this tab while we analyse your CV."
+        />
       </div>
     );
   }
@@ -332,7 +279,7 @@ export function UploadResumeContent() {
                 {file ? (
                   <>
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                      <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
+                      <CheckCircle2 className="h-6 w-6 text-success" />
                     </div>
                     <p className="text-sm font-semibold">{file.name}</p>
                     <p className="text-xs text-muted-foreground">Click to change file</p>

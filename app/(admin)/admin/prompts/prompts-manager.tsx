@@ -92,7 +92,7 @@ export function PromptsManager({ prompts }: { prompts: Prompt[] }) {
             </div>
             <div className="flex items-center gap-3">
               {msg && (
-                <span className={`text-sm ${msg.startsWith("Error") ? "text-destructive" : "text-green-600"}`}>
+                <span className={`text-sm ${msg.startsWith("Error") ? "text-destructive" : "text-success"}`}>
                   {msg}
                 </span>
               )}

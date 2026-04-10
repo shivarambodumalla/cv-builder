@@ -11,7 +11,13 @@
       "Bash(wc -l /Users/sivaramireddy/work/cv-builder/components/resume/templates/*.tsx)",
       "Bash(grep -n \"job-match-panel\" /Users/sivaramireddy/work/cv-builder/components/shared/*.tsx)",
       "Bash(lsof -ti:3000)",
-      "Bash(find /Users/sivaramireddy/work/cv-builder -type f -name \"*.tsx\" -exec grep -l \"Content.*Design\\\\|tabs\\\\|navigation\" {} \\\\;)"
+      "Bash(find /Users/sivaramireddy/work/cv-builder -type f -name \"*.tsx\" -exec grep -l \"Content.*Design\\\\|tabs\\\\|navigation\" {} \\\\;)",
+      "Bash(npx supabase:*)",
+      "Bash(git status:*)",
+      "Bash(curl -s -X POST http://localhost:3000/api/cv/fix-all -H \"Content-Type: application/json\" -H \"Cookie: $\\(cat /Users/sivaramireddy/work/cv-builder/.env.local)"
+    ],
+    "additionalDirectories": [
+      "/Users/sivaramireddy/work/cv-builder/app/api/cv"
     ]
   }
 }

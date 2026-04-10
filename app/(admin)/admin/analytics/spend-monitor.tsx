@@ -93,7 +93,7 @@ export function SpendMonitor({ currentSpend, currentCap, currentRate }: Props) {
             <Button size="sm" onClick={handleSave} disabled={saving}>
               {saving ? "Saving..." : "Save Settings"}
             </Button>
-            {status === "saved" && <span className="text-xs text-green-600">Saved</span>}
+            {status === "saved" && <span className="text-xs text-success">Saved</span>}
             {status === "error" && <span className="text-xs text-red-600">Failed to save | check console</span>}
           </div>
         </div>
@@ -117,7 +117,7 @@ export function SpendMonitor({ currentSpend, currentCap, currentRate }: Props) {
                 <td className="px-3 py-2 font-medium">gemini-2.5-flash</td>
                 <td className="px-3 py-2 text-right">$0.15</td>
                 <td className="px-3 py-2 text-right">$0.60</td>
-                <td className="px-3 py-2 text-center"><span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700 text-[10px]">Active</span></td>
+                <td className="px-3 py-2 text-center"><span className="rounded-full bg-success/15 px-2 py-0.5 text-success text-[10px]">Active</span></td>
               </tr>
               <tr className="border-b">
                 <td className="px-3 py-2 font-medium text-muted-foreground">gemini-1.5-flash</td>

@@ -23,6 +23,7 @@ const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon:
   ai_rewrite_limit: { title: "More AI rewrites", subtitle: "Polish every bullet point with AI", icon: "sparkles" },
   template_locked: { title: "Unlock all templates", subtitle: "5 professional templates to stand out", icon: "crown" },
   cv_limit: { title: "Create more CVs", subtitle: "Unlimited CVs for different roles", icon: "crown" },
+  fix_all_limit: { title: "You've used your free AI fix", subtitle: "Upgrade to Pro for unlimited AI fixes across all your CVs", icon: "sparkles" },
   generic: { title: "Go Pro", subtitle: "Everything you need to land interviews", icon: "crown" },
 };
 
@@ -67,13 +68,13 @@ export function UpgradeModal() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
-      <SheetContent className="w-full sm:max-w-[440px] overflow-y-auto p-0" aria-describedby={undefined}>
+      <SheetContent className="w-full sm:max-w-[440px] overflow-y-auto p-0" aria-describedby={undefined} data-testid="upgrade-modal">
         <SheetTitle className="sr-only">Upgrade to Pro</SheetTitle>
         {success ? (
           <div className="flex flex-col items-center justify-center gap-4 py-24 px-6">
             <div className="relative">
-              <div className="absolute inset-0 animate-ping rounded-full bg-green-400/30" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-green-500">
+              <div className="absolute inset-0 animate-ping rounded-full bg-success/30" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success">
                 <Check className="h-8 w-8 text-white" />
               </div>
             </div>
@@ -139,7 +140,7 @@ export function UpgradeModal() {
                         <span className="text-xs text-muted-foreground/50 line-through">${opt.original}</span>
                         <span className="text-xl font-bold">${opt.sale}</span>
                       </div>
-                      <span className="inline-block rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900 dark:text-green-300 leading-none mt-0.5">
+                      <span className="inline-block rounded bg-success/20 px-1.5 py-0.5 text-[10px] font-bold text-success leading-none mt-0.5">
                         SAVE {opt.savePercent}%
                       </span>
                     </div>
@@ -159,7 +160,7 @@ export function UpgradeModal() {
               <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
                 {FEATURES.map((f) => (
                   <div key={f} className="flex items-center gap-1.5 text-[13px]">
-                    <Check className="h-3.5 w-3.5 shrink-0 text-green-500" />
+                    <Check className="h-3.5 w-3.5 shrink-0 text-success" />
                     <span>{f}</span>
                   </div>
                 ))}

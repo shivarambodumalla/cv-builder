@@ -154,7 +154,7 @@ export function UserActions({
         )}
 
         {message && (
-          <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${messageType === "success" ? "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300" : "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"}`}>
+          <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${messageType === "success" ? "bg-success/10 text-success" : "bg-error/10 text-error"}`}>
             {messageType === "success" ? <Check className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
             {message}
           </div>

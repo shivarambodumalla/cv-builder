@@ -5,6 +5,24 @@ import { logUsage } from "@/lib/ai/usage-logger";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+/* ── Rate-limit queue: 6s minimum gap between Gemini requests ── */
+const MIN_GAP_MS = 6000;
+let lastRequestTime = 0;
+let queueTail: Promise<void> = Promise.resolve();
+
+function enqueue(): Promise<void> {
+  queueTail = queueTail.then(async () => {
+    const now = Date.now();
+    const wait = Math.max(0, MIN_GAP_MS - (now - lastRequestTime));
+    if (wait > 0) {
+      console.log(`[callAI] Queued — waiting ${wait}ms to respect RPM limit`);
+      await new Promise((r) => setTimeout(r, wait));
+    }
+    lastRequestTime = Date.now();
+  });
+  return queueTail;
+}
+
 interface CallAIParams {
   promptName: string;
   variables: Record<string, string>;
@@ -64,21 +82,55 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
   });
 
   let result;
-  try {
-    result = await model.generateContent(content);
-  } catch (err) {
-    logUsage({
-      userId: userId ?? null,
-      ip: ip ?? "unknown",
-      feature,
-      model: modelName,
-      inputTokens: 0,
-      outputTokens: 0,
-      status: "error",
-      error: (err as Error).message,
-    });
-    throw err;
+  const FALLBACK_MODEL = process.env.AI_FALLBACK_MODEL || "gemini-2.0-flash";
+  const MAX_RETRIES = 3;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      await enqueue();
+      result = await model.generateContent(content);
+      break;
+    } catch (err) {
+      const msg = (err as Error).message || "";
+      const isRetryable = msg.includes("503") || msg.includes("429") || msg.includes("high demand") || msg.includes("overloaded") || msg.includes("RESOURCE_EXHAUSTED");
+      if (isRetryable && attempt < MAX_RETRIES) {
+        const delay = Math.min((attempt + 1) * 3000 + Math.random() * 1000, 15000);
+        console.log(`[callAI] Retryable error (attempt ${attempt + 1}/${MAX_RETRIES}), waiting ${Math.round(delay)}ms...`);
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+      // Try fallback model once before giving up
+      if (isRetryable && FALLBACK_MODEL && FALLBACK_MODEL !== modelName) {
+        console.log(`[callAI] Primary model exhausted, trying fallback: ${FALLBACK_MODEL}`);
+        try {
+          const fallback = genAI.getGenerativeModel({
+            model: FALLBACK_MODEL,
+            generationConfig: {
+              maxOutputTokens: settings.max_tokens || 4096,
+              temperature: settings.temperature,
+            },
+          });
+          await enqueue();
+          result = await fallback.generateContent(content);
+          console.log(`[callAI] Fallback model ${FALLBACK_MODEL} succeeded`);
+          break;
+        } catch (fbErr) {
+          console.error(`[callAI] Fallback model also failed:`, (fbErr as Error).message);
+        }
+      }
+      logUsage({
+        userId: userId ?? null,
+        ip: ip ?? "unknown",
+        feature,
+        model: modelName,
+        inputTokens: 0,
+        outputTokens: 0,
+        status: "error",
+        error: msg,
+      });
+      throw err;
+    }
   }
+  if (!result) throw new Error("AI call failed after retries");
 
   // Extract token usage
   const usageMeta = result.response.usageMetadata;

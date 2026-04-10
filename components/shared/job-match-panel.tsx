@@ -8,21 +8,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
   Check,
-  ChevronDown,
-  ChevronUp,
   Crosshair,
   Loader2,
   Plus,
   RefreshCw,
   Sparkles,
   Zap,
+  FileText,
+  Search,
+  Brain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import type { ResumeContent } from "@/lib/resume/types";
 import type { FieldRef } from "@/lib/ai/ats-analyser";
+import { StepLoader } from "@/components/shared/step-loader";
 import { ConfidenceChip } from "@/components/shared/confidence-chip";
+import { JdRedFlagDetector } from "@/components/resume/jd-red-flag-detector";
+import { OfferEvaluation } from "@/components/resume/offer-evaluation";
+import { SalaryInsights } from "@/components/resume/salary-insights";
+import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
+import { Wand2 } from "lucide-react";
 
 /* ── Types ─────────────────────────────────────────── */
 
@@ -162,6 +169,7 @@ export function JobMatchPanel({
           rows={8}
           value={jobDescription}
           onChange={(e) => setJobDescription(e.target.value)}
+          data-testid="jd-input"
         />
         <p className="text-[11px] text-muted-foreground">
           {jobDescription.length < 50
@@ -173,6 +181,7 @@ export function JobMatchPanel({
         <Button
           onClick={handleAnalyse}
           disabled={loading || jobDescription.length < 50}
+          data-testid="btn-analyse-match"
         >
           {loading ? (
             <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Analysing...</>
@@ -201,6 +210,7 @@ export function JobMatchRightPanel({
   forcePaywall,
   company,
   jobTitle,
+  jdText,
 }: {
   result: JobMatchResult;
   cvId: string;
@@ -212,9 +222,13 @@ export function JobMatchRightPanel({
   forcePaywall?: boolean;
   company?: string;
   jobTitle?: string;
+  jdText?: string;
 }) {
   const { openUpgradeModal } = useUpgradeModal();
   const [limitReached, setLimitReached] = useState(false);
+  const [tailorLoading, setTailorLoading] = useState(false);
+  const [tailorResult, setTailorResult] = useState<FixAllResult | null>(null);
+  const [tailorOpen, setTailorOpen] = useState(false);
   const categories = result.categories ?? {};
 
   // Check limit on mount for free plan
@@ -329,6 +343,46 @@ export function JobMatchRightPanel({
     topFixesElRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  async function handleTailorCV() {
+    setTailorLoading(true);
+    try {
+      const res = await fetch("/api/cv/tailor-for-jd", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cv_id: cvId }),
+      });
+      if (res.status === 403) {
+        openUpgradeModal("fix_all_limit");
+        setTailorLoading(false);
+        return;
+      }
+      if (!res.ok) { setTailorLoading(false); return; }
+      const data = await res.json();
+      setTailorResult(data as FixAllResult);
+      setTailorOpen(true);
+    } catch { /* ignore */ }
+    setTailorLoading(false);
+  }
+
+  function handleTailorApply(changes: { fieldPath: string; value: string }[]) {
+    for (const change of changes) {
+      if (change.fieldPath === "skills.add") {
+        window.dispatchEvent(new CustomEvent("add-skill", { detail: { skill: change.value } }));
+      } else {
+        window.dispatchEvent(new CustomEvent("rewrite-accept", {
+          detail: {
+            newText: change.value,
+            fieldRef: change.fieldPath === "summary.content"
+              ? { section: "summary" }
+              : { section: "experience", field: "bullets", bulletText: change.value },
+          },
+        }));
+      }
+    }
+    // Trigger re-match after applying
+    if (onRematch) setTimeout(onRematch, 1000);
+  }
+
   return (
     <div>
       {/* PART 1: Header */}
@@ -366,9 +420,23 @@ export function JobMatchRightPanel({
         )}
       </div>
 
+      {/* Skeleton loader while rematching */}
+      {rematching && (
+        <StepLoader
+          steps={[
+            { label: "Reading job description", sub: "Extracting requirements and keywords", icon: FileText },
+            { label: "Comparing with your CV", sub: "Matching skills and experience", icon: Search },
+            { label: "Calculating match score", sub: "Scoring across all dimensions", icon: Brain },
+          ]}
+          currentStep={1}
+          centerIcon={Brain}
+          footerText="This usually takes 10–20 seconds"
+        />
+      )}
+
       {/* PART 2: Score Card */}
       <div className="rounded-xl border bg-background p-4 mb-3 flex items-center gap-4" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-        <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
+        <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }} data-testid="match-score">
           <circle cx="40" cy="40" r="32" strokeWidth="7" fill="none" className="stroke-muted" />
           <circle cx="40" cy="40" r="32"
             stroke={matchScore >= 70 ? "var(--success)" : matchScore >= 50 ? "var(--warning)" : "var(--error)"}
@@ -397,6 +465,39 @@ export function JobMatchRightPanel({
         </div>
       </div>
 
+      {/* CV Tailor CTA */}
+      {isPaidContent && jdText && (
+        <button
+          onClick={handleTailorCV}
+          disabled={tailorLoading || matchScore >= 95}
+          data-testid="btn-tailor-cv"
+          style={{
+            width: "100%",
+            marginBottom: 12,
+            background: matchScore >= 95 ? "#F7F5F0" : "#15803d",
+            color: matchScore >= 95 ? "#9CA3AF" : "white",
+            border: "none",
+            padding: "10px",
+            borderRadius: "8px",
+            fontSize: "12px",
+            fontWeight: 600,
+            cursor: matchScore >= 95 ? "not-allowed" : "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
+          }}
+        >
+          {tailorLoading ? (
+            <><Loader2 size={12} className="animate-spin" /> Tailoring CV...</>
+          ) : matchScore >= 95 ? (
+            "CV already optimised for this role"
+          ) : (
+            <><Wand2 size={12} /> Tailor CV for this role</>
+          )}
+        </button>
+      )}
+
       {/* PART 3: Three stat chips */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", marginBottom: "12px" }}>
         <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: "0.5px solid #EDE8E0" }}>
@@ -415,13 +516,13 @@ export function JobMatchRightPanel({
 
       {/* Progress banner */}
       {hasChanges && (
-        <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3 dark:border-green-900 dark:bg-green-950/30" style={{ marginBottom: "12px" }}>
-          <p className="text-sm font-medium text-success dark:text-green-300">
+        <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3" style={{ marginBottom: "12px" }}>
+          <p className="text-sm font-medium text-success">
             {fixStatus.addressed}/{fixStatus.total} fixes addressed
             {missingKeywordsAdded.length > 0 && ` + ${missingKeywordsAdded.length} keywords added`}
           </p>
           {fixStatus.potentialGain > 0 && (
-            <p className="text-xs text-success dark:text-green-400">+{fixStatus.potentialGain} pts potential improvement</p>
+            <p className="text-xs text-success">+{fixStatus.potentialGain} pts potential improvement</p>
           )}
         </div>
       )}
@@ -467,7 +568,7 @@ export function JobMatchRightPanel({
             <button
               type="button"
               onClick={scrollToTopFixes}
-              className="inline-flex items-center justify-center rounded-md border border-success/30 bg-success/10 px-4 py-2 text-sm font-medium text-success hover:bg-success/20 dark:bg-green-950/30 dark:text-green-400 dark:border-green-700/30 dark:hover:bg-green-950/50 transition-colors"
+              className="inline-flex items-center justify-center rounded-md border border-success/30 bg-success/10 px-4 py-2 text-sm font-medium text-success hover:bg-success/20 transition-colors"
             >
               View top fixes
             </button>
@@ -496,7 +597,7 @@ export function JobMatchRightPanel({
           {result.top_fixes.map((fix, i) => {
             const isAddressed = fixStatus.items[i];
             return (
-              <div key={i} className={cn("rounded-lg border p-3 space-y-1 transition-colors", isAddressed && "border-success/30 bg-success/10/50 dark:border-green-900 dark:bg-green-950/20")}>
+              <div key={i} className={cn("rounded-lg border p-3 space-y-1 transition-colors", isAddressed && "border-success/30 bg-success/10")}>
                 <div className="flex items-start gap-2">
                   <div className="flex-1">
                     <p className={cn("text-sm", isAddressed && "line-through text-muted-foreground")}>{fix.description}</p>
@@ -515,7 +616,7 @@ export function JobMatchRightPanel({
                         const original = findOriginalText(fix.field_ref!);
                         if (!original) return null;
                         return (
-                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-success dark:text-green-400"
+                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-success"
                             onClick={() => openRewriteDrawer(original, fix.field_ref!, "job_match")}>
                             <Sparkles className="mr-1 h-3 w-3" /> Rewrite
                           </Button>
@@ -569,6 +670,15 @@ export function JobMatchRightPanel({
         <p className="text-sm text-muted-foreground border-t pt-4" style={{ marginBottom: "14px" }}>{result.summary}</p>
       )}
 
+      {/* Offer Evaluation */}
+      {jdText && <div data-testid="offer-evaluation"><OfferEvaluation jdText={jdText} enabled={true} /></div>}
+
+      {/* JD Red Flags */}
+      {jdText && <div data-testid="red-flags-section"><JdRedFlagDetector jdText={jdText} enabled={true} /></div>}
+
+      {/* Salary Insights */}
+      {jobTitle && <SalaryInsights targetRole={jobTitle} isPro={plan === "pro"} />}
+
       {/* Cover Letter CTA */}
       <div className="rounded-lg border border-dashed p-4 text-center">
         <p className="text-sm text-muted-foreground mb-2">
@@ -581,6 +691,19 @@ export function JobMatchRightPanel({
           Generate Cover Letter
         </Button>
       </div>
+
+      {/* Tailor CV Drawer */}
+      {tailorResult && (
+        <FixAllDrawer
+          open={tailorOpen}
+          onClose={() => setTailorOpen(false)}
+          result={tailorResult}
+          currentScore={matchScore}
+          onApply={handleTailorApply}
+          mode="tailor"
+          jdText={jdText}
+        />
+      )}
     </div>
   );
 }
@@ -664,7 +787,7 @@ function KeywordsSection({ category }: { category: JobMatchCategory }) {
               <p className="text-xs font-medium text-muted-foreground mb-1.5">Matched</p>
               <div className="flex flex-wrap gap-2">
                 {matched.map((kw) => (
-                  <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success dark:text-green-400 dark:border-green-700">{kw}</span>
+                  <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success">{kw}</span>
                 ))}
               </div>
             </div>
@@ -682,8 +805,8 @@ function KeywordsSection({ category }: { category: JobMatchCategory }) {
                       className={cn(
                         "inline-flex items-center gap-1 rounded-full border-[1.5px] px-3 py-1 text-xs font-medium transition-all",
                         isAdded
-                          ? "border-success text-success dark:text-green-400 dark:border-green-700 cursor-default"
-                          : "border-red-400 text-red-700 hover:bg-red-50 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-950"
+                          ? "border-success text-success cursor-default"
+                          : "border-error text-error hover:bg-error/10"
                       )}
                       onClick={() => handleAdd(kw)}
                     >
@@ -699,7 +822,7 @@ function KeywordsSection({ category }: { category: JobMatchCategory }) {
               <p className="text-xs font-medium text-muted-foreground mb-1.5">Partial</p>
               <div className="flex flex-wrap gap-2">
                 {partial.map((kw) => (
-                  <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-amber-500 bg-transparent px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-400 dark:border-amber-600">{kw}</span>
+                  <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-warning bg-transparent px-3 py-1 text-xs font-medium text-warning">{kw}</span>
                 ))}
               </div>
             </div>
@@ -726,10 +849,10 @@ function SkillsSection({ category }: { category: JobMatchCategory }) {
               <p className="text-xs font-medium text-muted-foreground mb-1.5">Hard Skills</p>
               <div className="flex flex-wrap gap-2">
                 {hardMatched.map((s) => (
-                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success dark:text-green-400 dark:border-green-700">{s}</span>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success">{s}</span>
                 ))}
                 {hardMissing.map((s) => (
-                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-red-400 bg-transparent px-3 py-1 text-xs font-medium text-red-700 dark:text-red-400 dark:border-red-700">{s}</span>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-error bg-transparent px-3 py-1 text-xs font-medium text-error">{s}</span>
                 ))}
               </div>
             </div>
@@ -739,10 +862,10 @@ function SkillsSection({ category }: { category: JobMatchCategory }) {
               <p className="text-xs font-medium text-muted-foreground mb-1.5">Soft Skills</p>
               <div className="flex flex-wrap gap-2">
                 {softMatched.map((s) => (
-                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success dark:text-green-400 dark:border-green-700">{s}</span>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success">{s}</span>
                 ))}
                 {softMissing.map((s) => (
-                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-red-400 bg-transparent px-3 py-1 text-xs font-medium text-red-700 dark:text-red-400 dark:border-red-700">{s}</span>
+                  <span key={s} className="inline-flex items-center rounded-full border-[1.5px] border-error bg-transparent px-3 py-1 text-xs font-medium text-error">{s}</span>
                 ))}
               </div>
             </div>

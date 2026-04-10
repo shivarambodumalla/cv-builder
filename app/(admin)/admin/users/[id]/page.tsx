@@ -73,8 +73,8 @@ export default async function UserDetailPage({
     : null;
 
   const statusColor =
-    profile.subscription_status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-    : profile.subscription_status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+    profile.subscription_status === "active" ? "bg-success/15 text-success"
+    : profile.subscription_status === "cancelled" ? "bg-error/15 text-error"
     : "bg-muted text-muted-foreground";
 
   return (

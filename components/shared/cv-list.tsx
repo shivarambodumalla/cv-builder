@@ -250,6 +250,7 @@ export function CvList({ cvs, isPro }: { cvs: Cv[]; isPro?: boolean }) {
       {/* Create New Resume */}
       <Link
         href="/upload-resume"
+        data-testid="btn-create-resume"
         className="group flex items-center gap-4 rounded-xl border-2 border-dashed border-primary/30 p-5 transition-all hover:border-primary hover:bg-primary/5"
       >
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
@@ -321,6 +322,7 @@ export function CvList({ cvs, isPro }: { cvs: Cv[]; isPro?: boolean }) {
                   <div
                     key={cv.id}
                     className={cardClass}
+                    data-testid={`resume-card-${cv.id}`}
                     onClick={() => router.push(`/resume/${cv.id}`)}
                   >
                     {/* Top row */}
@@ -358,6 +360,7 @@ export function CvList({ cvs, isPro }: { cvs: Cv[]; isPro?: boolean }) {
                   <div
                     key={cv.id}
                     className={cardClass}
+                    data-testid={`resume-card-${cv.id}`}
                     onClick={() => router.push(`/resume/${cv.id}`)}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">

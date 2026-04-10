@@ -10,6 +10,7 @@ export type UpgradeTrigger =
   | "ai_rewrite_limit"
   | "template_locked"
   | "cv_limit"
+  | "fix_all_limit"
   | "generic";
 
 interface UpgradeModalContextType {

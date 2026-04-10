@@ -116,7 +116,7 @@ export function CampaignManager({ campaigns, templateNames }: { campaigns: Campa
                 <td className="py-2">{c.segment}</td>
                 <td className="py-2 text-right">{c.sent_count}</td>
                 <td className="py-2">
-                  <span className={`text-xs px-1.5 py-0.5 rounded ${c.status === "sent" ? "bg-green-100 text-green-700" : c.status === "sending" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"}`}>
+                  <span className={`text-xs px-1.5 py-0.5 rounded ${c.status === "sent" ? "bg-success/15 text-success" : c.status === "sending" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"}`}>
                     {c.status}
                   </span>
                 </td>

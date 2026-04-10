@@ -110,7 +110,7 @@ export function PricingManager({ initialConfigs }: { initialConfigs: PricingConf
                   {saving === c.id ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
                   ) : saved === c.id ? (
-                    <Check className="h-3 w-3 text-green-500" />
+                    <Check className="h-3 w-3 text-success" />
                   ) : (
                     "Save"
                   )}
