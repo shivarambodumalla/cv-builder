@@ -56,7 +56,7 @@ export async function GET() {
 
   // Step 3: Use @supabase/ssr createServerClient to set cookies
   // in the correct chunked format that the middleware expects
-  let response = NextResponse.json({
+  const response = NextResponse.json({
     ok: true,
     user_id: signInData.user.id,
   });
