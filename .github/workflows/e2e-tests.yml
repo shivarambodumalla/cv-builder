@@ -13,7 +13,6 @@ jobs:
 
     env:
       ENABLE_TEST_AUTH: "true"
-      NODE_ENV: test
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -22,8 +21,6 @@ jobs:
       LEMONSQUEEZY_API_KEY: ${{ secrets.LEMONSQUEEZY_API_KEY }}
       LEMONSQUEEZY_STORE_ID: ${{ secrets.LEMONSQUEEZY_STORE_ID }}
       LEMONSQUEEZY_WEBHOOK_SECRET: ${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}
-      TEST_USER_ID: "00000000-0000-0000-0000-000000000001"
-      TEST_CV_ID: "00000000-0000-0000-0000-000000000002"
 
     steps:
       - name: Checkout
@@ -41,11 +38,18 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      - name: Create auth directory
+        run: mkdir -p tests/e2e/.auth
+
       - name: Build Next.js app
         run: npm run build
+        env:
+          NODE_ENV: production
 
       - name: Run E2E tests
         run: npx playwright test
+        env:
+          CI: true
 
       - name: Upload test report
         uses: actions/upload-artifact@v4

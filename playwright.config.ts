@@ -1,14 +1,16 @@
 import { defineConfig } from "@playwright/test";
-import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.local" });
+// Load .env.local for local development (CI gets env vars from GitHub secrets)
+try { require("dotenv").config({ path: ".env.local" }); } catch { /* dotenv not needed in CI */ }
+
+const isCI = !!process.env.CI;
 
 export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
   workers: 1,
   reporter: [["html", { outputFolder: "playwright-report" }]],
   use: {
@@ -18,9 +20,10 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "npm run dev",
+    command: isCI ? "npm run start" : "npm run dev",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
+    timeout: 60000,
     env: {
       ENABLE_TEST_AUTH: "true",
     },

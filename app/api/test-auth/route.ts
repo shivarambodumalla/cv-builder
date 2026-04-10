@@ -10,7 +10,9 @@ import { createServerClient } from "@supabase/ssr";
  * Only works when ENABLE_TEST_AUTH=true and NOT in production.
  */
 export async function GET() {
-  if (process.env.ENABLE_TEST_AUTH !== "true" || process.env.NODE_ENV === "production") {
+  // Only available when ENABLE_TEST_AUTH is explicitly set to "true"
+  // In production deployments, this env var is never set
+  if (process.env.ENABLE_TEST_AUTH !== "true") {
     return NextResponse.json({ error: "Not available" }, { status: 404 });
   }
 

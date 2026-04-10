@@ -1,6 +1,8 @@
 import { chromium } from "@playwright/test";
+import { mkdirSync } from "fs";
 
 async function globalSetup() {
+  mkdirSync("tests/e2e/.auth", { recursive: true });
   const baseURL = "http://localhost:3000";
 
   const browser = await chromium.launch();
