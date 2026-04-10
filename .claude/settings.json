@@ -14,7 +14,12 @@
       "Bash(find /Users/sivaramireddy/work/cv-builder -type f -name \"*.tsx\" -exec grep -l \"Content.*Design\\\\|tabs\\\\|navigation\" {} \\\\;)",
       "Bash(npx supabase:*)",
       "Bash(git status:*)",
-      "Bash(curl -s -X POST http://localhost:3000/api/cv/fix-all -H \"Content-Type: application/json\" -H \"Cookie: $\\(cat /Users/sivaramireddy/work/cv-builder/.env.local)"
+      "Bash(curl -s -X POST http://localhost:3000/api/cv/fix-all -H \"Content-Type: application/json\" -H \"Cookie: $\\(cat /Users/sivaramireddy/work/cv-builder/.env.local)",
+      "Bash(ENABLE_TEST_AUTH=true nohup npx next dev --port 3000)",
+      "Bash(curl -s http://localhost:3000/api/test-auth)",
+      "Bash(ENABLE_TEST_AUTH=true npx playwright test tests/e2e/dashboard.spec.ts)",
+      "Bash(curl -v http://localhost:3000/api/test-auth)",
+      "Bash(ENABLE_TEST_AUTH=true npx playwright test)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv"

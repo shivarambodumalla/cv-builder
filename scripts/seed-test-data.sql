@@ -1,25 +1,35 @@
--- Seed test user for E2E testing
--- Fixed UUIDs for consistency across test runs
+-- Seed test data for E2E Playwright tests
+-- Test user ID: 84b43241-814c-4fce-8afa-0bcd10a0635c (created by /api/test-auth)
+-- Test CV ID: 00000000-0000-0000-0000-000000000002
 
--- Test profile (profiles table — no auth.users needed for test bypass)
+-- Step 1: Ensure profile exists for the test user (auth user created by test-auth endpoint)
 INSERT INTO profiles (
-  id, email, full_name, subscription_status, plan
+  id, email, full_name, plan, subscription_status,
+  usage_window_start, ats_scans_this_window, job_matches_this_window,
+  cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window
 ) VALUES (
-  '00000000-0000-0000-0000-000000000001',
+  '84b43241-814c-4fce-8afa-0bcd10a0635c',
   'test@cvedge.test',
   'Arjun Mehta',
+  'pro',
   'active',
-  'pro'
+  NOW(), 0, 0, 0, 0, 0
 ) ON CONFLICT (id) DO UPDATE SET
   subscription_status = 'active',
-  plan = 'pro';
+  plan = 'pro',
+  usage_window_start = NOW(),
+  ats_scans_this_window = 0,
+  job_matches_this_window = 0,
+  cover_letters_this_window = 0,
+  ai_rewrites_this_window = 0,
+  pdf_downloads_this_window = 0;
 
--- Test CV
+-- Step 2: Seed test CV with Arjun Mehta data
 INSERT INTO cvs (
   id, user_id, title, target_role, parsed_json, created_at, updated_at
 ) VALUES (
   '00000000-0000-0000-0000-000000000002',
-  '00000000-0000-0000-0000-000000000001',
+  '84b43241-814c-4fce-8afa-0bcd10a0635c',
   'Arjun-Mehta-Resume',
   'Senior ML Engineer',
   '{
@@ -42,10 +52,12 @@ INSERT INTO cvs (
   NOW(),
   NOW()
 ) ON CONFLICT (id) DO UPDATE SET
+  user_id = '84b43241-814c-4fce-8afa-0bcd10a0635c',
   parsed_json = EXCLUDED.parsed_json,
+  target_role = 'Senior ML Engineer',
   updated_at = NOW();
 
--- Seed JD on test CV
+-- Step 3: Add job description to the test CV
 UPDATE cvs SET
   job_description = 'We are looking for a Senior ML Engineer to join our AI team. You will build and deploy large-scale recommendation systems using PyTorch and TensorFlow. Requirements: 5+ years ML experience, proficiency in Python, experience with MLOps, Kubernetes, and cloud platforms. Knowledge of CUDA and RLHF preferred. We offer competitive salary, health insurance, hybrid work (3 days office), and strong growth opportunities.',
   job_company = 'AI Corp',

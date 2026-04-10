@@ -1,7 +1,11 @@
 import { defineConfig } from "@playwright/test";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -9,11 +13,9 @@ export default defineConfig({
   reporter: [["html", { outputFolder: "playwright-report" }]],
   use: {
     baseURL: "http://localhost:3000",
+    storageState: "tests/e2e/.auth/user.json",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
-    extraHTTPHeaders: {
-      "x-test-user-id": "00000000-0000-0000-0000-000000000001",
-    },
   },
   webServer: {
     command: "npm run dev",

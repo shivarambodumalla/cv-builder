@@ -2,17 +2,6 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  // TEST AUTH BYPASS — only in non-production with ENABLE_TEST_AUTH=true
-  if (
-    process.env.ENABLE_TEST_AUTH === "true" &&
-    process.env.NODE_ENV !== "production" &&
-    request.headers.get("x-test-user-id")
-  ) {
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("x-user-id", request.headers.get("x-test-user-id")!);
-    return NextResponse.next({ request: { headers: requestHeaders } });
-  }
-
   const { response, user } = await updateSession(request);
 
   // If already redirecting (e.g. to login), return that
