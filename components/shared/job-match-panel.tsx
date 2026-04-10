@@ -199,6 +199,8 @@ export function JobMatchRightPanel({
   onRematch,
   plan = "free",
   forcePaywall,
+  company,
+  jobTitle,
 }: {
   result: JobMatchResult;
   cvId: string;
@@ -208,6 +210,8 @@ export function JobMatchRightPanel({
   onRematch?: () => void;
   plan?: string;
   forcePaywall?: boolean;
+  company?: string;
+  jobTitle?: string;
 }) {
   const { openUpgradeModal } = useUpgradeModal();
   const [limitReached, setLimitReached] = useState(false);
@@ -330,6 +334,12 @@ export function JobMatchRightPanel({
       {/* PART 1: Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
         <div>
+          {/* Company · Role subtitle */}
+          {(company || jobTitle) && (
+            <div style={{ fontSize: "11px", color: "#78716C", marginBottom: "2px", fontWeight: 500 }}>
+              {[company, jobTitle].filter(Boolean).join(" · ")}
+            </div>
+          )}
           <div style={{ fontSize: "14px", fontWeight: 700, color: "#0C1A0E", letterSpacing: "-0.2px" }}>
             Job Match
           </div>

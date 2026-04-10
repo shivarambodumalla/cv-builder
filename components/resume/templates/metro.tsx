@@ -188,6 +188,74 @@ export function MetroTemplate({
 
     summary: () => {
       if (!summary.content) return null;
+      const allSkills = skills.categories.flatMap((cat) => cat.skills);
+      const fewSkills = allSkills.length > 0 && allSkills.length <= 12 && visibleSections.includes("skills");
+
+      if (fewSkills) {
+        // Two-column: summary left, skills right
+        return (
+          <div key="summary">
+            {renderRule()}
+            <div style={{ display: "flex", gap: "24px" }}>
+              {/* Summary — left */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {renderSectionHeading("Profile")}
+                <p
+                  style={{
+                    fontFamily: "var(--resume-font)",
+                    fontSize: "var(--resume-body-size)",
+                    color: "#374151",
+                    lineHeight: "var(--resume-line-spacing)",
+                    margin: 0,
+                    overflowWrap: "break-word",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {summary.content}
+                </p>
+              </div>
+              {/* Skills — right */}
+              <div style={{ width: "38%", flexShrink: 0 }}>
+                {renderSectionHeading("Skills")}
+                <div style={{ fontFamily: "var(--resume-font)" }}>
+                  {allSkills.map((skill, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          borderRadius: "4px",
+                          border: "1.5px solid var(--resume-accent)",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: "var(--resume-body-size)",
+                          color: "#374151",
+                          overflowWrap: "break-word",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {skill}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       return (
         <div key="summary">
           {renderRule()}
@@ -198,6 +266,8 @@ export function MetroTemplate({
               color: "#374151",
               lineHeight: "var(--resume-line-spacing)",
               margin: 0,
+              overflowWrap: "break-word",
+              wordBreak: "break-word",
             }}
           >
             {summary.content}
@@ -209,6 +279,12 @@ export function MetroTemplate({
     skills: () => {
       if (skills.categories.length === 0) return null;
       const allSkills = skills.categories.flatMap((cat) => cat.skills);
+
+      // If few skills + summary exists, skills are rendered inside summary section
+      if (allSkills.length <= 12 && summary.content && visibleSections.includes("summary")) {
+        return null;
+      }
+
       return (
         <div key="skills">
           {renderRule()}
@@ -238,6 +314,8 @@ export function MetroTemplate({
                   style={{
                     fontSize: "var(--resume-body-size)",
                     color: "#374151",
+                    overflowWrap: "break-word",
+                    wordBreak: "break-word",
                   }}
                 >
                   {skill}

@@ -86,3 +86,12 @@
     }
   }
 }
+
+/* Prevent text overflow in all resume templates */
+[data-resume-section],
+[data-resume-entry],
+[data-resume-bullet],
+[data-resume-section-title] {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}

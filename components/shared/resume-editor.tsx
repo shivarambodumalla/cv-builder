@@ -174,12 +174,20 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [pdfToast, setPdfToast] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
   const [mobilePreview, setMobilePreview] = useState(false);
+  const [coverLetterMounted, setCoverLetterMounted] = useState(() => coverLetters.length > 0);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const titleDebounceRef = useRef<NodeJS.Timeout>();
   const designDebounceRef = useRef<NodeJS.Timeout>();
   const containerRef = useRef<HTMLDivElement>(null);
   const scorerDebounceRef = useRef<NodeJS.Timeout>();
   const [estimatedScore, setEstimatedScore] = useState<ClientScoreResult | null>(null);
+
+  // Lazy mount cover letter on first tab visit
+  useEffect(() => {
+    if (activeTab === "cover-letter" && !coverLetterMounted) {
+      setCoverLetterMounted(true);
+    }
+  }, [activeTab, coverLetterMounted]);
 
   // Job match state — lifted here so it survives tab switches and can be seeded from server
   const [jobMatchResult, setJobMatchResult] = useState<JobMatchResult | null>(() => {
@@ -228,6 +236,28 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
     }, 300);
     return () => clearTimeout(scorerDebounceRef.current);
   }, [content, latestReport, keywordList, plan]);
+
+  // Persist estimated ATS score so the dashboard can display it
+  const estimatedScoreSaveRef = useRef<NodeJS.Timeout>();
+  useEffect(() => {
+    if (!estimatedScore) return;
+    clearTimeout(estimatedScoreSaveRef.current);
+    estimatedScoreSaveRef.current = setTimeout(() => {
+      const supabase = createClient();
+      supabase.from("cvs")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", cv.id)
+        .then(() => {});
+      // Save score to latest ats_report so dashboard reads the fresh value
+      if (latestReport?.id) {
+        supabase.from("ats_reports")
+          .update({ overall_score: estimatedScore.estimated_score })
+          .eq("id", latestReport.id)
+          .then(() => {});
+      }
+    }, 10000); // debounce 10s to avoid excessive writes
+    return () => clearTimeout(estimatedScoreSaveRef.current);
+  }, [estimatedScore, cv.id, latestReport?.id]);
 
   const currentSkills = useMemo(() => {
     return (content.skills?.categories ?? []).flatMap((c) => c.skills);
@@ -676,15 +706,15 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   />
                   {jobMatchResult && (
                     <div className="mt-6 border-t pt-6">
-                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} />
+                      <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} />
                     </div>
                   )}
                 </div>
               </>
             )}
 
-            {/* Cover Letter tab */}
-            {activeTab === "cover-letter" && (
+            {/* Cover Letter tab — lazy mounted on first visit */}
+            {coverLetterMounted && activeTab === "cover-letter" && (
               <CoverLetterPanel
                 cvId={cv.id}
                 jobMatches={jobMatches}
@@ -763,7 +793,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </Button>
               )}
               {jobMatchResult ? (
-                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} />
+                <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} />
               ) : (
                 <div className="space-y-6">
                   <div className="rounded-lg border bg-background p-6">

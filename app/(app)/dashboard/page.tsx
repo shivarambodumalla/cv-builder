@@ -18,9 +18,11 @@ export default async function DashboardPage() {
 
   const { data: cvs } = await supabase
     .from("cvs")
-    .select("id, title, created_at, parsed_json, design_settings, target_role, ats_reports(score), job_matches(match_score), cover_letters(id)")
+    .select("id, title, created_at, parsed_json, design_settings, target_role, ats_reports(score, overall_score, created_at), job_matches(match_score, created_at), cover_letters(id)")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .order("created_at", { referencedTable: "ats_reports", ascending: false })
+    .order("created_at", { referencedTable: "job_matches", ascending: false });
 
   const { data: profile } = await supabase
     .from("profiles")

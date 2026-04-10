@@ -31,7 +31,7 @@ interface Cv {
   parsed_json?: any;
   design_settings?: any;
   target_role?: string;
-  ats_reports: { score: number }[];
+  ats_reports: { score: number; overall_score?: number }[];
   job_matches?: { match_score: number }[];
   cover_letters?: { id: string }[];
 }
@@ -86,7 +86,8 @@ function extractCvData(cv: Cv) {
   const contactName = cv.parsed_json?.contact?.name || null;
   const targetRole = cv.target_role || cv.parsed_json?.targetTitle?.title || null;
   const template = cv.design_settings?.template || "classic";
-  const atsScore = cv.ats_reports?.[0]?.score ?? null;
+  const latestAts = cv.ats_reports?.[0];
+  const atsScore = latestAts ? (latestAts.overall_score ?? latestAts.score ?? null) : null;
   const matchScore = cv.job_matches?.[0]?.match_score ?? null;
   const hasCoverLetter = (cv.cover_letters?.length ?? 0) > 0;
   return { contactName, targetRole, template, atsScore, matchScore, hasCoverLetter };

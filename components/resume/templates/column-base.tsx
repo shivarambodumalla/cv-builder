@@ -519,6 +519,7 @@ export function ColumnBase({
         borderRight: showDivider ? "1pt solid #E2E8F0" : "none",
         padding: `${marginY}in ${marginX * 0.6}in`, flexShrink: 0,
         fontFamily: "var(--resume-font)",
+        overflow: "hidden", overflowWrap: "break-word" as const, wordBreak: "break-word" as const,
       }}>
         {leftOrdered.map((key) => renderLeftSection(key))}
       </div>
