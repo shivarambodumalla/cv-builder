@@ -19,7 +19,13 @@
       "Bash(curl -s http://localhost:3000/api/test-auth)",
       "Bash(ENABLE_TEST_AUTH=true npx playwright test tests/e2e/dashboard.spec.ts)",
       "Bash(curl -v http://localhost:3000/api/test-auth)",
-      "Bash(ENABLE_TEST_AUTH=true npx playwright test)"
+      "Bash(ENABLE_TEST_AUTH=true npx playwright test)",
+      "Bash(gh run:*)",
+      "Bash(brew list:*)",
+      "Bash(brew install:*)",
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder status --short)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv"
