@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -89,6 +90,7 @@ function starCompleteness(s: string | null | undefined): boolean {
    ══════════════════════════════════════════════════════ */
 export function StoryBankContent({ stories, cvs, isPro }: Props) {
   const router = useRouter();
+  const { openUpgradeModal } = useUpgradeModal();
 
   /* ── State ── */
   const [storyList, setStoryList] = useState<Story[]>(stories);
@@ -229,6 +231,34 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
   /* ══════════════════════════════════════
      RENDER
      ══════════════════════════════════════ */
+  if (!isPro) {
+    return (
+      <div className="container mx-auto px-4 py-16 sm:py-24">
+        <div className="max-w-md mx-auto text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-3">Interview Coach</h1>
+          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+            Build your STAR story bank, extract stories from your CV, and get AI-powered interview prep tailored to every job.
+          </p>
+          <div className="space-y-2 text-left mb-8">
+            {["STAR story builder with AI suggestions", "Extract stories from CV, URL, or PDF", "Match stories to any job description", "Multi-framework support (STAR, STAR+R, CAR)", "Quality scoring and interview readiness tracker"].map((f) => (
+              <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <CheckCircle2 size={14} className="text-success shrink-0" />
+                {f}
+              </div>
+            ))}
+          </div>
+          <Button onClick={() => openUpgradeModal("generic")} className="bg-primary hover:bg-primary/90 text-white w-full">
+            Upgrade to Pro
+          </Button>
+          <p className="text-xs text-muted-foreground mt-3">Starting at $2.30/week</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 sm:py-12">
       <div className="space-y-6">

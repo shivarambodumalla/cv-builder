@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getPlan } from "@/lib/billing/limits";
 import { StoryDetailContent } from "../[id]/story-detail-content";
 
 export default async function NewStoryPage() {
@@ -7,7 +8,14 @@ export default async function NewStoryPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // Pass empty story for "new" mode
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_status, current_period_end")
+    .eq("id", user.id)
+    .single();
+
+  if (getPlan(profile) !== "pro") redirect("/interview-coach");
+
   return (
     <StoryDetailContent
       story={{

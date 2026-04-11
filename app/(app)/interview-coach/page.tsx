@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { StoryBankContent } from "./story-bank-content";
+import { getPlan } from "@/lib/billing/limits";
 
 export const metadata: Metadata = {
   title: "Interview Coach",
@@ -33,12 +34,12 @@ export default async function StoriesPage() {
         .order("updated_at", { ascending: false }),
       supabase
         .from("profiles")
-        .select("subscription_status")
+        .select("subscription_status, current_period_end")
         .eq("id", user.id)
         .single(),
     ]);
 
-  const isPro = profile?.subscription_status === "active";
+  const isPro = getPlan(profile) === "pro";
 
   return <StoryBankContent stories={stories ?? []} cvs={cvs ?? []} isPro={isPro} />;
 }
