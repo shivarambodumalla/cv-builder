@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
       summary: summary || null,
       framework: framework || "star",
       seniority_context: seniority_context || null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
     .select()
     .single();

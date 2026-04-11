@@ -37,6 +37,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       framework: framework || "star",
       seniority_context: seniority_context || null,
       updated_at: new Date().toISOString(),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
     .eq("id", id)
     .eq("user_id", user.id)

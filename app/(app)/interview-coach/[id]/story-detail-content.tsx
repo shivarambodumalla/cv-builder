@@ -69,9 +69,11 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [qualityScore, setQualityScore] = useState(story.quality_score);
-  const [framework, setFramework] = useState((story as any)?.framework ?? "star");
-  const [reflection, setReflection] = useState((story as any)?.reflection ?? "");
-  const [summary, setSummary] = useState((story as any)?.summary ?? "");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const storyAny = story as Record<string, any>;
+  const [framework, setFramework] = useState(storyAny?.framework ?? "star");
+  const [reflection, setReflection] = useState(storyAny?.reflection ?? "");
+  const [summary, setSummary] = useState(storyAny?.summary ?? "");
   const [summaryLoading, setSummaryLoading] = useState(false);
 
   // AI suggestions

@@ -162,9 +162,11 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
     setFormAction(story?.action ?? "");
     setFormResult(story?.result ?? "");
     setFormTags(story?.tags ?? []);
-    setFormFramework((story as any)?.framework ?? "star");
-    setFormReflection((story as any)?.reflection ?? "");
-    setFormSummary((story as any)?.summary ?? "");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const s = story as Record<string, any>;
+    setFormFramework(s?.framework ?? "star");
+    setFormReflection(s?.reflection ?? "");
+    setFormSummary(s?.summary ?? "");
     setShowBuilder(true);
   }
 
