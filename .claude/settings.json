@@ -27,7 +27,8 @@
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
       "Bash(grep -n 'test.describe\\\\|test\\(' /Users/sivaramireddy/work/cv-builder/tests/e2e/*.spec.ts)",
-      "Bash(gh secret:*)"
+      "Bash(gh secret:*)",
+      "Bash(grep -h \"process.env\\\\.\" /Users/sivaramireddy/work/cv-builder/lib/**/*.ts /Users/sivaramireddy/work/cv-builder/app/**/*.ts)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv"

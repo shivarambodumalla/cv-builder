@@ -5,8 +5,8 @@ const { createClient } = require("@supabase/supabase-js");
 
 const parsedPath = path.join(__dirname, "../test-results/parsed.json");
 if (!fs.existsSync(parsedPath)) {
-  console.error("No parsed.json found");
-  process.exit(1);
+  console.log("No parsed.json found — skipping upload");
+  process.exit(0);
 }
 
 const parsed = JSON.parse(fs.readFileSync(parsedPath, "utf-8"));

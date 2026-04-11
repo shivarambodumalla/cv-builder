@@ -26,14 +26,12 @@ interface TestRun {
 interface TestResult {
   id: string;
   run_id: string;
-  test_case_id: string | null;
   suite: string;
   test_name: string;
   status: string;
   duration_ms: number;
   error_message: string | null;
-  error_stack: string | null;
-  retry_count: number;
+  screenshot_url: string | null;
   created_at: string;
 }
 
@@ -210,7 +208,6 @@ export function RunDetailContent({
                         }}
                       >
                         {result.error_message}
-                        {result.error_stack && `\n\n${result.error_stack}`}
                       </pre>
                     </div>
                   )}

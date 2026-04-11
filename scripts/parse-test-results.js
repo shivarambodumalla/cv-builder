@@ -5,8 +5,11 @@ const resultsPath = path.join(__dirname, "../test-results/results.json");
 const outputPath = path.join(__dirname, "../test-results/parsed.json");
 
 if (!fs.existsSync(resultsPath)) {
-  console.error("No results.json found");
-  process.exit(1);
+  console.log("No results.json found — tests may not have run (build failure?)");
+  // Write empty parsed.json so downstream steps don't fail
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, JSON.stringify({ status: "error", total: 0, passed: 0, failed: 0, skipped: 0, results: [], error: "No test results — build may have failed" }, null, 2));
+  process.exit(0);
 }
 
 const raw = JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
