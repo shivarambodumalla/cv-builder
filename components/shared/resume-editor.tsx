@@ -35,6 +35,7 @@ import { calculateClientScore, type ClientScoreResult, type KeywordList } from "
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_CONTENT, DEFAULT_DESIGN } from "@/lib/resume/defaults";
 import { getPreviewContent } from "@/lib/resume/placeholder";
+import { StepLoader } from "@/components/shared/step-loader";
 import {
   ArrowLeft,
   Briefcase,
@@ -51,6 +52,10 @@ import {
   Eye,
   PenLine,
   BookOpen,
+  FileText,
+  Search,
+  Brain,
+  X,
 } from "lucide-react";
 
 interface Cv {
@@ -198,6 +203,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   });
 
   const [rematching, setRematching] = useState(false);
+  const [jobMatchAnalysing, setJobMatchAnalysing] = useState(false);
   const [jobMatchLimitReached, setJobMatchLimitReached] = useState(false);
 
   async function handleRematch() {
@@ -387,6 +393,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [inlineRewriteOpen, setInlineRewriteOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [inlineRewriteData, setInlineRewriteData] = useState<{ originalText: string; fieldRef: any; sectionLabel: string; category: string; isInline?: boolean } | null>(null);
+
+  // Onboarding banner state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  useEffect(() => {
+    if (!localStorage.getItem("cvedge_onboarding_dismissed")) setShowOnboarding(true);
+  }, []);
+  function dismissOnboarding() {
+    setShowOnboarding(false);
+    localStorage.setItem("cvedge_onboarding_dismissed", "true");
+  }
 
   useEffect(() => {
     function onInlineRewrite(e: Event) {
@@ -587,7 +603,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={() => router.push("/dashboard")}><LayoutDashboard className="mr-2 h-4 w-4" />Dashboard</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push(`/stories?cv_id=${cv.id}`)}><BookOpen className="mr-2 h-4 w-4" />Story Bank</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/interview-coach?cv_id=${cv.id}`)}><BookOpen className="mr-2 h-4 w-4" />Interview Coach</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/billing")}><CreditCard className="mr-2 h-4 w-4" />Billing</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
@@ -649,10 +665,37 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </TabsTrigger>
                 <TabsTrigger value="cover-letter" data-testid="tab-cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
               </TabsList>
-              <a href="/stories" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Story Bank →
-              </a>
             </div>
+            {showOnboarding && (
+              <div className="mx-4 mt-2 mb-0 rounded-lg border bg-primary/5 p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-foreground">New here? Follow these steps:</p>
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
+                      {[
+                        { label: "Upload", done: true },
+                        { label: "ATS Score", done: !!latestReport },
+                        { label: "Fix All", done: false },
+                        { label: "Download", done: false },
+                      ].map((step, i) => (
+                        <div key={step.label} className="flex items-center gap-1">
+                          {i > 0 && <span className="text-muted-foreground/30 text-xs">&rarr;</span>}
+                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${step.done ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"}`}>
+                            {step.done ? "✓ " : ""}{step.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1.5">
+                      {!latestReport ? "Next: Switch to the ATS tab and run your first analysis →" : "Next: Use Fix All to improve your score →"}
+                    </p>
+                  </div>
+                  <button onClick={dismissOnboarding} className="text-muted-foreground hover:text-foreground transition-colors shrink-0">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="flex-1 overflow-y-auto p-4">
 
             {/* Content tab: show editor */}
@@ -698,6 +741,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                       onResult={setJobMatchResult}
                       onFixField={handleJobMatchFix}
                       onLimitReached={() => setJobMatchLimitReached(true)}
+                      onAnalysing={setJobMatchAnalysing}
                     />
                   )}
                 </div>
@@ -714,6 +758,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                     result={jobMatchResult}
                     onResult={setJobMatchResult}
                     onFixField={handleJobMatchFix}
+                    onAnalysing={setJobMatchAnalysing}
                   />
                   {jobMatchResult && (
                     <div className="mt-6 border-t pt-6">
@@ -805,6 +850,17 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               )}
               {jobMatchResult ? (
                 <JobMatchRightPanel result={jobMatchResult} cvId={cv.id} content={content} onFixField={handleJobMatchFix} rematching={rematching} onRematch={handleRematch} plan={plan} forcePaywall={jobMatchLimitReached} company={cv.job_company ?? ""} jobTitle={cv.job_title_target ?? ""} jdText={cv.job_description ?? ""} />
+              ) : jobMatchAnalysing ? (
+                <StepLoader
+                  steps={[
+                    { label: "Reading job description", sub: "Extracting requirements and keywords", icon: FileText },
+                    { label: "Comparing with your CV", sub: "Matching skills and experience", icon: Search },
+                    { label: "Calculating match score", sub: "Scoring across all dimensions", icon: Brain },
+                  ]}
+                  currentStep={1}
+                  centerIcon={Brain}
+                  footerText="This usually takes 10–20 seconds"
+                />
               ) : (
                 <div className="space-y-6">
                   <div className="rounded-lg border bg-background p-6">

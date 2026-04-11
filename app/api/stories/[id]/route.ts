@@ -9,7 +9,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { title, situation, task, action, result, tags } = body;
+  const { title, situation, task, action, result, tags, reflection, summary, framework, seniority_context } = body;
 
   let quality_score = 0;
   try {
@@ -24,7 +24,20 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   const { data, error } = await supabase
     .from("stories")
-    .update({ title, situation, task, action, result, tags, quality_score, updated_at: new Date().toISOString() })
+    .update({
+      title,
+      situation,
+      task,
+      action,
+      result,
+      tags,
+      quality_score,
+      reflection: reflection || null,
+      summary: summary || null,
+      framework: framework || "star",
+      seniority_context: seniority_context || null,
+      updated_at: new Date().toISOString(),
+    } as any)
     .eq("id", id)
     .eq("user_id", user.id)
     .select()

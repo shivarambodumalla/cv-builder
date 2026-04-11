@@ -164,7 +164,7 @@ export function StoryBuilder({
       <SheetContent className="w-full sm:max-w-[520px] overflow-y-auto p-0 flex flex-col">
         {/* Header */}
         <div className="border-b px-6 py-4">
-          <SheetTitle>{isEdit ? "Edit Story" : "Add Story"}</SheetTitle>
+          <SheetTitle>{isEdit ? "Edit Experience" : "Add Experience"}</SheetTitle>
         </div>
 
         {/* Scrollable form area */}

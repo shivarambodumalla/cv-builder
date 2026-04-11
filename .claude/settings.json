@@ -28,10 +28,14 @@
       "Bash(git commit -m ':*)",
       "Bash(grep -n 'test.describe\\\\|test\\(' /Users/sivaramireddy/work/cv-builder/tests/e2e/*.spec.ts)",
       "Bash(gh secret:*)",
-      "Bash(grep -h \"process.env\\\\.\" /Users/sivaramireddy/work/cv-builder/lib/**/*.ts /Users/sivaramireddy/work/cv-builder/app/**/*.ts)"
+      "Bash(grep -h \"process.env\\\\.\" /Users/sivaramireddy/work/cv-builder/lib/**/*.ts /Users/sivaramireddy/work/cv-builder/app/**/*.ts)",
+      "Bash(grep -l \"export const metadata\" /Users/sivaramireddy/work/cv-builder/app/**/*page.tsx)",
+      "Bash(find /Users/sivaramireddy/work/cv-builder/app -name \"page.tsx\" -exec grep -l \"metadata\" {} \\\\;)",
+      "Bash(ls -la /Users/sivaramireddy/work/cv-builder/app/sitemap* /Users/sivaramireddy/work/cv-builder/app/robots*)"
     ],
     "additionalDirectories": [
-      "/Users/sivaramireddy/work/cv-builder/app/api/cv"
+      "/Users/sivaramireddy/work/cv-builder/app/api/cv",
+      "/Users/sivaramireddy/work/cv-builder/app/(app)/stories"
     ]
   }
 }

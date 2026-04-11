@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown, Crown } from "lucide-react";
+import { Check, ChevronDown, Crown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/ui/chip";
 
@@ -45,6 +45,7 @@ const FAQS = [
   { q: "Do I need to start from scratch?", a: "No. Upload your existing CV as a PDF and we parse everything automatically. Improve what you have, no blank templates." },
   { q: "What roles and industries do you support?", a: "130+ roles across 12 domains: Engineering, Design, Product, Data, Marketing, Sales, Finance, HR, Operations, Content, Mechanical, and New Age." },
   { q: "Will recruiters know I used AI?", a: "No. CVEdge suggests improvements based on your actual experience. Every change is reviewed and approved by you. Your CV stays yours." },
+  { q: "What if my score doesn't reach 80?", a: "If your ATS score doesn't reach 80+ after using Fix All, contact us within 14 days. We'll personally review your CV. If we still can't get you to 80+, we'll give you a full refund. No questions asked." },
 ];
 
 export function PricingContent() {
@@ -56,6 +57,14 @@ export function PricingContent() {
 
   return (
     <>
+      {/* Guarantee badge */}
+      <div className="flex justify-center mb-6">
+        <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2">
+          <Shield className="h-4 w-4 text-primary" />
+          <span className="text-sm font-semibold text-primary">80+ ATS Score Guaranteed or your money back</span>
+        </div>
+      </div>
+
       {/* Trust bar */}
       <div className="flex flex-wrap justify-center gap-2 mb-12">
         {["Cancel anytime", "No credit card to start", "Your data never sold"].map((t) => (
@@ -81,7 +90,7 @@ export function PricingContent() {
             ))}
           </ul>
           <Button variant="outline" className="w-full" asChild>
-            <Link href="/upload-resume">Get started free <span className="ml-1">&rarr;</span></Link>
+            <Link href="/upload-resume">Start free — no card needed <span className="ml-1">&rarr;</span></Link>
           </Button>
           <p className="mt-2 text-center text-[11px] text-muted-foreground">No credit card required</p>
         </div>
@@ -92,10 +101,11 @@ export function PricingContent() {
             <span className="rounded-full bg-amber-500 px-3 py-1 text-[10px] font-bold text-white">MOST POPULAR</span>
           </div>
 
-          <div className="flex items-center gap-2 mb-4 mt-1">
+          <div className="flex items-center gap-2 mb-2 mt-1">
             <Crown className="h-5 w-5 text-amber-500" />
             <span className="text-lg font-bold">Pro</span>
           </div>
+          <p className="text-sm text-muted-foreground mb-4">Get your CV interview-ready. Fix everything with one click. Guaranteed results or full refund.</p>
 
           {/* Pricing rows */}
           <div className="space-y-2.5 mb-4">
@@ -133,6 +143,8 @@ export function PricingContent() {
             })}
           </div>
 
+          <p className="text-[11px] text-muted-foreground text-center mb-2">Less than your daily coffee</p>
+
           {/* Nudge */}
           {nudge && <p className="text-[11px] text-amber-700 dark:text-amber-400 text-center mb-3">&#128161; {nudge}</p>}
 
@@ -160,7 +172,7 @@ export function PricingContent() {
           </div>
 
           <Button className="w-full h-12 text-base font-semibold" asChild>
-            <Link href="#">Get Pro - ${selected.sale}/{selected.per} <span className="ml-1">&rarr;</span></Link>
+            <Link href="#">Get interview-ready today <span className="ml-1">&rarr;</span></Link>
           </Button>
           <p className="mt-3 text-center text-[11px] text-muted-foreground">
             &#10003; Cancel anytime &middot; &#10003; Instant access after payment
@@ -209,6 +221,15 @@ export function PricingContent() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Money-back guarantee */}
+      <div className="mx-auto max-w-md text-center py-8">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-success/15">
+          <Shield className="h-6 w-6 text-success" />
+        </div>
+        <p className="text-base font-semibold">14-day money back guarantee</p>
+        <p className="text-sm text-muted-foreground mt-2">If CVEdge doesn&apos;t get your CV to 80+ ATS score, we refund you. Simple as that.</p>
       </div>
 
       {/* Bottom CTA */}

@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { title, situation, task, action, result, tags, source_type, source_url, source_cv_id } = body;
+  const { title, situation, task, action, result, tags, source_type, source_url, source_cv_id, reflection, summary, framework, seniority_context } = body;
 
   if (!title) return NextResponse.json({ error: "Title required" }, { status: 400 });
 
@@ -38,7 +38,11 @@ export async function POST(request: NextRequest) {
       source_type: source_type || "manual",
       source_url: source_url || null,
       source_cv_id: source_cv_id || null,
-    })
+      reflection: reflection || null,
+      summary: summary || null,
+      framework: framework || "star",
+      seniority_context: seniority_context || null,
+    } as any)
     .select()
     .single();
 

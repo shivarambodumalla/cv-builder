@@ -46,7 +46,7 @@ If the answer is no to all — do not implement.
 - react-hook-form + zod
 - @react-pdf/renderer (inline rendering via lib/pdf/render.tsx)
 - Resend + @react-email/components (email)
-- Lemon Squeezy (payments, currently suspended)
+- Lemon Squeezy (payments — test mode active, live mode ready)
 - Google Gemini 2.5 Flash (@google/generative-ai)
 - pdf-parse, mammoth (document parsing)
 - @dnd-kit (drag & drop)
@@ -55,11 +55,31 @@ If the answer is no to all — do not implement.
 
 ## Route Groups
 
-- (marketing) — public: /, /pricing, /upload-resume, /privacy, /terms
+- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /jobs, /privacy, /terms
 - (auth) — /login, /register (Google OAuth only)
-- (app) — authenticated: /dashboard, /billing
+- (app) — authenticated: /dashboard, /billing, /interview-coach (renamed from /stories)
 - (editor) — /resume/[id] (two-panel resume editor)
 - (admin) — /admin/** (admin panel)
+
+### Naming
+- "Interview Story Bank" is now **"Interview Coach"** everywhere in the UI
+- Route: /interview-coach (not /stories)
+- API routes still use /api/stories/* (unchanged)
+- Database table still named `stories` (unchanged)
+- Display text: "experiences" not "stories", "answers" not "stories"
+
+### 80+ Score Guarantee
+- Guarantee badge component: components/shared/guarantee-badge.tsx (inline + full)
+- Eligibility check: lib/guarantee/check.ts (Pro + ATS done + Fix All used + score < 80 + account < 14 days)
+- Claim API: POST /api/guarantee/claim → inserts into guarantee_claims table, emails admin
+- CTA: shown in ATS panel when Pro user has score < 80 after Fix All
+- DB table: guarantee_claims (id, user_id, cv_id, current_score, status, created_at, resolved_at, resolution)
+
+### Jobs (Coming Soon)
+- Marketing page: /jobs — waitlist form + feature preview cards
+- Waitlist API: POST /api/waitlist/jobs → inserts into job_waitlist table
+- DB table: job_waitlist (id, email, created_at) — unique on email, no auth required
+- Nav: "Jobs" link with "Soon" pill (no link, cursor-default)
 
 ---
 
@@ -244,12 +264,14 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 - client.ts: callAI() fetches prompt + settings from DB, substitutes {{variables}}, calls Gemini
 - maxOutputTokens: uses settings.max_tokens from DB (not hardcoded)
-- Settings: ats_analysis=4096, job_match=4096, cover_letter=1024, keyword_generate=512, bullet_rewrite=512, bullet_rewrite_debate=512, cv_parse=4096, jd_red_flag=512, fix_all=4096
+- Settings: ats_analysis=4096, job_match=4096, cover_letter=1024, keyword_generate=512, bullet_rewrite=512, bullet_rewrite_debate=512, cv_parse=4096, jd_red_flag=512, fix_all=4096, cv_tailor=4096, offer_evaluation=512, story_extract=4096, story_match=1024, story_quality=512, story_summary=256, story_framework_suggest=128
 - thinkingBudget: 0 (disabled)
 - Spend cap: ai_settings.daily_spend_cap_usd (default $10/day)
 - Rate limiter: 10/hr anon, 100/hr auth (in-memory)
 - Usage logging: ai_usage_logs table (fire-and-forget)
-- Seed: npx tsx scripts/seed-prompts.ts (original), npx tsx --env-file=.env.local scripts/seed-new-prompts.ts (jd_red_flag + fix_all)
+- Seed: npx tsx scripts/seed-prompts.ts (all prompts + AI settings)
+- Fallback model: gemini-2.0-flash (auto-fallback on 503/429 after 3 retries)
+- Retry: 3 attempts with exponential backoff + jitter (3-10s) on 503/429/RESOURCE_EXHAUSTED
 
 ## Billing & Subscription
 
@@ -281,7 +303,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 ### Upgrade Modal
 
 - context/upgrade-modal-context.tsx: UpgradeModalProvider + useUpgradeModal()
-- Triggers: download, ats_limit, job_match_limit, cover_letter_limit, ai_rewrite_limit, template_locked, cv_limit, fix_all_limit, generic
+- Triggers: download, ats_limit, job_match_limit, cover_letter_limit, ai_rewrite_limit, template_locked, cv_limit, fix_all_limit, story_scan_limit, story_save_limit, story_prep_limit, generic
 - All 3 prices visible as selectable rows (no tabs)
 - Mock upgrade: /api/billing/mock-upgrade (dev only, blocked in production for non-admins)
 
@@ -290,6 +312,57 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - POST /api/cv/export/pdf -> lib/pdf/render.tsx (inline rendering, no child process)
 - Checks pdf_download limit, adds watermark if free plan
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
+
+## CV Tailor for JD
+
+- POST /api/cv/tailor-for-jd → callAI("cv_tailor_per_jd_v1")
+- Rewrites CV to maximize match score for a specific job description
+- Shares fix_all_count_week usage counter with Fix All
+- Opens FixAllDrawer with mode="tailor" and JD panel (two-column: 45% JD / 55% diff)
+- Auto re-matches after applying changes
+- Button: "Tailor CV" in Job Match header next to Re-match
+
+## Offer Evaluation
+
+- POST /api/cv/offer-evaluation → callAI("offer_evaluation_v1")
+- Scores JD across 5 dimensions: seniority fit, role clarity, growth, remote clarity, work-life balance
+- Returns: scores, overall grade (A-F), signals with color dots, summary
+- Component: components/resume/offer-evaluation.tsx — bar charts + signal rows
+- Shown in Job Match panel after enhancements
+
+## Salary Insights
+
+- Component: components/resume/salary-insights.tsx
+- Embeds chart iframe for supported roles (SWE, PM, Designer, DS, EM)
+- Pro only — free users see nothing
+- Never shows source attribution
+
+## Interview Coach (formerly Story Bank)
+
+- Route: /stories (app), /interview-coach (marketing)
+- API routes: /api/stories/*, /api/story-sources/*
+- DB tables: stories (STAR fields + tags + quality_score + framework + reflection + summary + seniority_context), story_sources
+- Features:
+  - STAR story editor with split-pane (35% form / 65% preview)
+  - Multi-framework: STAR, STAR+R (with reflection), CAR (challenge-action-result)
+  - AI quality scoring via story_quality_v1
+  - AI summary generation via story_summary_v1
+  - Story extraction from CV/URL/GitHub/PDF via story_extract_v1
+  - Deduplication: word-overlap similarity check against existing stories
+  - Interview prep: match stories to JD via story_match_v1
+  - Readiness card: X/8 stories ready (quality >= 7)
+  - Search, tag filter, sort, grid/list view toggle
+- Pro gates: story_scan_limit, story_save_limit (3 free), story_prep_limit
+
+## E2E Testing (Playwright)
+
+- Config: playwright.config.ts
+- Test dir: tests/e2e/
+- Auth: /api/test-auth route creates real Supabase session via signInWithPassword
+- Global setup: tests/e2e/global-setup.ts — visits /api/test-auth, saves cookies to .auth/user.json
+- Suites: ats-flow, job-match-flow, billing-gate, dashboard
+- CI: .github/workflows/e2e-tests.yml — build → test → parse → upload to DB → email on failure
+- Admin: /admin/tests — test cases registry + run history + run detail
 
 ## Database Tables
 
@@ -311,6 +384,13 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 16. email_templates — transactional email templates
 17. email_logs — sent email history
 18. campaigns — email campaigns
+19. stories — interview STAR stories (title, S/T/A/R fields, tags, quality_score, framework, reflection, summary, seniority_context)
+20. story_sources — extraction sources (portfolio, github, url, pdf, cv)
+21. test_runs — E2E test run results (status, pass/fail counts, commit info, GitHub link)
+22. test_results — individual test results per run
+23. test_cases — test case registry (suite, name, spec_file, is_active)
+24. guarantee_claims — 80+ score guarantee claims
+25. job_waitlist — jobs feature waitlist
 
 **Important column names — do NOT guess, use these exact names:**
 - CVs: `parsed_json` (not "content"), `design_settings` (not "design"), `target_role` (top-level)
@@ -339,6 +419,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - Emails: template editor with preview
 - Campaigns: email campaigns
 - Email Logs: sent email history
+- Tests: test case registry + run history + run detail (linked to GitHub Actions)
 - Active link detection via client component (AdminSidebarNav)
 
 ## Security

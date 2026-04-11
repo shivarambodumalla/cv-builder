@@ -34,17 +34,28 @@ export function MobileNav() {
       </Button>
       {open && (
         <div className="absolute inset-x-0 top-14 z-50 border-b bg-background p-4 space-y-1 animate-in slide-in-from-top-2">
-          {loggedIn && (
-            <Link href="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted transition-colors">
-              <FileText className="h-4 w-4" /> My Resumes
-            </Link>
+          {loggedIn ? (
+            <>
+              <Link href="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted transition-colors">
+                <FileText className="h-4 w-4" /> Resumes
+              </Link>
+              <Link href="/interview-coach" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                Interview Coach
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/resumes" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                Resumes
+              </Link>
+              <Link href="/interview-prep" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                Interview Coach
+              </Link>
+            </>
           )}
-          <Link href="/#how-it-works" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-            How it works
-          </Link>
-          <Link href="/#features" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-            Features
-          </Link>
+          <span className="flex items-center rounded-md px-3 py-2.5 text-sm font-medium cursor-default">
+            Jobs<span className="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>
+          </span>
           <Link href="/pricing" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
             Pricing
           </Link>

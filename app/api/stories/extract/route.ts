@@ -3,6 +3,24 @@ import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 
+/** Simple word-overlap similarity (0-1) */
+function similarity(a: string, b: string): number {
+  if (!a || !b) return 0;
+  const wordsA = new Set(a.toLowerCase().split(/\s+/).filter((w) => w.length > 3));
+  const wordsB = new Set(b.toLowerCase().split(/\s+/).filter((w) => w.length > 3));
+  if (wordsA.size === 0 || wordsB.size === 0) return 0;
+  let overlap = 0;
+  for (const w of wordsA) if (wordsB.has(w)) overlap++;
+  return overlap / Math.min(wordsA.size, wordsB.size);
+}
+
+interface ExistingStory {
+  id: string;
+  title: string;
+  situation: string | null;
+  action: string | null;
+}
+
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
   const supabase = await createClient();
@@ -26,7 +44,6 @@ export async function POST(request: NextRequest) {
     if (!cv) return NextResponse.json({ error: "CV not found" }, { status: 404 });
     const parsed = cv.parsed_json as Record<string, unknown>;
     userRole = (cv.target_role as string) || "General";
-    // Extract all bullets + summary
     const parts: string[] = [];
     const summary = (parsed?.summary as { content?: string })?.content;
     if (summary) parts.push(`Summary: ${summary}`);
@@ -58,6 +75,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Not enough content to extract stories" }, { status: 400 });
   }
 
+  // Fetch existing stories for dedup
+  const { data: existingStories } = await supabase
+    .from("stories")
+    .select("id, title, situation, action")
+    .eq("user_id", user.id)
+    .eq("is_active", true);
+
+  const existing: ExistingStory[] = existingStories ?? [];
+
   try {
     const result = await callAI({
       promptName: "story_extract_v1",
@@ -66,7 +92,35 @@ export async function POST(request: NextRequest) {
       userId: user.id,
       ip,
     });
-    return NextResponse.json(result);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const raw = result as any;
+    const stories: Array<Record<string, unknown>> = raw?.stories || [];
+
+    // Tag each extracted story with overlap info
+    const taggedStories = stories.map((story) => {
+      const storyText = [story.title, story.situation, story.action].filter(Boolean).join(" ");
+      let bestMatch: { id: string; title: string; score: number } | null = null;
+
+      for (const ex of existing) {
+        const exText = [ex.title, ex.situation, ex.action].filter(Boolean).join(" ");
+        const score = similarity(storyText, exText);
+        if (score > 0.4 && (!bestMatch || score > bestMatch.score)) {
+          bestMatch = { id: ex.id, title: ex.title, score };
+        }
+      }
+
+      return {
+        ...story,
+        overlap: bestMatch ? {
+          existing_id: bestMatch.id,
+          existing_title: bestMatch.title,
+          similarity: Math.round(bestMatch.score * 100),
+        } : null,
+      };
+    });
+
+    return NextResponse.json({ stories: taggedStories });
   } catch (err) {
     console.error("[story-extract] Failed:", err);
     return NextResponse.json({ stories: [] });

@@ -55,11 +55,31 @@ If the answer is no to all — do not implement.
 
 ## Route Groups
 
-- (marketing) — public: /, /pricing, /upload-resume, /privacy, /terms
+- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /jobs, /privacy, /terms
 - (auth) — /login, /register (Google OAuth only)
-- (app) — authenticated: /dashboard, /billing
+- (app) — authenticated: /dashboard, /billing, /interview-coach (renamed from /stories)
 - (editor) — /resume/[id] (two-panel resume editor)
 - (admin) — /admin/** (admin panel)
+
+### Naming
+- "Interview Story Bank" is now **"Interview Coach"** everywhere in the UI
+- Route: /interview-coach (not /stories)
+- API routes still use /api/stories/* (unchanged)
+- Database table still named `stories` (unchanged)
+- Display text: "experiences" not "stories", "answers" not "stories"
+
+### 80+ Score Guarantee
+- Guarantee badge component: components/shared/guarantee-badge.tsx (inline + full)
+- Eligibility check: lib/guarantee/check.ts (Pro + ATS done + Fix All used + score < 80 + account < 14 days)
+- Claim API: POST /api/guarantee/claim → inserts into guarantee_claims table, emails admin
+- CTA: shown in ATS panel when Pro user has score < 80 after Fix All
+- DB table: guarantee_claims (id, user_id, cv_id, current_score, status, created_at, resolved_at, resolution)
+
+### Jobs (Coming Soon)
+- Marketing page: /jobs — waitlist form + feature preview cards
+- Waitlist API: POST /api/waitlist/jobs → inserts into job_waitlist table
+- DB table: job_waitlist (id, email, created_at) — unique on email, no auth required
+- Nav: "Jobs" link with "Soon" pill (no link, cursor-default)
 
 ---
 

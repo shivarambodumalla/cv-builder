@@ -506,8 +506,19 @@ Source content: {{source_content}}
 Source type: {{source_type}}
 User role: {{user_role}}
 
+Also detect candidate seniority from content:
+- < 2 years experience → junior (also extract from education/projects)
+- 2-5 years → mid
+- 5+ years → senior
+
+For each story also return:
+- reflection: what was learned (if evident from context, otherwise null)
+- summary: 2-3 sentence natural narrative of the story
+- suggested_framework: "star" | "star_r" | "car"
+- seniority_context: "junior" | "mid" | "senior"
+
 Return JSON only, no markdown:
-{ "stories": [ { "title": "", "situation": "", "task": "", "action": "", "result": "", "tags": [], "quality_score": 0, "needs_more_info": [] } ] }
+{ "stories": [ { "title": "", "situation": "", "task": "", "action": "", "result": "", "tags": [], "quality_score": 0, "needs_more_info": [], "reflection": null, "summary": "", "suggested_framework": "star", "seniority_context": "mid" } ] }
 
 Max 10 stories per source. Only extract genuine stories — no fabrication.`,
   },
@@ -536,10 +547,40 @@ Return top 5 stories ranked by relevance. If fewer than 5 stories provided, rank
 
 Story: {{story_json}}
 
+Scoring bonuses:
+- +1 to overall_score if reflection is filled and meaningful
+- +1 to overall_score if summary exists and is well-written
+- Junior candidates (seniority_context = "junior"): is_interview_ready = true if overall_score >= 5
+
 Return JSON only, no markdown:
 { "overall_score": 0, "specificity_score": 0, "impact_score": 0, "clarity_score": 0, "missing_elements": [], "improvement_suggestions": [], "is_interview_ready": false }
 
 Scoring: 1-10 for each. is_interview_ready = true if overall_score >= 7.`,
+  },
+  {
+    name: "story_summary_v1",
+    content: `Generate a 2-3 sentence natural narrative summary of this interview story.
+
+Write as if the candidate is speaking naturally in an interview. First person, confident, specific. Include the key metric/outcome. Include the learning if reflection exists. Max 60 words.
+
+Story: {{story_json}}
+
+Return JSON only, no markdown:
+{ "summary": "string" }`,
+  },
+  {
+    name: "story_framework_suggest_v1",
+    content: `Given a behavioral interview question, suggest which framework to use and why.
+
+Frameworks available:
+- star: Situation Task Action Result — best for detailed stories
+- star_r: STAR + Reflection/Learning — best for stories with growth lessons
+- car: Challenge Action Result — best for concise answers
+
+Question: {{question}}
+
+Return JSON only, no markdown:
+{ "suggested_framework": "star", "reason": "one sentence max 12 words" }`,
   },
 ];
 
@@ -558,6 +599,8 @@ const AI_SETTINGS = [
   { feature: "story_extract", max_tokens: 4096, temperature: 0, enabled: true },
   { feature: "story_match", max_tokens: 1024, temperature: 0, enabled: true },
   { feature: "story_quality", max_tokens: 512, temperature: 0, enabled: true },
+  { feature: "story_summary", max_tokens: 256, temperature: 0.3, enabled: true },
+  { feature: "story_framework_suggest", max_tokens: 128, temperature: 0, enabled: true },
 ];
 
 async function seed() {

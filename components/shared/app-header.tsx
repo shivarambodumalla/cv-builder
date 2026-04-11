@@ -70,13 +70,22 @@ export function AppHeader({ user }: AppHeaderProps) {
               href="/dashboard"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Dashboard
+              Resumes
             </Link>
             <Link
-              href="/stories"
+              href="/interview-coach"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Stories
+              Interview Coach
+            </Link>
+            <span className="text-sm text-muted-foreground cursor-default flex items-center">
+              Jobs<span className="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>
+            </span>
+            <Link
+              href="/pricing"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Pricing
             </Link>
           </nav>
         </div>

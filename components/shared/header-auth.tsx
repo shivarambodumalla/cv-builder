@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { UserMenu } from "@/components/shared/user-menu";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { FileText } from "lucide-react";
 
 interface UserData {
   email: string;
@@ -64,33 +62,59 @@ export function HeaderAuth() {
 
     nav.innerHTML = "";
 
-    // Always show marketing links
-    const links = [
-      { href: "/#how-it-works", label: "How it works" },
-      { href: "/#features", label: "Features" },
-      { href: "/pricing", label: "Pricing" },
-    ];
-
-    // Add "My Resumes" first if logged in
     if (user) {
-      const myResumes = document.createElement("a");
-      myResumes.href = "/dashboard";
-      myResumes.className = "text-sm font-medium text-foreground hover:text-primary transition-colors";
-      myResumes.textContent = "My Resumes";
-      nav.appendChild(myResumes);
-    }
+      // Authenticated nav links
+      const resumes = document.createElement("a");
+      resumes.href = "/dashboard";
+      resumes.className = "text-sm font-medium text-foreground hover:text-primary transition-colors";
+      resumes.textContent = "Resumes";
+      nav.appendChild(resumes);
 
-    for (const l of links) {
-      const a = document.createElement("a");
-      a.href = l.href;
-      a.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
-      a.textContent = l.label;
-      nav.appendChild(a);
+      const stories = document.createElement("a");
+      stories.href = "/interview-coach";
+      stories.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      stories.textContent = "Interview Coach";
+      nav.appendChild(stories);
+
+      const jobs = document.createElement("span");
+      jobs.className = "text-sm text-muted-foreground cursor-default flex items-center";
+      jobs.innerHTML = 'Jobs<span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>';
+      nav.appendChild(jobs);
+
+      const pricing = document.createElement("a");
+      pricing.href = "/pricing";
+      pricing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      pricing.textContent = "Pricing";
+      nav.appendChild(pricing);
+    } else {
+      // Marketing nav links
+      const resumes = document.createElement("a");
+      resumes.href = "/resumes";
+      resumes.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      resumes.textContent = "Resumes";
+      nav.appendChild(resumes);
+
+      const stories = document.createElement("a");
+      stories.href = "/interview-prep";
+      stories.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      stories.textContent = "Interview Coach";
+      nav.appendChild(stories);
+
+      const jobs = document.createElement("span");
+      jobs.className = "text-sm text-muted-foreground cursor-default flex items-center";
+      jobs.innerHTML = 'Jobs<span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>';
+      nav.appendChild(jobs);
+
+      const pricing = document.createElement("a");
+      pricing.href = "/pricing";
+      pricing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      pricing.textContent = "Pricing";
+      nav.appendChild(pricing);
     }
   }, [user, loading]);
 
   if (loading) {
-    return <ThemeToggle />;
+    return null;
   }
 
   if (user) {
@@ -105,7 +129,6 @@ export function HeaderAuth() {
 
   return (
     <>
-      <ThemeToggle />
       <Link
         href="/login"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -116,7 +139,7 @@ export function HeaderAuth() {
         href="/upload-resume"
         className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
       >
-        Get started
+        Get started free
       </Link>
     </>
   );

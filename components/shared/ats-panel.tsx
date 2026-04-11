@@ -21,6 +21,7 @@ import {
   Check,
   Sparkles,
   Wand2,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
@@ -207,6 +208,9 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const [fixAllStep, setFixAllStep] = useState(0);
   const [fixAllResult, setFixAllResult] = useState<FixAllResult | null>(null);
   const [fixAllOpen, setFixAllOpen] = useState(false);
+  const [guaranteeOpen, setGuaranteeOpen] = useState(false);
+  const [guaranteeClaiming, setGuaranteeClaiming] = useState(false);
+  const [guaranteeResult, setGuaranteeResult] = useState<string | null>(null);
 
   useEffect(() => {
     if (plan !== "free") return;
@@ -676,7 +680,49 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
               </div>
             </>
           )}
+
+          {/* Guarantee CTA */}
+          {isPaidContent && report && displayScore < 80 && plan === "pro" && (
+            <div className="text-center mt-3">
+              <button
+                onClick={() => setGuaranteeOpen(true)}
+                className="text-[10px] text-muted-foreground hover:text-success transition-colors"
+              >
+                Still under 80? Claim your guarantee &rarr;
+              </button>
+            </div>
+          )}
         </>
+      )}
+
+      {guaranteeOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setGuaranteeOpen(false)}>
+          <div className="bg-background rounded-xl border p-6 max-w-sm mx-4 text-center" onClick={(e) => e.stopPropagation()}>
+            <Shield className="h-8 w-8 text-success mx-auto mb-3" />
+            <p className="text-base font-semibold">We&apos;ll review your CV personally</p>
+            <p className="text-sm text-muted-foreground mt-2">Current score: {displayScore}</p>
+            {guaranteeResult ? (
+              <p className="text-sm text-success mt-4">{guaranteeResult}</p>
+            ) : (
+              <Button
+                className="mt-4 w-full"
+                onClick={async () => {
+                  setGuaranteeClaiming(true);
+                  try {
+                    const res = await fetch("/api/guarantee/claim", { method: "POST" });
+                    const data = await res.json();
+                    setGuaranteeResult(data.message || data.error);
+                  } catch { setGuaranteeResult("Something went wrong. Please try again."); }
+                  setGuaranteeClaiming(false);
+                }}
+                disabled={guaranteeClaiming}
+              >
+                {guaranteeClaiming ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                Request review
+              </Button>
+            )}
+          </div>
+        </div>
       )}
 
       {rewriteIssue && (

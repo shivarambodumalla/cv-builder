@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /resume/
+Disallow: /billing/
+Disallow: /stories/
+
+Sitemap: https://www.thecvedge.com/sitemap.xml

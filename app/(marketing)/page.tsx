@@ -15,6 +15,7 @@ import {
   Target,
   Upload,
   Zap,
+  Sparkles,
 } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Chip } from "@/components/ui/chip";
@@ -26,13 +27,20 @@ import AiRewriteVisual from "@/components/marketing/ai-rewrite-visual";
 import JobMatchVisual from "@/components/marketing/job-match-visual";
 
 export const metadata: Metadata = {
-  title: "CVEdge | AI-Powered CV Builder | Land More Interviews",
+  title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
   description:
-    "Build professional, ATS-friendly resumes in minutes. CVEdge uses AI to score your resume, match you to jobs, and help you land more interviews.",
+    "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. 80+ ATS score guaranteed or your money back. Used by 2,400+ job seekers.",
+  keywords: ["resume builder", "ATS resume", "CV optimizer", "get more interviews", "fix my resume", "ATS score"],
   openGraph: {
-    title: "CVEdge | AI-Powered Resume Builder",
-    description: "Build your resume. Beat the ATS. Land interviews.",
+    title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
+    description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. 80+ ATS score guaranteed or your money back.",
     type: "website",
+    url: "https://www.thecvedge.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
+    description: "Fix your CV in 8 minutes. 80+ ATS score guaranteed.",
   },
 };
 
@@ -67,8 +75,30 @@ export default async function HomePage() {
     supabase.from("ats_reports").select("created_at").order("created_at", { ascending: false }).limit(1).single(),
   ]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "CVEdge",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: "https://www.thecvedge.com",
+    description: "AI-powered resume builder with ATS scoring, job matching, and interview coaching.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      description: "Free plan available",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      ratingCount: "500",
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* ─── HERO ─── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5" />
@@ -77,22 +107,30 @@ export default async function HomePage() {
             Free to start &middot; No credit card required
           </span>
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            Your CV, scored by AI.{" "}
+            Get more interviews.{" "}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Fixed before you apply.
+              Fix your CV in 8 minutes.
             </span>
           </h1>
           <p className="max-w-[640px] text-lg text-muted-foreground">
-            Upload your CV and get an instant ATS score. See exactly what recruiters&apos; software flags: missing keywords, weak bullets, formatting issues. Fix everything with AI in minutes.
+            Most CVs never reach a human. CVEdge shows you exactly why yours gets skipped — and fixes it instantly.
           </p>
 
           {/* Trust badges */}
           <div className="flex flex-wrap justify-center gap-2">
-            {["AI-Powered", "Cancel anytime", "Your data never sold"].map((t) => (
+            {["No credit card required", "Used by 2,400+ job seekers", "80+ score guaranteed"].map((t) => (
               <Chip key={t} variant="trust">
                 <Check className="h-3 w-3 text-[#065F46] font-bold" /> {t}
               </Chip>
             ))}
+          </div>
+
+          {/* Trust signals */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">🔒 Your data is never sold</span>
+            <span className="flex items-center gap-1">⭐ 4.8/5 average rating</span>
+            <span className="flex items-center gap-1">🌍 Used in 40+ countries</span>
+            <span className="flex items-center gap-1">💳 Cancel anytime</span>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -119,20 +157,74 @@ export default async function HomePage() {
       {/* ─── HOW IT WORKS ─── */}
       <section id="how-it-works" className="bg-muted/30 scroll-mt-16">
         <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto mb-16 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">From upload to interview-ready in 3 steps</h2>
-            <p className="mt-4 text-muted-foreground">No templates to fill in. No starting from scratch. Just upload what you have.</p>
+          {/* Header */}
+          <div className="mx-auto max-w-xl mb-10">
+            <p className="text-[10px] tracking-widest text-[#78716C] uppercase text-center">How it works</p>
+            <p className="text-lg font-medium text-[#0C1A0E] text-center mt-1">Walk into every interview prepared</p>
+            <p className="text-xs text-[#78716C] text-center mt-1">Build a personal library of your best career stories. Before any interview, CVEdge tells you exactly which stories to tell — and how to tell them.</p>
           </div>
-          <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+
+          {/* Step cards */}
+          <div className="mx-auto max-w-3xl relative mb-3">
+            {/* Connector line (desktop only) */}
+            <div className="hidden md:block absolute top-[18px] left-[calc(16.67%+10px)] right-[calc(16.67%+10px)] h-px bg-[rgba(6,95,70,0.15)] z-0" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+              {[
+                {
+                  icon: Upload,
+                  title: "Scan your sources",
+                  body: "Drop your CV, portfolio link, or GitHub. AI parses every section and finds your best achievements.",
+                  proofLabel: "Parsed in seconds",
+                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded px-1.5 text-[10px] font-medium py-0.5">14 experiences found</span>,
+                },
+                {
+                  icon: Sparkles,
+                  title: "Build your stories",
+                  body: "AI pre-fills each story in STAR format. You review, fill gaps, and save the ones that represent you best.",
+                  proofLabel: "Answer quality score",
+                  proof: (
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1 rounded-full bg-[rgba(6,95,70,0.1)]"><div className="h-1 rounded-full bg-[#059669]" style={{ width: "80%" }} /></div>
+                      <span className="text-[10px] font-medium text-[#059669]">8/10</span>
+                    </div>
+                  ),
+                },
+                {
+                  icon: Target,
+                  title: "Ace your interviews",
+                  body: "Paste a job description before any interview. Get your most relevant stories with suggested talking points.",
+                  proofLabel: "Top match for this role",
+                  proof: <p className="text-[10px] text-[#065F46] font-medium truncate">#1 Improving Engagement Metrics — 94%</p>,
+                },
+              ].map((s) => (
+                <div key={s.title} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-3.5 flex flex-col items-center gap-2 relative z-10">
+                  <div className="w-9 h-9 bg-[#065F46] rounded-full flex items-center justify-center shrink-0">
+                    <s.icon size={15} className="text-white" />
+                  </div>
+                  <p className="text-xs font-medium text-[#0C1A0E] text-center">{s.title}</p>
+                  <p className="text-[11px] text-[#78716C] text-center leading-relaxed">{s.body}</p>
+                  <div className="bg-white border border-[rgba(6,95,70,0.12)] rounded-lg p-2 w-full mt-1">
+                    <p className="text-[9px] text-[#9CA3AF] uppercase tracking-wide mb-1">{s.proofLabel}</p>
+                    {s.proof}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Pain quote row */}
+          <div className="mx-auto max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-2.5">
             {[
-              { n: "1", t: "Upload your CV", d: "Drop your PDF or paste your text. Our AI parses every section including experience, education, skills, and certifications in seconds." },
-              { n: "2", t: "Get your ATS score", d: "See a detailed breakdown across 6 categories: contact info, sections, keywords, measurable results, bullet quality, and formatting." },
-              { n: "3", t: "Fix and download", d: 'Click "Fix" on any issue to jump to the exact field. Use AI Rewrite to improve bullets instantly. Download a clean PDF.' },
-            ].map((s) => (
-              <div key={s.n} className="relative rounded-xl border bg-background p-6 text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-bold">{s.n}</div>
-                <h3 className="text-lg font-semibold">{s.t}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
+              { quote: "\u201cI know I did good work but I can never remember specifics in the moment.\u201d", resolve: "Every achievement, structured and saved" },
+              { quote: "\u201cI prep for hours then get asked something different and freeze.\u201d", resolve: "8 themes covered, always ready" },
+              { quote: "\u201cI give the same stories for every role even when they\u2019re not the best fit.\u201d", resolve: "Role-matched story shortlist" },
+            ].map((p) => (
+              <div key={p.resolve} className="bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] rounded-xl p-3">
+                <p className="text-[10px] text-[#78716C] italic leading-relaxed mb-2">{p.quote}</p>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 bg-[#065F46] rounded-full shrink-0" />
+                  <p className="text-[10px] font-medium text-[#065F46]">{p.resolve}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -147,8 +239,8 @@ export default async function HomePage() {
             <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
               <div>
                 <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">ATS Analysis</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Know your score before recruiters do</h2>
-                <p className="mt-4 text-muted-foreground">75% of resumes are rejected by ATS software before a human sees them. CVEdge scores your CV the same way ATS systems do, then shows you exactly what to fix.</p>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Find out why your CV gets rejected</h2>
+                <p className="mt-4 text-muted-foreground">Recruiters use software to filter CVs before reading them. CVEdge runs the same check — so you can fix problems before they cost you the interview.</p>
                 <ul className="mt-6 space-y-3">
                   <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Score breakdown across 6 categories with per-issue impact points</span></li>
                   <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Checks against 2,400+ role-specific keywords across 130+ job roles</span></li>
@@ -177,7 +269,7 @@ export default async function HomePage() {
               {/* Text — right on desktop */}
               <div className="order-1 lg:order-2">
                 <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">AI Rewrite</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Rewrite weak bullets with AI in seconds</h2>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Make every line of your CV count</h2>
                 <p className="mt-4 text-muted-foreground leading-relaxed">Every bullet point has a Rewrite button. Pick a mode, get a suggestion, refine it with plain instructions, and insert it with one click.</p>
                 <ul className="mt-6 space-y-4">
                   <li className="flex items-start gap-3">
@@ -248,7 +340,7 @@ export default async function HomePage() {
             <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
               <div>
                 <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Job Search</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Match your CV to any job. Generate a cover letter.</h2>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">See how well you match before you apply</h2>
                 <p className="mt-4 text-muted-foreground leading-relaxed">Paste a job description and see exactly how well your CV matches. Then generate a tailored cover letter that references your actual experience.</p>
                 <ul className="mt-6 space-y-4">
                   <li className="flex items-start gap-3">
@@ -284,7 +376,7 @@ export default async function HomePage() {
       <section id="features" className="scroll-mt-16">
         <div className="container mx-auto px-4 py-20 md:py-28">
           <div className="mx-auto mb-16 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Everything you need to land interviews</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Everything you need to go from application to offer letter</h2>
             <p className="mt-4 text-muted-foreground">10 tools in one place. Upload your CV and get started in 60 seconds.</p>
           </div>
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">

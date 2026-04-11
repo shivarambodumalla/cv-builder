@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CvList } from "@/components/shared/cv-list";
 import { sendEmail } from "@/lib/email/sender";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Manage your resumes, track ATS scores, and prepare for interviews.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +71,7 @@ export default async function DashboardPage() {
         isPro={profile?.subscription_status === "active"}
         storyCount={storyCount}
         readyStories={readyStories}
+        userName={user.user_metadata?.full_name?.split(" ")[0] || user.user_metadata?.name?.split(" ")[0] || ""}
       />
     </div>
   );

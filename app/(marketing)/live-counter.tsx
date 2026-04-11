@@ -20,22 +20,36 @@ function timeAgo(dateStr: string): string {
 export function LiveCounter({ initialCount, lastReportAt }: Props) {
   const [count, setCount] = useState(initialCount);
   const [lastAt, setLastAt] = useState(lastReportAt);
+  const [weeklyImproved, setWeeklyImproved] = useState<number | null>(null);
+  const [avgImprovement, setAvgImprovement] = useState<number | null>(null);
 
+  // Fetch public stats on mount and periodically
   useEffect(() => {
-    const interval = setInterval(async () => {
+    async function fetchStats() {
       try {
-        const res = await fetch("/api/stats");
-        if (res.ok) {
-          const data = await res.json();
+        const [statsRes, publicRes] = await Promise.all([
+          fetch("/api/stats"),
+          fetch("/api/stats/public"),
+        ]);
+        if (statsRes.ok) {
+          const data = await statsRes.json();
           setCount(data.todayCount ?? count);
           setLastAt(data.lastReportAt ?? lastAt);
         }
+        if (publicRes.ok) {
+          const publicData = await publicRes.json();
+          setWeeklyImproved(publicData.cvs_improved_this_week ?? 0);
+          setAvgImprovement(publicData.avg_score_improvement ?? 0);
+        }
       } catch { /* silent */ }
-    }, 60000);
+    }
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 60000);
     return () => clearInterval(interval);
   }, [count, lastAt]);
 
-  if (count === 0 && !lastAt) {
+  if (count === 0 && !lastAt && weeklyImproved === null) {
     return (
       <p className="text-xs text-muted-foreground flex items-center gap-1.5">
         <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -45,10 +59,23 @@ export function LiveCounter({ initialCount, lastReportAt }: Props) {
   }
 
   return (
-    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-      <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-      {count} CV{count !== 1 ? "s" : ""} analysed today
-      {lastAt && <span>&middot; Last analysis {timeAgo(lastAt)}</span>}
-    </p>
+    <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
+      <p className="flex items-center gap-1.5">
+        <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+        {weeklyImproved !== null ? weeklyImproved : count} CV{(weeklyImproved !== null ? weeklyImproved : count) !== 1 ? "s" : ""} improved this week
+      </p>
+      {avgImprovement !== null && avgImprovement > 0 && (
+        <p className="flex items-center gap-1.5">
+          <span>&middot;</span>
+          Average improvement: +{avgImprovement} points
+        </p>
+      )}
+      {lastAt && (
+        <p className="flex items-center gap-1.5">
+          <span>&middot;</span>
+          Last analysis {timeAgo(lastAt)}
+        </p>
+      )}
+    </div>
   );
 }

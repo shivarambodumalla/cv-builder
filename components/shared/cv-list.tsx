@@ -22,7 +22,6 @@ import {
   Crown,
   Loader2,
   BookOpen,
-  ArrowRight,
 } from "lucide-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -122,7 +121,7 @@ function ChipsRow({ atsScore, matchScore, hasCoverLetter }: { atsScore: number |
   );
 }
 
-export function CvList({ cvs, isPro, storyCount = 0, readyStories = 0 }: { cvs: Cv[]; isPro?: boolean; storyCount?: number; readyStories?: number }) {
+export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: Cv[]; isPro?: boolean; storyCount?: number; readyStories?: number; userName?: string }) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -249,57 +248,25 @@ export function CvList({ cvs, isPro, storyCount = 0, readyStories = 0 }: { cvs: 
         </div>
       )}
 
-      {/* Create New Resume */}
-      <Link
-        href="/upload-resume"
-        data-testid="btn-create-resume"
-        className="group flex items-center gap-4 rounded-xl border-2 border-dashed border-primary/30 p-5 transition-all hover:border-primary hover:bg-primary/5"
-      >
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-          <Plus className="h-6 w-6" />
-        </div>
+      {/* Welcome Banner */}
+      <div className="bg-primary rounded-2xl px-6 py-6 sm:py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
         <div>
-          <p className="text-base font-semibold">Create New Resume</p>
-          <p className="text-sm text-muted-foreground">Upload a PDF or paste your CV text to get started</p>
+          <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
+            {userName ? `Welcome back, ${userName}` : "Welcome back"}
+          </h2>
+          <p className="text-xs sm:text-sm text-white/60 mt-1">
+            You have {cvs.length} {cvs.length === 1 ? "resume" : "resumes"} · {readyStories} {readyStories === 1 ? "answer" : "answers"} interview-ready
+          </p>
         </div>
-      </Link>
-
-      {/* Story Bank Nudge / Stat */}
-      {storyCount === 0 ? (
-        <Link
-          href="/stories"
-          className="group flex items-center gap-4 rounded-xl border-2 border-dashed border-muted-foreground/20 p-5 transition-all hover:border-primary/40 hover:bg-primary/5"
-        >
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-            <BookOpen className="h-6 w-6" />
-          </div>
-          <div className="flex-1">
-            <p className="text-base font-semibold">Build your interview story bank</p>
-            <p className="text-sm text-muted-foreground">Turn your experience into interview-ready stories</p>
-          </div>
-          <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-            Get started <ArrowRight className="h-4 w-4" />
-          </span>
-        </Link>
-      ) : (
-        <Link
-          href="/stories"
-          className="flex items-center justify-between rounded-xl border bg-card p-4 transition-colors hover:border-primary/30"
-        >
-          <div className="flex items-center gap-3">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${readyStories >= 6 ? "bg-success/15 text-success" : readyStories >= 3 ? "bg-warning/15 text-warning" : "bg-muted text-muted-foreground"}`}>
-              <BookOpen className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="text-sm font-medium">{storyCount} {storyCount === 1 ? "story" : "stories"} ready</p>
-              <p className="text-xs text-muted-foreground">{readyStories} interview-ready</p>
-            </div>
-          </div>
-          <span className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-            View story bank <ArrowRight className="h-3 w-3" />
-          </span>
-        </Link>
-      )}
+        <div className="flex gap-2">
+          <Link href="/interview-coach" className="bg-white/10 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors flex items-center gap-1.5">
+            <BookOpen className="h-4 w-4" /> Interview Coach
+          </Link>
+          <Link href="/upload-resume" data-testid="btn-create-resume" className="bg-success text-white font-semibold rounded-lg px-4 py-2 text-sm hover:bg-success/90 transition-colors flex items-center gap-1.5">
+            <Plus className="h-4 w-4" /> New Resume
+          </Link>
+        </div>
+      </div>
 
       {/* Recent Resumes Header */}
       {cvs.length > 0 && (

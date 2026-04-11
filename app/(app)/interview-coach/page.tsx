@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { StoryBankContent } from "./story-bank-content";
+
+export const metadata: Metadata = {
+  title: "Interview Coach",
+  description: "Build your STAR interview story bank. Extract stories from your CV, practice with AI, and ace every behavioral interview.",
+};
 
 export const dynamic = "force-dynamic";
 

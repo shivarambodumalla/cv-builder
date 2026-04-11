@@ -88,6 +88,7 @@ interface JobMatchPanelProps {
   rematching?: boolean;
   onRematch?: () => void;
   onLimitReached?: () => void;
+  onAnalysing?: (loading: boolean) => void;
 }
 
 /* ── Left Panel — ONLY job description form ────────── */
@@ -100,6 +101,7 @@ export function JobMatchPanel({
   result,
   onResult,
   onLimitReached,
+  onAnalysing,
 }: JobMatchPanelProps) {
   const { openUpgradeModal } = useUpgradeModal();
   const [jobDescription, setJobDescription] = useState(initialJobDescription);
@@ -116,6 +118,7 @@ export function JobMatchPanel({
 
     setLoading(true);
     setError("");
+    onAnalysing?.(true);
 
     try {
       const res = await fetch("/api/cv/job-match", {
@@ -136,18 +139,22 @@ export function JobMatchPanel({
           openUpgradeModal("job_match_limit");
           onLimitReached?.();
           setLoading(false);
+          onAnalysing?.(false);
           return;
         }
         setError(data.error);
         setLoading(false);
+        onAnalysing?.(false);
         return;
       }
 
       onResult(data as JobMatchResult);
       setLoading(false);
+      onAnalysing?.(false);
     } catch {
       setError("Analysis failed. Please try again.");
       setLoading(false);
+      onAnalysing?.(false);
     }
   }
 
@@ -390,36 +397,47 @@ export function JobMatchRightPanel({
       {/* PART 1: Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
         <div>
-          {/* Company · Role subtitle */}
-          {(company || jobTitle) && (
-            <div style={{ fontSize: "11px", color: "#78716C", marginBottom: "2px", fontWeight: 500 }}>
-              {[company, jobTitle].filter(Boolean).join(" · ")}
-            </div>
-          )}
           <div style={{ fontSize: "14px", fontWeight: 700, color: "#0C1A0E", letterSpacing: "-0.2px" }}>
             Job Match
           </div>
-          {result.created_at && (
-            <div style={{ fontSize: "10px", color: "#9CA3AF", marginTop: "1px" }}>
-              {result.match_score}% match
+          {(jobTitle || company) && (
+            <div style={{ fontSize: "11px", color: "#78716C", marginTop: "1px", fontWeight: 500 }}>
+              {[jobTitle, company].filter(Boolean).join(" · ")}
             </div>
           )}
         </div>
-        {onRematch && (
-          <button
-            onClick={onRematch}
-            disabled={rematching}
-            style={{
-              background: "white", border: "1px solid #E0D8CC", padding: "6px 12px",
-              borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "#3D3830",
-              cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04)", opacity: rematching ? 0.5 : 1,
-            }}
-          >
-            {rematching ? <Loader2 size={11} className="animate-spin" /> : <RefreshCw size={11} color="#3D3830" />}
-            Re-match
-          </button>
-        )}
+        <div style={{ display: "flex", gap: 6 }}>
+          {isPaidContent && jdText && matchScore < 95 && (
+            <button
+              onClick={handleTailorCV}
+              disabled={tailorLoading}
+              data-testid="btn-tailor-cv"
+              style={{
+                background: "#15803d", border: "none", padding: "6px 12px",
+                borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "white",
+                cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
+              }}
+            >
+              {tailorLoading ? <Loader2 size={11} className="animate-spin" /> : <Wand2 size={11} />}
+              Tailor CV
+            </button>
+          )}
+          {onRematch && (
+            <button
+              onClick={onRematch}
+              disabled={rematching}
+              style={{
+                background: "white", border: "1px solid #E0D8CC", padding: "6px 12px",
+                borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "#3D3830",
+                cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)", opacity: rematching ? 0.5 : 1,
+              }}
+            >
+              {rematching ? <Loader2 size={11} className="animate-spin" /> : <RefreshCw size={11} color="#3D3830" />}
+              Re-match
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Skeleton loader while rematching */}
@@ -466,39 +484,6 @@ export function JobMatchRightPanel({
           <ConfidenceChip level={matchScore >= 75 ? "high" : matchScore >= 50 ? "medium" : "low"} size="sm" />
         </div>
       </div>
-
-      {/* CV Tailor CTA */}
-      {isPaidContent && jdText && (
-        <button
-          onClick={handleTailorCV}
-          disabled={tailorLoading || matchScore >= 95}
-          data-testid="btn-tailor-cv"
-          style={{
-            width: "100%",
-            marginBottom: 12,
-            background: matchScore >= 95 ? "#F7F5F0" : "#15803d",
-            color: matchScore >= 95 ? "#9CA3AF" : "white",
-            border: "none",
-            padding: "10px",
-            borderRadius: "8px",
-            fontSize: "12px",
-            fontWeight: 600,
-            cursor: matchScore >= 95 ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}
-        >
-          {tailorLoading ? (
-            <><Loader2 size={12} className="animate-spin" /> Tailoring CV...</>
-          ) : matchScore >= 95 ? (
-            "CV already optimised for this role"
-          ) : (
-            <><Wand2 size={12} /> Tailor CV for this role</>
-          )}
-        </button>
-      )}
 
       {/* PART 3: Three stat chips */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", marginBottom: "12px" }}>
@@ -681,38 +666,40 @@ export function JobMatchRightPanel({
       {/* Salary Insights */}
       {jobTitle && <SalaryInsights targetRole={jobTitle} isPro={plan === "pro"} />}
 
-      {/* Prepare for Interview */}
-      {jdText && (
-        <div className="rounded-lg border border-dashed p-4 text-center">
-          <p className="text-sm text-muted-foreground mb-2">
-            Prepare STAR stories tailored to this role
-          </p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              if (plan === "free") {
-                openUpgradeModal("story_prep_limit");
-                return;
-              }
-              router.push(`/stories?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
-            }}
-          >
-            <BookOpen className="mr-1.5 h-4 w-4" /> Prepare for Interview
+      {/* Action cards */}
+      <div className="space-y-2 mt-4">
+        {jdText && (
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+            <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+              <BookOpen size={16} className="text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground">Prepare for Interview</p>
+              <p className="text-xs text-muted-foreground">Get STAR stories tailored to this role</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => {
+              if (plan === "free") { openUpgradeModal("story_prep_limit"); return; }
+              router.push(`/interview-coach?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
+            }}>
+              Prepare
+            </Button>
+          </div>
+        )}
+        <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
+          <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+            <FileText size={16} className="text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground">Generate Cover Letter</p>
+            <p className="text-xs text-muted-foreground">Tailored cover letter based on this match</p>
+          </div>
+          <Button size="sm" variant="outline" onClick={() => {
+            sessionStorage.setItem(`cover_letter_source_${cvId}`, "job-match");
+            window.dispatchEvent(new CustomEvent("switch-tab", { detail: "cover-letter" }));
+          }}>
+            Generate
           </Button>
         </div>
-      )}
-
-      {/* Cover Letter CTA */}
-      <div className="rounded-lg border border-dashed p-4 text-center">
-        <p className="text-sm text-muted-foreground mb-2">
-          Ready to apply? Generate a tailored cover letter based on this match.
-        </p>
-        <Button variant="outline" onClick={() => {
-          sessionStorage.setItem(`cover_letter_source_${cvId}`, "job-match");
-          window.dispatchEvent(new CustomEvent("switch-tab", { detail: "cover-letter" }));
-        }}>
-          Generate Cover Letter
-        </Button>
       </div>
 
       {/* Tailor CV Drawer */}

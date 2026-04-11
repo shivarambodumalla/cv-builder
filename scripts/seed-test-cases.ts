@@ -18,9 +18,22 @@ const TEST_CASES = [
   // Dashboard Flow
   { suite: "Dashboard Flow", name: "Dashboard loads", description: "Verify dashboard renders with create button or content", spec_file: "tests/e2e/dashboard.spec.ts" },
   { suite: "Dashboard Flow", name: "Dashboard shows test resume", description: "Verify seeded test resume card is visible", spec_file: "tests/e2e/dashboard.spec.ts" },
-  // Story Bank
-  { suite: "Story Bank", name: "Story bank page loads", description: "Verify story bank page renders", spec_file: "tests/e2e/stories.spec.ts" },
-  { suite: "Story Bank", name: "Add story modal opens", description: "Verify add story sheet opens", spec_file: "tests/e2e/stories.spec.ts" },
+  // Interview Coach (Story Bank)
+  { suite: "Interview Coach", name: "Story bank page loads", description: "Verify interview coach page renders with readiness banner", spec_file: "tests/e2e/stories.spec.ts" },
+  { suite: "Interview Coach", name: "Add story navigates to new page", description: "Click Add Story navigates to /stories/new", spec_file: "tests/e2e/stories.spec.ts" },
+  { suite: "Interview Coach", name: "Story detail page loads", description: "Verify split-pane story editor renders", spec_file: "tests/e2e/stories.spec.ts" },
+  { suite: "Interview Coach", name: "Extract from CV flow", description: "Verify extraction wizard opens and processes CV", spec_file: "tests/e2e/stories.spec.ts" },
+  // CV Tailor
+  { suite: "CV Tailor", name: "Tailor button visible in job match", description: "Verify Tailor CV button appears next to Re-match", spec_file: "tests/e2e/job-match-flow.spec.ts" },
+  // Offer Evaluation
+  { suite: "Offer Evaluation", name: "Evaluation appears after match", description: "Verify offer evaluation section renders after job match analysis", spec_file: "tests/e2e/job-match-flow.spec.ts" },
+  // Templates
+  { suite: "Templates", name: "Template selector renders all 12", description: "Verify all 12 templates appear in design panel", spec_file: "tests/e2e/templates.spec.ts" },
+  // PDF Export
+  { suite: "PDF Export", name: "PDF download works", description: "Verify PDF download triggers and completes", spec_file: "tests/e2e/pdf-export.spec.ts" },
+  // Billing
+  { suite: "Billing", name: "Checkout flow initiates", description: "Verify upgrade modal opens and checkout URL is generated", spec_file: "tests/e2e/billing-gate.spec.ts" },
+  { suite: "Billing", name: "Cancel subscription flow", description: "Verify cancel subscription confirmation dialog", spec_file: "tests/e2e/billing-gate.spec.ts" },
 ];
 
 async function seed() {

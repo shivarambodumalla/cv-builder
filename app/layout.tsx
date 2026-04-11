@@ -14,14 +14,40 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CVEdge | AI-Powered CV Builder",
-  description: "Build professional CVs with AI assistance",
+  title: {
+    default: "CVEdge — AI Resume Builder | Get More Interviews",
+    template: "%s | CVEdge",
+  },
+  description: "Build ATS-optimised resumes with AI. Get instant ATS scoring, job matching, AI bullet rewrites, and interview coaching. Land more interviews in minutes.",
+  metadataBase: new URL("https://www.thecvedge.com"),
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/img/CV-Edge-Logo-square.svg", type: "image/svg+xml" },
     ],
     apple: "/img/CV-Edge-Logo-square.svg",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "CVEdge",
+    title: "CVEdge — AI Resume Builder | Get More Interviews",
+    description: "Build ATS-optimised resumes with AI. Instant ATS scoring, job matching, AI rewrites, and interview coaching.",
+    url: "https://www.thecvedge.com",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge — AI Resume Builder" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@thecvedge",
+    title: "CVEdge — AI Resume Builder",
+    description: "Build ATS-optimised resumes with AI. Land more interviews in minutes.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  other: {
+    "theme-color": "#1a7a6d",
   },
 };
 
