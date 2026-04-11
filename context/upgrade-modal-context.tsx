@@ -11,6 +11,9 @@ export type UpgradeTrigger =
   | "template_locked"
   | "cv_limit"
   | "fix_all_limit"
+  | "story_scan_limit"
+  | "story_save_limit"
+  | "story_prep_limit"
   | "generic";
 
 interface UpgradeModalContextType {

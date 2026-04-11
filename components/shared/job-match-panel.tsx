@@ -29,7 +29,8 @@ import { JdRedFlagDetector } from "@/components/resume/jd-red-flag-detector";
 import { OfferEvaluation } from "@/components/resume/offer-evaluation";
 import { SalaryInsights } from "@/components/resume/salary-insights";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
-import { Wand2 } from "lucide-react";
+import { Wand2, BookOpen } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 /* ── Types ─────────────────────────────────────────── */
 
@@ -224,6 +225,7 @@ export function JobMatchRightPanel({
   jobTitle?: string;
   jdText?: string;
 }) {
+  const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
   const [limitReached, setLimitReached] = useState(false);
   const [tailorLoading, setTailorLoading] = useState(false);
@@ -678,6 +680,27 @@ export function JobMatchRightPanel({
 
       {/* Salary Insights */}
       {jobTitle && <SalaryInsights targetRole={jobTitle} isPro={plan === "pro"} />}
+
+      {/* Prepare for Interview */}
+      {jdText && (
+        <div className="rounded-lg border border-dashed p-4 text-center">
+          <p className="text-sm text-muted-foreground mb-2">
+            Prepare STAR stories tailored to this role
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (plan === "free") {
+                openUpgradeModal("story_prep_limit");
+                return;
+              }
+              router.push(`/stories?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
+            }}
+          >
+            <BookOpen className="mr-1.5 h-4 w-4" /> Prepare for Interview
+          </Button>
+        </div>
+      )}
 
       {/* Cover Letter CTA */}
       <div className="rounded-lg border border-dashed p-4 text-center">

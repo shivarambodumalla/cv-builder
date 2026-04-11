@@ -72,6 +72,12 @@ export function AppHeader({ user }: AppHeaderProps) {
             >
               Dashboard
             </Link>
+            <Link
+              href="/stories"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Stories
+            </Link>
           </nav>
         </div>
 

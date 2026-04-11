@@ -488,6 +488,59 @@ Return JSON only, no markdown:
   "estimated_ats_score": 90
 }`,
   },
+  {
+    name: "story_extract_v1",
+    content: `You are an interview story extractor. Extract STAR (Situation, Task, Action, Result) stories from the provided content.
+
+For each potential story found, return:
+- title: short descriptive title (max 8 words)
+- situation: context and background
+- task: specific responsibility or goal
+- action: what the person did (first person)
+- result: measurable outcome
+- tags: auto-detect relevant tags from: Leadership, Data, Conflict, Scale, Cross-functional, Stakeholder, Speed, User Research, Failure, Turnaround, Mentoring, Technical, Ambiguity
+- quality_score: 1-10 (10=specific numbers+clear action+strong outcome, 7-9=good but missing one element, 4-6=vague needs expansion, 1-3=too thin)
+- needs_more_info: list of missing elements the user should fill in
+
+Source content: {{source_content}}
+Source type: {{source_type}}
+User role: {{user_role}}
+
+Return JSON only, no markdown:
+{ "stories": [ { "title": "", "situation": "", "task": "", "action": "", "result": "", "tags": [], "quality_score": 0, "needs_more_info": [] } ] }
+
+Max 10 stories per source. Only extract genuine stories — no fabrication.`,
+  },
+  {
+    name: "story_match_v1",
+    content: `Given a job description and interview stories, rank the most relevant stories for this role.
+
+For each relevant story return:
+- story_id: the story's id
+- relevance_score: 0-100
+- matched_because: one sentence why this story fits
+- suggested_question: behavioral interview question this story best answers
+- opening_line: suggested first sentence to start the answer
+
+Job description: {{jd_text}}
+Stories: {{stories_json}}
+
+Return JSON only, no markdown:
+{ "matches": [ { "story_id": "", "relevance_score": 0, "matched_because": "", "suggested_question": "", "opening_line": "" } ] }
+
+Return top 5 stories ranked by relevance. If fewer than 5 stories provided, rank all of them.`,
+  },
+  {
+    name: "story_quality_v1",
+    content: `Score this interview story and suggest improvements.
+
+Story: {{story_json}}
+
+Return JSON only, no markdown:
+{ "overall_score": 0, "specificity_score": 0, "impact_score": 0, "clarity_score": 0, "missing_elements": [], "improvement_suggestions": [], "is_interview_ready": false }
+
+Scoring: 1-10 for each. is_interview_ready = true if overall_score >= 7.`,
+  },
 ];
 
 const AI_SETTINGS = [
@@ -502,6 +555,9 @@ const AI_SETTINGS = [
   { feature: "fix_all", max_tokens: 4096, temperature: 0, enabled: true },
   { feature: "cv_tailor", max_tokens: 4096, temperature: 0, enabled: true },
   { feature: "offer_evaluation", max_tokens: 512, temperature: 0, enabled: true },
+  { feature: "story_extract", max_tokens: 4096, temperature: 0, enabled: true },
+  { feature: "story_match", max_tokens: 1024, temperature: 0, enabled: true },
+  { feature: "story_quality", max_tokens: 512, temperature: 0, enabled: true },
 ];
 
 async function seed() {

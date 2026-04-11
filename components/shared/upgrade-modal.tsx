@@ -24,6 +24,9 @@ const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon:
   template_locked: { title: "Unlock all templates", subtitle: "5 professional templates to stand out", icon: "crown" },
   cv_limit: { title: "Create more CVs", subtitle: "Unlimited CVs for different roles", icon: "crown" },
   fix_all_limit: { title: "You've used your free AI fix", subtitle: "Upgrade to Pro for unlimited AI fixes across all your CVs", icon: "sparkles" },
+  story_scan_limit: { title: "Scan portfolios & GitHub", subtitle: "Upgrade to extract stories from any source", icon: "sparkles" },
+  story_save_limit: { title: "Save more stories", subtitle: "Free plan includes 3 stories. Upgrade for unlimited.", icon: "crown" },
+  story_prep_limit: { title: "Interview prep mode", subtitle: "Match stories to any job description", icon: "sparkles" },
   generic: { title: "Go Pro", subtitle: "Everything you need to land interviews", icon: "crown" },
 };
 

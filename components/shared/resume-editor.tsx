@@ -50,6 +50,7 @@ import {
   Loader2,
   Eye,
   PenLine,
+  BookOpen,
 } from "lucide-react";
 
 interface Cv {
@@ -586,6 +587,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={() => router.push("/dashboard")}><LayoutDashboard className="mr-2 h-4 w-4" />Dashboard</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/stories?cv_id=${cv.id}`)}><BookOpen className="mr-2 h-4 w-4" />Story Bank</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push("/billing")}><CreditCard className="mr-2 h-4 w-4" />Billing</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
@@ -647,6 +649,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </TabsTrigger>
                 <TabsTrigger value="cover-letter" data-testid="tab-cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
               </TabsList>
+              <a href="/stories" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                Story Bank →
+              </a>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
 

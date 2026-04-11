@@ -48,9 +48,24 @@ export default async function DashboardPage() {
     }).catch(() => {});
   }
 
+  // Fetch story stats
+  const { data: stories } = await supabase
+    .from("stories")
+    .select("id, quality_score")
+    .eq("user_id", user.id)
+    .eq("is_active", true);
+
+  const storyCount = stories?.length ?? 0;
+  const readyStories = stories?.filter((s) => (s.quality_score ?? 0) >= 7).length ?? 0;
+
   return (
     <div className="container mx-auto px-4 py-12">
-      <CvList cvs={cvs ?? []} isPro={profile?.subscription_status === "active"} />
+      <CvList
+        cvs={cvs ?? []}
+        isPro={profile?.subscription_status === "active"}
+        storyCount={storyCount}
+        readyStories={readyStories}
+      />
     </div>
   );
 }

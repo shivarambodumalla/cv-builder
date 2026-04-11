@@ -18,6 +18,9 @@ const TEST_CASES = [
   // Dashboard Flow
   { suite: "Dashboard Flow", name: "Dashboard loads", description: "Verify dashboard renders with create button or content", spec_file: "tests/e2e/dashboard.spec.ts" },
   { suite: "Dashboard Flow", name: "Dashboard shows test resume", description: "Verify seeded test resume card is visible", spec_file: "tests/e2e/dashboard.spec.ts" },
+  // Story Bank
+  { suite: "Story Bank", name: "Story bank page loads", description: "Verify story bank page renders", spec_file: "tests/e2e/stories.spec.ts" },
+  { suite: "Story Bank", name: "Add story modal opens", description: "Verify add story sheet opens", spec_file: "tests/e2e/stories.spec.ts" },
 ];
 
 async function seed() {
