@@ -162,7 +162,9 @@ export function RunDetailContent({
             className="rounded-lg border bg-white p-8 text-center text-muted-foreground"
             style={{ borderColor: "#E0D8CC" }}
           >
-            No test results found for this run.
+            {run.total_tests === 0 && (run.status === "error" || run.status === "running")
+              ? "This run completed before result tracking was enabled."
+              : "No test results found for this run."}
           </div>
         )}
         {Object.entries(suiteGroups).map(([suite, suiteResults]) => (

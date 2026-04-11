@@ -49,9 +49,10 @@ jobs:
 
       - name: Run E2E tests
         if: env.BUILD_FAILED != 'true'
-        run: npx playwright test --reporter=json > test-results/results.json || true
+        run: npx playwright test --reporter=json,html || true
         env:
           CI: true
+          PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/results.json
 
       - name: Parse test results
         if: always()
