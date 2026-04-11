@@ -49,7 +49,12 @@ export function getDaysUntilReset(windowStart: string | null): number {
 }
 
 export function getPlan(profile: any): "free" | "pro" {
-  return profile?.subscription_status === "active" ? "pro" : "free";
+  if (profile?.subscription_status === "active") return "pro";
+  // Cancelled but still within billing period — keep pro access
+  if (profile?.subscription_status === "cancelled" && profile?.current_period_end) {
+    if (new Date(profile.current_period_end) > new Date()) return "pro";
+  }
+  return "free";
 }
 
 const COLUMN_MAP: Record<string, { column: string; limitKey: string }> = {
