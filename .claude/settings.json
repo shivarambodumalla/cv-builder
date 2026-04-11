@@ -25,7 +25,9 @@
       "Bash(brew install:*)",
       "Bash(git -C /Users/sivaramireddy/work/cv-builder status --short)",
       "Bash(git add:*)",
-      "Bash(git commit -m ':*)"
+      "Bash(git commit -m ':*)",
+      "Bash(grep -n 'test.describe\\\\|test\\(' /Users/sivaramireddy/work/cv-builder/tests/e2e/*.spec.ts)",
+      "Bash(gh secret:*)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv"

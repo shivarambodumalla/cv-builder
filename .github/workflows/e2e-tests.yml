@@ -21,6 +21,7 @@ jobs:
       LEMONSQUEEZY_API_KEY: ${{ secrets.LEMONSQUEEZY_API_KEY }}
       LEMONSQUEEZY_STORE_ID: ${{ secrets.LEMONSQUEEZY_STORE_ID }}
       LEMONSQUEEZY_WEBHOOK_SECRET: ${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
 
     steps:
       - name: Checkout
@@ -47,9 +48,19 @@ jobs:
           NODE_ENV: production
 
       - name: Run E2E tests
-        run: npx playwright test
+        run: npx playwright test --reporter=json > test-results/results.json || true
         env:
           CI: true
+
+      - name: Parse test results
+        if: always()
+        run: node scripts/parse-test-results.js
+
+      - name: Upload results to database
+        if: always()
+        run: node scripts/upload-test-results.js
+        env:
+          GITHUB_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
@@ -66,3 +77,14 @@ jobs:
           name: test-screenshots
           path: test-results/
           retention-days: 3
+
+      - name: Check test status
+        if: always()
+        run: |
+          if [ -f test-results/parsed.json ]; then
+            STATUS=$(node -e "console.log(require('./test-results/parsed.json').status)")
+            if [ "$STATUS" = "failed" ]; then
+              echo "Tests failed!"
+              exit 1
+            fi
+          fi
