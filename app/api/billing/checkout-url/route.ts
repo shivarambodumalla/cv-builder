@@ -16,6 +16,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid period" }, { status: 400 });
   }
 
-  const url = await getCheckoutUrl(period, user.email || "", user.id);
-  return NextResponse.json({ url });
+  try {
+    const url = await getCheckoutUrl(period, user.email || "", user.id);
+    return NextResponse.json({ url });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[checkout-url] Failed:", msg);
+    return NextResponse.json({ error: `Checkout failed: ${msg}` }, { status: 500 });
+  }
 }
