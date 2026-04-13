@@ -36,6 +36,6 @@ test.describe("CV Editor", () => {
     await page.goto(`/resume/${TEST_CV_ID}`);
     await expect(page.getByTestId("tab-match")).toBeVisible({ timeout: 15000 });
     await page.click('[data-testid="tab-match"]');
-    await expect(page.locator("textarea, text=Job Match").first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator("textarea").first().or(page.getByText(/job match/i).first())).toBeVisible({ timeout: 5000 });
   });
 });
