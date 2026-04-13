@@ -32,8 +32,39 @@ const TEST_CASES = [
   // PDF Export
   { suite: "PDF Export", name: "PDF download works", description: "Verify PDF download triggers and completes", spec_file: "tests/e2e/pdf-export.spec.ts" },
   // Billing
-  { suite: "Billing", name: "Checkout flow initiates", description: "Verify upgrade modal opens and checkout URL is generated", spec_file: "tests/e2e/billing-gate.spec.ts" },
-  { suite: "Billing", name: "Cancel subscription flow", description: "Verify cancel subscription confirmation dialog", spec_file: "tests/e2e/billing-gate.spec.ts" },
+  { suite: "Billing", name: "Billing page loads", description: "Verify billing page renders with plan info", spec_file: "tests/e2e/billing.spec.ts" },
+  { suite: "Billing", name: "Upgrade modal shows pricing", description: "Verify upgrade modal opens with pricing options", spec_file: "tests/e2e/billing.spec.ts" },
+  { suite: "Billing", name: "Cancel subscription button exists", description: "Verify cancel button for pro users", spec_file: "tests/e2e/billing.spec.ts" },
+  // CV Editor
+  { suite: "CV Editor", name: "Editor loads with tabs", description: "Verify editor renders all 4 tabs", spec_file: "tests/e2e/cv-editor.spec.ts" },
+  { suite: "CV Editor", name: "Content tab shows form fields", description: "Verify content editor has input fields", spec_file: "tests/e2e/cv-editor.spec.ts" },
+  { suite: "CV Editor", name: "Design tab shows templates", description: "Verify design tab opens with template selector", spec_file: "tests/e2e/cv-editor.spec.ts" },
+  { suite: "CV Editor", name: "ATS tab shows content", description: "Verify ATS tab renders score or analyse", spec_file: "tests/e2e/cv-editor.spec.ts" },
+  { suite: "CV Editor", name: "Match tab shows JD input", description: "Verify match tab renders JD form or results", spec_file: "tests/e2e/cv-editor.spec.ts" },
+  // Cover Letter
+  { suite: "Cover Letter", name: "Cover letter tab loads", description: "Verify cover letter tab renders", spec_file: "tests/e2e/cover-letter.spec.ts" },
+  // PDF Export
+  { suite: "PDF Export", name: "Download button exists", description: "Verify download button is present in editor", spec_file: "tests/e2e/pdf-export.spec.ts" },
+  // Auth
+  { suite: "Auth", name: "Dashboard redirects unauthenticated", description: "Verify /dashboard redirects to /login", spec_file: "tests/e2e/auth.spec.ts" },
+  { suite: "Auth", name: "Editor redirects unauthenticated", description: "Verify /resume/id redirects to /login", spec_file: "tests/e2e/auth.spec.ts" },
+  { suite: "Auth", name: "Billing redirects unauthenticated", description: "Verify /billing redirects to /login", spec_file: "tests/e2e/auth.spec.ts" },
+  { suite: "Auth", name: "Login page loads", description: "Verify login page renders", spec_file: "tests/e2e/auth.spec.ts" },
+  // Admin
+  { suite: "Admin", name: "Admin dashboard loads", description: "Verify admin dashboard renders or redirects", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin tests page loads", description: "Verify test management page renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin users page loads", description: "Verify users list renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin prompts page loads", description: "Verify prompts editor renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin pricing page loads", description: "Verify pricing manager renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin emails page loads", description: "Verify email templates page renders", spec_file: "tests/e2e/admin.spec.ts" },
+  // Marketing Pages
+  { suite: "Marketing", name: "Homepage loads with H1", description: "Verify homepage renders with main heading", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Pricing page loads", description: "Verify pricing page renders", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Upload resume page loads", description: "Verify upload page renders", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Privacy page loads", description: "Verify privacy policy renders", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Terms page loads", description: "Verify terms of service renders", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Sitemap returns XML", description: "Verify sitemap.xml is accessible", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Robots.txt is accessible", description: "Verify robots.txt serves correctly", spec_file: "tests/e2e/marketing.spec.ts" },
 ];
 
 async function seed() {
