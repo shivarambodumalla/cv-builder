@@ -65,6 +65,27 @@ const TEST_CASES = [
   { suite: "Marketing", name: "Terms page loads", description: "Verify terms of service renders", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Sitemap returns XML", description: "Verify sitemap.xml is accessible", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Robots.txt is accessible", description: "Verify robots.txt serves correctly", spec_file: "tests/e2e/marketing.spec.ts" },
+  // Journey: ATS
+  { suite: "Journey: ATS", name: "Full ATS scan with results", description: "Mock ATS API, verify score and categories render", spec_file: "tests/e2e/journey-ats.spec.ts" },
+  { suite: "Journey: ATS", name: "Fix All opens drawer with diff", description: "Mock Fix All API, verify drawer renders changes", spec_file: "tests/e2e/journey-ats.spec.ts" },
+  { suite: "Journey: ATS", name: "Missing keywords as chips", description: "Verify keyword chips render from mock data", spec_file: "tests/e2e/journey-ats.spec.ts" },
+  { suite: "Journey: ATS", name: "ATS limit triggers upgrade modal", description: "Mock 403, verify upgrade modal appears", spec_file: "tests/e2e/journey-ats.spec.ts" },
+  // Journey: Job Match
+  { suite: "Journey: Job Match", name: "Paste JD and get match score", description: "Mock match API, verify score renders", spec_file: "tests/e2e/journey-job-match.spec.ts" },
+  { suite: "Journey: Job Match", name: "Tailor CV opens drawer", description: "Mock tailor API, verify drawer opens", spec_file: "tests/e2e/journey-job-match.spec.ts" },
+  { suite: "Journey: Job Match", name: "Match limit triggers upgrade", description: "Mock 403, verify upgrade modal", spec_file: "tests/e2e/journey-job-match.spec.ts" },
+  // Journey: CV Lifecycle
+  { suite: "Journey: CV", name: "Editor auto-saves", description: "Verify field changes trigger save", spec_file: "tests/e2e/journey-cv-lifecycle.spec.ts" },
+  { suite: "Journey: CV", name: "Invalid CV shows 404", description: "Navigate to bad UUID, verify 404", spec_file: "tests/e2e/journey-cv-lifecycle.spec.ts" },
+  { suite: "Journey: CV", name: "Dashboard shows CV cards", description: "Verify resume cards render on dashboard", spec_file: "tests/e2e/journey-cv-lifecycle.spec.ts" },
+  { suite: "Journey: CV", name: "Card click navigates to editor", description: "Click CV card, verify URL changes to /resume/", spec_file: "tests/e2e/journey-cv-lifecycle.spec.ts" },
+  // Journey: Cover Letter
+  { suite: "Journey: Cover Letter", name: "Generate cover letter", description: "Mock API, verify letter renders", spec_file: "tests/e2e/journey-cover-letter.spec.ts" },
+  { suite: "Journey: Cover Letter", name: "Cover letter limit triggers upgrade", description: "Mock 403, verify upgrade appears", spec_file: "tests/e2e/journey-cover-letter.spec.ts" },
+  // Journey: Error Handling
+  { suite: "Journey: Errors", name: "API 502 shows error not blank", description: "Mock 502 on ATS, verify error state", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
+  { suite: "Journey: Errors", name: "Network error doesn't crash", description: "Abort job match request, verify no crash", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
+  { suite: "Journey: Errors", name: "Fix All error recovers", description: "Mock Fix All 502, verify recovery", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
 ];
 
 async function seed() {
