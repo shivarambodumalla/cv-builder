@@ -5,7 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 async function checkAdmin(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== process.env.ADMIN_EMAIL) return null;
+  if (!user) return null;
+  const adminEmails = (process.env.ADMIN_EMAIL || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  if (!adminEmails.includes(user.email?.toLowerCase() || "")) return null;
   return user;
 }
 

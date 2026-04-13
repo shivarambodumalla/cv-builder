@@ -33,7 +33,8 @@
       "Bash(find /Users/sivaramireddy/work/cv-builder/app -name \"page.tsx\" -exec grep -l \"metadata\" {} \\\\;)",
       "Bash(ls -la /Users/sivaramireddy/work/cv-builder/app/sitemap* /Users/sivaramireddy/work/cv-builder/app/robots*)",
       "Bash(curl -s https://www.thecvedge.com/api/billing/checkout-url -X POST -H \"Content-Type: application/json\" -d '{\"period\":\"monthly\"}')",
-      "Bash(node /Users/sivaramireddy/work/cv-builder/scripts/generate-og-image.js)"
+      "Bash(node /Users/sivaramireddy/work/cv-builder/scripts/generate-og-image.js)",
+      "Bash(git commit:*)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",

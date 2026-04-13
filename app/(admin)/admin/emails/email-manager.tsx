@@ -43,12 +43,17 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
 
   async function saveBrand() {
     setBrandSaving(true);
-    await fetch("/api/admin/brand", {
+    const res = await fetch("/api/admin/brand", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(brand),
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(`Save failed: ${data.error || res.statusText}`);
+    }
     setBrandSaving(false);
+    router.refresh();
   }
 
   async function toggleEnabled(t: Template) {
