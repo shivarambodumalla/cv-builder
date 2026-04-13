@@ -9,8 +9,8 @@ export function ThemeLogo({ className = "h-7", iconOnly = false }: ThemeLogoProp
 
   return (
     <>
-      <img src={light} alt="CVEdge" className={`${className} dark:hidden`} />
-      <img src={dark} alt="CVEdge" className={`${className} hidden dark:block`} />
+      <img src={light} alt="CVEdge logo" className={`${className} dark:hidden`} />
+      <img src={dark} alt="CVEdge logo" className={`${className} hidden dark:block`} />
     </>
   );
 }

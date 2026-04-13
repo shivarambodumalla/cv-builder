@@ -258,7 +258,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => freeAtLimit ? openUpgradeModal("story_save_limit") : router.push("/interview-coach/new")}
+              onClick={() => freeAtLimit ? openUpgradeModal("generic") : router.push("/interview-coach/new")}
               className="bg-primary hover:bg-primary/90 text-white"
             >
               <Plus className="mr-1.5 h-4 w-4" /> Add Experience
@@ -313,7 +313,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 Free plan: {FREE_STORY_LIMIT} experiences per week ({weeklyCount}/{FREE_STORY_LIMIT} used). Upgrade for unlimited experiences, AI extraction, and interview prep.
               </p>
             </div>
-            <Button onClick={() => openUpgradeModal("story_save_limit")} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
+            <Button onClick={() => openUpgradeModal("generic")} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
               Upgrade to Pro
             </Button>
           </div>

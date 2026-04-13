@@ -3,17 +3,19 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type UpgradeTrigger =
-  | "download"
+  | "cv_limit"
   | "ats_limit"
+  | "rewrite_limit"
   | "job_match_limit"
   | "cover_letter_limit"
-  | "ai_rewrite_limit"
-  | "template_locked"
-  | "cv_limit"
   | "fix_all_limit"
-  | "story_scan_limit"
-  | "story_save_limit"
-  | "story_prep_limit"
+  | "cv_tailor_limit"
+  | "offer_eval_limit"
+  | "portfolio_scan_limit"
+  | "story_summary_limit"
+  | "interview_prep_limit"
+  | "template_locked"
+  | "download"
   | "generic";
 
 interface UpgradeModalContextType {

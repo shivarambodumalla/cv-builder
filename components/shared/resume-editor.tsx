@@ -514,7 +514,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => router.push("/dashboard")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <img src="/img/CV-Edge-Logo-square.svg" alt="CVedge" className="h-7 w-7 shrink-0" />
+          <img src="/img/CV-Edge-Logo-square.svg" alt="CVEdge logo" className="h-7 w-7 shrink-0" />
           {editingTitle ? (
             <input
               ref={titleInputRef}

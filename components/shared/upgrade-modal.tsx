@@ -16,27 +16,29 @@ const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: n
 ];
 
 const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
-  download: { title: "Download your CV", subtitle: "Clean, watermark-free PDFs anytime", icon: "zap" },
-  ats_limit: { title: "You need more ATS scans", subtitle: "Unlimited analysis to fix every issue", icon: "zap" },
-  job_match_limit: { title: "Unlock job matching", subtitle: "Match your CV to any job description", icon: "sparkles" },
-  cover_letter_limit: { title: "Generate more cover letters", subtitle: "Tailored letters for every application", icon: "sparkles" },
-  ai_rewrite_limit: { title: "More AI rewrites", subtitle: "Polish every bullet point with AI", icon: "sparkles" },
-  template_locked: { title: "Unlock all templates", subtitle: "5 professional templates to stand out", icon: "crown" },
-  cv_limit: { title: "Create more CVs", subtitle: "Unlimited CVs for different roles", icon: "crown" },
-  fix_all_limit: { title: "You've used your free AI fix", subtitle: "Upgrade to Pro for unlimited AI fixes across all your CVs", icon: "sparkles" },
-  story_scan_limit: { title: "Scan portfolios & GitHub", subtitle: "Upgrade to extract stories from any source", icon: "sparkles" },
-  story_save_limit: { title: "Save more stories", subtitle: "Free plan includes 3 stories. Upgrade for unlimited.", icon: "crown" },
-  story_prep_limit: { title: "Interview prep mode", subtitle: "Match stories to any job description", icon: "sparkles" },
-  generic: { title: "Go Pro", subtitle: "Everything you need to land interviews", icon: "crown" },
+  cv_limit: { title: "You have 3 CVs", subtitle: "Upgrade to create unlimited CVs tailored for different roles.", icon: "crown" },
+  ats_limit: { title: "ATS scans used this week", subtitle: "Resets Monday — or upgrade for unlimited ATS analysis.", icon: "zap" },
+  rewrite_limit: { title: "AI rewrites used this week", subtitle: "Resets Monday — or upgrade for unlimited rewrites.", icon: "sparkles" },
+  job_match_limit: { title: "Job matches used this week", subtitle: "Resets Monday — or upgrade for unlimited matching.", icon: "sparkles" },
+  cover_letter_limit: { title: "Cover letters used this week", subtitle: "Resets Monday — or upgrade for unlimited letters.", icon: "sparkles" },
+  fix_all_limit: { title: "Fix All uses reached", subtitle: "Resets Monday — or upgrade for unlimited AI fixes.", icon: "sparkles" },
+  cv_tailor_limit: { title: "CV tailoring used this week", subtitle: "Resets Monday — or upgrade for unlimited tailoring.", icon: "sparkles" },
+  offer_eval_limit: { title: "Offer evaluations used", subtitle: "Resets Monday — or upgrade for unlimited evaluations.", icon: "sparkles" },
+  portfolio_scan_limit: { title: "Portfolio scanning limited", subtitle: "Upgrade to scan unlimited portfolios and GitHub profiles.", icon: "sparkles" },
+  story_summary_limit: { title: "Story summaries used", subtitle: "Resets Monday — or upgrade for unlimited AI summaries.", icon: "sparkles" },
+  interview_prep_limit: { title: "Interview prep sessions used", subtitle: "Resets Monday — or upgrade for unlimited prep.", icon: "sparkles" },
+  template_locked: { title: "All templates included", subtitle: "Every template is free. Upgrade for watermark-free PDFs.", icon: "crown" },
+  download: { title: "Download your CV", subtitle: "Free downloads include a small watermark. Upgrade for clean PDFs.", icon: "zap" },
+  generic: { title: "Upgrade to Pro", subtitle: "Unlimited everything for serious job seekers.", icon: "crown" },
 };
 
 const FEATURES = [
   "Unlimited ATS scans",
+  "Unlimited AI rewrites",
   "Unlimited job matches",
   "Unlimited cover letters",
-  "Unlimited AI rewrites",
-  "All 5 templates",
-  "Clean PDF exports",
+  "Clean PDF exports (no watermark)",
+  "All 12 templates",
 ];
 
 export function UpgradeModal() {
@@ -176,7 +178,7 @@ export function UpgradeModal() {
               onClick={handleCheckout}
               disabled={checkoutLoading}
             >
-              {checkoutLoading ? "Processing..." : `Get Pro \u2014 $${selected.sale}/${selected.per}`}
+              {checkoutLoading ? "Processing..." : "Get Pro \u2014 $9/month"}
             </Button>
 
             <p className="text-center text-[11px] text-muted-foreground">

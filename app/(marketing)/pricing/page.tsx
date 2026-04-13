@@ -2,13 +2,9 @@ import type { Metadata } from "next";
 import { PricingContent } from "./pricing-content";
 
 export const metadata: Metadata = {
-  title: "Pricing | CVEdge | Simple, Transparent Pricing",
-  description:
-    "One plan. Full access. Cancel anytime. Start free, upgrade to Pro for unlimited CVs, ATS scans, AI rewrites, job matching, and cover letters.",
-  openGraph: {
-    title: "Pricing | CVEdge",
-    description: "Simple, transparent pricing. Start free, go Pro when ready.",
-  },
+  title: "Pricing",
+  description: "CVEdge is free forever for job seekers. Upgrade to Pro for unlimited access. 90+ ATS score guaranteed or your money back.",
+  alternates: { canonical: "https://thecvedge.com/pricing" },
 };
 
 export default function PricingPage() {

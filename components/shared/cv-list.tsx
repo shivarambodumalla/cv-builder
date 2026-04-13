@@ -85,13 +85,14 @@ function formatDate(dateStr: string) {
 
 function extractCvData(cv: Cv) {
   const contactName = cv.parsed_json?.contact?.name || null;
+  const displayName = cv.title && cv.title !== "Untitled CV" ? cv.title : contactName || "Untitled";
   const targetRole = cv.target_role || cv.parsed_json?.targetTitle?.title || null;
   const template = cv.design_settings?.template || "classic";
   const latestAts = cv.ats_reports?.[0];
   const atsScore = latestAts ? (latestAts.overall_score ?? latestAts.score ?? null) : null;
   const matchScore = cv.job_matches?.[0]?.match_score ?? null;
   const hasCoverLetter = (cv.cover_letters?.length ?? 0) > 0;
-  return { contactName, targetRole, template, atsScore, matchScore, hasCoverLetter };
+  return { displayName, contactName, targetRole, template, atsScore, matchScore, hasCoverLetter };
 }
 
 /* ── Chips row ── */
@@ -323,7 +324,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: C
             /* ── GRID VIEW ── */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {filtered.map((cv) => {
-                const { contactName, targetRole, template, atsScore, matchScore, hasCoverLetter } = extractCvData(cv);
+                const { displayName, targetRole, template, atsScore, matchScore, hasCoverLetter } = extractCvData(cv);
                 return (
                   <div
                     key={cv.id}
@@ -334,7 +335,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: C
                     {/* Top row */}
                     <div className="flex items-start justify-between">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-[#0C1A0E] truncate">{contactName ?? "Untitled"}</p>
+                        <p className="text-sm font-medium text-[#0C1A0E] truncate">{displayName}</p>
                         {targetRole && <p className="text-xs text-[#78716C] mt-0.5 truncate">{targetRole}</p>}
                       </div>
                       <ActionButtons cvId={cv.id} />
@@ -361,7 +362,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: C
             /* ── LIST VIEW ── */
             <div className="flex flex-col gap-2">
               {filtered.map((cv) => {
-                const { contactName, targetRole, template, atsScore, matchScore, hasCoverLetter } = extractCvData(cv);
+                const { displayName, targetRole, template, atsScore, matchScore, hasCoverLetter } = extractCvData(cv);
                 return (
                   <div
                     key={cv.id}
@@ -373,7 +374,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: C
                       {/* Left block */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-[#0C1A0E] truncate">
-                          {contactName ?? "Untitled"}
+                          {displayName}
                           {targetRole && <span className="text-[#78716C] font-normal ml-1.5">— {targetRole}</span>}
                         </p>
                         <div className="flex items-center gap-1.5 mt-1">

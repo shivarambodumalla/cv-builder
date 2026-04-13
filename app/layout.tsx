@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { UpgradeModalProvider } from "@/context/upgrade-modal-context";
 import { UpgradeModal } from "@/components/shared/upgrade-modal";
@@ -14,41 +16,29 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://thecvedge.com"),
   title: {
-    default: "CVEdge — AI Resume Builder | Get More Interviews",
+    default: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
     template: "%s | CVEdge",
   },
-  description: "Build ATS-optimised resumes with AI. Get instant ATS scoring, job matching, AI bullet rewrites, and interview coaching. Land more interviews in minutes.",
-  metadataBase: new URL("https://www.thecvedge.com"),
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/img/CV-Edge-Logo-square.svg", type: "image/svg+xml" },
-    ],
-    apple: "/img/CV-Edge-Logo-square.svg",
-  },
+  description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. Free forever. 90+ ATS score guaranteed or your money back.",
+  keywords: ["free ATS checker", "resume builder", "CV optimizer", "ATS resume scanner", "fix my resume", "free CV checker", "ATS score", "resume AI", "job search tools", "interview preparation"],
+  authors: [{ name: "CVEdge", url: "https://thecvedge.com" }],
+  creator: "CVEdge",
+  publisher: "CVEdge",
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large" as const, "max-snippet": -1 } },
   openGraph: {
     type: "website",
+    locale: "en_US",
+    url: "https://thecvedge.com",
     siteName: "CVEdge",
-    title: "CVEdge — AI Resume Builder | Get More Interviews",
-    description: "Build ATS-optimised resumes with AI. Instant ATS scoring, job matching, AI rewrites, and interview coaching.",
-    url: "https://www.thecvedge.com",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge — AI Resume Builder" }],
+    title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
+    description: "Free AI-powered CV optimisation. Find why your CV gets rejected and fix it instantly. 90+ ATS score guaranteed.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge — AI-powered CV optimisation" }],
   },
-  twitter: {
-    card: "summary_large_image",
-    site: "@thecvedge",
-    title: "CVEdge — AI Resume Builder",
-    description: "Build ATS-optimised resumes with AI. Land more interviews in minutes.",
-    images: ["/og-image.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  other: {
-    "theme-color": "#1a7a6d",
-  },
+  twitter: { card: "summary_large_image", title: "CVEdge — Get More Interviews", description: "Free AI-powered CV optimisation. 90+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
+  alternates: { canonical: "https://thecvedge.com" },
+  icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }], apple: "/img/CV-Edge-Logo-square.svg" },
 };
 
 export default function RootLayout({
@@ -59,6 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-52LEWSBN7M" />
+        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-52LEWSBN7M');` }} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -71,6 +63,8 @@ export default function RootLayout({
             <UpgradeModal />
           </UpgradeModalProvider>
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

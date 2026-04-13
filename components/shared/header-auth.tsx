@@ -64,15 +64,17 @@ export function HeaderAuth() {
 
     if (user) {
       // Authenticated nav links
+      const linkClass = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+
       const resumes = document.createElement("a");
       resumes.href = "/dashboard";
-      resumes.className = "text-sm font-medium text-foreground hover:text-primary transition-colors";
+      resumes.className = linkClass;
       resumes.textContent = "Resumes";
       nav.appendChild(resumes);
 
       const stories = document.createElement("a");
       stories.href = "/interview-coach";
-      stories.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      stories.className = linkClass;
       stories.textContent = "Interview Coach";
       nav.appendChild(stories);
 

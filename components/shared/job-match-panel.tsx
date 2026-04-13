@@ -236,6 +236,7 @@ export function JobMatchRightPanel({
   const { openUpgradeModal } = useUpgradeModal();
   const [limitReached, setLimitReached] = useState(false);
   const [tailorLoading, setTailorLoading] = useState(false);
+  const [tailorStep, setTailorStep] = useState(0);
   const [tailorResult, setTailorResult] = useState<FixAllResult | null>(null);
   const [tailorOpen, setTailorOpen] = useState(false);
   const categories = result.categories ?? {};
@@ -354,6 +355,9 @@ export function JobMatchRightPanel({
 
   async function handleTailorCV() {
     setTailorLoading(true);
+    setTailorStep(0);
+    const t1 = setTimeout(() => setTailorStep(1), 2500);
+    const t2 = setTimeout(() => setTailorStep(2), 5000);
     try {
       const res = await fetch("/api/cv/tailor-for-jd", {
         method: "POST",
@@ -370,6 +374,8 @@ export function JobMatchRightPanel({
       setTailorResult(data as FixAllResult);
       setTailorOpen(true);
     } catch { /* ignore */ }
+    clearTimeout(t1);
+    clearTimeout(t2);
     setTailorLoading(false);
   }
 
@@ -678,7 +684,7 @@ export function JobMatchRightPanel({
               <p className="text-xs text-muted-foreground">Get STAR stories tailored to this role</p>
             </div>
             <Button size="sm" variant="outline" onClick={() => {
-              if (plan === "free") { openUpgradeModal("story_prep_limit"); return; }
+              if (plan === "free") { openUpgradeModal("interview_prep_limit"); return; }
               router.push(`/interview-coach?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
             }}>
               Prepare
@@ -701,6 +707,21 @@ export function JobMatchRightPanel({
           </Button>
         </div>
       </div>
+
+      {/* Tailor CV full-screen loader */}
+      {tailorLoading && (
+        <StepLoader
+          fullScreen
+          steps={[
+            { label: "Reading job description", sub: "Extracting requirements and keywords", icon: FileText },
+            { label: "Comparing with your CV", sub: "Finding alignment gaps", icon: Search },
+            { label: "Tailoring your CV", sub: "Rewriting bullets for this role", icon: Wand2 },
+          ]}
+          currentStep={tailorStep}
+          centerIcon={Wand2}
+          footerText="Please don't close this tab while we tailor your CV."
+        />
+      )}
 
       {/* Tailor CV Drawer */}
       {tailorResult && (

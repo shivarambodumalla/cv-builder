@@ -27,21 +27,9 @@ import AiRewriteVisual from "@/components/marketing/ai-rewrite-visual";
 import JobMatchVisual from "@/components/marketing/job-match-visual";
 
 export const metadata: Metadata = {
-  title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
-  description:
-    "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. 80+ ATS score guaranteed or your money back. Used by 2,400+ job seekers.",
-  keywords: ["resume builder", "ATS resume", "CV optimizer", "get more interviews", "fix my resume", "ATS score"],
-  openGraph: {
-    title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
-    description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. 80+ ATS score guaranteed or your money back.",
-    type: "website",
-    url: "https://www.thecvedge.com",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
-    description: "Fix your CV in 8 minutes. 80+ ATS score guaranteed.",
-  },
+  title: "Free ATS Resume Checker — Fix Your CV in 8 Minutes",
+  description: "CVEdge finds exactly why your CV gets rejected by ATS software and fixes it with AI. Free forever. Used by job seekers in 40+ countries.",
+  alternates: { canonical: "https://thecvedge.com" },
 };
 
 export const dynamic = "force-dynamic";
@@ -79,26 +67,29 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "CVEdge",
+    url: "https://thecvedge.com",
+    description: "Free AI-powered CV optimisation platform. Fix your CV in 8 minutes. 90+ ATS score guaranteed.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    url: "https://www.thecvedge.com",
-    description: "AI-powered resume builder with ATS scoring, job matching, and interview coaching.",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      description: "Free plan available",
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      ratingCount: "500",
-    },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
+    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "124" },
+    featureList: ["ATS Score Analysis", "AI CV Rewriting", "Job Match Scoring", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software automatically filters CVs before a human recruiter reads them. 75% of CVs are rejected by ATS before anyone sees them." } },
+      { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for job seekers. All core features including ATS scoring, AI rewrites, and templates are free." } },
+      { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge guarantees a 90+ ATS score after using Fix All with AI. If you do not reach 90+, contact us within 14 days for a full refund." } },
+    ],
   };
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       {/* ─── HERO ─── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5" />
@@ -139,9 +130,6 @@ export default async function HomePage() {
                 Score My CV Free
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
-              <Link href="/pricing">See Pricing</Link>
-            </Button>
           </div>
 
           {/* Live counter */}
@@ -160,7 +148,7 @@ export default async function HomePage() {
           {/* Header */}
           <div className="mx-auto max-w-xl mb-10">
             <p className="text-[10px] tracking-widest text-[#78716C] uppercase text-center">How it works</p>
-            <p className="text-lg font-medium text-[#0C1A0E] text-center mt-1">Walk into every interview prepared</p>
+            <h2 className="text-lg font-medium text-[#0C1A0E] dark:text-foreground text-center mt-1">Walk into every interview prepared</h2>
             <p className="text-xs text-[#78716C] text-center mt-1">Build a personal library of your best career stories. Before any interview, CVEdge tells you exactly which stories to tell — and how to tell them.</p>
           </div>
 

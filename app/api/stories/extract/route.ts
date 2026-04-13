@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 
 /** Simple word-overlap similarity (0-1) */
 function similarity(a: string, b: string): number {
@@ -29,6 +30,18 @@ export async function POST(request: NextRequest) {
 
   const rl = checkRateLimit(ip, true);
   if (!rl.allowed) return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+
+  // Check feature limit
+  const access = await checkFeatureAccess(user.id, "portfolio_scan");
+  if (!access.allowed) {
+    return NextResponse.json({
+      error: "You've used all free story extractions. Upgrade for unlimited.",
+      code: access.reason,
+      used: access.used,
+      limit: access.limit,
+      daysUntilReset: access.daysUntilReset,
+    }, { status: 403 });
+  }
 
   const { source_type, cv_id, source_url, file_content } = await request.json();
   let sourceContent = "";
@@ -120,6 +133,7 @@ export async function POST(request: NextRequest) {
       };
     });
 
+    incrementUsage(user.id, "portfolio_scan").catch(() => {});
     return NextResponse.json({ stories: taggedStories });
   } catch (err) {
     console.error("[story-extract] Failed:", err);

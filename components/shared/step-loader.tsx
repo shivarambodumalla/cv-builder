@@ -84,7 +84,7 @@ function LoaderContent({ steps, currentStep, centerIcon: CenterIcon, progress, f
 export function StepLoader(props: StepLoaderProps) {
   if (props.fullScreen) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
         <LoaderContent {...props} />
       </div>
     );

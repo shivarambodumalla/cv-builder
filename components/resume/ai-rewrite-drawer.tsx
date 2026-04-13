@@ -99,7 +99,7 @@ export function AiRewriteDrawer({
       });
       const data = await res.json();
       if (res.status === 403) {
-        openUpgradeModal("ai_rewrite_limit");
+        openUpgradeModal("rewrite_limit");
         onClose();
         return;
       }

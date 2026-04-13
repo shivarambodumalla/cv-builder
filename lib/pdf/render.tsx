@@ -271,7 +271,7 @@ export async function renderCvPdf(
   }
 
   if (watermark) {
-    children.push(e(Text, { key: "wm", fixed: true, style: { position: "absolute", bottom: 14, left: 0, right: 0, textAlign: "center", fontSize: 7, color: "#bbb" } }, "Built with CVEdge"));
+    children.push(e(Text, { key: "wm", fixed: true, style: { position: "absolute", bottom: 14, left: 0, right: 0, textAlign: "center", fontSize: 7, color: "#bbb" } }, "Optimised with CVEdge \u00b7 thecvedge.com"));
   }
 
   const doc = e(Document, null,
