@@ -14,6 +14,7 @@ export default async function ExtractPage() {
     .eq("id", user.id)
     .single();
 
+  // Extract is Pro only
   if (getPlan(profile) !== "pro") redirect("/interview-coach");
 
   const { data: cvs } = await supabase

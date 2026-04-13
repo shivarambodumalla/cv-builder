@@ -231,33 +231,8 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
   /* ══════════════════════════════════════
      RENDER
      ══════════════════════════════════════ */
-  if (!isPro) {
-    return (
-      <div className="container mx-auto px-4 py-16 sm:py-24">
-        <div className="max-w-md mx-auto text-center">
-          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <BookOpen className="h-8 w-8 text-primary" />
-          </div>
-          <h1 className="text-2xl font-bold text-foreground mb-3">Interview Coach</h1>
-          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-            Build your STAR story bank, extract stories from your CV, and get AI-powered interview prep tailored to every job.
-          </p>
-          <div className="space-y-2 text-left mb-8">
-            {["STAR story builder with AI suggestions", "Extract stories from CV, URL, or PDF", "Match stories to any job description", "Multi-framework support (STAR, STAR+R, CAR)", "Quality scoring and interview readiness tracker"].map((f) => (
-              <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CheckCircle2 size={14} className="text-success shrink-0" />
-                {f}
-              </div>
-            ))}
-          </div>
-          <Button onClick={() => openUpgradeModal("generic")} className="bg-primary hover:bg-primary/90 text-white w-full">
-            Upgrade to Pro
-          </Button>
-          <p className="text-xs text-muted-foreground mt-3">Starting at $2.30/week</p>
-        </div>
-      </div>
-    );
-  }
+  const FREE_STORY_LIMIT = 3;
+  const freeAtLimit = !isPro && storyList.length >= FREE_STORY_LIMIT;
 
   return (
     <div className="container mx-auto px-4 py-8 sm:py-12">
@@ -281,9 +256,13 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => router.push("/interview-coach/new")} className="bg-primary hover:bg-primary/90 text-white">
+            <Button
+              onClick={() => freeAtLimit ? openUpgradeModal("story_save_limit") : router.push("/interview-coach/new")}
+              className="bg-primary hover:bg-primary/90 text-white"
+            >
               <Plus className="mr-1.5 h-4 w-4" /> Add Experience
             </Button>
+            {isPro && (
             <div className="relative">
               <Button variant="outline" className="border-primary text-primary hover:bg-primary/10" onClick={() => setShowExtractMenu(!showExtractMenu)}>
                 <FileSearch className="mr-1.5 h-4 w-4" /> Extract <ChevronDown className="ml-1 h-3 w-3" />
@@ -310,6 +289,7 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
                 </>
               )}
             </div>
+            )}
           </div>
         </div>
         {/* Mobile readiness bar */}
@@ -322,6 +302,21 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
             ))}
           </div>
         </div>
+
+        {/* ── Upgrade Banner (free users) ── */}
+        {!isPro && (
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Unlock the full power of Interview Coach</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Free plan: {FREE_STORY_LIMIT} experiences max, no AI generation. Upgrade for unlimited experiences, AI extraction, and interview prep.
+              </p>
+            </div>
+            <Button onClick={() => openUpgradeModal("story_save_limit")} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
+              Upgrade to Pro
+            </Button>
+          </div>
+        )}
 
         {/* ── Story Library ── */}
         <div id="stories-library">
