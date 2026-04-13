@@ -53,7 +53,7 @@ interface Story {
 
 interface CvOption { id: string; title: string | null; target_role: string | null; }
 interface ExtractedCandidate { title: string; situation: string; task: string; action: string; result: string; tags: string[]; }
-interface Props { stories: Story[]; cvs: CvOption[]; isPro: boolean; }
+interface Props { stories: Story[]; cvs: CvOption[]; isPro: boolean; storiesThisWeek: number; }
 
 /* ── Constants ── */
 const COMMON_TAGS = ["Leadership", "Problem Solving", "Teamwork", "Technical", "Communication", "Initiative", "Conflict Resolution", "Growth", "Customer Focus", "Innovation"];
@@ -88,7 +88,7 @@ function starCompleteness(s: string | null | undefined): boolean {
 /* ══════════════════════════════════════════════════════
    MAIN COMPONENT
    ══════════════════════════════════════════════════════ */
-export function StoryBankContent({ stories, cvs, isPro }: Props) {
+export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
 
@@ -188,7 +188,7 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
         if (res.ok) { const updated: Story = await res.json(); setStoryList((prev) => prev.map((s) => s.id === updated.id ? updated : s)); }
       } else {
         const res = await fetch("/api/stories/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        if (res.ok) { const created: Story = await res.json(); setStoryList((prev) => [created, ...prev]); }
+        if (res.ok) { const created: Story = await res.json(); setStoryList((prev) => [created, ...prev]); setWeeklyCount((c) => c + 1); }
       }
       closeBuilder();
       router.refresh();
@@ -232,7 +232,8 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
      RENDER
      ══════════════════════════════════════ */
   const FREE_STORY_LIMIT = 3;
-  const freeAtLimit = !isPro && storyList.length >= FREE_STORY_LIMIT;
+  const [weeklyCount, setWeeklyCount] = useState(storiesThisWeek);
+  const freeAtLimit = !isPro && weeklyCount >= FREE_STORY_LIMIT;
 
   return (
     <div className="container mx-auto px-4 py-8 sm:py-12">
@@ -309,7 +310,7 @@ export function StoryBankContent({ stories, cvs, isPro }: Props) {
             <div>
               <p className="text-sm font-semibold text-foreground">Unlock the full power of Interview Coach</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Free plan: {FREE_STORY_LIMIT} experiences max, no AI generation. Upgrade for unlimited experiences, AI extraction, and interview prep.
+                Free plan: {FREE_STORY_LIMIT} experiences per week ({weeklyCount}/{FREE_STORY_LIMIT} used). Upgrade for unlimited experiences, AI extraction, and interview prep.
               </p>
             </div>
             <Button onClick={() => openUpgradeModal("story_save_limit")} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">

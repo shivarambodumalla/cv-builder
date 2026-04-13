@@ -277,8 +277,8 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 ### Plans
 
-- Free: 1 CV, 3 ATS scans, 1 job match, 1 cover letter, 5 AI rewrites, 1 PDF download (per 7-day window), 1 template (classic), watermarked PDF
-- Pro: unlimited everything, all 12 templates, no watermark
+- Free: 3 CVs, 15 ATS scans, 20 job matches, 10 cover letters, 50 AI rewrites, 20 PDF downloads (per 7-day window), all 12 templates, no watermark
+- Pro: unlimited everything, all 12 templates, no watermark, 80+ score guarantee, priority support
 
 ### Usage Window
 

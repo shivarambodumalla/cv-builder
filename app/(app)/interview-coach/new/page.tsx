@@ -10,13 +10,27 @@ export default async function NewStoryPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { count }] = await Promise.all([
-    supabase.from("profiles").select("subscription_status, current_period_end").eq("id", user.id).single(),
-    supabase.from("stories").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("is_active", true),
-  ]);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_status, current_period_end")
+    .eq("id", user.id)
+    .single();
 
   const isPro = getPlan(profile) === "pro";
-  if (!isPro && (count ?? 0) >= FREE_STORY_LIMIT) redirect("/interview-coach");
+
+  if (!isPro) {
+    // Count stories created this week
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const { count } = await supabase
+      .from("stories")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("is_active", true)
+      .gte("created_at", weekAgo.toISOString());
+
+    if ((count ?? 0) >= FREE_STORY_LIMIT) redirect("/interview-coach");
+  }
 
   return (
     <StoryDetailContent

@@ -2,13 +2,13 @@
 
 export const PLAN_LIMITS = {
   free: {
-    cvs: 1,
-    ats_scans: 3,
-    job_matches: 1,
-    cover_letters: 1,
-    ai_rewrites: 5,
-    pdf_downloads: 1,
-    templates: ["classic"],
+    cvs: 3,
+    ats_scans: 15,
+    job_matches: 20,
+    cover_letters: 10,
+    ai_rewrites: 50,
+    pdf_downloads: 20,
+    templates: ["classic", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
     watermark: true,
     can_download: true,
   },

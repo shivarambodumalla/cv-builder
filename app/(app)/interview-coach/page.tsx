@@ -41,5 +41,10 @@ export default async function StoriesPage() {
 
   const isPro = getPlan(profile) === "pro";
 
-  return <StoryBankContent stories={stories ?? []} cvs={cvs ?? []} isPro={isPro} />;
+  // Count stories created this week (7-day window)
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const storiesThisWeek = (stories ?? []).filter((s) => new Date(s.created_at) > weekAgo).length;
+
+  return <StoryBankContent stories={stories ?? []} cvs={cvs ?? []} isPro={isPro} storiesThisWeek={storiesThisWeek} />;
 }
