@@ -49,7 +49,7 @@ async function upload() {
       passed: parsed.passed,
       failed: parsed.failed,
       skipped: parsed.skipped,
-      duration_ms: parsed.duration_ms,
+      duration_ms: Number.isFinite(Number(parsed.duration_ms)) ? Math.round(Number(parsed.duration_ms)) : 0,
       github_run_id: githubRunId,
       github_run_url: githubRunUrl,
       completed_at: new Date().toISOString(),
@@ -59,7 +59,7 @@ async function upload() {
 
   if (runError) {
     console.error("Failed to insert test run:", runError.message);
-    process.exit(1);
+    process.exit(0); // Don't fail CI for telemetry issues
   }
 
   console.log(`✓ Test run #${runNumber} created (${run.id})`);
@@ -71,7 +71,7 @@ async function upload() {
       suite: r.suite,
       test_name: r.test_name,
       status: r.status,
-      duration_ms: r.duration_ms,
+      duration_ms: Number.isFinite(Number(r.duration_ms)) ? Math.round(Number(r.duration_ms)) : 0,
       error_message: r.error_message,
     }));
 
