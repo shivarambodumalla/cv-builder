@@ -258,6 +258,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
           </div>
           <div className="flex gap-2">
             <Button
+              data-testid="add-story-button"
               onClick={() => freeAtLimit ? openUpgradeModal("generic") : router.push("/interview-coach/new")}
               className="bg-primary hover:bg-primary/90 text-white"
             >
@@ -380,7 +381,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 const allFilled = [story.situation, story.task, story.action, story.result].every(starCompleteness);
                 const isReady = story.quality_score >= 7 && allFilled;
                 return (
-                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 flex flex-col gap-2.5 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" onClick={() => router.push(`/interview-coach/${story.id}`)}>
+                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 flex flex-col gap-2.5 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
                     {/* Title + Score */}
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-[13px] font-medium text-[#0C1A0E] truncate flex-1">{story.title}</p>
@@ -432,7 +433,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 const allFilled = [story.situation, story.task, story.action, story.result].every(starCompleteness);
                 const isReady = story.quality_score >= 7 && allFilled;
                 return (
-                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" onClick={() => router.push(`/interview-coach/${story.id}`)}>
+                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                       {/* STAR letters */}
                       <div className="flex gap-0.5 shrink-0">
