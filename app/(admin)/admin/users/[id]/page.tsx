@@ -158,12 +158,16 @@ export default async function UserDetailPage({
   }, null);
 
   const skills = aggregateSkills((userCvs ?? []).map((c) => ({ parsed_json: c.parsed_json as ResumeContent | null })));
-  const experienceLevel = enriched?.experience_level ?? deriveExperienceLevel(yearsOfExperience);
+  const VALID_LEVELS = ["early", "mid", "senior", "expert"] as const;
+  type LevelKey = typeof VALID_LEVELS[number];
+  const rawLevel = enriched?.experience_level as string | null | undefined;
+  const experienceLevel: LevelKey | null =
+    (rawLevel && (VALID_LEVELS as readonly string[]).includes(rawLevel) ? (rawLevel as LevelKey) : null) ??
+    deriveExperienceLevel(yearsOfExperience);
   const currentRoleLine = enriched?.current_role && enriched?.current_company
     ? `${enriched.current_role} at ${enriched.current_company}`
     : enriched?.current_role || enriched?.current_company || null;
   const targetRole = enriched?.resolved_target_role || enriched?.target_title_from_cv || null;
-  const location = enriched?.resolved_location || null;
   const eduLine = enriched?.degree && enriched?.college
     ? `${enriched.degree} · ${enriched.college}`
     : enriched?.college || enriched?.degree || null;

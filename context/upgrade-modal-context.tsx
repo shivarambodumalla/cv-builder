@@ -44,12 +44,12 @@ export function UpgradeModalProvider({ children }: { children: ReactNode }) {
     setTrigger(t);
     setDaysUntilReset(days ?? null);
     setIsOpen(true);
-    logActivity("Saw upgrade modal", { trigger: t });
+    logActivity("Saw upgrade modal", { metadata: { trigger: t } });
   }
 
   function closeUpgradeModal() {
     setIsOpen(false);
-    logActivity("Dismissed upgrade modal", { trigger });
+    logActivity("Dismissed upgrade modal", { metadata: { trigger } });
   }
 
   return (

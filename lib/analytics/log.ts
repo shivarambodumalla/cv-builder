@@ -1,12 +1,8 @@
 export type ActivityMetadata = Record<string, unknown>;
 
-type GtagFn = (command: string, ...args: unknown[]) => void;
-
 declare global {
-  interface Window {
-    gtag?: GtagFn;
-    dataLayer?: unknown[];
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  interface Window { gtag?: (...args: any[]) => void; dataLayer?: unknown[]; }
 }
 
 function toGtagEventName(event: string): string {
