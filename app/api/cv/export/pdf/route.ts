@@ -27,10 +27,11 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { content, design: clientDesign, title } = body as {
+  const { content, design: clientDesign, title, cv_id: cvId } = body as {
     content: ResumeContent;
     design: Partial<ResumeDesignSettings>;
     title: string;
+    cv_id?: string;
   };
 
   if (!content || !content.contact) {
@@ -58,6 +59,37 @@ export async function POST(request: NextRequest) {
 
     // Increment usage after success
     incrementUsage(user.id, "pdf_download").catch(() => {});
+
+    // Increment lifetime download counter (admin analytics, fire-and-forget)
+    (async () => {
+      const adminClient = createAdminClient();
+      const { data } = await adminClient
+        .from("profiles")
+        .select("total_pdf_downloads")
+        .eq("id", user.id)
+        .single();
+      await adminClient
+        .from("profiles")
+        .update({ total_pdf_downloads: (data?.total_pdf_downloads ?? 0) + 1 })
+        .eq("id", user.id);
+      await adminClient.from("user_activity").insert({
+        user_id: user.id,
+        event: "Downloaded PDF",
+        page: "/api/cv/export/pdf",
+        metadata: { title, plan, cv_id: cvId ?? null },
+      });
+      if (cvId) {
+        const { data: cvRow } = await adminClient
+          .from("cvs")
+          .select("download_count")
+          .eq("id", cvId)
+          .maybeSingle();
+        await adminClient
+          .from("cvs")
+          .update({ download_count: (cvRow?.download_count ?? 0) + 1 })
+          .eq("id", cvId);
+      }
+    })().catch(() => {});
 
     // Send upgrade prompt email to free users after download
     if (plan === "free" && user.email) {

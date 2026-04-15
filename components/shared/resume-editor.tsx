@@ -556,7 +556,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               const res = await fetch("/api/cv/export/pdf", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content, design, title }),
+                body: JSON.stringify({ content, design, title, cv_id: cv.id }),
               });
               if (res.status === 403) {
                 const errData = await res.json();

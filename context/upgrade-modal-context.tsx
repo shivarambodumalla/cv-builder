@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { logActivity } from "@/lib/analytics/log";
 
 export type UpgradeTrigger =
   | "cv_limit"
@@ -43,10 +44,12 @@ export function UpgradeModalProvider({ children }: { children: ReactNode }) {
     setTrigger(t);
     setDaysUntilReset(days ?? null);
     setIsOpen(true);
+    logActivity("Saw upgrade modal", { trigger: t });
   }
 
   function closeUpgradeModal() {
     setIsOpen(false);
+    logActivity("Dismissed upgrade modal", { trigger });
   }
 
   return (

@@ -33,6 +33,7 @@ import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import { ConfidenceChip } from "@/components/shared/confidence-chip";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
 import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
+import { useActivity } from "@/lib/analytics/useActivity";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
 
@@ -190,6 +191,7 @@ function CategoryRow({
 
 export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
   const router = useRouter();
+  const { log } = useActivity();
   const { openUpgradeModal } = useUpgradeModal();
   const [report, setReport] = useState<AtsPanelReport | null>(initialReport);
   const [loading, setLoading] = useState(false);
@@ -388,6 +390,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
 
       if (!res.ok) {
         if (res.status === 403 && data.code?.includes("limit")) {
+          log("Hit ATS scan limit");
           setLimitReached(true);
           openUpgradeModal("ats_limit");
           setLoading(false);
@@ -404,6 +407,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       setCurrentStep("done");
       await new Promise((r) => setTimeout(r, 600));
       setReport(data);
+      log("Ran ATS analysis", { score: data?.overall_score ?? data?.score });
       setLoading(false);
       router.refresh();
     } catch {

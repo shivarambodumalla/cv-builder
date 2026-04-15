@@ -7,6 +7,8 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 import { UpgradeModalProvider } from "@/context/upgrade-modal-context";
 import { UpgradeModal } from "@/components/shared/upgrade-modal";
 import { DevReload } from "./dev-reload";
+import { PageSessionTracker } from "@/components/shared/page-session-tracker";
+import { PageTracker } from "@/components/shared/page-tracker";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -59,6 +61,8 @@ export default function RootLayout({
         >
           <UpgradeModalProvider>
             <DevReload />
+            <PageSessionTracker />
+            <PageTracker />
             {children}
             <UpgradeModal />
           </UpgradeModalProvider>
