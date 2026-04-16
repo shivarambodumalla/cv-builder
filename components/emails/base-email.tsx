@@ -89,25 +89,13 @@ export function BaseEmail({
 
           {/* Social links */}
           <Section style={socialSection}>
-            <table role="presentation" cellPadding="0" cellSpacing="0" style={{ margin: "0 auto" }}>
-              <tr>
-                <td style={{ padding: "0 8px" }}>
-                  <Link href="https://x.com/thecvedge">
-                    <Img src={`${appUrl}/img/email/icon-x.svg`} width="24" height="24" alt="X" style={{ display: "block" }} />
-                  </Link>
-                </td>
-                <td style={{ padding: "0 8px" }}>
-                  <Link href="https://www.linkedin.com/company/cv-edge">
-                    <Img src={`${appUrl}/img/email/icon-linkedin.svg`} width="24" height="24" alt="LinkedIn" style={{ display: "block" }} />
-                  </Link>
-                </td>
-                <td style={{ padding: "0 8px" }}>
-                  <Link href="https://www.instagram.com/thecvedge/">
-                    <Img src={`${appUrl}/img/email/icon-instagram.svg`} width="24" height="24" alt="Instagram" style={{ display: "block" }} />
-                  </Link>
-                </td>
-              </tr>
-            </table>
+            <Text style={socialRow}>
+              <Link href="https://x.com/thecvedge" style={socialLinkStyle}>X</Link>
+              {" \u00B7 "}
+              <Link href="https://www.linkedin.com/company/cv-edge" style={socialLinkStyle}>LinkedIn</Link>
+              {" \u00B7 "}
+              <Link href="https://www.instagram.com/thecvedge/" style={socialLinkStyle}>Instagram</Link>
+            </Text>
           </Section>
 
           {/* Footer */}
@@ -192,17 +180,17 @@ const socialSection: React.CSSProperties = {
   padding: "20px 0 4px",
 };
 
+const socialRow: React.CSSProperties = {
+  textAlign: "center" as const,
+  fontSize: "13px",
+  color: "#9CA3AF",
+  margin: "0",
+};
+
 const socialLinkStyle: React.CSSProperties = {
   color: "#6B7280",
   textDecoration: "none",
   fontSize: "13px",
-};
-
-const socialDot: React.CSSProperties = {
-  display: "inline",
-  color: "#9CA3AF",
-  fontSize: "13px",
-  margin: "0 8px",
 };
 
 const footerSection: React.CSSProperties = {
