@@ -1,18 +1,20 @@
-// Re-export from limits for backwards compatibility
-export { checkAndConsumeLimit } from "./limits";
-
 import { createAdminClient } from "@/lib/supabase/admin";
-import { checkAndConsumeLimit } from "./limits";
+import { checkLimit, consumeLimit, checkAndConsumeLimit } from "./limits";
 
+// Re-export for backward compat
+export { checkAndConsumeLimit };
+
+// Check-only: does NOT increment counter. Use before AI calls.
 export async function checkFeatureAccess(
   userId: string,
   feature: string
 ) {
   const supabase = createAdminClient();
-  return checkAndConsumeLimit(supabase, userId, feature);
+  return checkLimit(supabase, userId, feature);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function incrementUsage(_userId: string, _feature: string) {
-  // No-op — checkAndConsumeLimit now handles both check + increment
+// Consume: atomic increment AFTER a successful operation.
+export async function incrementUsage(userId: string, feature: string): Promise<boolean> {
+  const supabase = createAdminClient();
+  return consumeLimit(supabase, userId, feature);
 }

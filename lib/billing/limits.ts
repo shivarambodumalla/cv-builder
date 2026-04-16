@@ -4,7 +4,7 @@ export const PLAN_LIMITS = {
   free: {
     cvs: 3,
     ats_scans: 10,
-    ai_rewrites: 20,
+    ai_rewrites: 25,
     job_matches: 5,
     cover_letters: 5,
     fix_all: 3,
@@ -132,9 +132,9 @@ const COLUMN_MAP: Record<string, { column: string; limitKey: string }> = {
   interview_prep: { column: "interview_prep_this_week", limitKey: "interview_prep" },
 };
 
-// --- Core limit check + consume ---
+// --- Check-only (does NOT increment counter) ---
 
-export async function checkAndConsumeLimit(
+export async function checkLimit(
   supabase: any,
   userId: string,
   feature: string
@@ -207,19 +207,48 @@ export async function checkAndConsumeLimit(
     return { allowed: false, used, limit, reason: `${feature}_limit`, daysUntilReset };
   }
 
-  // Atomic consume — only increment if counter hasn't changed (prevents race condition)
-  const { data: updated, error } = await supabase
+  return { allowed: true, used, limit };
+}
+
+// --- Atomic consume (increment counter ONLY after success) ---
+
+export async function consumeLimit(
+  supabase: any,
+  userId: string,
+  feature: string
+): Promise<boolean> {
+  const mapping = COLUMN_MAP[feature];
+  if (!mapping) return false;
+
+  const { data: profile } = await supabase
     .from("profiles")
-    .update({ [column]: used + 1 })
+    .select(`${mapping.column}, plan, subscription_status, current_period_end`)
     .eq("id", userId)
-    .lt(column, limit) // Only update if still under limit
-    .select(column)
     .single();
 
-  if (error || !updated) {
-    // Another request consumed the last slot — recheck
-    return { allowed: false, used: limit, limit, reason: `${feature}_limit`, daysUntilReset };
-  }
+  if (!profile) return false;
 
-  return { allowed: true, used: used + 1, limit };
+  const plan = getPlan(profile);
+  const limits = PLAN_LIMITS[plan];
+  const limit = limits[mapping.limitKey as keyof typeof limits] as number;
+  if (limit === -1) return true; // unlimited
+
+  const { data: updated, error } = await supabase
+    .from("profiles")
+    .update({ [mapping.column]: (profile[mapping.column] ?? 0) + 1 })
+    .eq("id", userId)
+    .lt(mapping.column, limit)
+    .select(mapping.column)
+    .single();
+
+  return !error && !!updated;
+}
+
+// --- Backward compat: old checkAndConsumeLimit calls check-only now ---
+export async function checkAndConsumeLimit(
+  supabase: any,
+  userId: string,
+  feature: string
+) {
+  return checkLimit(supabase, userId, feature);
 }
