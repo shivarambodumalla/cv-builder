@@ -87,15 +87,27 @@ export function BaseEmail({
             )}
           </Section>
 
-          {/* Social links */}
+          {/* Social icons */}
           <Section style={socialSection}>
-            <Text style={socialRow}>
-              <Link href="https://x.com/thecvedge" style={socialLinkStyle}>X</Link>
-              {" \u00B7 "}
-              <Link href="https://www.linkedin.com/company/cv-edge" style={socialLinkStyle}>LinkedIn</Link>
-              {" \u00B7 "}
-              <Link href="https://www.instagram.com/thecvedge/" style={socialLinkStyle}>Instagram</Link>
-            </Text>
+            <table role="presentation" cellPadding="0" cellSpacing="0" style={{ margin: "0 auto" }}>
+              <tr>
+                <td style={{ padding: "0 6px" }}>
+                  <Link href="https://x.com/thecvedge">
+                    <Img src={`${appUrl}/img/email/icon-x.png`} width="24" height="24" alt="X" style={{ display: "block" }} />
+                  </Link>
+                </td>
+                <td style={{ padding: "0 6px" }}>
+                  <Link href="https://www.linkedin.com/company/cv-edge">
+                    <Img src={`${appUrl}/img/email/icon-linkedin.png`} width="24" height="24" alt="LinkedIn" style={{ display: "block" }} />
+                  </Link>
+                </td>
+                <td style={{ padding: "0 6px" }}>
+                  <Link href="https://www.instagram.com/thecvedge/">
+                    <Img src={`${appUrl}/img/email/icon-instagram.png`} width="24" height="24" alt="Instagram" style={{ display: "block" }} />
+                  </Link>
+                </td>
+              </tr>
+            </table>
           </Section>
 
           {/* Footer */}
@@ -178,19 +190,6 @@ const button: React.CSSProperties = {
 const socialSection: React.CSSProperties = {
   textAlign: "center" as const,
   padding: "20px 0 4px",
-};
-
-const socialRow: React.CSSProperties = {
-  textAlign: "center" as const,
-  fontSize: "13px",
-  color: "#9CA3AF",
-  margin: "0",
-};
-
-const socialLinkStyle: React.CSSProperties = {
-  color: "#6B7280",
-  textDecoration: "none",
-  fontSize: "13px",
 };
 
 const footerSection: React.CSSProperties = {
