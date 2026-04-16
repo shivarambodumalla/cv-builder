@@ -51,8 +51,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-52LEWSBN7M" />
-        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-52LEWSBN7M');` }} />
+        {process.env.NODE_ENV === "production" && (
+          <>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-52LEWSBN7M" />
+            <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-52LEWSBN7M');gtag('config','AW-18095722375');` }} />
+          </>
+        )}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
