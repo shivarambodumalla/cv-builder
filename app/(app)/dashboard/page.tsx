@@ -36,22 +36,32 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single();
 
-  // Send welcome email on first dashboard visit
+  // Send welcome email on first dashboard visit (atomic flag-first to prevent duplicates)
   const admin = createAdminClient();
-  const { data: welcomeCheck } = await admin
+  const { data: claimed, error: claimError } = await admin
     .from("profiles")
-    .select("welcome_email_sent")
+    .update({ welcome_email_sent: true })
     .eq("id", user.id)
-    .single();
+    .eq("welcome_email_sent", false)
+    .select("id")
+    .maybeSingle();
 
-  if (welcomeCheck && !welcomeCheck.welcome_email_sent && user.email) {
-    sendEmail({
-      to: user.email,
-      templateName: "welcome",
-      userId: user.id,
-    }).then(() => {
-      admin.from("profiles").update({ welcome_email_sent: true }).eq("id", user.id).then(() => {});
-    }).catch(() => {});
+  if (claimed && !claimError && user.email) {
+    try {
+      const firstName = user.user_metadata?.full_name?.split(" ")[0] || user.user_metadata?.name?.split(" ")[0] || "";
+      await sendEmail({
+        to: user.email,
+        templateName: "welcome",
+        userId: user.id,
+        variables: { name: firstName || "there" },
+      });
+    } catch {
+      // Email failed — rollback flag so next visit retries
+      await admin
+        .from("profiles")
+        .update({ welcome_email_sent: false })
+        .eq("id", user.id);
+    }
   }
 
   // Fetch story stats

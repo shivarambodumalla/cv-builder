@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/sender";
-
-async function checkAdmin(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== process.env.ADMIN_EMAIL) return null;
-  return user;
-}
 
 export async function GET() {
   const admin = createAdminClient();
@@ -42,9 +35,8 @@ async function getSegmentUsers(supabase: ReturnType<typeof createAdminClient>, s
 }
 
 export async function POST(request: NextRequest) {
-  if (!(await checkAdmin(request))) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
 
   const { name, templateName, segment, sendNow, scheduledAt, customEmails } = await request.json();
   const admin = createAdminClient();

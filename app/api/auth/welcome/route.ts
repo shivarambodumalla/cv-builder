@@ -9,29 +9,33 @@ export async function POST() {
   if (!user?.email) return NextResponse.json({ skipped: true });
 
   const admin = createAdminClient();
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("welcome_email_sent")
-    .eq("id", user.id)
-    .single();
 
-  if (profile?.welcome_email_sent) {
+  // Atomic claim — only one request can win the update
+  const { data: claimed } = await admin
+    .from("profiles")
+    .update({ welcome_email_sent: true })
+    .eq("id", user.id)
+    .eq("welcome_email_sent", false)
+    .select("id")
+    .maybeSingle();
+
+  if (!claimed) {
     return NextResponse.json({ skipped: true, reason: "already_sent" });
   }
 
-  console.log("[welcome] sending welcome email to", user.email);
-
-  await sendEmail({
-    to: user.email,
-    templateName: "welcome",
-    userId: user.id,
-  });
-
-  await admin
-    .from("profiles")
-    .update({ welcome_email_sent: true })
-    .eq("id", user.id);
-
-  console.log("[welcome] done");
-  return NextResponse.json({ sent: true });
+  try {
+    await sendEmail({
+      to: user.email,
+      templateName: "welcome",
+      userId: user.id,
+    });
+    return NextResponse.json({ sent: true });
+  } catch {
+    // Rollback flag so next attempt retries
+    await admin
+      .from("profiles")
+      .update({ welcome_email_sent: false })
+      .eq("id", user.id);
+    return NextResponse.json({ error: "send_failed" }, { status: 500 });
+  }
 }

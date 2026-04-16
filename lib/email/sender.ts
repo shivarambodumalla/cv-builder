@@ -74,27 +74,37 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
 
     // Resolve template fields
     const subject = replaceVars(template.subject, allVars);
-    const heading = replaceVars(template.heading, allVars);
-    const subheading = replaceVars(template.subheading, allVars);
-    const ctaText = template.cta_text ? replaceVars(template.cta_text, allVars) : undefined;
-    const ctaUrl = template.cta_url ? replaceVars(template.cta_url, allVars) : undefined;
-    const bodyHtml = template.body_html ? replaceVars(template.body_html, allVars) : undefined;
 
-    // Render email
-    const html = await render(
-      BaseEmail({
-        heading,
-        subheading,
-        ctaText,
-        ctaUrl,
-        bodyHtml,
-        previewText: subheading,
-        logoText: brand.logo_text,
-        primaryColor: brand.primary_color,
-        supportEmail: brand.support_email,
-        appUrl: brand.app_url,
-      })
-    );
+    let html: string;
+
+    if (template.custom_html) {
+      // Custom HTML overrides the base layout entirely
+      html = replaceVars(template.custom_html, allVars);
+    } else {
+      const heading = replaceVars(template.heading, allVars);
+      const subheading = replaceVars(template.subheading, allVars);
+      const ctaText = template.cta_text ? replaceVars(template.cta_text, allVars) : undefined;
+      const ctaUrl = template.cta_url ? replaceVars(template.cta_url, allVars) : undefined;
+      const bodyHtml = template.body_html ? replaceVars(template.body_html, allVars).replace(/\n/g, "<br>") : undefined;
+      const afterCtaHtml = template.after_cta_html ? replaceVars(template.after_cta_html, allVars).replace(/\n/g, "<br>") : undefined;
+
+      // Render email using base layout
+      html = await render(
+        BaseEmail({
+          heading,
+          subheading,
+          ctaText,
+          ctaUrl,
+          bodyHtml,
+          afterCtaHtml,
+          previewText: subheading,
+          logoText: brand.logo_text,
+          primaryColor: brand.primary_color,
+          supportEmail: brand.support_email,
+          appUrl: brand.app_url,
+        })
+      );
+    }
 
     // Send via Resend
     const { error } = await resend.emails.send({

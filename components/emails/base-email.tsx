@@ -5,6 +5,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
@@ -18,6 +19,7 @@ interface BaseEmailProps {
   ctaText?: string;
   ctaUrl?: string;
   bodyHtml?: string;
+  afterCtaHtml?: string;
   previewText?: string;
   logoText?: string;
   primaryColor?: string;
@@ -31,9 +33,10 @@ export function BaseEmail({
   ctaText,
   ctaUrl,
   bodyHtml,
+  afterCtaHtml,
   previewText,
   logoText = "CVEdge",
-  primaryColor = "#0D9488",
+  primaryColor = "#065F46",
   supportEmail = "hello@thecvedge.com",
   appUrl = "https://www.thecvedge.com",
 }: BaseEmailProps) {
@@ -42,49 +45,85 @@ export function BaseEmail({
       <Head />
       {previewText && <Preview>{previewText}</Preview>}
       <Body style={main}>
-        <Container style={container}>
-          {/* Logo */}
-          <Section style={logoSection}>
-            <Text style={{ ...logo, color: primaryColor }}>{logoText}</Text>
+        <Container style={wrapper}>
+          {/* Header */}
+          <Section style={header}>
+            <Link href={appUrl}>
+              <Img
+                src={`${appUrl}/img/cvedge-logo.png`}
+                width="140"
+                height="43"
+                alt={logoText}
+                style={logoImgStyle}
+              />
+            </Link>
           </Section>
 
-          {/* Heading */}
-          <Heading style={h1}>{heading}</Heading>
+          {/* Content card */}
+          <Section style={card}>
+            <Heading style={h1}>{heading}</Heading>
+            <Text style={paragraph}>{subheading}</Text>
 
-          {/* Subheading */}
-          <Text style={paragraph}>{subheading}</Text>
+            {bodyHtml && (
+              <div
+                dangerouslySetInnerHTML={{ __html: bodyHtml }}
+                style={{ marginTop: "8px" }}
+              />
+            )}
 
-          {/* Body HTML */}
-          {bodyHtml && (
-            <Section
-              dangerouslySetInnerHTML={{ __html: bodyHtml }}
-              style={{ marginTop: "16px" }}
-            />
-          )}
+            {ctaText && ctaUrl && (
+              <Section style={buttonContainer}>
+                <Link href={ctaUrl} style={{ ...button, backgroundColor: primaryColor }}>
+                  {ctaText}
+                </Link>
+              </Section>
+            )}
 
-          {/* CTA Button */}
-          {ctaText && ctaUrl && (
-            <Section style={buttonContainer}>
-              <Link href={ctaUrl} style={{ ...button, backgroundColor: primaryColor }}>
-                {ctaText}
-              </Link>
-            </Section>
-          )}
+            {afterCtaHtml && (
+              <div
+                dangerouslySetInnerHTML={{ __html: afterCtaHtml }}
+                style={{ marginTop: "16px" }}
+              />
+            )}
+          </Section>
 
-          <Hr style={hr} />
+          {/* Social links */}
+          <Section style={socialSection}>
+            <table role="presentation" cellPadding="0" cellSpacing="0" style={{ margin: "0 auto" }}>
+              <tr>
+                <td style={{ padding: "0 8px" }}>
+                  <Link href="https://x.com/thecvedge">
+                    <Img src={`${appUrl}/img/email/icon-x.svg`} width="24" height="24" alt="X" style={{ display: "block" }} />
+                  </Link>
+                </td>
+                <td style={{ padding: "0 8px" }}>
+                  <Link href="https://www.linkedin.com/company/cv-edge">
+                    <Img src={`${appUrl}/img/email/icon-linkedin.svg`} width="24" height="24" alt="LinkedIn" style={{ display: "block" }} />
+                  </Link>
+                </td>
+                <td style={{ padding: "0 8px" }}>
+                  <Link href="https://www.instagram.com/thecvedge/">
+                    <Img src={`${appUrl}/img/email/icon-instagram.svg`} width="24" height="24" alt="Instagram" style={{ display: "block" }} />
+                  </Link>
+                </td>
+              </tr>
+            </table>
+          </Section>
 
           {/* Footer */}
-          <Text style={footer}>
-            &copy; {new Date().getFullYear()} {logoText} &middot;{" "}
-            <Link href={`mailto:${supportEmail}`} style={footerLink}>
-              {supportEmail}
-            </Link>
-          </Text>
-          <Text style={footer}>
-            <Link href={`${appUrl}/unsubscribe`} style={footerLink}>
-              Unsubscribe
-            </Link>
-          </Text>
+          <Section style={footerSection}>
+            <Text style={footer}>
+              &copy; {new Date().getFullYear()} {logoText} &middot;{" "}
+              <Link href={`mailto:${supportEmail}`} style={footerLinkStyle}>
+                {supportEmail}
+              </Link>
+            </Text>
+            <Text style={footer}>
+              <Link href={`${appUrl}/unsubscribe`} style={footerLinkStyle}>
+                Unsubscribe
+              </Link>
+            </Text>
+          </Section>
         </Container>
       </Body>
     </Html>
@@ -92,45 +131,50 @@ export function BaseEmail({
 }
 
 const main: React.CSSProperties = {
-  backgroundColor: "#f6f6f6",
+  backgroundColor: "#f5f0e8",
   fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
 };
 
-const container: React.CSSProperties = {
-  backgroundColor: "#ffffff",
+const wrapper: React.CSSProperties = {
   margin: "0 auto",
-  padding: "40px 32px",
   maxWidth: "600px",
-  borderRadius: "8px",
+  padding: "24px 16px",
 };
 
-const logoSection: React.CSSProperties = {
-  marginBottom: "24px",
+const header: React.CSSProperties = {
+  padding: "24px 32px",
+  textAlign: "center" as const,
 };
 
-const logo: React.CSSProperties = {
-  fontSize: "24px",
-  fontWeight: 700,
-  margin: "0",
+const logoImgStyle: React.CSSProperties = {
+  display: "inline-block",
+};
+
+const card: React.CSSProperties = {
+  backgroundColor: "#ffffff",
+  borderRadius: "12px",
+  padding: "40px 32px",
+  border: "1px solid #ece5d8",
 };
 
 const h1: React.CSSProperties = {
   color: "#1a1a1a",
-  fontSize: "32px",
+  fontSize: "28px",
   fontWeight: 700,
-  lineHeight: "1.2",
+  lineHeight: "1.25",
   margin: "0 0 12px",
+  letterSpacing: "-0.01em",
 };
 
 const paragraph: React.CSSProperties = {
-  color: "#666666",
+  color: "#4a4a4a",
   fontSize: "16px",
-  lineHeight: "1.5",
+  lineHeight: "1.6",
   margin: "0 0 24px",
 };
 
 const buttonContainer: React.CSSProperties = {
-  marginBottom: "32px",
+  marginTop: "8px",
 };
 
 const button: React.CSSProperties = {
@@ -138,26 +182,43 @@ const button: React.CSSProperties = {
   fontSize: "16px",
   fontWeight: 600,
   textDecoration: "none",
-  padding: "14px 32px",
-  borderRadius: "100px",
+  padding: "12px 28px",
+  borderRadius: "8px",
   display: "inline-block",
 };
 
-const hr: React.CSSProperties = {
-  borderColor: "#e5e5e5",
-  margin: "32px 0 16px",
+const socialSection: React.CSSProperties = {
+  textAlign: "center" as const,
+  padding: "20px 0 4px",
+};
+
+const socialLinkStyle: React.CSSProperties = {
+  color: "#6B7280",
+  textDecoration: "none",
+  fontSize: "13px",
+};
+
+const socialDot: React.CSSProperties = {
+  display: "inline",
+  color: "#9CA3AF",
+  fontSize: "13px",
+  margin: "0 8px",
+};
+
+const footerSection: React.CSSProperties = {
+  padding: "12px 32px 8px",
 };
 
 const footer: React.CSSProperties = {
-  color: "#999999",
+  color: "#9CA3AF",
   fontSize: "12px",
   lineHeight: "1.5",
   margin: "0",
   textAlign: "center" as const,
 };
 
-const footerLink: React.CSSProperties = {
-  color: "#999999",
+const footerLinkStyle: React.CSSProperties = {
+  color: "#9CA3AF",
   textDecoration: "underline",
 };
 

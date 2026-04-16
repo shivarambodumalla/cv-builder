@@ -10,61 +10,36 @@ const supabase = createClient(
 const TEMPLATES = [
   {
     name: "limit_reset",
-    subject: "Your CVEdge limits just reset",
-    heading: "Your weekly limits just reset",
-    subheading: "Fresh week, fresh chances. Here\u2019s what you have available:",
+    subject: "Your CVEdge limits just refreshed \u2014 fresh week ahead",
+    heading: "Good news \u2014 your limits just refreshed",
+    subheading: "Here\u2019s what you have this week:",
     cta_text: "Continue job hunting \u2192",
     cta_url: "{{appUrl}}/dashboard",
-    body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:16px;">
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 10 ATS scans</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 20 AI rewrites</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 5 job matches</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 5 cover letters</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 3 Fix All</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 3 CV tailors</td></tr>
+    body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:20px;">
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 10 ATS scans</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 25 AI rewrites</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 5 job matches</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 5 cover letters</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 3 Fix All with AI</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 3 CV tailors</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 5 interview prep sessions</td></tr>
 </table>
-<p style="margin:0;font-size:12px;color:#9CA3AF;">Limits reset every Monday. Upgrade to Pro for unlimited access.</p>`,
-  },
-  {
-    name: "limit_hit",
-    subject: "You\u2019ve used your free {{feature}} this week",
-    heading: "You\u2019ve reached your weekly limit",
-    subheading: "You\u2019ve used all your free {{feature}} this week. Resets Monday {{reset_date}}.",
-    cta_text: "Upgrade for $9/month",
-    cta_url: "{{appUrl}}/pricing",
-    body_html: `<p style="margin:0 0 16px;font-size:14px;color:#3D3830;">Upgrade to Pro and never hit a limit again \u2014 unlimited ATS scans, AI rewrites, job matches, and more.</p>
-<p style="margin:0;text-align:center;">
-  <a href="{{appUrl}}/dashboard" style="display:inline-block;background-color:#E5E7EB;color:#3D3830;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Come back Monday</a>
-</p>`,
-  },
-  {
-    name: "cv_limit_hit",
-    subject: "You\u2019ve reached 3 CVs on CVEdge",
-    heading: "You have 3 CVs saved",
-    subheading: "You\u2019ve reached the free plan limit of 3 CVs. Upgrade to Pro to unlock:",
-    cta_text: "Upgrade for $9/month",
-    cta_url: "{{appUrl}}/pricing",
-    body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:16px;">
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 Unlimited CVs</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 No watermark on exports</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 Unlimited AI rewrites, ATS scans, and job matches</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 80+ ATS score guarantee</td></tr>
-</table>`,
+<p style="margin:0 0 8px;font-size:14px;color:#3D3830;">Your CV from last week is waiting. Pick up where you left off.</p>`,
   },
   {
     name: "reactivation",
     subject: "Your CVEdge limits just reset \u2014 come back",
     heading: "We miss you!",
     subheading: "It\u2019s been a while. Your limits have reset \u2014 a fresh week of free features is waiting for you.",
-    cta_text: "Get back to job hunting \u2192",
+    cta_text: "Get back to job hunting",
     cta_url: "{{appUrl}}/dashboard",
     body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:16px;">
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 10 ATS scans</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 20 AI rewrites</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 5 job matches</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 5 cover letters</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 3 Fix All</td></tr>
-  <tr><td style="padding:4px 0;color:#3D3830;font-size:14px;">\u2022 3 CV tailors</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 10 ATS scans</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 20 AI rewrites</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 5 job matches</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 5 cover letters</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 3 Fix All</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 3 CV tailors</td></tr>
 </table>
 <p style="margin:0;font-size:12px;color:#9CA3AF;">Your free limits reset every Monday. We\u2019re here when you\u2019re ready.</p>`,
   },
