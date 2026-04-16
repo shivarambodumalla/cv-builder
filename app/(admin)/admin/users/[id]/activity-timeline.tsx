@@ -39,18 +39,40 @@ function categorize(event: string): string {
   return "Other";
 }
 
-function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const sec = Math.round(diff / 1000);
-  if (sec < 60) return "just now";
-  const min = Math.round(sec / 60);
-  if (min < 60) return `${min} min${min === 1 ? "" : "s"} ago`;
-  const hr = Math.round(min / 60);
-  if (hr < 24) return `${hr} hr${hr === 1 ? "" : "s"} ago`;
-  const day = Math.round(hr / 24);
-  if (day === 1) return "Yesterday";
-  if (day < 14) return `${day} days ago`;
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+function formatTime(iso: string): { primary: string; secondary: string } {
+  const d = new Date(iso);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const mins = Math.round(diffMs / 60000);
+
+  // Absolute date+time always shown
+  const absolute = d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  // Relative only for < 60 min
+  if (mins < 1) return { primary: "just now", secondary: absolute };
+  if (mins < 60) return { primary: `${mins}m ago`, secondary: absolute };
+
+  // For older events, show absolute as primary
+  const isToday = d.toDateString() === now.toDateString();
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const isYesterday = d.toDateString() === yesterday.toDateString();
+
+  if (isToday) {
+    const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
+    return { primary: `Today, ${time}`, secondary: "" };
+  }
+  if (isYesterday) {
+    const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
+    return { primary: `Yesterday, ${time}`, secondary: "" };
+  }
+
+  return { primary: absolute, secondary: d.getFullYear() !== now.getFullYear() ? String(d.getFullYear()) : "" };
 }
 
 function renderMetadata(metadata: Record<string, unknown> | null): string {
@@ -123,6 +145,7 @@ export function ActivityTimeline({ events }: { events: ActivityEvent[] }) {
         <ul className="space-y-2">
           {events.map((e) => {
             const meta = renderMetadata(e.metadata);
+            const time = formatTime(e.created_at);
             return (
               <li key={e.id} className="flex items-start gap-3 text-sm">
                 <span
@@ -133,7 +156,12 @@ export function ActivityTimeline({ events }: { events: ActivityEvent[] }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline justify-between gap-2">
                     <p className="font-medium">{e.event}</p>
-                    <span className="shrink-0 text-xs text-muted-foreground">{timeAgo(e.created_at)}</span>
+                    <span className="shrink-0 text-right text-xs text-muted-foreground">
+                      {time.primary}
+                      {time.secondary && (
+                        <span className="ml-1.5 opacity-60">{time.secondary}</span>
+                      )}
+                    </span>
                   </div>
                   {(meta || e.page) && (
                     <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">

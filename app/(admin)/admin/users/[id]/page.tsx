@@ -220,12 +220,16 @@ export default async function UserDetailPage({
   const totalSessionMs = [...pathStats.values()].reduce((sum, s) => sum + s.totalMs, 0);
 
   const formatDuration = (ms: number): string => {
-    const s = Math.round(ms / 1000);
-    if (s < 60) return `${s}s`;
-    const m = Math.floor(s / 60);
-    if (m < 60) return `${m}m ${s % 60}s`;
+    const totalSec = Math.round(ms / 1000);
+    if (totalSec < 60) return `${totalSec}s`;
+    const m = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    if (m < 60) return `${m}m ${sec}s`;
     const h = Math.floor(m / 60);
-    return `${h}h ${m % 60}m`;
+    const min = m % 60;
+    if (h < 24) return `${h}h ${min}m`;
+    const d = Math.floor(h / 24);
+    return `${d}d ${h % 24}h`;
   };
 
   // Activity timeline (last 50 events)
@@ -689,7 +693,8 @@ export default async function UserDetailPage({
                     <tr className="border-b">
                       <th className="px-6 py-2 text-left font-medium text-muted-foreground">Page</th>
                       <th className="px-6 py-2 text-right font-medium text-muted-foreground">Visits</th>
-                      <th className="px-6 py-2 text-right font-medium text-muted-foreground">Time Spent</th>
+                      <th className="px-6 py-2 text-right font-medium text-muted-foreground">Total Time</th>
+                      <th className="px-6 py-2 text-right font-medium text-muted-foreground">Avg / Visit</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -698,6 +703,7 @@ export default async function UserDetailPage({
                         <td className="px-6 py-2 font-mono text-xs">{p.path}</td>
                         <td className="px-6 py-2 text-right">{p.visits}</td>
                         <td className="px-6 py-2 text-right">{formatDuration(p.totalMs)}</td>
+                        <td className="px-6 py-2 text-right text-muted-foreground">{formatDuration(Math.round(p.totalMs / Math.max(p.visits, 1)))}</td>
                       </tr>
                     ))}
                   </tbody>
