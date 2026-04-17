@@ -589,7 +589,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
               handlePdfDownload();
             }
           }}>
-            <Download className="mr-1.5 h-3.5 w-3.5" /> Resume
+            <Download className="mr-1.5 h-3.5 w-3.5" /> Download
           </Button>
           {plan !== "pro" && (
             <Button size="sm" variant="secondary" className="h-8 gap-1.5" onClick={() => openUpgradeModal("generic")}>

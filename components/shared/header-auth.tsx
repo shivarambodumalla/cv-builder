@@ -9,6 +9,8 @@ interface UserData {
   email: string;
   fullName: string | null;
   avatarUrl: string | null;
+  plan: string;
+  isPro: boolean;
 }
 
 export function HeaderAuth() {
@@ -29,7 +31,7 @@ export function HeaderAuth() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, avatar_url")
+        .select("full_name, avatar_url, plan, subscription_status")
         .eq("id", authUser.id)
         .single();
 
@@ -37,6 +39,8 @@ export function HeaderAuth() {
         email: authUser.email || "",
         fullName: profile?.full_name ?? null,
         avatarUrl: profile?.avatar_url ?? null,
+        plan: profile?.plan ?? "free",
+        isPro: profile?.subscription_status === "active",
       });
       setLoading(false);
     }
@@ -121,11 +125,22 @@ export function HeaderAuth() {
 
   if (user) {
     return (
-      <UserMenu
-        email={user.email}
-        fullName={user.fullName}
-        avatarUrl={user.avatarUrl}
-      />
+      <div className="flex items-center gap-3">
+        {!user.isPro && (
+          <Link
+            href="/pricing"
+            className="inline-flex items-center gap-1.5 rounded-md bg-[#065F46] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors"
+          >
+            <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" /></svg>
+            Go Pro
+          </Link>
+        )}
+        <UserMenu
+          email={user.email}
+          fullName={user.fullName}
+          avatarUrl={user.avatarUrl}
+        />
+      </div>
     );
   }
 
