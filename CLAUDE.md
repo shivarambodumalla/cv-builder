@@ -154,22 +154,22 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ### Templates
 
-12 templates total:
+12 templates total (all available on free plan):
 
-| Template | Type | Display Name | Free |
-|----------|------|-------------|------|
-| classic | single-column | Classic | Yes |
-| sharp | single-column | Sharp | No |
-| minimal | single-column | Minimal | No |
-| executive | single-column | Executive | No |
-| sidebar | 2-column (sidebar left) | Slate | No |
-| sidebar-right | 2-column (sidebar right) | Onyx | No |
-| two-column | 2-column (header + body) | Horizon | No |
-| divide | 2-column (left/right + divider) | Divide | No |
-| folio | 2-column (left bg + right) | Folio | No |
-| metro | — | Metro | No |
-| harvard | — | Harvard | No |
-| ledger | — | Ledger | No |
+| Template | Type | Display Name |
+|----------|------|-------------|
+| classic | single-column | Classic |
+| sharp | single-column | Sharp |
+| minimal | single-column | Minimal |
+| executive | single-column | Executive |
+| sidebar | 2-column (sidebar left) | Slate |
+| sidebar-right | 2-column (sidebar right) | Onyx |
+| two-column | 2-column (header + body) | Horizon |
+| divide | 2-column (left/right + divider) | Divide |
+| folio | 2-column (left bg + right) | Folio |
+| metro | — | Metro |
+| harvard | — | Harvard |
+| ledger | — | Ledger |
 
 ### Two-Column Templates
 
@@ -251,7 +251,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - Returns: rewritten summary, rewritten bullets per company, skills_to_add, sections_needing_attention, estimated_score_improvement
 - Skips bullets already strong (metric + action verb + outcome)
 - Generates summary if empty
-- Usage gated: free plan gets 1 use, upgrade trigger `fix_all_limit`
+- Usage gated: free plan gets 3 uses/week (Monday reset), upgrade trigger `fix_all_limit`
 
 ## JD Red Flag Detector
 
@@ -311,14 +311,14 @@ Two reset mechanisms coexist:
 ### Upgrade Modal
 
 - context/upgrade-modal-context.tsx: UpgradeModalProvider + useUpgradeModal()
-- Triggers: download, ats_limit, job_match_limit, cover_letter_limit, ai_rewrite_limit, template_locked, cv_limit, fix_all_limit, story_scan_limit, story_save_limit, story_prep_limit, generic
+- Triggers: cv_limit, ats_limit, rewrite_limit, job_match_limit, cover_letter_limit, fix_all_limit, cv_tailor_limit, offer_eval_limit, portfolio_scan_limit, story_summary_limit, interview_prep_limit, template_locked, download, generic
 - All 3 prices visible as selectable rows (no tabs)
 - Mock upgrade: /api/billing/mock-upgrade (dev only, blocked in production for non-admins)
 
 ## PDF Export
 
-- POST /api/cv/export/pdf -> lib/pdf/render.tsx (inline rendering, no child process)
-- Checks pdf_download limit, adds watermark if free plan
+- POST /api/cv/export/pdf -> lib/pdf/html-to-pdf.ts (inline rendering, no child process)
+- PDF downloads are unlimited for all plans (pdf_downloads = -1); watermark added for free plan
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
 
 ## CV Tailor for JD
@@ -360,7 +360,7 @@ Two reset mechanisms coexist:
   - Interview prep: match stories to JD via story_match_v1
   - Readiness card: X/8 stories ready (quality >= 7)
   - Search, tag filter, sort, grid/list view toggle
-- Pro gates: story_scan_limit, story_save_limit (3 free), story_prep_limit
+- Pro gates: story_summary_limit (10 free/week), interview_prep_limit (5 free/week)
 
 ## E2E Testing (Playwright)
 
@@ -368,9 +368,15 @@ Two reset mechanisms coexist:
 - Test dir: tests/e2e/
 - Auth: /api/test-auth route creates real Supabase session via signInWithPassword
 - Global setup: tests/e2e/global-setup.ts — visits /api/test-auth, saves cookies to .auth/user.json
-- Suites: ats-flow, job-match-flow, billing-gate, dashboard
+- Suites (17 spec files):
+  - Core: auth, dashboard, cv-editor, billing, billing-gate, pdf-export
+  - Features: ats-flow, job-match-flow, cover-letter, interview-coach
+  - Marketing: marketing (homepage, pricing, upload, privacy, terms, sitemap, robots)
+  - Admin: admin (dashboard, tests, users, prompts, pricing, emails)
+  - Journeys: journey-ats, journey-job-match, journey-cv-lifecycle, journey-cover-letter, journey-error-handling
 - CI: .github/workflows/e2e-tests.yml — build → test → parse → upload to DB → email on failure
 - Admin: /admin/tests — test cases registry + run history + run detail
+- Seed: npx tsx scripts/seed-test-cases.ts (89 test case records)
 
 ## Database Tables
 
@@ -428,6 +434,8 @@ Two reset mechanisms coexist:
 - Campaigns: email campaigns
 - Email Logs: sent email history
 - Tests: test case registry + run history + run detail (linked to GitHub Actions)
+- Funnel: signup/conversion funnel analytics
+- Resume Preview: admin resume preview tool
 - Active link detection via client component (AdminSidebarNav)
 
 ## Security

@@ -19,10 +19,10 @@ const TEST_CASES = [
   { suite: "Dashboard Flow", name: "Dashboard loads", description: "Verify dashboard renders with create button or content", spec_file: "tests/e2e/dashboard.spec.ts" },
   { suite: "Dashboard Flow", name: "Dashboard shows test resume", description: "Verify seeded test resume card is visible", spec_file: "tests/e2e/dashboard.spec.ts" },
   // Interview Coach (Story Bank)
-  { suite: "Interview Coach", name: "Story bank page loads", description: "Verify interview coach page renders with readiness banner", spec_file: "tests/e2e/stories.spec.ts" },
-  { suite: "Interview Coach", name: "Add story navigates to new page", description: "Click Add Story navigates to /stories/new", spec_file: "tests/e2e/stories.spec.ts" },
-  { suite: "Interview Coach", name: "Story detail page loads", description: "Verify split-pane story editor renders", spec_file: "tests/e2e/stories.spec.ts" },
-  { suite: "Interview Coach", name: "Extract from CV flow", description: "Verify extraction wizard opens and processes CV", spec_file: "tests/e2e/stories.spec.ts" },
+  { suite: "Interview Coach", name: "Story bank page loads", description: "Verify interview coach page renders with readiness banner", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  { suite: "Interview Coach", name: "Add story navigates to new page", description: "Click Add Story navigates to /stories/new", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  { suite: "Interview Coach", name: "Story detail page loads", description: "Verify split-pane story editor renders", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  { suite: "Interview Coach", name: "Extract from CV flow", description: "Verify extraction wizard opens and processes CV", spec_file: "tests/e2e/interview-coach.spec.ts" },
   // CV Tailor
   { suite: "CV Tailor", name: "Tailor button visible in job match", description: "Verify Tailor CV button appears next to Re-match", spec_file: "tests/e2e/job-match-flow.spec.ts" },
   // Offer Evaluation
