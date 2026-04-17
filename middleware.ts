@@ -48,6 +48,6 @@ export const config = {
     "/resume/:path*",
     "/billing/:path*",
     "/admin/:path*",
-    "/api/((?!cron/|telemetry/|activity/).)*",
+    "/api/((?!cron/|telemetry/|activity/|gdpr/consent).)*",
   ],
 };

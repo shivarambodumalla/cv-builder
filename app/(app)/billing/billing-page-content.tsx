@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getPlan } from "@/lib/billing/limits";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
-import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt, AlertTriangle } from "lucide-react";
+import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt, AlertTriangle, Trash2, DatabaseBackup } from "lucide-react";
 
 interface ProfileData {
   plan?: string;
@@ -53,6 +53,24 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
   const { openUpgradeModal } = useUpgradeModal();
   const [cancelLoading, setCancelLoading] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  async function handleDeleteAccount() {
+    setDeleteLoading(true);
+    try {
+      const res = await fetch("/api/gdpr/delete-account", { method: "POST" });
+      if (res.ok) {
+        window.location.href = "/login";
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || "Deletion failed. Please contact support.");
+      }
+    } catch {
+      alert("Something went wrong. Please contact support.");
+    }
+    setDeleteLoading(false);
+  }
 
   async function handleCancel() {
     setCancelLoading(true);
@@ -322,6 +340,68 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           </div>
         </div>
       )}
+
+      {/* GDPR / Data Privacy */}
+      <div className="rounded-xl border p-6 space-y-4">
+        <h2 className="text-base font-semibold">Data &amp; Privacy</h2>
+        <p className="text-sm text-muted-foreground">
+          You have full control over your data. Export everything or permanently delete your account.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={async () => {
+              const res = await fetch("/api/gdpr/export-data");
+              if (!res.ok) return;
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `cvedge-data-export-${new Date().toISOString().slice(0, 10)}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+          >
+            <DatabaseBackup className="h-4 w-4" /> Export My Data
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            <Trash2 className="h-4 w-4" /> Delete Account
+          </Button>
+        </div>
+        {showDeleteConfirm && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 space-y-3">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-medium">Permanently delete your account?</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  This will permanently delete all your resumes, ATS reports, job matches, cover letters, interview stories, and account data. This action cannot be undone.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteAccount}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? "Deleting..." : "Yes, delete everything"}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowDeleteConfirm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

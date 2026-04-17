@@ -9,6 +9,7 @@ import { UpgradeModal } from "@/components/shared/upgrade-modal";
 import { DevReload } from "./dev-reload";
 import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
+import { CookieConsent } from "@/components/shared/cookie-consent";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -51,12 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
-        {process.env.NODE_ENV === "production" && (
-          <>
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-52LEWSBN7M" />
-            <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-52LEWSBN7M');gtag('config','AW-18095722375');` }} />
-          </>
-        )}
+        {/* GA/Ads scripts loaded dynamically after cookie consent — see CookieConsent component */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -69,6 +65,7 @@ export default function RootLayout({
             <PageTracker />
             {children}
             <UpgradeModal />
+            <CookieConsent />
           </UpgradeModalProvider>
         </ThemeProvider>
         <Analytics />
