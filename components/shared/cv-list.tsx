@@ -122,7 +122,7 @@ function ChipsRow({ atsScore, matchScore, hasCoverLetter }: { atsScore: number |
   );
 }
 
-export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: Cv[]; isPro?: boolean; storyCount?: number; readyStories?: number; userName?: string }) {
+export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReached = false }: { cvs: Cv[]; isPro?: boolean; storyCount?: number; readyStories?: number; userName?: string; limitReached?: boolean }) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -217,8 +217,8 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "" }: { cvs: C
 
   return (
     <div className="space-y-8">
-      {/* Pro banner */}
-      {!isPro && (
+      {/* Pro banner — only when a free limit is reached */}
+      {!isPro && limitReached && (
         <div className="relative overflow-hidden rounded-2xl border border-[#065F46]/20 bg-[#065F46] p-6 sm:p-8">
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />

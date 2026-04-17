@@ -32,7 +32,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan, subscription_status, onboarding_shown")
+    .select("plan, subscription_status, onboarding_shown, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
     .eq("id", user.id)
     .single();
 
@@ -77,6 +77,16 @@ export default async function DashboardPage() {
   const userName = user.user_metadata?.full_name?.split(" ")[0] || user.user_metadata?.name?.split(" ")[0] || "";
   const hasCvs = (cvs ?? []).length > 0;
   const showOnboarding = !hasCvs && !profile?.onboarding_shown;
+  const isPro = profile?.subscription_status === "active";
+
+  // Check if any free limit is reached
+  const anyLimitReached = !isPro && (
+    (profile?.ats_scans_this_window ?? 0) >= 10 ||
+    (profile?.job_matches_this_window ?? 0) >= 5 ||
+    (profile?.cover_letters_this_window ?? 0) >= 5 ||
+    (profile?.ai_rewrites_this_window ?? 0) >= 25 ||
+    (cvs ?? []).length >= 3
+  );
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -105,10 +115,11 @@ export default async function DashboardPage() {
       )}
       <CvList
         cvs={cvs ?? []}
-        isPro={profile?.subscription_status === "active"}
+        isPro={isPro}
         storyCount={storyCount}
         readyStories={readyStories}
         userName={userName}
+        limitReached={anyLimitReached}
       />
     </div>
   );
