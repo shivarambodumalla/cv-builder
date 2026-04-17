@@ -300,7 +300,7 @@ export function FunnelDashboard() {
                         <span className={drop >= 50 ? "text-error font-semibold" : "text-warning font-semibold"}>
                           {fmtPct(drop)} drop
                         </span>
-                        <span className="text-muted-foreground"> — {lost.toLocaleString()} users didn't proceed.</span>
+                        <span className="text-muted-foreground">{" — "}{lost.toLocaleString()}{" users did not proceed."}</span>
                         {drop >= 50 && (
                           <span className="text-error text-xs ml-1 font-medium">Critical</span>
                         )}
