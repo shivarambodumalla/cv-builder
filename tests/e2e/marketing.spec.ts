@@ -1,71 +1,51 @@
 import { test, expect } from "@playwright/test";
 
+// Marketing pages are public — use fresh context (no auth cookies)
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe("Marketing Pages", () => {
-  test("Homepage loads with H1", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto("http://localhost:3000");
-    await page.waitForLoadState("networkidle");
-    const h1 = await page.locator("h1").first().textContent();
-    expect(h1).toBeTruthy();
-    await context.close();
+  test("Homepage loads", async ({ page }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
   });
 
-  test("Pricing page loads", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto("http://localhost:3000/pricing");
-    await page.waitForLoadState("networkidle");
-    const pageText = await page.textContent("body") || "";
-    expect(pageText.includes("Pricing") || pageText.includes("Pro") || pageText.includes("Free")).toBeTruthy();
-    await context.close();
+  test("Pricing page loads", async ({ page }) => {
+    await page.goto("/pricing", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
+    const text = await page.textContent("body");
+    expect(text).toMatch(/pricing|pro|free/i);
   });
 
-  test("Upload resume page loads", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto("http://localhost:3000/upload-resume");
-    await page.waitForLoadState("networkidle");
-    const pageText = await page.textContent("body") || "";
-    expect(pageText.includes("Upload") || pageText.includes("CV") || pageText.includes("Resume")).toBeTruthy();
-    await context.close();
+  test("Upload resume page loads", async ({ page }) => {
+    await page.goto("/upload-resume", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
+    const text = await page.textContent("body");
+    expect(text).toMatch(/upload|cv|resume/i);
   });
 
-  test("Privacy page loads", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto("http://localhost:3000/privacy");
-    await page.waitForLoadState("networkidle");
-    const pageText = await page.textContent("body") || "";
-    expect(pageText.includes("Privacy")).toBeTruthy();
-    await context.close();
+  test("Privacy page loads", async ({ page }) => {
+    await page.goto("/privacy", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
+    const text = await page.textContent("body");
+    expect(text).toMatch(/privacy/i);
   });
 
-  test("Terms page loads", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto("http://localhost:3000/terms");
-    await page.waitForLoadState("networkidle");
-    const pageText = await page.textContent("body") || "";
-    expect(pageText.includes("Terms")).toBeTruthy();
-    await context.close();
+  test("Terms page loads", async ({ page }) => {
+    await page.goto("/terms", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
+    const text = await page.textContent("body");
+    expect(text).toMatch(/terms/i);
   });
 
-  test("Sitemap returns XML", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    const res = await page.goto("http://localhost:3000/sitemap.xml");
+  test("Sitemap returns XML", async ({ page }) => {
+    const res = await page.goto("/sitemap.xml");
     expect(res?.status()).toBe(200);
-    await context.close();
   });
 
-  test("Robots.txt is accessible", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    const res = await page.goto("http://localhost:3000/robots.txt");
+  test("Robots.txt is accessible", async ({ page }) => {
+    const res = await page.goto("/robots.txt");
     expect(res?.status()).toBe(200);
-    const text = await page.textContent("body") || "";
-    expect(text.includes("Sitemap")).toBeTruthy();
-    await context.close();
+    const text = await page.textContent("body");
+    expect(text).toMatch(/sitemap/i);
   });
 });

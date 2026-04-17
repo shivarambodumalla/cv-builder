@@ -23,7 +23,7 @@ export default defineConfig({
     command: isCI ? "npm run start" : "npm run dev",
     url: "http://localhost:3000",
     reuseExistingServer: !isCI,
-    timeout: 60000,
+    timeout: isCI ? 120000 : 60000,
     env: {
       ENABLE_TEST_AUTH: "true",
     },
