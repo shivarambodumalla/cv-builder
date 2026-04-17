@@ -10,12 +10,17 @@ import { createClient } from "@/lib/supabase/client";
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isPro, setIsPro] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       setLoggedIn(!!user);
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("subscription_status").eq("id", user.id).single();
+        setIsPro(profile?.subscription_status === "active");
+      }
     });
   }, []);
 
@@ -60,7 +65,13 @@ export function MobileNav() {
             Pricing
           </Link>
           {loggedIn ? (
-            <div className="pt-2 border-t">
+            <div className="pt-2 border-t space-y-1">
+              {!isPro && (
+                <Link href="/pricing" onClick={() => setOpen(false)} className="flex w-full items-center gap-2 rounded-md bg-[#065F46] px-3 py-2.5 text-sm font-semibold text-white">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+                  Go Pro
+                </Link>
+              )}
               <button onClick={handleLogout} className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-destructive hover:bg-muted transition-colors">
                 <LogOut className="h-4 w-4" /> Log out
               </button>
