@@ -572,6 +572,40 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           </div>
 
+          {/* Job Match CTA */}
+          <div
+            className="rounded-xl border p-4 mb-3"
+            style={{ backgroundColor: "#F0FDF4", borderColor: "#34D399" }}
+          >
+            <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#065F46", marginBottom: "4px" }}>
+              See how you match a real job description
+            </h4>
+            <p style={{ fontSize: "12px", color: "#4a4a4a", lineHeight: 1.5, marginBottom: "10px" }}>
+              Paste any JD below — get your match score in 30 seconds
+            </p>
+            <button
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("switch-tab", { detail: "job-match" }));
+                setTimeout(() => {
+                  const jdTextarea = document.querySelector<HTMLTextAreaElement>('[data-testid="jd-textarea"], textarea[placeholder*="job description" i], textarea[placeholder*="paste" i]');
+                  jdTextarea?.focus();
+                }, 300);
+              }}
+              style={{
+                backgroundColor: "#065F46",
+                color: "#fff",
+                fontSize: "13px",
+                fontWeight: 600,
+                padding: "8px 18px",
+                borderRadius: "6px",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Run Job Match
+            </button>
+          </div>
+
           {/* Paywall */}
           {!isPaidContent && (
             <div style={{ marginBottom: "12px" }}>
