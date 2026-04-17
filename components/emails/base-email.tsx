@@ -93,17 +93,17 @@ export function BaseEmail({
               <tr>
                 <td style={{ padding: "0 6px" }}>
                   <Link href="https://x.com/thecvedge">
-                    <Img src={`${appUrl}/img/email/icon-x.png`} width="24" height="24" alt="X" style={{ display: "block" }} />
+                    <Img src={`${appUrl}/img/email/icon-x.svg`} width="24" height="24" alt="X" style={{ display: "block" }} />
                   </Link>
                 </td>
                 <td style={{ padding: "0 6px" }}>
                   <Link href="https://www.linkedin.com/company/cv-edge">
-                    <Img src={`${appUrl}/img/email/icon-linkedin.png`} width="24" height="24" alt="LinkedIn" style={{ display: "block" }} />
+                    <Img src={`${appUrl}/img/email/icon-linkedin.svg`} width="24" height="24" alt="LinkedIn" style={{ display: "block" }} />
                   </Link>
                 </td>
                 <td style={{ padding: "0 6px" }}>
                   <Link href="https://www.instagram.com/thecvedge/">
-                    <Img src={`${appUrl}/img/email/icon-instagram.png`} width="24" height="24" alt="Instagram" style={{ display: "block" }} />
+                    <Img src={`${appUrl}/img/email/icon-instagram.svg`} width="24" height="24" alt="Instagram" style={{ display: "block" }} />
                   </Link>
                 </td>
               </tr>

@@ -24,7 +24,7 @@ export function ClassicTemplate({
   formatDate,
   bulletChar,
   visibleSections,
-  sectionSpacing = 16,
+  sectionSpacing = 12,
   marginX = 0.75,
   marginY = 0.5,
   pageBreaks = [],
@@ -50,10 +50,9 @@ export function ClassicTemplate({
         textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
         letterSpacing: "1.5px",
         color: "var(--resume-accent)",
-        borderBottom: "1px solid var(--resume-accent)",
+        borderBottom: "1.5px solid var(--resume-accent)",
         paddingBottom: "3px",
-        marginBottom: "8px",
-        marginTop: "14px",
+        marginBottom: "6px",
       }}
     >
       {title}
@@ -81,7 +80,7 @@ export function ClassicTemplate({
             fontSize: "var(--resume-name-size)",
             fontWeight: "var(--resume-name-weight)" as unknown as number,
             lineHeight: 1.2,
-            color: "#1a1a1a",
+            color: "var(--resume-accent)",
           }}
         >
           {contact.name}
@@ -89,7 +88,7 @@ export function ClassicTemplate({
         {contactItems.length > 0 && (
           <div
             style={{
-              fontSize: "var(--resume-body-size)",
+              fontSize: "9pt",
               color: "#555",
               marginTop: "6px",
               lineHeight: "var(--resume-line-spacing)",
@@ -126,7 +125,7 @@ export function ClassicTemplate({
               fontFamily: "var(--resume-font)",
               fontSize: "var(--resume-body-size)",
               lineHeight: "var(--resume-line-spacing)",
-              color: "#333",
+              color: "#1a1a1a",
               margin: 0,
             }}
           >
@@ -148,18 +147,18 @@ export function ClassicTemplate({
                   alignItems: "baseline",
                   fontFamily: "var(--resume-font)",
                   fontSize: "var(--resume-body-size)",
+                  marginBottom: "1px",
                 }}
               >
-                <div>
-                  <span style={{ fontWeight: 700, color: "#1a1a1a" }}>{item.role}</span>
-                  {item.company && (
-                    <span style={{ color: "#555" }}> | {item.company}</span>
-                  )}
-                  {item.location && (
-                    <span style={{ color: "#777" }}> | {item.location}</span>
+                <div style={{ flex: 1, paddingRight: "8px" }}>
+                  <div style={{ fontWeight: 700, color: "#1a1a1a" }}>{item.role}</div>
+                  {(item.company || item.location) && (
+                    <div style={{ color: "#555", fontSize: "calc(var(--resume-body-size) - 0.5pt)" }}>
+                      {[item.company, item.location].filter(Boolean).join(" | ")}
+                    </div>
                   )}
                 </div>
-                <div style={{ color: "#555", whiteSpace: "nowrap", marginLeft: "12px" }}>
+                <div style={{ color: "#777", whiteSpace: "nowrap", fontSize: "8.5pt", textAlign: "right", minWidth: "90px" }}>
                   {renderDateRange(item.startDate, item.endDate, item.isCurrent)}
                 </div>
               </div>
@@ -172,11 +171,11 @@ export function ClassicTemplate({
                     fontFamily: "var(--resume-font)",
                     fontSize: "var(--resume-body-size)",
                     lineHeight: "var(--resume-line-spacing)",
-                    color: "#333",
+                    color: "#444",
                   }}
                 >
                   {item.bullets.filter(Boolean).map((bullet, j) => (
-                    <li key={j} style={{ paddingLeft: bulletChar ? 0 : undefined }}>
+                    <li key={j} style={{ marginBottom: "1.5px" }}>
                       {bulletChar && <span style={{ marginRight: "6px" }}>{bulletChar}</span>}
                       {bullet}
                     </li>
@@ -193,7 +192,7 @@ export function ClassicTemplate({
         <div key="education">
           {renderSectionTitle("Education")}
           {education.items.map((item, i) => (
-            <div key={i} data-resume-entry="" style={{ marginBottom: i < education.items.length - 1 ? "8px" : 0 }}>
+            <div key={i} data-resume-entry="" style={{ marginBottom: i < education.items.length - 1 ? "4px" : 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -203,14 +202,16 @@ export function ClassicTemplate({
                   fontSize: "var(--resume-body-size)",
                 }}
               >
-                <div>
-                  <span style={{ fontWeight: 700, color: "#1a1a1a" }}>{item.degree}</span>
-                  {item.field && <span style={{ color: "#555" }}> in {item.field}</span>}
+                <div style={{ flex: 1, paddingRight: "8px" }}>
+                  <div>
+                    <span style={{ fontWeight: 700, color: "#1a1a1a" }}>{item.degree}</span>
+                    {item.field && <span style={{ color: "#555" }}> in {item.field}</span>}
+                  </div>
                   {item.institution && (
-                    <span style={{ color: "#555" }}> - {item.institution}</span>
+                    <div style={{ color: "#555" }}>{item.institution}</div>
                   )}
                 </div>
-                <div style={{ color: "#555", whiteSpace: "nowrap", marginLeft: "12px" }}>
+                <div style={{ color: "#777", whiteSpace: "nowrap", fontSize: "8.5pt", textAlign: "right", minWidth: "90px" }}>
                   {renderDateRange(item.startDate, item.endDate)}
                 </div>
               </div>
@@ -447,7 +448,7 @@ export function ClassicTemplate({
         fontFamily: "var(--resume-font)",
         fontSize: "var(--resume-body-size)",
         lineHeight: "var(--resume-line-spacing)",
-        color: "#333",
+        color: "#1a1a1a",
         padding: `${marginY}in ${marginX}in`,
       }}
     >
@@ -467,15 +468,6 @@ export function ClassicTemplate({
               ...(hasPageBreak ? { pageBreakBefore: "always" as const } : {}),
             }}
           >
-            {key !== "contact" && key !== "targetTitle" && i > 0 && (
-              <hr
-                style={{
-                  border: "none",
-                  borderTop: "1px solid #e5e5e5",
-                  margin: "0 0 8px 0",
-                }}
-              />
-            )}
             {node}
           </div>
         );

@@ -16,11 +16,13 @@ const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: n
 ];
 
 const FREE_FEATURES = [
-  "1 CV (upgrade for unlimited)",
-  "3 ATS scans every 7 days",
-  "Full ATS report (view only)",
-  "Classic template",
-  "1 watermarked PDF download/week",
+  "3 CVs (upgrade for unlimited)",
+  "10 ATS scans every 7 days",
+  "25 AI rewrites every 7 days",
+  "5 job matches every 7 days",
+  "5 cover letters every 7 days",
+  "All 12 templates",
+  "Unlimited PDF downloads (watermarked)",
 ];
 
 const PRO_FEATURES = [
@@ -29,7 +31,7 @@ const PRO_FEATURES = [
   "Unlimited job matches - paste any JD",
   "Unlimited cover letters - tailored to every role",
   "Unlimited AI rewrites - improve any bullet",
-  "All 5 templates - Classic, Sharp, Minimal, Executive, Sidebar",
+  "All 12 templates",
   "Clean PDF exports - no watermark",
   "Real-time ATS score updates",
   "Job description keyword gap analysis",
@@ -53,7 +55,7 @@ export function PricingContent() {
   const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set());
   const selected = OPTIONS.find((o) => o.period === billing)!;
 
-  const nudge = billing === "weekly" ? "Switch to monthly, 3x cheaper than weekly" : billing === "monthly" ? "Switch to yearly and save $48" : null;
+  const nudge = billing === "weekly" ? "Switch to monthly and save 30% compared to weekly" : billing === "monthly" ? "Switch to yearly and save $48" : null;
 
   return (
     <>

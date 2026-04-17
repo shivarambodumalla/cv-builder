@@ -237,22 +237,22 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           <h3 className="font-semibold">Free plan includes</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <FileText className="h-4 w-4" /> 1 CV
+              <FileText className="h-4 w-4" /> 3 CVs
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <BarChart3 className="h-4 w-4" /> 3 ATS scans/month
+              <BarChart3 className="h-4 w-4" /> 10 ATS scans/week
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Briefcase className="h-4 w-4" /> 1 job match/month
+              <Briefcase className="h-4 w-4" /> 5 job matches/week
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Mail className="h-4 w-4" /> 1 cover letter/month
+              <Mail className="h-4 w-4" /> 5 cover letters/week
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Sparkles className="h-4 w-4" /> 5 AI rewrites/month
+              <Sparkles className="h-4 w-4" /> 25 AI rewrites/week
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Download className="h-4 w-4" /> 1 PDF download/week
+              <Download className="h-4 w-4" /> Unlimited PDF downloads (watermarked)
             </div>
           </div>
           <Button variant="outline" className="w-full" onClick={() => openUpgradeModal("generic")}>
@@ -269,19 +269,19 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
               <FileText className="h-4 w-4 text-primary" /> Unlimited CVs
             </div>
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-primary" /> 100 ATS scans/month
+              <BarChart3 className="h-4 w-4 text-primary" /> Unlimited ATS scans
             </div>
             <div className="flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-primary" /> 100 job matches/month
+              <Briefcase className="h-4 w-4 text-primary" /> Unlimited job matches
             </div>
             <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary" /> 100 cover letters/month
+              <Mail className="h-4 w-4 text-primary" /> Unlimited cover letters
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" /> 200 AI rewrites/month
+              <Sparkles className="h-4 w-4 text-primary" /> Unlimited AI rewrites
             </div>
             <div className="flex items-center gap-2">
-              <Download className="h-4 w-4 text-primary" /> Unlimited PDF downloads
+              <Download className="h-4 w-4 text-primary" /> Clean PDF exports (no watermark)
             </div>
           </div>
         </div>

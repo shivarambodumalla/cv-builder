@@ -35,7 +35,7 @@ const FAQS = [
   },
   {
     q: "Is there a free plan?",
-    a: "Yes. The free plan includes 1 CV, 3 ATS scans per week, 5 AI rewrites, and 1 watermarked PDF download per week. No credit card required to get started.",
+    a: "Yes. The free plan includes 3 CVs, 10 ATS scans, 25 AI rewrites, 5 job matches, and 5 cover letters every 7 days. All 12 templates and unlimited watermarked PDF downloads. No credit card required to get started.",
   },
 ];
 

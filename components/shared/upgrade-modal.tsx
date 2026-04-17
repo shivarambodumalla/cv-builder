@@ -17,10 +17,10 @@ const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: n
 
 const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
   cv_limit: { title: "You have 3 CVs", subtitle: "Upgrade to create unlimited CVs tailored for different roles.", icon: "crown" },
-  ats_limit: { title: "ATS scans used this week", subtitle: "Resets Monday — or upgrade for unlimited ATS analysis.", icon: "zap" },
-  rewrite_limit: { title: "AI rewrites used this week", subtitle: "Resets Monday — or upgrade for unlimited rewrites.", icon: "sparkles" },
-  job_match_limit: { title: "Job matches used this week", subtitle: "Resets Monday — or upgrade for unlimited matching.", icon: "sparkles" },
-  cover_letter_limit: { title: "Cover letters used this week", subtitle: "Resets Monday — or upgrade for unlimited letters.", icon: "sparkles" },
+  ats_limit: { title: "ATS scans used up", subtitle: "Resets in 7 days — or upgrade for unlimited ATS analysis.", icon: "zap" },
+  rewrite_limit: { title: "AI rewrites used up", subtitle: "Resets in 7 days — or upgrade for unlimited rewrites.", icon: "sparkles" },
+  job_match_limit: { title: "Job matches used up", subtitle: "Resets in 7 days — or upgrade for unlimited matching.", icon: "sparkles" },
+  cover_letter_limit: { title: "Cover letters used up", subtitle: "Resets in 7 days — or upgrade for unlimited letters.", icon: "sparkles" },
   fix_all_limit: { title: "Fix All uses reached", subtitle: "Resets Monday — or upgrade for unlimited AI fixes.", icon: "sparkles" },
   cv_tailor_limit: { title: "CV tailoring used this week", subtitle: "Resets Monday — or upgrade for unlimited tailoring.", icon: "sparkles" },
   offer_eval_limit: { title: "Offer evaluations used", subtitle: "Resets Monday — or upgrade for unlimited evaluations.", icon: "sparkles" },
@@ -178,7 +178,7 @@ export function UpgradeModal() {
               onClick={handleCheckout}
               disabled={checkoutLoading}
             >
-              {checkoutLoading ? "Processing..." : "Get Pro \u2014 $9/month"}
+              {checkoutLoading ? "Processing..." : `Get Pro \u2014 $${selected.sale}/${selected.per}`}
             </Button>
 
             <p className="text-center text-[11px] text-muted-foreground">

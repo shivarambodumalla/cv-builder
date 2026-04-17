@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { renderCvPdf } from "@/lib/pdf/render";
+import { renderHtmlToPdf } from "@/lib/pdf/html-to-pdf";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { getPlan, PLAN_LIMITS } from "@/lib/billing/limits";
 import { sendEmailAsync } from "@/lib/email/sender";
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   const design: ResumeDesignSettings = { ...DEFAULT_DESIGN, ...clientDesign };
 
   try {
-    const buffer = await renderCvPdf(content, design, watermark);
+    const buffer = await renderHtmlToPdf(content, design, watermark);
     const filename = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
 
     // Increment usage after success

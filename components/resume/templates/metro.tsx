@@ -122,143 +122,99 @@ export function MetroTemplate({
      ══════════════════════════════════════ */
 
   const sectionRenderers: Record<string, () => React.ReactNode> = {
-    contact: () => (
-      <div key="contact" style={{ fontFamily: "var(--resume-font)" }}>
-        {/* Target title above name */}
-        {visibleSections.includes("targetTitle") && targetTitle.title && (
-          <div
-            style={{
-              fontSize: "calc(var(--resume-body-size) + 3pt)",
-              fontWeight: 600,
-              color: "var(--resume-accent)",
-              marginBottom: "4px",
-            }}
-          >
-            {targetTitle.title}
-          </div>
-        )}
+    contact: () => {
+      const hasSkills = skills.categories.length > 0 && visibleSections.includes("skills");
 
-        {/* Name */}
-        <div
-          style={{
-            fontSize: "var(--resume-name-size)",
-            fontWeight: "var(--resume-name-weight)" as unknown as number,
-            color: "#0F172A",
-            letterSpacing: "-0.5px",
-            lineHeight: 1,
-            marginBottom: "12px",
-          }}
-        >
-          {contact.name}
-        </div>
-
-        {/* Contact items vertically listed with icon dots */}
-        {contactItems.length > 0 && (
-          <div>
-            {contactItems.map((item, i) => (
+      return (
+        <div key="contact" style={{ fontFamily: "var(--resume-font)" }}>
+          <div style={{ display: "flex", gap: "24px" }}>
+            {/* Left: Profile info */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {/* Name */}
               <div
-                key={i}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginBottom: "5px",
+                  fontSize: "var(--resume-name-size)",
+                  fontWeight: "var(--resume-name-weight)" as unknown as number,
+                  color: "#0F172A",
+                  letterSpacing: "-0.5px",
+                  lineHeight: 1,
+                  marginBottom: "4px",
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--resume-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                  {contactIcon(item.label)}
-                </svg>
-                <span
+                {contact.name}
+              </div>
+
+              {/* Target title */}
+              {visibleSections.includes("targetTitle") && targetTitle.title && (
+                <div
                   style={{
-                    fontSize: "var(--resume-body-size)",
-                    color: "#374151",
+                    fontSize: "calc(var(--resume-body-size) + 2pt)",
+                    fontWeight: 600,
+                    color: "var(--resume-accent)",
+                    marginBottom: "10px",
                   }}
                 >
-                  {item.value}
-                </span>
+                  {targetTitle.title}
+                </div>
+              )}
+
+              {/* Contact items */}
+              {contactItems.length > 0 && (
+                <div>
+                  {contactItems.map((item, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--resume-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                        {contactIcon(item.label)}
+                      </svg>
+                      <span style={{ fontSize: "var(--resume-body-size)", color: "#374151" }}>
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Skills */}
+            {hasSkills && (
+              <div style={{ width: "40%", flexShrink: 0 }}>
+                {renderSectionHeading("Skills")}
+                <div style={{ fontFamily: "var(--resume-font)" }}>
+                  {skills.categories.map((cat, ci) => (
+                    <div key={ci} style={{ marginBottom: "6px" }}>
+                      <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 700, color: "#111", marginBottom: "2px" }}>
+                        {cat.name}
+                      </div>
+                      <div style={{ fontSize: "calc(var(--resume-body-size) - 0.5pt)", color: "#374151", lineHeight: "var(--resume-line-spacing)" }}>
+                        {cat.skills.join(", ")}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            )}
           </div>
-        )}
-      </div>
-    ),
+        </div>
+      );
+    },
 
     /* targetTitle is rendered inline inside contact; skip standalone */
     targetTitle: () => null,
 
     summary: () => {
       if (!summary.content) return null;
-      const allSkills = skills.categories.flatMap((cat) => cat.skills);
-      const fewSkills = allSkills.length > 0 && allSkills.length <= 12 && visibleSections.includes("skills");
-
-      if (fewSkills) {
-        // Two-column: summary left, skills right
-        return (
-          <div key="summary">
-            {renderRule()}
-            <div style={{ display: "flex", gap: "24px" }}>
-              {/* Summary — left */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {renderSectionHeading("Profile")}
-                <p
-                  style={{
-                    fontFamily: "var(--resume-font)",
-                    fontSize: "var(--resume-body-size)",
-                    color: "#374151",
-                    lineHeight: "var(--resume-line-spacing)",
-                    margin: 0,
-                    overflowWrap: "break-word",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {summary.content}
-                </p>
-              </div>
-              {/* Skills — right */}
-              <div style={{ width: "38%", flexShrink: 0 }}>
-                {renderSectionHeading("Skills")}
-                <div style={{ fontFamily: "var(--resume-font)" }}>
-                  {allSkills.map((skill, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        marginBottom: "5px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "4px",
-                          border: "1.5px solid var(--resume-accent)",
-                          flexShrink: 0,
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: "var(--resume-body-size)",
-                          color: "#374151",
-                          overflowWrap: "break-word",
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {skill}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
       return (
         <div key="summary">
           {renderRule()}
+          {renderSectionHeading("Profile")}
           <p
             style={{
               fontFamily: "var(--resume-font)",
@@ -276,56 +232,8 @@ export function MetroTemplate({
       );
     },
 
-    skills: () => {
-      if (skills.categories.length === 0) return null;
-      const allSkills = skills.categories.flatMap((cat) => cat.skills);
-
-      // If few skills + summary exists, skills are rendered inside summary section
-      if (allSkills.length <= 12 && summary.content && visibleSections.includes("summary")) {
-        return null;
-      }
-
-      return (
-        <div key="skills">
-          {renderRule()}
-          {renderSectionHeading("Skills")}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0 24px", fontFamily: "var(--resume-font)" }}>
-            {allSkills.map((skill, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "5px",
-                  marginBottom: "5px",
-                  width: "calc(50% - 12px)",
-                }}
-              >
-                <div
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "4px",
-                    border: "1.5px solid var(--resume-accent)",
-                    flexShrink: 0,
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: "var(--resume-body-size)",
-                    color: "#374151",
-                    overflowWrap: "break-word",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {skill}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    },
+    /* Skills always rendered in the contact header */
+    skills: () => null,
 
     education: () => {
       if (education.items.length === 0) return null;

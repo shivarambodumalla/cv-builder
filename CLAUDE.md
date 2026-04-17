@@ -5,6 +5,10 @@
 - App URL: https://www.thecvedge.com
 - Admin Email: env ADMIN_EMAIL (comma-separated list)
 
+## Deployment Rules
+
+- **NEVER push to prod (git push) without explicit user approval.** Always ask before pushing. Commit locally, then wait for the user to confirm before running `git push`.
+
 ---
 
 ## Engineering & UX Governance
@@ -277,19 +281,23 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 ### Plans
 
-- Free: 3 CVs, 15 ATS scans, 20 job matches, 10 cover letters, 50 AI rewrites, 20 PDF downloads (per 7-day window), all 12 templates, no watermark
+- Free (7-day rolling window): 3 CVs, 10 ATS scans, 25 AI rewrites, 5 job matches, 5 cover letters, unlimited PDF downloads (watermarked), all 12 templates
+- Free (weekly Monday reset): 3 Fix All, 3 CV tailors, 5 offer evals, 3 portfolio scans, 10 story summaries, 5 interview preps
 - Pro: unlimited everything, all 12 templates, no watermark, 80+ score guarantee, priority support
 
-### Usage Window
+### Usage Windows
 
-- 7-day rolling window from usage_window_start
-- Columns: ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window
-- Auto-reset on window expiration
+Two reset mechanisms coexist:
+- **7-day rolling window** (from usage_window_start): ats_scans, job_matches, cover_letters, ai_rewrites, pdf_downloads
+- **Weekly Monday reset** (from week_reset_at): fix_all, cv_tailor, offer_eval, portfolio_scan, story_summary, interview_prep
+- Source of truth: `lib/billing/limits.ts` (PLAN_LIMITS + COLUMN_MAP)
+- Auto-reset on window/week expiration via checkLimit()
 
 ### Feature Gate (lib/billing/)
 
-- checkAndConsumeLimit(): atomic check + increment with .lt() to prevent race conditions
-- checkFeatureAccess(): wrapper that creates admin client
+- checkLimit(): check-only (does NOT increment counter), handles window/week resets
+- consumeLimit(): atomic increment with .lt() to prevent race conditions (call after successful AI response)
+- checkAndConsumeLimit(): backward-compat alias → calls checkLimit() only
 - Plan expiry: checked on every feature access, auto-downgrades if current_period_end passed
 
 ### Pricing

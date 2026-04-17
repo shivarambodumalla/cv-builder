@@ -35,7 +35,7 @@ const TEMPLATES = [
     cta_url: "{{appUrl}}/dashboard",
     body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:16px;">
   <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 10 ATS scans</td></tr>
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 20 AI rewrites</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 25 AI rewrites</td></tr>
   <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 5 job matches</td></tr>
   <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 5 cover letters</td></tr>
   <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 3 Fix All</td></tr>

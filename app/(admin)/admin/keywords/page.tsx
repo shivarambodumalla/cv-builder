@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Save, Trash2, X } from "lucide-react";
+import { Plus, Save, Search, Trash2, X } from "lucide-react";
 
 interface KeywordList {
   id: string;
@@ -64,6 +64,7 @@ function TagInput({
 
 export default function AdminKeywordsPage() {
   const [lists, setLists] = useState<KeywordList[]>([]);
+  const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<KeywordList | null>(null);
   const [editing, setEditing] = useState<KeywordList | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -157,7 +158,16 @@ export default function AdminKeywordsPage() {
 
       <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
         <div className="space-y-2">
-          {lists.map((l) => (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search roles..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          {lists.filter((l) => !search.trim() || l.role.toLowerCase().includes(search.trim().toLowerCase())).map((l) => (
             <button
               key={l.id} type="button" onClick={() => selectList(l)}
               className={`w-full rounded-lg border p-3 text-left text-sm transition-colors hover:bg-muted/50 ${selected?.id === l.id ? "border-primary bg-muted/50" : ""}`}
@@ -169,6 +179,9 @@ export default function AdminKeywordsPage() {
             </button>
           ))}
           {lists.length === 0 && <p className="text-sm text-muted-foreground">No roles configured yet.</p>}
+          {lists.length > 0 && search.trim() && lists.filter((l) => l.role.toLowerCase().includes(search.trim().toLowerCase())).length === 0 && (
+            <p className="text-sm text-muted-foreground">No roles match &quot;{search.trim()}&quot;</p>
+          )}
         </div>
 
         {editing ? (

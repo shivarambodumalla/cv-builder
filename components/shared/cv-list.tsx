@@ -249,25 +249,27 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
         </div>
       )}
 
-      {/* Welcome Banner */}
-      <div className="bg-primary rounded-2xl px-6 py-6 sm:py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
-        <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
-            {userName ? `Welcome back, ${userName}` : "Welcome back"}
-          </h2>
-          <p className="text-xs sm:text-sm text-white/60 mt-1">
-            You have {cvs.length} {cvs.length === 1 ? "resume" : "resumes"} · {readyStories} {readyStories === 1 ? "answer" : "answers"} interview-ready
-          </p>
+      {/* Welcome Banner — only when user has CVs */}
+      {cvs.length > 0 && (
+        <div className="bg-primary rounded-2xl px-6 py-6 sm:py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-6">
+          <div>
+            <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
+              {userName ? `Welcome back, ${userName}` : "Welcome back"}
+            </h2>
+            <p className="text-xs sm:text-sm text-white/60 mt-1">
+              You have {cvs.length} {cvs.length === 1 ? "resume" : "resumes"} · {readyStories} {readyStories === 1 ? "answer" : "answers"} interview-ready
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Link href="/interview-coach" className="bg-white/10 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4" /> Interview Coach
+            </Link>
+            <Link href="/upload-resume" data-testid="btn-create-resume" className="bg-success text-white font-semibold rounded-lg px-4 py-2 text-sm hover:bg-success/90 transition-colors flex items-center gap-1.5">
+              <Plus className="h-4 w-4" /> New Resume
+            </Link>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Link href="/interview-coach" className="bg-white/10 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors flex items-center gap-1.5">
-            <BookOpen className="h-4 w-4" /> Interview Coach
-          </Link>
-          <Link href="/upload-resume" data-testid="btn-create-resume" className="bg-success text-white font-semibold rounded-lg px-4 py-2 text-sm hover:bg-success/90 transition-colors flex items-center gap-1.5">
-            <Plus className="h-4 w-4" /> New Resume
-          </Link>
-        </div>
-      </div>
+      )}
 
       {/* Recent Resumes Header */}
       {cvs.length > 0 && (
@@ -406,10 +408,87 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
       )}
 
       {cvs.length === 0 && (
-        <div className="flex flex-col items-center text-center py-12">
-          <FileText className="mb-4 h-12 w-12 text-muted-foreground" />
-          <p className="text-lg font-medium">No resumes yet</p>
-          <p className="mt-1 text-sm text-muted-foreground">Create your first resume to get started.</p>
+        <div className="flex items-center justify-center py-4 sm:py-8">
+          <div className="relative overflow-hidden rounded-2xl border shadow-sm max-w-xl w-full">
+            <div className="h-1 bg-gradient-to-r from-[#065F46] via-[#34D399] to-[#065F46]" />
+
+            <div className="px-6 pt-6 pb-7 sm:px-10 sm:pt-8 sm:pb-9">
+              <div className="flex flex-col items-center gap-5">
+                {/* Illustration */}
+                <div className="rounded-xl bg-[#F0EDE6] dark:bg-[#065F46]/10 px-4 py-3 flex items-center justify-center">
+                  <svg width="230" height="170" viewBox="0 0 270 205" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="20" y="20" width="118" height="165" rx="10" fill="#F7F5F0" stroke="rgba(6,95,70,0.15)" strokeWidth="1"/>
+                    <rect x="20" y="20" width="118" height="38" rx="10" fill="#065F46"/>
+                    <rect x="20" y="46" width="118" height="12" fill="#065F46"/>
+                    <circle cx="45" cy="39" r="11" fill="rgba(255,255,255,0.15)"/>
+                    <rect x="63" y="32" width="50" height="5" rx="2.5" fill="rgba(255,255,255,0.6)"/>
+                    <rect x="63" y="42" width="35" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+                    <rect x="32" y="70" width="90" height="4" rx="2" fill="rgba(6,95,70,0.15)"/>
+                    <rect x="32" y="80" width="74" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
+                    <rect x="32" y="90" width="82" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
+                    <rect x="32" y="106" width="90" height="4" rx="2" fill="rgba(6,95,70,0.15)"/>
+                    <rect x="32" y="116" width="62" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
+                    <rect x="32" y="126" width="78" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
+                    <rect x="32" y="142" width="90" height="4" rx="2" fill="rgba(6,95,70,0.15)"/>
+                    <rect x="32" y="152" width="54" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
+                    <rect x="32" y="162" width="70" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
+                    <rect x="148" y="44" width="102" height="104" rx="12" fill="#fff" stroke="rgba(6,95,70,0.15)" strokeWidth="1"/>
+                    <circle cx="199" cy="84" r="27" fill="none" stroke="rgba(6,95,70,0.07)" strokeWidth="6"/>
+                    <circle cx="199" cy="84" r="27" fill="none" stroke="#065F46" strokeWidth="6" strokeDasharray="170" strokeDashoffset="14" strokeLinecap="round" transform="rotate(-90 199 84)"/>
+                    <text x="199" y="89" textAnchor="middle" fontSize="16" fontWeight="600" fill="#065F46" fontFamily="system-ui">92</text>
+                    <text x="199" y="134" textAnchor="middle" fontSize="8" fill="#78716C" fontFamily="system-ui">ATS Score</text>
+                    <rect x="148" y="158" width="56" height="17" rx="8.5" fill="#D1FAE5"/>
+                    <text x="176" y="170" textAnchor="middle" fontSize="7.5" fill="#065F46" fontFamily="system-ui" fontWeight="500">Leadership</text>
+                    <rect x="210" y="158" width="40" height="17" rx="8.5" fill="#D1FAE5"/>
+                    <text x="230" y="170" textAnchor="middle" fontSize="7.5" fill="#065F46" fontFamily="system-ui" fontWeight="500">Design</text>
+                    <rect x="148" y="180" width="44" height="17" rx="8.5" fill="#FEE2E2"/>
+                    <text x="170" y="192" textAnchor="middle" fontSize="7.5" fill="#991B1B" fontFamily="system-ui" fontWeight="500">Missing</text>
+                    <rect x="198" y="180" width="52" height="17" rx="8.5" fill="#D1FAE5"/>
+                    <text x="224" y="192" textAnchor="middle" fontSize="7.5" fill="#065F46" fontFamily="system-ui" fontWeight="500">Strategy</text>
+                  </svg>
+                </div>
+
+                {/* Content */}
+                <div className="text-center">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-1.5">
+                    {userName ? `Welcome, ${userName}!` : "Welcome!"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-5 max-w-sm mx-auto">
+                    75% of CVs get rejected by ATS before a recruiter sees them. Find out your score in under 3 minutes.
+                  </p>
+
+                  {/* Steps — horizontal */}
+                  <div className="flex items-center justify-center gap-4 sm:gap-6 mb-6">
+                    {[
+                      { num: "1", text: "Upload" },
+                      { num: "2", text: "Score" },
+                      { num: "3", text: "Fix & download" },
+                    ].map((step, i) => (
+                      <div key={step.num} className="flex items-center gap-1.5">
+                        {i > 0 && <span className="text-muted-foreground/30 -ml-3 mr-1">{">"}</span>}
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] text-[9px] font-bold text-white">
+                          {step.num}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{step.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Link
+                    href="/upload-resume"
+                    data-testid="btn-create-resume"
+                    className="inline-flex items-center justify-center rounded-lg bg-[#065F46] px-7 py-2.5 text-sm font-semibold text-white hover:bg-[#065F46]/90 transition-all hover:shadow-lg gap-2"
+                  >
+                    Upload CV
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </Link>
+                  <p className="text-[11px] text-muted-foreground/50 mt-2">Free. No credit card. 30 seconds.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

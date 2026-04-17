@@ -39,7 +39,7 @@ export function LedgerTemplate({
     return s && e ? `${s} – ${e}` : s || e;
   };
 
-  const LABEL_W = 100;
+  const LABEL_W = 120;
 
   /* ── Section row: full-width top rule, label left + content right ── */
   const renderSectionRow = (label: string, children: React.ReactNode) => (
@@ -58,6 +58,7 @@ export function LedgerTemplate({
               fontFamily: "var(--resume-font)",
               textTransform: "uppercase" as const,
               letterSpacing: 0.5,
+              whiteSpace: "nowrap" as const,
             }}
           >
             {label}

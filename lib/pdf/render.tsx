@@ -64,7 +64,9 @@ export async function renderCvPdf(
   const lineH = ds.lineSpacing || 1.2;
   const mx = Math.max((ds.marginX ?? 0.75), 0.5) * 72;  // Convert inches to points, min 0.5in
   const my = Math.max((ds.marginY ?? 0.5), 0.4) * 72;   // Convert inches to points, min 0.4in
-  const secSpacing = ds.sectionSpacing ?? 12;
+  // Scale section spacing down — react-pdf renders spacing ~1.5x larger than CSS px
+  const rawSecSpacing = ds.sectionSpacing ?? 12;
+  const secSpacing = Math.round(rawSecSpacing * 0.65);
   const dateFmt = ds.dateFormat || "short";
   const dateSep = "-";
   const bullet = BULLET_MAP[ds.bulletStyle] || "•";
@@ -89,7 +91,7 @@ export async function renderCvPdf(
   const nameStyle = { fontSize: namePt, fontFamily: nameWt >= 700 ? fontBold : font, lineHeight: 1.2, textAlign: align as "left", color: nameColor };
   const titleStyle = { fontSize: bodyPt + 2, fontFamily: titleWeight >= 600 ? fontBold : font, textAlign: align as "left", color: titleColor };
   const contactStyle = { fontSize: 9, fontFamily: font, color: "#555", textAlign: align as "left" };
-  const headingStyle = { fontSize: headingPt, fontFamily: headingWt >= 700 ? fontBold : font, letterSpacing: headingLetterSpacing, color: headingColor, borderBottomWidth: headingBorderWidth, borderBottomColor: headingBorderColor, paddingBottom: 3, marginBottom: 6 };
+  const headingStyle = { fontSize: headingPt, fontFamily: headingWt >= 700 ? fontBold : font, letterSpacing: headingLetterSpacing, color: headingColor, borderBottomWidth: headingBorderWidth, borderBottomColor: headingBorderColor, paddingBottom: 2, marginBottom: 4 };
   const bodyStyle = { fontSize: bodyPt, fontFamily: font, lineHeight: lineH, color: "#1a1a1a" };
   const boldStyle = { fontSize: bodyPt, fontFamily: fontBold, lineHeight: lineH, color: "#1a1a1a" };
   const dateStyle = { fontSize: 8.5, fontFamily: font, color: "#777", textAlign: "right" as const, minWidth: 90 };
@@ -151,7 +153,7 @@ export async function renderCvPdf(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function makeBullets(bullets: any[]) {
     return (bullets || []).filter(Boolean).map((b: string, j: number) =>
-      e(View, { key: `b${j}`, style: { flexDirection: "row", marginLeft: 8, marginBottom: 1.5 } },
+      e(View, { key: `b${j}`, style: { flexDirection: "row", marginLeft: 8, marginBottom: 0.5 } },
         bullet ? e(Text, { style: { width: 10, ...bodyStyle } }, bullet) : null,
         e(Text, { style: { flex: 1, ...bodyStyle, color: "#444" } }, b)
       )
@@ -185,7 +187,7 @@ export async function renderCvPdf(
     }
     if (key === "experience" && data.experience?.items?.length) {
       addSection("experience", "Experience", data.experience.items.map((x, i) =>
-        e(View, { key: `exp${i}`, style: { marginBottom: 8 }, minPresenceAhead: 40 },
+        e(View, { key: `exp${i}`, style: { marginBottom: 6 }, minPresenceAhead: 40 },
           e(View, { style: { flexDirection: "row", justifyContent: "space-between", marginBottom: 1 } },
             e(View, { style: { flex: 1, paddingRight: 8 } },
               e(Text, { style: boldStyle }, x.role || ""),
@@ -199,7 +201,7 @@ export async function renderCvPdf(
     }
     if (key === "education" && data.education?.items?.length) {
       addSection("education", "Education", data.education.items.map((x, i) =>
-        e(View, { key: `edu${i}`, style: { flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }, wrap: false, minPresenceAhead: 30 },
+        e(View, { key: `edu${i}`, style: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 }, wrap: false, minPresenceAhead: 30 },
           e(View, { style: { flex: 1, paddingRight: 8 } },
             e(Text, { style: boldStyle }, (x.degree || "") + (x.field ? " in " + x.field : "")),
             e(Text, { style: { ...bodyStyle, color: "#555" } }, x.institution || "")
@@ -275,7 +277,7 @@ export async function renderCvPdf(
   }
 
   const doc = e(Document, null,
-    e(Page, { size: paper, style: { paddingTop: my, paddingBottom: my + 10, paddingLeft: mx, paddingRight: mx, fontFamily: font, fontSize: bodyPt, lineHeight: lineH, color: "#1a1a1a" } },
+    e(Page, { size: paper, style: { paddingTop: my, paddingBottom: my, paddingLeft: mx, paddingRight: mx, fontFamily: font, fontSize: bodyPt, lineHeight: lineH, color: "#1a1a1a" } },
       ...children
     )
   );

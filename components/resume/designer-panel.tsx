@@ -50,7 +50,7 @@ const TEMPLATES: { name: TemplateName; label: string }[] = [
   { name: "two-column", label: "Horizon" },
   { name: "divide", label: "Divide" },
   { name: "folio", label: "Folio" },
-  { name: "metro", label: "Metro" },
+  // { name: "metro", label: "Metro" },  // hidden — redesign in progress
   { name: "harvard", label: "Harvard" },
   { name: "ledger", label: "Ledger" },
 ];
@@ -1019,20 +1019,44 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
         <div className="grid grid-cols-2 gap-3">
           {TEMPLATES.map((t) => {
             const selected = design.template === t.name;
+            const imgMap: Record<string, string> = {
+              classic: "classic.jpg",
+              sharp: "sharp.jpg",
+              minimal: "minimal.jpg",
+              executive: "Executive.jpg",
+              sidebar: "slate.jpg",
+              "sidebar-right": "onyx.jpg",
+              "two-column": "horizon.jpg",
+              divide: "divide.jpg",
+              folio: "folio.jpg",
+              metro: "metro.jpg",
+              harvard: "harward.jpg",
+              ledger: "ledger.jpg",
+            };
+            const imgSrc = imgMap[t.name];
             return (
               <button
                 key={t.name}
                 type="button"
                 className={cn(
-                  "relative rounded-lg border p-1 text-left transition-all",
+                  "relative rounded-lg border p-1 text-left transition-all overflow-hidden",
                   selected && "ring-2 ring-primary"
                 )}
                 onClick={() => update("template", t.name)}
               >
-                <div className="h-20 rounded bg-muted">
-                  <TemplatePreview template={t.name} />
-                </div>
-                <p className="mt-1 text-center text-xs font-medium">{t.label}</p>
+                {imgSrc ? (
+                  <img
+                    src={`/img/templates/${imgSrc}`}
+                    alt={t.label}
+                    className="w-full rounded"
+                    style={{ aspectRatio: "210/240", objectFit: "cover", objectPosition: "top" }}
+                  />
+                ) : (
+                  <div className="h-28 rounded bg-muted">
+                    <TemplatePreview template={t.name} />
+                  </div>
+                )}
+                <p className="mt-1.5 text-center text-xs font-medium">{t.label}</p>
               </button>
             );
           })}

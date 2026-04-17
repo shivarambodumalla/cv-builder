@@ -68,7 +68,7 @@ export default async function HomePage() {
     "@type": "SoftwareApplication",
     name: "CVEdge",
     url: "https://thecvedge.com",
-    description: "Free AI-powered CV optimisation platform. Fix your CV in 8 minutes. 90+ ATS score guaranteed.",
+    description: "Free AI-powered CV optimisation platform. Fix your CV in 8 minutes. 80+ ATS score guaranteed.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
@@ -82,7 +82,7 @@ export default async function HomePage() {
     mainEntity: [
       { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software automatically filters CVs before a human recruiter reads them. 75% of CVs are rejected by ATS before anyone sees them." } },
       { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for job seekers. All core features including ATS scoring, AI rewrites, and templates are free." } },
-      { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge guarantees a 90+ ATS score after using Fix All with AI. If you do not reach 90+, contact us within 14 days for a full refund." } },
+      { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge guarantees an 80+ ATS score after using Fix All with AI. If you do not reach 80+, contact us within 14 days for a full refund." } },
     ],
   };
 
