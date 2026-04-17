@@ -6,6 +6,7 @@ import { AdminSidebarNav } from "./admin-sidebar-nav";
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/analytics", label: "Analytics" },
+  { href: "/admin/funnel", label: "Funnel" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/pricing", label: "Pricing" },
   { href: "/admin/prompts", label: "Prompts" },
