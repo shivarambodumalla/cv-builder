@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 // score-ring no longer used — score card is inline SVG
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import {
   RefreshCw,
   ChevronDown,
@@ -22,6 +23,7 @@ import {
   Sparkles,
   Wand2,
   Shield,
+  ArrowRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
@@ -34,6 +36,7 @@ import { ConfidenceChip } from "@/components/shared/confidence-chip";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
 import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
 import { useActivity } from "@/lib/analytics/useActivity";
+import { JobsWidget } from "@/components/jobs/jobs-widget";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
 
@@ -374,11 +377,25 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
     return { section: "experience" };
   }
 
+  function scrollPanelToTop() {
+    // Walk up from any element inside this panel to find the scrollable container
+    const el = document.querySelector("[data-panel='ats']");
+    let parent = el?.parentElement;
+    while (parent) {
+      if (parent.scrollHeight > parent.clientHeight) {
+        parent.scrollTo({ top: 0, behavior: "smooth" });
+        break;
+      }
+      parent = parent.parentElement;
+    }
+  }
+
   async function handleAnalyse() {
     setLoading(true);
     setCurrentStep("reading");
     setError("");
     setErrorCode("");
+    scrollPanelToTop();
 
     try {
       const res = await fetch("/api/cv/analyse", {
@@ -452,7 +469,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const confidenceValue = (report?.confidence ?? "medium") as "high" | "medium" | "low";
 
   return (
-    <div>
+    <div data-panel="ats">
       {/* ── PART 2: Header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
         <div>
@@ -606,6 +623,18 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </button>
           </div>
 
+          {/* Jobs link */}
+          <div className="mb-3 flex justify-start">
+            <Link
+              href="/my-jobs"
+              className="inline-flex items-center gap-1 text-[12px] font-medium hover:underline"
+              style={{ color: "#065F46" }}
+            >
+              View jobs matching your profile
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+
           {/* Paywall */}
           {!isPaidContent && (
             <div style={{ marginBottom: "12px" }}>
@@ -730,6 +759,9 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
               </button>
             </div>
           )}
+
+          {/* Matching jobs widget */}
+          <JobsWidget cvId={cvId} cvTitle={content?.targetTitle?.title || content?.experience?.items?.[0]?.role || undefined} />
         </>
       )}
 

@@ -25,9 +25,10 @@ import {
   Sun,
   Moon,
   Monitor,
-  LayoutDashboard,
+  Heart,
   CreditCard,
   Shield,
+  Settings,
 } from "lucide-react";
 
 interface AppHeaderProps {
@@ -110,13 +111,17 @@ export function AppHeader({ user }: AppHeaderProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/dashboard")}>
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                Dashboard
+              <DropdownMenuItem onClick={() => router.push("/my-jobs/saved")}>
+                <Heart className="mr-2 h-4 w-4" />
+                Saved Jobs
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/billing")}>
                 <CreditCard className="mr-2 h-4 w-4" />
                 Billing
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/settings")}>
+                <Settings className="mr-2 h-4 w-4" />
+                Preferences
               </DropdownMenuItem>
               {user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
                 <DropdownMenuItem onClick={() => router.push("/admin")}>

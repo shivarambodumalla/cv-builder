@@ -1,85 +1,63 @@
-"use client";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Upload, BarChart2, Target } from "lucide-react";
+import { JobSearchForm } from "./job-search-form";
+import { SignInCTA } from "./sign-in-cta";
+import { JobsSignInModal } from "./jobs-signin-modal";
+import { BrowseRoles } from "@/components/jobs/browse-roles";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Target, Bell, Check, Loader2 } from "lucide-react";
+export const dynamic = "force-dynamic";
 
-export default function JobsPage() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+export const metadata: Metadata = {
+  title: "Find Jobs That Match Your CV | CVEdge",
+  description: "Search thousands of jobs and see your ATS match score before you apply. Sign in free to unlock your scores.",
+  openGraph: { title: "Find Jobs That Match Your CV | CVEdge", description: "Search thousands of jobs and see your ATS match score before you apply.", url: "https://thecvedge.com/jobs" },
+};
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setStatus("loading");
-    try {
-      const res = await fetch("/api/waitlist/jobs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setStatus(res.ok ? "success" : "error");
-    } catch {
-      setStatus("error");
-    }
-  }
+
+export default async function JobsPage({ searchParams }: { searchParams: Promise<{ q?: string; location?: string }> }) {
+  const params = await searchParams;
+  const query = params.q?.trim() || "";
+  const location = params.location?.trim() || "";
+  const hasSearched = !!query;
 
   return (
-    <div className="container mx-auto px-4 py-20 md:py-28">
-      {/* Header */}
-      <div className="mx-auto max-w-2xl text-center mb-16">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <h1 className="text-3xl font-bold tracking-tight">Jobs</h1>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Coming Soon</span>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto max-w-5xl px-4 pt-8 pb-16">
+        {/* Search card */}
+        <div className="rounded-2xl bg-[#F0EDE6] dark:bg-muted/30 p-5 sm:p-6 space-y-4 mb-8">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">Find jobs that match your CV</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">Search any role — sign in to see your match score for every listing</p>
+          </div>
+          <JobSearchForm defaultQuery={query} defaultLocation={location} />
         </div>
-        <p className="text-lg font-medium mt-2">Find roles that match your optimised CV</p>
-        <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
-          CVEdge will match your CV to thousands of roles, show your estimated ATS score for each, and help you apply with one click.
-        </p>
-      </div>
 
-      {/* Feature preview cards */}
-      <div className="mx-auto max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-        {[
-          { icon: Search, title: "Smart job matching", body: "See your ATS score for every role before you apply" },
-          { icon: Target, title: "Tailored applications", body: "Auto-tailor your CV for each role with one click" },
-          { icon: Bell, title: "Job alerts", body: "Get notified when roles matching your profile appear" },
-        ].map((f) => (
-          <div key={f.title} className="rounded-xl border bg-card p-5 text-center">
-            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <f.icon className="h-5 w-5" />
-            </div>
-            <p className="text-sm font-semibold">{f.title}</p>
-            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{f.body}</p>
-          </div>
-        ))}
-      </div>
+        {hasSearched && <JobsSignInModal query={query} location={location} />}
+        {!hasSearched && <SignInCTA />}
 
-      {/* Waitlist */}
-      <div className="mx-auto max-w-md text-center">
-        <p className="text-sm font-medium mb-3">Be the first to know when Jobs launches</p>
-        {status === "success" ? (
-          <div className="flex items-center justify-center gap-2 rounded-lg bg-success/10 p-4">
-            <Check className="h-5 w-5 text-success" />
-            <p className="text-sm font-medium text-success">You&apos;re on the list!</p>
+        {/* How it works */}
+        <section className="mt-16">
+          <h2 className="text-xl font-bold text-center mb-8">How it works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { icon: Upload, step: "1", title: "Upload your CV", body: "Paste or upload your CV once. CVEdge parses and optimises it automatically." },
+              { icon: BarChart2, step: "2", title: "See your match %", body: "Every job shows an ATS match score so you know your chances before you apply." },
+              { icon: Target, step: "3", title: "Apply to the best", body: "Focus your effort on the roles you are most likely to get — and tailor in one click." },
+            ].map((item) => (
+              <div key={item.step} className="rounded-xl border bg-card p-6 text-center">
+                <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <item.icon className="h-5 w-5" />
+                </div>
+                <p className="text-xs font-semibold text-primary mb-1">Step {item.step}</p>
+                <p className="font-semibold text-sm mb-1.5">{item.title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{item.body}</p>
+              </div>
+            ))}
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <Input
-              type="email"
-              placeholder="you@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1"
-              required
-            />
-            <Button type="submit" disabled={status === "loading"}>
-              {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Join waitlist"}
-            </Button>
-          </form>
-        )}
-        {status === "error" && <p className="text-xs text-error mt-2">Something went wrong. Try again.</p>}
+        </section>
+
+        <BrowseRoles />
       </div>
     </div>
   );

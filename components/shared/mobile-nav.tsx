@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, X, FileText, LogOut } from "lucide-react";
+import { Menu, X, FileText, LogOut, Heart, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -58,14 +58,20 @@ export function MobileNav() {
               </Link>
             </>
           )}
-          <span className="flex items-center rounded-md px-3 py-2.5 text-sm font-medium cursor-default">
-            Jobs<span className="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>
-          </span>
+          <Link href={loggedIn ? "/my-jobs" : "/jobs"} onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+            Jobs
+          </Link>
           <Link href="/pricing" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
             Pricing
           </Link>
           {loggedIn ? (
             <div className="pt-2 border-t space-y-1">
+              <Link href="/my-jobs/saved" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                <Heart className="h-4 w-4" /> Saved Jobs
+              </Link>
+              <Link href="/settings" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                <Settings className="h-4 w-4" /> Preferences
+              </Link>
               {!isPro && (
                 <Link href="/pricing" onClick={() => setOpen(false)} className="flex w-full items-center gap-2 rounded-md bg-[#065F46] px-3 py-2.5 text-sm font-semibold text-white">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>

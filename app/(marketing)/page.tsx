@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
   BarChart3,
+  Briefcase,
   Brain,
   Check,
   Download,
@@ -27,8 +28,8 @@ import AiRewriteVisual from "@/components/marketing/ai-rewrite-visual";
 import JobMatchVisual from "@/components/marketing/job-match-visual";
 
 export const metadata: Metadata = {
-  title: "Free ATS Resume Checker — Fix Your CV in 8 Minutes",
-  description: "CVEdge finds exactly why your CV gets rejected by ATS software and fixes it with AI. Free forever. Used by job seekers in 40+ countries.",
+  title: "Free ATS Resume Checker & AI Job Search — Fix Your CV in 8 Minutes",
+  description: "CVEdge finds exactly why your CV gets rejected by ATS software and fixes it with AI. Free job search with match scores for every role. Used by job seekers in 40+ countries.",
   alternates: { canonical: "https://thecvedge.com" },
 };
 
@@ -48,6 +49,7 @@ const COMPARISON = [
   { feature: "AI bullet rewrite", us: "4 modes", them: "Not available" },
   { feature: "Real-time score updates", us: "As you type", them: "Not available" },
   { feature: "Job description matching", us: "Yes", them: "Not available" },
+  { feature: "AI job search with match scores", us: "Free", them: "Not available" },
   { feature: "Cover letter generation", us: "Yes", them: "Not available" },
   { feature: "Price to start", us: "Free", them: "$20-30/month" },
 ];
@@ -73,7 +75,7 @@ export default async function HomePage() {
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
     aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "124" },
-    featureList: ["ATS Score Analysis", "AI CV Rewriting", "Job Match Scoring", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
+    featureList: ["ATS Score Analysis", "AI CV Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
   };
 
   const faqJsonLd = {
@@ -83,6 +85,7 @@ export default async function HomePage() {
       { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software automatically filters CVs before a human recruiter reads them. 75% of CVs are rejected by ATS before anyone sees them." } },
       { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for job seekers. All core features including ATS scoring, AI rewrites, and templates are free." } },
       { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge guarantees an 80+ ATS score after using Fix All with AI. If you do not reach 80+, contact us within 14 days for a full refund." } },
+      { "@type": "Question", name: "Does CVEdge have a job search?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge includes a free AI job search that matches jobs to your CV. Every listing shows a match score so you apply to the right roles." } },
     ],
   };
 
@@ -360,12 +363,72 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ─── AI JOB SEARCH ─── */}
+      <section className="py-20 md:py-28">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
+              {/* Visual — left */}
+              <div className="order-2 lg:order-1">
+                <div className="rounded-2xl bg-[#F7F5F0] dark:bg-card border p-5 space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-[#0C1A0E] dark:text-foreground">Jobs matching your profile</p>
+                    <span className="text-[10px] text-muted-foreground">20 results</span>
+                  </div>
+                  {[
+                    { title: "Senior Frontend Engineer", company: "Google", location: "Remote, US", score: 94, color: "#DCFCE7", textColor: "#065F46" },
+                    { title: "Full Stack Developer", company: "Stripe", location: "San Francisco, CA", score: 87, color: "#D1FAE5", textColor: "#065F46" },
+                    { title: "React Engineer", company: "Vercel", location: "Remote", score: 72, color: "#D1FAE5", textColor: "#065F46" },
+                  ].map((job) => (
+                    <div key={job.title} className="flex items-center gap-3 rounded-xl bg-white dark:bg-background border p-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46] text-[10px] font-bold text-white">
+                        {job.company.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold truncate">{job.title}</p>
+                        <p className="text-[10px] text-muted-foreground">{job.company} &middot; {job.location}</p>
+                      </div>
+                      <span className="shrink-0 rounded-lg px-2 py-1 text-[10px] font-bold" style={{ backgroundColor: job.color, color: job.textColor }}>
+                        {job.score}% match
+                      </span>
+                    </div>
+                  ))}
+                  <p className="text-center text-[10px] text-muted-foreground pt-1">Personalised to your CV, skills, and location preferences</p>
+                </div>
+              </div>
+              {/* Text — right */}
+              <div className="order-1 lg:order-2">
+                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Free AI Job Search</span>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Find jobs that match your CV — for free</h2>
+                <p className="mt-4 text-muted-foreground leading-relaxed">Stop scrolling through hundreds of irrelevant listings. CVEdge matches jobs to your CV and shows a match score for every role — so you only apply where you have the best chance.</p>
+                <ul className="mt-6 space-y-4">
+                  {[
+                    "AI match score for every listing based on your CV skills and experience",
+                    "Filter by location, job type, salary, and remote/on-site",
+                    "Save jobs and track applications. Apply with one click",
+                    "Personalised to your preferred locations and career level",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </div>
+                      <span className="text-sm leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button className="mt-6" asChild><Link href="/jobs">Search jobs free</Link></Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── FEATURES GRID ─── */}
       <section id="features" className="scroll-mt-16">
         <div className="container mx-auto px-4 py-20 md:py-28">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Everything you need to go from application to offer letter</h2>
-            <p className="mt-4 text-muted-foreground">10 tools in one place. Upload your CV and get started in 60 seconds.</p>
+            <p className="mt-4 text-muted-foreground">All the tools in one place. Upload your CV and get started in 60 seconds.</p>
           </div>
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -375,7 +438,8 @@ export default async function HomePage() {
               { icon: PenTool, title: "AI Bullet Rewrite", desc: "Rewrite any bullet in 4 modes: ATS, Impact, Concise, Grammar. Refine with natural language." },
               { icon: Target, title: "Job Matching", desc: "Paste a job description, get a match score, see missing keywords, and fix gaps instantly." },
               { icon: Mail, title: "Cover Letters", desc: "Generate tailored cover letters in 3 tones that reference your actual experience and the role." },
-              { icon: FileText, title: "5 Pro Templates", desc: "Classic, Sharp, Minimal, Executive, Sidebar. All designed to pass ATS and look professional." },
+              { icon: Briefcase, title: "Free AI Job Search", desc: "Search thousands of jobs matched to your CV. See a match score for every listing before you apply." },
+              { icon: FileText, title: "12 Templates", desc: "Classic, Sharp, Minimal, Executive, and 8 more. All designed to pass ATS and look professional." },
               { icon: Download, title: "PDF Export", desc: "Download clean, formatted PDFs ready to send. Pro users get watermark-free exports." },
               { icon: Zap, title: "Real-time Scoring", desc: "Your ATS score updates as you type. See estimated impact before you re-analyse." },
               { icon: Brain, title: "Smart Add Keywords", desc: "Tap any missing keyword to add it to your skills section instantly. No copy-paste." },

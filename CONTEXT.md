@@ -479,3 +479,98 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - Maintain hierarchy via spacing + typography
 - Touch targets: minimum 44x44px on mobile (sm:min-w-0 for desktop)
 - After code changes: always kill dev server + rm -rf .next before restart (prevents stale chunk 404s)
+
+---
+
+## Jobs Feature
+
+### Adzuna API
+- App ID: stored in ADZUNA_APP_ID env
+- App Key: stored in ADZUNA_APP_KEY env
+- Base URL: https://api.adzuna.com/v1/api/jobs
+- Cache: 30 minutes per search query
+- Default country: us
+- Results per page: 20 (widget: 5)
+
+### Jobs page routes
+- Authenticated: /jobs (app/(app)/jobs/page.tsx)
+- Saved jobs: /jobs/saved (app/(app)/jobs/saved/page.tsx)
+- Public (marketing): app/(marketing)/jobs/page.tsx
+- Role pages: app/(marketing)/jobs/[role]/page.tsx
+
+### Key files
+- lib/jobs/adzuna.ts — API client
+- lib/jobs/matcher.ts — Matching engine
+- lib/jobs/extract-cv-profile.ts — CV profile extractor
+- components/jobs/job-card.tsx — Job card component
+- components/jobs/preferred-locations-modal.tsx — First visit modal
+- components/jobs/jobs-widget.tsx — Mini job cards in Match panel
+- app/(app)/jobs/jobs-content.tsx — Main authenticated jobs page content
+
+### Database tables
+- job_clicks — PPC click tracking
+- saved_jobs — User saved jobs
+- preferred_locations — User location prefs
+- profiles.preferred_locations_set — First visit modal flag
+- profiles.open_to_remote — Remote work preference
+- profiles.user_country — For location-based job priority
+- profiles.user_city — For local jobs first
+
+### Matching engine logic
+- Two search sets: bestMatches (best matches) and moreJobs (skill matches)
+- Relevance score 0-100: Title (0-30) + Skills (0-40) + Location (0-20) + Recency (0-10)
+- Seniority levels: junior/mid/senior/staff/executive
+- Title expansion: never show roles 2+ levels below current seniority
+- Location priority: preferred > user city > remote > anywhere
+
+### Revenue tracking
+- Every Apply click -> job_clicks table
+- source field: 'app' | 'email_weekly' | 'widget'
+- Estimated CPC: $0.15 avg
+- Revenue = job_clicks count x 0.15
+- Admin dashboard: /admin (Jobs Revenue section)
+
+### SEO role pages
+10 static role pages with ISR revalidate every 24 hours:
+software-engineer, product-manager, ux-designer, data-scientist, marketing-manager, devops-engineer, frontend-developer, backend-developer, machine-learning-engineer, business-analyst
+
+### Preferred locations onboarding
+- Modal shows when: profiles.preferred_locations_set = false
+- Shows once only (Skip also sets flag)
+- User can save up to 5 locations
+- Editable in profile settings
+
+### Job card design tokens
+Match badge colors:
+- 90+: bg #DCFCE7 text #065F46
+- 70-89: bg #D1FAE5 text #065F46
+- 50-69: bg #FEF3C7 text #92400E
+- Below 50: bg #FEE2E2 text #991B1B
+
+### Jobs billing
+- Jobs tab: unlimited (free forever, no gate)
+- Job Apply clicks: unlimited (free)
+- Saved jobs: unlimited (free)
+
+### Jobs test suites
+- jobs — main jobs page + interactions (tests/e2e/jobs-flow.spec.ts)
+- jobs_seo — public + role SEO pages (tests/e2e/jobs-flow.spec.ts)
+- jobs_widget — widget in match panel (tests/e2e/jobs-flow.spec.ts)
+- jobs_api — API route tests (tests/e2e/jobs-api.spec.ts)
+
+### Jobs data-testid attributes
+- job-card — each job card wrapper
+- apply-btn — Apply button on job card
+- save-btn — Save/unsave button on job card
+- cv-selector — CV dropdown on jobs page
+- jobs-filters — filter bar wrapper
+- jobs-search — keyword search input
+- jobs-widget — widget wrapper in match panel
+- jobs-widget-card — each mini card in widget
+
+### Jobs-specific coding rules
+- Never hardcode Adzuna credentials — always use process.env
+- Cache all Adzuna requests 30 mins minimum
+- Always handle Adzuna API errors silently — never break UI
+- Track every Apply click before opening URL
+- Preferred locations modal must show before jobs on first visit

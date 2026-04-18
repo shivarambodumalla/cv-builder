@@ -86,6 +86,26 @@ const TEST_CASES = [
   { suite: "Journey: Errors", name: "API 502 shows error not blank", description: "Mock 502 on ATS, verify error state", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
   { suite: "Journey: Errors", name: "Network error doesn't crash", description: "Abort job match request, verify no crash", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
   { suite: "Journey: Errors", name: "Fix All error recovers", description: "Mock Fix All 502, verify recovery", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
+  // Jobs Feature
+  { suite: "Jobs", name: "Jobs page loads with listings", description: "Auth user visits /jobs, page loads with job cards, CV selector, and filters bar", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Preferred locations modal on first visit", description: "User with preferred_locations_set=false sees modal before listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Job card renders all fields", description: "Job card shows match badge, title, company, location, salary, actions", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Apply button tracks click", description: "Clicking Apply sends POST to /api/jobs/track-click and opens new tab", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Save job toggles correctly", description: "Save fills heart, unsave restores outline", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "CV selector fetches new jobs", description: "Selecting different CV reloads job listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Keyword filter works", description: "Typing keyword filters job cards to matching listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Remote filter works", description: "Selecting Remote type filters to remote listings only", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Saved jobs page shows saved jobs", description: "User visits /jobs/saved and sees previously saved jobs", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs", name: "Jobs visible in app navigation", description: "Jobs nav item present for authenticated users", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  // Jobs SEO
+  { suite: "Jobs SEO", name: "Public /jobs page accessible without login", description: "Logged out user visits /jobs, page loads with listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  { suite: "Jobs SEO", name: "Role SEO page loads", description: "Visit /jobs/software-engineer, H1 contains role, jobs visible", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  // Jobs Widget
+  { suite: "Jobs Widget", name: "Top 5 jobs widget in job match panel", description: "Widget shows 5 mini job cards below match section", spec_file: "tests/e2e/jobs-flow.spec.ts" },
+  // Jobs API
+  { suite: "Jobs API", name: "Search returns results", description: "GET /api/jobs/search returns bestMatches and moreJobs arrays", spec_file: "tests/e2e/jobs-api.spec.ts" },
+  { suite: "Jobs API", name: "Track click saves to DB", description: "POST /api/jobs/track-click returns ok:true", spec_file: "tests/e2e/jobs-api.spec.ts" },
+  { suite: "Jobs API", name: "Save and unsave job", description: "POST /api/jobs/save then DELETE /api/jobs/save toggles correctly", spec_file: "tests/e2e/jobs-api.spec.ts" },
 ];
 
 async function seed() {

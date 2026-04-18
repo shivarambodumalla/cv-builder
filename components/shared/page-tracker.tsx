@@ -11,6 +11,7 @@ const PAGE_NAMES: Record<string, string> = {
   "/interview-coach": "Opened interview coach",
   "/stories": "Opened interview coach",
   "/jobs": "Opened jobs page",
+  "/my-jobs": "Opened jobs page",
   "/profile": "Opened profile page",
   "/billing": "Opened billing page",
   "/upload-resume": "Opened upload page",

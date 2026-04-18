@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, LayoutGrid, CreditCard, ChevronRight } from "lucide-react";
+import { LogOut, Heart, CreditCard, ChevronRight, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface UserMenuProps {
@@ -97,13 +97,17 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
 
         {/* Menu items */}
         <div className="py-1">
-          <DropdownMenuItem onClick={() => router.push("/dashboard")} className="px-4 py-2 cursor-pointer">
-            <LayoutGrid className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
-            <span className="text-[13px]">Dashboard</span>
+          <DropdownMenuItem onClick={() => router.push("/my-jobs/saved")} className="px-4 py-2 cursor-pointer">
+            <Heart className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
+            <span className="text-[13px]">Saved Jobs</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/billing")} className="px-4 py-2 cursor-pointer">
             <CreditCard className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
             <span className="text-[13px]">Billing</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/settings")} className="px-4 py-2 cursor-pointer">
+            <Settings className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
+            <span className="text-[13px]">Preferences</span>
           </DropdownMenuItem>
         </div>
 

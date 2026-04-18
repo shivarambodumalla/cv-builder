@@ -20,6 +20,24 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: "User is not on Pro plan" }, { status: 400 });
   }
 
+  // Cancel on Lemon Squeezy if there's a real subscription
+  const { data: sub } = await supabase
+    .from("profiles")
+    .select("subscription_id")
+    .eq("id", id)
+    .single();
+
+  if (sub?.subscription_id && !sub.subscription_id.startsWith("admin_grant_")) {
+    try {
+      const { cancelSubscription } = await import("@lemonsqueezy/lemonsqueezy.js");
+      const { configureLemonSqueezy } = await import("@/lib/lemonsqueezy");
+      configureLemonSqueezy();
+      await cancelSubscription(sub.subscription_id);
+    } catch (err) {
+      console.error("[admin/suspend] Lemon Squeezy cancel failed:", err);
+    }
+  }
+
   // Suspend: revoke Pro, set to free
   await supabase.from("profiles").update({
     plan: "free",

@@ -31,6 +31,7 @@ import { SalaryInsights } from "@/components/resume/salary-insights";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
 import { Wand2, BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { JobsWidget } from "@/components/jobs/jobs-widget";
 
 /* ── Types ─────────────────────────────────────────── */
 
@@ -98,6 +99,7 @@ export function JobMatchPanel({
   initialJobDescription,
   initialCompany,
   initialJobTitle,
+  content,
   result,
   onResult,
   onLimitReached,
@@ -110,6 +112,18 @@ export function JobMatchPanel({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  function scrollPanelToTop() {
+    const el = document.querySelector("[data-panel='job-match']");
+    let parent = el?.parentElement;
+    while (parent) {
+      if (parent.scrollHeight > parent.clientHeight) {
+        parent.scrollTo({ top: 0, behavior: "smooth" });
+        break;
+      }
+      parent = parent.parentElement;
+    }
+  }
+
   async function handleAnalyse() {
     if (jobDescription.length < 50) {
       setError("Job description must be at least 50 characters");
@@ -119,6 +133,7 @@ export function JobMatchPanel({
     setLoading(true);
     setError("");
     onAnalysing?.(true);
+    scrollPanelToTop();
 
     try {
       const res = await fetch("/api/cv/job-match", {
@@ -159,7 +174,7 @@ export function JobMatchPanel({
   }
 
   return (
-    <div className="space-y-4">
+    <div data-panel="job-match" className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label className="text-xs">Company</Label>
@@ -201,6 +216,13 @@ export function JobMatchPanel({
         </Button>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
+
+      {/* Jobs widget — show matching jobs below JD form */}
+      <JobsWidget
+        cvId={cvId}
+        cvTitle={jobTitle || content?.targetTitle?.title || content?.experience?.items?.[0]?.role || undefined}
+        jdKeywords={jobDescription.length > 10 ? [jobTitle || ""].filter(Boolean) : undefined}
+      />
     </div>
   );
 }
@@ -506,6 +528,18 @@ export function JobMatchRightPanel({
           <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Exp. fit</div>
         </div>
       </div>
+
+      {/* Jobs Widget */}
+      <JobsWidget
+        cvId={cvId}
+        cvTitle={jobTitle}
+        jdKeywords={kwCat?.keywords_matched?.slice(0, 3)}
+        skills={
+          content?.skills?.categories
+            ? content.skills.categories.flatMap((c) => c.skills ?? [])
+            : undefined
+        }
+      />
 
       {/* Progress banner */}
       {hasChanges && (

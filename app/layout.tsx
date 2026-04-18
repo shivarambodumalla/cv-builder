@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | CVEdge",
   },
   description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. Free forever. 80+ ATS score guaranteed or your money back.",
-  keywords: ["free ATS checker", "resume builder", "CV optimizer", "ATS resume scanner", "fix my resume", "free CV checker", "ATS score", "resume AI", "job search tools", "interview preparation"],
+  keywords: ["free ATS checker", "resume builder", "CV optimizer", "ATS resume scanner", "fix my resume", "free CV checker", "ATS score", "resume AI", "free job search", "AI job search", "job match score", "job search tools", "interview preparation"],
   authors: [{ name: "CVEdge", url: "https://thecvedge.com" }],
   creator: "CVEdge",
   publisher: "CVEdge",

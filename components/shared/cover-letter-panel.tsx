@@ -98,9 +98,22 @@ export function CoverLetterPanel({
     }
   }, [cvId, jobMatches, content]);
 
+  function scrollPanelToTop() {
+    const el = document.querySelector("[data-panel='cover-letter']");
+    let parent = el?.parentElement;
+    while (parent) {
+      if (parent.scrollHeight > parent.clientHeight) {
+        parent.scrollTo({ top: 0, behavior: "smooth" });
+        break;
+      }
+      parent = parent.parentElement;
+    }
+  }
+
   async function handleGenerate(regenerate = false) {
     setLoading(true);
     setError("");
+    scrollPanelToTop();
 
     try {
       const res = await fetch("/api/cv/cover-letter", {
@@ -287,7 +300,7 @@ export function CoverLetterPanel({
   }
 
   return (
-    <div className="space-y-4">
+    <div data-panel="cover-letter" className="space-y-4">
       {/* Toolbar */}
       <div className="flex items-center gap-2 flex-wrap">
         {/* Tone selector */}

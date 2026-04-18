@@ -82,9 +82,10 @@ export function HeaderAuth() {
       stories.textContent = "Interview Coach";
       nav.appendChild(stories);
 
-      const jobs = document.createElement("span");
-      jobs.className = "text-sm text-muted-foreground cursor-default flex items-center";
-      jobs.innerHTML = 'Jobs<span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>';
+      const jobs = document.createElement("a");
+      jobs.href = "/my-jobs";
+      jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      jobs.textContent = "Jobs";
       nav.appendChild(jobs);
 
       const pricing = document.createElement("a");
@@ -107,9 +108,10 @@ export function HeaderAuth() {
       stories.textContent = "Interview Coach";
       nav.appendChild(stories);
 
-      const jobs = document.createElement("span");
-      jobs.className = "text-sm text-muted-foreground cursor-default flex items-center";
-      jobs.innerHTML = 'Jobs<span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">Soon</span>';
+      const jobs = document.createElement("a");
+      jobs.href = "/jobs";
+      jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      jobs.textContent = "Jobs";
       nav.appendChild(jobs);
 
       const pricing = document.createElement("a");

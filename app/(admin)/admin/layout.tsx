@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: "/admin/keywords", label: "Keywords" },
   { href: "/admin/missing-roles", label: "Missing Roles" },
   { href: "/admin/ai-settings", label: "AI Settings" },
+  { href: "/admin/job-providers", label: "Job Providers" },
   { href: "/admin/emails", label: "Emails" },
   { href: "/admin/campaigns", label: "Campaigns" },
   { href: "/admin/email-logs", label: "Email Logs" },

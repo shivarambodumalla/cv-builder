@@ -22,6 +22,13 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
+  // Redirect /jobs to /my-jobs for authenticated users (marketing → app)
+  if (user && request.nextUrl.pathname === "/jobs") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/my-jobs";
+    return NextResponse.redirect(url);
+  }
+
   const isAdminRoute =
     request.nextUrl.pathname.startsWith("/admin") ||
     request.nextUrl.pathname.startsWith("/api/admin");
@@ -47,6 +54,9 @@ export const config = {
     "/dashboard/:path*",
     "/resume/:path*",
     "/billing/:path*",
+    "/jobs",
+    "/my-jobs/:path*",
+    "/settings/:path*",
     "/admin/:path*",
     "/api/((?!cron/|telemetry/|activity/|gdpr/consent).)*",
   ],
