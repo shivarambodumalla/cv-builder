@@ -70,21 +70,21 @@ export async function GET(request: NextRequest) {
 
   const engagement = [
     { key: "cv_created", label: "CV Created", count: cvCreated.data?.count ?? 0, icon: "file-text" },
-    { key: "visited_editor", label: "Opened Editor", count: visitedEditor.data?.count ?? 0, icon: "edit" },
     { key: "ats_scanned", label: "ATS Scanned", count: atsScanned.data?.count ?? 0, icon: "scan" },
-    { key: "ai_rewrite", label: "Used AI Rewrite", count: aiRewriteUsed.data?.count ?? 0, icon: "sparkles" },
-    { key: "fix_all", label: "Used Fix All", count: fixAllUsed.data?.count ?? 0, icon: "wand" },
-    { key: "job_matched", label: "Job Matched", count: jobMatched.data?.count ?? 0, icon: "briefcase" },
+    { key: "job_matched", label: "Job Match", count: jobMatched.data?.count ?? 0, icon: "briefcase" },
     { key: "cover_letter", label: "Cover Letter", count: coverLetter.data?.count ?? 0, icon: "mail" },
-    { key: "pdf_downloaded", label: "PDF Downloaded", count: pdfDownloaded.data?.count ?? 0, icon: "download" },
+    { key: "pdf_downloaded", label: "Downloaded", count: pdfDownloaded.data?.count ?? 0, icon: "download" },
   ];
 
   const conversion = [
-    { key: "visited_pricing", label: "Visited Pricing", count: visitedPricing.data?.count ?? 0, icon: "credit-card" },
-    { key: "upgraded", label: "Upgraded to Pro", count: upgraded.count ?? 0, icon: "crown" },
+    { key: "visited_pricing", label: "Pricing Page", count: visitedPricing.data?.count ?? 0, icon: "credit-card" },
+    { key: "upgraded", label: "Upgraded", count: upgraded.count ?? 0, icon: "crown" },
   ];
 
   const extras = [
+    { key: "visited_editor", label: "Opened Editor", count: visitedEditor.data?.count ?? 0 },
+    { key: "ai_rewrite", label: "AI Rewrite Used", count: aiRewriteUsed.data?.count ?? 0 },
+    { key: "fix_all", label: "Fix All Used", count: fixAllUsed.data?.count ?? 0 },
     { key: "interview_prep", label: "Interview Prep", count: interviewPrep.data?.count ?? 0 },
     { key: "jobs_waitlist", label: "Jobs Waitlist", count: jobsWaitlist.count ?? 0 },
   ];

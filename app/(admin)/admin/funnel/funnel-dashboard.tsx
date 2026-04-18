@@ -162,7 +162,7 @@ export function FunnelDashboard() {
           </div>
 
           {/* Funnel sections */}
-          <FunnelSection title="Acquisition" description="How users arrive and onboard" stages={data.acquisition} base={base} accentClass="bg-blue-500" />
+          <FunnelSection title="Acquisition" description="Signup → first actions (anonymous homepage visits tracked in Google Analytics)" stages={data.acquisition} base={base} accentClass="bg-blue-500" />
           <FunnelSection title="Engagement" description="Feature adoption and depth of usage" stages={data.engagement} base={base} accentClass="bg-[#065F46]" />
           <FunnelSection title="Conversion" description="Path to paid" stages={data.conversion} base={base} accentClass="bg-amber-500" />
 
@@ -213,8 +213,8 @@ function FunnelSection({ title, description, stages, base, accentClass }: { titl
       </div>
 
       {/* Bar chart */}
-      <div className="px-4 pt-4 pb-2">
-        <div className="flex items-end gap-2" style={{ height: 160 }}>
+      <div className="px-4 pt-4 pb-2 overflow-x-auto">
+        <div className="flex items-end gap-3" style={{ height: 180, minWidth: stages.length * 80 }}>
           {stages.map((stage, i) => {
             const maxCount = sectionBase || 1;
             const barH = Math.max((stage.count / maxCount) * 130, 4);
@@ -222,11 +222,11 @@ function FunnelSection({ title, description, stages, base, accentClass }: { titl
             const Icon = ICON_MAP[stage.icon || ""] || FileText;
 
             return (
-              <div key={stage.key} className="flex flex-col items-center gap-1 flex-1">
-                <span className="text-[11px] font-bold tabular-nums">{stage.count.toLocaleString()}</span>
+              <div key={stage.key} className="flex flex-col items-center gap-1 flex-1" style={{ minWidth: 70 }}>
+                <span className="text-xs font-bold tabular-nums">{stage.count.toLocaleString()}</span>
                 {stepPct !== null && (
                   <span className={cn(
-                    "text-[9px] font-semibold tabular-nums px-1 py-0.5 rounded-full",
+                    "text-[9px] font-semibold tabular-nums px-1.5 py-0.5 rounded-full",
                     stepPct >= 60 ? "bg-success/15 text-success" :
                     stepPct >= 30 ? "bg-warning/15 text-warning" :
                     "bg-error/15 text-error"
@@ -234,10 +234,10 @@ function FunnelSection({ title, description, stages, base, accentClass }: { titl
                     {fmtPct(stepPct)}
                   </span>
                 )}
-                {i === 0 && <div className="h-4" />}
-                <div className={cn("w-full rounded-t-md transition-all duration-500 max-w-[60px]", accentClass, i > 0 && "opacity-80")} style={{ height: barH }} />
-                <Icon className="h-3 w-3 text-muted-foreground mt-1" />
-                <span className="text-[9px] text-muted-foreground text-center leading-tight h-6">{stage.label}</span>
+                {i === 0 && <div className="h-5" />}
+                <div className={cn("w-full rounded-t-md transition-all duration-500", accentClass, i > 0 && "opacity-80")} style={{ height: barH, maxWidth: 56 }} />
+                <Icon className="h-3.5 w-3.5 text-muted-foreground mt-1" />
+                <span className="text-[10px] text-muted-foreground text-center leading-tight whitespace-nowrap">{stage.label}</span>
               </div>
             );
           })}
