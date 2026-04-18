@@ -59,25 +59,26 @@ export default async function UserDetailPage({
   const { id } = await params;
   const supabase = createAdminClient();
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, pdf_downloads_this_week, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
-    .eq("id", id)
-    .single();
+  // Parallel fetch: profile + enriched view + CVs (all just need user id)
+  const [{ data: profile }, { data: enriched }, { data: userCvs }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, pdf_downloads_this_week, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
+      .eq("id", id)
+      .single(),
+    supabase
+      .from("user_profile_enriched")
+      .select("current_role, current_company, college, degree, field_of_study, resolved_target_role, resolved_location, cv_location, cv_linkedin, cv_website, resolved_linkedin, resolved_portfolio, github_url, linkedin_url, portfolio_url, phone, target_title_from_cv, last_sign_in_at, last_seen_at, employment_status, preferred_job_type, industry, country, profile_location, experience_level, signup_city, signup_region, signup_country, signup_country_code, signup_location_captured_at")
+      .eq("id", id)
+      .maybeSingle(),
+    supabase
+      .from("cvs")
+      .select("id, title, target_role, created_at, updated_at, parsed_json, design_settings, download_count")
+      .eq("user_id", id)
+      .order("updated_at", { ascending: false }),
+  ]);
 
   if (!profile) notFound();
-
-  const { data: enriched } = await supabase
-    .from("user_profile_enriched")
-    .select("current_role, current_company, college, degree, field_of_study, resolved_target_role, resolved_location, cv_location, cv_linkedin, cv_website, resolved_linkedin, resolved_portfolio, github_url, linkedin_url, portfolio_url, phone, target_title_from_cv, last_sign_in_at, last_seen_at, employment_status, preferred_job_type, industry, country, profile_location, experience_level, signup_city, signup_region, signup_country, signup_country_code, signup_location_captured_at")
-    .eq("id", id)
-    .maybeSingle();
-
-  const { data: userCvs } = await supabase
-    .from("cvs")
-    .select("id, title, target_role, created_at, updated_at, parsed_json, design_settings, download_count")
-    .eq("user_id", profile.id)
-    .order("updated_at", { ascending: false });
 
   const cvIds = (userCvs ?? []).map((c) => c.id);
   const cvsCount = cvIds.length;
@@ -182,29 +183,33 @@ export default async function UserDetailPage({
   const isPro = profile.subscription_status === "active";
   const planLimits = PLAN_LIMITS[isPro ? "pro" : "free"];
 
-  let atsCount = 0;
-  let jobMatchCount = 0;
-  let coverLetterCount = 0;
+  // Derive counts from existing data — no extra DB queries needed
+  const atsCount = latestAtsByCvId.size;
+  const jobMatchCount = latestJobMatchByCvId.size;
+  const coverLetterCount = [...coverLettersByCvId.values()].reduce((sum, arr) => sum + arr.length, 0);
 
-  if (cvIds.length > 0) {
-    const [ats, jm, cl] = await Promise.all([
-      supabase.from("ats_reports").select("*", { count: "exact", head: true }).in("cv_id", cvIds),
-      supabase.from("job_matches").select("*", { count: "exact", head: true }).in("cv_id", cvIds),
-      supabase.from("cover_letters").select("*", { count: "exact", head: true }).in("cv_id", cvIds),
-    ]);
-    atsCount = ats.count ?? 0;
-    jobMatchCount = jm.count ?? 0;
-    coverLetterCount = cl.count ?? 0;
-  }
-
-  // Page session stats: top paths by total time spent
-  const { data: sessions } = await supabase
-    .from("page_sessions")
-    .select("path, duration_ms")
-    .eq("user_id", id)
-    .not("duration_ms", "is", null)
-    .order("created_at", { ascending: false })
-    .limit(1000);
+  // Parallel fetch: sessions + activity + subscription history (all just need user id)
+  const [{ data: sessions }, { data: activityRows }, { data: history }] = await Promise.all([
+    supabase
+      .from("page_sessions")
+      .select("path, duration_ms")
+      .eq("user_id", id)
+      .not("duration_ms", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(1000),
+    supabase
+      .from("user_activity")
+      .select("id, event, page, metadata, created_at")
+      .eq("user_id", id)
+      .order("created_at", { ascending: false })
+      .limit(50),
+    supabase
+      .from("subscription_history")
+      .select("id, plan, period, amount, currency, status, started_at, ended_at")
+      .eq("user_id", id)
+      .order("started_at", { ascending: false })
+      .limit(10),
+  ]);
 
   const pathStats = new Map<string, { totalMs: number; visits: number }>();
   for (const s of sessions ?? []) {
@@ -232,13 +237,6 @@ export default async function UserDetailPage({
     return `${d}d ${h % 24}h`;
   };
 
-  // Activity timeline (last 50 events)
-  const { data: activityRows } = await supabase
-    .from("user_activity")
-    .select("id, event, page, metadata, created_at")
-    .eq("user_id", id)
-    .order("created_at", { ascending: false })
-    .limit(50);
   const activity: ActivityEvent[] = (activityRows ?? []).map((r) => ({
     id: r.id,
     event: r.event,
@@ -246,14 +244,6 @@ export default async function UserDetailPage({
     metadata: (r.metadata as Record<string, unknown> | null) ?? null,
     created_at: r.created_at,
   }));
-
-  // Subscription history
-  const { data: history } = await supabase
-    .from("subscription_history")
-    .select("id, plan, period, amount, currency, status, started_at, ended_at")
-    .eq("user_id", id)
-    .order("started_at", { ascending: false })
-    .limit(10);
 
   const renewalDate = profile.current_period_end
     ? new Date(profile.current_period_end).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })

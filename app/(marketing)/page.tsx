@@ -33,7 +33,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.thecvedge.com" },
 };
 
-export const dynamic = "force-dynamic";
+// Revalidate every hour — homepage stats don't need to be real-time
+export const revalidate = 3600;
 
 const SCORE_CATEGORIES = [
   { name: "Contact info", desc: "Name, email, phone, location", weight: 10 },

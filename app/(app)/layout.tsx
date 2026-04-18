@@ -8,12 +8,12 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Middleware already verifies auth and redirects. Use getSession() here
+  // as a lightweight backup (local JWT read, no network call).
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     redirect("/login");
   }
 

@@ -185,6 +185,15 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, initialBe
       .catch(() => {});
   }, []);
 
+  // Auto-fetch jobs on mount if no initial data was server-rendered
+  const didAutoFetch = useRef(false);
+  useEffect(() => {
+    if (!didAutoFetch.current && bestMatches.length === 0 && moreJobs.length === 0 && hasCvs) {
+      didAutoFetch.current = true;
+      fetchJobs();
+    }
+  }, [fetchJobs, bestMatches.length, moreJobs.length, hasCvs]);
+
 
   async function loadMoreBest() {
     // First reveal more from the already-fetched results

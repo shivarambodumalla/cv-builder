@@ -29,9 +29,14 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
+  // Use getSession() instead of getUser() — reads JWT from cookie locally
+  // without making a network call to Supabase servers on every request.
+  // Only refreshes the token when it's actually expired (~1hr), not every nav.
+  // Page-level server components still call getUser() for verified identity.
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   const isProtected =
     request.nextUrl.pathname.startsWith("/dashboard") ||
