@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy | CVEdge",
   description: "How CVEdge collects, uses, and protects your personal data.",
+  alternates: { canonical: "https://www.thecvedge.com/privacy" },
 };
 
 const sections = [

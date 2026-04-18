@@ -58,8 +58,8 @@ export async function generateMetadata({ params }: { params: Promise<{ role: str
   return {
     title: `${role.title} Jobs — See Your Match Score | CVEdge`,
     description: role.description,
-    openGraph: { title: `${role.title} Jobs | CVEdge`, description: role.description, url: `https://thecvedge.com/jobs/${role.slug}` },
-    alternates: { canonical: `https://thecvedge.com/jobs/${role.slug}` },
+    openGraph: { title: `${role.title} Jobs | CVEdge`, description: role.description, url: `https://www.thecvedge.com/jobs/${role.slug}` },
+    alternates: { canonical: `https://www.thecvedge.com/jobs/${role.slug}` },
   };
 }
 

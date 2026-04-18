@@ -4,7 +4,7 @@ import { PricingContent } from "./pricing-content";
 export const metadata: Metadata = {
   title: "Pricing",
   description: "CVEdge is free forever for job seekers. Upgrade to Pro for unlimited access. 80+ ATS score guaranteed or your money back.",
-  alternates: { canonical: "https://thecvedge.com/pricing" },
+  alternates: { canonical: "https://www.thecvedge.com/pricing" },
 };
 
 export default function PricingPage() {

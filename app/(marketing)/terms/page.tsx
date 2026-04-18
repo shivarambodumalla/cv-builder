@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service | CVEdge",
   description: "Terms and conditions for using the CVEdge platform.",
+  alternates: { canonical: "https://www.thecvedge.com/terms" },
 };
 
 const sections = [

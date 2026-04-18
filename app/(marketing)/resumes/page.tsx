@@ -6,7 +6,7 @@ import { BarChart3, Sparkles, Layout, Target, Download } from "lucide-react";
 export const metadata: Metadata = {
   title: "AI Resume Builder — Free ATS-Friendly Templates",
   description: "12 free ATS-friendly CV templates. Upload your CV, get an instant ATS score, fix everything with AI. No signup required.",
-  alternates: { canonical: "https://thecvedge.com/resumes" },
+  alternates: { canonical: "https://www.thecvedge.com/resumes" },
 };
 
 const FEATURES = [

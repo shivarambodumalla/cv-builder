@@ -2,7 +2,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Search, Sparkles, Target, CheckCircle, BarChart3, Brain, Briefcase } from "lucide-react";
 
-export const metadata = { title: "Interview Coach — CVEdge" };
+export const metadata = {
+  title: "Interview Coach — Prepare STAR Stories from Your CV | CVEdge",
+  description: "Build a bank of interview stories from your CV, GitHub, and portfolio. Get AI-powered STAR frameworks, quality scoring, and job-specific prep — free.",
+  openGraph: {
+    title: "Interview Coach | CVEdge",
+    description: "Build interview stories from your CV. Get AI-powered STAR frameworks and job-specific prep.",
+    url: "https://www.thecvedge.com/interview-prep",
+  },
+  alternates: { canonical: "https://www.thecvedge.com/interview-prep" },
+};
 
 const STEPS = [
   {

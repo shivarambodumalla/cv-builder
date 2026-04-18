@@ -30,7 +30,7 @@ import JobMatchVisual from "@/components/marketing/job-match-visual";
 export const metadata: Metadata = {
   title: "Free ATS Resume Checker & AI Job Search — Fix Your CV in 8 Minutes",
   description: "CVEdge finds exactly why your CV gets rejected by ATS software and fixes it with AI. Free job search with match scores for every role. Used by job seekers in 40+ countries.",
-  alternates: { canonical: "https://thecvedge.com" },
+  alternates: { canonical: "https://www.thecvedge.com" },
 };
 
 export const dynamic = "force-dynamic";
@@ -69,7 +69,7 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "CVEdge",
-    url: "https://thecvedge.com",
+    url: "https://www.thecvedge.com",
     description: "Free AI-powered CV optimisation platform. Fix your CV in 8 minutes. 80+ ATS score guaranteed.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",

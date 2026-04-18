@@ -11,8 +11,8 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Find Jobs That Match Your CV | CVEdge",
   description: "Search thousands of jobs and see your ATS match score before you apply. Sign in free to unlock your scores.",
-  openGraph: { title: "Find Jobs That Match Your CV | CVEdge", description: "Search thousands of jobs and see your ATS match score before you apply.", url: "https://thecvedge.com/jobs" },
-  alternates: { canonical: "https://thecvedge.com/jobs" },
+  openGraph: { title: "Find Jobs That Match Your CV | CVEdge", description: "Search thousands of jobs and see your ATS match score before you apply.", url: "https://www.thecvedge.com/jobs" },
+  alternates: { canonical: "https://www.thecvedge.com/jobs" },
 };
 
 
