@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AnonPageTracker } from "@/components/shared/anon-page-tracker";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -10,5 +11,10 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <AnonPageTracker />
+      {children}
+    </>
+  );
 }

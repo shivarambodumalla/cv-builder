@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Loader2, AlertTriangle, UserPlus, Layout, Upload, FileText, Pencil, ScanLine, Sparkles, Wand2, Briefcase, Mail, Download, CreditCard, Crown } from "lucide-react";
+import { Loader2, AlertTriangle, UserPlus, Layout, Upload, FileText, Pencil, ScanLine, Sparkles, Wand2, Briefcase, Mail, Download, CreditCard, Crown, Home, LogIn } from "lucide-react";
 
 interface Stage {
   key: string;
@@ -14,6 +14,7 @@ interface Stage {
 }
 
 interface FunnelData {
+  awareness: Stage[];
   acquisition: Stage[];
   engagement: Stage[];
   conversion: Stage[];
@@ -55,7 +56,7 @@ const PRESETS: { key: Preset; label: string }[] = [
 ];
 
 const ICON_MAP: Record<string, React.ElementType> = {
-  "user-plus": UserPlus, layout: Layout, upload: Upload, "file-text": FileText,
+  home: Home, "log-in": LogIn, "user-plus": UserPlus, layout: Layout, upload: Upload, "file-text": FileText,
   edit: Pencil, scan: ScanLine, sparkles: Sparkles, wand: Wand2,
   briefcase: Briefcase, mail: Mail, download: Download, "credit-card": CreditCard, crown: Crown,
 };
@@ -106,6 +107,7 @@ export function FunnelDashboard() {
     if (p !== "custom") fetchFunnel(p);
   }
 
+  const awarenessBase = data?.awareness[0]?.count ?? 0;
   const base = data?.acquisition[0]?.count ?? 0;
 
   return (
@@ -154,15 +156,17 @@ export function FunnelDashboard() {
       {data && !loading && (
         <>
           {/* Summary cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <SummaryCard label="Signups" value={base} color="text-foreground" />
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <SummaryCard label="Page Views" value={awarenessBase} color="text-foreground" />
+            <SummaryCard label="Signups" value={base} sub={awarenessBase > 0 ? `${fmtPct(pct(base, awarenessBase))} of visits` : undefined} />
             <SummaryCard label="CVs Created" value={data.engagement.find(s => s.key === "cv_created")?.count ?? 0} sub={base > 0 ? `${fmtPct(pct(data.engagement.find(s => s.key === "cv_created")?.count ?? 0, base))} of signups` : undefined} />
-            <SummaryCard label="PDF Downloads" value={data.engagement.find(s => s.key === "pdf_downloaded")?.count ?? 0} sub={base > 0 ? `${fmtPct(pct(data.engagement.find(s => s.key === "pdf_downloaded")?.count ?? 0, base))} of signups` : undefined} />
+            <SummaryCard label="Downloads" value={data.engagement.find(s => s.key === "pdf_downloaded")?.count ?? 0} sub={base > 0 ? `${fmtPct(pct(data.engagement.find(s => s.key === "pdf_downloaded")?.count ?? 0, base))} of signups` : undefined} />
             <SummaryCard label="Pro Upgrades" value={data.conversion.find(s => s.key === "upgraded")?.count ?? 0} color="text-success" sub={base > 0 ? `${fmtPct(pct(data.conversion.find(s => s.key === "upgraded")?.count ?? 0, base))} conversion` : undefined} />
           </div>
 
           {/* Funnel sections */}
-          <FunnelSection title="Acquisition" description="Signup → first actions (anonymous homepage visits tracked in Google Analytics)" stages={data.acquisition} base={base} accentClass="bg-blue-500" />
+          <FunnelSection title="Awareness" description="Anonymous page views on marketing pages (no login required)" stages={data.awareness} base={awarenessBase} accentClass="bg-purple-500" />
+          <FunnelSection title="Acquisition" description="Signup and first actions" stages={data.acquisition} base={base} accentClass="bg-blue-500" />
           <FunnelSection title="Engagement" description="Feature adoption and depth of usage" stages={data.engagement} base={base} accentClass="bg-[#065F46]" />
           <FunnelSection title="Conversion" description="Path to paid" stages={data.conversion} base={base} accentClass="bg-amber-500" />
 
@@ -300,7 +304,7 @@ function FunnelSection({ title, description, stages, base, accentClass }: { titl
 
 /* ── Drop-off Insights ── */
 function DropoffInsights({ data, base }: { data: FunnelData; base: number }) {
-  const allStages = [...data.acquisition, ...data.engagement, ...data.conversion];
+  const allStages = [...data.awareness, ...data.acquisition, ...data.engagement, ...data.conversion];
   const drops: { from: string; to: string; dropPct: number; lost: number }[] = [];
 
   for (let i = 1; i < allStages.length; i++) {

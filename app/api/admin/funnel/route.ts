@@ -15,11 +15,27 @@ export async function GET(request: NextRequest) {
   }
 
   const admin = createAdminClient();
+
+  // Helper for user_activity RPC calls
   const rpc = <T = { count: number }>(name: string) =>
     admin.rpc(name, { from_ts: from, to_ts: to }).single<T>();
 
+  // Helper for page_views RPC calls (date-based, not timestamp)
+  const fromDate = from.slice(0, 10);
+  const toDate = to.slice(0, 10);
+  const pvRpc = (path: string) =>
+    admin.rpc("funnel_page_views", { from_date: fromDate, to_date: toDate, page_path: path }).single<{ total: number }>();
+
   const [
+    // Pre-signup (anonymous page views)
+    pvHomepage,
+    pvPricing,
+    pvUpload,
+    pvLogin,
+    pvResumes,
+    // Signup
     signups,
+    // Post-signup activity
     visitedDashboard,
     visitedUpload,
     cvCreated,
@@ -35,10 +51,16 @@ export async function GET(request: NextRequest) {
     interviewPrep,
     jobsWaitlist,
   ] = await Promise.all([
+    // Anonymous page views
+    pvRpc("/"),
+    pvRpc("/pricing"),
+    pvRpc("/upload-resume"),
+    pvRpc("/login"),
+    pvRpc("/resumes"),
     // Signup count
     admin.from("profiles").select("id", { count: "exact", head: true })
       .gte("created_at", from).lte("created_at", to),
-    // Page visits
+    // Post-signup page visits
     rpc("funnel_visited_dashboard"),
     rpc("funnel_visited_upload"),
     // Core funnel
@@ -61,13 +83,23 @@ export async function GET(request: NextRequest) {
       .gte("created_at", from).lte("created_at", to),
   ]);
 
-  // Main funnel: full user journey
-  const acquisition = [
-    { key: "signups", label: "Signed Up", count: signups.count ?? 0, icon: "user-plus" },
-    { key: "visited_dashboard", label: "Visited Dashboard", count: visitedDashboard.data?.count ?? 0, icon: "layout" },
-    { key: "visited_upload", label: "Visited Upload Page", count: visitedUpload.data?.count ?? 0, icon: "upload" },
+  // Pre-signup: anonymous visitors
+  const awareness = [
+    { key: "pv_homepage", label: "Homepage", count: Number(pvHomepage.data?.total ?? 0), icon: "home" },
+    { key: "pv_resumes", label: "Templates", count: Number(pvResumes.data?.total ?? 0), icon: "file-text" },
+    { key: "pv_pricing", label: "Pricing", count: Number(pvPricing.data?.total ?? 0), icon: "credit-card" },
+    { key: "pv_upload", label: "Upload Page", count: Number(pvUpload.data?.total ?? 0), icon: "upload" },
+    { key: "pv_login", label: "Login Page", count: Number(pvLogin.data?.total ?? 0), icon: "log-in" },
   ];
 
+  // Post-signup: acquisition
+  const acquisition = [
+    { key: "signups", label: "Signed Up", count: signups.count ?? 0, icon: "user-plus" },
+    { key: "visited_dashboard", label: "Dashboard", count: visitedDashboard.data?.count ?? 0, icon: "layout" },
+    { key: "visited_upload", label: "Upload Page", count: visitedUpload.data?.count ?? 0, icon: "upload" },
+  ];
+
+  // Engagement
   const engagement = [
     { key: "cv_created", label: "CV Created", count: cvCreated.data?.count ?? 0, icon: "file-text" },
     { key: "ats_scanned", label: "ATS Scanned", count: atsScanned.data?.count ?? 0, icon: "scan" },
@@ -76,8 +108,9 @@ export async function GET(request: NextRequest) {
     { key: "pdf_downloaded", label: "Downloaded", count: pdfDownloaded.data?.count ?? 0, icon: "download" },
   ];
 
+  // Conversion
   const conversion = [
-    { key: "visited_pricing", label: "Pricing Page", count: visitedPricing.data?.count ?? 0, icon: "credit-card" },
+    { key: "visited_pricing_auth", label: "Pricing Page", count: visitedPricing.data?.count ?? 0, icon: "credit-card" },
     { key: "upgraded", label: "Upgraded", count: upgraded.count ?? 0, icon: "crown" },
   ];
 
@@ -89,5 +122,5 @@ export async function GET(request: NextRequest) {
     { key: "jobs_waitlist", label: "Jobs Waitlist", count: jobsWaitlist.count ?? 0 },
   ];
 
-  return NextResponse.json({ acquisition, engagement, conversion, extras });
+  return NextResponse.json({ awareness, acquisition, engagement, conversion, extras });
 }
