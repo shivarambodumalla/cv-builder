@@ -122,5 +122,108 @@ export async function GET(request: NextRequest) {
     { key: "jobs_waitlist", label: "Jobs Waitlist", count: jobsWaitlist.count ?? 0 },
   ];
 
-  return NextResponse.json({ awareness, acquisition, engagement, conversion, extras });
+  // ── Page-level visits (public + private) ──
+  // Public pages (anonymous aggregate counts from page_views table)
+  const publicPaths = ["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs"];
+  const publicVisitPromises = publicPaths.map(p => pvRpc(p));
+  const publicVisitResults = await Promise.all(publicVisitPromises);
+
+  const publicPageVisits = publicPaths.map((path, i) => ({
+    path,
+    label: path === "/" ? "Homepage" : path.replace(/^\//, "").replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+    count: Number(publicVisitResults[i].data?.total ?? 0),
+    type: "public" as const,
+  }));
+
+  // Private pages (distinct users from page_sessions table)
+  const privatePaths = ["/dashboard", "/my-jobs", "/interview-coach", "/billing", "/settings"];
+  const privateVisitResults = await Promise.all(
+    privatePaths.map(path =>
+      admin
+        .from("page_sessions")
+        .select("user_id", { count: "exact", head: true })
+        .like("path", `${path}%`)
+        .gte("created_at", from)
+        .lte("created_at", to)
+    )
+  );
+
+  const privatePageVisits = privatePaths.map((path, i) => ({
+    path,
+    label: path.replace(/^\//, "").replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+    count: privateVisitResults[i].count ?? 0,
+    type: "private" as const,
+  }));
+
+  const pageVisits = [...publicPageVisits, ...privatePageVisits].sort((a, b) => b.count - a.count);
+
+  // Total anonymous visits (sum of all public page views)
+  const totalAnonVisits = publicPageVisits.reduce((sum, p) => sum + p.count, 0);
+
+  // ── Bounce analysis: public pages that don't lead to login/signup ──
+  const loginViews = Number(pvLogin.data?.total ?? 0);
+  const signupCount = signups.count ?? 0;
+  const bounceAnalysis = publicPageVisits
+    .filter(pv => pv.path !== "/login" && pv.path !== "/register" && pv.count > 0)
+    .map(pv => {
+      // Bounce = visitors who saw this page but never reached login
+      // Approximation: if login views are much lower than this page's views, most bounced
+      const reachLoginPct = pv.count > 0 ? Math.min(100, Math.round((loginViews / pv.count) * 100)) : 0;
+      const bouncePct = Math.max(0, 100 - reachLoginPct);
+      return { path: pv.path, label: pv.label, views: pv.count, bouncePct, reachLoginPct };
+    })
+    .sort((a, b) => b.bouncePct - a.bouncePct);
+
+  // ── Signup sources: which page did new users visit first after signing up ──
+  // Find first page_session for users who signed up in the date range
+  let signupSources: { page: string; count: number; pct: number }[] = [];
+  if (signupCount > 0) {
+    const { data: firstSessions } = await admin
+      .from("page_sessions")
+      .select("user_id, path")
+      .in("user_id",
+        (await admin.from("profiles").select("id").gte("created_at", from).lte("created_at", to)).data?.map(r => r.id) ?? []
+      )
+      .gte("created_at", from)
+      .lte("created_at", to)
+      .order("entered_at", { ascending: true });
+
+    // Group by user, take the first session path for each
+    const userFirstPage = new Map<string, string>();
+    for (const s of firstSessions ?? []) {
+      if (!userFirstPage.has(s.user_id)) {
+        userFirstPage.set(s.user_id, s.path);
+      }
+    }
+
+    // Count occurrences of each first page
+    const pageCounts = new Map<string, number>();
+    for (const page of userFirstPage.values()) {
+      // Normalize: /resume/xxx → /resume, /my-jobs/saved → /my-jobs
+      const normalized = page.replace(/\/[0-9a-f-]{36}/g, "").replace(/\/saved$/, "") || page;
+      pageCounts.set(normalized, (pageCounts.get(normalized) ?? 0) + 1);
+    }
+
+    signupSources = [...pageCounts.entries()]
+      .map(([page, count]) => ({
+        page,
+        count,
+        pct: Math.round((count / signupCount) * 100),
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+  }
+
+  return NextResponse.json({
+    awareness,
+    acquisition,
+    engagement,
+    conversion,
+    extras,
+    pageVisits,
+    totalAnonVisits,
+    newSignups: signupCount,
+    bounceAnalysis,
+    signupSources,
+  });
 }

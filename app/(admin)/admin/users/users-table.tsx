@@ -223,7 +223,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                       <td className="px-4 py-3">
                         <Link href={`/admin/users/${user.id}`} className="flex items-center gap-3 group">
                           <Avatar className="h-8 w-8 shrink-0">
-                            {user.avatar_url ? <AvatarImage src={user.avatar_url} alt={user.full_name || user.email} /> : null}
+                            {user.avatar_url ? <AvatarImage src={user.avatar_url} alt={user.full_name || user.email} referrerPolicy="no-referrer" /> : null}
                             <AvatarFallback className="bg-muted text-xs font-semibold">
                               {initials(user.full_name, user.email)}
                             </AvatarFallback>

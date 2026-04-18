@@ -266,7 +266,7 @@ export default async function UserDetailPage({
 
       <div className="mb-6 flex items-start gap-4">
         <Avatar className="h-16 w-16">
-          {profile.avatar_url ? <AvatarImage src={profile.avatar_url} alt={profile.full_name || profile.email} /> : null}
+          {profile.avatar_url ? <AvatarImage src={profile.avatar_url} alt={profile.full_name || profile.email} referrerPolicy="no-referrer" /> : null}
           <AvatarFallback className="text-lg font-medium">
             {(profile.full_name || profile.email || "?").slice(0, 1).toUpperCase()}
           </AvatarFallback>
