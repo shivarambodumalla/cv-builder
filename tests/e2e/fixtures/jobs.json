@@ -1,0 +1,46 @@
+{
+  "bestMatches": [
+    {
+      "id": "test_job_1",
+      "title": "Senior Software Engineer",
+      "company": { "display_name": "Acme Corp" },
+      "location": { "display_name": "London, UK" },
+      "salary_min": 80000,
+      "salary_max": 120000,
+      "redirect_url": "https://example.com/apply/1",
+      "created": "2026-04-17T10:00:00Z",
+      "contract_type": "full_time",
+      "salary_is_predicted": "0",
+      "matchScore": 85
+    },
+    {
+      "id": "test_job_2",
+      "title": "Frontend Engineer",
+      "company": { "display_name": "TechStart" },
+      "location": { "display_name": "Remote" },
+      "salary_min": 60000,
+      "salary_max": 90000,
+      "redirect_url": "https://example.com/apply/2",
+      "created": "2026-04-16T10:00:00Z",
+      "contract_type": "full_time",
+      "salary_is_predicted": "0",
+      "matchScore": 72
+    }
+  ],
+  "moreJobs": [
+    {
+      "id": "test_job_3",
+      "title": "Backend Developer",
+      "company": { "display_name": "DataFlow Inc" },
+      "location": { "display_name": "Berlin, Germany" },
+      "salary_min": 55000,
+      "salary_max": 85000,
+      "redirect_url": "https://example.com/apply/3",
+      "created": "2026-04-15T10:00:00Z",
+      "contract_type": "contract",
+      "salary_is_predicted": "1",
+      "matchScore": 58
+    }
+  ],
+  "total": 3
+}
