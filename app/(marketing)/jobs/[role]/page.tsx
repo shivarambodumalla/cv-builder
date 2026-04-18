@@ -114,18 +114,21 @@ export function generateStaticParams() {
   return ROLES.map((r) => ({ role: r.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { role: string } }): Promise<Metadata> {
-  const role = ROLE_MAP.get(params.role);
+export async function generateMetadata({ params }: { params: Promise<{ role: string }> }): Promise<Metadata> {
+  const { role: slug } = await params;
+  const role = ROLE_MAP.get(slug);
   if (!role) return {};
   return {
     title: `${role.title} Jobs — See Your Match Score | CVEdge`,
     description: role.description,
     openGraph: { title: `${role.title} Jobs | CVEdge`, description: role.description, url: `https://thecvedge.com/jobs/${role.slug}` },
+    alternates: { canonical: `https://thecvedge.com/jobs/${role.slug}` },
   };
 }
 
-export default async function RoleJobsPage({ params }: { params: { role: string } }) {
-  const role = ROLE_MAP.get(params.role);
+export default async function RoleJobsPage({ params }: { params: Promise<{ role: string }> }) {
+  const { role: slug } = await params;
+  const role = ROLE_MAP.get(slug);
   if (!role) notFound();
 
   // Fetch jobs from all enabled providers
