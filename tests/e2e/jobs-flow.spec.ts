@@ -14,11 +14,16 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
   await page.route("**/api/jobs/track-click", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
   });
-  await page.route("**/api/jobs/save", async (route) => {
-    if (route.request().method() === "GET") {
-      await route.fulfill({ status: 200, contentType: "application/json", body: '[]' });
+  await page.route("**/api/jobs/save**", async (route) => {
+    const method = route.request().method();
+    if (method === "GET") {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ savedJobs: [] }) });
+    } else if (method === "POST") {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: true }) });
+    } else if (method === "DELETE") {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: false }) });
     } else {
-      await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+      await route.fulfill({ status: 405 });
     }
   });
 }

@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to save job" }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, saved: true });
 }
 
 // ─── DELETE: unsave a job by job_id ───────────────────────────────────────────
@@ -123,5 +123,5 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Failed to unsave job" }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, saved: false });
 }
