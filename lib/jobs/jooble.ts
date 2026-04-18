@@ -153,9 +153,23 @@ export class JoobleProvider implements IJobProvider {
       }
 
       const data = (await response.json()) as JoobleRawResponse;
-      const jobs = (data.jobs ?? [])
-        .slice(0, results_per_page)
-        .map(normalizeJoobleJob);
+      let jobs = (data.jobs ?? []).map(normalizeJoobleJob);
+
+      // Jooble often returns global results regardless of location param — filter locally
+      if (where) {
+        const whereLower = where.toLowerCase();
+        const whereWords = whereLower.split(/[\s,]+/).filter(w => w.length > 3);
+        const locationFiltered = jobs.filter(j => {
+          const loc = j.location.toLowerCase();
+          if (loc.includes("remote")) return true;
+          if (loc.includes(whereLower) || whereLower.includes(loc)) return true;
+          return whereWords.some(w => loc.includes(w));
+        });
+        // Use filtered if we got results, otherwise keep original
+        if (locationFiltered.length > 0) jobs = locationFiltered;
+      }
+
+      jobs = jobs.slice(0, results_per_page);
 
       const result: SearchResponse = {
         results: jobs,

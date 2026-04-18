@@ -58,20 +58,35 @@ export default async function JobsPage() {
       what: searchWhat,
       where: searchWhere || undefined,
       country,
-      results_per_page: 20,
+      results_per_page: 40, // fetch more — some will be filtered out by location
       sort_by: "relevance",
     });
 
-    if (response.results.length > 0 && defaultCv?.parsed_json) {
-      // Score against CV
-      const cvData = defaultCv.parsed_json as ResumeContent;
-      const scored = scoreJobsAgainstCV(response.results, cvData, locations, country);
-      initialJobs = scored.sort((a: ScoredJob, b: ScoredJob) => b.matchScore - a.matchScore);
-    } else {
-      initialJobs = response.results;
+    // Filter to preferred locations (some providers like Jooble ignore the where param)
+    let filtered = response.results;
+    if (locations.length > 0) {
+      const prefLower = locations.map(l => l.toLowerCase());
+      filtered = response.results.filter(job => {
+        const jobLoc = (job.location || "").toLowerCase();
+        if (jobLoc.includes("remote")) return true;
+        return prefLower.some(pref =>
+          jobLoc.includes(pref) || pref.includes(jobLoc) ||
+          pref.split(/[\s,]+/).some((w: string) => w.length > 3 && jobLoc.includes(w))
+        );
+      });
+      // If filtering removes everything, fall back to unfiltered
+      if (filtered.length === 0) filtered = response.results;
     }
 
-    console.log("[my-jobs] Got", initialJobs.length, "jobs from all providers");
+    if (filtered.length > 0 && defaultCv?.parsed_json) {
+      const cvData = defaultCv.parsed_json as ResumeContent;
+      const scored = scoreJobsAgainstCV(filtered, cvData, locations, country);
+      initialJobs = scored.sort((a: ScoredJob, b: ScoredJob) => b.matchScore - a.matchScore);
+    } else {
+      initialJobs = filtered;
+    }
+
+    console.log("[my-jobs] Got", response.results.length, "raw,", filtered.length, "after location filter");
   } catch (err) {
     console.error("[my-jobs] Search failed:", err);
   }
