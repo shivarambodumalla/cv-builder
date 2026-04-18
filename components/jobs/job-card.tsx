@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Heart, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useActivity } from "@/lib/analytics/useActivity";
 
 export interface JobCardJob {
   id: string;
@@ -76,6 +77,7 @@ function avatarColor(name: string): string {
 export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore = true, savedAt, isExpired = false, onRemove }: JobCardProps) {
   const [saving, setSaving] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { log } = useActivity();
   useEffect(() => setMounted(true), []);
 
   const salary = fmtSalary(job.salary_min, job.salary_max);
@@ -88,7 +90,15 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
 
   async function toggleSave() {
     setSaving(true);
-    try { if (isSaved) await onUnsave?.(job.id); else await onSave?.(job); } finally { setSaving(false); }
+    try {
+      if (isSaved) {
+        await onUnsave?.(job.id);
+        log("Unsaved job", { title: job.title, company: job.company });
+      } else {
+        await onSave?.(job);
+        log("Saved job", { title: job.title, company: job.company, score });
+      }
+    } finally { setSaving(false); }
   }
 
   function apply() {
@@ -96,6 +106,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ jobId: job.id, jobTitle: job.title, company: job.company, location: job.location, salaryMin: job.salary_min, salaryMax: job.salary_max, matchScore: score, redirectUrl: job.redirect_url }),
     }).catch(() => {});
+    log("Applied to job", { title: job.title, company: job.company, score, location: job.location });
     window.open(job.redirect_url, "_blank", "noopener,noreferrer");
   }
 

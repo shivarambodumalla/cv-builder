@@ -8,6 +8,7 @@ import { JobCard, type JobCardJob } from "@/components/jobs/job-card";
 import { PreferredLocationsModal } from "@/components/jobs/preferred-locations-modal";
 import { getSuggestions, COMMON_ROLES, COMMON_LOCATIONS } from "@/lib/jobs/fuzzy-search";
 import Link from "next/link";
+import { useActivity } from "@/lib/analytics/useActivity";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -57,6 +58,7 @@ const JOB_TYPE_OPTIONS: { label: string; value: JobType }[] = [
 ];
 
 export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, initialBestMatches = [], initialMoreJobs = [] }: JobsContentProps) {
+  const { log } = useActivity();
   const [selectedCvId, setSelectedCvId] = useState<string>(defaultCvId ?? cvs[0]?.id ?? "");
   const [keyword, setKeyword] = useState("");
   const [locations, setLocations] = useState<string[]>([]);
@@ -163,6 +165,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, initialBe
       setCorrectedLocation(data.correctedLocation ?? null);
       setHasMoreBest(best.length === 20);
       setHasMoreMore(more.length === 20);
+      log("Searched jobs", { keyword: keyword || "smart match", results: best.length + more.length });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Search failed");
     } finally {
