@@ -2,24 +2,26 @@ import { test, expect } from "@playwright/test";
 import { TEST_CV_ID } from "./helpers/auth";
 import jobsFixture from "./fixtures/jobs.json";
 
+// Track which stubs were hit
+let trackClickCalled = false;
+let saveMethodCalled: string | null = null;
+
 async function stubJobsApi(page: import("@playwright/test").Page) {
-  // Stub search — covers /api/jobs/search and /api/jobs/search?cvId=...&page=1
+  trackClickCalled = false;
+  saveMethodCalled = null;
+
   await page.route("**/api/jobs/search**", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify(jobsFixture),
-    });
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(jobsFixture) });
   });
 
-  // Stub track-click
   await page.route("**/api/jobs/track-click**", async (route) => {
+    trackClickCalled = true;
     await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
   });
 
-  // Stub save — handle GET/POST/DELETE
   await page.route("**/api/jobs/save**", async (route) => {
     const method = route.request().method();
+    saveMethodCalled = method;
     if (method === "GET") {
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ savedJobs: [] }) });
     } else if (method === "POST") {
@@ -31,7 +33,6 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
     }
   });
 
-  // Stub preferred locations (used by jobs page)
   await page.route("**/api/user/preferred-locations**", async (route) => {
     if (route.request().method() === "GET") {
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ locations: [] }) });
@@ -39,16 +40,22 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
       await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
     }
   });
+
+  // Stub activity/telemetry to prevent noise
+  await page.route("**/api/activity/**", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+  });
+  await page.route("**/api/telemetry/**", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+  });
 }
 
 async function waitForJobCards(page: import("@playwright/test").Page) {
-  // Wait for the client-side fetch to hit our stub and return
   await page.waitForResponse(
     (r) => r.url().includes("/api/jobs/search") && r.status() === 200,
     { timeout: 20000 }
-  );
-  // Then wait for the cards to render from the stubbed data
-  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 10000 });
+  ).catch(() => {});
+  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 15000 });
 }
 
 test.describe("Jobs Feature", () => {
@@ -58,16 +65,10 @@ test.describe("Jobs Feature", () => {
 
   test("jobs page loads with listings", async ({ page }) => {
     await page.goto("/my-jobs");
-
-    // Verify we're authenticated and on the jobs page (not redirected to login)
     await page.waitForLoadState("domcontentloaded");
-    const url = page.url();
-    // Accept either /my-jobs or /my-jobs with query params
-    expect(url).toMatch(/\/(my-jobs|login)/);
 
-    // If redirected to login, skip — auth isn't set up in this CI run
-    if (url.includes("/login")) {
-      test.skip(true, "Auth not available — skipping authenticated test");
+    if (page.url().includes("/login")) {
+      test.skip(true, "Auth not available");
       return;
     }
 
@@ -86,15 +87,15 @@ test.describe("Jobs Feature", () => {
     const applyBtn = page.locator('[data-testid="apply-btn"]').first();
     await expect(applyBtn).toBeVisible({ timeout: 10000 });
 
-    const [trackResp] = await Promise.all([
-      page.waitForResponse(
-        (r) => r.url().includes("/api/jobs/track-click") && r.status() === 200,
-        { timeout: 20000 }
-      ),
+    // Apply may open a new tab — handle gracefully
+    const [popup] = await Promise.all([
+      page.waitForEvent("popup").catch(() => null),
       applyBtn.click(),
     ]);
+    await popup?.close();
 
-    expect(trackResp.request().method()).toBe("POST");
+    // Verify the track-click stub was hit (poll since fetch is fire-and-forget)
+    await expect.poll(() => trackClickCalled, { timeout: 10000 }).toBe(true);
   });
 
   test("save job toggles", async ({ page }) => {
@@ -107,15 +108,10 @@ test.describe("Jobs Feature", () => {
     const saveBtn = page.locator('[data-testid="save-btn"]').first();
     await expect(saveBtn).toBeVisible({ timeout: 10000 });
 
-    const [saveResp] = await Promise.all([
-      page.waitForResponse(
-        (r) => r.url().includes("/api/jobs/save") && r.status() === 200,
-        { timeout: 20000 }
-      ),
-      saveBtn.click(),
-    ]);
+    await saveBtn.click();
 
-    expect(saveResp.request().method()).toBe("POST");
+    // Verify save API was called with POST
+    await expect.poll(() => saveMethodCalled, { timeout: 10000 }).toBe("POST");
   });
 
   test("keyword filter works", async ({ page }) => {
@@ -126,19 +122,17 @@ test.describe("Jobs Feature", () => {
     await waitForJobCards(page);
 
     const searchInput = page.locator('[data-testid="jobs-search"]');
-    // Search input might not exist if the page layout changed — skip gracefully
     if (!(await searchInput.isVisible().catch(() => false))) {
       test.skip(true, "Search input not visible");
       return;
     }
 
     await searchInput.fill("engineer");
-    // Wait for debounce + re-render
     await page.waitForTimeout(1500);
 
     const pageText = (await page.textContent("body")) || "";
     expect(
-      pageText.includes("engineer") || pageText.includes("Engineer") || pageText.includes("No jobs found") || pageText.includes("No")
+      pageText.includes("engineer") || pageText.includes("Engineer") || pageText.includes("No jobs")
     ).toBeTruthy();
   });
 

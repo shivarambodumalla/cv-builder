@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useSignupModal } from "@/components/popups/signup-modal";
 
 type TemplateCategory = "all" | "single" | "two-column" | "minimal" | "professional";
 
@@ -41,6 +41,7 @@ const FILTERS: { key: TemplateCategory; label: string }[] = [
 
 export function TemplateShowcase() {
   const [filter, setFilter] = useState<TemplateCategory>("all");
+  const { showSignupModal } = useSignupModal();
 
   const filtered = TEMPLATES.filter((t) => t.category.includes(filter));
 
@@ -69,10 +70,11 @@ export function TemplateShowcase() {
       {/* Uniform template grid — 3 per row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((t) => (
-          <Link
+          <button
             key={t.slug}
-            href={`/upload-resume?template=${t.slug}`}
-            className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow"
+            type="button"
+            onClick={() => showSignupModal({ trigger: "template_click", templateName: t.name, templateImg: t.img ?? undefined })}
+            className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow text-left"
           >
             <div className="h-[340px] bg-muted overflow-hidden relative">
               {t.img ? (
@@ -111,7 +113,7 @@ export function TemplateShowcase() {
                 Use this template
               </span>
             </div>
-          </Link>
+          </button>
         ))}
       </div>
     </div>
