@@ -48,6 +48,14 @@ export async function GET(request: Request) {
         }
       }
 
+      // Check for template selection cookie — redirect to upload page
+      const templateCookie = request.headers.get("cookie")?.match(/cvedge_template=([^;]+)/)?.[1];
+      if (templateCookie) {
+        const res = NextResponse.redirect(`${origin}/upload-resume?template=${templateCookie}`);
+        res.cookies.delete("cvedge_template");
+        return res;
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
 

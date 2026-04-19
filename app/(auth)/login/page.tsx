@@ -20,7 +20,6 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
   const returnUrl = searchParams.get("returnUrl");
-
   async function handleGoogleLogin() {
     const supabase = createClient();
     const callbackParams = new URLSearchParams();

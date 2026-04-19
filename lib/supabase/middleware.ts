@@ -59,6 +59,17 @@ export async function updateSession(request: NextRequest) {
 
   if (user && isAuthOrHome) {
     const url = request.nextUrl.clone();
+
+    // Check for template selection cookie — redirect to upload instead of dashboard
+    const templateCookie = request.cookies.get("cvedge_template")?.value;
+    if (templateCookie) {
+      url.pathname = "/upload-resume";
+      url.searchParams.set("template", templateCookie);
+      const res = NextResponse.redirect(url);
+      res.cookies.delete("cvedge_template");
+      return { response: res, user };
+    }
+
     url.pathname = "/dashboard";
     return { response: NextResponse.redirect(url), user };
   }

@@ -72,7 +72,7 @@ export function TemplateShowcase() {
           <button
             key={t.slug}
             type="button"
-            onClick={() => showSignupModal({ trigger: "template_click", templateName: t.name, templateImg: t.img ?? undefined })}
+            onClick={() => showSignupModal({ trigger: "template_click", templateName: t.name, templateSlug: t.slug, templateImg: t.img ?? undefined })}
             className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow text-left"
           >
             <div className="h-[340px] bg-muted overflow-hidden relative">
@@ -108,7 +108,7 @@ export function TemplateShowcase() {
                 ))}
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{t.desc}</p>
-              <span className="mt-1.5 inline-flex items-center justify-center rounded-md bg-[#065F46] px-3 py-1 text-[10px] font-medium text-white group-hover:bg-[#065F46]/90 transition-colors">
+              <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-5 py-2.5 text-sm font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
                 Use this template
               </span>
             </div>

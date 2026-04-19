@@ -23,6 +23,7 @@ export type SignupTrigger =
 export interface SignupTriggerContext {
   trigger: SignupTrigger;
   templateName?: string;
+  templateSlug?: string;
   templateImg?: string;
   roleName?: string;
   searchQuery?: string;
@@ -127,8 +128,14 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
   function handleAuth() {
     trackPopup("click", ctx.trigger);
     markDismissed();
-    const returnParam = pathname && pathname !== "/" ? `?returnUrl=${encodeURIComponent(pathname)}` : "";
-    window.location.href = `/login${returnParam}`;
+
+    // Save template selection as a cookie (readable server-side for redirect)
+    if (ctx.trigger === "template_click" && ctx.templateSlug) {
+      document.cookie = `cvedge_template=${ctx.templateSlug};path=/;max-age=300`;
+    }
+
+    // Go to login — middleware handles redirect for logged-in users
+    window.location.href = "/login";
   }
 
   function handleDismiss() {
