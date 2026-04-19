@@ -61,11 +61,8 @@ export function PopupAudit() {
 
   function handlePreview(p: PopupConfig) {
     if (p.category === "signup_modal" && p.signupContext) {
-      const key = "cvedge_signup_modal_dismissed";
-      const saved = localStorage.getItem(key);
-      localStorage.removeItem(key);
-      showSignupModal(p.signupContext);
-      if (saved) setTimeout(() => localStorage.setItem(key, saved), 100);
+      // force: true bypasses session + cooldown checks
+      showSignupModal(p.signupContext, true);
     } else {
       setPreviewPopover(p);
     }
@@ -144,49 +141,42 @@ export function PopupAudit() {
         </div>
       </div>
 
-      {/* Popover / inline preview modal */}
+      {/* Popover / inline preview — NO backdrop, bottom-right, page stays interactive */}
       {previewPopover && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:justify-end bg-black/30 p-6" onClick={() => setPreviewPopover(null)}>
-          {/* Preview as actual popover in bottom-right */}
-          <div className="w-[340px] animate-in slide-in-from-bottom-4 duration-300" onClick={(e) => e.stopPropagation()}>
-            <div className="rounded-2xl shadow-2xl overflow-hidden border">
-              {/* Green header */}
-              <div className="bg-[#065F46] px-4 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {(() => {
-                    const Icon = ICON_MAP[previewPopover.previewIcon || ""] || FileText;
-                    return (
-                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15">
-                        <Icon className="h-3.5 w-3.5 text-white" />
-                      </div>
-                    );
-                  })()}
-                  <span className="text-white text-xs font-bold">CV<span className="text-[#34D399]">Edge</span></span>
-                </div>
-                <button onClick={() => setPreviewPopover(null)} className="flex h-7 w-7 items-center justify-center rounded-lg bg-black/20 text-white/70 hover:bg-black/30 hover:text-white transition-colors">
-                  <X className="h-3.5 w-3.5" />
-                </button>
+        <div className="fixed bottom-6 right-6 z-[80] w-[340px] animate-in slide-in-from-bottom-4 duration-300">
+          <div className="rounded-2xl shadow-2xl overflow-hidden border">
+            {/* Green header */}
+            <div className="bg-[#065F46] px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {(() => {
+                  const Icon = ICON_MAP[previewPopover.previewIcon || ""] || FileText;
+                  return (
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15">
+                      <Icon className="h-3.5 w-3.5 text-white" />
+                    </div>
+                  );
+                })()}
+                <span className="text-white text-xs font-bold">CV<span className="text-[#34D399]">Edge</span></span>
               </div>
-              {/* Beige body */}
-              <div className="bg-[#F5F0E8] dark:bg-card px-4 py-4">
-                <h3 className="text-sm font-semibold mb-1">{previewPopover.previewTitle}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{previewPopover.previewSubtitle}</p>
-                <button className="w-full rounded-lg bg-[#065F46] py-2 text-xs font-semibold text-white">
-                  {previewPopover.previewCta}
-                </button>
-                <button onClick={() => setPreviewPopover(null)} className="block w-full text-center text-[11px] text-muted-foreground mt-2">
-                  Maybe later
-                </button>
-              </div>
+              <button onClick={() => setPreviewPopover(null)} className="flex h-7 w-7 items-center justify-center rounded-lg bg-black/20 text-white/70 hover:bg-black/30 hover:text-white transition-colors">
+                <X className="h-3.5 w-3.5" />
+              </button>
             </div>
-            {/* Metadata */}
-            <div className="mt-2 rounded-lg bg-background border p-3 text-[10px] text-muted-foreground space-y-1">
-              <p><strong>Category:</strong> {CATEGORY_LABELS[previewPopover.category]}</p>
-              <p><strong>Pages:</strong> {previewPopover.pages.join(", ")}</p>
-              <p><strong>Who:</strong> {previewPopover.who}</p>
-              <p><strong>Condition:</strong> {previewPopover.condition}</p>
-              <p><strong>Cooldown:</strong> {previewPopover.frequency}</p>
+            {/* Beige body */}
+            <div className="bg-[#F5F0E8] dark:bg-card px-4 py-4">
+              <h3 className="text-sm font-semibold mb-1">{previewPopover.previewTitle}</h3>
+              <p className="text-xs text-muted-foreground mb-4">{previewPopover.previewSubtitle}</p>
+              <button className="w-full rounded-lg bg-[#065F46] py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
+                {previewPopover.previewCta}
+              </button>
+              <button onClick={() => setPreviewPopover(null)} className="block w-full text-center text-[11px] text-muted-foreground mt-2 hover:text-foreground transition-colors">
+                Maybe later
+              </button>
             </div>
+          </div>
+          {/* Metadata badge */}
+          <div className="mt-2 rounded-lg bg-background border p-2.5 text-[10px] text-muted-foreground">
+            <span className="font-semibold">{previewPopover.name}</span> · {previewPopover.who} · {previewPopover.condition} · {previewPopover.frequency} cooldown
           </div>
         </div>
       )}

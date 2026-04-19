@@ -95,7 +95,7 @@ function trackPopup(action: "shown" | "click" | "dismiss", trigger: string) {
 // ─── Context ─────────────────────────────────────────────────────────────────
 
 interface SignupModalContextType {
-  showSignupModal: (ctx?: Partial<SignupTriggerContext>) => void;
+  showSignupModal: (ctx?: Partial<SignupTriggerContext>, force?: boolean) => void;
 }
 
 const SignupModalCtx = createContext<SignupModalContextType>({ showSignupModal: () => {} });
@@ -107,12 +107,12 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
   const [open, setOpen] = useState(false);
   const [ctx, setCtx] = useState<SignupTriggerContext>({ trigger: "generic" });
 
-  const showSignupModal = useCallback((c?: Partial<SignupTriggerContext>) => {
-    if (sessionShown || isDismissedRecently()) return;
+  const showSignupModal = useCallback((c?: Partial<SignupTriggerContext>, force?: boolean) => {
+    if (!force && (sessionShown || isDismissedRecently())) return;
     const triggerCtx: SignupTriggerContext = { trigger: "generic", ...c };
     setCtx(triggerCtx);
     setOpen(true);
-    sessionShown = true;
+    if (!force) sessionShown = true;
     trackPopup("shown", triggerCtx.trigger);
   }, []);
 
@@ -171,8 +171,8 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
                 <div className="space-y-4 mb-7">
                   {BENEFITS.map((b) => (
                     <div key={b} className="flex items-center gap-3">
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#D1FAE5]">
-                        <Check className="h-3.5 w-3.5 text-[#065F46]" />
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
+                        <Check className="h-3 w-3 text-white" />
                       </div>
                       <span className="text-[15px]">{b}</span>
                     </div>
@@ -229,8 +229,8 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
                 <div className="space-y-3 mb-5">
                   {BENEFITS.map((b) => (
                     <div key={b} className="flex items-center gap-3">
-                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#D1FAE5]">
-                        <Check className="h-3 w-3 text-[#065F46]" />
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
+                        <Check className="h-3 w-3 text-white" />
                       </div>
                       <span className="text-sm">{b}</span>
                     </div>
