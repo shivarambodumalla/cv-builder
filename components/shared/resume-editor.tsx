@@ -178,7 +178,6 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [title, setTitle] = useState(cv.title || "Untitled CV");
   const [editingTitle, setEditingTitle] = useState(false);
   const [pdfToast, setPdfToast] = useState(false);
-  const [showWatermarkModal, setShowWatermarkModal] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
   const [mobilePreview, setMobilePreview] = useState(false);
   const [coverLetterMounted, setCoverLetterMounted] = useState(() => coverLetters.length > 0);
@@ -569,16 +568,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           >
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
-          <Button size="sm" className="h-8" onClick={() => {
-            if (plan !== "pro") {
-              setShowWatermarkModal(true);
-              if (typeof window !== "undefined" && typeof window.gtag === "function") {
-                window.gtag("event", "upgrade_modal_shown", { trigger: "pdf_download" });
-              }
-            } else {
-              handlePdfDownload();
-            }
-          }}>
+          <Button size="sm" className="h-8" onClick={handlePdfDownload}>
             <Download className="mr-1.5 h-3.5 w-3.5" /> Download
           </Button>
           {plan !== "pro" && (
@@ -919,57 +909,6 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           <button onClick={() => { setPdfToast(false); openUpgradeModal("download"); }} className="text-xs text-primary hover:underline mt-1">
             Upgrade to remove watermark
           </button>
-        </div>
-      )}
-      {/* Watermark preview modal */}
-      {showWatermarkModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowWatermarkModal(false)}>
-          <div className="bg-background rounded-xl border shadow-xl max-w-sm w-full mx-4 p-6" onClick={(e) => e.stopPropagation()}>
-            {/* Watermark preview */}
-            <div className="rounded-lg border bg-white p-6 mb-5 relative overflow-hidden" style={{ minHeight: 140 }}>
-              <div className="space-y-2">
-                <div className="h-3 w-3/4 rounded bg-muted" />
-                <div className="h-2 w-full rounded bg-muted/60" />
-                <div className="h-2 w-5/6 rounded bg-muted/60" />
-                <div className="h-2 w-2/3 rounded bg-muted/60" />
-                <div className="h-3 w-1/2 rounded bg-muted mt-3" />
-                <div className="h-2 w-full rounded bg-muted/60" />
-                <div className="h-2 w-4/5 rounded bg-muted/60" />
-              </div>
-              {/* Watermark overlay */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className="text-2xl font-bold text-black/[0.06] rotate-[-30deg] select-none whitespace-nowrap">
-                  CVEdge Watermark
-                </span>
-              </div>
-            </div>
-
-            <h3 className="text-base font-semibold mb-1">Free downloads include a watermark</h3>
-            <p className="text-sm text-muted-foreground mb-5">
-              Upgrade to Pro for clean, professional PDFs with no branding.
-            </p>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  setShowWatermarkModal(false);
-                  openUpgradeModal("download");
-                }}
-                className="w-full rounded-md bg-[#065F46] py-2.5 text-sm font-semibold text-white hover:bg-[#065F46]/90 transition-colors"
-              >
-                Upgrade — from $2.30/week
-              </button>
-              <button
-                onClick={() => {
-                  setShowWatermarkModal(false);
-                  handlePdfDownload();
-                }}
-                className="w-full rounded-md border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
-              >
-                Download with watermark
-              </button>
-            </div>
-          </div>
         </div>
       )}
     </div>

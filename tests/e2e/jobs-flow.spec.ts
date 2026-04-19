@@ -42,10 +42,13 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
 }
 
 async function waitForJobCards(page: import("@playwright/test").Page) {
-  // The page loads with no initial jobs (server passes initialBestMatches=[])
-  // Then the client fetches from the stubbed API and renders cards
-  // Give it enough time for the client-side fetch + render cycle
-  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 20000 });
+  // Wait for the client-side fetch to hit our stub and return
+  await page.waitForResponse(
+    (r) => r.url().includes("/api/jobs/search") && r.status() === 200,
+    { timeout: 20000 }
+  );
+  // Then wait for the cards to render from the stubbed data
+  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 10000 });
 }
 
 test.describe("Jobs Feature", () => {

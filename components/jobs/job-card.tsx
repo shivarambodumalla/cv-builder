@@ -111,7 +111,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
   }
 
   return (
-    <div className={`rounded-2xl border bg-card p-4 transition-shadow hover:shadow-md ${isExpired ? "opacity-60" : ""}`}>
+    <div data-testid="job-card" className={`rounded-2xl border bg-card p-4 transition-shadow hover:shadow-md ${isExpired ? "opacity-60" : ""}`}>
       <div className="flex gap-3">
         {/* Avatar */}
         {job.company_logo ? (
@@ -171,11 +171,11 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
 
         {/* Desktop actions */}
         <div className="hidden sm:flex items-center gap-2 shrink-0">
-          <button onClick={toggleSave} disabled={saving} className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-colors ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground hover:border-rose-300 hover:text-rose-600"}`}>
+          <button data-testid="save-btn" onClick={toggleSave} disabled={saving} className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-colors ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground hover:border-rose-300 hover:text-rose-600"}`}>
             <Heart className={`h-3.5 w-3.5 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
             {isSaved ? "Saved" : "Save"}
           </button>
-          <button onClick={apply} className="flex items-center gap-1.5 rounded-xl bg-[#065F46] px-4 py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
+          <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1.5 rounded-xl bg-[#065F46] px-4 py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
             <ExternalLink className="h-3.5 w-3.5" /> Apply
           </button>
           {isExpired && onRemove && <button onClick={() => onRemove(job.id)} className="text-xs text-muted-foreground hover:text-error px-2">Remove</button>}
@@ -197,11 +197,11 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
           </span>
         ) : null}
         <div className="flex-1" />
-        <button onClick={toggleSave} disabled={saving} className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground"}`}>
+        <button data-testid="save-btn" onClick={toggleSave} disabled={saving} className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground"}`}>
           <Heart className={`h-3 w-3 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
           {isSaved ? "Saved" : "Save"}
         </button>
-        <button onClick={apply} className="flex items-center gap-1 rounded-lg bg-[#065F46] px-3 py-1.5 text-[11px] font-semibold text-white">
+        <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1 rounded-lg bg-[#065F46] px-3 py-1.5 text-[11px] font-semibold text-white">
           <ExternalLink className="h-3 w-3" /> Apply
         </button>
       </div>
