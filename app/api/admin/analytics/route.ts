@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
 
   // Enrich top users with name + email from profiles
   const topUserIds = topUsersSorted.map(([id]) => id);
-  let profileMap: Record<string, { name: string; email: string }> = {};
+  const profileMap: Record<string, { name: string; email: string }> = {};
   if (topUserIds.length > 0) {
     const { data: profiles } = await admin
       .from("profiles")
