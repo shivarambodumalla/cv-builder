@@ -34,14 +34,9 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
   });
 
   await page.route("**/api/user/preferred-locations**", async (route) => {
-    if (route.request().method() === "GET") {
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ locations: [] }) });
-    } else {
-      await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
-    }
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ locations: [] }) });
   });
 
-  // Stub activity/telemetry to prevent noise
   await page.route("**/api/activity/**", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
   });
@@ -51,14 +46,19 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
 }
 
 async function waitForJobCards(page: import("@playwright/test").Page) {
-  await page.waitForResponse(
-    (r) => r.url().includes("/api/jobs/search") && r.status() === 200,
-    { timeout: 20000 }
-  ).catch(() => {});
-  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 15000 });
+  // Wait for cards to render — the stub returns data, client renders it
+  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 30000 });
+}
+
+// Helper: find a VISIBLE button (not hidden by responsive breakpoint)
+function visibleBtn(page: import("@playwright/test").Page, testId: string) {
+  return page.locator(`[data-testid="${testId}"]`).locator("visible=true").first();
 }
 
 test.describe("Jobs Feature", () => {
+  // Set viewport to desktop so sm: breakpoint buttons are visible
+  test.use({ viewport: { width: 1280, height: 720 } });
+
   test.beforeEach(async ({ page }) => {
     await stubJobsApi(page);
   });
@@ -84,17 +84,19 @@ test.describe("Jobs Feature", () => {
 
     await waitForJobCards(page);
 
-    const applyBtn = page.locator('[data-testid="apply-btn"]').first();
-    await expect(applyBtn).toBeVisible({ timeout: 10000 });
+    // Find the VISIBLE apply button (desktop or mobile depending on viewport)
+    const applyBtn = visibleBtn(page, "apply-btn");
+    await applyBtn.scrollIntoViewIfNeeded();
+    await expect(applyBtn).toBeEnabled({ timeout: 5000 });
 
-    // Apply may open a new tab — handle gracefully
+    // Apply opens new tab — handle gracefully
     const [popup] = await Promise.all([
       page.waitForEvent("popup").catch(() => null),
       applyBtn.click(),
     ]);
     await popup?.close();
 
-    // Verify the track-click stub was hit (poll since fetch is fire-and-forget)
+    // Verify track-click was called
     await expect.poll(() => trackClickCalled, { timeout: 10000 }).toBe(true);
   });
 
@@ -105,12 +107,12 @@ test.describe("Jobs Feature", () => {
 
     await waitForJobCards(page);
 
-    const saveBtn = page.locator('[data-testid="save-btn"]').first();
-    await expect(saveBtn).toBeVisible({ timeout: 10000 });
+    const saveBtn = visibleBtn(page, "save-btn");
+    await saveBtn.scrollIntoViewIfNeeded();
+    await expect(saveBtn).toBeEnabled({ timeout: 5000 });
 
     await saveBtn.click();
 
-    // Verify save API was called with POST
     await expect.poll(() => saveMethodCalled, { timeout: 10000 }).toBe("POST");
   });
 
