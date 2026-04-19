@@ -104,7 +104,20 @@ export async function GET(request: NextRequest) {
     userMap[l.user_id].usd += Number(l.cost_usd ?? 0);
     userMap[l.user_id].inr += Number(l.cost_inr ?? 0);
   }
-  const topUsers = Object.entries(userMap).sort((a, b) => b[1].usd - a[1].usd).slice(0, 10);
+  const topUsersSorted = Object.entries(userMap).sort((a, b) => b[1].usd - a[1].usd).slice(0, 10);
+
+  // Enrich top users with name + email from profiles
+  const topUserIds = topUsersSorted.map(([id]) => id);
+  let profileMap: Record<string, { name: string; email: string }> = {};
+  if (topUserIds.length > 0) {
+    const { data: profiles } = await admin
+      .from("profiles")
+      .select("id, full_name, email")
+      .in("id", topUserIds);
+    for (const pr of profiles ?? []) {
+      profileMap[pr.id] = { name: pr.full_name ?? "", email: pr.email ?? "" };
+    }
+  }
 
   return NextResponse.json({
     range: range || "today",
@@ -115,7 +128,12 @@ export async function GET(request: NextRequest) {
     byDay: dailyBreakdown,
     byHour,
     byModel,
-    topUsers: topUsers.map(([id, d]) => ({ id, ...d })),
+    topUsers: topUsersSorted.map(([id, d]) => ({
+      id,
+      name: profileMap[id]?.name || "",
+      email: profileMap[id]?.email || "",
+      ...d,
+    })),
     fetchedAt: new Date().toISOString(),
   });
 }

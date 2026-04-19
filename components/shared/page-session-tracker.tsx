@@ -11,6 +11,7 @@ export function PageSessionTracker() {
 
   useEffect(() => {
     const flush = (path: string, enteredAt: number) => {
+      if (typeof window !== "undefined" && window.location.hostname === "localhost") return;
       const durationMs = Date.now() - enteredAt;
       if (durationMs < 1000 || flushedRef.current) return;
       flushedRef.current = true;

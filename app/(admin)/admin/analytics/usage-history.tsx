@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 interface FeatureData { calls: number; input: number; output: number; usd: number; inr: number }
 interface DayData { date: string; calls: number; input: number; output: number; usd: number; inr: number; users: number }
 interface ModelData { calls: number; input: number; output: number; usd: number }
-interface TopUser { id: string; calls: number; usd: number; inr: number }
+interface TopUser { id: string; name: string; email: string; calls: number; usd: number; inr: number }
 
 interface HistoryData {
   range: string;
@@ -275,7 +275,7 @@ export function UsageHistory() {
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b text-left text-muted-foreground">
-                      <th className="pb-1.5">User ID</th>
+                      <th className="pb-1.5">User</th>
                       <th className="pb-1.5 text-right">Calls</th>
                       <th className="pb-1.5 text-right">USD</th>
                       <th className="pb-1.5 text-right">INR</th>
@@ -284,7 +284,12 @@ export function UsageHistory() {
                   <tbody>
                     {data.topUsers.map((u) => (
                       <tr key={u.id} className="border-b">
-                        <td className="py-1.5 font-mono text-[10px]">{u.id.slice(0, 12)}...</td>
+                        <td className="py-1.5">
+                          <div>
+                            <span className="text-xs font-medium">{u.name || "—"}</span>
+                            <span className="text-[10px] text-muted-foreground ml-1.5">{u.email}</span>
+                          </div>
+                        </td>
                         <td className="py-1.5 text-right">{u.calls}</td>
                         <td className="py-1.5 text-right">${u.usd.toFixed(6)}</td>
                         <td className="py-1.5 text-right">₹{u.inr.toFixed(2)}</td>

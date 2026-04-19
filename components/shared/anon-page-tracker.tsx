@@ -9,6 +9,7 @@ export function AnonPageTracker() {
 
   useEffect(() => {
     if (!pathname) return;
+    if (typeof window !== "undefined" && window.location.hostname === "localhost") return;
 
     // Fire-and-forget — never block rendering
     fetch("/api/telemetry/page-view", {

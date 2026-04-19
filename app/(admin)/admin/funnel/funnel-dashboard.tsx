@@ -14,8 +14,10 @@ interface Stage { key: string; label: string; count: number; icon?: string }
 interface PageVisit { path: string; label: string; count: number; type: "public" | "private" }
 interface BounceItem { path: string; label: string; views: number; bouncePct: number; reachLoginPct: number }
 interface SignupSource { page: string; count: number; pct: number }
+interface FunnelStep { key: string; label: string; count: number }
 interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
+  jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[];
   pageVisits: PageVisit[]; totalAnonVisits: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
 }
@@ -155,6 +157,56 @@ export function FunnelDashboard() {
                           {fp(convPct)}
                         </span>
                       </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── 2b. JOBS FUNNEL ── */}
+          <div className="rounded-xl border p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Briefcase className="h-4 w-4 text-[#065F46]" />
+              <h2 className="text-sm font-semibold">Jobs Funnel</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {data.jobsFunnel.map((step, i) => {
+                const prev = i > 0 ? data.jobsFunnel[i - 1].count : step.count;
+                const convPct = prev > 0 ? p(step.count, prev) : 0;
+                return (
+                  <div key={step.key} className="rounded-lg border p-3">
+                    <p className="text-[11px] text-muted-foreground">{step.label}</p>
+                    <p className="text-lg font-bold tabular-nums mt-0.5">{step.count.toLocaleString()}</p>
+                    {i > 0 && prev > 0 && (
+                      <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-[#065F46]" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
+                        {fp(convPct)} from prev
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── 2c. INTERVIEW PREP FUNNEL ── */}
+          <div className="rounded-xl border p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="h-4 w-4 text-[#7C3AED]" />
+              <h2 className="text-sm font-semibold">Interview Prep Funnel</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {data.interviewFunnel.map((step, i) => {
+                const prev = i > 0 ? data.interviewFunnel[i - 1].count : step.count;
+                const convPct = prev > 0 ? p(step.count, prev) : 0;
+                return (
+                  <div key={step.key} className="rounded-lg border p-3">
+                    <p className="text-[11px] text-muted-foreground">{step.label}</p>
+                    <p className="text-lg font-bold tabular-nums mt-0.5">{step.count.toLocaleString()}</p>
+                    {i > 0 && prev > 0 && (
+                      <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-[#7C3AED]" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
+                        {fp(convPct)} from prev
+                      </p>
                     )}
                   </div>
                 );
