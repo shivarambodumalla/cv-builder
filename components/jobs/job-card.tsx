@@ -169,41 +169,32 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
           </div>
         </div>
 
-        {/* Desktop actions */}
-        <div className="hidden sm:flex items-center gap-2 shrink-0">
-          <button data-testid="save-btn" onClick={toggleSave} disabled={saving} className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-colors ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground hover:border-rose-300 hover:text-rose-600"}`}>
-            <Heart className={`h-3.5 w-3.5 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
-            {isSaved ? "Saved" : "Save"}
-          </button>
-          <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1.5 rounded-xl bg-[#065F46] px-4 py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
-            <ExternalLink className="h-3.5 w-3.5" /> Apply
-          </button>
-          {isExpired && onRemove && <button onClick={() => onRemove(job.id)} className="text-xs text-muted-foreground hover:text-error px-2">Remove</button>}
-        </div>
       </div>
 
-      {/* Mobile actions */}
-      <div className="flex items-center gap-2 mt-3 sm:hidden">
+      {/* Actions — single row, responsive sizing */}
+      <div className="flex items-center gap-2 mt-3">
+        {/* Match badge — mobile only */}
         {showMatchScore && score != null && job.match_label_text ? (
           <span
-            className="rounded-full px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap"
+            className="sm:hidden rounded-full px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap"
             style={{ backgroundColor: job.match_label_bg ?? undefined, color: job.match_label_color ?? undefined }}
           >
             {job.match_show_score !== false ? `${score}% · ${job.match_label_text}` : job.match_label_text}
           </span>
         ) : showMatchScore && score != null && mc ? (
-          <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap ${mc.bg} ${mc.text}`}>
+          <span className={`sm:hidden rounded-full px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap ${mc.bg} ${mc.text}`}>
             {score}%
           </span>
         ) : null}
         <div className="flex-1" />
-        <button data-testid="save-btn" onClick={toggleSave} disabled={saving} className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground"}`}>
-          <Heart className={`h-3 w-3 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
-          {isSaved ? "Saved" : "Save"}
+        <button data-testid="save-btn" onClick={toggleSave} disabled={saving} className={`flex items-center gap-1.5 rounded-xl border px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-medium transition-colors ${isSaved ? "border-rose-300 text-rose-600 bg-rose-50" : "border-border text-muted-foreground hover:border-rose-300 hover:text-rose-600"}`}>
+          <Heart className={`h-3 sm:h-3.5 w-3 sm:w-3.5 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
+          <span className="hidden sm:inline">{isSaved ? "Saved" : "Save"}</span>
         </button>
-        <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1 rounded-lg bg-[#065F46] px-3 py-1.5 text-[11px] font-semibold text-white">
-          <ExternalLink className="h-3 w-3" /> Apply
+        <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1.5 rounded-xl bg-[#065F46] px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
+          <ExternalLink className="h-3 sm:h-3.5 w-3 sm:w-3.5" /> Apply
         </button>
+        {isExpired && onRemove && <button onClick={() => onRemove(job.id)} className="text-xs text-muted-foreground hover:text-error px-2">Remove</button>}
       </div>
     </div>
   );

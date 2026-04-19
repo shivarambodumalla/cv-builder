@@ -2,7 +2,6 @@ import { test, expect } from "@playwright/test";
 import { TEST_CV_ID } from "./helpers/auth";
 import jobsFixture from "./fixtures/jobs.json";
 
-// Track which stubs were hit
 let trackClickCalled = false;
 let saveMethodCalled: string | null = null;
 
@@ -13,30 +12,21 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
   await page.route("**/api/jobs/search**", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(jobsFixture) });
   });
-
   await page.route("**/api/jobs/track-click**", async (route) => {
     trackClickCalled = true;
     await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
   });
-
   await page.route("**/api/jobs/save**", async (route) => {
+    saveMethodCalled = route.request().method();
     const method = route.request().method();
-    saveMethodCalled = method;
-    if (method === "GET") {
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ savedJobs: [] }) });
-    } else if (method === "POST") {
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: true }) });
-    } else if (method === "DELETE") {
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: false }) });
-    } else {
-      await route.fulfill({ status: 405 });
-    }
+    if (method === "GET") await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ savedJobs: [] }) });
+    else if (method === "POST") await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: true }) });
+    else if (method === "DELETE") await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: false }) });
+    else await route.fulfill({ status: 405 });
   });
-
   await page.route("**/api/user/preferred-locations**", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ locations: [] }) });
   });
-
   await page.route("**/api/activity/**", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
   });
@@ -45,18 +35,7 @@ async function stubJobsApi(page: import("@playwright/test").Page) {
   });
 }
 
-async function waitForJobCards(page: import("@playwright/test").Page) {
-  // Wait for cards to render — the stub returns data, client renders it
-  await expect(page.locator('[data-testid="job-card"]').first()).toBeVisible({ timeout: 30000 });
-}
-
-// Helper: find a VISIBLE button (not hidden by responsive breakpoint)
-function visibleBtn(page: import("@playwright/test").Page, testId: string) {
-  return page.locator(`[data-testid="${testId}"]`).filter({ visible: true }).first();
-}
-
 test.describe("Jobs Feature", () => {
-  // Set viewport to desktop so sm: breakpoint buttons are visible
   test.use({ viewport: { width: 1280, height: 720 } });
 
   test.beforeEach(async ({ page }) => {
@@ -66,15 +45,14 @@ test.describe("Jobs Feature", () => {
   test("jobs page loads with listings", async ({ page }) => {
     await page.goto("/my-jobs");
     await page.waitForLoadState("domcontentloaded");
+    if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
-    if (page.url().includes("/login")) {
-      test.skip(true, "Auth not available");
-      return;
-    }
+    // Wait for job cards from stub
+    const firstCard = page.locator('[data-testid="job-card"]').first();
+    await expect(firstCard).toBeVisible({ timeout: 30000 });
 
-    await waitForJobCards(page);
-    const cards = await page.locator('[data-testid="job-card"]').count();
-    expect(cards).toBeGreaterThan(0);
+    const count = await page.locator('[data-testid="job-card"]').count();
+    expect(count).toBeGreaterThan(0);
   });
 
   test("apply button tracks click", async ({ page }) => {
@@ -82,21 +60,19 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("domcontentloaded");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
-    await waitForJobCards(page);
+    // Wait for card then find apply button INSIDE the first card
+    const firstCard = page.locator('[data-testid="job-card"]').first();
+    await expect(firstCard).toBeVisible({ timeout: 30000 });
 
-    // Find the VISIBLE apply button (desktop or mobile depending on viewport)
-    const applyBtn = visibleBtn(page, "apply-btn");
-    await applyBtn.scrollIntoViewIfNeeded();
-    await expect(applyBtn).toBeEnabled({ timeout: 5000 });
+    const applyBtn = firstCard.locator('[data-testid="apply-btn"]');
+    await expect(applyBtn).toBeVisible({ timeout: 5000 });
 
-    // Apply opens new tab — handle gracefully
     const [popup] = await Promise.all([
       page.waitForEvent("popup").catch(() => null),
       applyBtn.click(),
     ]);
     await popup?.close();
 
-    // Verify track-click was called
     await expect.poll(() => trackClickCalled, { timeout: 10000 }).toBe(true);
   });
 
@@ -105,11 +81,11 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("domcontentloaded");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
-    await waitForJobCards(page);
+    const firstCard = page.locator('[data-testid="job-card"]').first();
+    await expect(firstCard).toBeVisible({ timeout: 30000 });
 
-    const saveBtn = visibleBtn(page, "save-btn");
-    await saveBtn.scrollIntoViewIfNeeded();
-    await expect(saveBtn).toBeEnabled({ timeout: 5000 });
+    const saveBtn = firstCard.locator('[data-testid="save-btn"]');
+    await expect(saveBtn).toBeVisible({ timeout: 5000 });
 
     await saveBtn.click();
 
@@ -121,7 +97,8 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("domcontentloaded");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
-    await waitForJobCards(page);
+    const firstCard = page.locator('[data-testid="job-card"]').first();
+    await expect(firstCard).toBeVisible({ timeout: 30000 });
 
     const searchInput = page.locator('[data-testid="jobs-search"]');
     if (!(await searchInput.isVisible().catch(() => false))) {
@@ -133,9 +110,7 @@ test.describe("Jobs Feature", () => {
     await page.waitForTimeout(1500);
 
     const pageText = (await page.textContent("body")) || "";
-    expect(
-      pageText.includes("engineer") || pageText.includes("Engineer") || pageText.includes("No jobs")
-    ).toBeTruthy();
+    expect(pageText.includes("engineer") || pageText.includes("Engineer") || pageText.includes("No jobs")).toBeTruthy();
   });
 
   test("saved jobs page loads", async ({ page }) => {
@@ -144,9 +119,7 @@ test.describe("Jobs Feature", () => {
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
     const pageText = (await page.textContent("body")) || "";
-    expect(
-      pageText.includes("Saved") || pageText.includes("saved") || pageText.includes("No saved jobs")
-    ).toBeTruthy();
+    expect(pageText.includes("Saved") || pageText.includes("saved") || pageText.includes("No saved jobs")).toBeTruthy();
   });
 });
 
@@ -156,8 +129,7 @@ test.describe("Jobs SEO", () => {
     const page = await context.newPage();
     await page.goto("/jobs");
     await page.waitForLoadState("domcontentloaded");
-    const pageText = (await page.textContent("body")) || "";
-    expect(pageText.toLowerCase()).toContain("job");
+    expect((await page.textContent("body") || "").toLowerCase()).toContain("job");
     await context.close();
   });
 
@@ -166,8 +138,7 @@ test.describe("Jobs SEO", () => {
     const page = await context.newPage();
     await page.goto("/jobs/software-engineer");
     await page.waitForSelector("h1", { timeout: 10000 });
-    const h1 = await page.locator("h1").textContent();
-    expect(h1?.toLowerCase()).toContain("software engineer");
+    expect((await page.locator("h1").textContent() || "").toLowerCase()).toContain("software engineer");
     await context.close();
   });
 });
@@ -178,8 +149,7 @@ test.describe("Jobs Widget", () => {
     await page.waitForSelector('[data-testid="tab-match"]', { timeout: 15000 });
     await page.click('[data-testid="tab-match"]');
     await page.waitForSelector("body", { timeout: 5000 });
-    const widget = page.locator('[data-testid="jobs-widget"]');
-    const isVisible = await widget.isVisible().catch(() => false);
+    const isVisible = await page.locator('[data-testid="jobs-widget"]').isVisible().catch(() => false);
     expect(typeof isVisible).toBe("boolean");
   });
 });
