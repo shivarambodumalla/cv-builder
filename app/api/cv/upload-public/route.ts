@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
-import { checkRateLimit as checkAIRateLimit } from "@/lib/ai/rate-limiter";
 import { alertAdmin } from "@/lib/email/alert";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;

@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { X, Check, FileText } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
 // ─── Trigger types ───────────────────────────────────────────────────────────

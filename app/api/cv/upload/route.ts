@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
   const pastedText = formData.get("text") as string | null;
   const admin = createAdminClient();
   const rawTitle = (formData.get("title") as string) || "Untitled CV";
-  let title = await uniqueCvTitle(admin, user.id, rawTitle);
+  const title = await uniqueCvTitle(admin, user.id, rawTitle);
 
   let rawText = "";
   let fileBuffer: Buffer | null = null;
