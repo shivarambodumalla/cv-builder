@@ -108,11 +108,17 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
   const [ctx, setCtx] = useState<SignupTriggerContext>({ trigger: "generic" });
 
   const showSignupModal = useCallback((c?: Partial<SignupTriggerContext>, force?: boolean) => {
-    if (!force && (sessionShown || isDismissedRecently())) return;
     const triggerCtx: SignupTriggerContext = { trigger: "generic", ...c };
+
+    // User-initiated triggers (clicks) always show — they're deliberate actions
+    const userInitiated = ["template_click", "resumes_cta", "jobs_cta", "role_page", "job_search"].includes(triggerCtx.trigger);
+    const shouldForce = force || userInitiated;
+
+    if (!shouldForce && (sessionShown || isDismissedRecently())) return;
+
     setCtx(triggerCtx);
     setOpen(true);
-    if (!force) sessionShown = true;
+    if (!shouldForce) sessionShown = true;
     trackPopup("shown", triggerCtx.trigger);
   }, []);
 
