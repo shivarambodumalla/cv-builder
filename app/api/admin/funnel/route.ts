@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-auth";
+import { EXCLUDED_USER_IDS } from "@/lib/admin/constants";
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
@@ -57,9 +58,10 @@ export async function GET(request: NextRequest) {
     pvRpc("/upload-resume"),
     pvRpc("/login"),
     pvRpc("/resumes"),
-    // Signup count
+    // Signup count (excluding test users)
     admin.from("profiles").select("id", { count: "exact", head: true })
-      .gte("created_at", from).lte("created_at", to),
+      .gte("created_at", from).lte("created_at", to)
+      .not("id", "in", `(${EXCLUDED_USER_IDS.join(",")})`),
     // Post-signup page visits
     rpc("funnel_visited_dashboard"),
     rpc("funnel_visited_upload"),
@@ -170,6 +172,7 @@ export async function GET(request: NextRequest) {
         .like("path", `${path}%`)
         .gte("created_at", from)
         .lte("created_at", to)
+        .not("user_id", "in", `(${EXCLUDED_USER_IDS.join(",")})`)
     )
   );
 
@@ -203,12 +206,11 @@ export async function GET(request: NextRequest) {
   // Find first page_session for users who signed up in the date range
   let signupSources: { page: string; count: number; pct: number }[] = [];
   if (signupCount > 0) {
+    const signupIds = (await admin.from("profiles").select("id").gte("created_at", from).lte("created_at", to).not("id", "in", `(${EXCLUDED_USER_IDS.join(",")})`)).data?.map(r => r.id) ?? [];
     const { data: firstSessions } = await admin
       .from("page_sessions")
       .select("user_id, path")
-      .in("user_id",
-        (await admin.from("profiles").select("id").gte("created_at", from).lte("created_at", to)).data?.map(r => r.id) ?? []
-      )
+      .in("user_id", signupIds)
       .gte("created_at", from)
       .lte("created_at", to)
       .order("entered_at", { ascending: true });

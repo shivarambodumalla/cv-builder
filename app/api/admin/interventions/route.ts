@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-auth";
+import { EXCLUDED_USER_IDS } from "@/lib/admin/constants";
 
 // All intervention IDs we track
 const SIGNUP_MODALS = [
@@ -52,7 +53,8 @@ export async function GET(request: NextRequest) {
       .select("id", { count: "exact", head: true })
       .like("event", `${eventPattern}%`)
       .gte("created_at", from)
-      .lte("created_at", to);
+      .lte("created_at", to)
+      .not("user_id", "in", `(${EXCLUDED_USER_IDS.join(",")})`);
     return count ?? 0;
   };
 

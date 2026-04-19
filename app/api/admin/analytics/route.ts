@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { EXCLUDED_USER_IDS } from "@/lib/admin/constants";
 
 export async function GET(request: NextRequest) {
   const admin = createAdminClient();
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
     .lt("created_at", endDate)
     .order("created_at", { ascending: false });
 
-  const rows = logs ?? [];
+  const rows = (logs ?? []).filter(r => !EXCLUDED_USER_IDS.includes(r.user_id));
   const calls = rows.length;
   const users = new Set(rows.map((r) => r.user_id).filter(Boolean)).size;
   const inputTokens = rows.reduce((s, r) => s + (r.input_tokens ?? 0), 0);

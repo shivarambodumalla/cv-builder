@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-auth";
+import { EXCLUDED_USER_IDS } from "@/lib/admin/constants";
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
@@ -12,8 +13,9 @@ export async function GET(request: NextRequest) {
   if (!from || !to) return NextResponse.json({ error: "from and to required" }, { status: 400 });
 
   const admin = createAdminClient();
+  const excl = `(${EXCLUDED_USER_IDS.join(",")})`;
 
-  // Parallel queries
+  // Parallel queries — all exclude test users
   const [
     { count: totalClicks },
     { count: totalSaves },
@@ -24,34 +26,24 @@ export async function GET(request: NextRequest) {
     { data: providerBreakdown },
     { data: clicksBySource },
   ] = await Promise.all([
-    // Total apply clicks
     admin.from("job_clicks").select("id", { count: "exact", head: true })
-      .gte("created_at", from).lte("created_at", to),
-    // Total saves
+      .gte("created_at", from).lte("created_at", to).not("user_id", "in", excl),
     admin.from("saved_jobs").select("id", { count: "exact", head: true })
-      .gte("saved_at", from).lte("saved_at", to),
-    // Unique users who searched (visited /my-jobs)
+      .gte("saved_at", from).lte("saved_at", to).not("user_id", "in", excl),
     admin.from("page_sessions").select("user_id", { count: "exact", head: true })
-      .like("path", "/my-jobs%")
-      .gte("created_at", from).lte("created_at", to),
-    // Clicks by day
+      .like("path", "/my-jobs%").gte("created_at", from).lte("created_at", to).not("user_id", "in", excl),
     admin.from("job_clicks").select("created_at")
-      .gte("created_at", from).lte("created_at", to)
+      .gte("created_at", from).lte("created_at", to).not("user_id", "in", excl)
       .order("created_at", { ascending: true }),
-    // Top clicked jobs
     admin.from("job_clicks").select("job_title, company, match_score, redirect_url")
-      .gte("created_at", from).lte("created_at", to)
-      .order("created_at", { ascending: false })
-      .limit(100),
-    // Top companies
+      .gte("created_at", from).lte("created_at", to).not("user_id", "in", excl)
+      .order("created_at", { ascending: false }).limit(100),
     admin.from("job_clicks").select("company")
-      .gte("created_at", from).lte("created_at", to),
-    // Provider breakdown
+      .gte("created_at", from).lte("created_at", to).not("user_id", "in", excl),
     admin.from("job_clicks").select("provider")
-      .gte("created_at", from).lte("created_at", to),
-    // Clicks by source
+      .gte("created_at", from).lte("created_at", to).not("user_id", "in", excl),
     admin.from("job_clicks").select("source")
-      .gte("created_at", from).lte("created_at", to),
+      .gte("created_at", from).lte("created_at", to).not("user_id", "in", excl),
   ]);
 
   // Aggregate clicks by day
@@ -109,18 +101,19 @@ export async function GET(request: NextRequest) {
     { step: "Saved Jobs", count: totalSaves ?? 0 },
   ];
 
-  // Recent 50 applications with user profiles
+  // Recent 50 applications with user profiles (excluding test users)
   const { data: recentClicks } = await admin
     .from("job_clicks")
     .select("id, user_id, job_title, company, location, match_score, salary_min, salary_max, created_at, source")
     .gte("created_at", from)
     .lte("created_at", to)
+    .not("user_id", "in", excl)
     .order("created_at", { ascending: false })
     .limit(50);
 
   // Get user profiles for the clickers
   const clickUserIds = [...new Set((recentClicks ?? []).map(c => c.user_id).filter(Boolean))];
-  let userMap: Record<string, { name: string; email: string; role: string | null; city: string | null }> = {};
+  const userMap: Record<string, { name: string; email: string; role: string | null; city: string | null }> = {};
   if (clickUserIds.length > 0) {
     const [{ data: profiles }, { data: cvRoles }] = await Promise.all([
       admin.from("profiles").select("id, full_name, email, signup_city, signup_country").in("id", clickUserIds),
