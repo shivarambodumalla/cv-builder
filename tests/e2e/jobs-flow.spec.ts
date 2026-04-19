@@ -83,13 +83,18 @@ test.describe("Jobs Feature", () => {
 
     await waitForJobCards(page);
 
-    const trackPromise = page.waitForRequest(
-      (req) => req.url().includes("/api/jobs/track-click")
-    );
+    const applyBtn = page.locator('[data-testid="apply-btn"]').first();
+    await expect(applyBtn).toBeVisible({ timeout: 10000 });
 
-    await page.locator('[data-testid="apply-btn"]').first().click();
-    const req = await trackPromise;
-    expect(req.method()).toBe("POST");
+    const [trackResp] = await Promise.all([
+      page.waitForResponse(
+        (r) => r.url().includes("/api/jobs/track-click") && r.status() === 200,
+        { timeout: 20000 }
+      ),
+      applyBtn.click(),
+    ]);
+
+    expect(trackResp.request().method()).toBe("POST");
   });
 
   test("save job toggles", async ({ page }) => {
@@ -100,8 +105,17 @@ test.describe("Jobs Feature", () => {
     await waitForJobCards(page);
 
     const saveBtn = page.locator('[data-testid="save-btn"]').first();
-    await saveBtn.click();
-    await expect(saveBtn).toBeVisible({ timeout: 3000 });
+    await expect(saveBtn).toBeVisible({ timeout: 10000 });
+
+    const [saveResp] = await Promise.all([
+      page.waitForResponse(
+        (r) => r.url().includes("/api/jobs/save") && r.status() === 200,
+        { timeout: 20000 }
+      ),
+      saveBtn.click(),
+    ]);
+
+    expect(saveResp.request().method()).toBe("POST");
   });
 
   test("keyword filter works", async ({ page }) => {
