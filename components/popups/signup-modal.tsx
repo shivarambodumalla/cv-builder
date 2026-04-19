@@ -102,6 +102,36 @@ interface SignupModalContextType {
 const SignupModalCtx = createContext<SignupModalContextType>({ showSignupModal: () => {} });
 export function useSignupModal() { return useContext(SignupModalCtx); }
 
+// ─── Post-auth return URL per trigger ────────────────────────────────────────
+
+function getReturnUrl(ctx: SignupTriggerContext, pathname: string | null): string | null {
+  switch (ctx.trigger) {
+    case "template_click":
+    case "template_hover":
+      return null; // handled via cvedge_template cookie
+    case "job_search":
+      return `/my-jobs${ctx.searchQuery ? `?keyword=${encodeURIComponent(ctx.searchQuery)}` : ""}`;
+    case "role_page":
+      return "/my-jobs";
+    case "resumes_cta":
+      return "/upload-resume";
+    case "jobs_cta":
+      return "/my-jobs";
+    case "ats_score":
+      return "/upload-resume";
+    case "timed":
+    case "exit_intent": {
+      // Map marketing pages to their authenticated equivalents
+      if (pathname === "/jobs" || pathname?.startsWith("/jobs/")) return "/my-jobs";
+      if (pathname === "/resumes") return "/upload-resume";
+      if (pathname === "/interview-prep") return "/interview-coach";
+      return null; // default → /dashboard via callback
+    }
+    default:
+      return null;
+  }
+}
+
 // ─── Provider ────────────────────────────────────────────────────────────────
 
 export function SignupModalProvider({ children }: { children: React.ReactNode }) {
@@ -130,12 +160,14 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
     markDismissed();
 
     // Save template selection as a cookie (readable server-side for redirect)
-    if (ctx.trigger === "template_click" && ctx.templateSlug) {
+    if ((ctx.trigger === "template_click" || ctx.trigger === "template_hover") && ctx.templateSlug) {
       document.cookie = `cvedge_template=${ctx.templateSlug};path=/;max-age=300`;
     }
 
-    // Go to login — middleware handles redirect for logged-in users
-    window.location.href = "/login";
+    const returnUrl = getReturnUrl(ctx, pathname);
+    window.location.href = returnUrl
+      ? `/login?returnUrl=${encodeURIComponent(returnUrl)}`
+      : "/login";
   }
 
   function handleDismiss() {

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Heart, CreditCard, ChevronRight, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 
 interface UserMenuProps {
   email: string;
@@ -27,6 +28,7 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
   const { theme, setTheme } = useTheme();
   const [isPro, setIsPro] = useState(false);
   const [period, setPeriod] = useState("");
+  const { openUpgradeModal } = useUpgradeModal();
 
   const initials = fullName
     ? fullName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -81,7 +83,7 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
               <span className="rounded-full bg-[#065F46] px-2 py-0.5 text-[9px] font-bold text-white">Active</span>
             </div>
           ) : (
-            <Link href="/billing" className="block">
+            <button onClick={() => openUpgradeModal("generic")} className="block w-full text-left">
               <div className="flex items-center justify-between rounded-lg bg-[#065F46] px-3 py-2.5 hover:opacity-90 transition-opacity cursor-pointer">
                 <div>
                   <p className="text-[11px] font-semibold text-white">Upgrade to Pro</p>
@@ -91,7 +93,7 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
                   <ChevronRight className="h-2.5 w-2.5 text-white" />
                 </div>
               </div>
-            </Link>
+            </button>
           )}
         </div>
 

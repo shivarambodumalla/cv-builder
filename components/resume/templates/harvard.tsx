@@ -705,7 +705,8 @@ export function HarvardTemplate({
         const renderer = sectionRenderers[key];
         if (!renderer) return null;
         const node = renderer();
-        if (!node) return null;
+        const SECTION_LABELS: Record<string, string> = { summary: "Summary", experience: "Experience", education: "Education", skills: "Skills", certifications: "Certifications", awards: "Awards", projects: "Projects", volunteering: "Volunteering", publications: "Publications" };
+        if (!node && !SECTION_LABELS[key]) return null;
         const hasPageBreak = pageBreaks.includes(key);
         return (
           <div
@@ -722,7 +723,7 @@ export function HarvardTemplate({
                 : {}),
             }}
           >
-            {node}
+            {node || renderSectionTitle(SECTION_LABELS[key])}
           </div>
         );
       })}

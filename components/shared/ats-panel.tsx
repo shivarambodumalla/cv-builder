@@ -393,6 +393,27 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   }
 
   async function handleAnalyse() {
+    // Prerequisite check — CV needs minimum content before ATS analysis
+    if (content) {
+      const missing: string[] = [];
+      if (!content.contact?.name?.trim()) missing.push("name");
+      if (!content.contact?.email?.trim()) missing.push("email");
+      const hasBody = !!(
+        content.experience?.items?.length ||
+        content.projects?.items?.length ||
+        content.education?.items?.length ||
+        content.volunteering?.items?.length
+      );
+      if (!hasBody) missing.push("experience, projects, or education");
+      if (!content.skills?.categories?.length) missing.push("skills");
+
+      if (missing.length > 0) {
+        setError(`Your CV needs more content before analysis. Please add: ${missing.join(", ")}.`);
+        setErrorCode("incomplete_cv");
+        return;
+      }
+    }
+
     setLoading(true);
     setCurrentStep("reading");
     setError("");
@@ -545,15 +566,51 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
         <p className="text-sm text-destructive" style={{ marginBottom: "12px" }}>{error}</p>
       )}
 
-      {/* ── Empty state ── */}
-      {!report && !loading && !error && (
-        <div className="flex flex-col items-center gap-4 py-6">
-          <p className="text-sm text-muted-foreground text-center">
-            Run an analysis to see your ATS score and improvement suggestions.
-          </p>
-          <Button onClick={handleAnalyse} disabled={loading}>Analyse CV</Button>
-        </div>
-      )}
+      {/* ── Empty state with prerequisite checklist ── */}
+      {!report && !loading && !error && (() => {
+        const hasBody = !!(
+          content?.experience?.items?.length ||
+          content?.projects?.items?.length ||
+          content?.education?.items?.length ||
+          content?.volunteering?.items?.length
+        );
+        const checks = [
+          { label: "Name", done: !!content?.contact?.name?.trim() },
+          { label: "Email", done: !!content?.contact?.email?.trim() },
+          { label: "Experience / Projects / Education", done: hasBody },
+          { label: "Skills", done: !!content?.skills?.categories?.length },
+        ];
+        const allDone = checks.every((c) => c.done);
+
+        return (
+          <div className="flex flex-col items-center gap-5 py-6">
+            <p className="text-sm text-muted-foreground text-center">
+              {allDone
+                ? "Your CV is ready for analysis."
+                : "Complete these sections before running ATS analysis."}
+            </p>
+
+            <div className="w-full max-w-xs space-y-2">
+              {checks.map((c) => (
+                <div key={c.label} className="flex items-center gap-2.5 rounded-lg border px-3 py-2">
+                  {c.done ? (
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
+                      <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    </span>
+                  ) : (
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
+                  )}
+                  <span className={`text-sm ${c.done ? "text-foreground" : "text-muted-foreground"}`}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <Button onClick={handleAnalyse} disabled={loading || !allDone}>
+              Analyse CV
+            </Button>
+          </div>
+        );
+      })()}
 
       {/* ── Report ── */}
       {report && (

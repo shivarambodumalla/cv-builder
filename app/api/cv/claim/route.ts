@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { uniqueCvTitle } from "@/lib/resume/unique-title";
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     const { data: cv, error: findError } = await admin
       .from("cvs")
-      .select("id")
+      .select("id, title")
       .eq("redirect_token", redirect_token)
       .is("user_id", null)
       .eq("status", "pending_auth")
@@ -46,10 +47,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const title = await uniqueCvTitle(admin, user.id, cv.title || "Untitled CV");
+
     const { error: updateError } = await admin
       .from("cvs")
       .update({
         user_id: user.id,
+        title,
         status: "active",
         redirect_token: null,
       })

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { alertAdmin } from "@/lib/email/alert";
 import { captureSignupLocation } from "@/lib/geolocation/capture-signup-location";
+import { uniqueCvTitle } from "@/lib/resume/unique-title";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -24,17 +25,19 @@ export async function GET(request: Request) {
 
           const { data: cv } = await admin
             .from("cvs")
-            .select("id")
+            .select("id, title")
             .eq("redirect_token", ref)
             .is("user_id", null)
             .eq("status", "pending_auth")
             .single();
 
           if (cv) {
+            const title = await uniqueCvTitle(admin, data.session.user.id, cv.title || "Untitled CV");
             await admin
               .from("cvs")
               .update({
                 user_id: data.session.user.id,
+                title,
                 status: "active",
                 redirect_token: null,
               })

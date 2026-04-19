@@ -499,8 +499,9 @@ export function SharpTemplate({
         const renderer = sectionRenderers[key];
         if (!renderer) return null;
         const node = renderer();
-        if (!node) return null;
-        return <div key={key} data-resume-section="" {...(pageBreaks.includes(key) ? { "data-page-break-before": "" } : {})} style={{ marginTop: i > 0 && key !== "targetTitle" ? `${sectionSpacing}px` : undefined, ...(pageBreaks.includes(key) ? { pageBreakBefore: "always" as const } : {}) }}>{node}</div>;
+        const SECTION_LABELS: Record<string, string> = { summary: "Summary", experience: "Experience", education: "Education", skills: "Skills", certifications: "Certifications", awards: "Awards", projects: "Projects", volunteering: "Volunteering", publications: "Publications" };
+        if (!node && !SECTION_LABELS[key]) return null;
+        return <div key={key} data-resume-section="" {...(pageBreaks.includes(key) ? { "data-page-break-before": "" } : {})} style={{ marginTop: i > 0 && key !== "targetTitle" ? `${sectionSpacing}px` : undefined, ...(pageBreaks.includes(key) ? { pageBreakBefore: "always" as const } : {}) }}>{node || renderSectionTitle(SECTION_LABELS[key])}</div>;
       })}
     </div>
   );

@@ -412,7 +412,8 @@ export function TwoColumnTemplate({
             const renderer = allRenderers[key];
             if (!renderer) return null;
             const node = renderer();
-            if (!node) return null;
+            const SECTION_LABELS: Record<string, string> = { summary: "Summary", experience: "Experience", education: "Education", skills: "Skills", certifications: "Certifications", awards: "Awards", projects: "Projects", volunteering: "Volunteering", publications: "Publications" };
+            if (!node && !SECTION_LABELS[key]) return null;
             const hasPageBreak = pageBreaks.includes(key);
             return (
               <div
@@ -421,7 +422,7 @@ export function TwoColumnTemplate({
                 {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
                 style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
               >
-                {node}
+                {node || sectionHeading(SECTION_LABELS[key])}
               </div>
             );
           })}
@@ -433,8 +434,9 @@ export function TwoColumnTemplate({
             const renderer = allRenderers[key];
             if (!renderer) return null;
             const node = renderer();
-            if (!node) return null;
-            return <div key={key} data-resume-section="">{node}</div>;
+            const SECTION_LABELS: Record<string, string> = { summary: "Summary", experience: "Experience", education: "Education", skills: "Skills", certifications: "Certifications", awards: "Awards", projects: "Projects", volunteering: "Volunteering", publications: "Publications" };
+            if (!node && !SECTION_LABELS[key]) return null;
+            return <div key={key} data-resume-section="">{node || sectionHeading(SECTION_LABELS[key])}</div>;
           })}
         </div>
       </div>

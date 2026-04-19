@@ -58,10 +58,6 @@ export async function POST(request: NextRequest) {
     const jobTitleTarget = (formData.get("job_title_target") as string) || null;
     const template = (formData.get("template") as string) || null;
 
-    if (!role?.trim()) {
-      return NextResponse.json({ error: "Role is required" }, { status: 400 });
-    }
-
     if (!file && !pastedText?.trim()) {
       return NextResponse.json({ error: "File or text is required" }, { status: 400 });
     }
@@ -131,6 +127,11 @@ export async function POST(request: NextRequest) {
       ? { template }
       : null;
 
+    // Derive target role: explicit selection > parsed CV title > "General"
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const parsedTitle = parsedJson ? (parsedJson as any)?.targetTitle?.title : null;
+    const targetRole = role?.trim() || parsedTitle || "General";
+
     const { data: cv, error: insertError } = await admin
       .from("cvs")
       .insert({
@@ -138,7 +139,7 @@ export async function POST(request: NextRequest) {
         title,
         raw_text: rawText,
         parsed_json: parsedJson,
-        target_role: role.trim(),
+        target_role: targetRole,
         target_domain: domain?.trim() || null,
         redirect_token: redirectToken,
         status: "pending_auth",

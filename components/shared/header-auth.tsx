@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { UserMenu } from "@/components/shared/user-menu";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 
 interface UserData {
   email: string;
@@ -13,9 +15,25 @@ interface UserData {
   isPro: boolean;
 }
 
+// Map marketing pages to their auth equivalents for post-login redirect
+const RETURN_MAP: Record<string, string> = {
+  "/resumes": "/upload-resume",
+  "/jobs": "/my-jobs",
+  "/interview-prep": "/interview-coach",
+  "/pricing": "/pricing",
+};
+
+function getLoginHref(pathname: string | null): string {
+  if (!pathname) return "/login";
+  const returnUrl = RETURN_MAP[pathname] ?? (pathname.startsWith("/jobs/") ? "/my-jobs" : null);
+  return returnUrl ? `/login?returnUrl=${encodeURIComponent(returnUrl)}` : "/login";
+}
+
 export function HeaderAuth() {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+  const { openUpgradeModal } = useUpgradeModal();
 
   useEffect(() => {
     const supabase = createClient();
@@ -130,13 +148,13 @@ export function HeaderAuth() {
     return (
       <div className="flex items-center gap-3">
         {!user.isPro && (
-          <Link
-            href="/pricing"
+          <button
+            onClick={() => openUpgradeModal("generic")}
             className="inline-flex items-center gap-1.5 rounded-md bg-[#065F46] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors"
           >
             <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" /></svg>
             Go Pro
-          </Link>
+          </button>
         )}
         <UserMenu
           email={user.email}
@@ -150,7 +168,7 @@ export function HeaderAuth() {
   return (
     <>
       <Link
-        href="/login"
+        href={getLoginHref(pathname)}
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         Sign in

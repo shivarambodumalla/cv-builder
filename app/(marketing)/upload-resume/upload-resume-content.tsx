@@ -2,20 +2,17 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Upload, Loader2, BarChart3, Search, Lightbulb, ArrowRight, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, ChevronDown, ChevronUp, Sparkles, Shield, Zap } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { Upload, BarChart3, Search, Lightbulb, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, Sparkles, Shield, Zap, PenLine, ClipboardPaste } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RoleSelector } from "@/components/shared/role-selector";
 import { cn } from "@/lib/utils";
 import { StepLoader } from "@/components/shared/step-loader";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 type AnalysisStep = "uploading" | "parsing" | "analysing" | "done";
+type UploadMode = "upload" | "paste" | "scratch";
 
 const STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.ElementType }[] = [
   { key: "uploading", label: "Uploading your CV", sub: "Securely transferring your file", icon: Upload },
@@ -24,27 +21,25 @@ const STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.Elemen
   { key: "done", label: "Analysis complete!", sub: "Your ATS report is ready", icon: CheckCircle2 },
 ];
 
+const OPTIONS: { key: UploadMode; icon: React.ElementType; title: string; desc: string }[] = [
+  { key: "upload", icon: Upload, title: "Upload PDF", desc: "Drop your CV or click to browse" },
+  { key: "paste", icon: ClipboardPaste, title: "Paste text", desc: "Copy and paste your CV content" },
+  { key: "scratch", icon: PenLine, title: "Start from scratch", desc: "Build your CV from a blank template" },
+];
+
 export function UploadResumeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const templateParam = searchParams.get("template");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [role, setRole] = useState<{ domain: string; role: string } | null>(null);
+  const [mode, setMode] = useState<UploadMode | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pastedText, setPastedText] = useState("");
-  const [uploadTab, setUploadTab] = useState("upload");
   const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState<AnalysisStep>("uploading");
   const [error, setError] = useState("");
-  const [roleError, setRoleError] = useState(false);
-  const [jdOpen, setJdOpen] = useState(false);
-  const [jobCompany, setJobCompany] = useState("");
-  const [jobTitleTarget, setJobTitleTarget] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
-
-  const roleSelected = role !== null && !!role.role;
 
   useEffect(() => {
     if (!loading) return;
@@ -74,12 +69,20 @@ export function UploadResumeContent() {
     if (droppedFile) handleFile(droppedFile);
   }, [handleFile]);
 
-  const handleSubmit = async () => {
-    if (!role || !role.role) {
-      setRoleError(true);
+  function handleOptionClick(key: UploadMode) {
+    if (key === "scratch") {
+      handleStartFresh();
       return;
     }
-    const hasContent = uploadTab === "upload" ? !!file : !!pastedText.trim();
+    setMode(key);
+    if (key === "upload") {
+      // Small delay so the UI updates before file picker opens
+      setTimeout(() => fileInputRef.current?.click(), 100);
+    }
+  }
+
+  const handleSubmit = async () => {
+    const hasContent = mode === "upload" ? !!file : !!pastedText.trim();
     if (!hasContent) return;
 
     setLoading(true);
@@ -88,16 +91,11 @@ export function UploadResumeContent() {
 
     try {
       const formData = new FormData();
-      if (uploadTab === "upload" && file) {
+      if (mode === "upload" && file) {
         formData.append("file", file);
       } else {
         formData.append("text", pastedText);
       }
-      formData.append("role", role.role);
-      formData.append("domain", role.domain);
-      if (jobDescription.trim()) formData.append("job_description", jobDescription.trim());
-      if (jobCompany.trim()) formData.append("job_company", jobCompany.trim());
-      if (jobTitleTarget.trim()) formData.append("job_title_target", jobTitleTarget.trim());
       if (templateParam) formData.append("template", templateParam);
 
       const res = await fetch("/api/cv/upload-public", {
@@ -146,6 +144,38 @@ export function UploadResumeContent() {
     setCurrentStep("uploading");
   }
 
+  async function handleStartFresh() {
+    setLoading(true);
+    setCurrentStep("uploading");
+    setError("");
+
+    try {
+      const res = await fetch("/api/cv/create-blank", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ template: templateParam || undefined }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+          return;
+        }
+        throw new Error(data.error || "Could not create CV.");
+      }
+
+      const { cv_id } = await res.json();
+      setCurrentStep("done");
+      await new Promise((r) => setTimeout(r, 400));
+      router.push(`/resume/${cv_id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setLoading(false);
+      setCurrentStep("uploading");
+    }
+  }
+
   // ─── ANALYSING SCREEN ───
   if (loading) {
     const stepIndex = STEPS.findIndex((s) => s.key === currentStep);
@@ -184,7 +214,7 @@ export function UploadResumeContent() {
     );
   }
 
-  // ─── UPLOAD FORM ───
+  // ─── MAIN FORM ───
   return (
     <div className="container mx-auto max-w-2xl px-4 py-12 md:py-20">
       <div className="space-y-10">
@@ -201,120 +231,101 @@ export function UploadResumeContent() {
           </p>
         </div>
 
-        {/* Role selector */}
-        <div className="space-y-2">
-          <Label className="text-base font-semibold">
-            What role are you targeting?
-            <span className="text-destructive"> *</span>
-          </Label>
-          <RoleSelector
-            value={role}
-            onChange={(v) => { setRole(v); setRoleError(false); }}
-            required
-            onRequestMissing={() => {}}
-          />
-          {roleError && (
-            <p className="text-sm text-destructive">
-              Please select a target role before uploading.
-            </p>
-          )}
+        {/* 3 option cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {OPTIONS.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => handleOptionClick(opt.key)}
+              className={cn(
+                "flex flex-col items-center gap-3 rounded-xl border-2 p-6 transition-all text-center",
+                mode === opt.key
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50 hover:bg-muted/30"
+              )}
+            >
+              <div className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-full transition-colors",
+                mode === opt.key ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+              )}>
+                <opt.icon className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{opt.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{opt.desc}</p>
+              </div>
+            </button>
+          ))}
         </div>
 
-        {/* Job description (collapsible) */}
-        <div className={cn("transition-opacity duration-300", !roleSelected && "opacity-40 pointer-events-none")}>
-          <button
-            type="button"
-            onClick={() => setJdOpen(!jdOpen)}
-            className="flex w-full items-center gap-2 rounded-xl border border-dashed border-foreground/20 px-5 py-4 text-sm text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all"
-          >
-            {jdOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            <span className="font-medium">+ Add job description (recommended)</span>
-          </button>
-          {jdOpen && (
-            <div className="mt-3 space-y-4 rounded-xl border bg-card p-5">
-              <p className="text-xs text-muted-foreground">
-                Adding a job description gives you a personalised match score and tailored keywords.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">Company</Label>
-                  <Input placeholder="e.g. Google" value={jobCompany} onChange={(e) => setJobCompany(e.target.value)} className="h-12 text-base border-foreground/20" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">Job title</Label>
-                  <Input placeholder="e.g. Senior Engineer" value={jobTitleTarget} onChange={(e) => setJobTitleTarget(e.target.value)} className="h-12 text-base border-foreground/20" />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-medium">Job description</Label>
-                <Textarea
-                  placeholder="Paste the full job description here..."
-                  rows={5}
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  className="text-base border-foreground/20"
-                />
-              </div>
+        {/* Expanded content for upload */}
+        {mode === "upload" && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div
+              onDrop={handleDrop}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onClick={() => fileInputRef.current?.click()}
+              className={cn(
+                "flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 transition-all",
+                dragOver ? "border-primary bg-primary/5 scale-[1.01]" : "border-foreground/20 hover:border-primary/50 hover:bg-muted/30",
+                file && "border-green-500/50 bg-green-50 dark:bg-green-950/20"
+              )}
+            >
+              {file ? (
+                <>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                    <CheckCircle2 className="h-6 w-6 text-success" />
+                  </div>
+                  <p className="text-sm font-semibold">{file.name}</p>
+                  <p className="text-xs text-muted-foreground">Click to change file</p>
+                </>
+              ) : (
+                <>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                    <Upload className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm font-medium">Drag & drop or click to select</p>
+                  <p className="text-xs text-muted-foreground">PDF, max 5 MB</p>
+                </>
+              )}
+              <input ref={fileInputRef} type="file" accept=".pdf" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} className="hidden" />
             </div>
-          )}
-        </div>
 
-        {/* CV upload */}
-        <div className={cn("space-y-3 transition-opacity duration-300", !roleSelected && "opacity-40 pointer-events-none")}>
-          <Label className="text-base font-semibold">Your CV</Label>
-          <Tabs value={uploadTab} onValueChange={setUploadTab}>
-            <TabsList className="w-full h-13 p-1">
-              <TabsTrigger value="upload" className="flex-1 text-sm h-11">Upload PDF</TabsTrigger>
-              <TabsTrigger value="paste" className="flex-1 text-sm h-11">Paste Text</TabsTrigger>
-            </TabsList>
-            <TabsContent value="upload">
-              <div
-                onDrop={handleDrop}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onClick={() => fileInputRef.current?.click()}
-                className={cn(
-                  "flex min-h-[180px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 transition-all",
-                  dragOver ? "border-primary bg-primary/5 scale-[1.01]" : "border-foreground/20 hover:border-primary/50 hover:bg-muted/30",
-                  file && "border-green-500/50 bg-green-50 dark:bg-green-950/20"
-                )}
-              >
-                {file ? (
-                  <>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                      <CheckCircle2 className="h-6 w-6 text-success" />
-                    </div>
-                    <p className="text-sm font-semibold">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">Click to change file</p>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                      <Upload className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                    <p className="text-sm font-medium">Drag & drop or click to select</p>
-                    <p className="text-xs text-muted-foreground">PDF, max 5 MB</p>
-                  </>
-                )}
-                <input ref={fileInputRef} type="file" accept=".pdf" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} className="hidden" />
-              </div>
-            </TabsContent>
-            <TabsContent value="paste">
-              <Textarea placeholder="Paste your CV text here..." rows={8} value={pastedText} onChange={(e) => setPastedText(e.target.value)} className="text-base border-foreground/20" />
-            </TabsContent>
-          </Tabs>
-        </div>
+            <Button
+              size="lg"
+              className="w-full h-14 text-base font-semibold"
+              disabled={!file}
+              onClick={handleSubmit}
+            >
+              Analyse my CV
+            </Button>
+          </div>
+        )}
 
-        {/* Submit */}
-        <Button
-          size="lg"
-          className="w-full h-14 text-base font-semibold"
-          disabled={!roleSelected || (uploadTab === "upload" ? !file : !pastedText.trim())}
-          onClick={handleSubmit}
-        >
-          Analyse my CV
-          <ArrowRight className="ml-2 h-5 w-5" />
-        </Button>
+        {/* Expanded content for paste */}
+        {mode === "paste" && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            <Textarea
+              placeholder="Paste your CV text here..."
+              rows={8}
+              value={pastedText}
+              onChange={(e) => setPastedText(e.target.value)}
+              className="text-base border-foreground/20"
+              autoFocus
+            />
+
+            <Button
+              size="lg"
+              className="w-full h-14 text-base font-semibold"
+              disabled={!pastedText.trim()}
+              onClick={handleSubmit}
+            >
+              Analyse my CV
+            </Button>
+          </div>
+        )}
 
         {/* Trust indicators */}
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">

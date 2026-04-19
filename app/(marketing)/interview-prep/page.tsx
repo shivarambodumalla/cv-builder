@@ -84,7 +84,7 @@ export default function InterviewStoriesPage() {
         <h1 className="text-3xl font-bold tracking-tight mt-2">Walk into every interview prepared</h1>
         <p className="text-muted-foreground mt-3">Build a personal library of your best career stories. CVEdge tells you which ones to tell — and how.</p>
         <Button className="mt-6" asChild>
-          <Link href="/login">Start building free</Link>
+          <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>
         </Button>
       </div>
 
@@ -146,7 +146,7 @@ export default function InterviewStoriesPage() {
         <h2 className="text-2xl font-bold tracking-tight">Ready to stop winging your interviews?</h2>
         <p className="mt-3 text-muted-foreground">Prepare for your interviews in minutes. Free to start, no credit card needed.</p>
         <Button className="mt-6" asChild>
-          <Link href="/login">Start building free</Link>
+          <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>
         </Button>
       </div>
     </div>

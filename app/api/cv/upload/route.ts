@@ -35,6 +35,7 @@ async function extractText(
 }
 
 import { alertAdmin } from "@/lib/email/alert";
+import { uniqueCvTitle } from "@/lib/resume/unique-title";
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
   const supabase = await createClient();
@@ -59,13 +60,9 @@ export async function POST(request: NextRequest) {
 
   const file = formData.get("file") as File | null;
   const pastedText = formData.get("text") as string | null;
-  let title = (formData.get("title") as string) || "Untitled CV";
-
-  // Auto-increment title if default
-  if (title === "Untitled CV") {
-    const { count } = await supabase.from("cvs").select("id", { count: "exact", head: true }).eq("user_id", user.id);
-    if (count && count > 0) title = `Untitled CV ${count + 1}`;
-  }
+  const admin = createAdminClient();
+  const rawTitle = (formData.get("title") as string) || "Untitled CV";
+  let title = await uniqueCvTitle(admin, user.id, rawTitle);
 
   let rawText = "";
   let fileBuffer: Buffer | null = null;
@@ -129,8 +126,6 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("[cv/upload] AI structuring failed (non-blocking):", err);
   }
-
-  const admin = createAdminClient();
 
   const { data: cv, error: insertError } = await admin
     .from("cvs")
