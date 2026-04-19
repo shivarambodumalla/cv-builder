@@ -29,6 +29,15 @@ const PRESETS: { key: Preset; label: string }[] = [
 
 function p(count: number, base: number): number { return base === 0 ? 0 : Math.round((count / base) * 1000) / 10; }
 
+interface RecentApp {
+  id: string; jobTitle: string; company: string; location: string; matchScore: number | null;
+  salary: string | null; source: string; appliedAt: string;
+  user: { name: string; email: string; role: string | null; city: string | null };
+}
+interface TopApplicant {
+  id: string; name: string; email: string; role: string | null; city: string | null;
+  clicks: number; avgScore: number;
+}
 interface JobsData {
   totalClicks: number; totalSaves: number; uniqueSearchers: number; revenue: number; cpc: number;
   daily: { date: string; clicks: number }[];
@@ -37,6 +46,8 @@ interface JobsData {
   providers: { name: string; clicks: number }[];
   sources: { name: string; clicks: number }[];
   funnel: { step: string; count: number }[];
+  recentApplications: RecentApp[];
+  topApplicants: TopApplicant[];
 }
 
 export function JobsAnalyticsDashboard() {
@@ -239,6 +250,95 @@ export function JobsAnalyticsDashboard() {
               </div>
             </div>
           </div>
+
+          {/* Top applicants — user profiling */}
+          {data.topApplicants.length > 0 && (
+            <div className="rounded-xl border overflow-hidden">
+              <div className="border-b px-4 py-3 bg-muted/20 flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <h2 className="text-sm font-semibold">Top Applicants</h2>
+                <span className="text-[10px] text-muted-foreground ml-auto">Who&apos;s applying the most</span>
+              </div>
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b bg-muted/10">
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">User</th>
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Role</th>
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Location</th>
+                    <th className="text-right px-4 py-2 font-medium text-muted-foreground">Applications</th>
+                    <th className="text-right px-4 py-2 font-medium text-muted-foreground">Avg Match</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.topApplicants.map((u) => (
+                    <tr key={u.id} className="border-b last:border-0 hover:bg-muted/20">
+                      <td className="px-4 py-2.5">
+                        <a href={`/admin/users/${u.id}`} className="hover:underline">
+                          <p className="font-medium">{u.name || "—"}</p>
+                          <p className="text-[10px] text-muted-foreground">{u.email}</p>
+                        </a>
+                      </td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{u.role || "—"}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{u.city || "—"}</td>
+                      <td className="px-4 py-2.5 text-right font-bold tabular-nums">{u.clicks}</td>
+                      <td className="px-4 py-2.5 text-right">
+                        {u.avgScore > 0 ? (
+                          <span className={cn("font-bold tabular-nums", u.avgScore >= 70 ? "text-success" : u.avgScore >= 40 ? "text-warning" : "text-muted-foreground")}>{u.avgScore}%</span>
+                        ) : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Recent applications log */}
+          {data.recentApplications.length > 0 && (
+            <div className="rounded-xl border overflow-hidden">
+              <div className="border-b px-4 py-3 bg-muted/20 flex items-center gap-2">
+                <MousePointerClick className="h-4 w-4 text-muted-foreground" />
+                <h2 className="text-sm font-semibold">Recent Applications</h2>
+                <span className="text-[10px] text-muted-foreground ml-auto">Last {data.recentApplications.length} apply clicks</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b bg-muted/10">
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">User</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Job</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Company</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Location</th>
+                      <th className="text-right px-4 py-2 font-medium text-muted-foreground">Match</th>
+                      <th className="text-right px-4 py-2 font-medium text-muted-foreground">Salary</th>
+                      <th className="text-right px-4 py-2 font-medium text-muted-foreground">When</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.recentApplications.map((a) => (
+                      <tr key={a.id} className="border-b last:border-0 hover:bg-muted/20">
+                        <td className="px-4 py-2">
+                          <p className="font-medium truncate max-w-[120px]">{a.user.name || "—"}</p>
+                          <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">{a.user.role || a.user.email}</p>
+                        </td>
+                        <td className="px-4 py-2 font-medium max-w-[180px] truncate">{a.jobTitle}</td>
+                        <td className="px-4 py-2 text-muted-foreground">{a.company}</td>
+                        <td className="px-4 py-2 text-muted-foreground truncate max-w-[120px]">{a.location}</td>
+                        <td className="px-4 py-2 text-right">
+                          {a.matchScore ? <span className={cn("font-bold tabular-nums", a.matchScore >= 70 ? "text-success" : a.matchScore >= 40 ? "text-warning" : "text-muted-foreground")}>{a.matchScore}%</span> : "—"}
+                        </td>
+                        <td className="px-4 py-2 text-right text-muted-foreground whitespace-nowrap">{a.salary || "—"}</td>
+                        <td className="px-4 py-2 text-right text-muted-foreground whitespace-nowrap">
+                          {new Date(a.appliedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          <span className="text-[10px] ml-1">{new Date(a.appliedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

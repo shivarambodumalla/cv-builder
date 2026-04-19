@@ -109,6 +109,71 @@ export async function GET(request: NextRequest) {
     { step: "Saved Jobs", count: totalSaves ?? 0 },
   ];
 
+  // Recent 50 applications with user profiles
+  const { data: recentClicks } = await admin
+    .from("job_clicks")
+    .select("id, user_id, job_title, company, location, match_score, salary_min, salary_max, created_at, source")
+    .gte("created_at", from)
+    .lte("created_at", to)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  // Get user profiles for the clickers
+  const clickUserIds = [...new Set((recentClicks ?? []).map(c => c.user_id).filter(Boolean))];
+  let userMap: Record<string, { name: string; email: string; role: string | null; city: string | null }> = {};
+  if (clickUserIds.length > 0) {
+    const [{ data: profiles }, { data: cvRoles }] = await Promise.all([
+      admin.from("profiles").select("id, full_name, email, signup_city, signup_country").in("id", clickUserIds),
+      admin.from("cvs").select("user_id, target_role").in("user_id", clickUserIds).not("target_role", "is", null).order("updated_at", { ascending: false }),
+    ]);
+    const roleMap = new Map<string, string>();
+    for (const cv of cvRoles ?? []) { if (!roleMap.has(cv.user_id) && cv.target_role) roleMap.set(cv.user_id, cv.target_role); }
+    for (const p of profiles ?? []) {
+      userMap[p.id] = {
+        name: p.full_name ?? "",
+        email: p.email ?? "",
+        role: roleMap.get(p.id) ?? null,
+        city: [p.signup_city, p.signup_country].filter(Boolean).join(", ") || null,
+      };
+    }
+  }
+
+  const recentApplications = (recentClicks ?? []).map(c => ({
+    id: c.id,
+    jobTitle: c.job_title,
+    company: c.company,
+    location: c.location,
+    matchScore: c.match_score,
+    salary: c.salary_min && c.salary_max ? `$${Math.round(c.salary_min / 1000)}k–$${Math.round(c.salary_max / 1000)}k` : c.salary_min ? `$${Math.round(c.salary_min / 1000)}k+` : null,
+    source: c.source || "app",
+    appliedAt: c.created_at,
+    user: userMap[c.user_id] ?? { name: "", email: "", role: null, city: null },
+  }));
+
+  // User profiling: aggregate by user — who applies the most, avg match score, locations
+  const userStats: Record<string, { name: string; email: string; role: string | null; city: string | null; clicks: number; saves: number; scores: number[] }> = {};
+  for (const c of recentClicks ?? []) {
+    if (!c.user_id) continue;
+    if (!userStats[c.user_id]) {
+      const u = userMap[c.user_id] ?? { name: "", email: "", role: null, city: null };
+      userStats[c.user_id] = { ...u, clicks: 0, saves: 0, scores: [] };
+    }
+    userStats[c.user_id].clicks++;
+    if (c.match_score) userStats[c.user_id].scores.push(c.match_score);
+  }
+  const topApplicants = Object.entries(userStats)
+    .map(([id, u]) => ({
+      id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      city: u.city,
+      clicks: u.clicks,
+      avgScore: u.scores.length > 0 ? Math.round(u.scores.reduce((a, b) => a + b, 0) / u.scores.length) : 0,
+    }))
+    .sort((a, b) => b.clicks - a.clicks)
+    .slice(0, 15);
+
   return NextResponse.json({
     totalClicks: totalClicks ?? 0,
     totalSaves: totalSaves ?? 0,
@@ -121,5 +186,7 @@ export async function GET(request: NextRequest) {
     providers,
     sources,
     funnel,
+    recentApplications,
+    topApplicants,
   });
 }
