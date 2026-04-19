@@ -19,13 +19,18 @@ export default function LoginPage() {
 function LoginContent() {
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
+  const returnUrl = searchParams.get("returnUrl");
 
   async function handleGoogleLogin() {
     const supabase = createClient();
+    const callbackParams = new URLSearchParams();
+    if (ref) callbackParams.set("ref", ref);
+    if (returnUrl) callbackParams.set("next", returnUrl);
+    const qs = callbackParams.toString();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback${ref ? "?ref=" + ref : ""}`,
+        redirectTo: `${window.location.origin}/auth/callback${qs ? "?" + qs : ""}`,
       },
     });
   }

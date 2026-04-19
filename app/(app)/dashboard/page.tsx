@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CvList } from "@/components/shared/cv-list";
+import { ReturnVisitNudge } from "@/components/popups/return-visit-nudge";
+import { UploadCvNudge } from "@/components/popups/upload-cv-nudge";
 import { sendEmail } from "@/lib/email/sender";
 
 export const metadata: Metadata = {
@@ -19,7 +21,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?returnUrl=%2Fdashboard");
   }
 
   const { data: cvs } = await supabase
@@ -86,8 +88,20 @@ export default async function DashboardPage() {
     (cvs ?? []).length >= 3
   );
 
+  // Return visit nudge data
+  const lastCv = (cvs ?? [])[0] ?? null;
+  const lastScore = lastCv?.ats_reports?.[0]?.overall_score ?? lastCv?.ats_reports?.[0]?.score ?? null;
+  const lastSignInAt = user.last_sign_in_at ?? null;
+
   return (
     <div className="container mx-auto px-4 py-12">
+      <ReturnVisitNudge
+        userName={userName}
+        lastScore={lastScore}
+        lastCvTitle={lastCv?.title ?? null}
+        lastCvId={lastCv?.id ?? null}
+        lastSignInAt={lastSignInAt}
+      />
       <CvList
         cvs={cvs ?? []}
         isPro={isPro}
@@ -96,6 +110,7 @@ export default async function DashboardPage() {
         userName={userName}
         limitReached={anyLimitReached}
       />
+      <UploadCvNudge />
     </div>
   );
 }

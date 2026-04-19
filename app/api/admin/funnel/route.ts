@@ -122,6 +122,31 @@ export async function GET(request: NextRequest) {
     { key: "jobs_waitlist", label: "Jobs Waitlist", count: jobsWaitlist.count ?? 0 },
   ];
 
+  // ── Popup metrics (tracked via page_views for anonymous, user_activity for auth) ──
+  const popupPaths = [
+    { id: "score_teaser", label: "Score Teaser" },
+    { id: "download_nudge", label: "Download Nudge" },
+    { id: "jobs_discovery", label: "Jobs Discovery" },
+    { id: "signup_modal", label: "Signup Modal" },
+  ];
+  const popupResults = await Promise.all(
+    popupPaths.flatMap(p => [
+      pvRpc(`/popup/shown/${p.id}`),
+      pvRpc(`/popup/click/${p.id}`),
+      pvRpc(`/popup/dismiss/${p.id}`),
+    ])
+  );
+  const popups = popupPaths.map((p, i) => ({
+    id: p.id,
+    label: p.label,
+    shown: Number(popupResults[i * 3].data?.total ?? 0),
+    clicked: Number(popupResults[i * 3 + 1].data?.total ?? 0),
+    dismissed: Number(popupResults[i * 3 + 2].data?.total ?? 0),
+    conversionPct: Number(popupResults[i * 3].data?.total ?? 0) > 0
+      ? Math.round((Number(popupResults[i * 3 + 1].data?.total ?? 0) / Number(popupResults[i * 3].data?.total ?? 0)) * 100)
+      : 0,
+  }));
+
   // ── Page-level visits (public + private) ──
   // Public pages (anonymous aggregate counts from page_views table)
   const publicPaths = ["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs"];
@@ -264,5 +289,6 @@ export async function GET(request: NextRequest) {
     newSignups: signupCount,
     bounceAnalysis,
     signupSources,
+    popups,
   });
 }

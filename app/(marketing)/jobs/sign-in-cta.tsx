@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Lock, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useSignupModal } from "@/components/popups/signup-modal";
 
 export function SignInCTA() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const { showSignupModal } = useSignupModal();
 
   useEffect(() => {
     const supabase = createClient();
@@ -34,11 +35,12 @@ export function SignInCTA() {
           CVEdge analyses your CV against each job description and gives you
           a real ATS compatibility score — so you apply smarter.
         </p>
-        <Link href="/login">
-          <Button className="bg-white text-[#065F46] hover:bg-white/90 font-semibold gap-2">
-            Sign in with Google <ArrowRight className="h-4 w-4" />
-          </Button>
-        </Link>
+        <Button
+          onClick={() => showSignupModal({ trigger: "jobs_cta" })}
+          className="bg-white text-[#065F46] hover:bg-white/90 font-semibold gap-2"
+        >
+          Find jobs matching your CV <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );

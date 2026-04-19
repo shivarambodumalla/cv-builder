@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Upload, Loader2, BarChart3, Search, Lightbulb, ArrowRight, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, ChevronDown, ChevronUp, Sparkles, Shield, Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,8 @@ const STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.Elemen
 
 export function UploadResumeContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const templateParam = searchParams.get("template");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [role, setRole] = useState<{ domain: string; role: string } | null>(null);
@@ -96,6 +98,7 @@ export function UploadResumeContent() {
       if (jobDescription.trim()) formData.append("job_description", jobDescription.trim());
       if (jobCompany.trim()) formData.append("job_company", jobCompany.trim());
       if (jobTitleTarget.trim()) formData.append("job_title_target", jobTitleTarget.trim());
+      if (templateParam) formData.append("template", templateParam);
 
       const res = await fetch("/api/cv/upload-public", {
         method: "POST",

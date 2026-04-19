@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function JobsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Fmy-jobs");
 
   const admin = createAdminClient();
 

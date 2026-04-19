@@ -36,6 +36,8 @@ import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_CONTENT, DEFAULT_DESIGN } from "@/lib/resume/defaults";
 import { getPreviewContent } from "@/lib/resume/placeholder";
 import { StepLoader } from "@/components/shared/step-loader";
+import { DownloadNudge } from "@/components/popups/download-nudge";
+import { AtsScanNudge } from "@/components/popups/ats-scan-nudge";
 import {
   ArrowLeft,
   Briefcase,
@@ -631,6 +633,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <TabsTrigger value="design" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm">Design</TabsTrigger>
                 <TabsTrigger value="analyser" data-testid="tab-ats" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm gap-1.5">
                   ATS
+                  <AtsScanNudge hasScanned={latestReport !== null} />
                   {(() => {
                     // Only show badge if report is current (not stale from before CV was updated)
                     const reportIsCurrent = latestReport?.created_at && cv.updated_at
@@ -672,7 +675,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </div>
                 <div className="lg:hidden">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
+                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} hasJobMatch={jobMatches.length > 0 || !!jobMatchResult} />
                 </div>
               </>
             )}
@@ -796,7 +799,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} hasJobMatch={jobMatches.length > 0 || !!jobMatchResult} />
             </div>
           )}
 
@@ -866,7 +869,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             return (
               <div className="mx-auto max-w-2xl">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
+                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} hasJobMatch={jobMatches.length > 0 || !!jobMatchResult} />
               </div>
             );
           })()}
@@ -911,6 +914,13 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           </button>
         </div>
       )}
+
+      {/* Download nudge — exit intent when ATS score exists but no download */}
+      <DownloadNudge
+        score={latestReport?.score ?? null}
+        downloadCount={0}
+        onDownload={handlePdfDownload}
+      />
     </div>
   );
 }

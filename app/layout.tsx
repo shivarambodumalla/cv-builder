@@ -10,6 +10,9 @@ import { DevReload } from "./dev-reload";
 import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
 import { CookieConsent } from "@/components/shared/cookie-consent";
+// ScoreTeaser removed — replaced by SignupModal exit_intent trigger
+import { JobsDiscovery } from "@/components/popups/jobs-discovery";
+import { SignupModalProvider, SignupTimedTrigger, SignupExitIntent } from "@/components/popups/signup-modal";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -59,14 +62,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <SignupModalProvider>
           <UpgradeModalProvider>
             <DevReload />
             <PageSessionTracker />
             <PageTracker />
+            <SignupTimedTrigger />
+            <SignupExitIntent />
             {children}
             <UpgradeModal />
+            <JobsDiscovery />
             <CookieConsent />
           </UpgradeModalProvider>
+          </SignupModalProvider>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

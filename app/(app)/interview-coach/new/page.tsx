@@ -8,7 +8,7 @@ const FREE_STORY_LIMIT = 3;
 export default async function NewStoryPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Finterview-coach%2Fnew");
 
   const { data: profile } = await supabase
     .from("profiles")

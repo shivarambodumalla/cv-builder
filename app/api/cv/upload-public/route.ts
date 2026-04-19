@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
     const jobDescription = (formData.get("job_description") as string) || null;
     const jobCompany = (formData.get("job_company") as string) || null;
     const jobTitleTarget = (formData.get("job_title_target") as string) || null;
+    const template = (formData.get("template") as string) || null;
 
     if (!role?.trim()) {
       return NextResponse.json({ error: "Role is required" }, { status: 400 });
@@ -125,6 +126,11 @@ export async function POST(request: NextRequest) {
 
     const admin = createAdminClient();
 
+    const VALID_TEMPLATES = ["classic", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"];
+    const designSettings = template && VALID_TEMPLATES.includes(template)
+      ? { template }
+      : null;
+
     const { data: cv, error: insertError } = await admin
       .from("cvs")
       .insert({
@@ -139,6 +145,7 @@ export async function POST(request: NextRequest) {
         job_description: jobDescription?.trim() || null,
         job_company: jobCompany?.trim() || null,
         job_title_target: jobTitleTarget?.trim() || null,
+        ...(designSettings && { design_settings: designSettings }),
       })
       .select("id")
       .single();

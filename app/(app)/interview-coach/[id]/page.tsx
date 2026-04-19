@@ -6,7 +6,7 @@ export default async function StoryDetailPage({ params }: { params: Promise<{ id
   const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Finterview-coach");
 
   const { data: story } = await supabase
     .from("stories")

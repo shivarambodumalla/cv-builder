@@ -6,7 +6,7 @@ import { ExtractContent } from "./extract-content";
 export default async function ExtractPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Finterview-coach%2Fextract");
 
   const { data: profile } = await supabase
     .from("profiles")

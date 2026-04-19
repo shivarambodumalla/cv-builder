@@ -424,6 +424,52 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ─── TEMPLATE SHOWCASE ─── */}
+      <section className="bg-muted/30 py-20 md:py-28">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center mb-12">
+              <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Templates</span>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">12 professional templates, all free</h2>
+              <p className="mt-4 text-muted-foreground max-w-lg mx-auto">Every template is designed to pass ATS filters and look great on screen. Pick one and start editing.</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { name: "Classic", img: "/img/templates/classic.jpg" },
+                { name: "Sharp", img: "/img/templates/sharp.jpg" },
+                { name: "Minimal", img: "/img/templates/minimal.jpg" },
+                { name: "Executive", img: "/img/templates/Executive.jpg" },
+                { name: "Slate", img: "/img/templates/slate.jpg" },
+                { name: "Onyx", img: "/img/templates/onyx.jpg" },
+                { name: "Horizon", img: "/img/templates/horizon.jpg" },
+                { name: "Divide", img: "/img/templates/divide.jpg" },
+                { name: "Folio", img: "/img/templates/folio.jpg" },
+                { name: "Harvard", img: "/img/templates/harward.jpg" },
+                { name: "Ledger", img: "/img/templates/ledger.jpg" },
+                { name: "Metro", img: null },
+              ].map((t) => (
+                <div key={t.name} className="rounded-xl border bg-card p-2 text-center group">
+                  <div className="aspect-[3/4] rounded-lg bg-muted overflow-hidden relative mb-1.5">
+                    {t.img ? (
+                      <>
+                        <img src={t.img} alt={`${t.name} template`} className="w-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-300" style={{ height: "80%" }} loading="lazy" />
+                        <div className="absolute bottom-0 left-0 right-0 h-[20%] bg-gradient-to-t from-card to-transparent" />
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">Soon</div>
+                    )}
+                  </div>
+                  <p className="text-[11px] font-medium">{t.name}</p>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-8">
+              <Button variant="outline" asChild><Link href="/resumes">View all templates</Link></Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── FEATURES GRID ─── */}
       <section id="features" className="scroll-mt-16">
         <div className="container mx-auto px-4 py-20 md:py-28">

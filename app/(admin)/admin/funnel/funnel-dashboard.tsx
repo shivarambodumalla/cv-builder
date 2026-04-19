@@ -15,11 +15,13 @@ interface PageVisit { path: string; label: string; count: number; type: "public"
 interface BounceItem { path: string; label: string; views: number; bouncePct: number; reachLoginPct: number }
 interface SignupSource { page: string; count: number; pct: number }
 interface FunnelStep { key: string; label: string; count: number }
+interface PopupMetric { id: string; label: string; shown: number; clicked: number; dismissed: number; conversionPct: number }
 interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
   jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[];
   pageVisits: PageVisit[]; totalAnonVisits: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
+  popups: PopupMetric[];
 }
 
 type Preset = "today" | "7d" | "30d" | "90d" | "180d" | "365d" | "custom";
@@ -332,6 +334,44 @@ export function FunnelDashboard() {
               )}
             </div>
           </div>
+
+          {/* ── POPUP PERFORMANCE ── */}
+          {data.popups && data.popups.some(pp => pp.shown > 0) && (
+            <div className="rounded-xl border p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <MousePointerClick className="h-4 w-4 text-muted-foreground" />
+                <h2 className="text-sm font-semibold">Popup Performance</h2>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b text-left text-muted-foreground">
+                      <th className="pb-2 font-medium">Popup</th>
+                      <th className="pb-2 text-right font-medium">Shown</th>
+                      <th className="pb-2 text-right font-medium">Clicked</th>
+                      <th className="pb-2 text-right font-medium">Dismissed</th>
+                      <th className="pb-2 text-right font-medium">Conversion</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.popups.map((pp) => (
+                      <tr key={pp.id} className="border-b last:border-0">
+                        <td className="py-2 font-medium">{pp.label}</td>
+                        <td className="py-2 text-right tabular-nums">{pp.shown}</td>
+                        <td className="py-2 text-right tabular-nums text-success font-semibold">{pp.clicked}</td>
+                        <td className="py-2 text-right tabular-nums text-muted-foreground">{pp.dismissed}</td>
+                        <td className="py-2 text-right">
+                          <span className={cn("font-bold tabular-nums", pp.conversionPct >= 20 ? "text-success" : pp.conversionPct >= 5 ? "text-warning" : "text-muted-foreground")}>
+                            {pp.conversionPct}%
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* ── 5. ENGAGEMENT HEALTH ── */}
           <EngagementHealth data={data} signups={signups} awarenessBase={awarenessBase} />

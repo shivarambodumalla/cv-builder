@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { UploadResumeContent } from "./upload-resume-content";
 
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function UploadResumePage() {
-  return <UploadResumeContent />;
+  return (
+    <Suspense fallback={<div />}>
+      <UploadResumeContent />
+    </Suspense>
+  );
 }

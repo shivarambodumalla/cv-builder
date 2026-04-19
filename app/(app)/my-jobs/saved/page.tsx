@@ -31,7 +31,7 @@ export default async function SavedJobsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Fmy-jobs%2Fsaved");
 
   const { data: savedJobs } = await supabase
     .from("saved_jobs")

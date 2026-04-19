@@ -35,6 +35,7 @@ import {
   List,
   ArrowUpDown,
 } from "lucide-react";
+import { StoryNudge } from "@/components/popups/story-nudge";
 
 /* ── Interfaces ── */
 interface Story {
@@ -304,6 +305,9 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
             ))}
           </div>
         </div>
+
+        {/* ── Story extraction nudge ── */}
+        <StoryNudge storyCount={storyList.length} hasCvs={cvs.length > 0} />
 
         {/* ── Upgrade Banner (free users) ── */}
         {!isPro && (

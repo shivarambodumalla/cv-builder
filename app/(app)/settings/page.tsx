@@ -17,7 +17,7 @@ export default async function SettingsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Fsettings");
 
   const admin = createAdminClient();
 

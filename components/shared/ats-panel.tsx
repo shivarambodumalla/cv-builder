@@ -37,6 +37,7 @@ import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-dra
 import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
 import { useActivity } from "@/lib/analytics/useActivity";
 import { JobsWidget } from "@/components/jobs/jobs-widget";
+import { JobMatchNudge } from "@/components/popups/job-match-nudge";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
 
@@ -51,6 +52,7 @@ interface AtsPanelProps {
   content?: ResumeContent;
   onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
   plan?: string;
+  hasJobMatch?: boolean;
 }
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
@@ -192,7 +194,7 @@ function CategoryRow({
   );
 }
 
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
+export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free", hasJobMatch = false }: AtsPanelProps) {
   const router = useRouter();
   const { log } = useActivity();
   const { openUpgradeModal } = useUpgradeModal();
@@ -759,6 +761,9 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
               </button>
             </div>
           )}
+
+          {/* Job match nudge — shown when ATS report exists but no job matches */}
+          <JobMatchNudge hasReport={!!report} hasJobMatch={hasJobMatch} />
 
           {/* Matching jobs widget */}
           <JobsWidget cvId={cvId} cvTitle={content?.targetTitle?.title || content?.experience?.items?.[0]?.role || undefined} />

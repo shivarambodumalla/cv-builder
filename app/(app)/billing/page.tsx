@@ -10,7 +10,7 @@ export default async function BillingPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Fbilling");
 
   const { data: profile } = await supabase
     .from("profiles")

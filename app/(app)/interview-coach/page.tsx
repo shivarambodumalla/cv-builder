@@ -17,7 +17,7 @@ export default async function StoriesPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/login?returnUrl=%2Finterview-coach");
 
   const [{ data: stories }, { data: cvs }, { data: profile }] =
     await Promise.all([

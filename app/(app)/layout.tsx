@@ -14,7 +14,7 @@ export default async function AppLayout({
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
-    redirect("/login");
+    redirect("/login?returnUrl=%2Fdashboard");
   }
 
   return (

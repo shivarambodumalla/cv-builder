@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Search, MapPin } from "lucide-react";
 import { getSuggestions, COMMON_ROLES, COMMON_LOCATIONS } from "@/lib/jobs/fuzzy-search";
+import { useSignupModal } from "@/components/popups/signup-modal";
 
 interface JobSearchFormProps {
   defaultQuery: string;
@@ -11,7 +11,7 @@ interface JobSearchFormProps {
 }
 
 export function JobSearchForm({ defaultQuery, defaultLocation }: JobSearchFormProps) {
-  const router = useRouter();
+  const { showSignupModal } = useSignupModal();
   const [query, setQuery] = useState(defaultQuery);
   const [location, setLocation] = useState(defaultLocation);
   const [roleSugs, setRoleSugs] = useState<string[]>([]);
@@ -29,12 +29,10 @@ export function JobSearchForm({ defaultQuery, defaultLocation }: JobSearchFormPr
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!query.trim()) return;
     setRoleSugs([]);
     setLocSugs([]);
-    const params = new URLSearchParams();
-    if (query.trim()) params.set("q", query.trim());
-    if (location.trim()) params.set("location", location.trim());
-    router.push(`/jobs?${params.toString()}`);
+    showSignupModal({ trigger: "job_search", searchQuery: query.trim() });
   }
 
   return (

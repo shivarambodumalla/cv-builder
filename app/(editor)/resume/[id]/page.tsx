@@ -18,7 +18,7 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?returnUrl=%2Fdashboard");
   }
 
   const { data: cv } = await supabase
