@@ -9,34 +9,53 @@ async function stubAllApis(page: import("@playwright/test").Page) {
   trackClickCalled = false;
   saveMethodCalled = null;
 
+  // Stub all /api/jobs/* endpoints
   await page.route("**/api/jobs/**", async (route) => {
     const url = route.request().url();
     const method = route.request().method();
 
-    if (url.includes("/track-click")) {
+    if (url.includes("track-click")) {
       trackClickCalled = true;
-      await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
-    } else if (url.includes("/save")) {
-      saveMethodCalled = method;
-      if (method === "GET") await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ savedJobs: [] }) });
-      else await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, saved: true }) });
-    } else if (url.includes("/search")) {
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(jobsFixture) });
-    } else {
-      await route.continue();
+      return route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
     }
+    if (url.includes("save")) {
+      saveMethodCalled = method;
+      return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(method === "GET" ? { savedJobs: [] } : { ok: true, saved: true }) });
+    }
+    if (url.includes("search")) {
+      return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(jobsFixture) });
+    }
+    return route.continue();
   });
 
-  // Stub other noisy endpoints
+  // Stub preferred locations API
   await page.route("**/api/user/**", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
+    return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ locations: [] }) });
   });
-  await page.route("**/api/activity/**", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
-  });
-  await page.route("**/api/telemetry/**", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
-  });
+
+  // Stub telemetry/activity to reduce noise
+  await page.route("**/api/activity/**", async (route) => route.fulfill({ status: 200, body: '{"ok":true}' }));
+  await page.route("**/api/telemetry/**", async (route) => route.fulfill({ status: 200, body: '{"ok":true}' }));
+}
+
+/** Dismiss the preferred locations modal if it appears (blocks job cards in CI) */
+async function dismissModalIfPresent(page: import("@playwright/test").Page) {
+  // The modal has a "Skip for now" or close button — try to dismiss it
+  const skipBtn = page.getByText("Skip for now");
+  const closeBtn = page.locator('[role="dialog"] button').first();
+
+  try {
+    // Give it 3 seconds to appear
+    if (await skipBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await skipBtn.click();
+      await page.waitForTimeout(500);
+    } else if (await closeBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await closeBtn.click();
+      await page.waitForTimeout(500);
+    }
+  } catch {
+    // No modal — continue
+  }
 }
 
 test.describe("Jobs Feature", () => {
@@ -51,6 +70,8 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("networkidle");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
+    await dismissModalIfPresent(page);
+
     await expect(page.getByTestId("job-card").first()).toBeVisible({ timeout: 30000 });
     expect(await page.getByTestId("job-card").count()).toBeGreaterThan(0);
   });
@@ -60,22 +81,15 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("networkidle");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
+    await dismissModalIfPresent(page);
     await expect(page.getByTestId("job-card").first()).toBeVisible({ timeout: 30000 });
 
-    // Find apply button — use getByRole as fallback if testid fails
     const applyBtn = page.getByTestId("apply-btn").first();
     await applyBtn.scrollIntoViewIfNeeded();
-
-    // Hover the card first (in case buttons are hover-revealed)
-    await page.getByTestId("job-card").first().hover();
-
-    // Wait then click — force:true bypasses any overlay issues in CI
-    await expect(applyBtn).toBeAttached({ timeout: 10000 });
     await applyBtn.click({ force: true, timeout: 10000 });
 
-    // Close any popup that opened
-    const popup = await page.waitForEvent("popup", { timeout: 3000 }).catch(() => null);
-    await popup?.close();
+    // Close popup if opened
+    await page.waitForEvent("popup", { timeout: 3000 }).then(p => p.close()).catch(() => {});
 
     await expect.poll(() => trackClickCalled, { timeout: 10000 }).toBe(true);
   });
@@ -85,12 +99,11 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("networkidle");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
+    await dismissModalIfPresent(page);
     await expect(page.getByTestId("job-card").first()).toBeVisible({ timeout: 30000 });
 
     const saveBtn = page.getByTestId("save-btn").first();
     await saveBtn.scrollIntoViewIfNeeded();
-    await page.getByTestId("job-card").first().hover();
-    await expect(saveBtn).toBeAttached({ timeout: 10000 });
     await saveBtn.click({ force: true, timeout: 10000 });
 
     await expect.poll(() => saveMethodCalled, { timeout: 10000 }).toBe("POST");
@@ -101,6 +114,7 @@ test.describe("Jobs Feature", () => {
     await page.waitForLoadState("networkidle");
     if (page.url().includes("/login")) { test.skip(true, "Auth not available"); return; }
 
+    await dismissModalIfPresent(page);
     await expect(page.getByTestId("job-card").first()).toBeVisible({ timeout: 30000 });
 
     const searchInput = page.getByTestId("jobs-search");
