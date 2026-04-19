@@ -52,7 +52,7 @@ async function waitForJobCards(page: import("@playwright/test").Page) {
 
 // Helper: find a VISIBLE button (not hidden by responsive breakpoint)
 function visibleBtn(page: import("@playwright/test").Page, testId: string) {
-  return page.locator(`[data-testid="${testId}"]`).locator("visible=true").first();
+  return page.locator(`[data-testid="${testId}"]`).filter({ visible: true }).first();
 }
 
 test.describe("Jobs Feature", () => {
