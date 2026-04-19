@@ -446,7 +446,6 @@ export default async function HomePage() {
                 { name: "Folio", img: "/img/templates/folio.jpg" },
                 { name: "Harvard", img: "/img/templates/harward.jpg" },
                 { name: "Ledger", img: "/img/templates/ledger.jpg" },
-                { name: "Metro", img: null },
               ].map((t) => (
                 <div key={t.name} className="rounded-xl border bg-card p-2 text-center group">
                   <div className="aspect-[3/4] rounded-lg bg-muted overflow-hidden relative mb-1.5">
