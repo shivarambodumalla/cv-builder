@@ -459,12 +459,28 @@ function EngagementHealth({ data, signups, awarenessBase }: { data: FunnelData; 
   const signupToDownload = p(data.engagement.find(s => s.key === "pdf_downloaded")?.count ?? 0, signups);
   const signupToPro = p(data.conversion.find(s => s.key === "upgraded")?.count ?? 0, signups);
 
+  // Jobs metrics
+  const jobPageVisits = data.jobsFunnel?.find(s => s.key === "job_page_visits")?.count ?? 0;
+  const jobClicks = data.jobsFunnel?.find(s => s.key === "job_clicks")?.count ?? 0;
+  const signupToJobs = p(jobPageVisits, signups);
+  const jobClickRate = p(jobClicks, jobPageVisits);
+
+  // Interview Prep metrics
+  const interviewPageVisits = data.interviewFunnel?.find(s => s.key === "interview_page_visits")?.count ?? 0;
+  const storiesCreated = data.interviewFunnel?.find(s => s.key === "stories_created")?.count ?? 0;
+  const signupToInterview = p(interviewPageVisits, signups);
+  const interviewCreateRate = p(storiesCreated, interviewPageVisits);
+
   const metrics = [
-    { label: "Visitor → Signup", value: visitToSignup, good: 5, great: 15, unit: "%" },
-    { label: "Signup → CV Created", value: signupToCV, good: 40, great: 70, unit: "%" },
-    { label: "Signup → ATS Scan", value: signupToATS, good: 30, great: 60, unit: "%" },
-    { label: "Signup → Download", value: signupToDownload, good: 15, great: 40, unit: "%" },
-    { label: "Signup → Pro", value: signupToPro, good: 2, great: 8, unit: "%" },
+    { label: "Visitor → Signup", value: visitToSignup, good: 5, great: 15, unit: "%", section: "core" as const },
+    { label: "Signup → CV Created", value: signupToCV, good: 40, great: 70, unit: "%", section: "core" as const },
+    { label: "Signup → ATS Scan", value: signupToATS, good: 30, great: 60, unit: "%", section: "core" as const },
+    { label: "Signup → Download", value: signupToDownload, good: 15, great: 40, unit: "%", section: "core" as const },
+    { label: "Signup → Pro", value: signupToPro, good: 2, great: 8, unit: "%", section: "core" as const },
+    { label: "Signup → Jobs Page", value: signupToJobs, good: 20, great: 50, unit: "%", section: "jobs" as const },
+    { label: "Jobs → Apply Click", value: jobClickRate, good: 5, great: 15, unit: "%", section: "jobs" as const },
+    { label: "Signup → Interview Coach", value: signupToInterview, good: 10, great: 30, unit: "%", section: "interview" as const },
+    { label: "Coach → Story Created", value: interviewCreateRate, good: 20, great: 50, unit: "%", section: "interview" as const },
   ];
 
   // Overall health: average of normalized scores (0-100 each)
@@ -488,20 +504,33 @@ function EngagementHealth({ data, signups, awarenessBase }: { data: FunnelData; 
           </div>
         </div>
       </div>
-      <div className="space-y-3">
-        {metrics.map((m) => {
-          const score = Math.min(100, (m.value / m.great) * 100);
-          const color = score >= 70 ? "bg-success" : score >= 40 ? "bg-warning" : "bg-error";
+      <div className="space-y-2">
+        {(["core", "jobs", "interview"] as const).map((section) => {
+          const sectionMetrics = metrics.filter(m => m.section === section);
+          if (sectionMetrics.every(m => m.value === 0) && section !== "core") return null;
+          const sectionLabel = section === "core" ? "Core Funnel" : section === "jobs" ? "Jobs" : "Interview Coach";
           return (
-            <div key={m.label} className="flex items-center gap-3">
-              <span className="text-xs w-36 shrink-0">{m.label}</span>
-              <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                <div className={cn("h-full rounded-full transition-all", color)} style={{ width: `${Math.max(score, 2)}%` }} />
+            <div key={section}>
+              {section !== "core" && <div className="border-t my-3" />}
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{sectionLabel}</p>
+              <div className="space-y-2.5">
+                {sectionMetrics.map((m) => {
+                  const score = Math.min(100, (m.value / m.great) * 100);
+                  const color = score >= 70 ? "bg-success" : score >= 40 ? "bg-warning" : "bg-error";
+                  return (
+                    <div key={m.label} className="flex items-center gap-3">
+                      <span className="text-xs w-40 shrink-0">{m.label}</span>
+                      <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                        <div className={cn("h-full rounded-full transition-all", color)} style={{ width: `${Math.max(score, 2)}%` }} />
+                      </div>
+                      <span className="text-xs font-bold tabular-nums w-12 text-right">{m.value}{m.unit}</span>
+                      <span className={cn("text-[9px] w-12 text-right", score >= 70 ? "text-success" : score >= 40 ? "text-warning" : "text-error")}>
+                        {score >= 70 ? "Good" : score >= 40 ? "OK" : "Low"}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              <span className="text-xs font-bold tabular-nums w-12 text-right">{m.value}{m.unit}</span>
-              <span className={cn("text-[9px] w-12 text-right", score >= 70 ? "text-success" : score >= 40 ? "text-warning" : "text-error")}>
-                {score >= 70 ? "Good" : score >= 40 ? "OK" : "Low"}
-              </span>
             </div>
           );
         })}

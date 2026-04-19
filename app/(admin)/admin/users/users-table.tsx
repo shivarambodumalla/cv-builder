@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type SortKey = "name" | "location" | "total_cvs" | "total_pdf_downloads" | "plan" | "last_active" | "joined_at";
+type SortKey = "name" | "role" | "location" | "total_cvs" | "total_pdf_downloads" | "job_clicks" | "saved_jobs" | "stories" | "plan" | "last_active" | "joined_at";
 type SortDir = "asc" | "desc";
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250];
 
@@ -23,8 +23,12 @@ export interface AdminUserRow {
   subscription_status?: string | null;
   joined_at: string;
   last_active: string | null;
+  target_role: string | null;
   total_cvs: number;
   total_pdf_downloads: number;
+  job_clicks: number;
+  saved_jobs: number;
+  stories: number;
   signup_city: string | null;
   signup_country: string | null;
   signup_country_code: string | null;
@@ -77,9 +81,13 @@ function locationFor(user: AdminUserRow): { line: string | null; cc: string | nu
 function sortValue(u: AdminUserRow, key: SortKey): string | number {
   switch (key) {
     case "name": return (u.full_name ?? u.email).toLowerCase();
+    case "role": return (u.target_role ?? "").toLowerCase();
     case "location": return (locationFor(u).line ?? "").toLowerCase();
     case "total_cvs": return u.total_cvs;
     case "total_pdf_downloads": return u.total_pdf_downloads;
+    case "job_clicks": return u.job_clicks;
+    case "saved_jobs": return u.saved_jobs;
+    case "stories": return u.stories;
     case "plan": return u.plan;
     case "last_active": return u.last_active ? new Date(u.last_active).getTime() : 0;
     case "joined_at": return u.joined_at ? new Date(u.joined_at).getTime() : 0;
@@ -135,7 +143,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
       setSortDir(sortDir === "asc" ? "desc" : "asc");
     } else {
       setSortKey(key);
-      setSortDir(["total_cvs", "total_pdf_downloads", "last_active", "joined_at"].includes(key) ? "desc" : "asc");
+      setSortDir(["total_cvs", "total_pdf_downloads", "job_clicks", "saved_jobs", "stories", "last_active", "joined_at"].includes(key) ? "desc" : "asc");
     }
     setPage(1);
   }
@@ -149,6 +157,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
           return (
             u.email.toLowerCase().includes(q) ||
             (u.full_name ?? "").toLowerCase().includes(q) ||
+            (u.target_role ?? "").toLowerCase().includes(q) ||
             loc.toLowerCase().includes(q) ||
             (u.signup_country ?? "").toLowerCase().includes(q) ||
             (u.signup_city ?? "").toLowerCase().includes(q)
@@ -207,9 +216,13 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
               <thead>
                 <tr className="border-b">
                   <SortHeader label="User" sortKey="name" current={sortKey} dir={sortDir} onSort={handleSort} />
+                  <SortHeader label="Role" sortKey="role" current={sortKey} dir={sortDir} onSort={handleSort} />
                   <SortHeader label="Location" sortKey="location" current={sortKey} dir={sortDir} onSort={handleSort} />
                   <SortHeader label="CVs" sortKey="total_cvs" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
                   <SortHeader label="Downloads" sortKey="total_pdf_downloads" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
+                  <SortHeader label="Job Clicks" sortKey="job_clicks" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
+                  <SortHeader label="Saved Jobs" sortKey="saved_jobs" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
+                  <SortHeader label="Stories" sortKey="stories" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
                   <SortHeader label="Plan" sortKey="plan" current={sortKey} dir={sortDir} onSort={handleSort} />
                   <SortHeader label="Last Active" sortKey="last_active" current={sortKey} dir={sortDir} onSort={handleSort} />
                   <SortHeader label="Joined" sortKey="joined_at" current={sortKey} dir={sortDir} onSort={handleSort} />
@@ -236,6 +249,13 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                           </div>
                         </Link>
                       </td>
+                      <td className="px-4 py-3">
+                        {user.target_role ? (
+                          <span className="text-xs text-muted-foreground">{user.target_role}</span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground/40">—</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-muted-foreground">
                         {locationLine ? (
                           <span className="inline-flex items-center gap-1.5">
@@ -250,6 +270,9 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                       </td>
                       <td className="px-4 py-3 text-right tabular-nums">{user.total_cvs}</td>
                       <td className="px-4 py-3 text-right tabular-nums">{user.total_pdf_downloads}</td>
+                      <td className="px-4 py-3 text-right tabular-nums">{user.job_clicks || <span className="text-muted-foreground">—</span>}</td>
+                      <td className="px-4 py-3 text-right tabular-nums">{user.saved_jobs || <span className="text-muted-foreground">—</span>}</td>
+                      <td className="px-4 py-3 text-right tabular-nums">{user.stories || <span className="text-muted-foreground">—</span>}</td>
                       <td className="px-4 py-3">
                         <Badge variant="secondary" className={`${planClass[user.plan] ?? ""} capitalize text-[10px]`}>
                           {user.plan}
@@ -266,7 +289,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                    <td colSpan={11} className="px-4 py-8 text-center text-muted-foreground">
                       No users match.
                     </td>
                   </tr>
