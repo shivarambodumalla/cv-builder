@@ -18,6 +18,8 @@ const NAV_LINKS = [
   { href: "/admin/campaigns", label: "Campaigns" },
   { href: "/admin/email-logs", label: "Email Logs" },
   { href: "/admin/tests", label: "Tests" },
+  { href: "/admin/interventions", label: "Interventions" },
+  { href: "/admin/popup-audit", label: "Popup Audit" },
 ];
 
 export default function AdminLayout({
