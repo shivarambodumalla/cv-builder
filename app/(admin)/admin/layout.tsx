@@ -50,6 +50,12 @@ const NAV_GROUPS = [
     ],
   },
   {
+    title: "Marketing",
+    links: [
+      { href: "/admin/testimonials", label: "Testimonials" },
+    ],
+  },
+  {
     title: "Tools",
     links: [
       { href: "/admin/tests", label: "E2E Tests" },

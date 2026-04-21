@@ -2,48 +2,34 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
-  BarChart3,
+  Activity,
   Briefcase,
   Brain,
   Check,
-  Download,
-  FileText,
-  Layout,
-  Mail,
-  PenTool,
+  DollarSign,
   Search,
-  Shield,
+  Sparkles,
   Target,
   Upload,
-  Zap,
-  Sparkles,
 } from "lucide-react";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { Chip } from "@/components/ui/chip";
-import { LiveCounter } from "./live-counter";
+
+
+
 import { FaqSection } from "./faq-section";
 import { CtaSection } from "@/components/shared/cta-section";
-import AtsAnalysisVisual from "@/components/marketing/ats-analysis-visual";
-import AiRewriteVisual from "@/components/marketing/ai-rewrite-visual";
-import JobMatchVisual from "@/components/marketing/job-match-visual";
+import { FeaturesTabs } from "@/components/marketing/features-tabs";
+import { LogoCarousel } from "@/components/marketing/logo-carousel";
+import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 
 export const metadata: Metadata = {
-  title: "Free ATS Resume Checker & AI Job Search — Fix Your CV in 8 Minutes",
-  description: "CVEdge finds exactly why your CV gets rejected by ATS software and fixes it with AI. Free job search with match scores for every role. Used by job seekers in 40+ countries.",
+  title: "Free ATS Resume Scanner — Check Your ATS Score in 60 Seconds | CVEdge",
+  description: "Your resume is getting filtered out by ATS software. CVEdge scans your resume, shows your real ATS score, and fixes critical issues with AI. Free to start. Used by 2,400+ job seekers.",
   alternates: { canonical: "https://www.thecvedge.com" },
 };
 
 // Revalidate every hour — homepage stats don't need to be real-time
 export const revalidate = 3600;
 
-const SCORE_CATEGORIES = [
-  { name: "Contact info", desc: "Name, email, phone, location", weight: 10 },
-  { name: "Required sections", desc: "Summary, experience, skills, education", weight: 20 },
-  { name: "Keyword match", desc: "Role-specific terms recruiters search for", weight: 25 },
-  { name: "Measurable results", desc: "Numbers, percentages, impact metrics", weight: 20 },
-  { name: "Bullet quality", desc: "Strong action verbs, clear outcomes", weight: 15 },
-  { name: "Formatting", desc: "Parseable structure, no tables or columns", weight: 10 },
-];
 
 const COMPARISON = [
   { feature: "Role-specific keywords", us: "130+ roles", them: "Generic only" },
@@ -56,22 +42,12 @@ const COMPARISON = [
 ];
 
 export default async function HomePage() {
-  // Fetch live stats
-  const supabase = createAdminClient();
-  const todayStart = new Date();
-  todayStart.setUTCHours(0, 0, 0, 0);
-
-  const [{ count: todayCount }, { data: lastReport }] = await Promise.all([
-    supabase.from("ats_reports").select("id", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
-    supabase.from("ats_reports").select("created_at").order("created_at", { ascending: false }).limit(1).single(),
-  ]);
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "CVEdge",
     url: "https://www.thecvedge.com",
-    description: "Free AI-powered CV optimisation platform. Fix your CV in 8 minutes. 80+ ATS score guaranteed.",
+    description: "Free ATS resume scanner. Check your ATS score, fix critical issues with AI, and start getting interview calls. Used by 2,400+ job seekers.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
@@ -95,53 +71,203 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       {/* ─── HERO ─── */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5" />
-        <div className="container relative mx-auto flex flex-col items-center gap-6 px-4 pb-16 pt-20 text-center md:pb-24 md:pt-32">
-          <span className="rounded-full border bg-background px-4 py-1.5 text-xs font-medium text-muted-foreground">
-            Free to start &middot; No credit card required
-          </span>
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            Get more interviews.{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Fix your CV in 8 minutes.
-            </span>
-          </h1>
-          <p className="max-w-[640px] text-lg text-muted-foreground">
-            Most CVs never reach a human. CVEdge shows you exactly why yours gets skipped — and fixes it instantly.
-          </p>
+      <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
+        {/* Decorative gradient blobs */}
+        <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
 
-          {/* Trust badges */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {["No credit card required", "Used by 2,400+ job seekers", "80+ score guaranteed"].map((t) => (
-              <Chip key={t} variant="trust">
-                <Check className="h-3 w-3 text-[#065F46] font-bold" /> {t}
-              </Chip>
-            ))}
-          </div>
-
-          {/* Trust signals */}
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">🔒 Your data is never sold</span>
-            <span className="flex items-center gap-1">⭐ 4.8/5 average rating</span>
-            <span className="flex items-center gap-1">🌍 Used in 40+ countries</span>
-            <span className="flex items-center gap-1">💳 Cancel anytime</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button size="lg" className="h-12 px-8 text-base" asChild>
-              <Link href="/upload-resume">
-                Score My CV Free
-              </Link>
+        <div className="relative mx-auto max-w-[1200px] px-6 pt-10 pb-10 sm:pt-14 sm:pb-12 md:pt-16 md:pb-14">
+          {/* Centered copy */}
+          <div className="mx-auto flex flex-col items-center text-center gap-4 max-w-3xl">
+            <h1 className="text-[2.25rem] sm:text-[3rem] md:text-[3.5rem] font-bold tracking-[-0.025em] leading-[1.12]">
+              Your resume isn&apos;t getting rejected.{" "}
+              <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
+            </h1>
+            <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
+              Get a real ATS score, fix critical issues, and start getting interview calls — in under 10 minutes.
+            </p>
+            <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium mt-1 shadow-md shadow-primary/20" asChild>
+              <Link href="/upload-resume">Scan my resume free</Link>
             </Button>
+
+            {/* Trust line */}
+            <p className="text-sm text-muted-foreground mt-1">
+              Trusted by 2,400+ job seekers &middot; Avg score improvement +18 points
+            </p>
           </div>
 
-          {/* Live counter */}
-          <LiveCounter initialCount={todayCount ?? 0} lastReportAt={lastReport?.created_at ?? null} />
+          {/* Product screenshot */}
+          <div className="relative mt-8 sm:mt-10 md:mt-12 mx-auto max-w-[1100px]">
+            <div className="rounded-xl border-2 border-primary/15 shadow-2xl overflow-hidden ring-1 ring-primary/5">
+              <img
+                src="/img/cover.png"
+                alt="CVEdge ATS resume scanner showing score breakdown and keyword analysis"
+                className="w-full h-auto"
+                loading="eager"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-          {/* Hero visual */}
-          <div className="mt-4 w-full max-w-5xl rounded-xl border overflow-hidden">
-            <img src="/img/cover.png" alt="CVEdge Resume Editor showing ATS score with score breakdown" className="w-full h-auto" loading="eager" />
+      {/* ─── LOGO CAROUSEL ─── */}
+      <LogoCarousel />
+
+      {/* ─── FEATURES (tabbed) ─── */}
+      <FeaturesTabs />
+
+      {/* ─── TEMPLATES + JOB SEARCH + INTERVIEW COACH ─── */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="mx-auto max-w-[1200px] space-y-6">
+            {/* Row 1 — Templates (full width) */}
+            <div className="rounded-[2rem] bg-[#1E3A5F] dark:bg-[#0f2340] border border-[#2A4F7A]/40 overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2">
+                <div className="flex flex-col items-start justify-center gap-5 px-8 sm:px-12 lg:px-14 py-14 lg:py-16">
+                  <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/80 uppercase tracking-wider">Templates</span>
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.025em] leading-[1.1] text-white">
+                    Professional<br />Templates
+                  </h2>
+                  <p className="max-w-[380px] text-base sm:text-lg text-white/70 leading-relaxed">
+                    12 ATS-optimised templates, all free. Every design passes automated filters and looks great on screen.
+                  </p>
+                  <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
+                    <Link href="/resumes">Browse templates</Link>
+                  </Button>
+                </div>
+                <div className="overflow-hidden p-6 lg:p-8">
+                  <div className="flex gap-3 items-start">
+                    <div className="flex-1 flex flex-col gap-3">
+                      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
+                        <img src="/img/templates/classic.jpg" alt="Classic template" className="w-full h-auto" loading="lazy" />
+                      </div>
+                      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
+                        <img src="/img/templates/Executive.jpg" alt="Executive template" className="w-full h-auto" loading="lazy" />
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col gap-3 mt-10">
+                      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
+                        <img src="/img/templates/sharp.jpg" alt="Sharp template" className="w-full h-auto" loading="lazy" />
+                      </div>
+                      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
+                        <img src="/img/templates/slate.jpg" alt="Slate template" className="w-full h-auto" loading="lazy" />
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col gap-3 mt-4">
+                      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
+                        <img src="/img/templates/folio.jpg" alt="Folio template" className="w-full h-auto" loading="lazy" />
+                      </div>
+                      <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
+                        <img src="/img/templates/divide.jpg" alt="Divide template" className="w-full h-auto" loading="lazy" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 2 — Job Search + Interview Coach (side by side) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Job Search */}
+              <div className="rounded-[2rem] bg-[#065F46] border border-[#065F46]/20 p-8 sm:p-10 flex flex-col gap-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                    <Briefcase className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">Free AI Job Search</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+                  Find jobs that match your CV
+                </h3>
+                <p className="text-sm text-white/70 leading-relaxed">
+                  Stop scrolling irrelevant listings. CVEdge matches jobs to your CV and shows a match score for every role.
+                </p>
+                <ul className="space-y-2 mt-1">
+                  {[
+                    "AI match score for every listing",
+                    "Filter by location, type, salary, remote",
+                    "Save jobs and track applications",
+                    "Up to 5 preferred locations",
+                  ].map((p) => (
+                    <li key={p} className="flex items-start gap-2.5">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
+                      <span className="text-sm text-white/90 leading-relaxed">{p}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto pt-3">
+                  <Button className="h-11 px-7 text-sm font-medium bg-white text-[#065F46] hover:bg-white/90" asChild>
+                    <Link href="/jobs">Search jobs free</Link>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Interview Coach */}
+              <div className="rounded-[2rem] bg-[#1E3A5F] dark:bg-[#0f2340] border border-[#2A4F7A]/40 p-8 sm:p-10 flex flex-col gap-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                    <Brain className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">Interview Coach</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+                  Walk into every interview prepared
+                </h3>
+                <p className="text-sm text-white/70 leading-relaxed">
+                  Build a library of STAR stories from your career. Before any interview, get a ranked shortlist matched to the job.
+                </p>
+                <ul className="space-y-2 mt-1">
+                  {[
+                    "AI extracts stories from CV, portfolio, GitHub",
+                    "STAR framework pre-filled by AI",
+                    "Quality scoring (0–10) per story",
+                    "Job-matched prep with talking points",
+                  ].map((p) => (
+                    <li key={p} className="flex items-start gap-2.5">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
+                      <span className="text-sm text-white/90 leading-relaxed">{p}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto pt-3">
+                  <Button className="h-11 px-7 text-sm font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
+                    <Link href="/interview-coach">Start interview prep</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 3 — USP Stats */}
+            <div className="rounded-[2rem] overflow-hidden">
+              {/* CTA banner */}
+              <div className="bg-[#065F46] px-6 py-8 sm:py-10 text-center">
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Land your next role faster</h2>
+                <p className="mt-1.5 text-white/70 text-sm">AI-powered resume builder and ATS scorer</p>
+                <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-[#34D399] hover:bg-[#2fc48d] text-[#065F46] shadow-md" asChild>
+                  <Link href="/upload-resume">Get started free</Link>
+                </Button>
+              </div>
+              {/* Stat cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 p-4 sm:p-5 bg-[#ece5d8] dark:bg-muted/30">
+                {[
+                  { icon: Search, stat: "130+", title: "Role keyword sets", desc: "Not generic lists" },
+                  { icon: Sparkles, stat: "4 modes", title: "AI bullet rewrite", desc: "Rewrite, expand, shorten, quantify" },
+                  { icon: Activity, stat: "Live", title: "Score updates", desc: "As you type, not after saving" },
+                  { icon: DollarSign, stat: "$0", title: "To start", desc: "Others charge $20\u201330/mo" },
+                ].map((s) => (
+                  <div key={s.title} className="rounded-xl bg-background border border-border/50 p-4 sm:p-5 space-y-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#065F46] text-white">
+                      <s.icon size={15} />
+                    </div>
+                    <p className="text-lg sm:text-xl font-bold tracking-tight">{s.stat}</p>
+                    <div>
+                      <p className="text-[13px] font-semibold">{s.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -150,53 +276,56 @@ export default async function HomePage() {
       <section id="how-it-works" className="bg-muted/30 scroll-mt-16">
         <div className="container mx-auto px-4 py-20 md:py-28">
           {/* Header */}
-          <div className="mx-auto max-w-xl mb-10">
-            <p className="text-[10px] tracking-widest text-[#78716C] uppercase text-center">How it works</p>
-            <h2 className="text-lg font-medium text-[#0C1A0E] dark:text-foreground text-center mt-1">Walk into every interview prepared</h2>
-            <p className="text-xs text-[#78716C] text-center mt-1">Build a personal library of your best career stories. Before any interview, CVEdge tells you exactly which stories to tell — and how to tell them.</p>
+          <div className="max-w-5xl mx-auto mb-14 md:mb-16">
+            <p className="text-xs sm:text-sm font-semibold tracking-widest text-primary uppercase">How it works</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground mt-3">From rejected to interview-ready in 3 steps</h2>
+            <p className="text-sm sm:text-base text-muted-foreground mt-4 leading-relaxed max-w-xl">Upload your resume, see exactly what&apos;s wrong, and fix everything — before the recruiter ever sees it.</p>
           </div>
 
           {/* Step cards */}
-          <div className="mx-auto max-w-3xl relative mb-3">
+          <div className="mx-auto max-w-5xl relative mb-8 md:mb-10">
             {/* Connector line (desktop only) */}
-            <div className="hidden md:block absolute top-[18px] left-[calc(16.67%+10px)] right-[calc(16.67%+10px)] h-px bg-[rgba(6,95,70,0.15)] z-0" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+            <div className="hidden md:block absolute top-[28px] left-[calc(16.67%+20px)] right-[calc(16.67%+20px)] h-px bg-primary/15 z-0" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
               {[
                 {
+                  step: "01",
                   icon: Upload,
-                  title: "Scan your sources",
-                  body: "Drop your CV, portfolio link, or GitHub. AI parses every section and finds your best achievements.",
+                  title: "Upload your resume",
+                  body: "Drop your PDF or paste text. AI parses every section in seconds — no manual entry needed.",
                   proofLabel: "Parsed in seconds",
-                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded px-1.5 text-[10px] font-medium py-0.5">14 experiences found</span>,
+                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded-md px-2.5 py-1 text-xs font-medium">14 experiences found</span>,
                 },
                 {
+                  step: "02",
                   icon: Sparkles,
-                  title: "Build your stories",
-                  body: "AI pre-fills each story in STAR format. You review, fill gaps, and save the ones that represent you best.",
+                  title: "Get your ATS analysis",
+                  body: "See your score, missing keywords, formatting errors, and exactly what to fix — ranked by impact.",
                   proofLabel: "Answer quality score",
                   proof: (
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1 rounded-full bg-[rgba(6,95,70,0.1)]"><div className="h-1 rounded-full bg-[#059669]" style={{ width: "80%" }} /></div>
-                      <span className="text-[10px] font-medium text-[#059669]">8/10</span>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-2 rounded-full bg-primary/10"><div className="h-2 rounded-full bg-primary" style={{ width: "80%" }} /></div>
+                      <span className="text-sm font-semibold text-primary">8/10</span>
                     </div>
                   ),
                 },
                 {
+                  step: "03",
                   icon: Target,
-                  title: "Ace your interviews",
-                  body: "Paste a job description before any interview. Get your most relevant stories with suggested talking points.",
+                  title: "Fix and optimise",
+                  body: "Apply AI suggestions with one click. Rewrite bullets, add keywords, and watch your score climb.",
                   proofLabel: "Top match for this role",
-                  proof: <p className="text-[10px] text-[#065F46] font-medium truncate">#1 Improving Engagement Metrics — 94%</p>,
+                  proof: <p className="text-xs text-[#065F46] font-semibold truncate">#1 Improving Engagement Metrics — 94%</p>,
                 },
               ].map((s) => (
-                <div key={s.title} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-3.5 flex flex-col items-center gap-2 relative z-10">
-                  <div className="w-9 h-9 bg-[#065F46] rounded-full flex items-center justify-center shrink-0">
-                    <s.icon size={15} className="text-white" />
+                <div key={s.title} className="bg-background border border-border/60 rounded-2xl p-6 sm:p-7 flex flex-col items-start gap-3 relative z-10 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shrink-0">
+                    <s.icon size={20} className="text-primary-foreground" />
                   </div>
-                  <p className="text-xs font-medium text-[#0C1A0E] text-center">{s.title}</p>
-                  <p className="text-[11px] text-[#78716C] text-center leading-relaxed">{s.body}</p>
-                  <div className="bg-white border border-[rgba(6,95,70,0.12)] rounded-lg p-2 w-full mt-1">
-                    <p className="text-[9px] text-[#9CA3AF] uppercase tracking-wide mb-1">{s.proofLabel}</p>
+                  <p className="text-sm font-bold text-foreground">{s.title}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{s.body}</p>
+                  <div className="bg-muted/50 border border-border/40 rounded-xl p-3.5 w-full mt-2">
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium mb-2">{s.proofLabel}</p>
                     {s.proof}
                   </div>
                 </div>
@@ -205,17 +334,17 @@ export default async function HomePage() {
           </div>
 
           {/* Pain quote row */}
-          <div className="mx-auto max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-2.5">
+          <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {[
               { quote: "\u201cI know I did good work but I can never remember specifics in the moment.\u201d", resolve: "Every achievement, structured and saved" },
               { quote: "\u201cI prep for hours then get asked something different and freeze.\u201d", resolve: "8 themes covered, always ready" },
               { quote: "\u201cI give the same stories for every role even when they\u2019re not the best fit.\u201d", resolve: "Role-matched story shortlist" },
             ].map((p) => (
-              <div key={p.resolve} className="bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] rounded-xl p-3">
-                <p className="text-[10px] text-[#78716C] italic leading-relaxed mb-2">{p.quote}</p>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-[#065F46] rounded-full shrink-0" />
-                  <p className="text-[10px] font-medium text-[#065F46]">{p.resolve}</p>
+              <div key={p.resolve} className="bg-primary/[0.04] border border-primary/10 rounded-xl p-5">
+                <p className="text-sm text-muted-foreground italic leading-relaxed mb-3">{p.quote}</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full shrink-0" />
+                  <p className="text-sm font-medium text-primary">{p.resolve}</p>
                 </div>
               </div>
             ))}
@@ -223,463 +352,112 @@ export default async function HomePage() {
         </div>
       </section>
 
-
-      {/* ─── ATS ANALYSIS ─── */}
-      <section className="py-20 md:py-28">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-6xl">
-            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
-              <div>
-                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">ATS Analysis</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Find out why your CV gets rejected</h2>
-                <p className="mt-4 text-muted-foreground">Recruiters use software to filter CVs before reading them. CVEdge runs the same check — so you can fix problems before they cost you the interview.</p>
-                <ul className="mt-6 space-y-3">
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Score breakdown across 6 categories with per-issue impact points</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Checks against 2,400+ role-specific keywords across 130+ job roles</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">Real-time estimated score updates as you edit your content</span></li>
-                  <li className="flex items-start gap-3"><Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" /><span className="text-sm">One-click keyword add: tap a missing keyword and it goes into your skills</span></li>
-                </ul>
-                <Button className="mt-6" asChild><Link href="/upload-resume">Analyse My CV Free</Link></Button>
-              </div>
-              <div className="hidden lg:block" style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.06))" }}>
-                <AtsAnalysisVisual />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── AI REWRITE ─── */}
+      {/* ─── WHY CVEDGE ─── */}
       <section className="bg-muted/30 py-20 md:py-28">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-6xl">
-            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
-              {/* Visual — left on desktop, first on mobile */}
-              <div className="hidden lg:block order-2 lg:order-1" style={{ filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.12))", borderRadius: 16, overflow: "hidden" }}>
-                <AiRewriteVisual />
-              </div>
-              {/* Text — right on desktop */}
-              <div className="order-1 lg:order-2">
-                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">AI Rewrite</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Make every line of your CV count</h2>
-                <p className="mt-4 text-muted-foreground leading-relaxed">Every bullet point has a Rewrite button. Pick a mode, get a suggestion, refine it with plain instructions, and insert it with one click.</p>
-                <ul className="mt-6 space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">4 rewrite modes: ATS keywords, measurable impact, concise phrasing, grammar fix</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">Refine with natural language: &quot;make it shorter&quot;, &quot;add React&quot;, &quot;more confident&quot;</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">Never fabricates metrics, uses [X] placeholders for numbers you fill in</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">One click to accept and insert directly into your CV</span>
-                  </li>
-                </ul>
-                <Button className="mt-6" asChild><Link href="/upload-resume">Try AI Rewrite free</Link></Button>
-              </div>
-            </div>
+        <div className="container mx-auto px-4 sm:px-6">
+          {/* Header */}
+          <div className="mb-10 md:mb-14 max-w-[1100px] mx-auto">
+            <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Why CVEdge</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mt-3">Built for real people, not robots</h2>
           </div>
-        </div>
-      </section>
 
-      {/* ─── SCORE METHODOLOGY ─── */}
-      <section className="container mx-auto px-4 py-20 md:py-28">
-        <div className="mx-auto max-w-4xl">
-          <div className="text-center mb-14">
-            <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Transparent Scoring</span>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How we calculate your score</h2>
-            <p className="mt-4 text-muted-foreground max-w-lg mx-auto">No black box. No guesswork. Every point is explainable and fixable.</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {SCORE_CATEGORIES.map((cat) => (
-              <div key={cat.name} className="rounded-xl border bg-background p-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold">{cat.name}</p>
-                  <span className="text-lg font-bold text-primary">{cat.weight}%</span>
+          {/* Card container */}
+          <div className="mx-auto max-w-[1100px] rounded-[2rem] bg-[#f5f0e8] dark:bg-card border border-border/40 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr]">
+              {/* Left — Comparison table on dark green */}
+              <div className="bg-[#065F46] p-8 sm:p-10">
+                <p className="text-xs font-semibold text-white/60 uppercase tracking-[0.2em] mb-6">How we compare</p>
+                {/* Table header */}
+                <div className="grid grid-cols-[1fr_auto_auto] gap-x-6 mb-2 pb-3 border-b border-white/15">
+                  <p className="text-xs font-semibold text-white/50 uppercase tracking-wider">Feature</p>
+                  <p className="text-xs font-bold text-white uppercase tracking-wider text-center w-24">CVEdge</p>
+                  <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-center w-20">Others</p>
                 </div>
-                <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${cat.weight * 4}%` }} />
-                </div>
-                <p className="text-xs text-muted-foreground">{cat.desc}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-10 text-center text-sm text-muted-foreground">Every category has specific, fixable rules. Fix one issue at a time and watch your score rise.</p>
-          <div className="mt-5 text-center">
-            <Button asChild><Link href="/upload-resume">See my score</Link></Button>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── JOB MATCH + COVER LETTER ─── */}
-      <section className="bg-muted/30 py-20 md:py-28">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-6xl">
-            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
-              <div>
-                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Job Search</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">See how well you match before you apply</h2>
-                <p className="mt-4 text-muted-foreground leading-relaxed">Paste a job description and see exactly how well your CV matches. Then generate a tailored cover letter that references your actual experience.</p>
-                <ul className="mt-6 space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">Match score with missing vs matched keywords highlighted</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">Fix mode: switch to editor with job match results side-by-side</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </div>
-                    <span className="text-sm leading-relaxed">Cover letter in 3 tones: Professional, Conversational, Confident</span>
-                  </li>
-                </ul>
-                <Button className="mt-6" asChild><Link href="/upload-resume">Try job matching free</Link></Button>
-              </div>
-              <div className="hidden lg:block" style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.06))", borderRadius: 16, overflow: "hidden" }}>
-                <JobMatchVisual />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── AI JOB SEARCH ─── */}
-      <section className="py-20 md:py-28">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-6xl">
-            <div className="grid gap-12 lg:gap-16 lg:grid-cols-2 lg:items-center">
-              {/* Visual — left */}
-              <div className="order-2 lg:order-1">
-                <div className="rounded-2xl bg-[#F7F5F0] dark:bg-card border p-5 space-y-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-[#0C1A0E] dark:text-foreground">Jobs matching your profile</p>
-                    <span className="text-[10px] text-muted-foreground">20 results</span>
-                  </div>
-                  {[
-                    { title: "Senior Frontend Engineer", company: "Google", location: "Remote, US", score: 94, color: "#DCFCE7", textColor: "#065F46" },
-                    { title: "Full Stack Developer", company: "Stripe", location: "San Francisco, CA", score: 87, color: "#D1FAE5", textColor: "#065F46" },
-                    { title: "React Engineer", company: "Vercel", location: "Remote", score: 72, color: "#D1FAE5", textColor: "#065F46" },
-                  ].map((job) => (
-                    <div key={job.title} className="flex items-center gap-3 rounded-xl bg-white dark:bg-background border p-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46] text-[10px] font-bold text-white">
-                        {job.company.slice(0, 2).toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold truncate">{job.title}</p>
-                        <p className="text-[10px] text-muted-foreground">{job.company} &middot; {job.location}</p>
-                      </div>
-                      <span className="shrink-0 rounded-lg px-2 py-1 text-[10px] font-bold" style={{ backgroundColor: job.color, color: job.textColor }}>
-                        {job.score}% match
-                      </span>
-                    </div>
-                  ))}
-                  <p className="text-center text-[10px] text-muted-foreground pt-1">Personalised to your CV, skills, and location preferences</p>
-                </div>
-              </div>
-              {/* Text — right */}
-              <div className="order-1 lg:order-2">
-                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Free AI Job Search</span>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">Find jobs that match your CV — for free</h2>
-                <p className="mt-4 text-muted-foreground leading-relaxed">Stop scrolling through hundreds of irrelevant listings. CVEdge matches jobs to your CV and shows a match score for every role — so you only apply where you have the best chance.</p>
-                <ul className="mt-6 space-y-4">
-                  {[
-                    "AI match score for every listing based on your CV skills and experience",
-                    "Filter by location, job type, salary, and remote/on-site",
-                    "Save jobs and track applications. Apply with one click",
-                    "Personalised to your preferred locations and career level",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
-                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 5l2 2L7.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      </div>
-                      <span className="text-sm leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button className="mt-6" asChild><Link href="/jobs">Search jobs free</Link></Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── TEMPLATE SHOWCASE ─── */}
-      <section className="bg-muted/30 py-20 md:py-28">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-5xl">
-            <div className="text-center mb-12">
-              <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Templates</span>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">12 professional templates, all free</h2>
-              <p className="mt-4 text-muted-foreground max-w-lg mx-auto">Every template is designed to pass ATS filters and look great on screen. Pick one and start editing.</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {[
-                { name: "Classic", img: "/img/templates/classic.jpg" },
-                { name: "Sharp", img: "/img/templates/sharp.jpg" },
-                { name: "Minimal", img: "/img/templates/minimal.jpg" },
-                { name: "Executive", img: "/img/templates/Executive.jpg" },
-                { name: "Slate", img: "/img/templates/slate.jpg" },
-                { name: "Onyx", img: "/img/templates/onyx.jpg" },
-                { name: "Horizon", img: "/img/templates/horizon.jpg" },
-                { name: "Divide", img: "/img/templates/divide.jpg" },
-                { name: "Folio", img: "/img/templates/folio.jpg" },
-                { name: "Harvard", img: "/img/templates/harward.jpg" },
-                { name: "Ledger", img: "/img/templates/ledger.jpg" },
-              ].map((t) => (
-                <div key={t.name} className="rounded-xl border bg-card p-2 text-center group">
-                  <div className="aspect-[3/4] rounded-lg bg-muted overflow-hidden relative mb-1.5">
-                    {t.img ? (
-                      <>
-                        <img src={t.img} alt={`${t.name} template`} className="w-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-300" style={{ height: "80%" }} loading="lazy" />
-                        <div className="absolute bottom-0 left-0 right-0 h-[20%] bg-gradient-to-t from-card to-transparent" />
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">Soon</div>
-                    )}
-                  </div>
-                  <p className="text-[11px] font-medium">{t.name}</p>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mt-8">
-              <Button variant="outline" asChild><Link href="/resumes">View all templates</Link></Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── FEATURES GRID ─── */}
-      <section id="features" className="scroll-mt-16">
-        <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto mb-16 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Everything you need to go from application to offer letter</h2>
-            <p className="mt-4 text-muted-foreground">All the tools in one place. Upload your CV and get started in 60 seconds.</p>
-          </div>
-          <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { icon: Upload, title: "Upload or Paste", desc: "Drop a PDF or paste your CV text. AI parses every section automatically. No manual entry needed." },
-              { icon: BarChart3, title: "ATS Score Checker", desc: "Score your CV across 6 categories. See exactly what ATS software will flag before you apply." },
-              { icon: Search, title: "Keyword Detection", desc: "Role-specific keyword lists compare your skills against what recruiters search for." },
-              { icon: PenTool, title: "AI Bullet Rewrite", desc: "Rewrite any bullet in 4 modes: ATS, Impact, Concise, Grammar. Refine with natural language." },
-              { icon: Target, title: "Job Matching", desc: "Paste a job description, get a match score, see missing keywords, and fix gaps instantly." },
-              { icon: Mail, title: "Cover Letters", desc: "Generate tailored cover letters in 3 tones that reference your actual experience and the role." },
-              { icon: Briefcase, title: "Free AI Job Search", desc: "Search thousands of jobs matched to your CV. See a match score for every listing before you apply." },
-              { icon: FileText, title: "12 Templates", desc: "Classic, Sharp, Minimal, Executive, and 8 more. All designed to pass ATS and look professional." },
-              { icon: Download, title: "PDF Export", desc: "Download clean, formatted PDFs ready to send. Pro users get watermark-free exports." },
-              { icon: Zap, title: "Real-time Scoring", desc: "Your ATS score updates as you type. See estimated impact before you re-analyse." },
-              { icon: Brain, title: "Smart Add Keywords", desc: "Tap any missing keyword to add it to your skills section instantly. No copy-paste." },
-              { icon: Shield, title: "Your Data, Private", desc: "Your CV data stays in your account. We never share it, sell it, or train AI on it." },
-              { icon: Layout, title: "Design Controls", desc: "Font, spacing, accent color, paper size, section order. Customize everything visually." },
-            ].map((f) => (
-              <div key={f.title} className="rounded-xl border bg-background p-5 space-y-2">
-                <f.icon className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── COMPARISON TABLE ─── */}
-      <section className="bg-muted/30">
-        <div className="container mx-auto px-4 py-20 md:py-28">
-          <div className="mx-auto max-w-3xl">
-            <div className="text-center mb-12">
-              <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Compare</span>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How CVEdge compares</h2>
-            </div>
-            <div className="rounded-2xl border bg-background overflow-hidden">
-              <div className="grid grid-cols-[1fr_1fr_1fr]">
-                {/* Header */}
-                <div className="p-4 border-b" />
-                <div className="p-4 border-b bg-[#065F46] text-center">
-                  <p className="text-sm font-bold text-white">CVEdge</p>
-                </div>
-                <div className="p-4 border-b text-center">
-                  <p className="text-sm font-medium text-muted-foreground">Others</p>
-                </div>
-                {/* Rows */}
+                {/* Table rows */}
                 {COMPARISON.map((row, i) => (
-                  <>
-                    <div key={`f-${i}`} className="px-4 py-3.5 border-b flex items-center">
-                      <p className="text-sm font-medium">{row.feature}</p>
-                    </div>
-                    <div key={`u-${i}`} className="px-4 py-3.5 border-b bg-[#065F46]/5 flex items-center justify-center">
-                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#065F46]">
-                        <Check className="h-4 w-4" /> {row.us}
-                      </span>
-                    </div>
-                    <div key={`t-${i}`} className="px-4 py-3.5 border-b flex items-center justify-center">
-                      <span className="text-sm text-muted-foreground/50 line-through">{row.them}</span>
-                    </div>
-                  </>
+                  <div key={i} className="grid grid-cols-[1fr_auto_auto] gap-x-6 py-3.5 border-b border-white/10 last:border-b-0">
+                    <p className="text-sm font-medium text-white">{row.feature}</p>
+                    <p className="text-sm font-semibold text-[#34D399] text-center w-24">{row.us.includes("Yes") ? `\u2713 ${row.us}` : row.us}</p>
+                    <p className="text-sm text-white/30 text-center w-20 line-through">{row.them}</p>
+                  </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ─── ABOUT + BEFORE/AFTER ─── */}
-      <section className="container mx-auto px-4 py-20 md:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            {/* Visual — first on mobile */}
-            <div className="order-1 lg:order-2">
-              <div className="rounded-2xl bg-[#F7F5F0] dark:bg-card p-5 sm:p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-[1fr_48px_1fr] items-stretch gap-3">
+              {/* Right — Before/After + trust */}
+              <div className="p-8 sm:p-10 flex flex-col gap-6">
+                <h3 className="text-xl font-bold tracking-tight">What changes in 8 minutes</h3>
+
+                {/* Before / After cards */}
+                <div className="flex items-center gap-4">
                   {/* Before */}
-                  <div className="rounded-xl bg-white dark:bg-background border border-[#E0D8CC] dark:border-border p-4 space-y-3">
-                    <p className="text-[10px] uppercase tracking-[1px] text-[#9CA3AF] font-medium">Raw CV &middot; No score</p>
+                  <div className="flex-1 rounded-xl border border-border/60 bg-background p-4 space-y-3">
+                    <p className="text-[10px] uppercase tracking-[1.5px] text-muted-foreground font-medium">Before</p>
                     <div className="space-y-1.5">
-                      <div className="h-2.5 rounded bg-[#E5E7EB] w-[60%]" />
-                      <div className="h-[7px] rounded bg-[#F3F4F6] w-[40%]" />
-                      <div className="h-[7px] rounded bg-[#F3F4F6] w-[80%]" />
+                      <div className="h-2 rounded bg-[#D1D5DB] w-[55%]" />
+                      <div className="h-1.5 rounded bg-[#E5E7EB] w-[80%]" />
+                      <div className="h-1.5 rounded bg-[#E5E7EB] w-[65%]" />
                     </div>
-                    <div className="space-y-1.5 pt-1">
-                      <div className="h-2 rounded bg-[#E5E7EB] w-[35%]" />
-                      <div className="h-[7px] rounded bg-[#F3F4F6] w-[90%]" />
-                      <div className="h-[7px] rounded bg-[#F3F4F6] w-[75%]" />
-                      <div className="h-[7px] rounded bg-[#F3F4F6] w-[85%]" />
-                      <div className="h-[7px] rounded bg-[#F3F4F6] w-[60%]" />
-                    </div>
-                    <div className="rounded-lg bg-[#FEF2F2] border border-[#FECACA] p-2.5 space-y-1">
-                      <p className="text-[9px] font-bold text-[#991B1B]">12 issues detected</p>
-                      {["Missing 8 keywords", "No measurable results", "Weak bullet structure", "Missing location"].map((t) => (
-                        <div key={t} className="flex items-center gap-1.5">
-                          <span className="h-1 w-1 rounded-full bg-red-400 shrink-0" />
-                          <span className="text-[9px] text-[#7F1D1D]">{t}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-2.5 pt-1">
-                      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="#FECACA" strokeWidth="3"/><circle cx="22" cy="22" r="19" stroke="#DC2626" strokeWidth="3" strokeDasharray="72 120" strokeLinecap="round" transform="rotate(-90 22 22)"/><text x="22" y="24" textAnchor="middle" fill="#DC2626" fontWeight="800" fontSize="12" fontFamily="system-ui">61</text></svg>
-                      <div>
-                        <p className="text-[9px] font-bold text-[#991B1B]">ATS Score</p>
-                        <p className="text-[8px] text-[#9CA3AF]">Likely rejected</p>
-                      </div>
+                    <div className="flex items-center gap-2 pt-1">
+                      <svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="#FECACA" strokeWidth="3"/><circle cx="22" cy="22" r="19" stroke="#DC2626" strokeWidth="3" strokeDasharray="72 120" strokeLinecap="round" transform="rotate(-90 22 22)"/><text x="22" y="25" textAnchor="middle" fill="#DC2626" fontWeight="800" fontSize="13" fontFamily="system-ui">61</text></svg>
+                      <p className="text-xs font-semibold text-[#DC2626]">Rejected</p>
                     </div>
                   </div>
 
-                  {/* Arrow */}
-                  <div className="hidden sm:flex items-center justify-center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#065F46" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                  </div>
-                  <div className="sm:hidden flex justify-center py-1">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#065F46" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg>
+                  {/* Arrow + label */}
+                  <div className="flex flex-col items-center gap-1 shrink-0">
+                    <p className="text-[10px] text-muted-foreground font-medium">8 min</p>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-foreground" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </div>
 
                   {/* After */}
-                  <div className="rounded-xl bg-white dark:bg-background border border-[#6EE7B7] p-4 space-y-3">
-                    <p className="text-[10px] uppercase tracking-[1px] text-[#065F46] font-medium">Optimised CV &middot; 8 min</p>
+                  <div className="flex-1 rounded-xl border border-[#6EE7B7] bg-background p-4 space-y-3">
+                    <p className="text-[10px] uppercase tracking-[1.5px] text-[#065F46] font-medium">After</p>
                     <div className="space-y-1.5">
-                      <div className="h-2.5 rounded bg-[#0C1A0E] w-[60%]" />
-                      <div className="h-[7px] rounded bg-[#D1FAE5] w-[40%]" />
-                      <div className="h-[7px] rounded bg-[#E5E7EB] w-[80%]" />
+                      <div className="h-2 rounded bg-[#065F46] w-[55%]" />
+                      <div className="h-1.5 rounded bg-[#34D399] w-[80%]" />
+                      <div className="h-1.5 rounded bg-[#6EE7B7] w-[65%]" />
                     </div>
-                    <div className="space-y-1.5 pt-1">
-                      <div className="h-2 rounded bg-[#065F46] w-[35%]" />
-                      <div className="h-[7px] rounded bg-[#D1FAE5] w-[90%]" />
-                      <div className="h-[7px] rounded bg-[#E5E7EB] w-[75%]" />
-                      <div className="h-[7px] rounded bg-[#D1FAE5] w-[85%]" />
-                      <div className="h-[7px] rounded bg-[#E5E7EB] w-[60%]" />
+                    <div className="flex items-center gap-2 pt-1">
+                      <svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="#6EE7B7" strokeWidth="3"/><circle cx="22" cy="22" r="19" stroke="#065F46" strokeWidth="3" strokeDasharray="112 120" strokeLinecap="round" transform="rotate(-90 22 22)"/><text x="22" y="25" textAnchor="middle" fill="#065F46" fontWeight="800" fontSize="13" fontFamily="system-ui">94</text></svg>
+                      <p className="text-xs font-semibold text-[#065F46]">Ready</p>
                     </div>
-                    <div className="rounded-lg bg-[#F0FDF4] border border-[#6EE7B7] p-2.5 space-y-1">
-                      <p className="text-[9px] font-bold text-[#065F46]">2 minor suggestions left</p>
-                      {["8 keywords added", "Bullets rewritten with metrics", "Location added"].map((t) => (
-                        <div key={t} className="flex items-center gap-1.5">
-                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="5" fill="#065F46"/><path d="M3 5l1.5 1.5L7 4" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          <span className="text-[9px] text-[#065F46]">{t}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-2.5 pt-1">
-                      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="#6EE7B7" strokeWidth="3"/><circle cx="22" cy="22" r="19" stroke="#065F46" strokeWidth="3" strokeDasharray="112 120" strokeLinecap="round" transform="rotate(-90 22 22)"/><text x="22" y="24" textAnchor="middle" fill="#065F46" fontWeight="800" fontSize="12" fontFamily="system-ui">94</text></svg>
+                  </div>
+                </div>
+
+                {/* Trust points */}
+                <div className="space-y-3 pt-2">
+                  {[
+                    { title: "Never fabricates", desc: "Uses [X] placeholders — your words, not ours" },
+                    { title: "Your experience only", desc: "Nothing invented — every point explained" },
+                    { title: "Fully transparent scoring", desc: "See exactly why your score changed" },
+                  ].map((t) => (
+                    <div key={t.title} className="flex items-start gap-3 rounded-xl bg-background/60 dark:bg-muted/30 border border-border/40 px-4 py-3">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                        <Check className="h-4 w-4 text-white" />
+                      </div>
                       <div>
-                        <p className="text-[9px] font-bold text-[#065F46]">ATS Score</p>
-                        <p className="text-[8px] text-[#6B7280]">Interview-ready</p>
+                        <p className="text-sm font-semibold">{t.title}</p>
+                        <p className="text-xs text-muted-foreground">{t.desc}</p>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-1 pt-1">
-                      {["PyTorch", "MLOps", "LLMs", "Kubernetes", "RAG"].map((kw) => (
-                        <span key={kw} className="rounded-full bg-[#D1FAE5] px-1.5 py-0.5 text-[8px] font-medium text-[#065F46]">{kw}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="mt-4 text-center text-[11px] text-[#78716C]">Senior ML Engineer &middot; Score improved from 61% to 94% in 8 minutes</p>
-              </div>
-            </div>
-
-            {/* Text — second on mobile */}
-            <div className="order-2 lg:order-1 space-y-6">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Built for real people, not robots</h2>
-              <p className="text-muted-foreground leading-relaxed">Most CV builders make you start from scratch with a blank template. CVEdge works differently: upload what you already have, and we show you exactly what to improve. No guesswork, no generic advice.</p>
-              <p className="text-muted-foreground leading-relaxed">Every suggestion is backed by the same keyword lists that ATS systems use. Every rewrite preserves your real experience. We never fabricate metrics or claims. The result is a CV that passes automated screening AND reads well to humans.</p>
-
-              <div className="space-y-4 pt-2">
-                <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46]">
-                    <Shield className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">We never fabricate metrics</p>
-                    <p className="text-xs text-muted-foreground">AI suggests placeholders like [X%]. You fill in the real numbers.</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46]">
-                    <FileText className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">Your experience stays yours</p>
-                    <p className="text-xs text-muted-foreground">Every rewrite is based on what you&apos;ve actually done. Nothing invented.</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#065F46]">
-                    <Zap className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">Full transparency</p>
-                    <p className="text-xs text-muted-foreground">See exactly why your score changed after every edit.</p>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ─── TESTIMONIALS ─── */}
+      <TestimonialsCarousel />
 
       {/* ─── FAQ ─── */}
       <section className="py-20 md:py-28">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-[720px]">
-            <div className="text-center mb-10">
+            <div className="mb-10">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Common questions</h2>
-              <p className="mt-3 text-base text-[#78716C]">Everything you need to know before getting started.</p>
+              <p className="mt-3 text-base text-muted-foreground">Everything you need to know before getting started.</p>
             </div>
             <FaqSection />
           </div>
@@ -689,7 +467,12 @@ export default async function HomePage() {
       {/* ─── CTA ─── */}
       <section>
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <CtaSection />
+          <CtaSection
+            label="Don't wait"
+            heading="Your resume might be getting filtered out right now"
+            subtext="Every day you wait is a missed opportunity. Scan your resume in 60 seconds."
+            buttonText="Check my resume score"
+          />
         </div>
       </section>
     </>

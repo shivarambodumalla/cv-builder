@@ -13,7 +13,7 @@ export function CtaSection({
   label = "Free analysis",
   heading = "Ready to see your ATS score?",
   subtext = "Under 60 seconds. No sign-up required.",
-  buttonText = "Analyse my CV free",
+  buttonText = "Get started free",
   buttonHref = "/upload-resume",
   trustItems = ["Free to start", "No credit card", "Cancel anytime"],
 }: CtaSectionProps) {

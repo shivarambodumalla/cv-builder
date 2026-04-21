@@ -6,36 +6,36 @@ import { cn } from "@/lib/utils";
 
 const FAQS = [
   {
-    q: "Will recruiters know I used AI?",
-    a: "No. CVEdge suggests improvements based on your actual experience. You review and approve every change. Your CV stays yours — AI just helps you express it better.",
+    q: "Is this really free?",
+    a: "Yes. You can scan your resume and see your ATS score for free. The free plan includes 3 resumes, 10 ATS scans, 25 AI rewrites, and 5 job matches every 7 days. No credit card required.",
   },
   {
-    q: "Is my CV data safe?",
-    a: "Yes. Your CV is stored securely in your account. We never sell it, share it, or use it to train AI models. You can delete your account and all data at any time.",
+    q: "How accurate is the ATS score?",
+    a: "It is based on real hiring system patterns, role-specific keyword analysis across 130+ roles, and the same filtering rules that ATS software uses. 75% of resumes are rejected by ATS before a human sees them.",
   },
   {
-    q: "Does ATS optimisation actually work?",
-    a: "Yes. Studies show 75% of CVs are rejected by ATS software before a human sees them. Matching the right keywords for your role is the single highest-leverage fix you can make.",
+    q: "Will this work for freshers?",
+    a: "Yes. CVEdge helps both freshers and experienced professionals. The AI adapts suggestions to your experience level and uses [X] placeholders when you need to add specific numbers.",
   },
   {
-    q: "How is this different from Resumeworded or Jobscan?",
-    a: "CVEdge combines ATS scoring, AI bullet rewrites, job matching, and cover letter generation in one tool — at a fraction of the price. Most tools only do one of these.",
+    q: "Is my data safe?",
+    a: "Your data is encrypted and stored securely. We never sell it, share it, or use it to train AI models. You can delete your account and all data at any time.",
   },
   {
     q: "Do I need to start from scratch?",
-    a: "No. Upload your existing CV as a PDF and we parse everything automatically. Improve what you have — no blank templates, no manual copy-pasting.",
+    a: "No. Upload your existing resume as a PDF and we parse everything automatically. Improve what you have — no blank templates, no manual entry.",
   },
   {
-    q: "What roles and industries do you support?",
-    a: "130+ roles across 12 domains — Engineering, Design, Product, Data, Marketing, Sales, Finance, HR, Operations, Content, Mechanical, and New Age / Digital Economy.",
+    q: "How is this different from other resume tools?",
+    a: "CVEdge combines ATS scoring, AI bullet rewrites, job matching, cover letter generation, and interview prep in one tool — at a fraction of the price. Most tools only do one of these.",
   },
   {
     q: "Can I cancel anytime?",
-    a: "Yes — cancel with one click from your billing page. No emails to send, no forms to fill. Your access continues until the end of your billing period.",
+    a: "Yes — cancel with one click from your billing page. No emails, no forms. Your access continues until the end of your billing period.",
   },
   {
-    q: "Is there a free plan?",
-    a: "Yes. The free plan includes 3 CVs, 10 ATS scans, 25 AI rewrites, 5 job matches, and 5 cover letters every 7 days. All 12 templates and unlimited watermarked PDF downloads. No credit card required to get started.",
+    q: "What roles do you support?",
+    a: "130+ roles across 12 domains — Engineering, Design, Product, Data, Marketing, Sales, Finance, HR, Operations, Content, Mechanical, and Digital Economy.",
   },
 ];
 

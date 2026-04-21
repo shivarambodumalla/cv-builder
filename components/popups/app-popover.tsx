@@ -87,7 +87,7 @@ export function AppPopover({
     <div className="fixed bottom-6 right-6 z-[80] w-[340px] animate-in slide-in-from-bottom-4 duration-300">
       <div className="rounded-2xl shadow-2xl overflow-hidden border">
         {/* Green header — compact */}
-        <div className="bg-[#065F46] px-4 py-3 flex items-center justify-between">
+        <div className="bg-[#1E3A5F] px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {icon || (
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15">

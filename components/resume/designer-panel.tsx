@@ -40,19 +40,19 @@ interface DesignerPanelProps {
   onChange: (design: ResumeDesignSettings) => void;
 }
 
-const TEMPLATES: { name: TemplateName; label: string }[] = [
-  { name: "classic", label: "Classic" },
-  { name: "sharp", label: "Sharp" },
-  { name: "minimal", label: "Minimal" },
-  { name: "executive", label: "Executive" },
-  { name: "sidebar", label: "Slate" },
-  { name: "sidebar-right", label: "Onyx" },
-  { name: "two-column", label: "Horizon" },
-  { name: "divide", label: "Divide" },
-  { name: "folio", label: "Folio" },
-  // { name: "metro", label: "Metro" },  // hidden — redesign in progress
-  { name: "harvard", label: "Harvard" },
-  { name: "ledger", label: "Ledger" },
+const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
+  { name: "classic", label: "Classic", desc: "Clean single-column layout. Works for any role." },
+  { name: "sharp", label: "Sharp", desc: "Bold headers with strong visual hierarchy." },
+  { name: "minimal", label: "Minimal", desc: "Maximum whitespace, distraction-free." },
+  { name: "executive", label: "Executive", desc: "Refined styling for senior professionals." },
+  { name: "sidebar", label: "Slate", desc: "Two-column with left sidebar for skills." },
+  { name: "sidebar-right", label: "Onyx", desc: "Two-column with right sidebar layout." },
+  { name: "two-column", label: "Horizon", desc: "Full-width header with two-column body." },
+  { name: "divide", label: "Divide", desc: "Split layout with a clean vertical divider." },
+  { name: "folio", label: "Folio", desc: "Two-column with a tinted left panel." },
+  // { name: "metro", label: "Metro", desc: "Modern metro-inspired design." },  // hidden — redesign in progress
+  { name: "harvard", label: "Harvard", desc: "Academic style inspired by Ivy League." },
+  { name: "ledger", label: "Ledger", desc: "Structured grid layout for detail-heavy roles." },
 ];
 
 const FONTS: { name: FontFamily; label: string }[] = [
@@ -1056,7 +1056,10 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
                     <TemplatePreview template={t.name} />
                   </div>
                 )}
-                <p className="mt-1.5 text-center text-xs font-medium">{t.label}</p>
+                <div className="mt-2 px-1 pb-1">
+                  <p className="text-sm font-semibold">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{t.desc}</p>
+                </div>
               </button>
             );
           })}

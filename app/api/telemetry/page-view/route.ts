@@ -9,7 +9,7 @@ const ALLOWED_PATHS = new Set(["/", "/pricing", "/upload-resume", "/login", "/re
 export async function POST(request: NextRequest) {
   try {
     const { path } = await request.json();
-    if (!path || !ALLOWED_PATHS.has(path)) return NextResponse.json({ ok: true });
+    if (!path || (!ALLOWED_PATHS.has(path) && !path.startsWith("/popup/"))) return NextResponse.json({ ok: true });
 
     const admin = createAdminClient();
     const today = new Date().toISOString().slice(0, 10);
