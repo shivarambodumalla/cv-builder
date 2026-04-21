@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { alertAdmin } from "@/lib/email/alert";
 import { captureSignupLocation } from "@/lib/geolocation/capture-signup-location";
 import { uniqueCvTitle } from "@/lib/resume/unique-title";
+import { sendGA4Event } from "@/lib/analytics/ga4-server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -25,6 +26,16 @@ export async function GET(request: Request) {
       const isSignup = !!user && !!user.created_at && !!user.last_sign_in_at
         && Math.abs(new Date(user.last_sign_in_at).getTime() - new Date(user.created_at).getTime()) < 5000;
       const authEvent = isSignup ? "signup" : "login";
+
+      // Server-side GA4 tracking — fires regardless of ad blockers
+      if (user) {
+        sendGA4Event({
+          events: [{ name: isSignup ? "sign_up" : "login", params: { method: "google" } }],
+          userId: user.id,
+          cookieHeader: request.headers.get("cookie"),
+          userAgent: request.headers.get("user-agent"),
+        }).catch(() => {});
+      }
 
       const appendAuthEvent = (url: string) => {
         const sep = url.includes("?") ? "&" : "?";

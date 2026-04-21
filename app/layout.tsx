@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/react";
@@ -56,7 +57,33 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
-        {/* GA/Ads scripts loaded dynamically after cookie consent — see CookieConsent component */}
+        {/* GA4 + Ads — loaded in HTML so GA4 tag verifier can detect it.
+            Consent defaults to denied; CookieConsent upgrades to granted on accept. */}
+        <Script id="gtag-consent-defaults" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+            });
+          `}
+        </Script>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-GLVL3MB6NC"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-config" strategy="afterInteractive">
+          {`
+            gtag('js', new Date());
+            gtag('config', 'G-GLVL3MB6NC');
+            gtag('config', 'G-52LEWSBN7M');
+            gtag('config', 'AW-18095722375');
+          `}
+        </Script>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

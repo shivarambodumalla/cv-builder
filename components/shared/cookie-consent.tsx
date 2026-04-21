@@ -20,49 +20,8 @@ export function hasConsent(): boolean {
   return localStorage.getItem(CONSENT_KEY) === "accepted";
 }
 
-/** Load GA + Ads scripts */
-function loadGA(consentGranted: boolean) {
-  if (typeof window === "undefined") return;
-  if (document.getElementById("gtag-script")) return;
-
-  // Set default consent BEFORE loading gtag
-  window.dataLayer = window.dataLayer || [];
-  function gtag(...args: unknown[]) { window.dataLayer!.push(args); }
-
-  if (!consentGranted) {
-    // Consent-denied mode: GA still counts visits but without cookies/user persistence
-    gtag("consent", "default", {
-      analytics_storage: "denied",
-      ad_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-    });
-  } else {
-    gtag("consent", "default", {
-      analytics_storage: "granted",
-      ad_storage: "granted",
-      ad_user_data: "granted",
-      ad_personalization: "granted",
-    });
-  }
-
-  const script = document.createElement("script");
-  script.id = "gtag-script";
-  script.async = true;
-  script.src = "https://www.googletagmanager.com/gtag/js?id=G-52LEWSBN7M";
-  document.head.appendChild(script);
-
-  script.onload = () => {
-    gtag("js", new Date());
-    gtag("config", "G-52LEWSBN7M");
-    gtag("config", "G-GLVL3MB6NC");
-    gtag("config", "AW-18095722375");
-    window.gtag = gtag as typeof window.gtag;
-  };
-}
-
-/** Upgrade consent from denied → granted (after user accepts) */
-function upgradeConsent() {
+/** Grant consent — called for non-GDPR users on mount, or when a GDPR user accepts */
+function grantConsent() {
   if (typeof window === "undefined" || !window.gtag) return;
   window.gtag("consent", "update", {
     analytics_storage: "granted",
@@ -95,27 +54,25 @@ export function CookieConsent() {
     const stored = localStorage.getItem(CONSENT_KEY);
     const gdpr = isGDPRRegion();
 
+    // Non-GDPR region (India, US, AU, etc.) — grant consent immediately, no banner
     if (!gdpr) {
-      // Non-GDPR region (India, US, AU, etc.) — load GA immediately, no banner
       localStorage.setItem(CONSENT_KEY, "accepted");
-      loadGA(true);
+      grantConsent();
       return;
     }
 
     // GDPR region — check stored consent
     if (stored === "accepted") {
-      loadGA(true);
+      grantConsent();
       return;
     }
 
     if (stored === "declined") {
-      // Load GA in consent-denied mode (cookieless, still counts visits)
-      loadGA(false);
+      // Consent stays denied — gtag.js still counts visits cookielessly
       return;
     }
 
-    // No stored consent — load GA in denied mode first, then show banner
-    loadGA(false);
+    // No stored consent — show banner (consent defaults to denied in layout.tsx)
     const t = setTimeout(() => setShow(true), 1500);
     return () => clearTimeout(t);
   }, []);
@@ -123,7 +80,7 @@ export function CookieConsent() {
   function handleAccept() {
     localStorage.setItem(CONSENT_KEY, "accepted");
     setShow(false);
-    upgradeConsent();
+    grantConsent();
 
     // Record consent server-side (fire-and-forget)
     fetch("/api/gdpr/consent", {
@@ -136,7 +93,7 @@ export function CookieConsent() {
   function handleDecline() {
     localStorage.setItem(CONSENT_KEY, "declined");
     setShow(false);
-    // GA stays in consent-denied mode — visits still counted, no cookies
+    // Consent stays denied — gtag.js still counts visits cookielessly
   }
 
   if (!show) return null;
