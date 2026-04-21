@@ -6,28 +6,25 @@ const PAPER_SIZES: Record<string, { width: string; height: string }> = {
   letter: { width: "8.5in", height: "11in" },
 };
 
-function isServerless(): boolean {
-  return !!process.env.AWS_EXECUTION_ENV || process.env.VERCEL === "1";
-}
-
 async function launchBrowser() {
   const puppeteer = await import("puppeteer-core");
 
-  if (isServerless()) {
-    const chromium = (await import("@sparticuz/chromium")).default;
+  // Mac dev — use system Chrome. Override via LOCAL_CHROMIUM_PATH.
+  if (process.platform === "darwin" && !process.env.VERCEL) {
+    const localPath = process.env.LOCAL_CHROMIUM_PATH
+      || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     return puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath(),
+      executablePath: localPath,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
       headless: true,
     });
   }
 
-  // Local dev — use an installed Chrome/Chromium. Override via LOCAL_CHROMIUM_PATH.
-  const localPath = process.env.LOCAL_CHROMIUM_PATH
-    || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  // Everything else (Vercel serverless, CI, Linux hosts) — use sparticuz's bundled chromium.
+  const chromium = (await import("@sparticuz/chromium")).default;
   return puppeteer.launch({
-    executablePath: localPath,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: chromium.args,
+    executablePath: await chromium.executablePath(),
     headless: true,
   });
 }
