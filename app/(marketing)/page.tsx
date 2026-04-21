@@ -40,6 +40,7 @@ const COMPARISON = [
   { feature: "Job description matching", us: "Yes", them: "Not available" },
   { feature: "AI job search with match scores", us: "Free", them: "Not available" },
   { feature: "Cover letter generation", us: "Yes", them: "Not available" },
+  { feature: "Watermark-free PDFs", us: "Free plan", them: "Paid only" },
   { feature: "Price to start", us: "Free", them: "$20-30/month" },
 ];
 
@@ -102,10 +103,10 @@ export default async function HomePage() {
           <div className="relative mt-8 sm:mt-10 md:mt-12 mx-auto max-w-[1100px]">
             <div className="rounded-xl border-2 border-primary/15 shadow-2xl overflow-hidden ring-1 ring-primary/5">
               <Image
-                src="/img/cover.png"
+                src="/img/cover.webp"
                 alt="CVEdge ATS resume scanner showing score breakdown and keyword analysis"
-                width={1600}
-                height={960}
+                width={2200}
+                height={1167}
                 priority
                 sizes="(max-width: 1100px) 100vw, 1100px"
                 className="w-full h-auto"
