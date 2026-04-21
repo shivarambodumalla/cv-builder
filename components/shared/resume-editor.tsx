@@ -530,7 +530,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
       {/* Header */}
       <header className="flex h-14 shrink-0 items-center border-b bg-background px-3">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => router.push("/dashboard")}>
+          <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-8 sm:w-8 shrink-0" onClick={() => router.push("/dashboard")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <img src="/img/CV-Edge-Logo-square.svg" alt="CVEdge logo" className="h-7 w-7 shrink-0" />
@@ -564,7 +564,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 lg:hidden"
+            className="h-11 w-11 lg:hidden"
             onClick={() => setMobilePreview(!mobilePreview)}
             title={mobilePreview ? "Back" : "Preview CV"}
           >
@@ -580,7 +580,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           )}
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none">
+            <DropdownMenuTrigger className="outline-none min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center">
               <Avatar className="h-8 w-8 cursor-pointer">
                 {user.avatar_url && <AvatarImage src={user.avatar_url} alt={user.full_name || user.email} />}
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
