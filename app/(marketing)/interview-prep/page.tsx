@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Search, Sparkles, Target, CheckCircle, BarChart3, Brain, Briefcase } from "lucide-react";
+import { BreadcrumbJsonLd, HowToJsonLd } from "@/components/shared/structured-data";
 
 export const metadata = {
   title: "Interview Coach — Prepare STAR Stories from Your CV | CVEdge",
@@ -9,6 +10,7 @@ export const metadata = {
     title: "Interview Coach | CVEdge",
     description: "Build interview stories from your CV. Get AI-powered STAR frameworks and job-specific prep.",
     url: "https://www.thecvedge.com/interview-prep",
+    images: ["/og-interview-coach.png"],
   },
   alternates: { canonical: "https://www.thecvedge.com/interview-prep" },
 };
@@ -78,6 +80,19 @@ const PAIN_POINTS = [
 export default function InterviewStoriesPage() {
   return (
     <div className="container mx-auto px-4 py-20 md:py-28">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://www.thecvedge.com" },
+          { name: "Interview Coach", url: "https://www.thecvedge.com/interview-prep" },
+        ]}
+      />
+      <HowToJsonLd
+        name="How to prepare for interviews with CVEdge"
+        description="Build a library of STAR-format stories from your CV, then get job-matched prep before every interview."
+        image="https://www.thecvedge.com/og-interview-coach.png"
+        totalTime="PT15M"
+        steps={STEPS.map((s) => ({ name: s.title, text: s.body }))}
+      />
       {/* Hero */}
       <div className="mx-auto max-w-2xl text-center mb-16">
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Interview Coach</p>

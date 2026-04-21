@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     template: "%s | CVEdge",
   },
   description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. Free forever. 80+ ATS score guaranteed or your money back.",
-  keywords: ["free ATS checker", "resume builder", "CV optimizer", "ATS resume scanner", "fix my resume", "free CV checker", "ATS score", "resume AI", "free job search", "AI job search", "job match score", "job search tools", "interview preparation"],
   authors: [{ name: "CVEdge", url: "https://www.thecvedge.com" }],
   creator: "CVEdge",
   publisher: "CVEdge",
@@ -49,6 +48,24 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }], apple: "/img/CV-Edge-Logo-square.svg" },
 };
 
+const ORGANIZATION_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "CVEdge",
+  url: "https://www.thecvedge.com",
+  logo: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg",
+  description: "AI-powered CV optimisation, ATS score analysis, and job search platform.",
+  sameAs: [
+    "https://twitter.com/thecvedge",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    email: "support@thecvedge.com",
+    availableLanguage: ["English"],
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -56,6 +73,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
+        />
+      </head>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
         {/* GA4 + Ads — loaded in HTML so GA4 tag verifier can detect it.
             Consent defaults to denied; CookieConsent upgrades to granted on accept. */}

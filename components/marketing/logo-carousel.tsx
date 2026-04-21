@@ -102,7 +102,7 @@ function LogoIcon({ name }: { name: string }) {
 
 export function LogoCarousel() {
   return (
-    <section className="py-10 md:py-14 overflow-hidden bg-[#f5f0e8]/50 dark:bg-background border-y border-border/40">
+    <section className="py-10 md:py-14 overflow-hidden bg-background border-y border-border/40">
       <div className="container mx-auto px-4">
         <p className="text-center text-xs sm:text-sm font-medium text-muted-foreground/70 uppercase tracking-widest mb-8">
           Trusted by professionals from
@@ -110,8 +110,8 @@ export function LogoCarousel() {
       </div>
       <div className="relative">
         {/* Fade edges */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-40 bg-gradient-to-r from-[#f5f0e8]/50 dark:from-background to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-40 bg-gradient-to-l from-[#f5f0e8]/50 dark:from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-40 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-40 bg-gradient-to-l from-background to-transparent z-10" />
 
         {/* Scrolling track */}
         <div className="flex animate-logo-scroll">

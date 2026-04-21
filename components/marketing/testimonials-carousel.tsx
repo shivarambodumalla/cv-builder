@@ -111,39 +111,37 @@ function TestimonialCard({
 }) {
   return (
     <div
-      className={`flex w-[300px] sm:w-[340px] shrink-0 flex-col justify-between rounded-2xl border bg-white dark:bg-card p-7 sm:p-8 min-h-[320px] transition-all duration-700 ease-out origin-center ${
+      className={`flex w-[300px] sm:w-[340px] shrink-0 flex-col justify-between rounded-2xl border bg-background dark:bg-card p-7 sm:p-8 min-h-80 transition-all duration-700 ease-out origin-center ${
         isCenter
-          ? "scale-105 sm:scale-110 shadow-2xl border-gray-300 dark:border-border z-10 relative"
-          : "scale-100 shadow-sm border-gray-200 dark:border-border/50 opacity-60"
+          ? "scale-105 sm:scale-110 shadow-2xl border-border z-10 relative"
+          : "scale-100 shadow-sm border-border/50 opacity-60"
       }`}
     >
       {/* Quote */}
       <p
-        className={`text-[15px] leading-[1.7] transition-colors duration-700 ${
-          isCenter
-            ? "text-gray-800 dark:text-foreground"
-            : "text-gray-500 dark:text-muted-foreground"
+        className={`text-sm leading-relaxed transition-colors duration-700 ${
+          isCenter ? "text-foreground" : "text-muted-foreground"
         }`}
       >
         {testimonial.quote}
       </p>
 
       {/* Author */}
-      <div className="mt-6 flex items-center gap-3.5 pt-5 border-t border-gray-100 dark:border-border/30">
+      <div className="mt-6 flex items-center gap-3.5 pt-5 border-t border-border/40">
         <div
           className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} p-[2.5px]`}
         >
           <div
-            className={`flex h-full w-full items-center justify-center rounded-full ${testimonial.avatar_bg} text-[11px] font-bold text-gray-600`}
+            className={`flex h-full w-full items-center justify-center rounded-full ${testimonial.avatar_bg} text-xs font-bold text-foreground`}
           >
             {getInitials(testimonial.name)}
           </div>
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] font-bold tracking-wide text-gray-900 dark:text-foreground uppercase">
+          <p className="text-xs font-bold tracking-wide text-foreground uppercase">
             {testimonial.name}
           </p>
-          <p className="text-[11px] font-medium tracking-wider text-gray-400 dark:text-muted-foreground uppercase">
+          <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
             {testimonial.role} @ {testimonial.company}
           </p>
         </div>
@@ -197,23 +195,23 @@ export function TestimonialsCarousel() {
   }, [activeIndex]);
 
   return (
-    <section className="py-20 md:py-28 overflow-hidden bg-[#fafafa] dark:bg-background">
+    <section className="py-20 md:py-28 overflow-hidden bg-muted/30">
       {/* Heading */}
       <div className="container mx-auto px-4 mb-12 md:mb-14">
-        <h2 className="text-center text-3xl sm:text-4xl md:text-[2.75rem] font-bold tracking-tight leading-tight">
+        <h2 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
           What customers say about us
         </h2>
       </div>
 
       {/* Step-based carousel */}
       <div
-        className="relative"
+        className="relative min-h-[420px]"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
         {/* Edge fades */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 sm:w-32 bg-gradient-to-r from-[#fafafa] dark:from-background to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 sm:w-32 bg-gradient-to-l from-[#fafafa] dark:from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 sm:w-32 bg-gradient-to-r from-muted/60 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 sm:w-32 bg-gradient-to-l from-muted/60 to-transparent" />
 
         <div className="overflow-hidden px-4">
           <div
@@ -238,8 +236,8 @@ export function TestimonialsCarousel() {
               onClick={() => setActiveIndex(i)}
               className={`rounded-full transition-all duration-500 ${
                 i === activeIndex
-                  ? "w-8 h-2 bg-gray-800 dark:bg-foreground"
-                  : "w-2 h-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
+                  ? "w-8 h-2 bg-foreground"
+                  : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
               aria-label={`Go to testimonial ${i + 1}`}
             />

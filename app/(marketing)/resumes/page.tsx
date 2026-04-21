@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import { BarChart3, Sparkles, Layout, Target, Download } from "lucide-react";
 import { TemplateShowcase } from "./template-showcase";
 import { ResumesGetStarted } from "./resumes-get-started";
+import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
   title: "AI Resume Builder — Free ATS-Friendly Templates",
   description: "12 free ATS-friendly CV templates. Upload your CV, get an instant ATS score, fix everything with AI. No signup required.",
   alternates: { canonical: "https://www.thecvedge.com/resumes" },
+  openGraph: {
+    title: "Free ATS-Friendly Resume Templates | CVEdge",
+    description: "12 free ATS-friendly CV templates with AI rewriting, score tracking, and one-click PDF export.",
+    url: "https://www.thecvedge.com/resumes",
+  },
 };
 
 const FEATURES = [
@@ -20,6 +26,12 @@ const FEATURES = [
 export default function ResumesPage() {
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://www.thecvedge.com" },
+          { name: "Resume Templates", url: "https://www.thecvedge.com/resumes" },
+        ]}
+      />
       {/* Header */}
       <div className="mx-auto max-w-2xl text-center mb-14">
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase mb-2">Templates</p>

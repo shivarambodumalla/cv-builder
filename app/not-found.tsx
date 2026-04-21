@@ -64,8 +64,33 @@ export default function NotFound() {
         </Button>
       </div>
 
+      {/* Popular destinations — recovers SEO equity from broken inbound links */}
+      <div className="mt-16 w-full max-w-xl">
+        <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-4">
+          You might be looking for
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+          {[
+            { href: "/", label: "Home" },
+            { href: "/upload-resume", label: "ATS checker" },
+            { href: "/resumes", label: "Resume templates" },
+            { href: "/jobs", label: "Job search" },
+            { href: "/interview-prep", label: "Interview coach" },
+            { href: "/pricing", label: "Pricing" },
+          ].map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="rounded-lg border border-border/60 bg-background px-4 py-2 text-center hover:border-primary/40 hover:bg-primary/5 transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Footer */}
-      <p className="mt-16 text-xs text-[#78716C]/60 dark:text-muted-foreground/40">
+      <p className="mt-12 text-xs text-muted-foreground/60">
         Error 404 &middot; Page not found
       </p>
 

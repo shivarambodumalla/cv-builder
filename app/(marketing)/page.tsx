@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ import { CtaSection } from "@/components/shared/cta-section";
 import { FeaturesTabs } from "@/components/marketing/features-tabs";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
+import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
   title: "Free ATS Resume Scanner — Check Your ATS Score in 60 Seconds | CVEdge",
@@ -99,11 +101,14 @@ export default async function HomePage() {
           {/* Product screenshot */}
           <div className="relative mt-8 sm:mt-10 md:mt-12 mx-auto max-w-[1100px]">
             <div className="rounded-xl border-2 border-primary/15 shadow-2xl overflow-hidden ring-1 ring-primary/5">
-              <img
+              <Image
                 src="/img/cover.png"
                 alt="CVEdge ATS resume scanner showing score breakdown and keyword analysis"
+                width={1600}
+                height={960}
+                priority
+                sizes="(max-width: 1100px) 100vw, 1100px"
                 className="w-full h-auto"
-                loading="eager"
               />
             </div>
           </div>
@@ -231,7 +236,7 @@ export default async function HomePage() {
                 </ul>
                 <div className="mt-auto pt-3">
                   <Button className="h-11 px-7 text-sm font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
-                    <Link href="/interview-coach">Start interview prep</Link>
+                    <Link href="/interview-prep">Start interview prep</Link>
                   </Button>
                 </div>
               </div>
@@ -244,11 +249,11 @@ export default async function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Land your next role faster</h2>
                 <p className="mt-1.5 text-white/70 text-sm">AI-powered resume builder and ATS scorer</p>
                 <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-[#34D399] hover:bg-[#2fc48d] text-[#065F46] shadow-md" asChild>
-                  <Link href="/upload-resume">Get started free</Link>
+                  <Link href="/upload-resume">Check my ATS score free</Link>
                 </Button>
               </div>
               {/* Stat cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 p-4 sm:p-5 bg-[#ece5d8] dark:bg-muted/30">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 p-4 sm:p-5 bg-card dark:bg-muted/30">
                 {[
                   { icon: Search, stat: "130+", title: "Role keyword sets", desc: "Not generic lists" },
                   { icon: Sparkles, stat: "4 modes", title: "AI bullet rewrite", desc: "Rewrite, expand, shorten, quantify" },
@@ -257,11 +262,11 @@ export default async function HomePage() {
                 ].map((s) => (
                   <div key={s.title} className="rounded-xl bg-background border border-border/50 p-4 sm:p-5 space-y-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#065F46] text-white">
-                      <s.icon size={15} />
+                      <s.icon size={16} />
                     </div>
                     <p className="text-lg sm:text-xl font-bold tracking-tight">{s.stat}</p>
                     <div>
-                      <p className="text-[13px] font-semibold">{s.title}</p>
+                      <p className="text-sm font-semibold">{s.title}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{s.desc}</p>
                     </div>
                   </div>
@@ -450,6 +455,35 @@ export default async function HomePage() {
 
       {/* ─── TESTIMONIALS ─── */}
       <TestimonialsCarousel />
+
+      {/* ─── POPULAR ROLES (SEO internal linking) ─── */}
+      <section className="py-16 md:py-20 border-t border-border/40">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-5xl text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Browse jobs by role</h2>
+            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
+              Explore open roles with match scores tailored to your CV. New listings daily.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-2">
+              {TRENDING_ROLES.map((r) => (
+                <Link
+                  key={r.slug}
+                  href={`/jobs/${r.slug}`}
+                  className="rounded-full border border-border/60 bg-background px-4 py-1.5 text-sm font-medium text-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                >
+                  {r.label}
+                </Link>
+              ))}
+            </div>
+            <Link
+              href="/jobs"
+              className="mt-8 inline-block text-sm font-medium text-primary hover:underline"
+            >
+              See all 130+ roles →
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ─── FAQ ─── */}
       <section className="py-20 md:py-28">

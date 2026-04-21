@@ -5,13 +5,14 @@ import { JobSearchForm } from "./job-search-form";
 import { SignInCTA } from "./sign-in-cta";
 import { JobsSignInModal } from "./jobs-signin-modal";
 import { BrowseRoles } from "@/components/jobs/browse-roles";
+import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Find Jobs That Match Your CV | CVEdge",
   description: "Search thousands of jobs and see your ATS match score before you apply. Sign in free to unlock your scores.",
-  openGraph: { title: "Find Jobs That Match Your CV | CVEdge", description: "Search thousands of jobs and see your ATS match score before you apply.", url: "https://www.thecvedge.com/jobs" },
+  openGraph: { title: "Find Jobs That Match Your CV | CVEdge", description: "Search thousands of jobs and see your ATS match score before you apply.", url: "https://www.thecvedge.com/jobs", images: ["/og-jobs.png"] },
   alternates: { canonical: "https://www.thecvedge.com/jobs" },
 };
 
@@ -24,6 +25,12 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="min-h-screen bg-background">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://www.thecvedge.com" },
+          { name: "Jobs", url: "https://www.thecvedge.com/jobs" },
+        ]}
+      />
       <div className="container mx-auto max-w-5xl px-4 pt-8 pb-16">
         {/* Search card */}
         <div className="rounded-2xl bg-[#F0EDE6] dark:bg-muted/30 p-5 sm:p-6 space-y-4 mb-8">

@@ -1,12 +1,35 @@
 User-agent: *
 Allow: /
+
+# Authenticated app routes — prevent indexing user-specific content
+Disallow: /dashboard
 Disallow: /dashboard/
 Disallow: /resume/
-Disallow: /api/
-Disallow: /admin/
+Disallow: /billing
 Disallow: /billing/
-Disallow: /stories/
+Disallow: /my-jobs
 Disallow: /my-jobs/
+Disallow: /settings
 Disallow: /settings/
+Disallow: /interview-coach
+Disallow: /interview-coach/
+Disallow: /stories
+Disallow: /stories/
+
+# Admin + API
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Auth flow
+Disallow: /auth/
+Disallow: /login?
+Disallow: /register?
+
+# Query-string facets that create duplicate pages
+Disallow: /*?q=
+Disallow: /*?location=
+Disallow: /*?ref=
+Disallow: /*?utm_
 
 Sitemap: https://www.thecvedge.com/sitemap.xml

@@ -276,7 +276,7 @@ export function TestimonialsManager({
                             updateField(t.id, "gradient", opt.value);
                             updateField(t.id, "avatar_bg", opt.bg);
                           }}
-                          className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${opt.value} p-[2px] transition-all ${
+                          className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${opt.value} p-0.5 transition-all ${
                             t.gradient === opt.value
                               ? "ring-2 ring-primary ring-offset-2"
                               : "opacity-60 hover:opacity-100"
@@ -334,10 +334,10 @@ export function TestimonialsManager({
 
                   {/* Avatar */}
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.gradient} p-[2px]`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.gradient} p-0.5`}
                   >
                     <div
-                      className={`flex h-full w-full items-center justify-center rounded-full ${t.avatar_bg} text-[10px] font-bold text-gray-600`}
+                      className={`flex h-full w-full items-center justify-center rounded-full ${t.avatar_bg} text-[10px] font-bold text-foreground`}
                     >
                       {getInitials(t.name)}
                     </div>
@@ -365,7 +365,7 @@ export function TestimonialsManager({
                         onChange={() => handleToggleEnabled(t)}
                         className="h-3.5 w-3.5"
                       />
-                      <span className="text-[11px] text-muted-foreground">
+                      <span className="text-xs text-muted-foreground">
                         {t.enabled ? "On" : "Off"}
                       </span>
                     </label>
@@ -455,7 +455,7 @@ export function TestimonialsManager({
                       avatar_bg: opt.bg,
                     }))
                   }
-                  className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${opt.value} p-[2px] transition-all ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${opt.value} p-0.5 transition-all ${
                     draft.gradient === opt.value
                       ? "ring-2 ring-primary ring-offset-2"
                       : "opacity-60 hover:opacity-100"
