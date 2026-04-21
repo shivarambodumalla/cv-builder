@@ -27,8 +27,15 @@ export async function GET(request: Request) {
         && Math.abs(new Date(user.last_sign_in_at).getTime() - new Date(user.created_at).getTime()) < 5000;
       const authEvent = isSignup ? "signup" : "login";
 
-      // Server-side GA4 tracking — fires regardless of ad blockers
-      if (user) {
+      // Server-side GA4 tracking — fires regardless of ad blockers.
+      // Skip for admin users so internal sign-ins don't inflate conversion counts.
+      const adminEmails = (process.env.ADMIN_EMAIL || "")
+        .split(",")
+        .map((e) => e.trim().toLowerCase())
+        .filter(Boolean);
+      const isAdmin = !!user?.email && adminEmails.includes(user.email.toLowerCase());
+
+      if (user && !isAdmin) {
         sendGA4Event({
           events: [{ name: isSignup ? "sign_up" : "login", params: { method: "google" } }],
           userId: user.id,
@@ -38,6 +45,7 @@ export async function GET(request: Request) {
       }
 
       const appendAuthEvent = (url: string) => {
+        if (isAdmin) return url; // skip client-side GA event for admins
         const sep = url.includes("?") ? "&" : "?";
         return `${url}${sep}auth_event=${authEvent}`;
       };

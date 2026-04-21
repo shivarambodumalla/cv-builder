@@ -11,6 +11,7 @@ import { DevReload } from "./dev-reload";
 import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
 import { AuthEventTracker } from "@/components/shared/auth-event-tracker";
+import { GAScripts } from "@/components/shared/ga-scripts";
 import { CookieConsent } from "@/components/shared/cookie-consent";
 // ScoreTeaser removed — replaced by SignupModal exit_intent trigger
 import { JobsDiscovery } from "@/components/popups/jobs-discovery";
@@ -72,18 +73,7 @@ export default function RootLayout({
             });
           `}
         </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-GLVL3MB6NC"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-config" strategy="afterInteractive">
-          {`
-            gtag('js', new Date());
-            gtag('config', 'G-GLVL3MB6NC');
-            gtag('config', 'G-52LEWSBN7M');
-            gtag('config', 'AW-18095722375');
-          `}
-        </Script>
+        <GAScripts />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
