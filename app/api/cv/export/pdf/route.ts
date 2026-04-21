@@ -9,6 +9,10 @@ import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
 
 import { alertAdmin } from "@/lib/email/alert";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
 

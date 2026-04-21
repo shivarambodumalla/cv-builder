@@ -6,20 +6,42 @@ const PAPER_SIZES: Record<string, { width: string; height: string }> = {
   letter: { width: "8.5in", height: "11in" },
 };
 
+function isServerless(): boolean {
+  return !!process.env.AWS_EXECUTION_ENV || process.env.VERCEL === "1";
+}
+
+async function launchBrowser() {
+  const puppeteer = await import("puppeteer-core");
+
+  if (isServerless()) {
+    const chromium = (await import("@sparticuz/chromium")).default;
+    return puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+  }
+
+  // Local dev — use an installed Chrome/Chromium. Override via LOCAL_CHROMIUM_PATH.
+  const localPath = process.env.LOCAL_CHROMIUM_PATH
+    || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  return puppeteer.launch({
+    executablePath: localPath,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: true,
+  });
+}
+
 export async function renderHtmlToPdf(
   content: ResumeContent,
   design: ResumeDesignSettings,
   watermark: boolean = false,
 ): Promise<Buffer> {
-  // Dynamic imports to avoid Next.js bundler restrictions on react-dom/server
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { renderToStaticMarkup } = require("react-dom/server");
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { TemplateRenderer } = require("@/components/resume/template-renderer");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { chromium } = require("playwright");
 
-  // Render the template to static HTML
   const templateHtml = renderToStaticMarkup(
     React.createElement(TemplateRenderer, { content, design })
   );
@@ -64,10 +86,10 @@ ${templateHtml}
 </body>
 </html>`;
 
-  const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
+  const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
-    await page.setContent(fullHtml, { waitUntil: "networkidle" });
+    await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
     const pdfBuffer = await page.pdf({
       width: paper.width,

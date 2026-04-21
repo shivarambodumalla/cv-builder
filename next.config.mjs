@@ -4,6 +4,9 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   poweredByHeader: false,
+  experimental: {
+    serverComponentsExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
+  },
   async headers() {
     return [
       {
