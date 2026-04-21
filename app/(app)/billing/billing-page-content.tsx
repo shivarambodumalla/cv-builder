@@ -270,7 +270,7 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
               <Sparkles className="h-4 w-4" /> 25 AI rewrites/week
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Download className="h-4 w-4" /> Unlimited PDF downloads (watermarked)
+              <Download className="h-4 w-4" /> Unlimited clean PDF downloads (no watermark)
             </div>
           </div>
           <Button variant="outline" className="w-full" onClick={() => openUpgradeModal("generic")}>

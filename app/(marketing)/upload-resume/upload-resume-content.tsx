@@ -125,7 +125,12 @@ export function UploadResumeContent() {
         });
         const claimData = await claimRes.json();
         if (claimData.cv_id) {
-          router.push(`/resume/${claimData.cv_id}`);
+          // If the user came in with a pre-selected template, skip the picker
+          // and go straight to the editor.
+          const dest = templateParam
+            ? `/resume/${claimData.cv_id}`
+            : `/resume/${claimData.cv_id}/pick-template`;
+          router.push(dest);
           return;
         }
       }
@@ -168,7 +173,10 @@ export function UploadResumeContent() {
       const { cv_id } = await res.json();
       setCurrentStep("done");
       await new Promise((r) => setTimeout(r, 400));
-      router.push(`/resume/${cv_id}`);
+      const dest = templateParam
+        ? `/resume/${cv_id}`
+        : `/resume/${cv_id}/pick-template`;
+      router.push(dest);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setLoading(false);

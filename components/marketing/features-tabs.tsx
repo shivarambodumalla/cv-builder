@@ -104,7 +104,7 @@ const TABS = [
       "12 professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
       "Customise font, accent colour, spacing, margins, bullet style, and section order",
       "Two-column templates with configurable sidebar sections",
-      "PDF export: clean, formatted, ATS-friendly — watermark-free on Pro",
+      "PDF export: clean, formatted, ATS-friendly — no watermark, ever",
       "Cover letter export: PDF, TXT, or copy to clipboard",
       "Paper size: A4 and US Letter supported",
     ],

@@ -278,6 +278,58 @@ export async function GET(request: NextRequest) {
     { key: "stories_scored", label: "Quality Scored", count: qualityScoredCount.count ?? 0 },
   ];
 
+  // ── Anonymous → Signup funnel ──
+  const anonToSignup = [
+    { key: "anon_visitors", label: "Anonymous Visitors", count: totalAnonVisits },
+    { key: "anon_login_page", label: "Reached Login", count: Number(pvLogin.data?.total ?? 0) },
+    { key: "signed_up", label: "Signed Up", count: signupCount },
+  ];
+
+  // ── Login → Download funnel ──
+  const loginToDownload = [
+    { key: "signed_up_logged_in", label: "Signed Up", count: signupCount },
+    { key: "cv_created_ltd", label: "CV Created", count: cvCreated.data?.count ?? 0 },
+    { key: "ats_scanned_ltd", label: "ATS Scanned", count: atsScanned.data?.count ?? 0 },
+    { key: "pdf_downloaded_ltd", label: "Downloaded PDF", count: pdfDownloaded.data?.count ?? 0 },
+  ];
+
+  // ── Visits over time (anonymous page_views aggregated by view_date) ──
+  const { data: visitRows } = await admin
+    .from("page_views")
+    .select("view_date, count")
+    .gte("view_date", fromDate)
+    .lte("view_date", toDate);
+
+  const byDate = new Map<string, number>();
+  for (const r of visitRows ?? []) {
+    const d = (r as { view_date: string; count: number }).view_date;
+    byDate.set(d, (byDate.get(d) ?? 0) + (r as { count: number }).count);
+  }
+
+  // Fill gaps with 0 so the chart has a continuous x-axis
+  const visitsOverTime: { date: string; count: number }[] = [];
+  const start = new Date(fromDate + "T00:00:00Z");
+  const end = new Date(toDate + "T00:00:00Z");
+  for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+    const key = d.toISOString().slice(0, 10);
+    visitsOverTime.push({ date: key, count: byDate.get(key) ?? 0 });
+  }
+
+  // Signups over time (for overlaying on the chart)
+  const { data: signupRows } = await admin
+    .from("profiles")
+    .select("created_at")
+    .gte("created_at", from)
+    .lte("created_at", to)
+    .not("id", "in", `(${EXCLUDED_USER_IDS.join(",")})`);
+
+  const signupsByDate = new Map<string, number>();
+  for (const r of signupRows ?? []) {
+    const d = (r as { created_at: string }).created_at.slice(0, 10);
+    signupsByDate.set(d, (signupsByDate.get(d) ?? 0) + 1);
+  }
+  const signupsOverTime = visitsOverTime.map(v => ({ date: v.date, count: signupsByDate.get(v.date) ?? 0 }));
+
   return NextResponse.json({
     awareness,
     acquisition,
@@ -286,11 +338,15 @@ export async function GET(request: NextRequest) {
     extras,
     jobsFunnel,
     interviewFunnel,
+    anonToSignup,
+    loginToDownload,
     pageVisits,
     totalAnonVisits,
     newSignups: signupCount,
     bounceAnalysis,
     signupSources,
     popups,
+    visitsOverTime,
+    signupsOverTime,
   });
 }

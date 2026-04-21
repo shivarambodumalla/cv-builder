@@ -15,7 +15,7 @@ export const PLAN_LIMITS = {
     interview_prep: 5,
     pdf_downloads: -1, // unlimited
     templates: ["classic", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
-    watermark: true,
+    watermark: false,
   },
   pro: {
     cvs: -1,

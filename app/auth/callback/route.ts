@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 
           const { data: cv } = await admin
             .from("cvs")
-            .select("id, title")
+            .select("id, title, design_settings")
             .eq("redirect_token", ref)
             .is("user_id", null)
             .eq("status", "pending_auth")
@@ -74,7 +74,11 @@ export async function GET(request: Request) {
               })
               .eq("id", cv.id);
 
-            return NextResponse.redirect(appendAuthEvent(`${origin}/resume/${cv.id}`));
+            const existingTemplate = (cv.design_settings as { template?: string } | null)?.template;
+            const dest = existingTemplate
+              ? `${origin}/resume/${cv.id}`
+              : `${origin}/resume/${cv.id}/pick-template`;
+            return NextResponse.redirect(appendAuthEvent(dest));
           }
         } catch (err) {
           console.error("[auth/callback] CV claim failed:", err);

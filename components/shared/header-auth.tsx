@@ -106,12 +106,6 @@ export function HeaderAuth() {
       jobs.textContent = "Jobs";
       nav.appendChild(jobs);
 
-      const pricing = document.createElement("a");
-      pricing.href = "/pricing";
-      pricing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
-      pricing.textContent = "Pricing";
-      nav.appendChild(pricing);
-
     } else {
       // Marketing nav links
       const resumes = document.createElement("a");
@@ -131,12 +125,6 @@ export function HeaderAuth() {
       jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
       jobs.textContent = "Jobs";
       nav.appendChild(jobs);
-
-      const pricing = document.createElement("a");
-      pricing.href = "/pricing";
-      pricing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
-      pricing.textContent = "Pricing";
-      nav.appendChild(pricing);
     }
   }, [user, loading]);
 

@@ -80,6 +80,32 @@ export function ProductJsonLd({
   );
 }
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+/**
+ * FAQPage JSON-LD — lets Google render FAQ accordions in SERPs.
+ */
+export function FaqJsonLd({ items }: { items: FaqItem[] }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 interface HowToStep {
   name: string;
   text: string;

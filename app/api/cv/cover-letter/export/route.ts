@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         content: letter.content,
         candidateName,
         company: cv.job_company || "",
-        showWatermark: isFree,
+        showWatermark: false,
       });
 
       const result = execFileSync("node", [workerPath], {
