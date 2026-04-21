@@ -55,6 +55,7 @@ function loadGA(consentGranted: boolean) {
   script.onload = () => {
     gtag("js", new Date());
     gtag("config", "G-52LEWSBN7M");
+    gtag("config", "G-GLVL3MB6NC");
     gtag("config", "AW-18095722375");
     window.gtag = gtag as typeof window.gtag;
   };

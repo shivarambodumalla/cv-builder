@@ -38,3 +38,11 @@ export function trackFixAllUsed() {
 export function trackCoverLetter() {
   gtag("event", "cover_letter", { event_category: "feature_usage" });
 }
+
+export function trackSignup(method: string = "google") {
+  gtag("event", "sign_up", { method, event_category: "conversion" });
+}
+
+export function trackLogin(method: string = "google") {
+  gtag("event", "login", { method, event_category: "conversion" });
+}

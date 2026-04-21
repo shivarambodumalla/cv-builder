@@ -19,6 +19,18 @@ export async function GET(request: Request) {
       if (data.session?.user) {
         captureSignupLocation(data.session.user.id, request.headers).catch(() => {});
       }
+
+      // Detect signup vs login: if created_at ≈ last_sign_in_at (within 5s), this is a first-time signup
+      const user = data.session?.user;
+      const isSignup = !!user && !!user.created_at && !!user.last_sign_in_at
+        && Math.abs(new Date(user.last_sign_in_at).getTime() - new Date(user.created_at).getTime()) < 5000;
+      const authEvent = isSignup ? "signup" : "login";
+
+      const appendAuthEvent = (url: string) => {
+        const sep = url.includes("?") ? "&" : "?";
+        return `${url}${sep}auth_event=${authEvent}`;
+      };
+
       if (ref && data.session?.user) {
         try {
           const admin = createAdminClient();
@@ -43,7 +55,7 @@ export async function GET(request: Request) {
               })
               .eq("id", cv.id);
 
-            return NextResponse.redirect(`${origin}/resume/${cv.id}`);
+            return NextResponse.redirect(appendAuthEvent(`${origin}/resume/${cv.id}`));
           }
         } catch (err) {
           console.error("[auth/callback] CV claim failed:", err);
@@ -54,12 +66,12 @@ export async function GET(request: Request) {
       // Check for template selection cookie — redirect to upload page
       const templateCookie = request.headers.get("cookie")?.match(/cvedge_template=([^;]+)/)?.[1];
       if (templateCookie) {
-        const res = NextResponse.redirect(`${origin}/upload-resume?template=${templateCookie}`);
+        const res = NextResponse.redirect(appendAuthEvent(`${origin}/upload-resume?template=${templateCookie}`));
         res.cookies.delete("cvedge_template");
         return res;
       }
 
-      return NextResponse.redirect(`${origin}${next}`);
+      return NextResponse.redirect(appendAuthEvent(`${origin}${next}`));
     }
 
     // Auth exchange failed

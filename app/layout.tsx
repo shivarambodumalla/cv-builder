@@ -9,6 +9,7 @@ import { UpgradeModal } from "@/components/shared/upgrade-modal";
 import { DevReload } from "./dev-reload";
 import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
+import { AuthEventTracker } from "@/components/shared/auth-event-tracker";
 import { CookieConsent } from "@/components/shared/cookie-consent";
 // ScoreTeaser removed — replaced by SignupModal exit_intent trigger
 import { JobsDiscovery } from "@/components/popups/jobs-discovery";
@@ -67,6 +68,7 @@ export default function RootLayout({
             <DevReload />
             <PageSessionTracker />
             <PageTracker />
+            <AuthEventTracker />
             <SignupTimedTrigger />
             <SignupExitIntent />
             {children}
