@@ -67,6 +67,7 @@ const TEMPLATE_LABEL: Record<string, string> = {
   metro: "Metro",
   harvard: "Harvard",
   ledger: "Ledger",
+  aurora: "Aurora",
 };
 
 function scoreColor(score: number | null): string {

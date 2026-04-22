@@ -29,6 +29,7 @@ const TEMPLATES: Template[] = [
   { name: "Folio", slug: "folio", img: "/img/templates/folio.jpg", category: ["all", "two-column"], type: "Two column", desc: "Coloured sidebar with clean white main area. Portfolio-style.", tags: ["Free"] },
   { name: "Harvard", slug: "harvard", img: "/img/templates/harward.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Academic-style formatting. Formal and structured.", tags: ["Free"] },
   { name: "Ledger", slug: "ledger", img: "/img/templates/ledger.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Finance-inspired clean lines. Numbers and metrics stand out.", tags: ["Free"] },
+  { name: "Aurora", slug: "aurora", img: "/img/templates/aurora.jpg", category: ["all", "two-column", "professional"], type: "Two column", desc: "Modern two-column with avatar and skill chips. Great for PM, design, and growth roles.", tags: ["Free", "New"] },
 ];
 
 const FILTERS: { key: TemplateCategory; label: string }[] = [

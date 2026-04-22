@@ -7,7 +7,7 @@ import { uniqueCvTitle } from "@/lib/resume/unique-title";
 const VALID_TEMPLATES = [
   "classic", "classic-serif", "sharp", "minimal", "executive", "sidebar",
   "sidebar-right", "two-column", "divide", "folio", "metro",
-  "harvard", "ledger",
+  "harvard", "ledger", "aurora",
 ];
 
 export async function POST(request: NextRequest) {

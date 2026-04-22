@@ -34,6 +34,11 @@ export const DEFAULT_DESIGN: ResumeDesignSettings = {
   sectionHeadingCase: "uppercase",
   contactSeparator: "pipe",
   sidebarSections: ["contact", "targetTitle", "skills", "education", "certifications"],
+  avatarMode: "initials",
+  avatarShape: "circle",
+  avatarSize: 84,
+  avatarPosition: "right",
+  avatarInitialsBg: "accent",
 };
 
 export const DEFAULT_CONTENT: ResumeContent = {

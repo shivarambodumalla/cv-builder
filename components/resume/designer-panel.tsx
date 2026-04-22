@@ -26,7 +26,12 @@ import type {
   PaperSize,
   BulletStyle,
   DateFormat,
+  AvatarMode,
+  AvatarShape,
+  AvatarPosition,
+  AvatarInitialsBg,
 } from "@/lib/resume/types";
+import { fileToResizedDataUrl } from "@/lib/resume/avatar";
 import {
   FONT_STACKS,
   ACCENT_COLORS,
@@ -38,6 +43,9 @@ import {
 interface DesignerPanelProps {
   design: ResumeDesignSettings;
   onChange: (design: ResumeDesignSettings) => void;
+  photoUrl?: string;
+  contactName?: string;
+  onPhotoChange?: (url: string | undefined) => void;
 }
 
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
@@ -54,6 +62,7 @@ const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   // { name: "metro", label: "Metro", desc: "Modern metro-inspired design." },  // hidden — redesign in progress
   { name: "harvard", label: "Harvard", desc: "Academic style inspired by Ivy League." },
   { name: "ledger", label: "Ledger", desc: "Structured grid layout for detail-heavy roles." },
+  { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
 ];
 
 const FONTS: { name: FontFamily; label: string }[] = [
@@ -407,6 +416,42 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="73" y="92" width="28" height="1.5" rx="1" fill="#111"/>
         </svg>
       );
+    case "aurora":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          {/* header */}
+          <rect x="8" y="10" width="50" height="5" rx="1" fill="#111"/>
+          <rect x="8" y="18" width="70" height="2" rx="1" fill="#2C5282"/>
+          <rect x="8" y="23" width="55" height="1.5" rx="1" fill="#9CA3AF"/>
+          <circle cx="102" cy="17" r="8" fill="#E5E7EB" stroke="#C7D2FE" strokeWidth="1"/>
+          <line x1="8" y1="32" x2="112" y2="32" stroke="#E5E7EB" strokeWidth="0.5"/>
+          {/* left col */}
+          <rect x="8" y="40" width="22" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="45" width="65" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="8" y="48" width="62" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="8" y="58" width="22" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="63" width="30" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="67" width="25" height="1.5" rx="1" fill="#2C5282"/>
+          <rect x="8" y="71" width="55" height="1.5" rx="1" fill="#CBD5E1"/>
+          <rect x="8" y="74" width="50" height="1.5" rx="1" fill="#CBD5E1"/>
+          <rect x="8" y="82" width="30" height="2" rx="1" fill="#111"/>
+          <rect x="8" y="86" width="25" height="1.5" rx="1" fill="#2C5282"/>
+          <rect x="8" y="90" width="55" height="1.5" rx="1" fill="#CBD5E1"/>
+          {/* right col — chips */}
+          <rect x="78" y="40" width="16" height="2" rx="1" fill="#111"/>
+          <rect x="78" y="46" width="10" height="3" rx="1.5" fill="#2C5282"/>
+          <rect x="90" y="46" width="13" height="3" rx="1.5" fill="#2C5282"/>
+          <rect x="78" y="51" width="12" height="3" rx="1.5" fill="white" stroke="#9CA3AF" strokeWidth="0.4"/>
+          <rect x="92" y="51" width="10" height="3" rx="1.5" fill="white" stroke="#9CA3AF" strokeWidth="0.4"/>
+          <rect x="78" y="60" width="16" height="2" rx="1" fill="#111"/>
+          <rect x="78" y="66" width="10" height="3" rx="1.5" fill="#2C5282"/>
+          <rect x="90" y="66" width="12" height="3" rx="1.5" fill="white" stroke="#9CA3AF" strokeWidth="0.4"/>
+          <rect x="78" y="76" width="18" height="2" rx="1" fill="#111"/>
+          <rect x="78" y="81" width="20" height="1.5" rx="1" fill="#111"/>
+          <rect x="78" y="84" width="18" height="1.5" rx="1" fill="#6B7280"/>
+        </svg>
+      );
   }
 }
 
@@ -450,7 +495,7 @@ function ColumnItem({ id, direction, onMove }: { id: string; direction: "toMain"
   );
 }
 
-export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
+export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhotoChange }: DesignerPanelProps) {
   function update<K extends keyof ResumeDesignSettings>(
     key: K,
     value: ResumeDesignSettings[K]
@@ -475,16 +520,45 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
   const currentHex = resolveAccentHex(design.accentColor);
 
   const isSidebar = design.template === "sidebar" || design.template === "sidebar-right";
-  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio";
+  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora";
   const isTwoCol = isSidebar || isColumnBased;
+  const supportsAvatar = design.template === "aurora";
+  const [avatarError, setAvatarError] = React.useState<string | null>(null);
+  const [avatarBusy, setAvatarBusy] = React.useState(false);
+  const avatarMode: AvatarMode = design.avatarMode ?? "initials";
+  const avatarShape: AvatarShape = design.avatarShape ?? "circle";
+  const avatarSize = design.avatarSize ?? 84;
+  const avatarPosition: AvatarPosition = design.avatarPosition ?? "right";
+  const avatarInitialsBg: AvatarInitialsBg = design.avatarInitialsBg ?? "accent";
+
+  async function handleAvatarFile(file: File) {
+    setAvatarError(null);
+    setAvatarBusy(true);
+    try {
+      const result = await fileToResizedDataUrl(file);
+      if (!result.ok) {
+        setAvatarError(result.error);
+        return;
+      }
+      onPhotoChange?.(result.dataUrl);
+      if ((design.avatarMode ?? "initials") !== "photo") {
+        onChange({ ...design, avatarMode: "photo" });
+      }
+    } catch {
+      setAvatarError("Could not process image.");
+    } finally {
+      setAvatarBusy(false);
+    }
+  }
 
   const SIDEBAR_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
   const HORIZON_RIGHT_DEFAULT = ["education", "certifications", "skills"];
   const HORIZON_HEADER = new Set(["contact", "targetTitle", "summary"]);
 
   const COLUMN_LEFT_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
-  // For sidebar & divide/folio: sidebarSections = left column. For horizon: sidebarSections = right column.
-  const secondarySections = design.sidebarSections ?? (isColumnBased && design.template === "two-column" ? HORIZON_RIGHT_DEFAULT : COLUMN_LEFT_DEFAULT);
+  // For sidebar & divide/folio: sidebarSections = left column. For horizon/aurora: sidebarSections = right column.
+  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora";
+  const secondarySections = design.sidebarSections ?? (headerOnTopLayout ? HORIZON_RIGHT_DEFAULT : COLUMN_LEFT_DEFAULT);
   const secondarySet = new Set(secondarySections);
 
   let displayLeft: string[] = [], displayRight: string[] = [];
@@ -496,8 +570,8 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
     displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k));
     labelLeft = isSidebar ? "Sidebar" : "Left";
     labelRight = isSidebar ? "Main" : "Right";
-  } else if (design.template === "two-column") {
-    // sidebarSections = right column sections (Horizon header is fixed)
+  } else if (headerOnTopLayout) {
+    // sidebarSections = right column sections (Horizon/Aurora header is fixed)
     displayLeft = design.sectionOrder.filter((k) => !secondarySet.has(k) && !HORIZON_HEADER.has(k));
     displayRight = secondarySections.filter((k) => !HORIZON_HEADER.has(k));
     labelLeft = "Left";
@@ -631,6 +705,182 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
         </div>
       </section>
 
+
+      {/* Avatar — only for templates that render one (Aurora) */}
+      {supportsAvatar && (
+        <section>
+          <Label className="mb-3 block text-sm font-semibold">Avatar</Label>
+          <div className="space-y-3">
+            {/* Mode */}
+            <div>
+              <span className="mb-1.5 block text-xs text-muted-foreground">Mode</span>
+              <div className="flex gap-1">
+                {([
+                  { value: "photo" as AvatarMode, label: "Photo" },
+                  { value: "initials" as AvatarMode, label: "Initials" },
+                  { value: "off" as AvatarMode, label: "Off" },
+                ]).map(({ value, label }) => (
+                  <Button
+                    key={value}
+                    variant={avatarMode === value ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => update("avatarMode", value)}
+                  >
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Upload (only when mode=photo) */}
+            {avatarMode === "photo" && (
+              <div>
+                <span className="mb-1.5 block text-xs text-muted-foreground">Photo</span>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex shrink-0 items-center justify-center overflow-hidden border bg-muted text-xs text-muted-foreground"
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius:
+                        avatarShape === "circle" ? "50%" : avatarShape === "rounded" ? 10 : 2,
+                    }}
+                  >
+                    {photoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={photoUrl} alt="Avatar preview" className="h-full w-full object-cover" />
+                    ) : (
+                      <span>—</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-muted">
+                      {avatarBusy ? "Processing…" : photoUrl ? "Replace" : "Upload"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={avatarBusy}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleAvatarFile(file);
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                    {photoUrl && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
+                        onClick={() => onPhotoChange?.(undefined)}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                {avatarError && <p className="mt-1.5 text-xs text-destructive">{avatarError}</p>}
+                <p className="mt-1.5 text-[11px] text-muted-foreground">
+                  Resized to 256px max. Stored inline with the CV.
+                </p>
+              </div>
+            )}
+
+            {avatarMode === "initials" && (
+              <p className="text-[11px] text-muted-foreground">
+                Uses initials from your name{contactName ? ` (“${(contactName.match(/\S+/g) ?? []).map((p) => p[0]).slice(0, 2).join("").toUpperCase()}”)` : ""}.
+              </p>
+            )}
+
+            {avatarMode !== "off" && (
+              <>
+                {/* Shape */}
+                <div>
+                  <span className="mb-1.5 block text-xs text-muted-foreground">Shape</span>
+                  <div className="flex gap-1">
+                    {([
+                      { value: "circle" as AvatarShape, label: "Circle" },
+                      { value: "rounded" as AvatarShape, label: "Rounded" },
+                      { value: "square" as AvatarShape, label: "Square" },
+                    ]).map(({ value, label }) => (
+                      <Button
+                        key={value}
+                        variant={avatarShape === value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => update("avatarShape", value)}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Initials background — only relevant when rendering initials */}
+                {avatarMode === "initials" && (
+                  <div>
+                    <span className="mb-1.5 block text-xs text-muted-foreground">Initials background</span>
+                    <div className="flex gap-1">
+                      {([
+                        { value: "accent" as AvatarInitialsBg, label: "Accent" },
+                        { value: "white" as AvatarInitialsBg, label: "White" },
+                      ]).map(({ value, label }) => (
+                        <Button
+                          key={value}
+                          variant={avatarInitialsBg === value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => update("avatarInitialsBg", value)}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Size */}
+                <div>
+                  <span className="mb-1.5 block text-xs text-muted-foreground">Size</span>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="range"
+                      min={56}
+                      max={130}
+                      step={2}
+                      value={avatarSize}
+                      className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
+                      onChange={(e) => update("avatarSize", parseInt(e.target.value, 10))}
+                    />
+                    <span className="w-10 text-right text-xs font-medium tabular-nums">
+                      {avatarSize}px
+                    </span>
+                  </div>
+                </div>
+
+                {/* Position */}
+                <div>
+                  <span className="mb-1.5 block text-xs text-muted-foreground">Position</span>
+                  <div className="flex gap-1">
+                    {([
+                      { value: "left" as AvatarPosition, label: "Left" },
+                      { value: "right" as AvatarPosition, label: "Right" },
+                    ]).map(({ value, label }) => (
+                      <Button
+                        key={value}
+                        variant={avatarPosition === value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => update("avatarPosition", value)}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Layout */}
       <section>
@@ -1052,6 +1302,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
               metro: "metro.jpg",
               harvard: "harward.jpg",
               ledger: "ledger.jpg",
+              aurora: "aurora.jpg",
             };
             const imgSrc = imgMap[t.name];
             return (

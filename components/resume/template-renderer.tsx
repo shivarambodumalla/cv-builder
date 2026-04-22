@@ -28,6 +28,7 @@ import { FolioTemplate } from "./templates/folio";
 import { MetroTemplate } from "./templates/metro";
 import { HarvardTemplate } from "./templates/harvard";
 import { LedgerTemplate } from "./templates/ledger";
+import { AuroraTemplate } from "./templates/aurora";
 
 const MONTH_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -142,6 +143,7 @@ const TEMPLATE_MAP = {
   metro: MetroTemplate,
   harvard: HarvardTemplate,
   ledger: LedgerTemplate,
+  aurora: AuroraTemplate,
 } as const;
 
 interface TemplateRendererProps {

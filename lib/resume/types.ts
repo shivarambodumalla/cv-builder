@@ -1,4 +1,4 @@
-export type TemplateName = "classic" | "classic-serif" | "sharp" | "minimal" | "executive" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger";
+export type TemplateName = "classic" | "classic-serif" | "sharp" | "minimal" | "executive" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger" | "aurora";
 export type FontFamily = "classic" | "clean" | "elegant" | "strong";
 export type AccentColor = "slate" | "teal" | "navy" | "rust" | "plum" | "deepRed" | "darkGold" | "forestGreen" | "steelBlue" | "softPurple" | "lavender" | "warmOrange" | "slateGray";
 export type HeaderAlignment = "left" | "center" | "right";
@@ -9,6 +9,10 @@ export type BulletStyle = "dot" | "dash" | "arrow" | "none";
 export type FontWeight = "light" | "regular" | "medium" | "bold" | "black";
 export type TextCase = "as-written" | "uppercase" | "capitalize";
 export type ContactSeparator = "pipe" | "dot" | "dash" | "comma" | "none";
+export type AvatarMode = "photo" | "initials" | "off";
+export type AvatarShape = "circle" | "rounded" | "square";
+export type AvatarPosition = "left" | "right";
+export type AvatarInitialsBg = "accent" | "white";
 
 export const CONTACT_SEPARATOR_MAP: Record<ContactSeparator, string> = {
   pipe: " | ",
@@ -51,6 +55,11 @@ export interface ResumeDesignSettings {
   sectionHeadingCase: TextCase;
   contactSeparator: ContactSeparator;
   sidebarSections?: string[];
+  avatarMode?: AvatarMode;
+  avatarShape?: AvatarShape;
+  avatarSize?: number;
+  avatarPosition?: AvatarPosition;
+  avatarInitialsBg?: AvatarInitialsBg;
 }
 
 export const FONT_STACKS: Record<FontFamily, string> = {
@@ -100,6 +109,7 @@ export interface ContactSection {
   location: string;
   linkedin: string;
   website: string;
+  photoUrl?: string;
 }
 
 export interface TargetTitleSection {

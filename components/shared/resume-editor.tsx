@@ -677,7 +677,18 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
 
             {/* Design tab */}
             {activeTab === "design" && (
-              <DesignerPanel design={design} onChange={handleDesignChange} />
+              <DesignerPanel
+                design={design}
+                onChange={handleDesignChange}
+                photoUrl={content.contact.photoUrl}
+                contactName={content.contact.name}
+                onPhotoChange={(url) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    contact: { ...prev.contact, photoUrl: url },
+                  }))
+                }
+              />
             )}
 
             {/* Job Match tab: default=JD form, after Fix/Rewrite=Content editor */}

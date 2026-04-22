@@ -15,6 +15,7 @@ const VALID_TEMPLATES = [
   "metro",
   "harvard",
   "ledger",
+  "aurora",
 ];
 
 export async function POST(
