@@ -203,7 +203,7 @@ export function WeeklyJobsEmail({
           {/* Footer */}
           <Section style={footerWrap}>
             <Text style={footer}>
-              You're getting this weekly digest because you have a CV on {logoText}.
+              You&apos;re getting this weekly digest because you have a CV on {logoText}.
             </Text>
             <Text style={footer}>
               <Link href={preferencesUrl} style={footerLink}>
