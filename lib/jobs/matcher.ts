@@ -122,6 +122,7 @@ export interface ScoredJob extends GenericJob {
   scoreBreakdown: {
     title: number;
     skills: number;
+    seniority?: number;
     location: number;
     recency: number;
   };
@@ -244,120 +245,207 @@ export function extractTopSkills(cv: ResumeContent, limit: number): string[] {
 }
 
 // ─── Scoring ──────────────────────────────────────────────────────────────────
+// Weights: title 40, skills 30, seniority 10, location 15, recency 5 = 100
+// A genuine "title + seniority + location" match should land in the 75–90 band.
 
-/** Title match score (0–30, can go negative for over-qualified/under-qualified) */
-function scoreTitleMatch(
-  jobTitle: string,
-  cvTitle: string,
-  seniority: SeniorityLevel
-): number {
+const SENIORITY_ORDER: SeniorityLevel[] = ["junior", "mid", "senior", "staff", "executive"];
+
+// Expand common abbreviations so "Staff PM" reads like "Staff Product Manager"
+const TITLE_ABBREV: Record<string, string> = {
+  "sr.": "senior",
+  "sr": "senior",
+  "jr.": "junior",
+  "jr": "junior",
+  "mgr": "manager",
+  "mgr.": "manager",
+  "pm": "product manager",
+  "swe": "software engineer",
+  "sde": "software engineer",
+  "sre": "site reliability engineer",
+  "qa": "quality assurance",
+  "ux": "user experience",
+  "ui": "user interface",
+  "ml": "machine learning",
+  "ai": "artificial intelligence",
+  "vp": "vice president",
+};
+
+function normaliseTitle(raw: string): string {
+  const lower = raw.toLowerCase().replace(/[^\w\s./-]/g, " ");
+  return lower
+    .split(/\s+/)
+    .map((w) => TITLE_ABBREV[w] ?? w)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function detectSeniorityFromTitle(title: string): SeniorityLevel | null {
+  const t = title.toLowerCase();
+  if (/\b(chief|vp of|head of|director of|director)\b/.test(t)) return "executive";
+  if (/\b(principal|staff)\b/.test(t)) return "staff";
+  if (/\b(senior|sr\.?|lead)\b/.test(t)) return "senior";
+  if (/\b(junior|jr\.?|entry|associate|intern)\b/.test(t)) return "junior";
+  return null; // unmarked → mid (implied)
+}
+
+/** Title match score (0–40, can go negative for under-qualified) */
+function scoreTitleMatch(jobTitle: string, cvTitle: string, seniority: SeniorityLevel): number {
   if (!jobTitle || !cvTitle) return 0;
 
-  const job = jobTitle.toLowerCase();
-  const cv = cvTitle.toLowerCase();
+  const job = normaliseTitle(jobTitle);
+  const cv = normaliseTitle(cvTitle);
 
-  // Exact match
-  if (job === cv) return 30;
+  // Exact match on normalised strings (handles abbreviations + punctuation noise)
+  if (job === cv) return 40;
 
-  // Partial match — cv title words in job title
+  // Word-overlap analysis
   const cvWords = cv.split(/\s+/).filter((w) => w.length > 2);
-  const matchingWords = cvWords.filter((w) => job.includes(w));
-  const overlapRatio = cvWords.length > 0 ? matchingWords.length / cvWords.length : 0;
+  const jobWords = new Set(job.split(/\s+/).filter((w) => w.length > 2));
+  const matching = cvWords.filter((w) => jobWords.has(w)).length;
+  const overlapRatio = cvWords.length > 0 ? matching / cvWords.length : 0;
 
-  if (overlapRatio >= 0.8) return 25;
-  if (overlapRatio >= 0.5) return 20;
+  // Seniority signal from the job title
+  const cvSen = detectSeniorityFromTitle(cvTitle) ?? seniority;
+  const jobSen = detectSeniorityFromTitle(jobTitle);
+  const seniorityInTitleMatches = jobSen !== null && jobSen === cvSen;
 
-  // Aspirational: job is senior tier above current seniority
-  const seniorityOrder: SeniorityLevel[] = [
-    "junior",
-    "mid",
-    "senior",
-    "staff",
-    "executive",
-  ];
-  const currentIdx = seniorityOrder.indexOf(seniority);
-  const jobHasHigherLevel = (
-    (job.includes("senior") || job.includes("staff") || job.includes("principal")) &&
-    currentIdx < seniorityOrder.indexOf("senior")
-  );
-  if (jobHasHigherLevel) return 15;
+  // Under-qualified: a senior/staff/exec candidate vs a junior/entry-level role
+  // is not a real match — regardless of family overlap. Check FIRST so overlap
+  // doesn't mask the mismatch.
+  const currentIdx = SENIORITY_ORDER.indexOf(seniority);
+  if (jobSen === "junior" && currentIdx >= SENIORITY_ORDER.indexOf("senior")) {
+    return -30;
+  }
 
-  // Too junior: job is clearly below current level
-  const jobHasLowerLevel = (
-    (job.includes("junior") || job.includes("associate") || job.includes("entry")) &&
-    currentIdx >= seniorityOrder.indexOf("senior")
-  );
-  if (jobHasLowerLevel) return -30;
+  if (overlapRatio >= 0.8) {
+    return seniorityInTitleMatches ? 38 : 35;
+  }
+  if (overlapRatio >= 0.5) {
+    return seniorityInTitleMatches ? 28 : 24;
+  }
 
-  // Minor keyword overlap
-  if (overlapRatio > 0) return 10;
+  // Aspirational (junior/mid applying to senior+)
+  if (jobSen && SENIORITY_ORDER.indexOf(jobSen) > currentIdx && currentIdx < SENIORITY_ORDER.indexOf("senior")) {
+    return 18;
+  }
+
+  // Minor overlap
+  if (overlapRatio > 0) return 12;
 
   return 0;
 }
 
-/** Skills match score (0–40, +4 per matching skill capped at 40) */
-function scoreSkillsMatch(
-  jobDescription: string,
-  cvSkills: string[]
-): number {
+// ─── Skill synonyms ──────────────────────────────────────────────────────────
+// Each canonical skill maps to all strings we'll accept as a match in the JD.
+// Lowercase only. Add sparingly — false positives hurt more than false negatives.
+const SKILL_SYNONYMS: Record<string, string[]> = {
+  javascript: ["javascript", "js", "ecmascript", "es6", "es2015"],
+  typescript: ["typescript", "ts"],
+  python: ["python", "py"],
+  react: ["react", "reactjs", "react.js", "react native"],
+  "react native": ["react native", "rn"],
+  "next.js": ["next.js", "nextjs", "next"],
+  "node.js": ["node.js", "nodejs", "node"],
+  kubernetes: ["kubernetes", "k8s"],
+  docker: ["docker", "containers", "containerization"],
+  postgres: ["postgres", "postgresql", "psql"],
+  mysql: ["mysql"],
+  mongodb: ["mongodb", "mongo"],
+  redis: ["redis"],
+  graphql: ["graphql"],
+  rest: ["rest", "restful", "rest api", "rest apis"],
+  "ci/cd": ["ci/cd", "ci cd", "continuous integration", "continuous deployment", "continuous delivery"],
+  aws: ["aws", "amazon web services"],
+  gcp: ["gcp", "google cloud", "google cloud platform"],
+  azure: ["azure", "microsoft azure"],
+  terraform: ["terraform", "iac"],
+  "product management": ["product management", "product manager", "pm"],
+  "go-to-market": ["go-to-market", "gtm"],
+  okrs: ["okr", "okrs", "objectives and key results"],
+  roadmap: ["roadmap", "roadmaps", "roadmapping"],
+  agile: ["agile", "scrum", "kanban"],
+  figma: ["figma"],
+  sketch: ["sketch"],
+  "user research": ["user research", "user interviews", "usability testing"],
+  analytics: ["analytics", "ga", "mixpanel", "amplitude"],
+  leadership: ["leadership", "leading", "led a team"],
+};
+
+/** Returns whichever strings (synonyms included) we should match in the JD for a given CV skill. */
+function synonymsFor(skill: string): string[] {
+  const key = skill.toLowerCase().trim();
+  if (SKILL_SYNONYMS[key]) return SKILL_SYNONYMS[key];
+  // Reverse lookup — CV may contain the canonical form
+  for (const [canon, variants] of Object.entries(SKILL_SYNONYMS)) {
+    if (variants.includes(key)) return [canon, ...variants];
+  }
+  return [key];
+}
+
+/** Word-boundary check that respects symbols (e.g. "C++", "CI/CD"). */
+function jdContains(haystack: string, needle: string): boolean {
+  if (!needle) return false;
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9+#./])${escaped}([^a-z0-9+#./]|$)`, "i").test(haystack);
+}
+
+/** Skills match score (0–30, +3 per matched skill, max 30) */
+function scoreSkillsMatch(jobDescription: string, cvSkills: string[]): number {
   if (!jobDescription || cvSkills.length === 0) return 0;
 
   const desc = jobDescription.toLowerCase();
-  let score = 0;
+  const matchedCanonicals = new Set<string>();
 
   for (const skill of cvSkills) {
-    if (desc.includes(skill.toLowerCase())) {
-      score += 4;
+    if (!skill) continue;
+    const synonyms = synonymsFor(skill);
+    const canonKey = synonyms[0];
+    if (matchedCanonicals.has(canonKey)) continue;
+    if (synonyms.some((s) => jdContains(desc, s))) {
+      matchedCanonicals.add(canonKey);
     }
-    if (score >= 40) break;
+    if (matchedCanonicals.size * 3 >= 30) break;
   }
 
-  return Math.min(score, 40);
+  return Math.min(matchedCanonicals.size * 3, 30);
 }
 
-/** Location match score (0–20) */
-function scoreLocation(
-  jobLocation: string,
-  preferredLocations: string[],
-  country: string
-): number {
-  if (!jobLocation) return 0;
-
-  const jobLoc = jobLocation.toLowerCase();
-
-  // Check for remote
-  if (jobLoc.includes("remote")) return 10;
-
-  // Check preferred locations
-  for (const preferred of preferredLocations) {
-    if (
-      preferred &&
-      (jobLoc.includes(preferred.toLowerCase()) ||
-        preferred.toLowerCase().includes(jobLoc))
-    ) {
-      return 20;
-    }
-  }
-
-  // Country-level match (crude: check if country code/name appears)
-  if (country && jobLoc.includes(country.toLowerCase())) return 15;
-
+/** Seniority fit (0–10) — rewards perfect alignment, credits adjacent */
+function scoreSeniorityFit(jobTitle: string, seniority: SeniorityLevel): number {
+  const jobSen = detectSeniorityFromTitle(jobTitle);
+  if (!jobSen) return 5; // unmarked titles are ambiguous — credit neutrally so we don't penalise
+  const diff = Math.abs(SENIORITY_ORDER.indexOf(jobSen) - SENIORITY_ORDER.indexOf(seniority));
+  if (diff === 0) return 10;
+  if (diff === 1) return 5;
   return 0;
 }
 
-/** Recency score (0–10) */
+/** Location match score (0–15) */
+function scoreLocation(jobLocation: string, preferredLocations: string[], country: string): number {
+  if (!jobLocation) return 0;
+  const jobLoc = jobLocation.toLowerCase();
+
+  for (const preferred of preferredLocations) {
+    if (preferred && (jobLoc.includes(preferred.toLowerCase()) || preferred.toLowerCase().includes(jobLoc))) {
+      return 15;
+    }
+  }
+
+  if (jobLoc.includes("remote")) return 12;
+  if (country && jobLoc.includes(country.toLowerCase())) return 8;
+  return 0;
+}
+
+/** Recency score (0–5) */
 function scoreRecency(createdDate: string): number {
   if (!createdDate) return 0;
-
   const created = new Date(createdDate);
   if (isNaN(created.getTime())) return 0;
-
-  const diffMs = Date.now() - created.getTime();
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
-
-  if (diffDays < 1) return 10;
-  if (diffDays < 7) return 7;
-  if (diffDays < 30) return 3;
+  const diffDays = (Date.now() - created.getTime()) / 86400000;
+  if (diffDays < 1) return 5;
+  if (diffDays < 7) return 3;
+  if (diffDays < 30) return 2;
   return 0;
 }
 
@@ -371,16 +459,13 @@ function scoreJob(
 ): ScoredJob {
   const titleScore = scoreTitleMatch(job.title, cvTitle, seniority);
   const skillsScore = scoreSkillsMatch(job.description, cvSkills);
-  const locationScore = scoreLocation(
-    job.location,
-    preferredLocations,
-    country
-  );
+  const seniorityScore = scoreSeniorityFit(job.title, seniority);
+  const locationScore = scoreLocation(job.location, preferredLocations, country);
   const recencyScore = scoreRecency(job.created);
 
   const matchScore = Math.max(
     0,
-    titleScore + skillsScore + locationScore + recencyScore
+    Math.min(100, titleScore + skillsScore + seniorityScore + locationScore + recencyScore)
   );
 
   const labelData = getMatchLabel(matchScore);
@@ -396,6 +481,7 @@ function scoreJob(
     scoreBreakdown: {
       title: titleScore,
       skills: skillsScore,
+      seniority: seniorityScore,
       location: locationScore,
       recency: recencyScore,
     },
