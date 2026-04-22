@@ -15,22 +15,30 @@ interface Template {
   type: string;
   desc: string;
   tags: string[];
+  atsSafe?: boolean;
 }
 
 const TEMPLATES: Template[] = [
   { name: "Classic", slug: "classic", img: "/img/templates/classic.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Clean and traditional. ATS-safe. Works for any industry.", tags: ["Popular"] },
-  { name: "Classic Serif", slug: "classic-serif", img: "/img/templates/classic-serif.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Elegant serif typography with grey section bands. ATS-safe. Traditional and timeless.", tags: [] },
+  { name: "Aurora", slug: "aurora", img: "/img/templates/aurora.jpg", category: ["all", "two-column", "professional"], type: "Two column", desc: "Modern two-column with avatar and skill chips. Great for PM, design, and growth roles.", tags: ["New"] },
+  { name: "Blueprint", slug: "blueprint", img: "/img/templates/blueprint.jpg", category: ["all", "two-column"], type: "Two column", desc: "Editorial two-column with accent header block and bordered body.", tags: ["New"] },
+  { name: "Bold Accent", slug: "bold-accent", img: "/img/templates/bold-accent.jpg", category: ["all", "single"], type: "Single column", desc: "Energetic single-column with accent chips and icon-bordered sections.", tags: ["New"] },
+  { name: "Classic Serif", slug: "classic-serif", img: "/img/templates/classic-serif.png", category: ["all", "single", "professional"], type: "Single column", desc: "Elegant serif typography with grey section bands. ATS-safe. Traditional and timeless.", tags: [] },
+  { name: "Executive Pro", slug: "executive-pro", img: "/img/templates/executive-pro.jpg", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold photo header with dark contact bar. Two-column layout for senior leadership roles.", tags: ["Pro", "New"] },
   { name: "Sharp", slug: "sharp", img: "/img/templates/sharp.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Bold headings with clear section dividers. Confident and modern.", tags: [] },
+  { name: "Clean Sidebar", slug: "clean-sidebar", img: "/img/templates/clean-sidebar.jpg", category: ["all", "two-column"], type: "Sidebar left", desc: "Warm light sidebar with progress bars and links. Versatile and friendly.", tags: ["New"] },
   { name: "Minimal", slug: "minimal", img: "/img/templates/minimal.jpg", category: ["all", "single", "minimal"], type: "Single column", desc: "Maximum whitespace. Lets your content breathe. Elegant simplicity.", tags: [] },
-  { name: "Executive", slug: "executive", img: "/img/templates/Executive.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Premium feel for senior roles. Refined typography and spacing.", tags: [] },
+  { name: "Electric Lilac", slug: "electric-lilac", img: "/img/templates/electric-lilac.jpg", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold two-column with vibrant accent sidebar. Photo-friendly for creative roles.", tags: ["Pro", "New"] },
+  { name: "Executive", slug: "executive", img: "/img/templates/executive.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Premium feel for senior roles. Refined typography and spacing.", tags: [] },
   { name: "Slate", slug: "sidebar", img: "/img/templates/slate.jpg", category: ["all", "two-column"], type: "Sidebar left", desc: "Bold two-column layout. Dark sidebar. Great for design and tech roles.", tags: [] },
+  { name: "Executive Sidebar", slug: "executive-sidebar", img: "/img/templates/executive-sidebar.jpg", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo — corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
   { name: "Onyx", slug: "sidebar-right", img: "/img/templates/onyx.jpg", category: ["all", "two-column"], type: "Sidebar right", desc: "Right sidebar for skills and education. Clean content hierarchy.", tags: [] },
   { name: "Horizon", slug: "two-column", img: "/img/templates/horizon.jpg", category: ["all", "two-column"], type: "Two column", desc: "Header spans full width. Two columns below for dense content.", tags: [] },
+  { name: "Wentworth", slug: "wentworth", img: "/img/templates/wentworth.jpg", category: ["all", "single", "minimal"], type: "Single column", desc: "Minimal editorial with split-weight name, circular photo, and accent line.", tags: ["Pro", "New"] },
   { name: "Divide", slug: "divide", img: "/img/templates/divide.jpg", category: ["all", "two-column"], type: "Two column", desc: "Vertical divider splits content. Balanced left-right layout.", tags: [] },
   { name: "Folio", slug: "folio", img: "/img/templates/folio.jpg", category: ["all", "two-column"], type: "Two column", desc: "Coloured sidebar with clean white main area. Portfolio-style.", tags: [] },
   { name: "Harvard", slug: "harvard", img: "/img/templates/harward.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Academic-style formatting. Formal and structured.", tags: [] },
   { name: "Ledger", slug: "ledger", img: "/img/templates/ledger.jpg", category: ["all", "single", "professional"], type: "Single column", desc: "Finance-inspired clean lines. Numbers and metrics stand out.", tags: [] },
-  { name: "Aurora", slug: "aurora", img: "/img/templates/aurora.jpg", category: ["all", "two-column", "professional"], type: "Two column", desc: "Modern two-column with avatar and skill chips. Great for PM, design, and growth roles.", tags: ["New"] },
 ];
 
 const FILTERS: { key: TemplateCategory; label: string }[] = [
@@ -135,7 +143,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                       : "hover:shadow-md hover:border-primary/40 active:scale-[0.98]"
                   )}
                 >
-                  <div className="aspect-[3/4] bg-muted overflow-hidden relative">
+                  <div className="aspect-[1242/1754] bg-muted overflow-hidden relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={t.img}
@@ -160,6 +168,8 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                             "rounded-full px-1.5 py-0.5 text-[9px] font-bold",
                             tag === "Popular"
                               ? "bg-[#065F46] text-white"
+                              : tag === "Pro"
+                              ? "bg-[#1E3A5F] text-white"
                               : "bg-muted text-muted-foreground"
                           )}
                         >

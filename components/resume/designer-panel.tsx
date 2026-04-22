@@ -63,6 +63,13 @@ const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   { name: "harvard", label: "Harvard", desc: "Academic style inspired by Ivy League." },
   { name: "ledger", label: "Ledger", desc: "Structured grid layout for detail-heavy roles." },
   { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
+  { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Pro (not ATS-safe)." },
+  { name: "electric-lilac", label: "Electric Lilac", desc: "Vibrant sidebar with accent colour and pill chips." },
+  { name: "bold-accent", label: "Bold Accent", desc: "Accent chips and icon-bordered sections." },
+  { name: "executive-sidebar", label: "Executive Sidebar", desc: "Dark sidebar with photo for senior roles." },
+  { name: "clean-sidebar", label: "Clean Sidebar", desc: "Warm sidebar with skill bars and links." },
+  { name: "blueprint", label: "Blueprint", desc: "Editorial header block with two-column body." },
+  { name: "wentworth", label: "Wentworth", desc: "Minimal editorial with split-weight name." },
 ];
 
 const FONTS: { name: FontFamily; label: string }[] = [
@@ -452,6 +459,198 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="78" y="84" width="18" height="1.5" rx="1" fill="#6B7280"/>
         </svg>
       );
+    case "executive-pro":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          {/* photo */}
+          <rect x="8" y="8" width="22" height="22" rx="2" fill="#E5E7EB" stroke="#CBD5E0" strokeWidth="0.5"/>
+          <circle cx="19" cy="17" r="4" fill="#CBD5E0"/>
+          <path d="M11 27 Q19 22 27 27 L27 30 L11 30 Z" fill="#CBD5E0"/>
+          {/* name + title */}
+          <rect x="35" y="10" width="40" height="4" rx="1" fill="#1a202c"/>
+          <rect x="35" y="17" width="34" height="2" rx="1" fill="#2C5282"/>
+          <rect x="35" y="22" width="55" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="35" y="25" width="55" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="35" y="28" width="50" height="1.5" rx="1" fill="#9CA3AF"/>
+          {/* dark contact bar */}
+          <rect x="0" y="36" width="120" height="6" fill="#1a3a4a"/>
+          <rect x="6" y="38" width="20" height="1.5" rx="0.5" fill="white" opacity="0.9"/>
+          <rect x="32" y="38" width="18" height="1.5" rx="0.5" fill="white" opacity="0.9"/>
+          <rect x="56" y="38" width="16" height="1.5" rx="0.5" fill="white" opacity="0.9"/>
+          <rect x="78" y="38" width="22" height="1.5" rx="0.5" fill="white" opacity="0.9"/>
+          {/* left column */}
+          <rect x="8" y="50" width="4" height="4" rx="0.8" fill="none" stroke="#CBD5E0" strokeWidth="0.5"/>
+          <rect x="14" y="51" width="28" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="8" y="57" width="40" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="8" y="61" width="25" height="1.5" rx="0.5" fill="#2C5282"/>
+          <rect x="8" y="65" width="45" height="1.5" rx="0.5" fill="#CBD5E1"/>
+          <rect x="8" y="68" width="43" height="1.5" rx="0.5" fill="#CBD5E1"/>
+          <rect x="8" y="71" width="40" height="1.5" rx="0.5" fill="#CBD5E1"/>
+          <rect x="8" y="80" width="40" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="8" y="84" width="25" height="1.5" rx="0.5" fill="#2C5282"/>
+          <rect x="8" y="88" width="45" height="1.5" rx="0.5" fill="#CBD5E1"/>
+          <rect x="8" y="91" width="43" height="1.5" rx="0.5" fill="#CBD5E1"/>
+          {/* left bottom: education */}
+          <rect x="8" y="106" width="4" height="4" rx="0.8" fill="none" stroke="#CBD5E0" strokeWidth="0.5"/>
+          <rect x="14" y="107" width="24" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="8" y="114" width="38" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="8" y="118" width="30" height="1.5" rx="0.5" fill="#4a5568"/>
+          <rect x="8" y="122" width="45" height="1.5" rx="0.5" fill="#CBD5E1"/>
+          {/* right column */}
+          <rect x="62" y="50" width="4" height="4" rx="0.8" fill="none" stroke="#CBD5E0" strokeWidth="0.5"/>
+          <rect x="68" y="51" width="22" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="62" y="58" width="22" height="1.5" rx="0.5" fill="#4a5568"/>
+          <rect x="86" y="58" width="22" height="1.5" rx="0.5" fill="#4a5568"/>
+          <rect x="62" y="62" width="22" height="1.5" rx="0.5" fill="#4a5568"/>
+          <rect x="86" y="62" width="22" height="1.5" rx="0.5" fill="#4a5568"/>
+          <rect x="62" y="66" width="22" height="1.5" rx="0.5" fill="#4a5568"/>
+          <rect x="86" y="66" width="22" height="1.5" rx="0.5" fill="#4a5568"/>
+          {/* right: awards */}
+          <rect x="62" y="76" width="4" height="4" rx="0.8" fill="none" stroke="#CBD5E0" strokeWidth="0.5"/>
+          <rect x="68" y="77" width="22" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="62" y="83" width="40" height="1.5" rx="0.5" fill="#1a202c"/>
+          <rect x="62" y="86" width="30" height="1.2" rx="0.5" fill="#9CA3AF"/>
+          <rect x="62" y="91" width="38" height="1.5" rx="0.5" fill="#1a202c"/>
+          <rect x="62" y="94" width="28" height="1.2" rx="0.5" fill="#9CA3AF"/>
+          {/* right: conferences */}
+          <rect x="62" y="104" width="4" height="4" rx="0.8" fill="none" stroke="#CBD5E0" strokeWidth="0.5"/>
+          <rect x="68" y="105" width="30" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="62" y="111" width="44" height="1.5" rx="0.5" fill="#1a202c"/>
+          <rect x="62" y="114" width="34" height="1.2" rx="0.5" fill="#9CA3AF"/>
+          <rect x="62" y="119" width="42" height="1.5" rx="0.5" fill="#1a202c"/>
+        </svg>
+      );
+    case "electric-lilac":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="0" y="0" width="46" height="170" fill="#9F7AEA"/>
+          <circle cx="23" cy="20" r="7" fill="white" opacity="0.9"/>
+          <rect x="6" y="32" width="34" height="2.5" rx="1" fill="white"/>
+          <rect x="6" y="38" width="28" height="1.5" rx="1" fill="white" opacity="0.7"/>
+          <rect x="6" y="50" width="30" height="2" rx="1" fill="white" opacity="0.5"/>
+          <rect x="6" y="54" width="20" height="2" rx="1" fill="white" opacity="0.3"/>
+          <rect x="6" y="58" width="26" height="2" rx="1" fill="white" opacity="0.3"/>
+          <rect x="52" y="14" width="24" height="2" rx="1" fill="#1a202c"/>
+          <line x1="52" y1="20" x2="112" y2="20" stroke="#E5E7EB" strokeWidth="0.5"/>
+          <rect x="52" y="24" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="52" y="28" width="50" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="52" y="40" width="22" height="2" rx="1" fill="#1a202c"/>
+          <line x1="52" y1="45" x2="112" y2="45" stroke="#E5E7EB" strokeWidth="0.5"/>
+          <rect x="52" y="49" width="40" height="1.5" rx="1" fill="#9F7AEA"/>
+          <rect x="52" y="53" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="52" y="57" width="50" height="1.5" rx="1" fill="#D1D5DB"/>
+        </svg>
+      );
+    case "bold-accent":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="8" y="8" width="18" height="18" rx="2" fill="#E5E7EB"/>
+          <rect x="30" y="10" width="45" height="4" rx="1" fill="#1a202c"/>
+          <rect x="30" y="17" width="35" height="2" rx="1" fill="#9F7AEA"/>
+          <rect x="30" y="22" width="65" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="8" y="32" width="104" height="2" fill="#9F7AEA"/>
+          <rect x="8" y="42" width="5" height="5" rx="1" fill="none" stroke="#9F7AEA" strokeWidth="0.8"/>
+          <rect x="16" y="43" width="22" height="2.5" rx="0.5" fill="#1a202c"/>
+          <line x1="8" y1="50" x2="112" y2="50" stroke="#E5E7EB" strokeWidth="0.5"/>
+          <rect x="8" y="54" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="8" y="58" width="50" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="8" y="70" width="12" height="3" rx="1.5" fill="#9F7AEA"/>
+          <rect x="22" y="70" width="14" height="3" rx="1.5" fill="#9F7AEA"/>
+          <rect x="38" y="70" width="10" height="3" rx="1.5" fill="#9F7AEA"/>
+        </svg>
+      );
+    case "executive-sidebar":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="0" y="0" width="36" height="170" fill="#1a3a4a"/>
+          <circle cx="18" cy="18" r="7" fill="white" opacity="0.9"/>
+          <rect x="5" y="30" width="26" height="2.5" rx="1" fill="white"/>
+          <rect x="5" y="36" width="20" height="1.5" rx="1" fill="white" opacity="0.6"/>
+          <rect x="5" y="46" width="26" height="1.5" rx="1" fill="white" opacity="0.7"/>
+          <rect x="5" y="50" width="24" height="1.5" rx="1" fill="white" opacity="0.7"/>
+          <rect x="5" y="54" width="26" height="1.5" rx="1" fill="white" opacity="0.7"/>
+          <rect x="42" y="12" width="32" height="2" rx="1" fill="#111"/>
+          <line x1="42" y1="18" x2="112" y2="18" stroke="#E5E7EB" strokeWidth="0.7"/>
+          <rect x="42" y="22" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="42" y="26" width="52" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="42" y="38" width="30" height="2" rx="1" fill="#111"/>
+          <line x1="42" y1="44" x2="112" y2="44" stroke="#E5E7EB" strokeWidth="0.7"/>
+          <rect x="42" y="48" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="42" y="52" width="50" height="1.5" rx="1" fill="#D1D5DB"/>
+        </svg>
+      );
+    case "clean-sidebar":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="0" y="0" width="38" height="170" fill="#F5F5F3"/>
+          <circle cx="19" cy="18" r="7" fill="#E5E7EB"/>
+          <rect x="5" y="30" width="28" height="2" rx="1" fill="#1a202c"/>
+          <rect x="5" y="35" width="22" height="1.5" rx="1" fill="#9CA3AF"/>
+          <line x1="5" y1="45" x2="33" y2="45" stroke="#D1D5DB" strokeWidth="0.5"/>
+          <rect x="5" y="50" width="26" height="3" rx="0.5" fill="#E5E7EB"/>
+          <rect x="5" y="50" width="16" height="3" rx="0.5" fill="#9F7AEA"/>
+          <rect x="5" y="58" width="24" height="3" rx="0.5" fill="#E5E7EB"/>
+          <rect x="5" y="58" width="14" height="3" rx="0.5" fill="#9F7AEA"/>
+          <rect x="44" y="12" width="30" height="2" rx="1" fill="#111"/>
+          <line x1="44" y1="18" x2="112" y2="18" stroke="#111" strokeWidth="0.8"/>
+          <rect x="44" y="22" width="55" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="44" y="26" width="50" height="1.5" rx="1" fill="#D1D5DB"/>
+          <rect x="44" y="38" width="22" height="2" rx="1" fill="#111"/>
+          <line x1="44" y1="44" x2="112" y2="44" stroke="#111" strokeWidth="0.8"/>
+          <rect x="44" y="50" width="28" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="76" y="50" width="28" height="2" rx="0.5" fill="#1a202c"/>
+        </svg>
+      );
+    case "blueprint":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="0" y="0" width="120" height="30" fill="#E9D8FD"/>
+          <rect x="8" y="8" width="30" height="3" rx="1" fill="#9F7AEA"/>
+          <rect x="8" y="14" width="40" height="4" rx="1" fill="#1a202c"/>
+          <rect x="90" y="6" width="22" height="22" rx="1" fill="white" stroke="#9F7AEA" strokeWidth="0.5"/>
+          <rect x="8" y="36" width="28" height="2" rx="1" fill="#1a202c"/>
+          <rect x="8" y="42" width="32" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="8" y="46" width="28" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="8" y="50" width="30" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="8" y="58" width="28" height="2" rx="1" fill="#1a202c"/>
+          <rect x="8" y="64" width="30" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="45" y="36" width="65" height="60" rx="1" fill="none" stroke="#E5E7EB" strokeWidth="0.7"/>
+          <rect x="49" y="40" width="28" height="2" rx="1" fill="#1a202c"/>
+          <rect x="49" y="45" width="55" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="49" y="49" width="52" height="1.5" rx="1" fill="#9CA3AF"/>
+          <rect x="49" y="56" width="28" height="2" rx="1" fill="#1a202c"/>
+          <rect x="49" y="61" width="55" height="1.5" rx="1" fill="#9CA3AF"/>
+        </svg>
+      );
+    case "wentworth":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          <rect x="8" y="10" width="40" height="4" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="16" width="40" height="4" rx="0.5" fill="#111"/>
+          <circle cx="100" cy="17" r="8" fill="#F5F5F3" stroke="#E5E7EB" strokeWidth="0.5"/>
+          <rect x="8" y="24" width="104" height="1" fill="#E9D8FD"/>
+          <rect x="8" y="28" width="26" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <line x1="8" y1="34" x2="112" y2="34" stroke="#E5E7EB" strokeWidth="0.4"/>
+          <rect x="8" y="40" width="18" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <line x1="8" y1="44" x2="112" y2="44" stroke="#E5E7EB" strokeWidth="0.3"/>
+          <rect x="8" y="48" width="30" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="85" y="48" width="22" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="53" width="40" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="58" width="60" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="62" width="58" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="74" width="18" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <line x1="8" y1="78" x2="112" y2="78" stroke="#E5E7EB" strokeWidth="0.3"/>
+          <rect x="8" y="82" width="30" height="1.5" rx="0.5" fill="#1a202c"/>
+          <rect x="60" y="82" width="30" height="1.5" rx="0.5" fill="#1a202c"/>
+        </svg>
+      );
   }
 }
 
@@ -520,9 +719,9 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   const currentHex = resolveAccentHex(design.accentColor);
 
   const isSidebar = design.template === "sidebar" || design.template === "sidebar-right";
-  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora";
+  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint";
   const isTwoCol = isSidebar || isColumnBased;
-  const supportsAvatar = design.template === "aurora";
+  const supportsAvatar = design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "bold-accent" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "wentworth";
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [avatarBusy, setAvatarBusy] = React.useState(false);
   const avatarMode: AvatarMode = design.avatarMode ?? "initials";
@@ -557,14 +756,14 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   const COLUMN_LEFT_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
   // For sidebar & divide/folio: sidebarSections = left column. For horizon/aurora: sidebarSections = right column.
-  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora";
+  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint";
   const secondarySections = design.sidebarSections ?? (headerOnTopLayout ? HORIZON_RIGHT_DEFAULT : COLUMN_LEFT_DEFAULT);
   const secondarySet = new Set(secondarySections);
 
   let displayLeft: string[] = [], displayRight: string[] = [];
   let labelLeft = "", labelRight = "";
 
-  if (isSidebar || design.template === "divide" || design.template === "folio") {
+  if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar") {
     // sidebarSections = left column sections
     displayLeft = [...secondarySections];
     displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k));
@@ -580,7 +779,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   // For sidebar/divide/folio: sidebarSections IS the left column, so "left→right" = remove from it
   // For horizon: sidebarSections IS the right column, so "left→right" = add to it
-  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio";
+  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar";
 
   function moveLeftToRight(id: string) {
     if (leftIsSecondary) {
@@ -886,7 +1085,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
       <section>
         <Label className="mb-3 block text-sm font-semibold">Layout</Label>
         <div className="space-y-3">
-          {!isTwoCol && (
+          {(!isTwoCol || design.template === "blueprint") && (
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">Header alignment</span>
             <div className="flex gap-1">
@@ -952,7 +1151,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               </span>
             </div>
           </div>
-          {!isSidebar && (
+          {!isSidebar && design.template !== "clean-sidebar" && (
           <>
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">
@@ -1290,10 +1489,10 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
             const selected = design.template === t.name;
             const imgMap: Record<string, string> = {
               classic: "classic.jpg",
-              "classic-serif": "classic-serif.jpg",
+              "classic-serif": "classic-serif.png",
               sharp: "sharp.jpg",
               minimal: "minimal.jpg",
-              executive: "Executive.jpg",
+              executive: "executive.jpg",
               sidebar: "slate.jpg",
               "sidebar-right": "onyx.jpg",
               "two-column": "horizon.jpg",
@@ -1303,6 +1502,13 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               harvard: "harward.jpg",
               ledger: "ledger.jpg",
               aurora: "aurora.jpg",
+              "executive-pro": "executive-pro.jpg",
+              "electric-lilac": "electric-lilac.jpg",
+              "bold-accent": "bold-accent.jpg",
+              "executive-sidebar": "executive-sidebar.jpg",
+              "clean-sidebar": "clean-sidebar.jpg",
+              blueprint: "blueprint.jpg",
+              wentworth: "wentworth.jpg",
             };
             const imgSrc = imgMap[t.name];
             return (

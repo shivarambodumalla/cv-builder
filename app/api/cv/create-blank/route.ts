@@ -5,9 +5,10 @@ import { DEFAULT_CONTENT } from "@/lib/resume/defaults";
 import { uniqueCvTitle } from "@/lib/resume/unique-title";
 
 const VALID_TEMPLATES = [
-  "classic", "classic-serif", "sharp", "minimal", "executive", "sidebar",
+  "classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar",
   "sidebar-right", "two-column", "divide", "folio", "metro",
   "harvard", "ledger", "aurora",
+  "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth",
 ];
 
 export async function POST(request: NextRequest) {

@@ -59,6 +59,7 @@ const TEMPLATE_LABEL: Record<string, string> = {
   sharp: "Sharp",
   minimal: "Minimal",
   executive: "Executive",
+  "executive-pro": "Executive Pro",
   sidebar: "Slate",
   "sidebar-right": "Onyx",
   "two-column": "Horizon",
@@ -68,6 +69,12 @@ const TEMPLATE_LABEL: Record<string, string> = {
   harvard: "Harvard",
   ledger: "Ledger",
   aurora: "Aurora",
+  "electric-lilac": "Electric Lilac",
+  "bold-accent": "Bold Accent",
+  "executive-sidebar": "Executive Sidebar",
+  "clean-sidebar": "Clean Sidebar",
+  blueprint: "Blueprint",
+  wentworth: "Wentworth",
 };
 
 function scoreColor(score: number | null): string {

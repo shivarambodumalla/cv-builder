@@ -158,22 +158,33 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ### Templates
 
-12 templates total (all available on free plan):
+21 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
 
-| Template | Type | Display Name |
-|----------|------|-------------|
-| classic | single-column | Classic |
-| sharp | single-column | Sharp |
-| minimal | single-column | Minimal |
-| executive | single-column | Executive |
-| sidebar | 2-column (sidebar left) | Slate |
-| sidebar-right | 2-column (sidebar right) | Onyx |
-| two-column | 2-column (header + body) | Horizon |
-| divide | 2-column (left/right + divider) | Divide |
-| folio | 2-column (left bg + right) | Folio |
-| metro | — | Metro |
-| harvard | — | Harvard |
-| ledger | — | Ledger |
+All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`; some also `avatarPosition`).
+
+| Template | Type | Tier | Display Name |
+|----------|------|------|-------------|
+| classic | single-column | Free | Classic |
+| classic-serif | single-column | Free | Classic Serif |
+| sharp | single-column | Free | Sharp |
+| minimal | single-column | Free | Minimal |
+| executive | single-column | Free | Executive |
+| executive-pro | 2-column (photo + dark bar) | Pro | Executive Pro |
+| sidebar | 2-column (sidebar left) | Free | Slate |
+| sidebar-right | 2-column (sidebar right) | Free | Onyx |
+| two-column | 2-column (header + body) | Free | Horizon |
+| divide | 2-column (left/right + divider) | Free | Divide |
+| folio | 2-column (left bg + right) | Free | Folio |
+| metro | — | Free | Metro |
+| harvard | — | Free | Harvard |
+| ledger | — | Free | Ledger |
+| aurora | 2-column (chips) | Free | Aurora |
+| electric-lilac | 2-column (vibrant sidebar) | Pro | Electric Lilac *(placeholder thumbnail)* |
+| bold-accent | single-column (accent chips) | Free | Bold Accent *(placeholder thumbnail)* |
+| executive-sidebar | 2-column (dark sidebar) | Pro | Executive Sidebar *(placeholder thumbnail)* |
+| clean-sidebar | 2-column (warm sidebar + bars) | Free | Clean Sidebar *(placeholder thumbnail)* |
+| blueprint | 2-column (editorial header block) | Free | Blueprint *(placeholder thumbnail)* |
+| wentworth | single-column (editorial minimal) | Pro | Wentworth *(placeholder thumbnail)* |
 
 ### Two-Column Templates
 

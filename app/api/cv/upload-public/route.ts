@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
 
     const admin = createAdminClient();
 
-    const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora"];
+    const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth"];
     const designSettings = template && VALID_TEMPLATES.includes(template)
       ? { template }
       : null;

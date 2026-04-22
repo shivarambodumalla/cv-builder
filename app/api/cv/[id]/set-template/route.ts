@@ -7,6 +7,7 @@ const VALID_TEMPLATES = [
   "sharp",
   "minimal",
   "executive",
+  "executive-pro",
   "sidebar",
   "sidebar-right",
   "two-column",
@@ -16,6 +17,12 @@ const VALID_TEMPLATES = [
   "harvard",
   "ledger",
   "aurora",
+  "electric-lilac",
+  "bold-accent",
+  "executive-sidebar",
+  "clean-sidebar",
+  "blueprint",
+  "wentworth",
 ];
 
 export async function POST(

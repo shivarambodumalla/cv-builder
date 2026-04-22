@@ -21,6 +21,7 @@ import { ClassicSerifTemplate } from "./templates/classic-serif";
 import { SharpTemplate } from "./templates/sharp";
 import { MinimalTemplate } from "./templates/minimal";
 import { ExecutiveTemplate } from "./templates/executive";
+import { ExecutiveProTemplate } from "./templates/executive-pro";
 import { SidebarTemplate, SidebarRightTemplate } from "./templates/sidebar";
 import { TwoColumnTemplate } from "./templates/two-column";
 import { DivideTemplate } from "./templates/divide";
@@ -29,6 +30,12 @@ import { MetroTemplate } from "./templates/metro";
 import { HarvardTemplate } from "./templates/harvard";
 import { LedgerTemplate } from "./templates/ledger";
 import { AuroraTemplate } from "./templates/aurora";
+import { ElectricLilac } from "./templates/electric-lilac";
+import { BoldAccent } from "./templates/bold-accent";
+import { ExecutiveSidebar } from "./templates/executive-sidebar";
+import { CleanSidebar } from "./templates/clean-sidebar";
+import { Blueprint } from "./templates/blueprint";
+import { Wentworth } from "./templates/wentworth";
 
 const MONTH_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -135,6 +142,7 @@ const TEMPLATE_MAP = {
   sharp: SharpTemplate,
   minimal: MinimalTemplate,
   executive: ExecutiveTemplate,
+  "executive-pro": ExecutiveProTemplate,
   sidebar: SidebarTemplate,
   "sidebar-right": SidebarRightTemplate,
   "two-column": TwoColumnTemplate,
@@ -144,6 +152,12 @@ const TEMPLATE_MAP = {
   harvard: HarvardTemplate,
   ledger: LedgerTemplate,
   aurora: AuroraTemplate,
+  "electric-lilac": ElectricLilac,
+  "bold-accent": BoldAccent,
+  "executive-sidebar": ExecutiveSidebar,
+  "clean-sidebar": CleanSidebar,
+  blueprint: Blueprint,
+  wentworth: Wentworth,
 } as const;
 
 interface TemplateRendererProps {
