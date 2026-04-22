@@ -126,7 +126,10 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
 
   function toggleSection(key: SectionKey) {
     const current = getValues(`sections.${key}` as `sections.contact`);
-    setValue(`sections.${key}` as `sections.contact`, !current);
+    setValue(`sections.${key}` as `sections.contact`, !current, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
   }
 
   useEffect(() => {

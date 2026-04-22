@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { DEFAULT_CONTENT } from "@/lib/resume/defaults";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { uniqueCvTitle } from "@/lib/resume/unique-title";
 
 const VALID_TEMPLATES = [
@@ -24,8 +25,8 @@ export async function POST(request: NextRequest) {
     const template = body.template as string | undefined;
 
     const designSettings = template && VALID_TEMPLATES.includes(template)
-      ? { template }
-      : null;
+      ? normalizeDesignSettings({ template: template as never })
+      : normalizeDesignSettings(null);
 
     const admin = createAdminClient();
     const title = await uniqueCvTitle(admin, user.id, "Untitled CV");
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
         raw_text: "",
         parsed_json: DEFAULT_CONTENT,
         status: "active",
-        ...(designSettings && { design_settings: designSettings }),
+        design_settings: designSettings as unknown as Record<string, unknown>,
       })
       .select("id")
       .single();

@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 
 interface AtsReportPayload {
@@ -213,7 +214,7 @@ export function UserResumes({ resumes }: { resumes: UserResume[] }) {
                   <PaperPreview paperSize={(selected.design_settings?.paperSize as ResumeDesignSettings["paperSize"]) ?? DEFAULT_DESIGN.paperSize}>
                     <TemplateRenderer
                       content={selected.parsed_json}
-                      design={{ ...DEFAULT_DESIGN, ...(selected.design_settings ?? {}) } as ResumeDesignSettings}
+                      design={normalizeDesignSettings(selected.design_settings)}
                     />
                   </PaperPreview>
                 ) : (

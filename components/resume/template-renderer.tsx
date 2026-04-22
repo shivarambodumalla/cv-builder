@@ -122,13 +122,24 @@ function resolveAccentColor(color: string): string {
   return "#0D9488";
 }
 
-function getOrderedSections(sectionOrder: string[]): SectionKey[] {
+function getOrderedSections(sectionOrder: string[] | undefined): SectionKey[] {
   const ordered: SectionKey[] = [];
   const seen = new Set<string>();
 
-  for (const key of sectionOrder) {
-    if (DEFAULT_SECTION_ORDER.includes(key as SectionKey) && !seen.has(key)) {
-      ordered.push(key as SectionKey);
+  if (Array.isArray(sectionOrder)) {
+    for (const key of sectionOrder) {
+      if (DEFAULT_SECTION_ORDER.includes(key as SectionKey) && !seen.has(key)) {
+        ordered.push(key as SectionKey);
+        seen.add(key);
+      }
+    }
+  }
+
+  // Append any canonical sections missing from sectionOrder so newly enabled
+  // sections always render even if the persisted order predates them.
+  for (const key of DEFAULT_SECTION_ORDER) {
+    if (!seen.has(key)) {
+      ordered.push(key);
       seen.add(key);
     }
   }

@@ -30,6 +30,7 @@ import type {
   AvatarShape,
   AvatarPosition,
   AvatarInitialsBg,
+  SectionVisibility,
 } from "@/lib/resume/types";
 import { fileToResizedDataUrl } from "@/lib/resume/avatar";
 import {
@@ -46,6 +47,7 @@ interface DesignerPanelProps {
   photoUrl?: string;
   contactName?: string;
   onPhotoChange?: (url: string | undefined) => void;
+  sectionVisibility?: SectionVisibility;
 }
 
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
@@ -694,7 +696,9 @@ function ColumnItem({ id, direction, onMove }: { id: string; direction: "toMain"
   );
 }
 
-export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhotoChange }: DesignerPanelProps) {
+export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhotoChange, sectionVisibility }: DesignerPanelProps) {
+  const isEnabled = (key: string) =>
+    sectionVisibility ? sectionVisibility[key as keyof SectionVisibility] !== false : true;
   function update<K extends keyof ResumeDesignSettings>(
     key: K,
     value: ResumeDesignSettings[K]
@@ -750,14 +754,30 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     }
   }
 
-  const SIDEBAR_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
-  const HORIZON_RIGHT_DEFAULT = ["education", "certifications", "skills"];
-  const HORIZON_HEADER = new Set(["contact", "targetTitle", "summary"]);
-
   const COLUMN_LEFT_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
-  // For sidebar & divide/folio: sidebarSections = left column. For horizon/aurora: sidebarSections = right column.
+
+  // Per-template fixed-header keys + right-column defaults. Must mirror the
+  // corresponding template component so the designer panel never hides a
+  // section the template is actually willing to render.
+  const HEADER_KEYS_BY_TEMPLATE: Record<string, string[]> = {
+    "two-column": ["contact", "targetTitle", "summary"],
+    aurora: ["contact", "targetTitle"],
+    "executive-pro": ["contact", "targetTitle", "summary"],
+    blueprint: ["contact", "targetTitle"],
+  };
+  const RIGHT_DEFAULT_BY_TEMPLATE: Record<string, string[]> = {
+    "two-column": ["education", "certifications", "skills"],
+    aurora: ["skills", "education", "certifications"],
+    "executive-pro": ["skills", "education", "certifications"],
+    blueprint: ["summary", "skills", "experience", "projects", "awards", "publications"],
+  };
+
   const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint";
-  const secondarySections = design.sidebarSections ?? (headerOnTopLayout ? HORIZON_RIGHT_DEFAULT : COLUMN_LEFT_DEFAULT);
+  const headerKeysArr = HEADER_KEYS_BY_TEMPLATE[design.template] ?? ["contact", "targetTitle"];
+  const headerSet = new Set(headerKeysArr);
+  const secondarySections = design.sidebarSections ?? (
+    headerOnTopLayout ? (RIGHT_DEFAULT_BY_TEMPLATE[design.template] ?? ["education", "certifications", "skills"]) : COLUMN_LEFT_DEFAULT
+  );
   const secondarySet = new Set(secondarySections);
 
   let displayLeft: string[] = [], displayRight: string[] = [];
@@ -765,14 +785,15 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar") {
     // sidebarSections = left column sections
-    displayLeft = [...secondarySections];
-    displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k));
+    displayLeft = secondarySections.filter((k) => isEnabled(k));
+    displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k) && isEnabled(k));
     labelLeft = isSidebar ? "Sidebar" : "Left";
     labelRight = isSidebar ? "Main" : "Right";
   } else if (headerOnTopLayout) {
-    // sidebarSections = right column sections (Horizon/Aurora header is fixed)
-    displayLeft = design.sectionOrder.filter((k) => !secondarySet.has(k) && !HORIZON_HEADER.has(k));
-    displayRight = secondarySections.filter((k) => !HORIZON_HEADER.has(k));
+    // sidebarSections = right column sections; contact/targetTitle (+summary for
+    // templates that pin it to the header) stay in the fixed header.
+    displayLeft = design.sectionOrder.filter((k) => !secondarySet.has(k) && !headerSet.has(k) && isEnabled(k));
+    displayRight = secondarySections.filter((k) => !headerSet.has(k) && isEnabled(k));
     labelLeft = "Left";
     labelRight = "Right";
   }
@@ -829,6 +850,68 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   return (
     <div className="space-y-6">
+
+      {/* Template */}
+      <section>
+        <Label className="mb-3 block text-sm font-semibold">Template</Label>
+        <div className="grid grid-cols-2 gap-3">
+          {TEMPLATES.map((t) => {
+            const selected = design.template === t.name;
+            const imgMap: Record<string, string> = {
+              classic: "classic.jpg",
+              "classic-serif": "classic-serif.png",
+              sharp: "sharp.jpg",
+              minimal: "minimal.jpg",
+              executive: "executive.jpg",
+              sidebar: "slate.jpg",
+              "sidebar-right": "onyx.jpg",
+              "two-column": "horizon.jpg",
+              divide: "divide.jpg",
+              folio: "folio.jpg",
+              metro: "metro.jpg",
+              harvard: "harward.jpg",
+              ledger: "ledger.jpg",
+              aurora: "aurora.jpg",
+              "executive-pro": "executive-pro.jpg",
+              "electric-lilac": "electric-lilac.jpg",
+              "bold-accent": "bold-accent.jpg",
+              "executive-sidebar": "executive-sidebar.jpg",
+              "clean-sidebar": "clean-sidebar.jpg",
+              blueprint: "blueprint.jpg",
+              wentworth: "wentworth.jpg",
+            };
+            const imgSrc = imgMap[t.name];
+            return (
+              <button
+                key={t.name}
+                type="button"
+                className={cn(
+                  "relative rounded-lg border p-1 text-left transition-all overflow-hidden",
+                  selected && "ring-2 ring-primary"
+                )}
+                onClick={() => update("template", t.name)}
+              >
+                {imgSrc ? (
+                  <img
+                    src={`/img/templates/${imgSrc}`}
+                    alt={t.label}
+                    className="w-full rounded"
+                    style={{ aspectRatio: "210/240", objectFit: "cover", objectPosition: "top" }}
+                  />
+                ) : (
+                  <div className="h-28 rounded bg-muted">
+                    <TemplatePreview template={t.name} />
+                  </div>
+                )}
+                <div className="mt-2 px-1 pb-1">
+                  <p className="text-sm font-semibold">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{t.desc}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Font */}
       <section>
@@ -904,6 +987,181 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
         </div>
       </section>
 
+
+      {/* Typography */}
+      <section>
+        <Label className="mb-3 block text-sm font-semibold">Typography</Label>
+        <div className="space-y-3">
+          <div>
+            <span className="mb-1.5 block text-xs text-muted-foreground">Body size</span>
+            <div className="flex items-center gap-2">
+              {(["S", "M", "L"] as const).map((size) => (
+                <Button
+                  key={size}
+                  variant={design.bodySize === size ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => update("bodySize", size)}
+                >
+                  {size}
+                </Button>
+              ))}
+              <Input
+                type="number"
+                min={8}
+                max={12}
+                value={activeBodyPt}
+                className="h-9 w-16 text-center"
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (v >= 8 && v <= 12) {
+                    const matchedSize = Object.entries(BODY_SIZE_PT).find(
+                      ([, pt]) => pt === v
+                    );
+                    update("bodySize", matchedSize ? (matchedSize[0] as "S" | "M" | "L") : v);
+                  }
+                }}
+              />
+              <span className="text-xs text-muted-foreground">pt</span>
+            </div>
+          </div>
+          <div>
+            <span className="mb-1.5 block text-xs text-muted-foreground">Name size</span>
+            <div className="flex items-center gap-2">
+              {(["S", "M", "L"] as const).map((size) => (
+                <Button
+                  key={size}
+                  variant={design.nameSize === size ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => update("nameSize", size)}
+                >
+                  {size}
+                </Button>
+              ))}
+              <Input
+                type="number"
+                min={18}
+                max={32}
+                value={activeNamePt}
+                className="h-9 w-16 text-center"
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (v >= 18 && v <= 32) {
+                    const matchedSize = Object.entries(NAME_SIZE_PT).find(
+                      ([, pt]) => pt === v
+                    );
+                    update("nameSize", matchedSize ? (matchedSize[0] as "S" | "M" | "L") : v);
+                  }
+                }}
+              />
+              <span className="text-xs text-muted-foreground">pt</span>
+            </div>
+          </div>
+          <div>
+            <span className="mb-1.5 block text-xs text-muted-foreground">Name weight</span>
+            <div className="flex gap-1">
+              {(["light", "regular", "medium", "bold", "black"] as FontWeight[]).map((w) => (
+                <Button
+                  key={w}
+                  variant={(design.nameWeight ?? "bold") === w ? "default" : "outline"}
+                  size="sm"
+                  className="flex-1 text-xs capitalize"
+                  onClick={() => update("nameWeight", w)}
+                >
+                  {w}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="mb-2 block text-xs font-medium text-foreground">Section Headings</span>
+            <div className="space-y-3">
+              <div>
+                <span className="mb-1.5 block text-xs text-muted-foreground">Size</span>
+                <div className="flex items-center gap-2">
+                {(["S", "M", "L"] as const).map((size) => (
+                  <Button
+                    key={size}
+                    variant={(design.sectionHeadingSize ?? "M") === size ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => update("sectionHeadingSize", size)}
+                  >
+                    {size}
+                  </Button>
+                ))}
+                <Input
+                  type="number"
+                  min={7}
+                  max={13}
+                  value={typeof design.sectionHeadingSize === "number" ? design.sectionHeadingSize : (SECTION_HEADING_SIZE_PT[design.sectionHeadingSize ?? "M"] ?? 9)}
+                  className="h-9 w-16 text-center"
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    if (v >= 7 && v <= 13) {
+                      const matched = Object.entries(SECTION_HEADING_SIZE_PT).find(([, pt]) => pt === v);
+                      update("sectionHeadingSize", matched ? (matched[0] as "S" | "M" | "L") : v);
+                    }
+                  }}
+                />
+                <span className="text-xs text-muted-foreground">pt</span>
+                </div>
+              </div>
+              <div>
+                <span className="mb-1.5 block text-xs text-muted-foreground">Weight</span>
+                <div className="flex gap-1">
+                  {(["light", "regular", "medium", "bold", "black"] as FontWeight[]).map((w) => (
+                    <Button
+                      key={w}
+                      variant={(design.sectionHeadingWeight ?? "bold") === w ? "default" : "outline"}
+                      size="sm"
+                      className="flex-1 text-xs capitalize"
+                      onClick={() => update("sectionHeadingWeight", w)}
+                    >
+                      {w}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <span className="mb-1.5 block text-xs text-muted-foreground">Text case</span>
+                <div className="flex gap-1">
+                  {([
+                    { value: "as-written" as TextCase, label: "As written" },
+                    { value: "uppercase" as TextCase, label: "Uppercase" },
+                    { value: "capitalize" as TextCase, label: "Capitalize" },
+                  ]).map(({ value, label }) => (
+                    <Button
+                      key={value}
+                      variant={(design.sectionHeadingCase ?? "uppercase") === value ? "default" : "outline"}
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={() => update("sectionHeadingCase", value)}
+                    >
+                      {label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <span className="mb-1.5 block text-xs text-muted-foreground">Line spacing</span>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min={1.0}
+                max={2.0}
+                step={0.1}
+                value={design.lineSpacing}
+                className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
+                onChange={(e) => update("lineSpacing", parseFloat(e.target.value))}
+              />
+              <span className="w-8 text-right text-xs font-medium tabular-nums">
+                {design.lineSpacing.toFixed(1)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Avatar — only for templates that render one (Aurora) */}
       {supportsAvatar && (
@@ -1197,182 +1455,6 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
       </section>
 
 
-      {/* Typography */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Typography</Label>
-        <div className="space-y-3">
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Body size</span>
-            <div className="flex items-center gap-2">
-              {(["S", "M", "L"] as const).map((size) => (
-                <Button
-                  key={size}
-                  variant={design.bodySize === size ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => update("bodySize", size)}
-                >
-                  {size}
-                </Button>
-              ))}
-              <Input
-                type="number"
-                min={8}
-                max={12}
-                value={activeBodyPt}
-                className="h-9 w-16 text-center"
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10);
-                  if (v >= 8 && v <= 12) {
-                    const matchedSize = Object.entries(BODY_SIZE_PT).find(
-                      ([, pt]) => pt === v
-                    );
-                    update("bodySize", matchedSize ? (matchedSize[0] as "S" | "M" | "L") : v);
-                  }
-                }}
-              />
-              <span className="text-xs text-muted-foreground">pt</span>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Name size</span>
-            <div className="flex items-center gap-2">
-              {(["S", "M", "L"] as const).map((size) => (
-                <Button
-                  key={size}
-                  variant={design.nameSize === size ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => update("nameSize", size)}
-                >
-                  {size}
-                </Button>
-              ))}
-              <Input
-                type="number"
-                min={18}
-                max={32}
-                value={activeNamePt}
-                className="h-9 w-16 text-center"
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10);
-                  if (v >= 18 && v <= 32) {
-                    const matchedSize = Object.entries(NAME_SIZE_PT).find(
-                      ([, pt]) => pt === v
-                    );
-                    update("nameSize", matchedSize ? (matchedSize[0] as "S" | "M" | "L") : v);
-                  }
-                }}
-              />
-              <span className="text-xs text-muted-foreground">pt</span>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Name weight</span>
-            <div className="flex gap-1">
-              {(["light", "regular", "medium", "bold", "black"] as FontWeight[]).map((w) => (
-                <Button
-                  key={w}
-                  variant={(design.nameWeight ?? "bold") === w ? "default" : "outline"}
-                  size="sm"
-                  className="flex-1 text-xs capitalize"
-                  onClick={() => update("nameWeight", w)}
-                >
-                  {w}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <span className="mb-2 block text-xs font-medium text-foreground">Section Headings</span>
-            <div className="space-y-3">
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Size</span>
-                <div className="flex items-center gap-2">
-                {(["S", "M", "L"] as const).map((size) => (
-                  <Button
-                    key={size}
-                    variant={(design.sectionHeadingSize ?? "M") === size ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => update("sectionHeadingSize", size)}
-                  >
-                    {size}
-                  </Button>
-                ))}
-                <Input
-                  type="number"
-                  min={7}
-                  max={13}
-                  value={typeof design.sectionHeadingSize === "number" ? design.sectionHeadingSize : (SECTION_HEADING_SIZE_PT[design.sectionHeadingSize ?? "M"] ?? 9)}
-                  className="h-9 w-16 text-center"
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    if (v >= 7 && v <= 13) {
-                      const matched = Object.entries(SECTION_HEADING_SIZE_PT).find(([, pt]) => pt === v);
-                      update("sectionHeadingSize", matched ? (matched[0] as "S" | "M" | "L") : v);
-                    }
-                  }}
-                />
-                <span className="text-xs text-muted-foreground">pt</span>
-                </div>
-              </div>
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Weight</span>
-                <div className="flex gap-1">
-                  {(["light", "regular", "medium", "bold", "black"] as FontWeight[]).map((w) => (
-                    <Button
-                      key={w}
-                      variant={(design.sectionHeadingWeight ?? "bold") === w ? "default" : "outline"}
-                      size="sm"
-                      className="flex-1 text-xs capitalize"
-                      onClick={() => update("sectionHeadingWeight", w)}
-                    >
-                      {w}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Text case</span>
-                <div className="flex gap-1">
-                  {([
-                    { value: "as-written" as TextCase, label: "As written" },
-                    { value: "uppercase" as TextCase, label: "Uppercase" },
-                    { value: "capitalize" as TextCase, label: "Capitalize" },
-                  ]).map(({ value, label }) => (
-                    <Button
-                      key={value}
-                      variant={(design.sectionHeadingCase ?? "uppercase") === value ? "default" : "outline"}
-                      size="sm"
-                      className="flex-1 text-xs"
-                      onClick={() => update("sectionHeadingCase", value)}
-                    >
-                      {label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Line spacing</span>
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={1.0}
-                max={2.0}
-                step={0.1}
-                value={design.lineSpacing}
-                className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
-                onChange={(e) => update("lineSpacing", parseFloat(e.target.value))}
-              />
-              <span className="w-8 text-right text-xs font-medium tabular-nums">
-                {design.lineSpacing.toFixed(1)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
       {/* Details */}
       <section>
         <Label className="mb-3 block text-sm font-semibold">Details</Label>
@@ -1468,11 +1550,11 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
         ) : (
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext
-              items={design.sectionOrder}
+              items={design.sectionOrder.filter((id) => isEnabled(id))}
               strategy={verticalListSortingStrategy}
             >
               <div className="flex flex-col gap-1.5">
-                {design.sectionOrder.map((id) => (
+                {design.sectionOrder.filter((id) => isEnabled(id)).map((id) => (
                   <SortableItem key={id} id={id} />
                 ))}
               </div>
@@ -1481,67 +1563,6 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
         )}
       </section>
 
-      {/* Template */}
-      <section className="pb-4">
-        <Label className="mb-3 block text-sm font-semibold">Template</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.map((t) => {
-            const selected = design.template === t.name;
-            const imgMap: Record<string, string> = {
-              classic: "classic.jpg",
-              "classic-serif": "classic-serif.png",
-              sharp: "sharp.jpg",
-              minimal: "minimal.jpg",
-              executive: "executive.jpg",
-              sidebar: "slate.jpg",
-              "sidebar-right": "onyx.jpg",
-              "two-column": "horizon.jpg",
-              divide: "divide.jpg",
-              folio: "folio.jpg",
-              metro: "metro.jpg",
-              harvard: "harward.jpg",
-              ledger: "ledger.jpg",
-              aurora: "aurora.jpg",
-              "executive-pro": "executive-pro.jpg",
-              "electric-lilac": "electric-lilac.jpg",
-              "bold-accent": "bold-accent.jpg",
-              "executive-sidebar": "executive-sidebar.jpg",
-              "clean-sidebar": "clean-sidebar.jpg",
-              blueprint: "blueprint.jpg",
-              wentworth: "wentworth.jpg",
-            };
-            const imgSrc = imgMap[t.name];
-            return (
-              <button
-                key={t.name}
-                type="button"
-                className={cn(
-                  "relative rounded-lg border p-1 text-left transition-all overflow-hidden",
-                  selected && "ring-2 ring-primary"
-                )}
-                onClick={() => update("template", t.name)}
-              >
-                {imgSrc ? (
-                  <img
-                    src={`/img/templates/${imgSrc}`}
-                    alt={t.label}
-                    className="w-full rounded"
-                    style={{ aspectRatio: "210/240", objectFit: "cover", objectPosition: "top" }}
-                  />
-                ) : (
-                  <div className="h-28 rounded bg-muted">
-                    <TemplatePreview template={t.name} />
-                  </div>
-                )}
-                <div className="mt-2 px-1 pb-1">
-                  <p className="text-sm font-semibold">{t.label}</p>
-                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{t.desc}</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
     </div>
   );
 }

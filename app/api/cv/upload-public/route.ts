@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { alertAdmin } from "@/lib/email/alert";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -123,8 +124,8 @@ export async function POST(request: NextRequest) {
 
     const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth"];
     const designSettings = template && VALID_TEMPLATES.includes(template)
-      ? { template }
-      : null;
+      ? normalizeDesignSettings({ template: template as never })
+      : normalizeDesignSettings(null);
 
     // Derive target role: explicit selection > parsed CV title > "General"
     /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -145,7 +146,7 @@ export async function POST(request: NextRequest) {
         job_description: jobDescription?.trim() || null,
         job_company: jobCompany?.trim() || null,
         job_title_target: jobTitleTarget?.trim() || null,
-        ...(designSettings && { design_settings: designSettings }),
+        design_settings: designSettings as unknown as Record<string, unknown>,
       })
       .select("id")
       .single();

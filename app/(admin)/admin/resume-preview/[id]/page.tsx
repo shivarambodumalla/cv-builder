@@ -5,9 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { Badge } from "@/components/ui/badge";
-import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { ArrowLeft, Eye } from "lucide-react";
-import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
+import type { ResumeContent } from "@/lib/resume/types";
 
 export const metadata: Metadata = {
   title: "Resume Preview | CVEdge Admin",
@@ -47,7 +47,7 @@ export default async function AdminResumePreviewPage({
 
   const atsScore = latestAts?.score ?? latestAts?.overall_score ?? null;
   const ownerLabel = owner?.full_name || owner?.email || "this user";
-  const design = { ...DEFAULT_DESIGN, ...(cv.design_settings ?? {}) } as ResumeDesignSettings;
+  const design = normalizeDesignSettings(cv.design_settings);
 
   return (
     <div className="min-h-screen bg-muted/20">

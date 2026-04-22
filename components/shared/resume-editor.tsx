@@ -33,7 +33,8 @@ import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/compon
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
 import { calculateClientScore, type ClientScoreResult, type KeywordList } from "@/lib/ats/client-scorer";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
-import { DEFAULT_CONTENT, DEFAULT_DESIGN } from "@/lib/resume/defaults";
+import { DEFAULT_CONTENT } from "@/lib/resume/defaults";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { getPreviewContent } from "@/lib/resume/placeholder";
 import { StepLoader } from "@/components/shared/step-loader";
 import { DownloadNudge } from "@/components/popups/download-nudge";
@@ -160,8 +161,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
     : DEFAULT_CONTENT;
 
   const [content, setContent] = useState<ResumeContent>(initialContent);
-  const [design, setDesign] = useState<ResumeDesignSettings>(
-    cv.design_settings ? { ...DEFAULT_DESIGN, ...cv.design_settings } : DEFAULT_DESIGN
+  const [design, setDesign] = useState<ResumeDesignSettings>(() =>
+    normalizeDesignSettings(cv.design_settings)
   );
   const [activeTab, setActiveTabRaw] = useState("editor");
   const prevTabRef = useRef("editor");
@@ -177,6 +178,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   }, [activeTab, cv.id]);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [downloading, setDownloading] = useState(false);
   const [title, setTitle] = useState(cv.title || "Untitled CV");
   const [editingTitle, setEditingTitle] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
@@ -498,6 +500,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   }
 
   async function handlePdfDownload() {
+    if (downloading) return;
+    setDownloading(true);
     try {
       const res = await fetch("/api/cv/export/pdf", {
         method: "POST",
@@ -517,7 +521,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
       a.download = `${(title || "resume").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch { /* ignore */ }
+    } catch { /* ignore */ } finally {
+      setDownloading(false);
+    }
   }
 
   return (
@@ -565,8 +571,12 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           >
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
-          <Button size="sm" className="h-8" onClick={handlePdfDownload}>
-            <Download className="mr-1.5 h-3.5 w-3.5" /> Download
+          <Button size="sm" className="h-8" onClick={handlePdfDownload} disabled={downloading}>
+            {downloading ? (
+              <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Downloading...</>
+            ) : (
+              <><Download className="mr-1.5 h-3.5 w-3.5" /> Download</>
+            )}
           </Button>
           {plan !== "pro" && (
             <Button size="sm" variant="secondary" className="h-8 gap-1.5" onClick={() => openUpgradeModal("generic")}>
@@ -682,6 +692,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 onChange={handleDesignChange}
                 photoUrl={content.contact.photoUrl}
                 contactName={content.contact.name}
+                sectionVisibility={content.sections}
                 onPhotoChange={(url) =>
                   setContent((prev) => ({
                     ...prev,

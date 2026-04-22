@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
+import type { ResumeDesignSettings } from "@/lib/resume/types";
 
 const VALID_TEMPLATES = [
   "classic",
@@ -59,14 +61,15 @@ export async function POST(
     return NextResponse.json({ error: "CV not found" }, { status: 404 });
   }
 
-  const nextDesignSettings = {
-    ...(cv.design_settings as Record<string, unknown> | null ?? {}),
-    template,
-  };
+  const existing = (cv.design_settings as Partial<ResumeDesignSettings> | null) ?? {};
+  const nextDesignSettings = normalizeDesignSettings({
+    ...existing,
+    template: template as ResumeDesignSettings["template"],
+  });
 
   const { error: updateError } = await supabase
     .from("cvs")
-    .update({ design_settings: nextDesignSettings })
+    .update({ design_settings: nextDesignSettings as unknown as Record<string, unknown> })
     .eq("id", id)
     .eq("user_id", user.id);
 

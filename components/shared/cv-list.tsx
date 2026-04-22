@@ -126,6 +126,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [sortAsc, setSortAsc] = useState(false);
@@ -170,6 +171,8 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
   async function handleDownload(e: React.MouseEvent, cvId: string) {
     e.preventDefault();
     e.stopPropagation();
+    if (downloadingId) return;
+    setDownloadingId(cvId);
     try {
       const res = await fetch(`/api/cv/export/pdf?cv_id=${cvId}`);
       if (!res.ok) return;
@@ -180,7 +183,9 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
       a.download = "resume.pdf";
       a.click();
       URL.revokeObjectURL(url);
-    } catch { /* ignore */ }
+    } catch { /* ignore */ } finally {
+      setDownloadingId(null);
+    }
   }
 
   /* ── Action buttons ── */
@@ -193,8 +198,13 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
           size="icon"
           className="w-7 h-7 rounded-md bg-black/[0.06] sm:min-w-0 sm:min-h-0 min-w-[44px] min-h-[44px]"
           onClick={(ev) => handleDownload(ev, cvId)}
+          disabled={downloadingId === cvId}
         >
-          <Download size={13} className="text-[#78716C]" />
+          {downloadingId === cvId ? (
+            <Loader2 size={13} className="text-[#78716C] animate-spin" />
+          ) : (
+            <Download size={13} className="text-[#78716C]" />
+          )}
         </Button>
         <Button
           variant="ghost"

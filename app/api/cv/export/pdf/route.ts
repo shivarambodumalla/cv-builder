@@ -6,7 +6,7 @@ import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { getPlan, PLAN_LIMITS } from "@/lib/billing/limits";
 import { sendEmailAsync } from "@/lib/email/sender";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
-import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
 
 import { alertAdmin } from "@/lib/email/alert";
 
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   const plan = getPlan(profile ?? {});
   const watermark = PLAN_LIMITS[plan].watermark;
 
-  const design: ResumeDesignSettings = { ...DEFAULT_DESIGN, ...clientDesign };
+  const design: ResumeDesignSettings = normalizeDesignSettings(clientDesign);
 
   try {
     const buffer = await renderHtmlToPdf(content, design, watermark);
