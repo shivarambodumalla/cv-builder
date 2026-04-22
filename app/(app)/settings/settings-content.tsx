@@ -19,6 +19,11 @@ interface SettingsContentProps {
   signupCity: string | null;
   signupCountry: string | null;
   memberSince: string;
+  emailPreferences: {
+    jobs_weekly: boolean;
+    product_updates: boolean;
+    tips: boolean;
+  };
 }
 
 const MAX_LOCATIONS = 5;
@@ -34,6 +39,7 @@ export function SettingsContent({
   signupCity,
   signupCountry,
   memberSince,
+  emailPreferences,
 }: SettingsContentProps) {
   const { theme, setTheme } = useTheme();
 
@@ -50,6 +56,29 @@ export function SettingsContent({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Email preferences
+  const [emailPrefs, setEmailPrefs] = useState(emailPreferences);
+  const [emailPrefSaving, setEmailPrefSaving] = useState<string | null>(null);
+
+  async function toggleEmailPref(key: keyof typeof emailPrefs) {
+    const next = !emailPrefs[key];
+    const previous = emailPrefs[key];
+    setEmailPrefs((prev) => ({ ...prev, [key]: next }));
+    setEmailPrefSaving(key);
+    try {
+      const res = await fetch("/api/user/email-preferences", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [`email_${key}`]: next }),
+      });
+      if (!res.ok) throw new Error("Save failed");
+    } catch {
+      setEmailPrefs((prev) => ({ ...prev, [key]: previous }));
+    } finally {
+      setEmailPrefSaving(null);
+    }
+  }
 
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -243,6 +272,47 @@ export function SettingsContent({
             "Save preferences"
           )}
         </Button>
+      </section>
+
+      {/* Email preferences */}
+      <section id="preferences" className="rounded-xl border p-5 sm:p-6 mb-6">
+        <h2 className="text-base font-semibold mb-1">Email preferences</h2>
+        <p className="text-sm text-muted-foreground mb-4">Choose which emails you want from us.</p>
+
+        <div className="space-y-3">
+          {([
+            { key: "jobs_weekly" as const, title: "Job matches", body: "Personalised job picks delivered Tue, Wed, and Thu." },
+            { key: "product_updates" as const, title: "Product updates", body: "New features, templates and major improvements." },
+            { key: "tips" as const, title: "Career tips", body: "Short, practical advice for your CV and applications." },
+          ]).map((row) => (
+            <div key={row.key} className="flex items-center justify-between rounded-xl border px-4 py-3 gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-medium">{row.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{row.body}</p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={emailPrefs[row.key]}
+                aria-label={`Toggle ${row.title}`}
+                disabled={emailPrefSaving === row.key}
+                onClick={() => toggleEmailPref(row.key)}
+                className={cn(
+                  "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors",
+                  emailPrefs[row.key] ? "bg-[#065F46]" : "bg-muted",
+                  emailPrefSaving === row.key && "opacity-60"
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform",
+                    emailPrefs[row.key] ? "translate-x-[22px]" : "translate-x-0.5"
+                  )}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Appearance */}

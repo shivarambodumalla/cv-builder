@@ -24,7 +24,7 @@ export default async function SettingsPage() {
   const [{ data: profile }, { data: prefLocs }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("full_name, subscription_status, subscription_period, open_to_remote, signup_city, signup_country, created_at")
+      .select("full_name, subscription_status, subscription_period, open_to_remote, signup_city, signup_country, created_at, email_jobs_weekly, email_product_updates, email_tips")
       .eq("id", user.id)
       .single(),
     admin
@@ -46,6 +46,11 @@ export default async function SettingsPage() {
       signupCity={profile?.signup_city ?? null}
       signupCountry={profile?.signup_country ?? null}
       memberSince={profile?.created_at ?? user.created_at}
+      emailPreferences={{
+        jobs_weekly: profile?.email_jobs_weekly ?? true,
+        product_updates: profile?.email_product_updates ?? true,
+        tips: profile?.email_tips ?? true,
+      }}
     />
   );
 }

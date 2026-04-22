@@ -50,7 +50,6 @@ export async function GET(request: NextRequest) {
     visitedPricing,
     upgraded,
     interviewPrep,
-    jobsWaitlist,
   ] = await Promise.all([
     // Anonymous page views
     pvRpc("/"),
@@ -81,8 +80,6 @@ export async function GET(request: NextRequest) {
       .gte("started_at", from).lte("started_at", to),
     // Extras
     rpc("funnel_interview_prep"),
-    admin.from("job_waitlist").select("id", { count: "exact", head: true })
-      .gte("created_at", from).lte("created_at", to),
   ]);
 
   // Pre-signup: anonymous visitors
@@ -121,7 +118,6 @@ export async function GET(request: NextRequest) {
     { key: "ai_rewrite", label: "AI Rewrite Used", count: aiRewriteUsed.data?.count ?? 0 },
     { key: "fix_all", label: "Fix All Used", count: fixAllUsed.data?.count ?? 0 },
     { key: "interview_prep", label: "Interview Prep", count: interviewPrep.data?.count ?? 0 },
-    { key: "jobs_waitlist", label: "Jobs Waitlist", count: jobsWaitlist.count ?? 0 },
   ];
 
   // ── Popup metrics (tracked via page_views for anonymous, user_activity for auth) ──

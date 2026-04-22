@@ -156,7 +156,12 @@
       "Bash(curl -s --max-time 15 -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/resume/00000000-0000-0000-0000-000000000000/pick-template)",
       "Bash(kill 94598 94774)",
       "Bash(lsof -iTCP:3000 -iTCP:3001 -sTCP:LISTEN)",
-      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/admin/funnel)"
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/admin/funnel)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(lsof -iTCP:3000 -sTCP:LISTEN -n -P)",
+      "Bash(lsof -iTCP:3001 -sTCP:LISTEN -n -P)",
+      "Bash(node --env-file=.env.local --import tsx scripts/send-test-weekly-jobs.ts)",
+      "Bash(node --env-file=.env.local ./node_modules/.bin/tsx scripts/send-test-weekly-jobs.ts)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",

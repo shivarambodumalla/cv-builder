@@ -79,11 +79,15 @@ If the answer is no to all — do not implement.
 - CTA: shown in ATS panel when Pro user has score < 80 after Fix All
 - DB table: guarantee_claims (id, user_id, cv_id, current_score, status, created_at, resolved_at, resolution)
 
-### Jobs (Coming Soon)
-- Marketing page: /jobs — waitlist form + feature preview cards
-- Waitlist API: POST /api/waitlist/jobs → inserts into job_waitlist table
-- DB table: job_waitlist (id, email, created_at) — unique on email, no auth required
-- Nav: "Jobs" link with "Soon" pill (no link, cursor-default)
+### Jobs (Live)
+- Marketing page: /jobs — search form, sign-in modal, browse by role
+- Role pages: /jobs/[role] — role-specific listings with fuzzy search + location fallback
+- Providers: Adzuna + Jooble (via lib/jobs/search.ts → searchAllProviders)
+- Matcher: lib/jobs/matcher.ts → matchJobsForCV / scoreJobsAgainstCV
+- Click tracking: /api/jobs/track-click → job_clicks table
+- Saved jobs: /api/jobs/save → saved_jobs table
+- User prefs: /api/user/preferred-locations → preferred_locations table
+- Legacy job_waitlist table/route removed (jobs page is live — no waitlist flow)
 
 ---
 
@@ -404,7 +408,8 @@ Two reset mechanisms coexist:
 22. test_results — individual test results per run
 23. test_cases — test case registry (suite, name, spec_file, is_active)
 24. guarantee_claims — 80+ score guarantee claims
-25. job_waitlist — jobs feature waitlist
+25. email_suppressions — hard suppression list (bounces, complaints, unsubscribes) — checked before every non-transactional send
+26. email_sent_jobs — dedup log of (user_id, job_id, template_name) so Tue/Wed/Thu digests deliver fresh jobs only
 
 **Important column names — do NOT guess, use these exact names:**
 - CVs: `parsed_json` (not "content"), `design_settings` (not "design"), `target_role` (top-level)
