@@ -6,6 +6,30 @@ const PAPER_SIZES: Record<string, { width: string; height: string }> = {
   letter: { width: "8.5in", height: "11in" },
 };
 
+// Cache the extracted chromium binary path across warm-lambda invocations.
+// sparticuz/chromium extracts the binary to /tmp on first resolve; re-resolving
+// can race with a still-open write fd and the kernel returns ETXTBSY.
+let chromiumPathPromise: Promise<string> | null = null;
+async function getChromiumPath(): Promise<string> {
+  if (!chromiumPathPromise) {
+    chromiumPathPromise = (async () => {
+      const chromium = (await import("@sparticuz/chromium")).default;
+      return chromium.executablePath();
+    })().catch((err) => {
+      // Reset on failure so the next caller can retry the extraction.
+      chromiumPathPromise = null;
+      throw err;
+    });
+  }
+  return chromiumPathPromise;
+}
+
+function isETXTBSY(err: unknown): boolean {
+  const code = (err as NodeJS.ErrnoException | undefined)?.code;
+  const msg = (err as Error | undefined)?.message ?? "";
+  return code === "ETXTBSY" || msg.includes("ETXTBSY");
+}
+
 async function launchBrowser() {
   const puppeteer = await import("puppeteer-core");
 
@@ -21,12 +45,26 @@ async function launchBrowser() {
   }
 
   // Everything else (Vercel serverless, CI, Linux hosts) — use sparticuz's bundled chromium.
+  // Retry on ETXTBSY: cold-start race between binary extraction and spawn.
   const chromium = (await import("@sparticuz/chromium")).default;
-  return puppeteer.launch({
-    args: chromium.args,
-    executablePath: await chromium.executablePath(),
-    headless: true,
-  });
+  const executablePath = await getChromiumPath();
+
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      return await puppeteer.launch({
+        args: chromium.args,
+        executablePath,
+        headless: true,
+      });
+    } catch (err) {
+      lastErr = err;
+      if (!isETXTBSY(err) || attempt === 4) throw err;
+      // Backoff: 150ms, 300ms, 450ms — gives the fs write fd time to close.
+      await new Promise((r) => setTimeout(r, 150 * attempt));
+    }
+  }
+  throw lastErr;
 }
 
 export async function renderHtmlToPdf(
