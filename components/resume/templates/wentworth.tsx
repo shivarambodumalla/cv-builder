@@ -663,7 +663,8 @@ export function Wentworth({
                   marginBottom: 3,
                 }}
               >
-                // {cat.name}
+                {"// "}
+                {cat.name}
               </div>
               <div
                 style={{
