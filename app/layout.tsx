@@ -12,6 +12,7 @@ import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
 import { AuthEventTracker } from "@/components/shared/auth-event-tracker";
 import { GAScripts } from "@/components/shared/ga-scripts";
+import { HotjarScripts } from "@/components/shared/hotjar-scripts";
 import { CookieConsent } from "@/components/shared/cookie-consent";
 import { JobsDiscovery } from "@/components/popups/jobs-discovery";
 import { SignupModalProvider, SignupTimedTrigger, SignupExitIntent } from "@/components/popups/signup-modal";
@@ -96,6 +97,7 @@ export default function RootLayout({
           `}
         </Script>
         <GAScripts />
+        <HotjarScripts />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

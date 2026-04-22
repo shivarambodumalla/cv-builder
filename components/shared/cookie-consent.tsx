@@ -22,13 +22,16 @@ export function hasConsent(): boolean {
 
 /** Grant consent — called for non-GDPR users on mount, or when a GDPR user accepts */
 function grantConsent() {
-  if (typeof window === "undefined" || !window.gtag) return;
-  window.gtag("consent", "update", {
-    analytics_storage: "granted",
-    ad_storage: "granted",
-    ad_user_data: "granted",
-    ad_personalization: "granted",
-  });
+  if (typeof window === "undefined") return;
+  if (window.gtag) {
+    window.gtag("consent", "update", {
+      analytics_storage: "granted",
+      ad_storage: "granted",
+      ad_user_data: "granted",
+      ad_personalization: "granted",
+    });
+  }
+  window.dispatchEvent(new CustomEvent("cvedge:consent-granted"));
 }
 
 /** Detect if user is in a GDPR region via timezone heuristic */
