@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const VALID_TEMPLATES = [
   "classic",
+  "classic-serif",
   "sharp",
   "minimal",
   "executive",

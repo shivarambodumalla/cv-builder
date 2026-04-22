@@ -17,6 +17,7 @@ import {
   type ContactSeparator,
 } from "@/lib/resume/types";
 import { ClassicTemplate } from "./templates/classic";
+import { ClassicSerifTemplate } from "./templates/classic-serif";
 import { SharpTemplate } from "./templates/sharp";
 import { MinimalTemplate } from "./templates/minimal";
 import { ExecutiveTemplate } from "./templates/executive";
@@ -129,6 +130,7 @@ function getOrderedSections(sectionOrder: string[]): SectionKey[] {
 
 const TEMPLATE_MAP = {
   classic: ClassicTemplate,
+  "classic-serif": ClassicSerifTemplate,
   sharp: SharpTemplate,
   minimal: MinimalTemplate,
   executive: ExecutiveTemplate,

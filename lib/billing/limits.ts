@@ -14,7 +14,7 @@ export const PLAN_LIMITS = {
     story_summary: 10,
     interview_prep: 5,
     pdf_downloads: -1, // unlimited
-    templates: ["classic", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
+    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
     watermark: false,
   },
   pro: {
@@ -30,7 +30,7 @@ export const PLAN_LIMITS = {
     story_summary: -1,
     interview_prep: -1,
     pdf_downloads: -1,
-    templates: ["classic", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
+    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger"],
     watermark: false,
   },
 };

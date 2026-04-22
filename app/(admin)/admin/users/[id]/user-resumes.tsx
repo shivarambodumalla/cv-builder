@@ -55,6 +55,7 @@ export interface UserResume {
 
 const TEMPLATE_LABEL: Record<string, string> = {
   classic: "Classic",
+  "classic-serif": "Classic Serif",
   sharp: "Sharp",
   minimal: "Minimal",
   executive: "Executive",

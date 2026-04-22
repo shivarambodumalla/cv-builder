@@ -1,4 +1,4 @@
-export type TemplateName = "classic" | "sharp" | "minimal" | "executive" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger";
+export type TemplateName = "classic" | "classic-serif" | "sharp" | "minimal" | "executive" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger";
 export type FontFamily = "classic" | "clean" | "elegant" | "strong";
 export type AccentColor = "slate" | "teal" | "navy" | "rust" | "plum" | "deepRed" | "darkGold" | "forestGreen" | "steelBlue" | "softPurple" | "lavender" | "warmOrange" | "slateGray";
 export type HeaderAlignment = "left" | "center" | "right";

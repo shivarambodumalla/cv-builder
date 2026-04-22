@@ -5,7 +5,7 @@ import { DEFAULT_CONTENT } from "@/lib/resume/defaults";
 import { uniqueCvTitle } from "@/lib/resume/unique-title";
 
 const VALID_TEMPLATES = [
-  "classic", "sharp", "minimal", "executive", "sidebar",
+  "classic", "classic-serif", "sharp", "minimal", "executive", "sidebar",
   "sidebar-right", "two-column", "divide", "folio", "metro",
   "harvard", "ledger",
 ];

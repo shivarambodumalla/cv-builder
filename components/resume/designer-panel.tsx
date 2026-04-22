@@ -42,6 +42,7 @@ interface DesignerPanelProps {
 
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   { name: "classic", label: "Classic", desc: "Clean single-column layout. Works for any role." },
+  { name: "classic-serif", label: "Classic Serif", desc: "Elegant serif typography with grey section bands." },
   { name: "sharp", label: "Sharp", desc: "Bold headers with strong visual hierarchy." },
   { name: "minimal", label: "Minimal", desc: "Maximum whitespace, distraction-free." },
   { name: "executive", label: "Executive", desc: "Refined styling for senior professionals." },
@@ -111,6 +112,24 @@ function TemplatePreview({ template }: { template: TemplateName }) {
             <div className="h-1 w-full rounded-sm bg-slate-200" />
             <div className="h-1 w-5/6 rounded-sm bg-slate-200" />
             <div className="h-1 w-full rounded-sm bg-slate-200" />
+          </div>
+        </div>
+      );
+    case "classic-serif":
+      return (
+        <div className="flex h-full flex-col gap-1.5 p-2">
+          <div className="mx-auto h-2 w-2/3 rounded-sm bg-slate-600" />
+          <div className="mx-auto h-1 w-1/2 rounded-sm bg-slate-400" />
+          <div className="mx-auto h-[1px] w-3/4 bg-slate-300" />
+          <div className="mt-1 h-2 w-full rounded-sm bg-slate-200" />
+          <div className="flex flex-col gap-0.5">
+            <div className="h-1 w-full rounded-sm bg-slate-300" />
+            <div className="h-1 w-5/6 rounded-sm bg-slate-300" />
+          </div>
+          <div className="h-2 w-full rounded-sm bg-slate-200" />
+          <div className="flex flex-col gap-0.5">
+            <div className="h-1 w-full rounded-sm bg-slate-300" />
+            <div className="h-1 w-4/5 rounded-sm bg-slate-300" />
           </div>
         </div>
       );
@@ -1021,6 +1040,7 @@ export function DesignerPanel({ design, onChange }: DesignerPanelProps) {
             const selected = design.template === t.name;
             const imgMap: Record<string, string> = {
               classic: "classic.jpg",
+              "classic-serif": "classic-serif.jpg",
               sharp: "sharp.jpg",
               minimal: "minimal.jpg",
               executive: "Executive.jpg",
