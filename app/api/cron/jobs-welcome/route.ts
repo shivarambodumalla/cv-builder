@@ -5,8 +5,9 @@ import { sendWeeklyJobsEmail, TEMPLATE_WELCOME_JOBS } from "@/lib/email/weekly-j
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
-// Runs hourly (every day). For each user whose first CV is >24h old and who hasn't
-// received the welcome-jobs email yet, send it.
+// Runs once a day at 11:00 UTC. Sends the welcome-jobs email to any user whose
+// first CV is >24h old and who hasn't received it yet. Because it's daily, the
+// email actually lands 24–48h after their first CV save — close enough.
 export async function GET(request: NextRequest) {
   const secret = request.headers.get("authorization")?.replace("Bearer ", "");
   if (!secret || secret !== process.env.CRON_SECRET) {

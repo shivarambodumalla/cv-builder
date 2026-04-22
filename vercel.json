@@ -14,7 +14,7 @@
     },
     {
       "path": "/api/cron/jobs-welcome",
-      "schedule": "0 * * * *"
+      "schedule": "0 11 * * *"
     },
     {
       "path": "/api/cron/jobs-weekly",
