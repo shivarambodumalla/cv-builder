@@ -29,7 +29,7 @@ const FREE_FEATURES = [
   "25 AI rewrites / 7 days",
   "5 job matches / 7 days",
   "5 cover letters / 7 days",
-  "All 12 templates",
+  "All templates",
   "Unlimited PDF downloads",
 ];
 

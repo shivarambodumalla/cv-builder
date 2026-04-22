@@ -296,9 +296,9 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 ### Plans
 
-- Free (7-day rolling window): 3 CVs, 10 ATS scans, 25 AI rewrites, 5 job matches, 5 cover letters, unlimited PDF downloads (watermarked), all 12 templates
+- Free (7-day rolling window): 3 CVs, 10 ATS scans, 25 AI rewrites, 5 job matches, 5 cover letters, 3 PDF downloads, all templates
 - Free (weekly Monday reset): 3 Fix All, 3 CV tailors, 5 offer evals, 3 portfolio scans, 10 story summaries, 5 interview preps
-- Pro: unlimited everything, all 12 templates, no watermark, 80+ score guarantee, priority support
+- Pro: unlimited everything, all templates, no watermark, 80+ score guarantee, priority support
 
 ### Usage Windows
 
@@ -333,7 +333,7 @@ Two reset mechanisms coexist:
 ## PDF Export
 
 - POST /api/cv/export/pdf -> lib/pdf/html-to-pdf.ts (inline rendering, no child process)
-- PDF downloads are unlimited for all plans (pdf_downloads = -1); watermark added for free plan
+- Free: 3 PDF downloads per 7-day rolling window, no watermark. Pro: unlimited, no watermark.
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
 
 ## CV Tailor for JD

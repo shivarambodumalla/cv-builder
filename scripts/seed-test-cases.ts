@@ -28,7 +28,7 @@ const TEST_CASES = [
   // Offer Evaluation
   { suite: "Offer Evaluation", name: "Evaluation appears after match", description: "Verify offer evaluation section renders after job match analysis", spec_file: "tests/e2e/job-match-flow.spec.ts" },
   // Templates
-  { suite: "Templates", name: "Template selector renders all 12", description: "Verify all 12 templates appear in design panel", spec_file: "tests/e2e/templates.spec.ts" },
+  { suite: "Templates", name: "Template selector renders all", description: "Verify all templates appear in design panel", spec_file: "tests/e2e/templates.spec.ts" },
   // PDF Export
   { suite: "PDF Export", name: "PDF download works", description: "Verify PDF download triggers and completes", spec_file: "tests/e2e/pdf-export.spec.ts" },
   // Billing

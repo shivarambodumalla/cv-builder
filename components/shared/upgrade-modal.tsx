@@ -37,7 +37,7 @@ const FEATURES = [
   "Unlimited AI rewrites",
   "Unlimited job matches",
   "Unlimited cover letters",
-  "All 12 templates",
+  "All templates",
   "Priority support",
 ];
 

@@ -35,13 +35,13 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
     case "timed":
       return { title: "Get your ATS score free", subtitle: "30 seconds. No credit card." };
     case "template_click":
-      return { title: `Use ${ctx.templateName || "this template"} free — sign in to start`, subtitle: "All 12 templates are free. No credit card." };
+      return { title: `Use ${ctx.templateName || "this template"} free — sign in to start`, subtitle: "All templates are free. No credit card." };
     case "job_search":
       return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}" — sign in to unlock scores.` : "Every listing shows how well your CV matches." };
     case "role_page":
       return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to unlock personalised match scores." };
     case "resumes_cta":
-      return { title: "Pick your template and build your CV free", subtitle: "All 12 templates. ATS-optimised. No credit card." };
+      return { title: "Pick your template and build your CV free", subtitle: "All templates. ATS-optimised. No credit card." };
     case "jobs_cta":
       return { title: "Find jobs matching your CV — sign in free", subtitle: "Every listing shows your ATS match score." };
     case "exit_intent":
@@ -59,7 +59,7 @@ const BENEFITS = [
   "ATS score in under 30 seconds",
   "AI fixes your weak bullets",
   "Match CV to any job",
-  "All 12 templates free",
+  "All templates free",
 ];
 
 // ─── Frequency control ───────────────────────────────────────────────────────
