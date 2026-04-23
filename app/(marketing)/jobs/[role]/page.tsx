@@ -5,7 +5,7 @@ import { RoleJobResults } from "./role-job-results";
 import { BrowseRoles } from "@/components/jobs/browse-roles";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 interface RoleDef {
   slug: string;
@@ -80,8 +80,8 @@ export default async function RoleJobsPage({ params }: { params: Promise<{ role:
     jobs = response.results;
   } catch { /* silent */ }
 
-  // JSON-LD for top 3
-  const schemas = jobs.slice(0, 3).map((j: unknown) => {
+  // JSON-LD for top results — Google Jobs surface ranks better with broader coverage
+  const schemas = jobs.slice(0, 20).map((j: unknown) => {
     const job = j as { title: string; description: string; company: { display_name: string }; location: { display_name: string }; created: string; contract_type: string; redirect_url: string; salary_min: number; salary_max: number };
     return {
       "@context": "https://schema.org",

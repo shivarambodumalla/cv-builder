@@ -7,7 +7,7 @@ import { JobsSignInModal } from "./jobs-signin-modal";
 import { BrowseRoles } from "@/components/jobs/browse-roles";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Find Jobs That Match Your CV | CVEdge",
