@@ -13,6 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  const interviewPrepRolePages: MetadataRoute.Sitemap = ALL_ROLES.map(({ slug }) => ({
+    url: `https://www.thecvedge.com/interview-prep/${slug}`,
+    lastModified: STABLE_LAST_MODIFIED,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
   return [
     { url: "https://www.thecvedge.com", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 1 },
     { url: "https://www.thecvedge.com/pricing", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
@@ -21,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "https://www.thecvedge.com/upload-resume", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
     { url: "https://www.thecvedge.com/jobs", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "daily", priority: 0.8 },
     ...rolePages,
+    ...interviewPrepRolePages,
     { url: "https://www.thecvedge.com/login", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.3 },
     { url: "https://www.thecvedge.com/privacy", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.2 },
     { url: "https://www.thecvedge.com/terms", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.2 },

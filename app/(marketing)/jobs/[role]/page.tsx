@@ -121,6 +121,20 @@ export default async function RoleJobsPage({ params }: { params: Promise<{ role:
           {/* Job results with sign-in modal on click */}
           <RoleJobResults jobs={jobs} roleTitle={role.title} />
 
+          {/* Cross-link to interview prep for this role */}
+          <div className="mt-10 rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold">Got an interview lined up?</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Prep STAR stories tailored to {role.title.toLowerCase()} interviews — common questions, answer frameworks, and job-matched practice.</p>
+            </div>
+            <a
+              href={`/interview-prep/${role.slug}`}
+              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors whitespace-nowrap"
+            >
+              Prep for {role.title}
+            </a>
+          </div>
+
           {/* Browse other roles — SEO internal links */}
           <BrowseRoles currentSlug={role.slug} />
         </div>
