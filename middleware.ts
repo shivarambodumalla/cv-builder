@@ -2,9 +2,12 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  // Guard against oversized cookies (431 errors) — clear stale auth chunks
+  // Guard against oversized cookies (431 errors) — clear stale auth chunks.
+  // Threshold sized for 32KB max-http-header-size (NODE_OPTIONS) minus safety
+  // margin. LinkedIn session cookies are larger than Google's; keeping this
+  // too low wipes fresh auth chunks and causes an infinite login loop.
   const cookieHeader = request.headers.get("cookie") ?? "";
-  if (cookieHeader.length > 6000) {
+  if (cookieHeader.length > 28000) {
     const res = NextResponse.redirect(request.url);
     const cookies = request.cookies.getAll();
     for (const c of cookies) {
