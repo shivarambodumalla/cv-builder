@@ -31,12 +31,5 @@ export default async function PickTemplatePage({ params: paramsPromise }: Props)
     notFound();
   }
 
-  // Short-circuit: if a template was already chosen (e.g. via ?template= URL
-  // param on the landing page), skip straight to the editor.
-  const existingTemplate = (cv.design_settings as { template?: string } | null)?.template;
-  if (existingTemplate) {
-    redirect(`/resume/${params.id}`);
-  }
-
   return <TemplatePicker cvId={cv.id} title={cv.title ?? null} />;
 }

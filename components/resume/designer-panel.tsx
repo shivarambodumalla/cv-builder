@@ -52,21 +52,24 @@ interface DesignerPanelProps {
 
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   { name: "classic", label: "Classic", desc: "Clean single-column layout. Works for any role." },
-  { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
-  { name: "blueprint", label: "Blueprint", desc: "Editorial header block with two-column body." },
-  { name: "bold-accent", label: "Bold Accent", desc: "Accent chips and icon-bordered sections." },
-  { name: "classic-serif", label: "Classic Serif", desc: "Elegant serif typography with grey section bands." },
+  { name: "orchid", label: "Orchid", desc: "Editorial serif headings with a warm sidebar and navy accent corner." },
   { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Pro (not ATS-safe)." },
+  { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
   { name: "sharp", label: "Sharp", desc: "Bold headers with strong visual hierarchy." },
-  { name: "clean-sidebar", label: "Clean Sidebar", desc: "Warm sidebar with skill bars and links." },
+  { name: "coastal", label: "Coastal", desc: "Teal accent header with photo and objective band. Creative two-column." },
   { name: "minimal", label: "Minimal", desc: "Maximum whitespace, distraction-free." },
   { name: "electric-lilac", label: "Electric Lilac", desc: "Vibrant sidebar with accent colour and pill chips." },
-  { name: "executive", label: "Executive", desc: "Refined styling for senior professionals." },
+  { name: "classic-serif", label: "Classic Serif", desc: "Elegant serif typography with grey section bands." },
+  { name: "portrait", label: "Portrait", desc: "Editorial split-weight name with headshot, plus-marker headings, and light grey canvas." },
   { name: "sidebar", label: "Slate", desc: "Two-column with left sidebar for skills." },
-  { name: "executive-sidebar", label: "Executive Sidebar", desc: "Dark sidebar with photo for senior roles." },
-  { name: "sidebar-right", label: "Onyx", desc: "Two-column with right sidebar layout." },
-  { name: "two-column", label: "Horizon", desc: "Full-width header with two-column body." },
   { name: "wentworth", label: "Wentworth", desc: "Minimal editorial with split-weight name." },
+  { name: "bold-accent", label: "Bold Accent", desc: "Accent chips and icon-bordered sections." },
+  { name: "blueprint", label: "Blueprint", desc: "Editorial header block with two-column body." },
+  { name: "two-column", label: "Horizon", desc: "Full-width header with two-column body." },
+  { name: "clean-sidebar", label: "Clean Sidebar", desc: "Warm sidebar with skill bars and links." },
+  { name: "executive", label: "Executive", desc: "Refined styling for senior professionals." },
+  { name: "sidebar-right", label: "Onyx", desc: "Two-column with right sidebar layout." },
+  { name: "executive-sidebar", label: "Executive Sidebar", desc: "Dark sidebar with photo for senior roles." },
   { name: "divide", label: "Divide", desc: "Split layout with a clean vertical divider." },
   { name: "folio", label: "Folio", desc: "Two-column with a tinted left panel." },
   { name: "harvard", label: "Harvard", desc: "Academic style inspired by Ivy League." },
@@ -630,6 +633,46 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="49" y="61" width="55" height="1.5" rx="1" fill="#9CA3AF"/>
         </svg>
       );
+    case "coastal":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          {/* top pale strip with name + photo */}
+          <rect x="0" y="0" width="120" height="30" fill="#F5F5F3"/>
+          <rect x="75" y="3" width="14" height="14" fill="#4BA8B0"/>
+          <rect x="82" y="6" width="22" height="22" rx="1.5" fill="#D9D9D9" stroke="#fff" strokeWidth="1"/>
+          <rect x="6" y="10" width="40" height="3" rx="0.5" fill="#4BA8B0"/>
+          <rect x="6" y="16" width="30" height="2" rx="0.5" fill="#4BA8B0"/>
+          {/* teal objective band */}
+          <rect x="0" y="30" width="120" height="34" fill="#4BA8B0"/>
+          <rect x="6" y="34" width="22" height="2" rx="0.5" fill="#fff"/>
+          <rect x="6" y="39" width="58" height="1.5" rx="0.5" fill="#E6F5F5"/>
+          <rect x="6" y="43" width="52" height="1.5" rx="0.5" fill="#E6F5F5"/>
+          <rect x="6" y="47" width="56" height="1.5" rx="0.5" fill="#E6F5F5"/>
+          <circle cx="9" cy="56" r="2" fill="none" stroke="#fff" strokeWidth="0.6"/>
+          <rect x="14" y="55" width="14" height="1.5" rx="0.5" fill="#E6F5F5"/>
+          <circle cx="41" cy="56" r="2" fill="none" stroke="#fff" strokeWidth="0.6"/>
+          <rect x="46" y="55" width="14" height="1.5" rx="0.5" fill="#E6F5F5"/>
+          <circle cx="74" cy="56" r="2" fill="none" stroke="#fff" strokeWidth="0.6"/>
+          <rect x="79" y="55" width="14" height="1.5" rx="0.5" fill="#E6F5F5"/>
+          {/* body two-columns */}
+          <rect x="6" y="72" width="24" height="2" rx="0.5" fill="#111"/>
+          <line x1="6" y1="77" x2="70" y2="77" stroke="#111" strokeWidth="0.6"/>
+          <rect x="6" y="82" width="32" height="2" rx="0.5" fill="#111"/>
+          <rect x="6" y="87" width="44" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="6" y="91" width="40" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="6" y="100" width="32" height="2" rx="0.5" fill="#111"/>
+          <rect x="6" y="105" width="44" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="75" y="72" width="20" height="2" rx="0.5" fill="#111"/>
+          <line x1="75" y1="77" x2="114" y2="77" stroke="#111" strokeWidth="0.6"/>
+          <rect x="75" y="82" width="30" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="75" y="86" width="34" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="75" y="95" width="18" height="2" rx="0.5" fill="#111"/>
+          <line x1="75" y1="100" x2="114" y2="100" stroke="#111" strokeWidth="0.6"/>
+          <rect x="75" y="105" width="30" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="75" y="109" width="28" height="1.5" rx="0.5" fill="#9CA3AF"/>
+        </svg>
+      );
     case "wentworth":
       return (
         <svg viewBox="0 0 120 170" className="h-full w-full">
@@ -651,6 +694,119 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <line x1="8" y1="78" x2="112" y2="78" stroke="#E5E7EB" strokeWidth="0.3"/>
           <rect x="8" y="82" width="30" height="1.5" rx="0.5" fill="#1a202c"/>
           <rect x="60" y="82" width="30" height="1.5" rx="0.5" fill="#1a202c"/>
+        </svg>
+      );
+    case "orchid":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* unified warm cream canvas — same color behind both columns */}
+          <rect width="120" height="170" fill="#F5F0E6"/>
+          {/* thin vertical column divider */}
+          <line x1="44" y1="8" x2="44" y2="162" stroke="#1f2937" strokeOpacity="0.12" strokeWidth="0.5"/>
+          {/* avatar */}
+          <circle cx="22" cy="24" r="10" fill="#E8D9F0" stroke="#C9A6DC" strokeWidth="0.6"/>
+          {/* name + title */}
+          <rect x="8" y="40" width="28" height="3" rx="0.5" fill="#1a202c"/>
+          <rect x="10" y="46" width="24" height="2" rx="0.5" fill="#B794C7"/>
+          {/* contact lines */}
+          <rect x="10" y="53" width="24" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="10" y="56.5" width="20" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* sidebar heading Skills */}
+          <rect x="8" y="68" width="16" height="2.4" rx="0.4" fill="#B794C7"/>
+          <line x1="8" y1="72.5" x2="36" y2="72.5" stroke="#D8BFE4" strokeWidth="0.4"/>
+          <rect x="8" y="76" width="20" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="79" width="22" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="82" width="18" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="85" width="21" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* sidebar heading Summary */}
+          <rect x="8" y="95" width="20" height="2.4" rx="0.4" fill="#B794C7"/>
+          <line x1="8" y1="99.5" x2="36" y2="99.5" stroke="#D8BFE4" strokeWidth="0.4"/>
+          <rect x="8" y="103" width="28" height="1.2" rx="0.4" fill="#D1D5DB"/>
+          <rect x="8" y="106" width="26" height="1.2" rx="0.4" fill="#D1D5DB"/>
+          <rect x="8" y="109" width="28" height="1.2" rx="0.4" fill="#D1D5DB"/>
+          <rect x="8" y="112" width="22" height="1.2" rx="0.4" fill="#D1D5DB"/>
+          {/* right col: Work Experience */}
+          <rect x="50" y="12" width="36" height="3" rx="0.4" fill="#B794C7"/>
+          <line x1="50" y1="18" x2="112" y2="18" stroke="#D8BFE4" strokeWidth="0.5"/>
+          <rect x="50" y="22" width="40" height="2" rx="0.4" fill="#1a202c"/>
+          <rect x="50" y="27" width="54" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="30" width="58" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="33" width="52" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="40" width="40" height="2" rx="0.4" fill="#1a202c"/>
+          <rect x="50" y="45" width="56" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="48" width="52" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="51" width="56" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="58" width="40" height="2" rx="0.4" fill="#1a202c"/>
+          <rect x="50" y="63" width="54" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="66" width="50" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* right col: Education */}
+          <rect x="50" y="85" width="28" height="3" rx="0.4" fill="#B794C7"/>
+          <line x1="50" y1="91" x2="112" y2="91" stroke="#D8BFE4" strokeWidth="0.5"/>
+          <rect x="50" y="95" width="56" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="98" width="60" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="50" y="101" width="48" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* navy corner wedge */}
+          <path d="M 120 170 L 120 148 A 22 22 0 0 0 98 170 Z" fill="#1E3A5F"/>
+        </svg>
+      );
+    case "portrait":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="#dedede"/>
+          {/* split-weight name — thin first, bold last */}
+          <rect x="10" y="12" width="30" height="2" rx="0.3" fill="#1a1a1a" opacity="0.55"/>
+          <rect x="10" y="16" width="52" height="6" rx="0.5" fill="#1a1a1a"/>
+          {/* contact column right */}
+          <circle cx="80" cy="14" r="1.3" fill="#5a5a5a"/>
+          <rect x="85" y="13.2" width="26" height="1.4" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="80" cy="19" r="1.3" fill="#5a5a5a"/>
+          <rect x="85" y="18.2" width="24" height="1.4" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="80" cy="24" r="1.3" fill="#5a5a5a"/>
+          <rect x="85" y="23.2" width="22" height="1.4" rx="0.3" fill="#5a5a5a"/>
+          {/* title + summary left */}
+          <rect x="10" y="36" width="34" height="2.2" rx="0.3" fill="#1a1a1a"/>
+          <rect x="10" y="42" width="56" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="10" y="45" width="52" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="10" y="48" width="54" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* photo right */}
+          <rect x="82" y="36" width="26" height="32" rx="1" fill="#8a8a8a"/>
+          {/* Experience heading + rule */}
+          <rect x="10" y="76" width="24" height="2.2" rx="0.3" fill="#1a1a1a"/>
+          <g stroke="#8a8a8a" strokeWidth="0.3" strokeLinecap="round"><line x1="66" y1="75" x2="66" y2="81"/><line x1="63" y1="78" x2="69" y2="78"/><line x1="64" y1="76" x2="68" y2="80"/><line x1="68" y1="76" x2="64" y2="80"/></g>
+          <line x1="10" y1="82" x2="66" y2="82" stroke="#1a1a1a" strokeWidth="0.4"/>
+          <rect x="10" y="85" width="40" height="1.6" rx="0.3" fill="#1a1a1a"/>
+          <rect x="10" y="88.5" width="52" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="12" y="92" width="50" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="12" y="95" width="48" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="12" y="98" width="44" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Education heading + rule */}
+          <rect x="10" y="110" width="22" height="2.2" rx="0.3" fill="#1a1a1a"/>
+          <g stroke="#8a8a8a" strokeWidth="0.3" strokeLinecap="round"><line x1="66" y1="109" x2="66" y2="115"/><line x1="63" y1="112" x2="69" y2="112"/><line x1="64" y1="110" x2="68" y2="114"/><line x1="68" y1="110" x2="64" y2="114"/></g>
+          <line x1="10" y1="116" x2="66" y2="116" stroke="#1a1a1a" strokeWidth="0.4"/>
+          <rect x="10" y="119" width="44" height="1.6" rx="0.3" fill="#1a1a1a"/>
+          <rect x="10" y="122.5" width="50" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Certifications heading + rule */}
+          <rect x="10" y="135" width="30" height="2.2" rx="0.3" fill="#1a1a1a"/>
+          <g stroke="#8a8a8a" strokeWidth="0.3" strokeLinecap="round"><line x1="66" y1="134" x2="66" y2="140"/><line x1="63" y1="137" x2="69" y2="137"/><line x1="64" y1="135" x2="68" y2="139"/><line x1="68" y1="135" x2="64" y2="139"/></g>
+          <line x1="10" y1="141" x2="66" y2="141" stroke="#1a1a1a" strokeWidth="0.4"/>
+          <rect x="10" y="144" width="40" height="1.6" rx="0.3" fill="#1a1a1a"/>
+          <rect x="10" y="147.5" width="44" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Right column: Skills */}
+          <rect x="72" y="76" width="16" height="2.2" rx="0.3" fill="#1a1a1a"/>
+          <g stroke="#8a8a8a" strokeWidth="0.3" strokeLinecap="round"><line x1="108" y1="75" x2="108" y2="81"/><line x1="105" y1="78" x2="111" y2="78"/><line x1="106" y1="76" x2="110" y2="80"/><line x1="110" y1="76" x2="106" y2="80"/></g>
+          <line x1="72" y1="82" x2="110" y2="82" stroke="#1a1a1a" strokeWidth="0.4"/>
+          <rect x="74" y="86" width="30" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="74" y="89" width="28" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="74" y="92" width="32" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="74" y="95" width="26" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="74" y="98" width="30" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Right column: Portfolio */}
+          <rect x="72" y="110" width="24" height="2.2" rx="0.3" fill="#1a1a1a"/>
+          <g stroke="#8a8a8a" strokeWidth="0.3" strokeLinecap="round"><line x1="108" y1="109" x2="108" y2="115"/><line x1="105" y1="112" x2="111" y2="112"/><line x1="106" y1="110" x2="110" y2="114"/><line x1="110" y1="110" x2="106" y2="114"/></g>
+          <line x1="72" y1="116" x2="110" y2="116" stroke="#1a1a1a" strokeWidth="0.4"/>
+          <rect x="72" y="120" width="36" height="1.4" rx="0.3" fill="#1a1a1a"/>
+          <rect x="72" y="124" width="34" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="72" y="127" width="30" height="1.2" rx="0.3" fill="#5a5a5a"/>
         </svg>
       );
   }
@@ -723,9 +879,9 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   const currentHex = resolveAccentHex(design.accentColor);
 
   const isSidebar = design.template === "sidebar" || design.template === "sidebar-right";
-  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint";
+  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "coastal" || design.template === "orchid" || design.template === "portrait";
   const isTwoCol = isSidebar || isColumnBased;
-  const supportsAvatar = design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "bold-accent" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "wentworth";
+  const supportsAvatar = design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "bold-accent" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "wentworth" || design.template === "coastal" || design.template === "orchid" || design.template === "portrait";
 
   // Per-template capability gates — only show a control when the template
   // actually honors the setting. Keeps the UI "honest" so users don't tweak
@@ -778,15 +934,17 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     aurora: ["contact", "targetTitle"],
     "executive-pro": ["contact", "targetTitle", "summary"],
     blueprint: ["contact", "targetTitle"],
+    coastal: ["contact", "targetTitle", "summary"],
   };
   const RIGHT_DEFAULT_BY_TEMPLATE: Record<string, string[]> = {
     "two-column": ["education", "certifications", "skills"],
     aurora: ["skills", "education", "certifications"],
     "executive-pro": ["skills", "education", "certifications"],
     blueprint: ["summary", "skills", "experience", "projects", "awards", "publications"],
+    coastal: ["skills", "awards", "certifications"],
   };
 
-  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint";
+  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal";
   const headerKeysArr = HEADER_KEYS_BY_TEMPLATE[design.template] ?? ["contact", "targetTitle"];
   const headerSet = new Set(headerKeysArr);
   const secondarySections = design.sidebarSections ?? (
@@ -797,7 +955,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   let displayLeft: string[] = [], displayRight: string[] = [];
   let labelLeft = "", labelRight = "";
 
-  if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar") {
+  if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid") {
     // sidebarSections = left column sections
     displayLeft = secondarySections.filter((k) => isEnabled(k));
     displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k) && isEnabled(k));
@@ -814,7 +972,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   // For sidebar/divide/folio: sidebarSections IS the left column, so "left→right" = remove from it
   // For horizon: sidebarSections IS the right column, so "left→right" = add to it
-  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar";
+  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid";
 
   function moveLeftToRight(id: string) {
     if (leftIsSecondary) {
@@ -1254,7 +1412,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     <input
                       type="range"
                       min={56}
-                      max={130}
+                      max={200}
                       step={2}
                       value={avatarSize}
                       className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
@@ -1266,25 +1424,27 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                   </div>
                 </div>
 
-                {/* Position */}
-                <div>
-                  <span className="mb-1.5 block text-xs text-muted-foreground">Position</span>
-                  <div className="flex gap-1">
-                    {([
-                      { value: "left" as AvatarPosition, label: "Left" },
-                      { value: "right" as AvatarPosition, label: "Right" },
-                    ]).map(({ value, label }) => (
-                      <Button
-                        key={value}
-                        variant={avatarPosition === value ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => update("avatarPosition", value)}
-                      >
-                        {label}
-                      </Button>
-                    ))}
+                {/* Position — hidden for templates with a fixed avatar slot */}
+                {design.template !== "portrait" && (
+                  <div>
+                    <span className="mb-1.5 block text-xs text-muted-foreground">Position</span>
+                    <div className="flex gap-1">
+                      {([
+                        { value: "left" as AvatarPosition, label: "Left" },
+                        { value: "right" as AvatarPosition, label: "Right" },
+                      ]).map(({ value, label }) => (
+                        <Button
+                          key={value}
+                          variant={avatarPosition === value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => update("avatarPosition", value)}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </>
             )}
           </div>
@@ -1543,6 +1703,9 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               "clean-sidebar": "clean-sidebar.jpg",
               blueprint: "blueprint.jpg",
               wentworth: "wentworth.jpg",
+              coastal: "coastal.jpg",
+              orchid: "orchid.jpg",
+              portrait: "portrait.jpg",
             };
             const imgSrc = imgMap[t.name];
             return (

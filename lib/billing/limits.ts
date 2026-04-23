@@ -14,7 +14,7 @@ export const PLAN_LIMITS = {
     story_summary: 10,
     interview_prep: 5,
     pdf_downloads: 3,
-    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "bold-accent", "clean-sidebar", "blueprint"],
+    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "bold-accent", "clean-sidebar", "blueprint", "orchid", "coastal", "portrait"],
     watermark: false,
   },
   pro: {
@@ -30,7 +30,7 @@ export const PLAN_LIMITS = {
     story_summary: -1,
     interview_prep: -1,
     pdf_downloads: -1,
-    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth"],
+    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait"],
     watermark: false,
   },
 };

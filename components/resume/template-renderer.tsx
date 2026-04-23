@@ -36,6 +36,9 @@ import { ExecutiveSidebar } from "./templates/executive-sidebar";
 import { CleanSidebar } from "./templates/clean-sidebar";
 import { Blueprint } from "./templates/blueprint";
 import { Wentworth } from "./templates/wentworth";
+import { OrchidTemplate } from "./templates/orchid";
+import { Coastal } from "./templates/coastal";
+import { PortraitTemplate } from "./templates/portrait";
 
 const MONTH_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -169,6 +172,9 @@ const TEMPLATE_MAP = {
   "clean-sidebar": CleanSidebar,
   blueprint: Blueprint,
   wentworth: Wentworth,
+  orchid: OrchidTemplate,
+  coastal: Coastal,
+  portrait: PortraitTemplate,
 } as const;
 
 interface TemplateRendererProps {

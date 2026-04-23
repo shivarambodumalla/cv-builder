@@ -10,6 +10,7 @@ const VALID_TEMPLATES = [
   "sidebar-right", "two-column", "divide", "folio", "metro",
   "harvard", "ledger", "aurora",
   "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth",
+  "orchid", "coastal", "portrait",
 ];
 
 export async function POST(request: NextRequest) {
@@ -24,8 +25,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const template = body.template as string | undefined;
 
-    const designSettings = template && VALID_TEMPLATES.includes(template)
-      ? normalizeDesignSettings({ template: template as never })
+    const templatePicked = !!(template && VALID_TEMPLATES.includes(template));
+    const designSettings = templatePicked
+      ? normalizeDesignSettings({ template: template as never, templatePicked: true })
       : normalizeDesignSettings(null);
 
     const admin = createAdminClient();

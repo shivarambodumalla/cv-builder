@@ -1,4 +1,4 @@
-export type TemplateName = "classic" | "classic-serif" | "sharp" | "minimal" | "executive" | "executive-pro" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger" | "aurora" | "electric-lilac" | "bold-accent" | "executive-sidebar" | "clean-sidebar" | "blueprint" | "wentworth";
+export type TemplateName = "classic" | "classic-serif" | "sharp" | "minimal" | "executive" | "executive-pro" | "sidebar" | "sidebar-right" | "two-column" | "divide" | "folio" | "metro" | "harvard" | "ledger" | "aurora" | "electric-lilac" | "bold-accent" | "executive-sidebar" | "clean-sidebar" | "blueprint" | "wentworth" | "orchid" | "coastal" | "portrait";
 export type FontFamily = "classic" | "clean" | "elegant" | "strong";
 export type AccentColor = "slate" | "teal" | "navy" | "rust" | "plum" | "deepRed" | "darkGold" | "forestGreen" | "steelBlue" | "softPurple" | "lavender" | "warmOrange" | "slateGray";
 export type HeaderAlignment = "left" | "center" | "right";
@@ -60,6 +60,10 @@ export interface ResumeDesignSettings {
   avatarSize?: number;
   avatarPosition?: AvatarPosition;
   avatarInitialsBg?: AvatarInitialsBg;
+  /** True when the user explicitly selected a template (e.g. via ?template=
+   *  on the upload page). False/undefined means we fell back to the default.
+   *  Used by the post-login/claim flow to decide whether to show the picker. */
+  templatePicked?: boolean;
 }
 
 export const FONT_STACKS: Record<FontFamily, string> = {

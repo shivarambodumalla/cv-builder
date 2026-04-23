@@ -25,6 +25,9 @@ const VALID_TEMPLATES = [
   "clean-sidebar",
   "blueprint",
   "wentworth",
+  "coastal",
+  "orchid",
+  "portrait",
 ];
 
 export async function POST(
@@ -65,6 +68,7 @@ export async function POST(
   const nextDesignSettings = normalizeDesignSettings({
     ...existing,
     template: template as ResumeDesignSettings["template"],
+    templatePicked: true,
   });
 
   const { error: updateError } = await supabase

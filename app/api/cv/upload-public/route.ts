@@ -122,9 +122,10 @@ export async function POST(request: NextRequest) {
 
     const admin = createAdminClient();
 
-    const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth"];
-    const designSettings = template && VALID_TEMPLATES.includes(template)
-      ? normalizeDesignSettings({ template: template as never })
+    const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait"];
+    const templatePicked = !!(template && VALID_TEMPLATES.includes(template));
+    const designSettings = templatePicked
+      ? normalizeDesignSettings({ template: template as never, templatePicked: true })
       : normalizeDesignSettings(null);
 
     // Derive target role: explicit selection > parsed CV title > "General"

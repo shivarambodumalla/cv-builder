@@ -158,7 +158,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ### Templates
 
-21 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
+24 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint, coastal, orchid, portrait. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
 
 All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`; some also `avatarPosition`).
 
@@ -185,6 +185,9 @@ All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avata
 | clean-sidebar | 2-column (warm sidebar + bars) | Free | Clean Sidebar *(placeholder thumbnail)* |
 | blueprint | 2-column (editorial header block) | Free | Blueprint *(placeholder thumbnail)* |
 | wentworth | single-column (editorial minimal) | Pro | Wentworth *(placeholder thumbnail)* |
+| coastal | 2-column (teal header + photo + objective band) | Free | Coastal |
+| orchid | 2-column (warm sidebar + serif accent headings + navy corner) | Free | Orchid |
+| portrait | 2-column (split-weight name + photo + plus-marker headings on grey canvas) | Free | Portrait |
 
 ### Two-Column Templates
 

@@ -145,7 +145,7 @@ export default async function HomePage() {
                   <div className="flex gap-3 items-start">
                     <div className="flex-1 flex flex-col gap-3">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/aurora.jpg" alt="Aurora template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/orchid.jpg" alt="Orchid template" className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
                         <img src="/img/templates/electric-lilac.jpg" alt="Electric Lilac template" className="w-full h-auto" loading="lazy" />
@@ -153,7 +153,7 @@ export default async function HomePage() {
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-10">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/wentworth.jpg" alt="Wentworth template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/portrait.jpg" alt="Portrait template" className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
                         <img src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar template" className="w-full h-auto" loading="lazy" />
@@ -161,10 +161,10 @@ export default async function HomePage() {
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-4">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/blueprint.jpg" alt="Blueprint template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/coastal.jpg" alt="Coastal template" className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/bold-accent.jpg" alt="Bold Accent template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/aurora.jpg" alt="Aurora template" className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                   </div>

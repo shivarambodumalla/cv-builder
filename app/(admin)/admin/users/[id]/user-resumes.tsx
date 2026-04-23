@@ -76,6 +76,7 @@ const TEMPLATE_LABEL: Record<string, string> = {
   "clean-sidebar": "Clean Sidebar",
   blueprint: "Blueprint",
   wentworth: "Wentworth",
+  orchid: "Orchid",
 };
 
 function scoreColor(score: number | null): string {

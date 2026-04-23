@@ -107,8 +107,8 @@ export async function GET(request: NextRequest) {
               })
               .eq("id", cv.id);
 
-            const existingTemplate = (cv.design_settings as { template?: string } | null)?.template;
-            const dest = existingTemplate
+            const templatePicked = (cv.design_settings as { templatePicked?: boolean } | null)?.templatePicked === true;
+            const dest = templatePicked
               ? `${origin}/resume/${cv.id}`
               : `${origin}/resume/${cv.id}/pick-template`;
             return redirectTo(appendAuthEvent(dest));
