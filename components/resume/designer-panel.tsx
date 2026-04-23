@@ -935,6 +935,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     "executive-pro": ["contact", "targetTitle", "summary"],
     blueprint: ["contact", "targetTitle"],
     coastal: ["contact", "targetTitle", "summary"],
+    portrait: ["contact", "targetTitle", "summary"],
   };
   const RIGHT_DEFAULT_BY_TEMPLATE: Record<string, string[]> = {
     "two-column": ["education", "certifications", "skills"],
@@ -942,9 +943,10 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     "executive-pro": ["skills", "education", "certifications"],
     blueprint: ["summary", "skills", "experience", "projects", "awards", "publications"],
     coastal: ["skills", "awards", "certifications"],
+    portrait: ["skills", "certifications", "awards"],
   };
 
-  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal";
+  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal" || design.template === "portrait";
   const headerKeysArr = HEADER_KEYS_BY_TEMPLATE[design.template] ?? ["contact", "targetTitle"];
   const headerSet = new Set(headerKeysArr);
   const secondarySections = design.sidebarSections ?? (

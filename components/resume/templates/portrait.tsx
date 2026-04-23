@@ -183,6 +183,8 @@ export function PortraitTemplate({
 
   const horizontalPadX = `${Math.max(marginX, 0.5)}in`;
   const verticalPadY = `${Math.max(marginY, 0.5)}in`;
+  // Pin the page bg to paper size so export/print never shows white in empty regions.
+  const paperHeight = design.paperSize === "letter" ? "11in" : "297mm";
 
   // Split-weight name: first word(s) thinner, last word big bold.
   const nameParts = (contact.name || "").trim().split(/\s+/).filter(Boolean);
@@ -641,6 +643,7 @@ export function PortraitTemplate({
         lineHeight: "var(--resume-line-spacing)",
         color: bodyText,
         padding: `${verticalPadY} ${horizontalPadX}`,
+        minHeight: paperHeight,
       }}
     >
       {/* Independent two-column flow: each column stacks its own items top-to-bottom */}

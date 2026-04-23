@@ -77,6 +77,8 @@ const TEMPLATE_LABEL: Record<string, string> = {
   blueprint: "Blueprint",
   wentworth: "Wentworth",
   orchid: "Orchid",
+  coastal: "Coastal",
+  portrait: "Portrait",
 };
 
 function scoreColor(score: number | null): string {

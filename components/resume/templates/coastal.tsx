@@ -223,8 +223,8 @@ export function Coastal({
       style={{
         fontFamily: "var(--resume-font)",
         fontSize: "calc(var(--resume-heading-size) + 1pt)",
-        fontWeight: 700,
-        textTransform: "uppercase",
+        fontWeight: "var(--resume-heading-weight)" as unknown as number,
+        textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
         letterSpacing: 1.2,
         color: darkText,
         borderBottom: "1.5px solid #1a1a1a",
@@ -635,7 +635,7 @@ export function Coastal({
                 style={{
                   fontFamily: "var(--resume-font)",
                   fontSize: "calc(var(--resume-name-size) + 2pt)",
-                  fontWeight: 700,
+                  fontWeight: "var(--resume-name-weight)" as unknown as number,
                   color: resolvedAccent,
                   textTransform: "uppercase",
                   letterSpacing: 1.5,
