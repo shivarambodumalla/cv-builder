@@ -49,8 +49,8 @@ export function ExecutiveTemplate({
         fontWeight: "var(--resume-heading-weight)" as unknown as number,
         textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
         letterSpacing: "1px",
-        color: "#222",
-        borderBottom: "1.5px solid #333",
+        color: "var(--resume-accent)",
+        borderBottom: "1.5px solid var(--resume-accent)",
         paddingBottom: "2px",
         marginBottom: "6px",
         marginTop: "10px",
@@ -106,7 +106,7 @@ export function ExecutiveTemplate({
               style={{
                 fontSize: "calc(var(--resume-body-size) + 1pt)",
                 fontWeight: 400,
-                color: "#555",
+                color: "var(--resume-accent)",
               }}
             >
               {targetTitle.title}

@@ -52,26 +52,26 @@ interface DesignerPanelProps {
 
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   { name: "classic", label: "Classic", desc: "Clean single-column layout. Works for any role." },
+  { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
+  { name: "blueprint", label: "Blueprint", desc: "Editorial header block with two-column body." },
+  { name: "bold-accent", label: "Bold Accent", desc: "Accent chips and icon-bordered sections." },
   { name: "classic-serif", label: "Classic Serif", desc: "Elegant serif typography with grey section bands." },
+  { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Pro (not ATS-safe)." },
   { name: "sharp", label: "Sharp", desc: "Bold headers with strong visual hierarchy." },
+  { name: "clean-sidebar", label: "Clean Sidebar", desc: "Warm sidebar with skill bars and links." },
   { name: "minimal", label: "Minimal", desc: "Maximum whitespace, distraction-free." },
+  { name: "electric-lilac", label: "Electric Lilac", desc: "Vibrant sidebar with accent colour and pill chips." },
   { name: "executive", label: "Executive", desc: "Refined styling for senior professionals." },
   { name: "sidebar", label: "Slate", desc: "Two-column with left sidebar for skills." },
+  { name: "executive-sidebar", label: "Executive Sidebar", desc: "Dark sidebar with photo for senior roles." },
   { name: "sidebar-right", label: "Onyx", desc: "Two-column with right sidebar layout." },
   { name: "two-column", label: "Horizon", desc: "Full-width header with two-column body." },
+  { name: "wentworth", label: "Wentworth", desc: "Minimal editorial with split-weight name." },
   { name: "divide", label: "Divide", desc: "Split layout with a clean vertical divider." },
   { name: "folio", label: "Folio", desc: "Two-column with a tinted left panel." },
-  // { name: "metro", label: "Metro", desc: "Modern metro-inspired design." },  // hidden — redesign in progress
   { name: "harvard", label: "Harvard", desc: "Academic style inspired by Ivy League." },
   { name: "ledger", label: "Ledger", desc: "Structured grid layout for detail-heavy roles." },
-  { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
-  { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Pro (not ATS-safe)." },
-  { name: "electric-lilac", label: "Electric Lilac", desc: "Vibrant sidebar with accent colour and pill chips." },
-  { name: "bold-accent", label: "Bold Accent", desc: "Accent chips and icon-bordered sections." },
-  { name: "executive-sidebar", label: "Executive Sidebar", desc: "Dark sidebar with photo for senior roles." },
-  { name: "clean-sidebar", label: "Clean Sidebar", desc: "Warm sidebar with skill bars and links." },
-  { name: "blueprint", label: "Blueprint", desc: "Editorial header block with two-column body." },
-  { name: "wentworth", label: "Wentworth", desc: "Minimal editorial with split-weight name." },
+  // { name: "metro", label: "Metro", desc: "Modern metro-inspired design." },  // hidden — redesign in progress
 ];
 
 const FONTS: { name: FontFamily; label: string }[] = [
@@ -726,6 +726,20 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint";
   const isTwoCol = isSidebar || isColumnBased;
   const supportsAvatar = design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "bold-accent" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "wentworth";
+
+  // Per-template capability gates — only show a control when the template
+  // actually honors the setting. Keeps the UI "honest" so users don't tweak
+  // options that have no visual effect.
+  const CONTACT_SEPARATOR_TEMPLATES = new Set<string>([
+    "classic", "classic-serif", "sharp", "minimal", "executive",
+    "sidebar", "sidebar-right", "two-column", "blueprint", "wentworth",
+  ]);
+  const HEADER_ALIGNMENT_TEMPLATES = new Set<string>([
+    "classic", "classic-serif", "sharp", "minimal", "executive",
+    "executive-pro", "blueprint", "wentworth",
+  ]);
+  const supportsContactSeparator = CONTACT_SEPARATOR_TEMPLATES.has(design.template);
+  const supportsHeaderAlignment = HEADER_ALIGNMENT_TEMPLATES.has(design.template);
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [avatarBusy, setAvatarBusy] = React.useState(false);
   const avatarMode: AvatarMode = design.avatarMode ?? "initials";
@@ -850,68 +864,6 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   return (
     <div className="space-y-6">
-
-      {/* Template */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Template</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.map((t) => {
-            const selected = design.template === t.name;
-            const imgMap: Record<string, string> = {
-              classic: "classic.jpg",
-              "classic-serif": "classic-serif.png",
-              sharp: "sharp.jpg",
-              minimal: "minimal.jpg",
-              executive: "executive.jpg",
-              sidebar: "slate.jpg",
-              "sidebar-right": "onyx.jpg",
-              "two-column": "horizon.jpg",
-              divide: "divide.jpg",
-              folio: "folio.jpg",
-              metro: "metro.jpg",
-              harvard: "harward.jpg",
-              ledger: "ledger.jpg",
-              aurora: "aurora.jpg",
-              "executive-pro": "executive-pro.jpg",
-              "electric-lilac": "electric-lilac.jpg",
-              "bold-accent": "bold-accent.jpg",
-              "executive-sidebar": "executive-sidebar.jpg",
-              "clean-sidebar": "clean-sidebar.jpg",
-              blueprint: "blueprint.jpg",
-              wentworth: "wentworth.jpg",
-            };
-            const imgSrc = imgMap[t.name];
-            return (
-              <button
-                key={t.name}
-                type="button"
-                className={cn(
-                  "relative rounded-lg border p-1 text-left transition-all overflow-hidden",
-                  selected && "ring-2 ring-primary"
-                )}
-                onClick={() => update("template", t.name)}
-              >
-                {imgSrc ? (
-                  <img
-                    src={`/img/templates/${imgSrc}`}
-                    alt={t.label}
-                    className="w-full rounded"
-                    style={{ aspectRatio: "210/240", objectFit: "cover", objectPosition: "top" }}
-                  />
-                ) : (
-                  <div className="h-28 rounded bg-muted">
-                    <TemplatePreview template={t.name} />
-                  </div>
-                )}
-                <div className="mt-2 px-1 pb-1">
-                  <p className="text-sm font-semibold">{t.label}</p>
-                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{t.desc}</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
 
       {/* Font */}
       <section>
@@ -1343,7 +1295,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
       <section>
         <Label className="mb-3 block text-sm font-semibold">Layout</Label>
         <div className="space-y-3">
-          {(!isTwoCol || design.template === "blueprint") && (
+          {supportsHeaderAlignment && (
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">Header alignment</span>
             <div className="flex gap-1">
@@ -1490,7 +1442,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               ))}
             </div>
           </div>
-          {!isTwoCol && (
+          {supportsContactSeparator && (
           <div>
             <span className="mb-1.5 block text-xs text-muted-foreground">Contact separator</span>
             <div className="flex gap-1">
@@ -1561,6 +1513,68 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
             </SortableContext>
           </DndContext>
         )}
+      </section>
+
+      {/* Template */}
+      <section className="pb-4">
+        <Label className="mb-3 block text-sm font-semibold">Template</Label>
+        <div className="grid grid-cols-2 gap-3">
+          {TEMPLATES.map((t) => {
+            const selected = design.template === t.name;
+            const imgMap: Record<string, string> = {
+              classic: "classic.jpg",
+              "classic-serif": "classic-serif.png",
+              sharp: "sharp.jpg",
+              minimal: "minimal.jpg",
+              executive: "executive.jpg",
+              sidebar: "slate.jpg",
+              "sidebar-right": "onyx.jpg",
+              "two-column": "horizon.jpg",
+              divide: "divide.jpg",
+              folio: "folio.jpg",
+              metro: "metro.jpg",
+              harvard: "harward.jpg",
+              ledger: "ledger.jpg",
+              aurora: "aurora.jpg",
+              "executive-pro": "executive-pro.jpg",
+              "electric-lilac": "electric-lilac.jpg",
+              "bold-accent": "bold-accent.jpg",
+              "executive-sidebar": "executive-sidebar.jpg",
+              "clean-sidebar": "clean-sidebar.jpg",
+              blueprint: "blueprint.jpg",
+              wentworth: "wentworth.jpg",
+            };
+            const imgSrc = imgMap[t.name];
+            return (
+              <button
+                key={t.name}
+                type="button"
+                className={cn(
+                  "relative rounded-lg border p-1 text-left transition-all overflow-hidden",
+                  selected && "ring-2 ring-primary"
+                )}
+                onClick={() => update("template", t.name)}
+              >
+                {imgSrc ? (
+                  <img
+                    src={`/img/templates/${imgSrc}`}
+                    alt={t.label}
+                    className="w-full rounded"
+                    style={{ aspectRatio: "210/240", objectFit: "cover", objectPosition: "top" }}
+                  />
+                ) : (
+                  <div className="h-28 rounded bg-muted">
+                    <TemplatePreview template={t.name} />
+                  </div>
+                )}
+                <div className="mt-2 px-1 pb-1">
+                  <p className="text-sm font-semibold">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{t.desc}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </section>
 
     </div>

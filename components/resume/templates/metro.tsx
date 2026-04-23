@@ -51,7 +51,7 @@ export function MetroTemplate({
         fontSize: "var(--resume-heading-size)",
         fontWeight: "var(--resume-heading-weight)" as unknown as number,
         textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
-        color: "#111",
+        color: "var(--resume-accent)",
         marginBottom: "8px",
       }}
     >

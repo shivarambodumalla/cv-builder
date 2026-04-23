@@ -197,9 +197,9 @@ export function Wentworth({
       data-resume-section-title=""
       style={{
         fontFamily: "var(--resume-font)",
-        fontSize: 12,
-        fontWeight: 600,
-        textTransform: "uppercase",
+        fontSize: "var(--resume-heading-size)",
+        fontWeight: "var(--resume-heading-weight)" as unknown as number,
+        textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
         letterSpacing: "0.22em",
         color: nameDark,
         marginBottom: 8,

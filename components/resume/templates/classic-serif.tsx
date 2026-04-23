@@ -136,7 +136,7 @@ export function ClassicSerifTemplate({
               fontSize: "calc(var(--resume-body-size) + 1pt)",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "#444",
+              color: accentHex,
               marginTop: 6,
             }}
           >

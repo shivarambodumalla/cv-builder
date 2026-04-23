@@ -145,26 +145,26 @@ export default async function HomePage() {
                   <div className="flex gap-3 items-start">
                     <div className="flex-1 flex flex-col gap-3">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/classic.jpg" alt="Classic template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/aurora.jpg" alt="Aurora template" className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/Executive.jpg" alt="Executive template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/electric-lilac.jpg" alt="Electric Lilac template" className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-10">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/sharp.jpg" alt="Sharp template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/wentworth.jpg" alt="Wentworth template" className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/slate.jpg" alt="Slate template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar template" className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-4">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/folio.jpg" alt="Folio template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/blueprint.jpg" alt="Blueprint template" className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/divide.jpg" alt="Divide template" className="w-full h-auto" loading="lazy" />
+                        <img src="/img/templates/bold-accent.jpg" alt="Bold Accent template" className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                   </div>
@@ -458,7 +458,7 @@ export default async function HomePage() {
       <TestimonialsCarousel />
 
       {/* ─── POPULAR ROLES (SEO internal linking) ─── */}
-      <section className="py-16 md:py-20 border-t border-border/40">
+      <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-5xl text-center">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Browse jobs by role</h2>

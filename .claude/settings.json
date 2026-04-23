@@ -187,7 +187,16 @@
       "Bash(sips -s format webp /Users/sivaramireddy/work/cv-builder/public/img/cover.png --out /Users/sivaramireddy/work/cv-builder/public/img/cover.webp)",
       "Bash(lsof -i :3000 -sTCP:LISTEN)",
       "Bash(kill 19769)",
-      "Bash(echo \"started, pid=$!\")"
+      "Bash(echo \"started, pid=$!\")",
+      "Bash(curl -sS -o /tmp/cover-check.webp -w \"HTTP %{http_code} · %{size_download} bytes\\\\n\" \"http://localhost:3000/img/cover.webp\")",
+      "Bash(md5 /tmp/cover-check.webp /Users/sivaramireddy/work/cv-builder/public/img/cover.webp)",
+      "Bash(curl -sS -o /tmp/cover-check2.webp -w \"HTTP %{http_code} · %{size_download} bytes\\\\n\" \"http://localhost:3000/img/cover.webp\")",
+      "Bash(md5 /tmp/cover-check2.webp /Users/sivaramireddy/work/cv-builder/public/img/cover.webp)",
+      "Bash(grep -r \"SUPABASE\\\\|OAUTH\\\\|GOOGLE\\\\|LINKEDIN\" /Users/sivaramireddy/work/cv-builder --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.js\" --include=\"*.json\" ! -path \"*/node_modules/*\")",
+      "Bash(ps -p 13573,23800 -o pid,ppid,command)",
+      "Bash(kill 23800)",
+      "Bash(grep -v \"^$\")",
+      "Bash(kill -9 23800)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",

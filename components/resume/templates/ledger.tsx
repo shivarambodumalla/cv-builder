@@ -52,11 +52,11 @@ export function LedgerTemplate({
           <span
             data-resume-section-title=""
             style={{
-              fontSize: "calc(var(--resume-body-size) + 1pt)",
-              fontWeight: 700,
+              fontSize: "var(--resume-heading-size)",
+              fontWeight: "var(--resume-heading-weight)" as unknown as number,
               color: "var(--resume-accent)",
               fontFamily: "var(--resume-font)",
-              textTransform: "uppercase" as const,
+              textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
               letterSpacing: 0.5,
               whiteSpace: "nowrap" as const,
             }}
