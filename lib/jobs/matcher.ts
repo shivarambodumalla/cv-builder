@@ -128,10 +128,23 @@ export interface ScoredJob extends GenericJob {
   };
 }
 
+export interface MatchDiagnostics {
+  searchCountry: string;
+  preferredLocations: string[];
+  providerJobs: number;       // total unique jobs returned by all provider searches
+  scoredJobs: number;         // after scoring (same size as providerJobs)
+  locationFiltered: number;   // after the preferred-location filter
+  bestCount: number;          // size of bestMatches (post-gate, post-slice)
+  moreCount: number;          // size of moreJobs (post-slice)
+  medianScore: number;        // median matchScore across scoredJobs
+  maxScore: number;           // max matchScore across scoredJobs
+}
+
 export interface MatchResult {
   bestMatches: ScoredJob[];
   moreJobs: ScoredJob[];
   total: number;
+  diagnostics: MatchDiagnostics;
 }
 
 // ─── Seniority ────────────────────────────────────────────────────────────────
@@ -595,19 +608,39 @@ export async function matchJobsForCV(
     scoreJob(job, targetTitle, cvSkills, preferredLocations, searchCountry, seniority)
   );
 
-  // Filter by preferred locations (only if user set locations)
-  const locationFiltered = preferredLocations.length > 0
+  // Filter by preferred locations (only if user set locations). If that
+  // filter cuts too deep (< 15 survivors), fall back to the full scored
+  // pool — the location score component already rewards preferred-location
+  // hits, so a weaker filter plus score-ranking is better than zero matches.
+  const strictLocationFiltered = preferredLocations.length > 0
     ? scoredJobs.filter((j) => jobMatchesLocations(j.location || "", preferredLocations))
+    : scoredJobs;
+  const locationFiltered = strictLocationFiltered.length >= 15
+    ? strictLocationFiltered
     : scoredJobs;
 
   // Set A IDs for sorting
   const setAIds = new Set(setAJobs.map((j) => j.id));
 
-  // Best matches: jobs from Set A (or location-matched), sorted by score descending
-  const bestMatches = locationFiltered
-    .filter((j) => setAIds.has(j.id) || j.matchScore >= 15)
-    .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, 30);
+  // Best matches: jobs from Set A or scoring ≥ 10 (down from 15 — we were
+  // being too strict given real-world title/skill overlap rates).
+  const SCORE_THRESHOLD = 10;
+  const strictBest = locationFiltered
+    .filter((j) => setAIds.has(j.id) || j.matchScore >= SCORE_THRESHOLD)
+    .sort((a, b) => b.matchScore - a.matchScore);
+
+  // If the strict gate yields fewer than 5 jobs, top up with the next-best
+  // scored jobs (even if they fell below the threshold) so users always get
+  // at least a handful of options when the feed returns anything at all.
+  let bestMatches = strictBest.slice(0, 30);
+  if (bestMatches.length < 5) {
+    const strictIds = new Set(bestMatches.map((j) => j.id));
+    const topUp = locationFiltered
+      .filter((j) => !strictIds.has(j.id) && j.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 5 - bestMatches.length);
+    bestMatches = bestMatches.concat(topUp);
+  }
 
   // More jobs: remaining, sorted by date descending
   const bestIds = new Set(bestMatches.map((j) => j.id));
@@ -620,9 +653,34 @@ export async function matchJobsForCV(
     })
     .slice(0, 30);
 
+  const sortedScores = scoredJobs.map((j) => j.matchScore).sort((a, b) => a - b);
+  const median = sortedScores.length
+    ? sortedScores[Math.floor(sortedScores.length / 2)]
+    : 0;
+  const max = sortedScores.length ? sortedScores[sortedScores.length - 1] : 0;
+
+  const diagnostics: MatchDiagnostics = {
+    searchCountry,
+    preferredLocations,
+    providerJobs: allJobs.length,
+    scoredJobs: scoredJobs.length,
+    locationFiltered: strictLocationFiltered.length,
+    bestCount: bestMatches.length,
+    moreCount: moreJobs.length,
+    medianScore: median,
+    maxScore: max,
+  };
+
+  console.log(
+    `[matcher] title="${targetTitle}" country=${searchCountry} locs=[${preferredLocations.join(",")}] ` +
+    `provider=${allJobs.length} locFiltered=${strictLocationFiltered.length} ` +
+    `best=${bestMatches.length} more=${moreJobs.length} median=${median} max=${max}`
+  );
+
   return {
     bestMatches,
     moreJobs,
     total: locationFiltered.length,
+    diagnostics,
   };
 }

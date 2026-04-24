@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { matchJobsForCV, getMatchLabel, type ScoredJob } from "@/lib/jobs/matcher";
+import { matchJobsForCV, getMatchLabel, type ScoredJob, type MatchDiagnostics } from "@/lib/jobs/matcher";
 import { WeeklyJobsEmail, type WeeklyJobItem } from "@/components/emails/weekly-jobs-email";
 import { WeeklyJobsEmptyEmail } from "@/components/emails/weekly-jobs-empty-email";
 import { canSendTo, recordSentJobs, getRecentlySentJobIds } from "@/lib/email/can-send";
@@ -47,6 +47,36 @@ function formatSalary(min: number | null, max: number | null): string | null {
 function trackClickUrl(jobId: string, redirect: string): string {
   const params = new URLSearchParams({ job_id: jobId, src: "email_weekly", redirect });
   return `${APP_URL}/api/jobs/track-click?${params.toString()}`;
+}
+
+// Fire-and-forget observability. Each run of the matcher gets one row so we
+// can query: "Is Adzuna returning anything? Are we filtering too hard? How
+// many users fell through to the empty path and why?"
+function recordMatchRun(params: {
+  admin: ReturnType<typeof createAdminClient>;
+  userId: string;
+  template: string;
+  diagnostics: MatchDiagnostics | null;
+  freshCount: number;
+  outcome: string;
+  error?: string;
+}): void {
+  const { admin, userId, template, diagnostics, freshCount, outcome, error } = params;
+  admin.from("job_match_runs").insert({
+    user_id: userId,
+    template,
+    search_country: diagnostics?.searchCountry ?? null,
+    preferred_locations: diagnostics?.preferredLocations ?? null,
+    provider_jobs: diagnostics?.providerJobs ?? 0,
+    location_filtered: diagnostics?.locationFiltered ?? 0,
+    best_count: diagnostics?.bestCount ?? 0,
+    more_count: diagnostics?.moreCount ?? 0,
+    median_score: diagnostics?.medianScore ?? 0,
+    max_score: diagnostics?.maxScore ?? 0,
+    fresh_count: freshCount,
+    outcome,
+    error: error ?? null,
+  }).then(() => {}, () => {});
 }
 
 function toItem(job: ScoredJob): WeeklyJobItem {
@@ -225,9 +255,46 @@ export async function sendWeeklyJobsEmail(
     try {
       const result = await matchJobsForCV(cvData, preferredLocations, profile.signup_country || "us");
 
-      // Dedup: drop anything already sent in the last 14 days (covers Tue/Wed/Thu window + slack)
-      const recentIds = await getRecentlySentJobIds(userId, TEMPLATE_JOBS_WEEKLY, 14);
-      const fresh = result.bestMatches.filter((j) => !recentIds.has(j.id)).slice(0, 5);
+      // Dedup strategy — three tiers, so a user never gets an empty fallback
+      // just because last week's five still sit inside the 14-day window.
+      //   1. Prefer best matches that are fresh (not sent in last 14d)
+      //   2. Top up from `moreJobs` (time-sorted feed) if still < 5
+      //   3. If still empty, relax dedup window to 7d (weekly cadence)
+      //   4. If still empty, send the top of bestMatches anyway — repeats
+      //      are better than no email at all
+      const recent14 = await getRecentlySentJobIds(userId, TEMPLATE_JOBS_WEEKLY, 14);
+      let picks: ScoredJob[] = result.bestMatches.filter((j) => !recent14.has(j.id));
+
+      if (picks.length < 5 && result.moreJobs.length > 0) {
+        const pickedIds = new Set(picks.map((j) => j.id));
+        const extras = result.moreJobs.filter(
+          (j) => !recent14.has(j.id) && !pickedIds.has(j.id)
+        );
+        picks = picks.concat(extras).slice(0, 5);
+      }
+
+      if (picks.length === 0) {
+        const recent7 = await getRecentlySentJobIds(userId, TEMPLATE_JOBS_WEEKLY, 7);
+        picks = [...result.bestMatches, ...result.moreJobs]
+          .filter((j) => !recent7.has(j.id))
+          .slice(0, 5);
+      }
+
+      if (picks.length === 0 && result.bestMatches.length > 0) {
+        picks = result.bestMatches.slice(0, 5);
+      }
+
+      const fresh = picks.slice(0, 5);
+
+      // Observability — one row per match attempt, queryable from admin.
+      recordMatchRun({
+        admin,
+        userId,
+        template,
+        diagnostics: result.diagnostics,
+        freshCount: fresh.length,
+        outcome: fresh.length > 0 ? "sent" : "will_fall_through_empty",
+      });
 
       if (fresh.length > 0) {
         // Welcome cron reuses the matches path — tag the log row with the originating template.
@@ -243,6 +310,15 @@ export async function sendWeeklyJobsEmail(
       }
     } catch (err) {
       console.warn("[weekly-jobs] match failed:", (err as Error).message);
+      recordMatchRun({
+        admin: createAdminClient(),
+        userId,
+        template,
+        diagnostics: null,
+        freshCount: 0,
+        outcome: "match_error",
+        error: (err as Error).message,
+      });
       // fall through to empty-match path
     }
   }
