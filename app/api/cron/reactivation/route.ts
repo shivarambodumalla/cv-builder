@@ -34,11 +34,13 @@ export async function GET(request: NextRequest) {
     if (!authUser?.user?.email) continue;
 
     const daysAgo = Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24));
+    const meta = authUser.user.user_metadata as { full_name?: string; name?: string } | null;
+    const firstName = (meta?.full_name || meta?.name || "").split(" ")[0] || "there";
 
     await sendEmail({
       to: authUser.user.email,
       templateName: "reactivation",
-      variables: { daysAgo: String(daysAgo) },
+      variables: { name: firstName, daysAgo: String(daysAgo) },
       userId: user.id,
     });
 
@@ -90,9 +92,13 @@ export async function GET(request: NextRequest) {
     const { data: authUser } = await supabase.auth.admin.getUserById(profile.id);
     if (!authUser?.user?.email) continue;
 
+    const meta = authUser.user.user_metadata as { full_name?: string; name?: string } | null;
+    const firstName = (meta?.full_name || meta?.name || "").split(" ")[0] || "there";
+
     await sendEmail({
       to: authUser.user.email,
       templateName: "inactive_user",
+      variables: { name: firstName },
       userId: profile.id,
     });
 

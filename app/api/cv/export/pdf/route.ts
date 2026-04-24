@@ -100,7 +100,9 @@ export async function POST(request: NextRequest) {
       const admin = createAdminClient();
       const { data: p } = await admin.from("profiles").select("upgrade_email_sent").eq("id", user.id).single();
       if (p && !p.upgrade_email_sent) {
-        sendEmailAsync({ to: user.email, templateName: "upgrade_prompt", userId: user.id });
+        const meta = user.user_metadata as { full_name?: string; name?: string } | null;
+        const firstName = (meta?.full_name || meta?.name || "").split(" ")[0] || "there";
+        sendEmailAsync({ to: user.email, templateName: "upgrade_prompt", variables: { name: firstName }, userId: user.id });
         admin.from("profiles").update({ upgrade_email_sent: true }).eq("id", user.id).then(() => {});
       }
     }

@@ -12,7 +12,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
   // Get user email for notification
   const { data: profile } = await supabase
     .from("profiles")
-    .select("email, plan")
+    .select("email, plan, full_name")
     .eq("id", id)
     .single();
 
@@ -66,10 +66,11 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
   try {
     const { sendEmail } = await import("@/lib/email/sender");
     if (profile.email) {
+      const firstName = (profile.full_name || "").split(" ")[0] || "there";
       sendEmail({
         to: profile.email,
         templateName: "subscription_suspended",
-        variables: {},
+        variables: { name: firstName },
         userId: id,
       }).catch(() => {});
     }

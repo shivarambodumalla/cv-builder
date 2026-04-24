@@ -63,7 +63,8 @@ export async function POST(request: NextRequest) {
     if (segment === "custom_emails" && customEmails) {
       const emails = (customEmails as string).split(",").map((e: string) => e.trim()).filter(Boolean);
       for (const email of emails) {
-        await sendEmail({ to: email, templateName });
+        // No profile lookup for ad-hoc addresses — fall back to generic greeting.
+        await sendEmail({ to: email, templateName, variables: { name: "there" } });
         sentCount++;
       }
 
@@ -82,9 +83,13 @@ export async function POST(request: NextRequest) {
       const { data: authUser } = await admin.auth.admin.getUserById(userId);
       if (!authUser?.user?.email) continue;
 
+      const meta = authUser.user.user_metadata as { full_name?: string; name?: string } | null;
+      const firstName = (meta?.full_name || meta?.name || "").split(" ")[0] || "there";
+
       await sendEmail({
         to: authUser.user.email,
         templateName,
+        variables: { name: firstName },
         userId,
       });
       sentCount++;

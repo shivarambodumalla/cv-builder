@@ -36,6 +36,17 @@ function replaceVars(text: string, vars: Record<string, string>): string {
   return result;
 }
 
+// Surfaces placeholders that slipped through — the bug that shipped "Hi {{name}},"
+// to real inboxes. Logs once per send with the offending vars and template name.
+function warnOnUnreplacedVars(templateName: string, ...parts: Array<string | undefined>): void {
+  const combined = parts.filter(Boolean).join("\n");
+  const leftovers = combined.match(/\{\{[a-zA-Z_][\w]*\}\}/g);
+  if (leftovers && leftovers.length > 0) {
+    const unique = Array.from(new Set(leftovers));
+    console.warn(`[email] "${templateName}" has unreplaced placeholders: ${unique.join(", ")}`);
+  }
+}
+
 interface SendEmailParams {
   to: string;
   templateName: string;
@@ -80,6 +91,7 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
     if (template.custom_html) {
       // Custom HTML overrides the base layout entirely
       html = replaceVars(template.custom_html, allVars);
+      warnOnUnreplacedVars(templateName, subject, html);
     } else {
       const heading = replaceVars(template.heading, allVars);
       const subheading = replaceVars(template.subheading, allVars);
@@ -87,6 +99,7 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
       const ctaUrl = template.cta_url ? replaceVars(template.cta_url, allVars) : undefined;
       const bodyHtml = template.body_html ? replaceVars(template.body_html, allVars).replace(/\n/g, "<br>") : undefined;
       const afterCtaHtml = template.after_cta_html ? replaceVars(template.after_cta_html, allVars).replace(/\n/g, "<br>") : undefined;
+      warnOnUnreplacedVars(templateName, subject, heading, subheading, ctaText, ctaUrl, bodyHtml, afterCtaHtml);
 
       // Render email using base layout
       html = await render(
