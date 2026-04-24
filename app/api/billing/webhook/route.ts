@@ -3,13 +3,14 @@ import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 function verifySignature(rawBody: string, signature: string): boolean {
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET!;
+  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
+  if (!secret) return false;
   const hmac = crypto.createHmac("sha256", secret);
   const digest = hmac.update(rawBody).digest("hex");
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(digest)
-  );
+  const sigBuf = Buffer.from(signature);
+  const digBuf = Buffer.from(digest);
+  if (sigBuf.length !== digBuf.length) return false;
+  return crypto.timingSafeEqual(sigBuf, digBuf);
 }
 
 function planFromVariantId(variantId: string): string {
@@ -30,12 +31,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const payload = JSON.parse(rawBody);
-  const eventName: string = payload.meta.event_name;
-  const customData = payload.meta.custom_data as
-    | { user_id?: string }
-    | undefined;
-  const userId = customData?.user_id;
+  let payload: {
+    meta?: { event_name?: string; custom_data?: { user_id?: string } };
+    data?: { id?: string | number; attributes?: { variant_id?: string | number } };
+  };
+  try {
+    payload = JSON.parse(rawBody);
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const eventName = payload.meta?.event_name;
+  const userId = payload.meta?.custom_data?.user_id;
 
   if (!userId) {
     return NextResponse.json(
@@ -44,9 +51,19 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const attrs = payload.data.attributes;
-  const variantId = String(attrs.variant_id);
-  const subscriptionId = String(payload.data.id);
+  const attrs = payload.data?.attributes;
+  const rawVariantId = attrs?.variant_id;
+  const rawSubscriptionId = payload.data?.id;
+
+  if (rawVariantId == null || rawSubscriptionId == null) {
+    return NextResponse.json(
+      { error: "Missing variant_id or subscription id" },
+      { status: 400 }
+    );
+  }
+
+  const variantId = String(rawVariantId);
+  const subscriptionId = String(rawSubscriptionId);
 
   const supabase = createAdminClient();
 

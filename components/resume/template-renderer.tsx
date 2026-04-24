@@ -205,7 +205,7 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
     (key) => content.sections[key as keyof typeof content.sections]
   );
 
-  const Template = TEMPLATE_MAP[design.template];
+  const Template = TEMPLATE_MAP[design.template] ?? ClassicTemplate;
 
   const cssVars: Record<string, string> = {
     "--resume-font": fontStack,

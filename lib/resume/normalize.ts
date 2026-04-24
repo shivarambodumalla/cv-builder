@@ -1,5 +1,32 @@
-import type { ResumeDesignSettings, SectionKey } from "./types";
+import type { ResumeDesignSettings, SectionKey, TemplateName } from "./types";
 import { DEFAULT_DESIGN } from "./defaults";
+
+const VALID_TEMPLATES: ReadonlySet<TemplateName> = new Set<TemplateName>([
+  "classic",
+  "classic-serif",
+  "sharp",
+  "minimal",
+  "executive",
+  "executive-pro",
+  "sidebar",
+  "sidebar-right",
+  "two-column",
+  "divide",
+  "folio",
+  "metro",
+  "harvard",
+  "ledger",
+  "aurora",
+  "electric-lilac",
+  "bold-accent",
+  "executive-sidebar",
+  "clean-sidebar",
+  "blueprint",
+  "wentworth",
+  "orchid",
+  "coastal",
+  "portrait",
+]);
 
 export const CANONICAL_SECTION_ORDER: SectionKey[] = [
   "contact",
@@ -44,6 +71,9 @@ export function normalizeDesignSettings(
   raw: Partial<ResumeDesignSettings> | null | undefined
 ): ResumeDesignSettings {
   const merged: ResumeDesignSettings = { ...DEFAULT_DESIGN, ...(raw ?? {}) };
+  if (!VALID_TEMPLATES.has(merged.template)) {
+    merged.template = DEFAULT_DESIGN.template;
+  }
   merged.sectionOrder = mergeOrder(merged.sectionOrder);
   merged.sidebarSections = Array.isArray(merged.sidebarSections)
     ? merged.sidebarSections.filter((k) => CANONICAL_SET.has(k))

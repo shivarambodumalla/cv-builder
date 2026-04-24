@@ -92,6 +92,12 @@ export default function Error({
       {/* Footer */}
       <p className="mt-16 text-xs text-[#78716C]/60 dark:text-muted-foreground/40">
         Error 500 &middot; Something went wrong
+        {error.digest && (
+          <>
+            {" "}
+            &middot; ref <span className="font-mono">{error.digest}</span>
+          </>
+        )}
       </p>
 
       <style>{`

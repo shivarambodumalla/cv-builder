@@ -57,6 +57,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
   const [filter, setFilter] = useState<TemplateCategory>("all");
   const [selecting, setSelecting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imgFailed, setImgFailed] = useState<Record<string, boolean>>({});
 
   const filtered = TEMPLATES.filter((t) => t.category.includes(filter));
 
@@ -147,7 +148,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                   )}
                 >
                   <div className="aspect-[1242/1754] bg-muted overflow-hidden relative">
-                    {t.img ? (
+                    {t.img && !imgFailed[t.slug] ? (
                       <>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -155,12 +156,14 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                           alt={`${t.name} CV template`}
                           className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
                           loading="lazy"
+                          onError={() => setImgFailed((prev) => ({ ...prev, [t.slug]: true }))}
                         />
                         <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent" />
                       </>
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-                        Coming soon
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-xs text-muted-foreground px-3 text-center">
+                        <div className="font-semibold text-foreground">{t.name}</div>
+                        <div className="text-[10px]">Preview unavailable</div>
                       </div>
                     )}
                     {isSelecting && (

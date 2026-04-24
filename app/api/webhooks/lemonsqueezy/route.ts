@@ -19,7 +19,13 @@ export async function POST(request: NextRequest) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const payload = JSON.parse(rawBody) as any;
+  let payload: any;
+  try {
+    payload = JSON.parse(rawBody);
+  } catch {
+    console.error("[webhook] Invalid JSON body");
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
   const eventName = payload.meta?.event_name;
   const attrs = payload.data?.attributes;
   const userId = payload.meta?.custom_data?.user_id || attrs?.custom_data?.user_id;
