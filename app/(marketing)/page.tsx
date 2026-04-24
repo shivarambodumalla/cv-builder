@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +18,7 @@ import {
 import { FaqSection } from "./faq-section";
 import { CtaSection } from "@/components/shared/cta-section";
 import { FeaturesTabs } from "@/components/marketing/features-tabs";
+import { HeroAnimation } from "@/components/marketing/hero-animation";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
@@ -80,37 +80,29 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
 
         <div className="relative mx-auto max-w-[1200px] px-6 pt-10 pb-10 sm:pt-14 sm:pb-12 md:pt-16 md:pb-14">
-          {/* Centered copy */}
-          <div className="mx-auto flex flex-col items-center text-center gap-4 max-w-3xl">
-            <h1 className="text-[2.25rem] sm:text-[3rem] md:text-[3.5rem] font-bold tracking-[-0.025em] leading-[1.12]">
-              Your resume isn&apos;t getting rejected.{" "}
-              <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
-            </h1>
-            <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Get a real ATS score, fix critical issues, and start getting interview calls — in under 10 minutes.
-            </p>
-            <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium mt-1 shadow-md shadow-primary/20" asChild>
-              <Link href="/upload-resume">Scan my resume free</Link>
-            </Button>
+          <div className="grid gap-8 md:grid-cols-[1.5fr_1fr] md:gap-10 items-center">
+            {/* Copy */}
+            <div className="flex flex-col items-center text-center md:items-start md:text-left gap-4 min-w-0 w-full">
+              <h1 className="text-[2rem] sm:text-[2.75rem] md:text-[3rem] lg:text-[3.5rem] font-bold tracking-[-0.025em] leading-[1.12] break-words max-w-full">
+                Your resume isn&apos;t getting rejected.{" "}
+                <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
+              </h1>
+              <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
+                Get a real ATS score, fix critical issues, and start getting interview calls — in under 10 minutes.
+              </p>
+              <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium mt-1 shadow-md shadow-primary/20" asChild>
+                <Link href="/upload-resume">Scan my resume free</Link>
+              </Button>
 
-            {/* Trust line */}
-            <p className="text-sm text-muted-foreground mt-1">
-              Trusted by 2,400+ job seekers &middot; Avg score improvement +18 points
-            </p>
-          </div>
+              {/* Trust line */}
+              <p className="text-sm text-muted-foreground mt-1 max-w-full">
+                Trusted by 2,400+ job seekers &middot; Avg score improvement +18 points
+              </p>
+            </div>
 
-          {/* Product screenshot */}
-          <div className="relative mt-8 sm:mt-10 md:mt-12 mx-auto max-w-[1100px]">
-            <div className="rounded-xl border-2 border-primary/15 shadow-2xl overflow-hidden ring-1 ring-primary/5">
-              <Image
-                src="/img/cover.webp"
-                alt="CVEdge ATS resume scanner showing score breakdown and keyword analysis"
-                width={2200}
-                height={1167}
-                priority
-                sizes="(max-width: 1100px) 100vw, 1100px"
-                className="w-full h-auto"
-              />
+            {/* Right column: animated preview (scales responsively) */}
+            <div className="relative w-full mx-auto max-w-[480px] min-w-0 md:ml-auto md:mr-0">
+              <HeroAnimation />
             </div>
           </div>
         </div>
