@@ -1,56 +1,65 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Metadata } from "next";
+import { EmailLogsTable, type EmailLogRow } from "./email-logs-table";
 
 export const metadata: Metadata = { title: "Email Logs | CVEdge Admin" };
 export const dynamic = "force-dynamic";
 
-export default async function EmailLogsPage() {
+const PAGE_SIZE = 50;
+
+interface PageProps {
+  searchParams: Promise<{ q?: string; status?: string; template?: string; page?: string }>;
+}
+
+export default async function EmailLogsPage({ searchParams }: PageProps) {
+  const sp = await searchParams;
+  const query = (sp.q ?? "").trim();
+  const status = (sp.status ?? "").trim();
+  const template = (sp.template ?? "").trim();
+  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+
   const supabase = createAdminClient();
-  const { data: logs } = await supabase
+
+  let q = supabase
     .from("email_logs")
-    .select("*")
+    .select("id, to_email, template_name, subject, status, error, created_at", { count: "exact" })
+    .order("created_at", { ascending: false });
+
+  if (status) q = q.eq("status", status);
+  if (template) q = q.eq("template_name", template);
+  if (query) {
+    // Escape PostgREST reserved chars in `or` filter values.
+    const safe = query.replace(/[,()]/g, " ").trim();
+    if (safe) q = q.or(`to_email.ilike.%${safe}%,subject.ilike.%${safe}%`);
+  }
+
+  const from = (page - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+  const { data, count } = await q.range(from, to);
+
+  // Distinct templates for the filter dropdown. Sample the most recent 2k
+  // sends — enough to cover every active template without scanning the full
+  // table. Logs for retired templates drop off the list once they age out,
+  // which is fine: the free-text search still finds them.
+  const { data: templateRows } = await supabase
+    .from("email_logs")
+    .select("template_name")
     .order("created_at", { ascending: false })
-    .limit(200);
+    .limit(2000);
+  const templates = Array.from(
+    new Set((templateRows ?? []).map((r) => r.template_name).filter(Boolean))
+  ).sort();
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Email Logs</h1>
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs sm:text-sm">
-          <thead>
-            <tr className="border-b text-left text-muted-foreground">
-              <th className="pb-2">To</th>
-              <th className="pb-2">Template</th>
-              <th className="pb-2">Subject</th>
-              <th className="pb-2">Status</th>
-              <th className="pb-2">Sent</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(logs ?? []).map((log) => (
-              <tr key={log.id} className="border-b">
-                <td className="py-2 font-medium max-w-[150px] truncate">{log.to_email}</td>
-                <td className="py-2">{log.template_name}</td>
-                <td className="py-2 text-muted-foreground max-w-[200px] truncate">{log.subject}</td>
-                <td className="py-2">
-                  <span
-                    className={`text-xs px-1.5 py-0.5 rounded ${log.status === "sent" ? "bg-success/15 text-success" : "bg-error/15 text-error"}`}
-                    title={log.error || undefined}
-                  >
-                    {log.status}
-                  </span>
-                </td>
-                <td className="py-2 text-muted-foreground whitespace-nowrap">
-                  {new Date(log.created_at).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-            {(!logs || logs.length === 0) && (
-              <tr><td colSpan={5} className="py-4 text-center text-muted-foreground">No emails sent yet</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <EmailLogsTable
+      logs={(data ?? []) as EmailLogRow[]}
+      total={count ?? 0}
+      page={page}
+      pageSize={PAGE_SIZE}
+      templates={templates}
+      query={query}
+      status={status}
+      template={template}
+    />
   );
 }
