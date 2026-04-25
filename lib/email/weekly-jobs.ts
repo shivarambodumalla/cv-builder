@@ -456,6 +456,7 @@ async function sendWithMatches(params: {
     to_email: to,
     subject,
     status: "sent",
+    resend_id: data?.id ?? null,
   });
 
   if (!skipRecordJobs && jobIdsToRecord && jobIdsToRecord.length > 0) {
@@ -552,6 +553,7 @@ async function sendEmptyEmail(params: {
     to_email: to,
     subject,
     status: "sent",
+    resend_id: data?.id ?? null,
   });
 
   return { outcome: "sent_empty", template, to, messageId: data?.id };

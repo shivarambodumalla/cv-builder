@@ -120,7 +120,7 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
     }
 
     // Send via Resend
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: `${brand.logo_text} <${brand.support_email}>`,
       to,
       subject,
@@ -129,13 +129,14 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
 
     if (error) throw new Error(error.message);
 
-    // Log success
+    // Log success — resend_id is the join key for engagement webhooks
     await supabase.from("email_logs").insert({
       user_id: userId || null,
       template_name: templateName,
       to_email: to,
       subject,
       status: "sent",
+      resend_id: data?.id ?? null,
     });
   } catch (err) {
     console.error(`[email] Failed to send "${templateName}" to ${to}:`, (err as Error).message);

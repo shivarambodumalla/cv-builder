@@ -14,6 +14,19 @@ export interface EmailLogRow {
   status: string;
   error: string | null;
   created_at: string;
+  delivered_at: string | null;
+  opened_at: string | null;
+  open_count: number;
+  clicked_at: string | null;
+  click_count: number;
+}
+
+export interface EngagementSummaryRow {
+  template_name: string;
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
 }
 
 interface Props {
@@ -25,9 +38,19 @@ interface Props {
   query: string;
   status: string;
   template: string;
+  engagement: EngagementSummaryRow[];
+  engagementWindowDays: number;
 }
 
-export function EmailLogsTable({ logs, total, page, pageSize, templates, query, status, template }: Props) {
+function pct(numerator: number, denominator: number): string {
+  if (denominator <= 0) return "—";
+  return `${Math.round((numerator / denominator) * 100)}%`;
+}
+
+export function EmailLogsTable({
+  logs, total, page, pageSize, templates, query, status, template,
+  engagement, engagementWindowDays,
+}: Props) {
   const router = useRouter();
   const params = useSearchParams();
   const [pending, startTransition] = useTransition();
@@ -65,6 +88,49 @@ export function EmailLogsTable({ logs, total, page, pageSize, templates, query, 
           {pending ? "Loading…" : `${from}–${to} of ${total.toLocaleString()}`}
         </p>
       </div>
+
+      {engagement.length > 0 && (
+        <div className="rounded-md border bg-muted/30">
+          <div className="flex items-center justify-between px-3 py-2 border-b">
+            <h2 className="text-sm font-semibold">Engagement — last {engagementWindowDays} days</h2>
+            <p className="text-[11px] text-muted-foreground">
+              Open/click rates inflated by image pre-fetch (Apple Mail) — read directionally.
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-muted-foreground">
+                  <th className="px-3 py-1.5 font-medium">Template</th>
+                  <th className="px-3 py-1.5 font-medium text-right">Sent</th>
+                  <th className="px-3 py-1.5 font-medium text-right">Delivered</th>
+                  <th className="px-3 py-1.5 font-medium text-right">Open rate</th>
+                  <th className="px-3 py-1.5 font-medium text-right">Click rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {engagement.map((r) => (
+                  <tr key={r.template_name} className="border-t">
+                    <td className="px-3 py-1.5 font-medium">{r.template_name}</td>
+                    <td className="px-3 py-1.5 text-right tabular-nums">{r.sent.toLocaleString()}</td>
+                    <td className="px-3 py-1.5 text-right tabular-nums text-muted-foreground">
+                      {pct(r.delivered, r.sent)}
+                    </td>
+                    <td className="px-3 py-1.5 text-right tabular-nums">
+                      <span className="font-medium">{pct(r.opened, r.delivered || r.sent)}</span>
+                      <span className="text-muted-foreground"> ({r.opened.toLocaleString()})</span>
+                    </td>
+                    <td className="px-3 py-1.5 text-right tabular-nums">
+                      <span className="font-medium">{pct(r.clicked, r.delivered || r.sent)}</span>
+                      <span className="text-muted-foreground"> ({r.clicked.toLocaleString()})</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[240px] max-w-md">
@@ -121,6 +187,9 @@ export function EmailLogsTable({ logs, total, page, pageSize, templates, query, 
               <th className="px-3 py-2 font-medium">Template</th>
               <th className="px-3 py-2 font-medium">Subject</th>
               <th className="px-3 py-2 font-medium">Status</th>
+              <th className="px-3 py-2 font-medium whitespace-nowrap" title="Delivered by Resend">Delivered</th>
+              <th className="px-3 py-2 font-medium whitespace-nowrap" title="Opens (count)">Opens</th>
+              <th className="px-3 py-2 font-medium whitespace-nowrap" title="Link clicks (count)">Clicks</th>
               <th className="px-3 py-2 font-medium whitespace-nowrap">Sent</th>
             </tr>
           </thead>
@@ -138,6 +207,15 @@ export function EmailLogsTable({ logs, total, page, pageSize, templates, query, 
                     {log.status}
                   </span>
                 </td>
+                <td className="px-3 py-2 whitespace-nowrap" title={log.delivered_at ?? undefined}>
+                  {log.delivered_at ? <span className="text-success">✓</span> : <span className="text-muted-foreground/60">—</span>}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap tabular-nums" title={log.opened_at ?? undefined}>
+                  {log.open_count > 0 ? log.open_count : <span className="text-muted-foreground/60">—</span>}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap tabular-nums" title={log.clicked_at ?? undefined}>
+                  {log.click_count > 0 ? log.click_count : <span className="text-muted-foreground/60">—</span>}
+                </td>
                 <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
                   {new Date(log.created_at).toLocaleString()}
                 </td>
@@ -145,7 +223,7 @@ export function EmailLogsTable({ logs, total, page, pageSize, templates, query, 
             ))}
             {logs.length === 0 && (
               <tr>
-                <td colSpan={5} className="py-6 text-center text-muted-foreground">
+                <td colSpan={8} className="py-6 text-center text-muted-foreground">
                   {hasFilters ? "No emails match these filters" : "No emails sent yet"}
                 </td>
               </tr>

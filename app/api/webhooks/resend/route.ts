@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient();
   const email = extractEmail(event.data?.to);
+  const resendId = event.data?.email_id ?? null;
 
   const hardBounce =
     event.type === "email.bounced" &&
@@ -91,6 +92,22 @@ export async function POST(request: NextRequest) {
     await admin
       .from("email_suppressions")
       .upsert({ email, reason: "complaint", source: "resend" }, { onConflict: "email" });
+  }
+
+  // Engagement events — bump counters/timestamps on the matching email_logs row
+  // via the bump_email_event SQL function (atomic, no read-modify-write race).
+  // Lookup is by resend_id; rows missing it (older sends, errors) just no-op.
+  if (resendId) {
+    let bumpEvent: "delivered" | "opened" | "clicked" | null = null;
+    if (event.type === "email.delivered") bumpEvent = "delivered";
+    else if (event.type === "email.opened") bumpEvent = "opened";
+    else if (event.type === "email.clicked") bumpEvent = "clicked";
+    if (bumpEvent) {
+      await admin.rpc("bump_email_event", {
+        p_resend_id: resendId,
+        p_event: bumpEvent,
+      });
+    }
   }
 
   return NextResponse.json({ ok: true });
