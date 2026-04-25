@@ -19,6 +19,7 @@ import { FaqSection } from "./faq-section";
 import { CtaSection } from "@/components/shared/cta-section";
 import { FeaturesTabs } from "@/components/marketing/features-tabs";
 import { HeroAnimation } from "@/components/marketing/hero-animation";
+import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
@@ -79,7 +80,7 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
         <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
 
-        <div className="relative mx-auto max-w-[1200px] px-6 pt-10 pb-10 sm:pt-14 sm:pb-12 md:pt-16 md:pb-14">
+        <div className="relative mx-auto max-w-[1200px] px-6 pt-7 pb-6 sm:pt-10 sm:pb-8 md:pt-12 md:pb-10">
           <div className="grid gap-8 md:grid-cols-[1.5fr_1fr] md:gap-10 items-center">
             {/* Copy */}
             <div className="flex flex-col items-center text-center md:items-start md:text-left gap-4 min-w-0 w-full">
@@ -90,9 +91,21 @@ export default async function HomePage() {
               <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
                 Get a real ATS score, fix critical issues, and start getting interview calls — in under 10 minutes.
               </p>
-              <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium mt-1 shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Scan my resume free</Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 sm:gap-4 mt-1">
+                <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
+                  <Link href="/upload-resume">Scan my resume free</Link>
+                </Button>
+                <Link
+                  href="/jobs"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-primary underline-offset-4 hover:underline transition-colors"
+                >
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+                  </span>
+                  Or browse 1M+ live jobs
+                </Link>
+              </div>
 
               {/* Trust line */}
               <p className="text-sm text-muted-foreground mt-1 max-w-full">
@@ -107,6 +120,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ─── LIVE JOBS BAND ─── */}
+      <LiveJobsBand />
 
       {/* ─── LOGO CAROUSEL ─── */}
       <LogoCarousel />

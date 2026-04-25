@@ -1,7 +1,19 @@
 "use client";
 
 import React from "react";
-import { AlignLeft, AlignCenter, AlignRight, GripVertical, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  AlignLeft, AlignCenter, AlignRight,
+  GripVertical, ChevronLeft, ChevronRight,
+  RotateCcw, ChevronDown, X as XIcon,
+  UserCircle2, Palette, Type, Columns2, SlidersHorizontal, ListOrdered,
+  type LucideIcon,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -12,9 +24,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type {
+  ResumeContent,
   ResumeDesignSettings,
   TemplateName,
   FontFamily,
@@ -33,6 +45,9 @@ import type {
   SectionVisibility,
 } from "@/lib/resume/types";
 import { fileToResizedDataUrl } from "@/lib/resume/avatar";
+import { TemplateRenderer } from "@/components/resume/template-renderer";
+import { PaperPreview } from "@/components/resume/paper-preview";
+import { getPreviewContent } from "@/lib/resume/placeholder";
 import {
   FONT_STACKS,
   ACCENT_COLORS,
@@ -48,6 +63,8 @@ interface DesignerPanelProps {
   contactName?: string;
   onPhotoChange?: (url: string | undefined) => void;
   sectionVisibility?: SectionVisibility;
+  userAvatarUrl?: string | null;
+  content?: ResumeContent;
 }
 
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
@@ -812,6 +829,181 @@ function TemplatePreview({ template }: { template: TemplateName }) {
   }
 }
 
+function SectionGroup({
+  title,
+  hint,
+  icon: Icon,
+  children,
+  bare,
+}: {
+  title: string;
+  hint?: string;
+  icon?: LucideIcon;
+  children: React.ReactNode;
+  bare?: boolean;
+}) {
+  // `bare` lets the caller render its own container (e.g. the Selected-template
+  // hero uses its own styled card and doesn't want to nest inside ours).
+  if (bare) {
+    return <section>{children}</section>;
+  }
+  return (
+    <section className="rounded-xl border border-border/60 bg-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <div className="mb-4 flex items-center gap-2.5">
+        {Icon && (
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-inset ring-primary/15">
+            <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+          </span>
+        )}
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[13px] font-semibold leading-tight tracking-tight text-foreground">
+            {title}
+          </h3>
+          {hint && (
+            <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{hint}</p>
+          )}
+        </div>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-xs text-foreground/80">{label}</span>
+      {children}
+    </div>
+  );
+}
+
+function StackedRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <span className="mb-1.5 block text-xs text-foreground/80">{label}</span>
+      {children}
+    </div>
+  );
+}
+
+function SizeInput({
+  value,
+  min,
+  max,
+  step,
+  defaultValue,
+  unit,
+  onChange,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  defaultValue: number;
+  unit: string;
+  onChange: (v: number) => void;
+}) {
+  const isDefault = Math.abs(value - defaultValue) < 1e-6;
+  return (
+    <div className="flex items-center gap-1">
+      <div className="relative">
+        <Input
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          className="h-8 w-[84px] pr-7 text-right tabular-nums"
+          onChange={(e) => {
+            const v = parseFloat(e.target.value);
+            if (!Number.isNaN(v) && v >= min && v <= max) onChange(v);
+          }}
+        />
+        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[11px] text-muted-foreground">
+          {unit}
+        </span>
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange(defaultValue)}
+        disabled={isDefault}
+        aria-label="Reset to default"
+        title={`Reset to ${defaultValue}${unit}`}
+        className="rounded p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+      >
+        <RotateCcw className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function SliderRow({
+  value,
+  min,
+  max,
+  step,
+  suffix,
+  onChange,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  suffix: string;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className={cn(
+          "h-1 flex-1 cursor-pointer appearance-none rounded-full bg-foreground/15 accent-primary",
+          "[&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary",
+          "[&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-primary"
+        )}
+      />
+      <span className="w-14 text-right text-xs font-medium tabular-nums text-muted-foreground">
+        {suffix}
+      </span>
+    </div>
+  );
+}
+
+function SelectField<T extends string>({
+  value,
+  options,
+  onChange,
+  width = "w-[116px]",
+}: {
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (v: T) => void;
+  width?: string;
+}) {
+  return (
+    <div className={cn("relative", width)}>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as T)}
+        className="h-8 w-full appearance-none rounded-md border border-input bg-background pl-2.5 pr-7 text-xs font-medium outline-none focus:ring-2 focus:ring-ring"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+    </div>
+  );
+}
+
 function SortableItem({ id }: { id: string }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -852,7 +1044,7 @@ function ColumnItem({ id, direction, onMove }: { id: string; direction: "toMain"
   );
 }
 
-export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhotoChange, sectionVisibility }: DesignerPanelProps) {
+export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhotoChange, sectionVisibility, userAvatarUrl, content }: DesignerPanelProps) {
   const isEnabled = (key: string) =>
     sectionVisibility ? sectionVisibility[key as keyof SectionVisibility] !== false : true;
   function update<K extends keyof ResumeDesignSettings>(
@@ -922,6 +1114,16 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     } finally {
       setAvatarBusy(false);
     }
+  }
+
+  function handleAvatarModeChange(newMode: AvatarMode) {
+    // When switching to Photo with no uploaded photo, seed from the user's
+    // account avatar so the template immediately renders something sensible.
+    // The user can still Replace or Remove.
+    if (newMode === "photo" && !photoUrl && userAvatarUrl) {
+      onPhotoChange?.(userAvatarUrl);
+    }
+    update("avatarMode", newMode);
   }
 
   const COLUMN_LEFT_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
@@ -1022,42 +1224,398 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     }
   }
 
+  const currentBodyPt = activeBodyPt;
+  const currentNamePt = activeNamePt;
+  const currentHeadingPt =
+    typeof design.sectionHeadingSize === "number"
+      ? design.sectionHeadingSize
+      : SECTION_HEADING_SIZE_PT[design.sectionHeadingSize ?? "M"] ?? 9;
+
+  const TEMPLATE_IMAGES: Record<string, string> = {
+    classic: "classic.jpg",
+    "classic-serif": "classic-serif.png",
+    sharp: "sharp.jpg",
+    minimal: "minimal.jpg",
+    executive: "executive.jpg",
+    sidebar: "slate.jpg",
+    "sidebar-right": "onyx.jpg",
+    "two-column": "horizon.jpg",
+    divide: "divide.jpg",
+    folio: "folio.jpg",
+    metro: "metro.jpg",
+    harvard: "harward.jpg",
+    ledger: "ledger.jpg",
+    aurora: "aurora.jpg",
+    "executive-pro": "executive-pro.jpg",
+    "electric-lilac": "electric-lilac.jpg",
+    "bold-accent": "bold-accent.jpg",
+    "executive-sidebar": "executive-sidebar.jpg",
+    "clean-sidebar": "clean-sidebar.jpg",
+    blueprint: "blueprint.jpg",
+    wentworth: "wentworth.jpg",
+    coastal: "coastal.jpg",
+    orchid: "orchid.jpg",
+    portrait: "portrait.jpg",
+  };
+
+  const currentTemplate = TEMPLATES.find((t) => t.name === design.template) ?? TEMPLATES[0];
+  const [templateDialogOpen, setTemplateDialogOpen] = React.useState(false);
+  const [stagedTemplate, setStagedTemplate] = React.useState<TemplateName>(design.template);
+  const [mobileModalView, setMobileModalView] = React.useState<"browse" | "preview">("browse");
+
+  React.useEffect(() => {
+    if (templateDialogOpen) {
+      setStagedTemplate(design.template);
+      setMobileModalView("browse");
+    }
+  }, [templateDialogOpen, design.template]);
+
+  const stagedTemplateMeta = TEMPLATES.find((t) => t.name === stagedTemplate) ?? TEMPLATES[0];
+
+  function renderTemplateThumb(name: TemplateName, className?: string) {
+    const imgSrc = TEMPLATE_IMAGES[name];
+    return imgSrc ? (
+      <img
+        src={`/img/templates/${imgSrc}`}
+        alt=""
+        className={cn("h-full w-full", className)}
+        style={{ objectFit: "cover", objectPosition: "top" }}
+      />
+    ) : (
+      <div className={cn("h-full w-full bg-muted", className)}>
+        <TemplatePreview template={name} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
 
-      {/* Font */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Font</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {FONTS.map((f) => {
-            const selected = design.font === f.name;
-            return (
+      {/* Selected template — 2-col hero: top-80% image on the left, bold name + description + change CTA on the right */}
+      <SectionGroup title="Selected template" bare>
+        <div className="rounded-xl border border-border/60 bg-card p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="flex gap-3.5">
+            {/* Left: top 80% of the template image (aspect 210 × 238 out of 297) */}
+            <div
+              className="shrink-0 overflow-hidden rounded-md bg-background ring-1 ring-border/60 shadow-[0_4px_12px_-6px_rgba(15,23,42,0.18)]"
+              style={{ width: 120, aspectRatio: "210/238" }}
+            >
+              {renderTemplateThumb(currentTemplate.name)}
+            </div>
+
+            {/* Right: active pill, name, description, change CTA */}
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden />
+                <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">
+                  Active
+                </p>
+              </div>
+              <h4 className="mt-1 text-lg font-bold leading-tight tracking-tight">
+                {currentTemplate.label}
+              </h4>
+              <p className="mt-1 line-clamp-3 text-[11px] leading-snug text-muted-foreground">
+                {currentTemplate.desc}
+              </p>
               <button
-                key={f.name}
                 type="button"
-                className={cn(
-                  "relative rounded-lg border px-3 py-3 text-center transition-all",
-                  selected && "ring-2 ring-primary"
-                )}
-                onClick={() => update("font", f.name)}
+                onClick={() => setTemplateDialogOpen(true)}
+                className="mt-auto inline-flex w-fit items-center gap-1 self-start text-[11px] font-medium text-primary underline-offset-4 hover:underline"
               >
-                <span
-                  className="block text-xl"
-                  style={{ fontFamily: FONT_STACKS[f.name] }}
-                >
-                  Aa
-                </span>
-                <span className="mt-1 block text-xs font-medium">{f.label}</span>
+                Change template
+                <ChevronRight className="h-3 w-3" />
               </button>
-            );
-          })}
+            </div>
+          </div>
         </div>
-      </section>
 
+        <Dialog open={templateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+          <DialogContent className="flex h-screen max-h-screen w-screen max-w-none flex-col gap-0 overflow-hidden rounded-none border-0 p-0 sm:rounded-none">
+            <DialogHeader className="shrink-0 border-b px-4 py-3 sm:px-6 sm:py-4">
+              <DialogTitle className="text-base">Pick a template</DialogTitle>
+            </DialogHeader>
 
-      {/* Accent Color */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Accent Color</Label>
+            {/* Mobile tab toggle (hidden ≥ lg where we show side-by-side) */}
+            <div className="flex shrink-0 border-b lg:hidden">
+              {([
+                { id: "browse" as const, label: "Browse" },
+                { id: "preview" as const, label: "Preview" },
+              ]).map((tab) => {
+                const active = mobileModalView === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setMobileModalView(tab.id)}
+                    className={cn(
+                      "flex-1 border-b-2 px-3 py-2.5 text-[13px] font-medium transition-colors",
+                      active
+                        ? "border-primary text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {tab.label}
+                    {tab.id === "preview" && stagedTemplate !== design.template && (
+                      <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary align-middle" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+              {/* Left 40%: browsable grid (or full-width on mobile Browse tab) */}
+              <div
+                className={cn(
+                  "min-h-0 w-full overflow-y-auto overscroll-contain p-4 sm:p-5",
+                  "lg:w-2/5 lg:border-r lg:block",
+                  mobileModalView === "browse" ? "block flex-1" : "hidden lg:block"
+                )}
+              >
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {TEMPLATES.map((t) => {
+                    const staged = stagedTemplate === t.name;
+                    const applied = design.template === t.name;
+                    return (
+                      <button
+                        key={t.name}
+                        type="button"
+                        onClick={() => setStagedTemplate(t.name)}
+                        className={cn(
+                          "group relative overflow-hidden rounded-md border bg-background text-left transition-all active:scale-[0.98] lg:hover:border-foreground/30",
+                          staged && "border-primary ring-2 ring-primary"
+                        )}
+                      >
+                        <div style={{ aspectRatio: "210/240" }}>
+                          {renderTemplateThumb(t.name)}
+                        </div>
+                        {applied && (
+                          <span className="absolute right-1.5 top-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary-foreground">
+                            Current
+                          </span>
+                        )}
+                        <p className="truncate px-2 py-1.5 text-[11px] font-medium">{t.label}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Right 60%: live CV preview (or full-width on mobile Preview tab) */}
+              <div
+                className={cn(
+                  "min-h-0 w-full flex-col bg-muted/40 lg:flex lg:w-3/5",
+                  mobileModalView === "preview" ? "flex flex-1" : "hidden lg:flex"
+                )}
+              >
+                <div className="shrink-0 border-b bg-background/70 px-4 py-2.5 backdrop-blur sm:px-5">
+                  <h4 className="text-sm font-semibold">{stagedTemplateMeta.label}</h4>
+                  <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:line-clamp-1">
+                    {stagedTemplateMeta.desc}
+                  </p>
+                </div>
+                <div className="min-h-0 flex-1 overflow-auto overscroll-contain p-4 sm:p-5">
+                  {content ? (
+                    <PaperPreview
+                      paperSize={design.paperSize}
+                      manualBreaks={[]}
+                      onRemoveManualBreak={() => {}}
+                    >
+                      <TemplateRenderer
+                        content={getPreviewContent(content)}
+                        design={{ ...design, template: stagedTemplate }}
+                      />
+                    </PaperPreview>
+                  ) : (
+                    <div className="mx-auto flex h-full max-w-[360px] items-center justify-center">
+                      <div
+                        className="w-full overflow-hidden rounded-md border bg-background shadow-sm"
+                        style={{ aspectRatio: "210/297" }}
+                      >
+                        {renderTemplateThumb(stagedTemplate)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center justify-end gap-2 border-t bg-background px-4 py-3 sm:px-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 px-4"
+                onClick={() => setTemplateDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                className="h-9 px-4"
+                disabled={stagedTemplate === design.template}
+                onClick={() => {
+                  update("template", stagedTemplate);
+                  setTemplateDialogOpen(false);
+                }}
+              >
+                Apply template
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </SectionGroup>
+
+      {/* Avatar — compact single-row upload, dropdowns for mode/shape/position */}
+      {supportsAvatar && (
+        <SectionGroup title="Avatar" hint="Photo or initials next to your name" icon={UserCircle2}>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border bg-muted text-xs text-muted-foreground"
+                style={{
+                  borderRadius:
+                    avatarShape === "circle" ? "50%" : avatarShape === "rounded" ? 10 : 2,
+                }}
+              >
+                {avatarMode === "photo" && photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photoUrl} alt="Avatar preview" className="h-full w-full object-cover" />
+                ) : avatarMode === "initials" && contactName ? (
+                  <span className="text-sm font-semibold text-foreground">
+                    {(contactName.match(/\S+/g) ?? []).map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
+                  </span>
+                ) : (
+                  <span>—</span>
+                )}
+              </div>
+              <div className="flex flex-1 flex-col gap-1">
+                <SelectField<AvatarMode>
+                  value={avatarMode}
+                  width="w-full"
+                  options={[
+                    { value: "photo", label: "Show photo" },
+                    { value: "initials", label: "Show initials" },
+                    { value: "off", label: "Hide avatar" },
+                  ]}
+                  onChange={handleAvatarModeChange}
+                />
+                {avatarMode === "photo" && (
+                  <div className="flex items-center gap-1">
+                    <label className="inline-flex h-7 cursor-pointer items-center justify-center rounded-md border bg-background px-2.5 text-[11px] font-medium hover:bg-muted">
+                      {avatarBusy ? "Processing…" : photoUrl ? "Replace" : "Upload"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={avatarBusy}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleAvatarFile(file);
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                    {userAvatarUrl && photoUrl !== userAvatarUrl && (
+                      <button
+                        type="button"
+                        onClick={() => onPhotoChange?.(userAvatarUrl)}
+                        className="text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                      >
+                        Use profile
+                      </button>
+                    )}
+                    {photoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => onPhotoChange?.(undefined)}
+                        aria-label="Remove photo"
+                        className="ml-auto flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-destructive"
+                      >
+                        <XIcon className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            {avatarMode === "photo" && avatarError && (
+              <p className="text-xs text-destructive">{avatarError}</p>
+            )}
+
+            {avatarMode !== "off" && (
+              <div className="space-y-2.5">
+                <FieldRow label="Shape">
+                  <div className="flex gap-1">
+                    {([
+                      { value: "circle" as AvatarShape, label: "Circle" },
+                      { value: "rounded" as AvatarShape, label: "Rounded" },
+                      { value: "square" as AvatarShape, label: "Square" },
+                    ]).map(({ value, label }) => (
+                      <Button
+                        key={value}
+                        variant={avatarShape === value ? "default" : "outline"}
+                        size="sm"
+                        className="h-8 px-2.5 text-[11px]"
+                        onClick={() => update("avatarShape", value)}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </div>
+                </FieldRow>
+
+                {avatarMode === "initials" && (
+                  <FieldRow label="Initials bg">
+                    <SelectField<AvatarInitialsBg>
+                      value={avatarInitialsBg}
+                      options={[
+                        { value: "accent", label: "Accent" },
+                        { value: "white", label: "White" },
+                      ]}
+                      onChange={(v) => update("avatarInitialsBg", v)}
+                    />
+                  </FieldRow>
+                )}
+
+                <StackedRow label="Size">
+                  <SliderRow
+                    value={avatarSize}
+                    min={56}
+                    max={200}
+                    step={2}
+                    suffix={`${avatarSize}px`}
+                    onChange={(v) => update("avatarSize", Math.round(v))}
+                  />
+                </StackedRow>
+
+                {design.template !== "portrait" && (
+                  <FieldRow label="Position">
+                    <div className="flex gap-1">
+                      {([
+                        { value: "left" as AvatarPosition, label: "Left" },
+                        { value: "right" as AvatarPosition, label: "Right" },
+                      ]).map(({ value, label }) => (
+                        <Button
+                          key={value}
+                          variant={avatarPosition === value ? "default" : "outline"}
+                          size="sm"
+                          className="h-8 px-3 text-[11px]"
+                          onClick={() => update("avatarPosition", value)}
+                        >
+                          {label}
+                        </Button>
+                      ))}
+                    </div>
+                  </FieldRow>
+                )}
+              </div>
+            )}
+          </div>
+        </SectionGroup>
+      )}
+
+      {/* Accent Colour */}
+      <SectionGroup title="Accent colour" hint="Used on headings, bullets, and highlights" icon={Palette}>
         <div className="space-y-3">
           <div className="flex flex-wrap gap-1.5">
             {ACCENT_PRESETS.map(({ key, hex }) => {
@@ -1067,7 +1625,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                   key={key}
                   type="button"
                   className={cn(
-                    "h-6 w-6 rounded-full transition-all shrink-0",
+                    "h-7 w-7 shrink-0 rounded-full transition-all",
                     selected && "ring-2 ring-primary ring-offset-1"
                   )}
                   style={{ backgroundColor: hex }}
@@ -1082,7 +1640,8 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               type="color"
               value={currentHex}
               onChange={(e) => update("accentColor", e.target.value)}
-              className="h-9 w-9 cursor-pointer rounded border border-input bg-transparent p-0.5"
+              className="h-8 w-8 cursor-pointer rounded border border-input bg-transparent p-0.5"
+              aria-label="Custom accent colour"
             />
             <Input
               value={currentHex}
@@ -1092,394 +1651,164 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                   update("accentColor", v);
                 }
               }}
-              className="h-9 w-28 font-mono text-xs"
+              className="h-8 w-28 font-mono text-xs"
               placeholder="#000000"
             />
           </div>
         </div>
-      </section>
+      </SectionGroup>
 
-
-      {/* Typography */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Typography</Label>
+      {/* Typography — font, sizes, weights, case, line spacing as a single compact group */}
+      <SectionGroup title="Typography" hint="Font family, sizes, and weights" icon={Type}>
         <div className="space-y-3">
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Body size</span>
-            <div className="flex items-center gap-2">
-              {(["S", "M", "L"] as const).map((size) => (
-                <Button
-                  key={size}
-                  variant={design.bodySize === size ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => update("bodySize", size)}
-                >
-                  {size}
-                </Button>
-              ))}
-              <Input
-                type="number"
-                min={8}
-                max={12}
-                value={activeBodyPt}
-                className="h-9 w-16 text-center"
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10);
-                  if (v >= 8 && v <= 12) {
-                    const matchedSize = Object.entries(BODY_SIZE_PT).find(
-                      ([, pt]) => pt === v
-                    );
-                    update("bodySize", matchedSize ? (matchedSize[0] as "S" | "M" | "L") : v);
-                  }
-                }}
-              />
-              <span className="text-xs text-muted-foreground">pt</span>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Name size</span>
-            <div className="flex items-center gap-2">
-              {(["S", "M", "L"] as const).map((size) => (
-                <Button
-                  key={size}
-                  variant={design.nameSize === size ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => update("nameSize", size)}
-                >
-                  {size}
-                </Button>
-              ))}
-              <Input
-                type="number"
-                min={18}
-                max={32}
-                value={activeNamePt}
-                className="h-9 w-16 text-center"
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10);
-                  if (v >= 18 && v <= 32) {
-                    const matchedSize = Object.entries(NAME_SIZE_PT).find(
-                      ([, pt]) => pt === v
-                    );
-                    update("nameSize", matchedSize ? (matchedSize[0] as "S" | "M" | "L") : v);
-                  }
-                }}
-              />
-              <span className="text-xs text-muted-foreground">pt</span>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Name weight</span>
-            <div className="flex gap-1">
-              {(["light", "regular", "medium", "bold", "black"] as FontWeight[]).map((w) => (
-                <Button
-                  key={w}
-                  variant={(design.nameWeight ?? "bold") === w ? "default" : "outline"}
-                  size="sm"
-                  className="flex-1 text-xs capitalize"
-                  onClick={() => update("nameWeight", w)}
-                >
-                  {w}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <span className="mb-2 block text-xs font-medium text-foreground">Section Headings</span>
-            <div className="space-y-3">
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Size</span>
-                <div className="flex items-center gap-2">
-                {(["S", "M", "L"] as const).map((size) => (
-                  <Button
-                    key={size}
-                    variant={(design.sectionHeadingSize ?? "M") === size ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => update("sectionHeadingSize", size)}
-                  >
-                    {size}
-                  </Button>
-                ))}
-                <Input
-                  type="number"
-                  min={7}
-                  max={13}
-                  value={typeof design.sectionHeadingSize === "number" ? design.sectionHeadingSize : (SECTION_HEADING_SIZE_PT[design.sectionHeadingSize ?? "M"] ?? 9)}
-                  className="h-9 w-16 text-center"
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    if (v >= 7 && v <= 13) {
-                      const matched = Object.entries(SECTION_HEADING_SIZE_PT).find(([, pt]) => pt === v);
-                      update("sectionHeadingSize", matched ? (matched[0] as "S" | "M" | "L") : v);
-                    }
-                  }}
-                />
-                <span className="text-xs text-muted-foreground">pt</span>
-                </div>
-              </div>
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Weight</span>
-                <div className="flex gap-1">
-                  {(["light", "regular", "medium", "bold", "black"] as FontWeight[]).map((w) => (
-                    <Button
-                      key={w}
-                      variant={(design.sectionHeadingWeight ?? "bold") === w ? "default" : "outline"}
-                      size="sm"
-                      className="flex-1 text-xs capitalize"
-                      onClick={() => update("sectionHeadingWeight", w)}
-                    >
-                      {w}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Text case</span>
-                <div className="flex gap-1">
-                  {([
-                    { value: "as-written" as TextCase, label: "As written" },
-                    { value: "uppercase" as TextCase, label: "Uppercase" },
-                    { value: "capitalize" as TextCase, label: "Capitalize" },
-                  ]).map(({ value, label }) => (
-                    <Button
-                      key={value}
-                      variant={(design.sectionHeadingCase ?? "uppercase") === value ? "default" : "outline"}
-                      size="sm"
-                      className="flex-1 text-xs"
-                      onClick={() => update("sectionHeadingCase", value)}
-                    >
-                      {label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Line spacing</span>
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={1.0}
-                max={2.0}
-                step={0.1}
-                value={design.lineSpacing}
-                className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
-                onChange={(e) => update("lineSpacing", parseFloat(e.target.value))}
-              />
-              <span className="w-8 text-right text-xs font-medium tabular-nums">
-                {design.lineSpacing.toFixed(1)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Avatar — only for templates that render one (Aurora) */}
-      {supportsAvatar && (
-        <section>
-          <Label className="mb-3 block text-sm font-semibold">Avatar</Label>
-          <div className="space-y-3">
-            {/* Mode */}
-            <div>
-              <span className="mb-1.5 block text-xs text-muted-foreground">Mode</span>
-              <div className="flex gap-1">
-                {([
-                  { value: "photo" as AvatarMode, label: "Photo" },
-                  { value: "initials" as AvatarMode, label: "Initials" },
-                  { value: "off" as AvatarMode, label: "Off" },
-                ]).map(({ value, label }) => (
-                  <Button
-                    key={value}
-                    variant={avatarMode === value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => update("avatarMode", value)}
-                  >
-                    {label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            {/* Upload (only when mode=photo) */}
-            {avatarMode === "photo" && (
-              <div>
-                <span className="mb-1.5 block text-xs text-muted-foreground">Photo</span>
-                <div className="flex items-center gap-3">
-                  <div
-                    className="flex shrink-0 items-center justify-center overflow-hidden border bg-muted text-xs text-muted-foreground"
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius:
-                        avatarShape === "circle" ? "50%" : avatarShape === "rounded" ? 10 : 2,
-                    }}
-                  >
-                    {photoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={photoUrl} alt="Avatar preview" className="h-full w-full object-cover" />
-                    ) : (
-                      <span>—</span>
+          <StackedRow label="Font">
+            <div className="grid grid-cols-4 gap-1.5">
+              {FONTS.map((f) => {
+                const selected = design.font === f.name;
+                return (
+                  <button
+                    key={f.name}
+                    type="button"
+                    className={cn(
+                      "relative rounded-md border py-2 text-center transition-all hover:border-foreground/30",
+                      selected && "border-primary ring-2 ring-primary"
                     )}
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="inline-flex cursor-pointer items-center justify-center rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-muted">
-                      {avatarBusy ? "Processing…" : photoUrl ? "Replace" : "Upload"}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={avatarBusy}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleAvatarFile(file);
-                          e.target.value = "";
-                        }}
-                      />
-                    </label>
-                    {photoUrl && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
-                        onClick={() => onPhotoChange?.(undefined)}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                {avatarError && <p className="mt-1.5 text-xs text-destructive">{avatarError}</p>}
-                <p className="mt-1.5 text-[11px] text-muted-foreground">
-                  Resized to 256px max. Stored inline with the CV.
-                </p>
-              </div>
-            )}
-
-            {avatarMode === "initials" && (
-              <p className="text-[11px] text-muted-foreground">
-                Uses initials from your name{contactName ? ` (“${(contactName.match(/\S+/g) ?? []).map((p) => p[0]).slice(0, 2).join("").toUpperCase()}”)` : ""}.
-              </p>
-            )}
-
-            {avatarMode !== "off" && (
-              <>
-                {/* Shape */}
-                <div>
-                  <span className="mb-1.5 block text-xs text-muted-foreground">Shape</span>
-                  <div className="flex gap-1">
-                    {([
-                      { value: "circle" as AvatarShape, label: "Circle" },
-                      { value: "rounded" as AvatarShape, label: "Rounded" },
-                      { value: "square" as AvatarShape, label: "Square" },
-                    ]).map(({ value, label }) => (
-                      <Button
-                        key={value}
-                        variant={avatarShape === value ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => update("avatarShape", value)}
-                      >
-                        {label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Initials background — only relevant when rendering initials */}
-                {avatarMode === "initials" && (
-                  <div>
-                    <span className="mb-1.5 block text-xs text-muted-foreground">Initials background</span>
-                    <div className="flex gap-1">
-                      {([
-                        { value: "accent" as AvatarInitialsBg, label: "Accent" },
-                        { value: "white" as AvatarInitialsBg, label: "White" },
-                      ]).map(({ value, label }) => (
-                        <Button
-                          key={value}
-                          variant={avatarInitialsBg === value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => update("avatarInitialsBg", value)}
-                        >
-                          {label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Size */}
-                <div>
-                  <span className="mb-1.5 block text-xs text-muted-foreground">Size</span>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min={56}
-                      max={200}
-                      step={2}
-                      value={avatarSize}
-                      className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
-                      onChange={(e) => update("avatarSize", parseInt(e.target.value, 10))}
-                    />
-                    <span className="w-10 text-right text-xs font-medium tabular-nums">
-                      {avatarSize}px
+                    onClick={() => update("font", f.name)}
+                  >
+                    <span className="block text-base leading-none" style={{ fontFamily: FONT_STACKS[f.name] }}>
+                      Aa
                     </span>
-                  </div>
-                </div>
+                    <span className="mt-1 block text-[10px] font-medium">{f.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </StackedRow>
 
-                {/* Position — hidden for templates with a fixed avatar slot */}
-                {design.template !== "portrait" && (
-                  <div>
-                    <span className="mb-1.5 block text-xs text-muted-foreground">Position</span>
-                    <div className="flex gap-1">
-                      {([
-                        { value: "left" as AvatarPosition, label: "Left" },
-                        { value: "right" as AvatarPosition, label: "Right" },
-                      ]).map(({ value, label }) => (
-                        <Button
-                          key={value}
-                          variant={avatarPosition === value ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => update("avatarPosition", value)}
-                        >
-                          {label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </section>
-      )}
+          <FieldRow label="Body size">
+            <SizeInput
+              value={currentBodyPt}
+              min={8}
+              max={14}
+              step={0.5}
+              defaultValue={10}
+              unit="pt"
+              onChange={(v) => {
+                const matched = Object.entries(BODY_SIZE_PT).find(([, pt]) => pt === v);
+                update("bodySize", matched ? (matched[0] as "S" | "M" | "L") : v);
+              }}
+            />
+          </FieldRow>
+
+          <FieldRow label="Name size">
+            <SizeInput
+              value={currentNamePt}
+              min={16}
+              max={36}
+              step={0.5}
+              defaultValue={24}
+              unit="pt"
+              onChange={(v) => {
+                const matched = Object.entries(NAME_SIZE_PT).find(([, pt]) => pt === v);
+                update("nameSize", matched ? (matched[0] as "S" | "M" | "L") : v);
+              }}
+            />
+          </FieldRow>
+
+          <FieldRow label="Name weight">
+            <SelectField<FontWeight>
+              value={design.nameWeight ?? "bold"}
+              options={[
+                { value: "light", label: "Light" },
+                { value: "regular", label: "Regular" },
+                { value: "medium", label: "Medium" },
+                { value: "bold", label: "Bold" },
+                { value: "black", label: "Black" },
+              ]}
+              onChange={(v) => update("nameWeight", v)}
+            />
+          </FieldRow>
+
+          <FieldRow label="Heading size">
+            <SizeInput
+              value={currentHeadingPt}
+              min={7}
+              max={14}
+              step={0.5}
+              defaultValue={9}
+              unit="pt"
+              onChange={(v) => {
+                const matched = Object.entries(SECTION_HEADING_SIZE_PT).find(([, pt]) => pt === v);
+                update("sectionHeadingSize", matched ? (matched[0] as "S" | "M" | "L") : v);
+              }}
+            />
+          </FieldRow>
+
+          <FieldRow label="Heading weight">
+            <SelectField<FontWeight>
+              value={design.sectionHeadingWeight ?? "bold"}
+              options={[
+                { value: "light", label: "Light" },
+                { value: "regular", label: "Regular" },
+                { value: "medium", label: "Medium" },
+                { value: "bold", label: "Bold" },
+                { value: "black", label: "Black" },
+              ]}
+              onChange={(v) => update("sectionHeadingWeight", v)}
+            />
+          </FieldRow>
+
+          <FieldRow label="Heading case">
+            <SelectField<TextCase>
+              value={design.sectionHeadingCase ?? "uppercase"}
+              options={[
+                { value: "as-written", label: "As written" },
+                { value: "uppercase", label: "UPPERCASE" },
+                { value: "capitalize", label: "Title Case" },
+              ]}
+              onChange={(v) => update("sectionHeadingCase", v)}
+            />
+          </FieldRow>
+
+          <StackedRow label="Line spacing">
+            <SliderRow
+              value={design.lineSpacing}
+              min={1.0}
+              max={2.0}
+              step={0.1}
+              suffix={design.lineSpacing.toFixed(1)}
+              onChange={(v) => update("lineSpacing", v)}
+            />
+          </StackedRow>
+        </div>
+      </SectionGroup>
 
       {/* Layout */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Layout</Label>
+      <SectionGroup title="Layout" hint="Paper, spacing, and margins" icon={Columns2}>
         <div className="space-y-3">
           {supportsHeaderAlignment && (
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Header alignment</span>
-            <div className="flex gap-1">
-              {([
-                { value: "left" as HeaderAlignment, icon: AlignLeft },
-                { value: "center" as HeaderAlignment, icon: AlignCenter },
-                { value: "right" as HeaderAlignment, icon: AlignRight },
-              ]).map(({ value, icon: Icon }) => (
-                <Button
-                  key={value}
-                  variant={design.headerAlignment === value ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => update("headerAlignment", value)}
-                >
-                  <Icon className="h-4 w-4" />
-                </Button>
-              ))}
-            </div>
-          </div>
+            <FieldRow label="Header">
+              <div className="flex gap-1">
+                {([
+                  { value: "left" as HeaderAlignment, icon: AlignLeft },
+                  { value: "center" as HeaderAlignment, icon: AlignCenter },
+                  { value: "right" as HeaderAlignment, icon: AlignRight },
+                ]).map(({ value, icon: Icon }) => (
+                  <Button
+                    key={value}
+                    variant={design.headerAlignment === value ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 w-8 px-0"
+                    onClick={() => update("headerAlignment", value)}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </Button>
+                ))}
+              </div>
+            </FieldRow>
           )}
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Paper size</span>
+
+          <FieldRow label="Paper">
             <div className="flex gap-1">
               {([
                 { value: "a4" as PaperSize, label: "A4" },
@@ -1489,155 +1818,104 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                   key={value}
                   variant={design.paperSize === value ? "default" : "outline"}
                   size="sm"
+                  className="h-8 px-3 text-xs"
                   onClick={() => update("paperSize", value)}
                 >
                   {label}
                 </Button>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
+          </FieldRow>
 
+          <StackedRow label="Section spacing">
+            <SliderRow
+              value={design.sectionSpacing ?? 16}
+              min={8}
+              max={32}
+              step={1}
+              suffix={`${design.sectionSpacing ?? 16}px`}
+              onChange={(v) => update("sectionSpacing", Math.round(v))}
+            />
+          </StackedRow>
 
-      {/* Spacing */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Spacing</Label>
-        <div className="space-y-4">
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">
-              Space between sections
-            </span>
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={8}
-                max={32}
-                step={1}
-                value={design.sectionSpacing ?? 16}
-                className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
-                onChange={(e) => update("sectionSpacing", parseInt(e.target.value, 10))}
-              />
-              <span className="w-10 text-right text-xs font-medium tabular-nums">
-                {design.sectionSpacing ?? 16}px
-              </span>
-            </div>
-          </div>
           {!isSidebar && design.template !== "clean-sidebar" && (
-          <>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">
-              Left & Right margins
-            </span>
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={0.3}
-                max={1.0}
-                step={0.05}
-                value={design.marginX ?? 0.75}
-                className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
-                onChange={(e) => update("marginX", parseFloat(e.target.value))}
-              />
-              <span className="w-10 text-right text-xs font-medium tabular-nums">
-                {(design.marginX ?? 0.75).toFixed(2)}in
-              </span>
-            </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">
-              Top & Bottom margins
-            </span>
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min={0.3}
-                max={1.0}
-                step={0.05}
-                value={design.marginY ?? 0.5}
-                className="h-2 flex-1 cursor-pointer appearance-none rounded-lg bg-muted accent-primary"
-                onChange={(e) => update("marginY", parseFloat(e.target.value))}
-              />
-              <span className="w-10 text-right text-xs font-medium tabular-nums">
-                {(design.marginY ?? 0.5).toFixed(2)}in
-              </span>
-            </div>
-          </div>
-          </>
+            <>
+              <StackedRow label="Horizontal margin">
+                <SliderRow
+                  value={design.marginX ?? 0.75}
+                  min={0.3}
+                  max={1.0}
+                  step={0.05}
+                  suffix={`${(design.marginX ?? 0.75).toFixed(2)}in`}
+                  onChange={(v) => update("marginX", v)}
+                />
+              </StackedRow>
+              <StackedRow label="Vertical margin">
+                <SliderRow
+                  value={design.marginY ?? 0.5}
+                  min={0.3}
+                  max={1.0}
+                  step={0.05}
+                  suffix={`${(design.marginY ?? 0.5).toFixed(2)}in`}
+                  onChange={(v) => update("marginY", v)}
+                />
+              </StackedRow>
+            </>
           )}
         </div>
-      </section>
-
+      </SectionGroup>
 
       {/* Details */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Details</Label>
+      <SectionGroup title="Details" hint="Bullets, dates, and separators" icon={SlidersHorizontal}>
         <div className="space-y-3">
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Bullet style</span>
+          <FieldRow label="Bullet">
             <div className="flex gap-1">
               {BULLET_OPTIONS.map(({ value, label }) => (
                 <Button
                   key={value}
                   variant={design.bulletStyle === value ? "default" : "outline"}
                   size="sm"
-                  className="min-w-9"
+                  className="h-8 min-w-8 px-2 text-xs"
                   onClick={() => update("bulletStyle", value)}
                 >
                   {label}
                 </Button>
               ))}
             </div>
-          </div>
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Date format</span>
-            <div className="flex gap-1">
-              {DATE_FORMAT_LABELS.map(({ value, label }) => (
-                <Button
-                  key={value}
-                  variant={design.dateFormat === value ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => update("dateFormat", value)}
-                >
-                  {label}
-                </Button>
-              ))}
-            </div>
-          </div>
+          </FieldRow>
+
+          <FieldRow label="Date format">
+            <SelectField<DateFormat>
+              value={design.dateFormat}
+              options={DATE_FORMAT_LABELS}
+              onChange={(v) => update("dateFormat", v)}
+            />
+          </FieldRow>
+
           {supportsContactSeparator && (
-          <div>
-            <span className="mb-1.5 block text-xs text-muted-foreground">Contact separator</span>
-            <div className="flex gap-1">
-              {([
-                { value: "pipe" as ContactSeparator, label: "|" },
-                { value: "dot" as ContactSeparator, label: "·" },
-                { value: "dash" as ContactSeparator, label: "–" },
-                { value: "comma" as ContactSeparator, label: "," },
-                { value: "none" as ContactSeparator, label: "none" },
-              ]).map(({ value, label }) => (
-                <Button
-                  key={value}
-                  variant={(design.contactSeparator ?? "pipe") === value ? "default" : "outline"}
-                  size="sm"
-                  className="min-w-9"
-                  onClick={() => update("contactSeparator", value)}
-                >
-                  {label}
-                </Button>
-              ))}
-            </div>
-          </div>
+            <FieldRow label="Separator">
+              <SelectField<ContactSeparator>
+                value={design.contactSeparator ?? "pipe"}
+                options={[
+                  { value: "pipe", label: "Pipe  |" },
+                  { value: "dot", label: "Dot  ·" },
+                  { value: "dash", label: "Dash  –" },
+                  { value: "comma", label: "Comma  ," },
+                  { value: "none", label: "None" },
+                ]}
+                onChange={(v) => update("contactSeparator", v)}
+              />
+            </FieldRow>
           )}
         </div>
-      </section>
+      </SectionGroup>
 
       {/* Section Order */}
-      <section>
-        <Label className="mb-3 block text-sm font-semibold">Section Order</Label>
+      <SectionGroup title="Section order" hint="Drag to reorder sections on the resume" icon={ListOrdered}>
         {isTwoCol ? (
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <span className="mb-2 block text-xs font-medium text-muted-foreground">{labelLeft}</span>
+              <span className="mb-2 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{labelLeft}</span>
               <DndContext id="left-col-reorder" collisionDetection={closestCenter} onDragEnd={handleLeftColDragEnd}>
                 <SortableContext items={displayLeft} strategy={verticalListSortingStrategy}>
                   <div className="flex flex-col gap-1">
@@ -1649,7 +1927,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               </DndContext>
             </div>
             <div>
-              <span className="mb-2 block text-xs font-medium text-muted-foreground">{labelRight}</span>
+              <span className="mb-2 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{labelRight}</span>
               <DndContext id="right-col-reorder" collisionDetection={closestCenter} onDragEnd={handleRightColDragEnd}>
                 <SortableContext items={displayRight} strategy={verticalListSortingStrategy}>
                   <div className="flex flex-col gap-1">
@@ -1675,72 +1953,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
             </SortableContext>
           </DndContext>
         )}
-      </section>
-
-      {/* Template */}
-      <section className="pb-4">
-        <Label className="mb-3 block text-sm font-semibold">Template</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.map((t) => {
-            const selected = design.template === t.name;
-            const imgMap: Record<string, string> = {
-              classic: "classic.jpg",
-              "classic-serif": "classic-serif.png",
-              sharp: "sharp.jpg",
-              minimal: "minimal.jpg",
-              executive: "executive.jpg",
-              sidebar: "slate.jpg",
-              "sidebar-right": "onyx.jpg",
-              "two-column": "horizon.jpg",
-              divide: "divide.jpg",
-              folio: "folio.jpg",
-              metro: "metro.jpg",
-              harvard: "harward.jpg",
-              ledger: "ledger.jpg",
-              aurora: "aurora.jpg",
-              "executive-pro": "executive-pro.jpg",
-              "electric-lilac": "electric-lilac.jpg",
-              "bold-accent": "bold-accent.jpg",
-              "executive-sidebar": "executive-sidebar.jpg",
-              "clean-sidebar": "clean-sidebar.jpg",
-              blueprint: "blueprint.jpg",
-              wentworth: "wentworth.jpg",
-              coastal: "coastal.jpg",
-              orchid: "orchid.jpg",
-              portrait: "portrait.jpg",
-            };
-            const imgSrc = imgMap[t.name];
-            return (
-              <button
-                key={t.name}
-                type="button"
-                className={cn(
-                  "relative rounded-lg border p-1 text-left transition-all overflow-hidden",
-                  selected && "ring-2 ring-primary"
-                )}
-                onClick={() => update("template", t.name)}
-              >
-                {imgSrc ? (
-                  <img
-                    src={`/img/templates/${imgSrc}`}
-                    alt={t.label}
-                    className="w-full rounded"
-                    style={{ aspectRatio: "210/240", objectFit: "cover", objectPosition: "top" }}
-                  />
-                ) : (
-                  <div className="h-28 rounded bg-muted">
-                    <TemplatePreview template={t.name} />
-                  </div>
-                )}
-                <div className="mt-2 px-1 pb-1">
-                  <p className="text-sm font-semibold">{t.label}</p>
-                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{t.desc}</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+      </SectionGroup>
 
     </div>
   );

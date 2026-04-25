@@ -22,6 +22,8 @@ interface JobsContentProps {
   cvs: CvOption[];
   preferredLocationsSet: boolean;
   defaultCvId?: string | null;
+  defaultKeyword?: string;
+  defaultLocations?: string[];
   initialBestMatches?: unknown[];
   initialMoreJobs?: unknown[];
 }
@@ -57,11 +59,11 @@ const JOB_TYPE_OPTIONS: { label: string; value: JobType }[] = [
   { label: "Permanent", value: "permanent" },
 ];
 
-export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, initialBestMatches = [], initialMoreJobs = [] }: JobsContentProps) {
+export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKeyword = "", defaultLocations = [], initialBestMatches = [], initialMoreJobs = [] }: JobsContentProps) {
   const { log } = useActivity();
   const [selectedCvId, setSelectedCvId] = useState<string>(defaultCvId ?? cvs[0]?.id ?? "");
-  const [keyword, setKeyword] = useState("");
-  const [locations, setLocations] = useState<string[]>([]);
+  const [keyword, setKeyword] = useState(defaultKeyword);
+  const [locations, setLocations] = useState<string[]>(defaultLocations);
   const [locationInput, setLocationInput] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<Set<JobType>>(new Set());
   const [sortBy, setSortBy] = useState<"relevance" | "match" | "date">("date");

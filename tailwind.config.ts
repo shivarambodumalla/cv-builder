@@ -67,9 +67,14 @@ const config: Config = {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(-50%)" },
         },
+        "shimmer-sweep": {
+          "0%": { transform: "translateX(-150%)" },
+          "60%, 100%": { transform: "translateX(150%)" },
+        },
       },
       animation: {
         "logo-scroll": "logo-scroll 60s linear infinite",
+        "shimmer-sweep": "shimmer-sweep 3s ease-in-out infinite",
       },
     },
   },
