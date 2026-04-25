@@ -22,6 +22,7 @@ export interface JobCardJob {
   match_label_color?: string | null;
   match_label_bg?: string | null;
   match_show_score?: boolean;
+  provider?: string;
 }
 
 interface JobCardProps {
@@ -104,7 +105,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
   function apply() {
     fetch("/api/jobs/track-click", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobId: job.id, jobTitle: job.title, company: job.company, location: job.location, salaryMin: job.salary_min, salaryMax: job.salary_max, matchScore: score, redirectUrl: job.redirect_url }),
+      body: JSON.stringify({ jobId: job.id, jobTitle: job.title, company: job.company, location: job.location, salaryMin: job.salary_min, salaryMax: job.salary_max, matchScore: score, redirectUrl: job.redirect_url, provider: job.provider }),
     }).catch(() => {});
     log("Applied to job", { title: job.title, company: job.company, score, location: job.location });
     window.open(job.redirect_url, "_blank", "noopener,noreferrer");

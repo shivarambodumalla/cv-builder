@@ -25,6 +25,12 @@ export interface WeeklyJobItem {
   matchLabelBg: string;
   matchShowScore: boolean;
   applyUrl: string;
+  provider: string;
+}
+
+export interface ProviderCount {
+  name: string;
+  count: number;
 }
 
 interface WeeklyJobsEmailProps {
@@ -41,10 +47,24 @@ interface WeeklyJobsEmailProps {
   logoText?: string;
   unsubscribeUrl: string;
   preferencesUrl: string;
+  // Per-provider breakdown for the digest. Hidden when only one provider
+  // contributed — the line is meant as a "see, we shopped around" signal,
+  // not vendor noise.
+  providerBreakdown?: ProviderCount[];
   // Admin-editable copy overrides — when omitted, the defaults below render.
   heroHeadingOverride?: string;
   heroSubOverride?: string;
   footerNoteOverride?: string;
+}
+
+const PROVIDER_LABELS: Record<string, string> = {
+  adzuna: "Adzuna",
+  jooble: "Jooble",
+  careerjet: "Careerjet",
+};
+
+function formatProviderLabel(name: string): string {
+  return PROVIDER_LABELS[name] ?? name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 const BRAND_TEAL = "#1a7a6d";
@@ -69,10 +89,12 @@ export function WeeklyJobsEmail({
   logoText = "CVEdge",
   unsubscribeUrl,
   preferencesUrl,
+  providerBreakdown,
   heroHeadingOverride,
   heroSubOverride,
   footerNoteOverride,
 }: WeeklyJobsEmailProps) {
+  const showBreakdown = (providerBreakdown?.length ?? 0) >= 2;
   const preview = `${jobCount} new ${targetTitle || "job"} matches this week${location ? ` in ${location}` : ""}`;
   const openCvUrl = cvId ? `${appUrl}/resume/${cvId}` : `${appUrl}/dashboard`;
   const viewAllUrl = cvId ? `${appUrl}/jobs?cvId=${cvId}` : `${appUrl}/jobs`;
@@ -110,6 +132,20 @@ export function WeeklyJobsEmail({
                 </>
               )}
             </Text>
+            {showBreakdown && (
+              <Text style={breakdownLine}>
+                Sourced from{" "}
+                {providerBreakdown!.map((p, i) => (
+                  <React.Fragment key={p.name}>
+                    {i > 0 ? <span style={dot}> · </span> : null}
+                    <span style={{ color: TEXT_DARK, fontWeight: 600 }}>
+                      {formatProviderLabel(p.name)}
+                    </span>{" "}
+                    ({p.count})
+                  </React.Fragment>
+                ))}
+              </Text>
+            )}
           </Section>
 
           {/* Top match — featured */}
@@ -306,6 +342,13 @@ const heroSub: React.CSSProperties = {
   fontSize: 14,
   lineHeight: 1.5,
   margin: 0,
+};
+
+const breakdownLine: React.CSSProperties = {
+  color: TEXT_MUTED,
+  fontSize: 12,
+  lineHeight: 1.5,
+  margin: "10px 0 0",
 };
 
 const topCard: React.CSSProperties = {

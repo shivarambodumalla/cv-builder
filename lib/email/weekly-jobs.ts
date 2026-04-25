@@ -2,7 +2,7 @@ import { Resend } from "resend";
 import { render } from "@react-email/render";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { matchJobsForCV, getMatchLabel, type ScoredJob, type MatchDiagnostics } from "@/lib/jobs/matcher";
-import { WeeklyJobsEmail, type WeeklyJobItem } from "@/components/emails/weekly-jobs-email";
+import { WeeklyJobsEmail, type WeeklyJobItem, type ProviderCount } from "@/components/emails/weekly-jobs-email";
 import { WeeklyJobsEmptyEmail } from "@/components/emails/weekly-jobs-empty-email";
 import { canSendTo, recordSentJobs, getRecentlySentJobIds } from "@/lib/email/can-send";
 import { makeUnsubscribeToken } from "@/lib/email/unsubscribe-token";
@@ -45,9 +45,24 @@ function formatSalary(min: number | null, max: number | null): string | null {
   return fmt(min || max || 0);
 }
 
-function trackClickUrl(jobId: string, redirect: string): string {
+function trackClickUrl(jobId: string, redirect: string, provider: string): string {
   const params = new URLSearchParams({ job_id: jobId, src: "email_weekly", redirect });
+  if (provider) params.set("provider", provider);
   return `${APP_URL}/api/jobs/track-click?${params.toString()}`;
+}
+
+// Counts per provider, sorted by descending count then provider name.
+// Used in the email's "Sourced from …" line so users see we shopped multiple
+// boards (and analytics can attribute opens/clicks back to the source).
+function buildProviderBreakdown(jobs: ScoredJob[]): ProviderCount[] {
+  const counts = new Map<string, number>();
+  for (const j of jobs) {
+    if (!j.provider) continue;
+    counts.set(j.provider, (counts.get(j.provider) ?? 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
 // Fire-and-forget observability. Each run of the matcher gets one row so we
@@ -93,7 +108,8 @@ function toItem(job: ScoredJob): WeeklyJobItem {
     matchLabelColor: job.matchLabelColor,
     matchLabelBg: job.matchLabelBg,
     matchShowScore: job.matchShowScore,
-    applyUrl: trackClickUrl(job.id, job.redirect_url),
+    applyUrl: trackClickUrl(job.id, job.redirect_url, job.provider),
+    provider: job.provider,
   };
 }
 
@@ -110,13 +126,14 @@ function buildSampleItems(): { top: WeeklyJobItem; others: WeeklyJobItem[] } {
     salary: "$180k–$220k",
     postedAgo: "2 days ago",
     applyUrl: `${APP_URL}/jobs`,
+    provider: "careerjet",
     ...makeBadge(92),
   };
   const others: WeeklyJobItem[] = [
-    { id: "sample-2", title: "Product Manager, Growth", company: "Linear", location: "New York, NY", salary: "$160k–$190k", postedAgo: "1 day ago", applyUrl: `${APP_URL}/jobs`, ...makeBadge(87) },
-    { id: "sample-3", title: "Principal PM — Platform", company: "Notion", location: "San Francisco, CA", salary: "$210k–$250k", postedAgo: "3 days ago", applyUrl: `${APP_URL}/jobs`, ...makeBadge(78) },
-    { id: "sample-4", title: "Senior PM, Payments", company: "Square", location: "Remote", salary: null, postedAgo: "4 days ago", applyUrl: `${APP_URL}/jobs`, ...makeBadge(71) },
-    { id: "sample-5", title: "Lead Product Manager", company: "Figma", location: "San Francisco, CA", salary: "$200k–$240k", postedAgo: "5 days ago", applyUrl: `${APP_URL}/jobs`, ...makeBadge(64) },
+    { id: "sample-2", title: "Product Manager, Growth", company: "Linear", location: "New York, NY", salary: "$160k–$190k", postedAgo: "1 day ago", applyUrl: `${APP_URL}/jobs`, provider: "careerjet", ...makeBadge(87) },
+    { id: "sample-3", title: "Principal PM — Platform", company: "Notion", location: "San Francisco, CA", salary: "$210k–$250k", postedAgo: "3 days ago", applyUrl: `${APP_URL}/jobs`, provider: "adzuna", ...makeBadge(78) },
+    { id: "sample-4", title: "Senior PM, Payments", company: "Square", location: "Remote", salary: null, postedAgo: "4 days ago", applyUrl: `${APP_URL}/jobs`, provider: "adzuna", ...makeBadge(71) },
+    { id: "sample-5", title: "Lead Product Manager", company: "Figma", location: "San Francisco, CA", salary: "$200k–$240k", postedAgo: "5 days ago", applyUrl: `${APP_URL}/jobs`, provider: "jooble", ...makeBadge(64) },
   ];
   return { top, others };
 }
@@ -240,10 +257,16 @@ export async function sendWeeklyJobsEmail(
   // ============================================================
   if (options.forceSample) {
     const sample = buildSampleItems();
+    const sampleBreakdown: ProviderCount[] = [
+      { name: "careerjet", count: 2 },
+      { name: "adzuna", count: 2 },
+      { name: "jooble", count: 1 },
+    ];
     return await sendWithMatches({
       admin, to, template, firstName, targetTitle: "Product Manager", location: "Remote · US",
       topItem: sample.top, otherItems: sample.others, atsScore, cvId: null,
       userId, unsubscribeUrl, preferencesUrl, skipRecordJobs: true,
+      providerBreakdown: sampleBreakdown,
     });
   }
 
@@ -307,6 +330,7 @@ export async function sendWeeklyJobsEmail(
           atsScore, cvId: cv?.id ?? null,
           userId, unsubscribeUrl, preferencesUrl,
           jobIdsToRecord: fresh.map((j) => j.id),
+          providerBreakdown: buildProviderBreakdown(fresh),
         });
       }
     } catch (err) {
@@ -373,11 +397,13 @@ async function sendWithMatches(params: {
   preferencesUrl: string;
   jobIdsToRecord?: string[];
   skipRecordJobs?: boolean;
+  providerBreakdown?: ProviderCount[];
 }): Promise<WeeklyJobsOutcome> {
   const {
     admin, to, template, firstName, targetTitle, location,
     topItem, otherItems, atsScore, cvId, userId,
     unsubscribeUrl, preferencesUrl, jobIdsToRecord, skipRecordJobs,
+    providerBreakdown,
   } = params;
 
   const jobCount = 1 + otherItems.length;
@@ -404,6 +430,7 @@ async function sendWithMatches(params: {
       heroHeadingOverride: copy.heroHeading,
       heroSubOverride: copy.heroSub,
       footerNoteOverride: copy.footerNote,
+      providerBreakdown,
     })
   );
 
