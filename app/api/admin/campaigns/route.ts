@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/sender";
+import { isJobsTemplate, type JobsTemplate } from "@/lib/email/system-templates";
+import { sendWeeklyJobsEmail } from "@/lib/email/weekly-jobs";
 
 export async function GET() {
   const admin = createAdminClient();
@@ -58,9 +60,18 @@ export async function POST(request: NextRequest) {
 
   if (sendNow) {
     let sentCount = 0;
+    const isJobs = isJobsTemplate(templateName);
 
-    // Custom email list
+    // Custom email list — only valid for DB-driven templates. Jobs emails
+    // need a real user (CV, locations, ATS score) to render meaningful
+    // content, so a raw address list has nothing to personalise from.
     if (segment === "custom_emails" && customEmails) {
+      if (isJobs) {
+        return NextResponse.json(
+          { error: "Jobs templates can't send to a custom email list — pick a user segment." },
+          { status: 400 }
+        );
+      }
       const emails = (customEmails as string).split(",").map((e: string) => e.trim()).filter(Boolean);
       for (const email of emails) {
         // No profile lookup for ad-hoc addresses — fall back to generic greeting.
@@ -82,6 +93,20 @@ export async function POST(request: NextRequest) {
     for (const userId of userIds) {
       const { data: authUser } = await admin.auth.admin.getUserById(userId);
       if (!authUser?.user?.email) continue;
+
+      if (isJobs) {
+        // Jobs templates render per-user from the matcher; sendWeeklyJobsEmail
+        // handles dedup, suppression, opt-out, and the empty-fallback path.
+        try {
+          const result = await sendWeeklyJobsEmail(userId, {
+            template: templateName as JobsTemplate,
+          });
+          if (result.outcome === "sent" || result.outcome === "sent_empty") sentCount++;
+        } catch (err) {
+          console.error(`[campaigns] jobs send failed for ${userId}:`, (err as Error).message);
+        }
+        continue;
+      }
 
       const meta = authUser.user.user_metadata as { full_name?: string; name?: string } | null;
       const firstName = (meta?.full_name || meta?.name || "").split(" ")[0] || "there";

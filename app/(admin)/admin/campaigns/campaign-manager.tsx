@@ -26,19 +26,31 @@ interface Campaign {
   created_at: string;
 }
 
-export function CampaignManager({ campaigns, templateNames }: { campaigns: Campaign[]; templateNames: string[] }) {
+export function CampaignManager({
+  campaigns,
+  templateNames,
+  jobsTemplateNames = [],
+}: {
+  campaigns: Campaign[];
+  templateNames: string[];
+  jobsTemplateNames?: string[];
+}) {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [templateName, setTemplateName] = useState(templateNames[0] ?? "");
+  const [templateName, setTemplateName] = useState(templateNames[0] ?? jobsTemplateNames[0] ?? "");
   const [segment, setSegment] = useState(SEGMENTS[0].value);
   const [customEmails, setCustomEmails] = useState("");
   const [sending, setSending] = useState(false);
 
+  const isJobsTemplate = jobsTemplateNames.includes(templateName);
+  const customEmailsBlocked = isJobsTemplate && segment === "custom_emails";
+
   async function handleSend() {
     if (!name.trim() || !templateName) return;
     if (segment === "custom_emails" && !customEmails.trim()) return;
+    if (customEmailsBlocked) return;
     setSending(true);
-    await fetch("/api/admin/campaigns", {
+    const res = await fetch("/api/admin/campaigns", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -50,6 +62,11 @@ export function CampaignManager({ campaigns, templateNames }: { campaigns: Campa
       }),
     });
     setSending(false);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Send failed (${res.status})`);
+      return;
+    }
     setName("");
     router.refresh();
   }
@@ -67,8 +84,22 @@ export function CampaignManager({ campaigns, templateNames }: { campaigns: Campa
           <div>
             <Label className="text-xs">Template</Label>
             <select value={templateName} onChange={(e) => setTemplateName(e.target.value)} className="w-full h-9 rounded-md border bg-background px-3 text-sm">
-              {templateNames.map((n) => <option key={n} value={n}>{n}</option>)}
+              {templateNames.length > 0 && (
+                <optgroup label="Editable templates">
+                  {templateNames.map((n) => <option key={n} value={n}>{n}</option>)}
+                </optgroup>
+              )}
+              {jobsTemplateNames.length > 0 && (
+                <optgroup label="Jobs (code-rendered, per-user)">
+                  {jobsTemplateNames.map((n) => <option key={n} value={n}>{n}</option>)}
+                </optgroup>
+              )}
             </select>
+            {isJobsTemplate && (
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Each recipient gets their own matched jobs. Suppression list, opt-outs, and dedup all apply.
+              </p>
+            )}
           </div>
           <div>
             <Label className="text-xs">Segment</Label>
@@ -87,9 +118,14 @@ export function CampaignManager({ campaigns, templateNames }: { campaigns: Campa
               rows={3}
               className="text-sm"
             />
+            {customEmailsBlocked && (
+              <p className="mt-1 text-[11px] text-error">
+                Jobs templates need a real account (CV + locations). Pick a user segment instead.
+              </p>
+            )}
           </div>
         )}
-        <Button onClick={handleSend} disabled={sending || !name.trim() || (segment === "custom_emails" && !customEmails.trim())}>
+        <Button onClick={handleSend} disabled={sending || !name.trim() || (segment === "custom_emails" && !customEmails.trim()) || customEmailsBlocked}>
           {sending ? "Sending..." : "Send Now"}
         </Button>
       </div>

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-auth";
 import { sendEmail } from "@/lib/email/sender";
+import { isJobsTemplate, type JobsTemplate } from "@/lib/email/system-templates";
+import { sendWeeklyJobsEmail } from "@/lib/email/weekly-jobs";
 
 export async function GET() {
   const admin = createAdminClient();
@@ -68,6 +70,20 @@ export async function POST(request: NextRequest) {
 
   // Test send
   const { templateName } = body;
+
+  // Jobs emails are React-rendered, not DB-driven — route via the dedicated
+  // sender. Empty variant must run the empty path; the others can use sample
+  // data so the test doesn't depend on the admin's CV having real matches.
+  if (isJobsTemplate(templateName)) {
+    const t = templateName as JobsTemplate;
+    await sendWeeklyJobsEmail(user.id, {
+      overrideTo: user.email,
+      forceSample: t !== "jobs_weekly_empty",
+      template: t,
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   await sendEmail({
     to: user.email,
     templateName,

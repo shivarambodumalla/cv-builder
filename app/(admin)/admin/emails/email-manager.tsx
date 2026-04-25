@@ -36,7 +36,20 @@ const SYSTEM_TEMPLATES = ["welcome", "upgrade_prompt", "reactivation", "inactive
 
 type CreateMode = "empty" | "html" | "clone";
 
-export function EmailManager({ templates: initial, brand: initialBrand }: { templates: Template[]; brand: Brand }) {
+interface CodeTemplate {
+  name: string;
+  description: string;
+}
+
+export function EmailManager({
+  templates: initial,
+  codeTemplates = [],
+  brand: initialBrand,
+}: {
+  templates: Template[];
+  codeTemplates?: CodeTemplate[];
+  brand: Brand;
+}) {
   const router = useRouter();
   const [templates, setTemplates] = useState(initial);
   const [brand, setBrand] = useState(initialBrand);
@@ -281,6 +294,7 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
 
       {/* Templates table */}
       <div className="overflow-x-auto">
+        <h2 className="text-sm font-semibold mb-2">Editable Templates</h2>
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b text-left text-muted-foreground">
@@ -336,6 +350,44 @@ export function EmailManager({ templates: initial, brand: initialBrand }: { temp
           </tbody>
         </table>
       </div>
+
+      {codeTemplates.length > 0 && (
+        <div className="overflow-x-auto">
+          <div className="mb-2">
+            <h2 className="text-sm font-semibold">Code-rendered Templates</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Layout lives in React components — content can&apos;t be edited here, but
+              you can send a test or trigger them in a campaign.
+            </p>
+          </div>
+          <table className="w-full text-xs sm:text-sm">
+            <thead>
+              <tr className="border-b text-left text-muted-foreground">
+                <th className="pb-2">Name</th>
+                <th className="pb-2">Description</th>
+                <th className="pb-2 text-center">Type</th>
+                <th className="pb-2 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {codeTemplates.map((t) => (
+                <tr key={t.name} className="border-b">
+                  <td className="py-2 font-medium">{t.name}</td>
+                  <td className="py-2 text-muted-foreground max-w-[360px]">{t.description}</td>
+                  <td className="py-2 text-center">
+                    <span className="inline-block rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Code</span>
+                  </td>
+                  <td className="py-2 text-right">
+                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => sendTest(t.name)} disabled={testSending === t.name}>
+                      <Send className="h-3 w-3 mr-1" /> {testSending === t.name ? "..." : "Test"}
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </>
   );
 }

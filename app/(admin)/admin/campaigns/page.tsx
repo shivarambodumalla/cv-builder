@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Metadata } from "next";
 import { CampaignManager } from "./campaign-manager";
+import { JOBS_TEMPLATES } from "@/lib/email/system-templates";
 
 export const metadata: Metadata = { title: "Campaigns | CVEdge Admin" };
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ export default async function CampaignsPage() {
       <CampaignManager
         campaigns={campaigns ?? []}
         templateNames={(templates ?? []).map((t) => t.name)}
+        jobsTemplateNames={[...JOBS_TEMPLATES]}
       />
     </div>
   );
