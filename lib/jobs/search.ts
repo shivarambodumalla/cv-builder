@@ -4,6 +4,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { AdzunaProvider } from "./adzuna";
 import { JoobleProvider } from "./jooble";
+import { CareerjetProvider } from "./careerjet";
 import type { IJobProvider, SearchParams, SearchResponse, ProviderConfig, GenericJob } from "./types";
 import { EMPTY_RESPONSE } from "./types";
 
@@ -12,6 +13,7 @@ import { EMPTY_RESPONSE } from "./types";
 const PROVIDER_FACTORIES: Record<string, (config: ProviderConfig) => IJobProvider> = {
   adzuna: (config) => new AdzunaProvider(config),
   jooble: (config) => new JoobleProvider(config),
+  careerjet: (config) => new CareerjetProvider(config),
   // Add new providers here:
   // indeed: (config) => new IndeedProvider(config),
   // linkedin: (config) => new LinkedInProvider(config),

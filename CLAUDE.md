@@ -82,7 +82,7 @@ If the answer is no to all — do not implement.
 ### Jobs (Live)
 - Marketing page: /jobs — search form, sign-in modal, browse by role
 - Role pages: /jobs/[role] — role-specific listings with fuzzy search + location fallback
-- Providers: Adzuna + Jooble (via lib/jobs/search.ts → searchAllProviders)
+- Providers: Adzuna + Jooble + Careerjet (via lib/jobs/search.ts → searchAllProviders)
 - Matcher: lib/jobs/matcher.ts → matchJobsForCV / scoreJobsAgainstCV
 - Click tracking: /api/jobs/track-click → job_clicks table
 - Saved jobs: /api/jobs/save → saved_jobs table
