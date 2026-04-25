@@ -46,7 +46,7 @@ function extractJSON(text: string): unknown {
   if (arrStart !== -1 && arrEnd > arrStart) {
     try { return JSON.parse(text.slice(arrStart, arrEnd + 1)); } catch { /* continue */ }
   }
-  throw new Error(`Failed to parse AI response as JSON. Raw: ${text.slice(0, 200)}`);
+  throw new Error(`Failed to parse AI response as JSON. Length: ${text.length}. Head: ${text.slice(0, 200)} | Tail: ${text.slice(-200)}`);
 }
 
 export async function callAI({ promptName, variables, feature, parseJson = true, userId, ip }: CallAIParams) {
@@ -76,6 +76,7 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
     generationConfig: {
       maxOutputTokens: settings.max_tokens || 4096,
       temperature: settings.temperature,
+      ...(parseJson ? { responseMimeType: "application/json" } : {}),
       // @ts-expect-error - thinkingConfig not in types yet
       thinkingConfig: { thinkingBudget: 0 },
     },
@@ -107,6 +108,7 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
             generationConfig: {
               maxOutputTokens: settings.max_tokens || 4096,
               temperature: settings.temperature,
+              ...(parseJson ? { responseMimeType: "application/json" } : {}),
             },
           });
           await enqueue();
@@ -162,5 +164,11 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
   text = text.trim();
 
   if (!parseJson) return text;
-  return extractJSON(text);
+  try {
+    return extractJSON(text);
+  } catch (err) {
+    const finishReason = result.response.candidates?.[0]?.finishReason;
+    console.error(`[callAI] JSON parse failed for ${promptName} (feature=${feature}, finishReason=${finishReason}, length=${text.length}, maxTokens=${settings.max_tokens}, outputTokens=${outputTokens})`);
+    throw err;
+  }
 }

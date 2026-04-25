@@ -286,7 +286,8 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 - client.ts: callAI() fetches prompt + settings from DB, substitutes {{variables}}, calls Gemini
 - maxOutputTokens: uses settings.max_tokens from DB (not hardcoded)
-- Settings: ats_analysis=4096, job_match=4096, cover_letter=1024, keyword_generate=512, bullet_rewrite=512, bullet_rewrite_debate=512, cv_parse=4096, jd_red_flag=512, fix_all=4096, cv_tailor=4096, offer_evaluation=512, story_extract=4096, story_match=1024, story_quality=512, story_summary=256, story_framework_suggest=128
+- Settings: ats_analysis=8192, job_match=4096, cover_letter=1024, keyword_generate=512, bullet_rewrite=512, bullet_rewrite_debate=512, cv_parse=4096, jd_red_flag=512, fix_all=4096, cv_tailor=4096, offer_evaluation=512, story_extract=4096, story_match=1024, story_quality=512, story_summary=256, story_framework_suggest=128
+- JSON callers: callAI sets `responseMimeType: "application/json"` when `parseJson:true` so Gemini emits strict JSON. `parseJson:false` (rewrite, cover-letter, rewrite-debate, gemini.ts wrapper) returns free-form text.
 - thinkingBudget: 0 (disabled)
 - Spend cap: ai_settings.daily_spend_cap_usd (default $10/day)
 - Rate limiter: 10/hr anon, 100/hr auth (in-memory)
