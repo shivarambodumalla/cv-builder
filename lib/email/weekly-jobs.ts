@@ -7,6 +7,7 @@ import { WeeklyJobsEmptyEmail } from "@/components/emails/weekly-jobs-empty-emai
 import { canSendTo, recordSentJobs, getRecentlySentJobIds } from "@/lib/email/can-send";
 import { makeUnsubscribeToken } from "@/lib/email/unsubscribe-token";
 import { getAdjacentRoles, getRotatingTip, getAtsMessage } from "@/lib/email/jobs-email-helpers";
+import { resolveJobsCopy } from "@/lib/email/jobs-copy";
 import type { ResumeContent } from "@/lib/resume/types";
 
 let _resend: Resend | null = null;
@@ -379,10 +380,16 @@ async function sendWithMatches(params: {
     unsubscribeUrl, preferencesUrl, jobIdsToRecord, skipRecordJobs,
   } = params;
 
+  const jobCount = 1 + otherItems.length;
+  const copy = await resolveJobsCopy(
+    template === TEMPLATE_WELCOME_JOBS ? "welcome_jobs" : "jobs_weekly",
+    { firstName, jobCount, targetTitle, location, atsScore, logoText: "CVEdge" }
+  );
+
   const html = await render(
     WeeklyJobsEmail({
       firstName,
-      jobCount: 1 + otherItems.length,
+      jobCount,
       targetTitle,
       location,
       topJob: topItem,
@@ -394,11 +401,14 @@ async function sendWithMatches(params: {
       logoText: "CVEdge",
       unsubscribeUrl,
       preferencesUrl,
+      heroHeadingOverride: copy.heroHeading,
+      heroSubOverride: copy.heroSub,
+      footerNoteOverride: copy.footerNote,
     })
   );
 
-  const subjectTitle = targetTitle || "your profile";
-  const subject = `${1 + otherItems.length} new matches for ${subjectTitle}${location ? ` · ${location}` : ""}`;
+  // Subject template still appends location for scannability when provided.
+  const subject = location ? `${copy.subject} · ${location}` : copy.subject;
 
   const { data, error } = await resendClient().emails.send({
     from: `CVEdge <${FROM_EMAIL}>`,
@@ -466,6 +476,10 @@ async function sendEmptyEmail(params: {
   const updatePreferencesUrl = `${APP_URL}/settings?tab=locations`;
   const viewMatchesUrl = cvId ? `${APP_URL}/jobs?cvId=${cvId}` : `${APP_URL}/jobs`;
 
+  const copy = await resolveJobsCopy("jobs_weekly_empty", {
+    firstName, jobCount: 0, targetTitle, location: "", atsScore, logoText: "CVEdge",
+  });
+
   const html = await render(
     WeeklyJobsEmptyEmail({
       firstName,
@@ -484,10 +498,13 @@ async function sendEmptyEmail(params: {
       appUrl: APP_URL,
       supportEmail: SUPPORT_EMAIL,
       logoText: "CVEdge",
+      heroHeadingOverride: copy.heroHeading,
+      heroSubOverride: copy.heroSub,
+      footerNoteOverride: copy.footerNote,
     })
   );
 
-  const subject = "Your CV needs to be ready when the right role drops";
+  const subject = copy.subject;
 
   const { data, error } = await resendClient().emails.send({
     from: `CVEdge <${FROM_EMAIL}>`,

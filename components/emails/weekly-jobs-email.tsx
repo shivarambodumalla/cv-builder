@@ -41,6 +41,10 @@ interface WeeklyJobsEmailProps {
   logoText?: string;
   unsubscribeUrl: string;
   preferencesUrl: string;
+  // Admin-editable copy overrides — when omitted, the defaults below render.
+  heroHeadingOverride?: string;
+  heroSubOverride?: string;
+  footerNoteOverride?: string;
 }
 
 const BRAND_TEAL = "#1a7a6d";
@@ -65,6 +69,9 @@ export function WeeklyJobsEmail({
   logoText = "CVEdge",
   unsubscribeUrl,
   preferencesUrl,
+  heroHeadingOverride,
+  heroSubOverride,
+  footerNoteOverride,
 }: WeeklyJobsEmailProps) {
   const preview = `${jobCount} new ${targetTitle || "job"} matches this week${location ? ` in ${location}` : ""}`;
   const openCvUrl = cvId ? `${appUrl}/resume/${cvId}` : `${appUrl}/dashboard`;
@@ -93,11 +100,15 @@ export function WeeklyJobsEmail({
           <Section style={heroCard}>
             <Text style={greeting}>Hi {firstName},</Text>
             <Heading style={heroHeading}>
-              {jobCount} new match{jobCount === 1 ? "" : "es"} for you this week
+              {heroHeadingOverride ?? `${jobCount} new match${jobCount === 1 ? "" : "es"} for you this week`}
             </Heading>
             <Text style={heroSub}>
-              {targetTitle ? <>Roles like <strong>{targetTitle}</strong></> : "Roles matched to your CV"}
-              {location ? <> · {location}</> : null}
+              {heroSubOverride ?? (
+                <>
+                  {targetTitle ? <>Roles like <strong>{targetTitle}</strong></> : "Roles matched to your CV"}
+                  {location ? <> · {location}</> : null}
+                </>
+              )}
             </Text>
           </Section>
 
@@ -203,7 +214,7 @@ export function WeeklyJobsEmail({
           {/* Footer */}
           <Section style={footerWrap}>
             <Text style={footer}>
-              You&apos;re getting this weekly digest because you have a CV on {logoText}.
+              {footerNoteOverride ?? `You're getting this weekly digest because you have a CV on ${logoText}.`}
             </Text>
             <Text style={footer}>
               <Link href={preferencesUrl} style={footerLink}>

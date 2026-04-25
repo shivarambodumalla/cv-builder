@@ -29,6 +29,10 @@ interface WeeklyJobsEmptyEmailProps {
   appUrl?: string;
   supportEmail?: string;
   logoText?: string;
+  // Admin-editable copy overrides — when omitted, the defaults below render.
+  heroHeadingOverride?: string;
+  heroSubOverride?: string;
+  footerNoteOverride?: string;
 }
 
 const BRAND_TEAL = "#1a7a6d";
@@ -56,6 +60,9 @@ export function WeeklyJobsEmptyEmail({
   appUrl = "https://www.thecvedge.com",
   supportEmail = "hello@thecvedge.com",
   logoText = "CVEdge",
+  heroHeadingOverride,
+  heroSubOverride,
+  footerNoteOverride,
 }: WeeklyJobsEmptyEmailProps) {
   const preview = "Here's how to stay ahead while the market catches up.";
 
@@ -82,14 +89,14 @@ export function WeeklyJobsEmptyEmail({
           <Section style={heroCard}>
             <Text style={greeting}>Hi {firstName},</Text>
             <Heading style={heroHeading}>
-              Your CV needs to be ready when the right role drops
+              {heroHeadingOverride ?? "Your CV needs to be ready when the right role drops"}
             </Heading>
             <Text style={heroSub}>
-              {targetTitle ? (
+              {heroSubOverride ?? (targetTitle ? (
                 <>While you wait for the right <strong>{targetTitle}</strong> role, here&apos;s how to make sure you&apos;re first in line when it lands.</>
               ) : (
                 <>While you wait for the right role, here&apos;s how to make sure you&apos;re first in line when it lands.</>
-              )}
+              ))}
             </Text>
           </Section>
 
@@ -166,8 +173,12 @@ export function WeeklyJobsEmptyEmail({
           {/* Footer */}
           <Section style={footerWrap}>
             <Text style={footer}>
-              You&apos;re receiving this because you set up job alerts
-              {targetTitle ? <> for {targetTitle}</> : null}.
+              {footerNoteOverride ?? (
+                <>
+                  You&apos;re receiving this because you set up job alerts
+                  {targetTitle ? <> for {targetTitle}</> : null}.
+                </>
+              )}
             </Text>
             <Text style={footer}>
               <Link href={preferencesUrl} style={footerLink}>

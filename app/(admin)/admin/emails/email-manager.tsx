@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,25 @@ interface CodeTemplate {
   description: string;
 }
 
+interface JobsCopy {
+  subject?: string;
+  heroHeading?: string;
+  heroSub?: string;
+  footerNote?: string;
+}
+
+interface JobsCopyResponse {
+  override: JobsCopy;
+  defaults: Required<JobsCopy>;
+}
+
+const JOBS_COPY_FIELDS: Array<{ key: keyof JobsCopy; label: string; placeholder: string; multiline?: boolean }> = [
+  { key: "subject", label: "Subject line", placeholder: "{{jobCount}} new matches for {{targetTitle}}" },
+  { key: "heroHeading", label: "Hero heading", placeholder: "{{jobCount}} new matches for you this week" },
+  { key: "heroSub", label: "Hero sub-heading", placeholder: "Roles like {{targetTitle}}", multiline: true },
+  { key: "footerNote", label: "Footer note", placeholder: "You're getting this digest because…", multiline: true },
+];
+
 export function EmailManager({
   templates: initial,
   codeTemplates = [],
@@ -68,6 +87,46 @@ export function EmailManager({
 
   // Delete state
   const [deleting, setDeleting] = useState<string | null>(null);
+
+  // Jobs copy editor state
+  const [editingCopy, setEditingCopy] = useState<string | null>(null);
+  const [copyData, setCopyData] = useState<Record<string, JobsCopyResponse>>({});
+  const [copyDraft, setCopyDraft] = useState<JobsCopy>({});
+  const [copySaving, setCopySaving] = useState(false);
+
+  useEffect(() => {
+    if (codeTemplates.length === 0) return;
+    fetch("/api/admin/jobs-email-copy")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d) setCopyData(d); })
+      .catch(() => {});
+  }, [codeTemplates.length]);
+
+  function startEditCopy(name: string) {
+    setEditingCopy(name);
+    setCopyDraft(copyData[name]?.override ?? {});
+  }
+
+  async function saveCopy() {
+    if (!editingCopy) return;
+    setCopySaving(true);
+    const res = await fetch("/api/admin/jobs-email-copy", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ templateName: editingCopy, copy: copyDraft }),
+    });
+    setCopySaving(false);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Save failed (${res.status})`);
+      return;
+    }
+    setCopyData((prev) => ({
+      ...prev,
+      [editingCopy]: { ...(prev[editingCopy] ?? { defaults: {} as Required<JobsCopy> }), override: copyDraft },
+    }));
+    setEditingCopy(null);
+  }
 
   function resetCreate() {
     setShowCreate(false);
@@ -356,10 +415,55 @@ export function EmailManager({
           <div className="mb-2">
             <h2 className="text-sm font-semibold">Code-rendered Templates</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Layout lives in React components — content can&apos;t be edited here, but
-              you can send a test or trigger them in a campaign.
+              Layout lives in React components. The voice — subject, hero, footer — is editable here.
+              Job cards, tips, and ATS hints stay code-driven.
             </p>
           </div>
+
+          {editingCopy && (
+            <div className="mb-4 rounded-lg border bg-muted/20 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Edit copy: {editingCopy}</h3>
+                <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setEditingCopy(null)}>Cancel</Button>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Variables: <code className="rounded bg-muted px-1">{"{{firstName}}"}</code>{" "}
+                <code className="rounded bg-muted px-1">{"{{jobCount}}"}</code>{" "}
+                <code className="rounded bg-muted px-1">{"{{targetTitle}}"}</code>{" "}
+                <code className="rounded bg-muted px-1">{"{{location}}"}</code>{" "}
+                <code className="rounded bg-muted px-1">{"{{atsScore}}"}</code>{" "}
+                <code className="rounded bg-muted px-1">{"{{logoText}}"}</code>. Leave a field blank to use the default.
+              </p>
+              {JOBS_COPY_FIELDS.map((field) => {
+                const fallback = copyData[editingCopy]?.defaults?.[field.key] ?? "";
+                const value = copyDraft[field.key] ?? "";
+                return (
+                  <div key={field.key}>
+                    <Label className="text-xs">{field.label}</Label>
+                    {field.multiline ? (
+                      <Textarea
+                        value={value}
+                        onChange={(e) => setCopyDraft({ ...copyDraft, [field.key]: e.target.value })}
+                        rows={2}
+                        className="text-sm"
+                        placeholder={field.placeholder}
+                      />
+                    ) : (
+                      <Input
+                        value={value}
+                        onChange={(e) => setCopyDraft({ ...copyDraft, [field.key]: e.target.value })}
+                        placeholder={field.placeholder}
+                      />
+                    )}
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">Default: {fallback}</p>
+                  </div>
+                );
+              })}
+              <Button size="sm" onClick={saveCopy} disabled={copySaving}>
+                {copySaving ? "Saving…" : "Save copy"}
+              </Button>
+            </div>
+          )}
           <table className="w-full text-xs sm:text-sm">
             <thead>
               <tr className="border-b text-left text-muted-foreground">
@@ -370,20 +474,31 @@ export function EmailManager({
               </tr>
             </thead>
             <tbody>
-              {codeTemplates.map((t) => (
-                <tr key={t.name} className="border-b">
-                  <td className="py-2 font-medium">{t.name}</td>
-                  <td className="py-2 text-muted-foreground max-w-[360px]">{t.description}</td>
-                  <td className="py-2 text-center">
-                    <span className="inline-block rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Code</span>
-                  </td>
-                  <td className="py-2 text-right">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => sendTest(t.name)} disabled={testSending === t.name}>
-                      <Send className="h-3 w-3 mr-1" /> {testSending === t.name ? "..." : "Test"}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {codeTemplates.map((t) => {
+                const hasOverride = Object.values(copyData[t.name]?.override ?? {}).some((v) => !!v);
+                return (
+                  <tr key={t.name} className="border-b">
+                    <td className="py-2 font-medium">
+                      {t.name}
+                      {hasOverride && <span className="ml-2 text-[10px] text-success">edited</span>}
+                    </td>
+                    <td className="py-2 text-muted-foreground max-w-[360px]">{t.description}</td>
+                    <td className="py-2 text-center">
+                      <span className="inline-block rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Code</span>
+                    </td>
+                    <td className="py-2 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => startEditCopy(t.name)}>
+                          <Pencil className="h-3 w-3 mr-1" /> Edit copy
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => sendTest(t.name)} disabled={testSending === t.name}>
+                          <Send className="h-3 w-3 mr-1" /> {testSending === t.name ? "..." : "Test"}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
