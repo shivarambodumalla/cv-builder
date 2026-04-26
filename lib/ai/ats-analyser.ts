@@ -166,7 +166,8 @@ function buildFieldRefs(report: AtsReportData): AtsReportData {
       } else if (category === "keywords") {
         issue.field_ref = { section: "skills", field: "skills" };
       } else if (category === "measurable_results" || category === "bullet_quality") {
-        const quoted = (issue.description || "").match(/[''\u2018\u2019]([^''\u2018\u2019]{15,}?)[''\u2018\u2019]/);
+        // Match bullet text in single, double, or curly quotes — AI mixes styles.
+        const quoted = (issue.description || "").match(/["'\u2018\u2019\u201C\u201D]([^"'\u2018\u2019\u201C\u201D]{15,}?)["'\u2018\u2019\u201C\u201D]/);
         issue.field_ref = { section: "experience", field: "bullets", bulletText: quoted?.[1] ?? undefined };
       } else {
         issue.field_ref = { section: category, field: null };

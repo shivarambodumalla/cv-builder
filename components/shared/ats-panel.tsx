@@ -285,6 +285,12 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       const bullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []);
       return bullets[ref.index] ?? "";
     }
+    // Fallback: AI didn't quote a specific bullet (or user edited it after the scan).
+    // Use the first non-empty bullet so the Rewrite click always opens the drawer.
+    if (ref.section === "experience") {
+      const bullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []);
+      if (bullets.length > 0) return bullets[0];
+    }
     return "";
   }
 
@@ -651,9 +657,9 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
           {/* Job Match CTA */}
           <div
             className="rounded-xl border p-4 mb-3"
-            style={{ backgroundColor: "#F0FDF4", borderColor: "#34D399" }}
+            style={{ backgroundColor: "#EEF2F8", borderColor: "#2A4F7A" }}
           >
-            <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#065F46", marginBottom: "4px" }}>
+            <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#1E3A5F", marginBottom: "4px" }}>
               See how you match a real job description
             </h4>
             <p style={{ fontSize: "12px", color: "#4a4a4a", lineHeight: 1.5, marginBottom: "10px" }}>
@@ -668,7 +674,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
                 }, 300);
               }}
               style={{
-                backgroundColor: "#065F46",
+                backgroundColor: "#1E3A5F",
                 color: "#fff",
                 fontSize: "13px",
                 fontWeight: 600,

@@ -234,9 +234,11 @@ ORIGINAL TEXT:
 
 Rules:
 - Return ONLY the rewritten text, no explanation, no quotes
-- Never fabricate specific metrics — use [X] for unknown numbers
+- PRESERVE every real number, percentage, currency amount, time period, and quantity that already exists in the ORIGINAL TEXT — copy them verbatim. Do NOT replace "30%", "$2M", "12 weeks", "5 engineers" etc. with [X], [X]%, or any placeholder.
+- Only use [X] when the original text has NO number for a metric you need to introduce
+- Never fabricate specific metrics that aren't already in the original
 - Keep the same general meaning and truthfulness
-- For impact mode: add quantified results where natural
+- For impact mode: add quantified results where natural; if the original already has numbers, KEEP them as-is
 - For concise mode: target 120-180 characters
 - For ATS mode: naturally incorporate missing keywords where relevant
 - For grammar mode: minimal changes, fix errors only
@@ -319,7 +321,8 @@ Your goal: rewrite this CV to maximise the ATS score for the target role.
 
 Rules:
 - Never fabricate metrics or achievements
-- If no metric exists use [X]% or [X] as placeholder
+- PRESERVE every real number that already exists in a bullet (percentages, currency, counts, time periods) — copy them verbatim into the rewrite. Never replace "30%", "$2M", "12 weeks", "5 engineers" etc. with [X], [X]%, or any placeholder.
+- Only use [X] / [X]% when the original bullet has NO number for a metric you are introducing
 - Never add experience the candidate does not have
 - Preserve the candidate's voice and style
 - Only improve what exists — do not invent
