@@ -226,7 +226,7 @@ export function FeaturesTabs() {
                     {[
                       { name: "Classic", img: "/img/templates/classic.jpg" },
                       { name: "Sharp", img: "/img/templates/sharp.jpg" },
-                      { name: "Executive", img: "/img/templates/Executive.jpg" },
+                      { name: "Executive", img: "/img/templates/executive.jpg" },
                       { name: "Slate", img: "/img/templates/slate.jpg" },
                       { name: "Folio", img: "/img/templates/folio.jpg" },
                       { name: "Divide", img: "/img/templates/divide.jpg" },

@@ -11,6 +11,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -1333,6 +1334,9 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
           <DialogContent className="flex h-screen max-h-screen w-screen max-w-none flex-col gap-0 overflow-hidden rounded-none border-0 p-0 sm:rounded-none">
             <DialogHeader className="shrink-0 border-b px-4 py-3 sm:px-6 sm:py-4">
               <DialogTitle className="text-base">Pick a template</DialogTitle>
+              <DialogDescription className="sr-only">
+                Browse and preview resume templates, then apply your selection.
+              </DialogDescription>
             </DialogHeader>
 
             {/* Mobile tab toggle (hidden ≥ lg where we show side-by-side) */}
