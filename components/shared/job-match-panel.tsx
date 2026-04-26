@@ -718,7 +718,6 @@ export function JobMatchRightPanel({
               <p className="text-xs text-muted-foreground">Get STAR stories tailored to this role</p>
             </div>
             <Button size="sm" variant="outline" onClick={() => {
-              if (plan === "free") { openUpgradeModal("interview_prep_limit"); return; }
               router.push(`/interview-coach?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
             }}>
               Prepare

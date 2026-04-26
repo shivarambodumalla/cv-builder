@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { logServerActivity } from "@/lib/analytics/server-log";
 
 import { alertAdmin } from "@/lib/email/alert";
 export async function POST(request: NextRequest) {
@@ -17,6 +18,12 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "ai_rewrite");
   if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "ai_rewrite",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
     return NextResponse.json({ error: "You've used all free AI rewrites. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 

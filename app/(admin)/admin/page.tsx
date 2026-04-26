@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Users, FileText, CreditCard, BarChart3, MousePointerClick } from "lucide-react";
+import { Users, FileText, CreditCard, BarChart3, MousePointerClick, Activity } from "lucide-react";
 
 const CPC = 0.15;
 
@@ -34,12 +34,41 @@ export default async function AdminDashboardPage() {
     { count: totalCvs },
     { count: totalAtsReports },
     { data: jobClicks },
+    { data: engagementRows },
+    { data: dauDailyRows },
   ] = await Promise.all([
     supabase.from("profiles").select("plan"),
     supabase.from("cvs").select("*", { count: "exact", head: true }),
     supabase.from("ats_reports").select("*", { count: "exact", head: true }),
     supabase.from("job_clicks").select("id, company, job_title, match_score, created_at"),
+    supabase.from("user_activity_metrics").select("dau, wau, mau, stickiness_pct"),
+    supabase.from("user_activity_daily").select("day, dau"),
   ]);
+
+  const engagement = engagementRows?.[0] ?? { dau: 0, wau: 0, mau: 0, stickiness_pct: 0 };
+
+  // Pad missing days with 0 so the chart always shows a full 30-day window.
+  const dauByDay = new Map<string, number>();
+  for (const r of dauDailyRows ?? []) {
+    if (r.day) dauByDay.set(String(r.day), Number(r.dau ?? 0));
+  }
+  const dauSeries: { day: string; dau: number }[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setUTCDate(now.getUTCDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    dauSeries.push({ day: key, dau: dauByDay.get(key) ?? 0 });
+  }
+  const dauMax = Math.max(1, ...dauSeries.map((p) => p.dau));
+  const dauTotal = dauSeries.reduce((s, p) => s + p.dau, 0);
+  const dauAvg = Math.round(dauTotal / dauSeries.length);
+  const firstHalf = dauSeries.slice(0, 15).reduce((s, p) => s + p.dau, 0);
+  const secondHalf = dauSeries.slice(15).reduce((s, p) => s + p.dau, 0);
+  const dauTrendPct = firstHalf > 0
+    ? Math.round(((secondHalf - firstHalf) / firstHalf) * 100)
+    : secondHalf > 0
+      ? 100
+      : 0;
 
   const totalUsers = profiles?.length ?? 0;
   const planCounts: Record<string, number> = { free: 0, starter: 0, pro: 0 };
@@ -139,6 +168,85 @@ export default async function AdminDashboardPage() {
             </Card>
           ))}
         </div>
+      </div>
+
+      {/* Engagement — engaged active users (excludes passive popover events) */}
+      <div>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight flex items-center gap-2">
+          <Activity className="h-5 w-5 text-muted-foreground" />
+          Engagement
+          <span className="text-xs font-normal text-muted-foreground">excludes passive popover impressions</span>
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+          {[
+            { label: "DAU", value: engagement.dau ?? 0, hint: "Active in last 24h" },
+            { label: "WAU", value: engagement.wau ?? 0, hint: "Active in last 7 days" },
+            { label: "MAU", value: engagement.mau ?? 0, hint: "Active in last 30 days" },
+            {
+              label: "Stickiness",
+              value: `${engagement.stickiness_pct ?? 0}%`,
+              hint: "DAU / MAU — 20%+ is healthy",
+            },
+          ].map((m) => (
+            <Card key={m.label}>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{m.label}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{m.value.toLocaleString?.() ?? m.value}</div>
+                <p className="mt-1 text-xs text-muted-foreground">{m.hint}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* 30-day DAU trend */}
+        <Card>
+          <CardHeader className="pb-3 flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-sm font-semibold">DAU — last 30 days</CardTitle>
+              <p className="mt-1 text-xs text-muted-foreground">
+                30-day avg {dauAvg.toLocaleString()} · 2nd half vs 1st{" "}
+                <span
+                  className={
+                    dauTrendPct > 10
+                      ? "text-success font-medium"
+                      : dauTrendPct < -10
+                        ? "text-error font-medium"
+                        : "text-muted-foreground"
+                  }
+                >
+                  {dauTrendPct > 0 ? `+${dauTrendPct}%` : `${dauTrendPct}%`}
+                </span>
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-end gap-1" style={{ height: 140 }}>
+              {dauSeries.map((p, i) => {
+                const h = Math.max((p.dau / dauMax) * 120, p.dau > 0 ? 3 : 0);
+                const showLabel = i === 0 || i === dauSeries.length - 1 || i % 7 === 0;
+                return (
+                  <div
+                    key={p.day}
+                    className="group relative flex flex-1 flex-col items-center gap-1"
+                    title={`${p.day}: ${p.dau} DAU`}
+                  >
+                    <div className="flex w-full items-end justify-center" style={{ height: 120 }}>
+                      <div
+                        className="w-full max-w-[18px] rounded-t bg-primary/40 transition-colors group-hover:bg-primary/70"
+                        style={{ height: h }}
+                      />
+                    </div>
+                    <span className="text-[9px] text-muted-foreground tabular-nums truncate w-full text-center">
+                      {showLabel ? p.day.slice(5) : ""}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Job Clicks Revenue */}

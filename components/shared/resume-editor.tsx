@@ -28,7 +28,6 @@ import { PaperPreview } from "@/components/resume/paper-preview";
 import { DesignerPanel } from "@/components/resume/designer-panel";
 import { AtsPanel } from "@/components/shared/ats-panel";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
-import { UpgradeBanner } from "@/components/shared/upgrade-banner";
 import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/components/shared/job-match-panel";
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
 import { calculateClientScore, type ClientScoreResult, type KeywordList } from "@/lib/ats/client-scorer";
@@ -876,9 +875,6 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                       Paste a job description and click Analyse Match.
                     </p>
                   </div>
-                  {plan !== "pro" && (
-                    <UpgradeBanner trigger="job_match" onUpgrade={() => openUpgradeModal("job_match_limit")} />
-                  )}
                 </div>
               )}
             </div>

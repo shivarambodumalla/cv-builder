@@ -5,6 +5,7 @@ import { analyseCV } from "@/lib/ai/ats-analyser";
 import { getDomainForRole } from "@/lib/resume/roles";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { logServerActivity } from "@/lib/analytics/server-log";
 import { alertAdmin } from "@/lib/email/alert";
 
 export async function POST(request: NextRequest) {
@@ -27,6 +28,12 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "ats_scan");
   if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "ats_scan",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
     return NextResponse.json({ error: "You've used all free ATS scans. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 

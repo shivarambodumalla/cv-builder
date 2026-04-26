@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { renderHtmlToPdf } from "@/lib/pdf/html-to-pdf";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { getPlan, PLAN_LIMITS } from "@/lib/billing/limits";
+import { logServerActivity } from "@/lib/analytics/server-log";
 import { sendEmailAsync } from "@/lib/email/sender";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
@@ -27,6 +28,12 @@ export async function POST(request: NextRequest) {
   // Check PDF download limit
   const access = await checkFeatureAccess(user.id, "pdf_download");
   if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "pdf_download",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
     return NextResponse.json({ error: "You've hit your free PDF download limit. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 

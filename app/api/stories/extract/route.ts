@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { logServerActivity } from "@/lib/analytics/server-log";
 
 /** Simple word-overlap similarity (0-1) */
 function similarity(a: string, b: string): number {
@@ -34,6 +35,12 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "portfolio_scan");
   if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "portfolio_scan",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
     return NextResponse.json({
       error: "You've used all free story extractions. Upgrade for unlimited.",
       code: access.reason,

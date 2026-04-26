@@ -32,6 +32,12 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
     notFound();
   }
 
+  const templatePicked =
+    (cv.design_settings as { templatePicked?: boolean } | null)?.templatePicked === true;
+  if (!templatePicked) {
+    redirect(`/resume/${params.id}/pick-template`);
+  }
+
   const { data: rawReports } = await supabase
     .from("ats_reports")
     .select("id, score, overall_score, confidence, report_data, issues, created_at")

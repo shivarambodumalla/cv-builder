@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Loader2, Sparkles } from "lucide-react";
+import { logActivity } from "@/lib/analytics/log";
 
 type TemplateCategory = "all" | "single" | "two-column" | "minimal" | "professional";
 
@@ -58,8 +60,22 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
   const [selecting, setSelecting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [imgFailed, setImgFailed] = useState<Record<string, boolean>>({});
+  const completedRef = useRef(false);
 
   const filtered = TEMPLATES.filter((t) => t.category.includes(filter));
+
+  // A4: log abandonment if user leaves without picking (or skipping).
+  useEffect(() => {
+    const onLeave = () => {
+      if (completedRef.current) return;
+      logActivity("picker_abandoned", { metadata: { cv_id: cvId } });
+    };
+    window.addEventListener("beforeunload", onLeave);
+    return () => {
+      window.removeEventListener("beforeunload", onLeave);
+      onLeave();
+    };
+  }, [cvId]);
 
   async function handleSelect(slug: string) {
     if (selecting) return;
@@ -79,11 +95,38 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
       return;
     }
 
+    completedRef.current = true;
+    logActivity("picker_completed", { metadata: { cv_id: cvId, template: slug } });
     router.push(`/resume/${cvId}`);
+  }
+
+  async function handleContinueWithClassic() {
+    if (selecting) return;
+    await handleSelect("classic");
   }
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Top bar — gives the picker a real exit instead of being a dead-end */}
+      <div className="border-b">
+        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+          <Link
+            href="/dashboard"
+            className="text-sm font-semibold tracking-tight text-foreground hover:text-primary transition-colors"
+          >
+            CVEdge
+          </Link>
+          <button
+            type="button"
+            onClick={handleContinueWithClassic}
+            disabled={selecting !== null}
+            className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+          >
+            {selecting === "classic" ? "Loading…" : "Skip — use Classic"}
+          </button>
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center mb-8 sm:mb-10 md:mb-12">

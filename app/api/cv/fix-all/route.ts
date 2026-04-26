@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { getPlan } from "@/lib/billing/limits";
+import { logServerActivity } from "@/lib/analytics/server-log";
 import type { ResumeContent } from "@/lib/resume/types";
 import { alertAdmin } from "@/lib/email/alert";
 
@@ -39,6 +40,12 @@ export async function POST(request: NextRequest) {
   const effectiveCount = windowExpired ? 0 : countThisWeek;
 
   if (plan === "free" && effectiveCount >= 1) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "fix_all",
+      reason: "fix_all_limit",
+      used: effectiveCount,
+      limit: 1,
+    });
     return NextResponse.json({
       error: "Free tier limit reached. Upgrade for unlimited Fix All.",
       code: "fix_all_limit",

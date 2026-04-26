@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { logServerActivity } from "@/lib/analytics/server-log";
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
@@ -16,6 +17,12 @@ export async function POST(request: NextRequest) {
   // Check feature limit
   const access = await checkFeatureAccess(user.id, "offer_eval");
   if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "offer_eval",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
     return NextResponse.json({
       error: "You've used all free offer evaluations. Upgrade for unlimited.",
       code: access.reason,
