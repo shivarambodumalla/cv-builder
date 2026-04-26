@@ -230,7 +230,11 @@
       "Bash(lsof -i :3000 -sTCP:LISTEN -n -P)",
       "Bash(kill 87596)",
       "Bash(curl -s -o /tmp/cvedge-home.html -w \"HTTP %{http_code} · %{time_total}s · %{size_download}b\\\\n\" http://localhost:3000/)",
-      "Bash(curl -s -o /tmp/cvedge-home2.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)"
+      "Bash(curl -s -o /tmp/cvedge-home2.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s \"http://public.api.careerjet.net/search?locale_code=en_GB&keywords=software+engineer&location=london&affid=46743b137b3795260d6187e084b7648a&user_ip=11.22.33.44&user_agent=Mozilla/5.0&url=https://www.thecvedge.com/jobs&pagesize=3\")",
+      "Bash(curl -s -H \"Referer: https://www.thecvedge.com/jobs\" -H \"User-Agent: Mozilla/5.0\" \"http://public.api.careerjet.net/search?locale_code=en_GB&keywords=software+engineer&location=london&affid=46743b137b3795260d6187e084b7648a&user_ip=11.22.33.44&user_agent=Mozilla/5.0&url=https://www.thecvedge.com/jobs&pagesize=3\")",
+      "Bash(curl -s -H \"Referer: https://www.thecvedge.com/jobs\" -H \"User-Agent: Mozilla/5.0\" \"https://public.api.careerjet.net/search?locale_code=en_US&keywords=product+manager&location=remote&affid=46743b137b3795260d6187e084b7648a&user_ip=11.22.33.44&user_agent=Mozilla/5.0&url=https://www.thecvedge.com/jobs&pagesize=2\")",
+      "Bash(curl -sv -H \"Referer: https://www.thecvedge.com/jobs\" -H \"User-Agent: Mozilla/5.0\" \"https://public.api.careerjet.net/search?locale_code=en_US&keywords=product+manager&location=remote&affid=46743b137b3795260d6187e084b7648a&user_ip=11.22.33.44&user_agent=Mozilla/5.0&url=https://www.thecvedge.com/jobs&pagesize=2\")"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",
