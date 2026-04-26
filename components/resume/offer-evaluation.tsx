@@ -212,39 +212,40 @@ export function OfferEvaluation({ jdText, enabled }: OfferEvaluationProps) {
               style={{
                 display: "flex",
                 alignItems: "flex-start",
-                gap: 6,
-                marginBottom: 5,
+                gap: 8,
+                marginBottom: 6,
               }}
             >
+              {/* Dot wrapper: matches the first line's box height + centers
+                  the dot in it, so the dot sits in line with the label
+                  regardless of how the text wraps. */}
               <span
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: getSignalDotColor(signal.status),
+                  height: "1.4em",
+                  fontSize: 10,
                   flexShrink: 0,
-                  marginTop: 3,
                 }}
-              />
-              <div>
+              >
                 <span
                   style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    color: "#0C1A0E",
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: getSignalDotColor(signal.status),
+                    display: "block",
                   }}
-                >
+                />
+              </span>
+              <div style={{ fontSize: 10, lineHeight: 1.4, color: "#78716C" }}>
+                <span style={{ fontWeight: 600, color: "#0C1A0E" }}>
                   {signal.label}
                 </span>
-                <span
-                  style={{
-                    fontSize: 10,
-                    color: "#78716C",
-                    marginLeft: 4,
-                  }}
-                >
-                  {signal.note}
-                </span>
+                <span style={{ color: "#A8A29E", margin: "0 4px" }}>·</span>
+                {signal.note}
               </div>
             </div>
           ))}

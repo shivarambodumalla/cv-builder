@@ -29,9 +29,9 @@ import { JdRedFlagDetector } from "@/components/resume/jd-red-flag-detector";
 import { OfferEvaluation } from "@/components/resume/offer-evaluation";
 import { SalaryInsights } from "@/components/resume/salary-insights";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
-import { Wand2, BookOpen } from "lucide-react";
+import { Wand2, BookOpen, Briefcase } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { JobsWidget } from "@/components/jobs/jobs-widget";
 
 /* ── Types ─────────────────────────────────────────── */
 
@@ -216,13 +216,6 @@ export function JobMatchPanel({
         </Button>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
-
-      {/* Jobs widget — show matching jobs below JD form */}
-      <JobsWidget
-        cvId={cvId}
-        cvTitle={jobTitle || content?.targetTitle?.title || content?.experience?.items?.[0]?.role || undefined}
-        jdKeywords={jobDescription.length > 10 ? [jobTitle || ""].filter(Boolean) : undefined}
-      />
     </div>
   );
 }
@@ -368,12 +361,6 @@ export function JobMatchRightPanel({
   const totalKeywords = matchedKeywords + missingKeywords;
   const expScore = categories.experience_match?.score ?? 0;
   const experienceFitLabel = expScore >= 90 ? "Strong" : expScore >= 70 ? "Good" : expScore >= 50 ? "Fair" : "Weak";
-
-  const topFixesRef = (el: HTMLDivElement | null) => { topFixesElRef.current = el; };
-  const topFixesElRef = { current: null as HTMLDivElement | null };
-  function scrollToTopFixes() {
-    topFixesElRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
 
   async function handleTailorCV() {
     setTailorLoading(true);
@@ -529,18 +516,6 @@ export function JobMatchRightPanel({
         </div>
       </div>
 
-      {/* Jobs Widget */}
-      <JobsWidget
-        cvId={cvId}
-        cvTitle={jobTitle}
-        jdKeywords={kwCat?.keywords_matched?.slice(0, 3)}
-        skills={
-          content?.skills?.categories
-            ? content.skills.categories.flatMap((c) => c.skills ?? [])
-            : undefined
-        }
-      />
-
       {/* Progress banner */}
       {hasChanges && (
         <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3" style={{ marginBottom: "12px" }}>
@@ -587,22 +562,6 @@ export function JobMatchRightPanel({
         </div>
       )}
 
-      {/* PART 5: Footer divider */}
-      {isPaidContent && (
-        <>
-          <div style={{ height: "0.5px", background: "#E0D8CC", margin: "14px 0" }} />
-          <div style={{ textAlign: "center", marginBottom: "14px" }}>
-            <button
-              type="button"
-              onClick={scrollToTopFixes}
-              className="inline-flex items-center justify-center rounded-md border border-success/30 bg-success/10 px-4 py-2 text-sm font-medium text-success hover:bg-success/20 transition-colors"
-            >
-              View top fixes
-            </button>
-          </div>
-        </>
-      )}
-
       {/* Quick Wins */}
       {isPaidContent && result.quick_wins?.length > 0 && (
         <div className="space-y-2" style={{ marginBottom: "14px" }}>
@@ -619,7 +578,7 @@ export function JobMatchRightPanel({
 
       {/* Top Fixes — with addressed tracking */}
       {isPaidContent && result.top_fixes?.length > 0 && (
-        <div ref={topFixesRef} className="space-y-2" style={{ marginBottom: "14px" }}>
+        <div className="space-y-2" style={{ marginBottom: "14px" }}>
           <h4 className="text-sm font-semibold">Top Fixes</h4>
           {result.top_fixes.map((fix, i) => {
             const isAddressed = fixStatus.items[i];
@@ -707,37 +666,101 @@ export function JobMatchRightPanel({
       {jobTitle && <SalaryInsights targetRole={jobTitle} isPro={plan === "pro"} />}
 
       {/* Action cards */}
-      <div className="space-y-2 mt-4">
-        {jdText && (
-          <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-            <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-              <BookOpen size={16} className="text-primary" />
+      <div className="mt-6 space-y-3">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Next steps</p>
+
+        {/* Hero: Find Matching Jobs */}
+        <Link
+          href={`/my-jobs?cvId=${encodeURIComponent(cvId)}`}
+          className="group relative block overflow-hidden rounded-2xl p-5 text-white shadow-md transition-all hover:shadow-xl hover:shadow-[#065F46]/20"
+          style={{ backgroundColor: "#065F46" }}
+        >
+          {/* Decorative rings */}
+          <div className="pointer-events-none absolute -right-10 -top-14 h-36 w-36 rounded-full bg-[#34D399]/20 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute -bottom-16 -left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute right-6 top-6 h-16 w-16 rounded-full border border-white/10" aria-hidden />
+          <div className="pointer-events-none absolute right-12 top-12 h-8 w-8 rounded-full border border-white/10" aria-hidden />
+          {/* Subtle dot grid */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage: "radial-gradient(white 1px, transparent 1px)",
+              backgroundSize: "14px 14px",
+            }}
+            aria-hidden
+          />
+
+          <div className="relative flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/20 backdrop-blur-sm">
+              <Briefcase size={20} />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground">Prepare for Interview</p>
-              <p className="text-xs text-muted-foreground">Get STAR stories tailored to this role</p>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-base font-semibold tracking-tight text-white">Find Matching Jobs</p>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#34D399]/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#34D399] ring-1 ring-[#34D399]/30">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34D399] opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#34D399]" />
+                  </span>
+                  Live
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-white/80">See live roles your CV fits — ranked by match score</p>
+              <div className="mt-2 flex items-center gap-3 text-[11px] text-white/60">
+                <span className="inline-flex items-center gap-1">
+                  <Sparkles size={11} className="text-[#34D399]" />
+                  Personalised
+                </span>
+                <span className="h-3 w-px bg-white/20" aria-hidden />
+                <span>Updated hourly</span>
+              </div>
             </div>
-            <Button size="sm" variant="outline" onClick={() => {
-              router.push(`/interview-coach?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
-            }}>
-              Prepare
+
+            <Button
+              size="sm"
+              className="shrink-0 bg-white px-4 font-semibold text-[#065F46] shadow-sm hover:bg-white/90"
+            >
+              Browse
             </Button>
           </div>
-        )}
-        <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
-          <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-            <FileText size={16} className="text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground">Generate Cover Letter</p>
-            <p className="text-xs text-muted-foreground">Tailored cover letter based on this match</p>
-          </div>
-          <Button size="sm" variant="outline" onClick={() => {
-            sessionStorage.setItem(`cover_letter_source_${cvId}`, "job-match");
-            window.dispatchEvent(new CustomEvent("switch-tab", { detail: "cover-letter" }));
-          }}>
-            Generate
-          </Button>
+        </Link>
+
+        {/* Secondary actions */}
+        <div className="grid gap-2 sm:grid-cols-2">
+          {jdText && (
+            <button
+              type="button"
+              onClick={() => {
+                router.push(`/interview-coach?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
+              }}
+              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:border-[#065F46]/30 hover:shadow-md dark:hover:border-[#34D399]/30"
+            >
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#065F46]/10 text-[#065F46] shadow-sm transition-colors group-hover:bg-[#065F46]/15 dark:bg-[#34D399]/15 dark:text-[#34D399] dark:group-hover:bg-[#34D399]/20">
+                <BookOpen size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground">Prepare for Interview</p>
+                <p className="truncate text-xs text-muted-foreground">STAR stories for this role</p>
+              </div>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              sessionStorage.setItem(`cover_letter_source_${cvId}`, "job-match");
+              window.dispatchEvent(new CustomEvent("switch-tab", { detail: "cover-letter" }));
+            }}
+            className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#065F46]/10 text-[#065F46] shadow-sm transition-colors group-hover:bg-[#065F46]/15 dark:bg-[#34D399]/15 dark:text-[#34D399] dark:group-hover:bg-[#34D399]/20">
+              <FileText size={18} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-foreground">Generate Cover Letter</p>
+              <p className="truncate text-xs text-muted-foreground">Tailored to this match</p>
+            </div>
+          </button>
         </div>
       </div>
 

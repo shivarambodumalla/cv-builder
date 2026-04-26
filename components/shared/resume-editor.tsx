@@ -702,7 +702,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </div>
                 <div className="lg:hidden">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} hasJobMatch={jobMatches.length > 0 || !!jobMatchResult} />
+                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
                 </div>
               </>
             )}
@@ -840,7 +840,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} hasJobMatch={jobMatches.length > 0 || !!jobMatchResult} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
             </div>
           )}
 
@@ -907,7 +907,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             return (
               <div className="mx-auto max-w-2xl">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} hasJobMatch={jobMatches.length > 0 || !!jobMatchResult} />
+                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
               </div>
             );
           })()}

@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 // score-ring no longer used — score card is inline SVG
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   RefreshCw,
   ChevronDown,
@@ -23,7 +22,6 @@ import {
   Sparkles,
   Wand2,
   Shield,
-  ArrowRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
@@ -52,7 +50,6 @@ interface AtsPanelProps {
   content?: ResumeContent;
   onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
   plan?: string;
-  hasJobMatch?: boolean;
 }
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
@@ -215,7 +212,7 @@ function CategoryRow({
   );
 }
 
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free", hasJobMatch = false }: AtsPanelProps) {
+export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
   const router = useRouter();
   const { log } = useActivity();
   const { openUpgradeModal } = useUpgradeModal();
@@ -676,52 +673,6 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           </div>
 
-          {/* Job Match CTA */}
-          <div
-            className="rounded-xl border p-4 mb-3"
-            style={{ backgroundColor: "#EEF2F8", borderColor: "#2A4F7A" }}
-          >
-            <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#1E3A5F", marginBottom: "4px" }}>
-              See how you match a real job description
-            </h4>
-            <p style={{ fontSize: "12px", color: "#4a4a4a", lineHeight: 1.5, marginBottom: "10px" }}>
-              Paste any JD below — get your match score in 30 seconds
-            </p>
-            <button
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent("switch-tab", { detail: "job-match" }));
-                setTimeout(() => {
-                  const jdTextarea = document.querySelector<HTMLTextAreaElement>('[data-testid="jd-textarea"], textarea[placeholder*="job description" i], textarea[placeholder*="paste" i]');
-                  jdTextarea?.focus();
-                }, 300);
-              }}
-              style={{
-                backgroundColor: "#1E3A5F",
-                color: "#fff",
-                fontSize: "13px",
-                fontWeight: 600,
-                padding: "8px 18px",
-                borderRadius: "6px",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Run Job Match
-            </button>
-          </div>
-
-          {/* Jobs link */}
-          <div className="mb-3 flex justify-start">
-            <Link
-              href="/my-jobs"
-              className="inline-flex items-center gap-1 text-[12px] font-medium hover:underline"
-              style={{ color: "#065F46" }}
-            >
-              View jobs matching your profile
-              <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
-
           {/* Paywall */}
           {!isPaidContent && (
             <div style={{ marginBottom: "12px" }}>
@@ -848,8 +799,8 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
             </div>
           )}
 
-          {/* Job match nudge — shown when ATS report exists but no job matches */}
-          <JobMatchNudge hasReport={!!report} hasJobMatch={hasJobMatch} />
+          {/* Job match nudge — score-aware: strong → find jobs + match-JD, mid → run match, weak → hidden */}
+          <JobMatchNudge hasReport={!!report} score={displayScore} cvId={cvId} />
 
           {/* Matching jobs widget */}
           <JobsWidget cvId={cvId} cvTitle={content?.targetTitle?.title || content?.experience?.items?.[0]?.role || undefined} />

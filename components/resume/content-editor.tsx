@@ -141,15 +141,46 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
     }
 
     function findBulletTextarea(container: Element, bulletText: string): HTMLElement | null {
-      const textareas = container.querySelectorAll("textarea");
-      const needleFull = bulletText.toLowerCase().trim();
+      const textareas = Array.from(container.querySelectorAll("textarea")) as HTMLTextAreaElement[];
+      if (textareas.length === 0) return null;
+
+      const normalize = (s: string) =>
+        s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
+      const tokenize = (s: string) => normalize(s).split(" ").filter((w) => w.length >= 4);
+
+      const needleFull = normalize(bulletText);
       const needleShort = needleFull.slice(0, 40);
+
+      // Pass 1: normalised exact / substring match
       for (const ta of textareas) {
-        const val = (ta as HTMLTextAreaElement).value.toLowerCase().trim();
-        if (val === needleFull || val.includes(needleFull)) return ta;
+        const val = normalize(ta.value);
+        if (val && (val === needleFull || val.includes(needleFull))) return ta;
       }
+
+      // Pass 2: normalised first-40-char prefix match
       for (const ta of textareas) {
-        if ((ta as HTMLTextAreaElement).value.toLowerCase().includes(needleShort)) return ta;
+        const val = normalize(ta.value);
+        if (val && needleShort && val.includes(needleShort)) return ta;
+      }
+
+      // Pass 3: token overlap. Score each bullet by how many ≥4-letter
+      // words from the AI snippet it contains. Pick the best match if it
+      // shares at least 3 words OR ≥60% of the snippet's tokens. This
+      // handles paraphrased / ellipsised quotes that strict substring
+      // matching misses.
+      const needleTokens = new Set(tokenize(bulletText));
+      if (needleTokens.size === 0) return null;
+
+      let best: { el: HTMLTextAreaElement; score: number } | null = null;
+      for (const ta of textareas) {
+        if (!ta.value) continue;
+        const valTokens = new Set(tokenize(ta.value));
+        let overlap = 0;
+        for (const t of needleTokens) if (valTokens.has(t)) overlap++;
+        if (!best || overlap > best.score) best = { el: ta, score: overlap };
+      }
+      if (best && (best.score >= 3 || best.score / needleTokens.size >= 0.6)) {
+        return best.el;
       }
       return null;
     }
