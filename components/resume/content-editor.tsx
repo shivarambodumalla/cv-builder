@@ -230,7 +230,7 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
         // Bullets in experience/projects/volunteering: always expand sub-items
         // so the right role's bullets mount, then locate by text or index.
         if (ref.field === "bullets") {
-          let fieldEl = locateBullet();
+          const fieldEl = locateBullet();
           if (fieldEl) { highlightEl(fieldEl); return; }
 
           const expanded = expandSubItems();
