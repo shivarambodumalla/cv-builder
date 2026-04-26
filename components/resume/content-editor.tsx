@@ -155,7 +155,7 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
     }
 
     function onJumpToField(e: Event) {
-      const ref = (e as CustomEvent).detail as { section: string; field?: string | null; bulletText?: string };
+      const ref = (e as CustomEvent).detail as { section: string; field?: string | null; bulletText?: string; index?: number };
       if (!ref?.section) return;
       const el = document.querySelector(`[data-section="${ref.section}"]`);
       if (!el) return;
@@ -166,38 +166,56 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
       const trigger = el.querySelector("[data-state=closed]") as HTMLElement;
       trigger?.click();
 
+      // Find the right textarea inside `el`. Returns null if not found.
+      function locateBullet(): HTMLElement | null {
+        if (ref.bulletText) {
+          const found = findBulletTextarea(el!, ref.bulletText);
+          if (found) return found;
+        }
+        if (ref.index != null) {
+          const all = el!.querySelectorAll('textarea[name*="bullets"]');
+          const target = all[ref.index] as HTMLElement | undefined;
+          if (target) return target;
+        }
+        return null;
+      }
+
+      // Expand every collapsed sub-item (role accordion) inside the section so
+      // bullet textareas mount. Returns true if it expanded anything.
+      function expandSubItems(): boolean {
+        const collapsedItems = el!.querySelectorAll(".rounded-lg.border");
+        let expandedAny = false;
+        for (const item of collapsedItems) {
+          // ExpItem renders the inner panel only when open (no .border-t child).
+          if (!item.querySelector(".border-t")) {
+            const header = item.querySelector("[role=button]") as HTMLElement;
+            if (header) { header.click(); expandedAny = true; }
+          }
+        }
+        return expandedAny;
+      }
+
       setTimeout(() => {
-        if (ref.bulletText && ref.field === "bullets") {
-          // First try to find the textarea (works if items are already open)
-          let fieldEl = findBulletTextarea(el, ref.bulletText);
-          if (fieldEl) {
-            highlightEl(fieldEl);
-            return;
-          }
+        // Bullets in experience/projects/volunteering: always expand sub-items
+        // so the right role's bullets mount, then locate by text or index.
+        if (ref.field === "bullets") {
+          let fieldEl = locateBullet();
+          if (fieldEl) { highlightEl(fieldEl); return; }
 
-          // Textareas not in DOM — expand all collapsed sub-items first
-          const collapsedItems = el.querySelectorAll(".rounded-lg.border");
-          let expandedAny = false;
-          for (const item of collapsedItems) {
-            // If no .border-t child, the item is collapsed
-            if (!item.querySelector(".border-t")) {
-              const header = item.querySelector("[role=button]") as HTMLElement;
-              if (header) { header.click(); expandedAny = true; }
-            }
-          }
-
-          if (expandedAny) {
-            // Wait for React to render the expanded content, then search again
+          const expanded = expandSubItems();
+          if (expanded) {
             setTimeout(() => {
-              fieldEl = findBulletTextarea(el, ref.bulletText!);
-              if (fieldEl) {
-                highlightEl(fieldEl);
-              } else {
-                // Fallback: focus first textarea in the section
-                const fallback = el.querySelector("textarea") as HTMLElement;
-                if (fallback) highlightEl(fallback);
-              }
+              const found = locateBullet();
+              if (found) { highlightEl(found); return; }
+              // Final fallback: first bullet textarea in the section.
+              const fallback = el.querySelector('textarea[name*="bullets"]') as HTMLElement;
+              if (fallback) highlightEl(fallback);
             }, 350);
+          } else {
+            // Nothing to expand and we couldn't locate it: fall back to first
+            // bullet so something visible happens.
+            const fallback = el.querySelector('textarea[name*="bullets"]') as HTMLElement;
+            if (fallback) highlightEl(fallback);
           }
           return;
         }
