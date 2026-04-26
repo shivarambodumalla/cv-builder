@@ -235,9 +235,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [jobMatchEditing, setJobMatchEditing] = useState(false);
 
   useEffect(() => {
-    // Pro users get real-time score updates; free users see frozen verified score
-    if (plan !== "pro") return;
-
+    // Live score update for everyone — free + pro. Re-analyse still verifies.
     clearTimeout(scorerDebounceRef.current);
     scorerDebounceRef.current = setTimeout(() => {
       const report = latestReport ?? { score: 0, category_scores: {} };
@@ -245,7 +243,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
       setEstimatedScore(result);
     }, 300);
     return () => clearTimeout(scorerDebounceRef.current);
-  }, [content, latestReport, keywordList, plan]);
+  }, [content, latestReport, keywordList]);
 
   // Persist estimated ATS score so the dashboard can display it
   const estimatedScoreSaveRef = useRef<NodeJS.Timeout>();

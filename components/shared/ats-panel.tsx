@@ -109,6 +109,11 @@ function formatTimeAgo(dateStr: string) {
   return `${days}d ago`;
 }
 
+/* Stable identity for an issue so we can mark it addressed across re-renders. */
+function issueKey(category: string, issue: { description: string }): string {
+  return `${category}::${issue.description}`;
+}
+
 /* ── Category accordion row ── */
 function CategoryRow({
   name,
@@ -117,6 +122,7 @@ function CategoryRow({
   onRewrite,
   estimatedCatScore,
   changed,
+  addressedIssues,
 }: {
   name: string;
   data: AtsCategoryScore;
@@ -124,6 +130,7 @@ function CategoryRow({
   onRewrite?: (issue: { description: string; fix: string; field_ref?: FieldRef }, category: string) => void;
   estimatedCatScore?: number;
   changed?: boolean;
+  addressedIssues?: Set<string>;
 }) {
   const [expanded, setExpanded] = useState(false);
   const activeIssues = data.issues;
@@ -160,29 +167,43 @@ function CategoryRow({
 
       {expanded && activeIssues.length > 0 && (
         <div className="border-t px-4 py-3 space-y-2">
-          {activeIssues.map((issue, i) => (
-            <div key={i} className="flex items-start gap-2 text-sm">
-              <div className="flex-1 space-y-0.5">
-                <p>{issue.description}</p>
-                {issue.fix && (
-                  <p className="text-xs text-muted-foreground">{issue.fix}</p>
-                )}
+          {activeIssues.map((issue, i) => {
+            const addressed = addressedIssues?.has(issueKey(name, issue)) ?? false;
+            return (
+              <div key={i} className={cn("flex items-start gap-2 text-sm", addressed && "opacity-60")}>
+                <div className="flex-1 space-y-0.5">
+                  <p className={addressed ? "line-through" : undefined}>{issue.description}</p>
+                  {issue.fix && (
+                    <p className="text-xs text-muted-foreground">{issue.fix}</p>
+                  )}
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  {addressed ? (
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-success">
+                      <Check className="h-3 w-3" /> Addressed
+                    </span>
+                  ) : (
+                    <span
+                      className="text-xs font-medium text-success"
+                      title="Estimated score lift after re-analysis. Click Re-analyse to verify."
+                    >
+                      ~+{issue.impact} pts
+                    </span>
+                  )}
+                  {!addressed && issue.field_ref && REWRITABLE_SECTIONS.has(issue.field_ref.section) && onRewrite && (
+                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-success" onClick={() => onRewrite(issue, name)}>
+                      <Sparkles className="mr-1 h-3 w-3" />Rewrite
+                    </Button>
+                  )}
+                  {!addressed && issue.field_ref && (issue.field_ref.field || issue.field_ref.bulletText) && (
+                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onFix(issue)}>
+                      <Crosshair className="mr-1 h-3 w-3" />Fix
+                    </Button>
+                  )}
+                </div>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <span className="text-xs font-medium text-success">+{issue.impact}pts</span>
-                {issue.field_ref && REWRITABLE_SECTIONS.has(issue.field_ref.section) && onRewrite && (
-                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-success" onClick={() => onRewrite(issue, name)}>
-                    <Sparkles className="mr-1 h-3 w-3" />Rewrite
-                  </Button>
-                )}
-                {issue.field_ref && (issue.field_ref.field || issue.field_ref.bulletText) && (
-                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onFix(issue)}>
-                    <Crosshair className="mr-1 h-3 w-3" />Fix
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
       {expanded && activeIssues.length === 0 && (
@@ -210,6 +231,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const [rewriteIssue, setRewriteIssue] = useState<{ description: string; fix: string; category: string; field_ref?: FieldRef } | null>(null);
   const [rewriteOriginal, setRewriteOriginal] = useState("");
   const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
+  const [addressedIssues, setAddressedIssues] = useState<Set<string>>(new Set());
   const [limitReached, setLimitReached] = useState(false);
   const [fixAllLoading, setFixAllLoading] = useState(false);
   const [fixAllStep, setFixAllStep] = useState(0);
@@ -237,7 +259,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   const displayScore = hasEstimate ? estimatedScore.estimated_score : verifiedScore;
   const isEstimated = hasEstimate && estimatedScore.estimated_score !== verifiedScore;
 
-  useEffect(() => { setAddedKeywords(new Set()); }, [report]);
+  useEffect(() => { setAddedKeywords(new Set()); setAddressedIssues(new Set()); }, [report]);
 
   const effectiveKeywords = useMemo(() => {
     if (!report?.keywords) return null;
@@ -725,6 +747,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
                     onRewrite={content ? handleRewrite : undefined}
                     estimatedCatScore={isEstimated && estCat ? estCat.score : undefined}
                     changed={changed && isEstimated}
+                    addressedIssues={addressedIssues}
                   />
                 );
               })}
@@ -874,7 +897,14 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
           sectionLabel={rewriteIssue.field_ref ? findSectionLabel(rewriteIssue.field_ref) : ""}
           isCurrent={true}
           missingKeywords={effectiveKeywords?.missing ?? []}
-          onAccept={(text, ref) => { onRewriteAccept?.(text, ref); }}
+          onAccept={(text, ref) => {
+            onRewriteAccept?.(text, ref);
+            setAddressedIssues((prev) => {
+              const next = new Set(prev);
+              next.add(issueKey(rewriteIssue.category, rewriteIssue));
+              return next;
+            });
+          }}
         />
       )}
 
