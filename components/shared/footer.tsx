@@ -36,12 +36,12 @@ const socialLinks = [
   { Icon: InstagramIcon, href: "https://www.instagram.com/thecvedge/", label: "Instagram" },
 ];
 
-const productLinks = [
-  { label: "Features", href: "/#features" },
+const productLinks: { label: string; href: string; external?: boolean }[] = [
+  { label: "Jobs", href: "/jobs" },
   { label: "Pricing", href: "/pricing" },
   { label: "Upload Resume", href: "/upload-resume" },
   { label: "Interview Coach", href: "/interview-prep" },
-  { label: "Blog", href: "https://blog.thecvedge.com", external: true },
+  { label: "Blog", href: "/blog" },
 ];
 
 const legalLinks = [

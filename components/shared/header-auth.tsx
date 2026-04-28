@@ -106,6 +106,12 @@ export function HeaderAuth() {
       jobs.textContent = "Jobs";
       nav.appendChild(jobs);
 
+      const blogAuth = document.createElement("a");
+      blogAuth.href = "/blog";
+      blogAuth.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      blogAuth.textContent = "Blog";
+      nav.appendChild(blogAuth);
+
     } else {
       // Marketing nav links
       const resumes = document.createElement("a");
@@ -125,6 +131,12 @@ export function HeaderAuth() {
       jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
       jobs.textContent = "Jobs";
       nav.appendChild(jobs);
+
+      const blog = document.createElement("a");
+      blog.href = "/blog";
+      blog.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      blog.textContent = "Blog";
+      nav.appendChild(blog);
     }
   }, [user, loading]);
 

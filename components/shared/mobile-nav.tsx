@@ -63,6 +63,9 @@ export function MobileNav() {
           <Link href={loggedIn ? "/my-jobs" : "/jobs"} onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
             Jobs
           </Link>
+          <Link href="/blog" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+            Blog
+          </Link>
           {loggedIn ? (
             <div className="pt-2 border-t space-y-1">
               <Link href="/my-jobs/saved" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
