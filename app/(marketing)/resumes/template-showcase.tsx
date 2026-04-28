@@ -94,6 +94,7 @@ export function TemplateShowcase() {
                   <img
                     src={t.img}
                     alt={`${t.name} CV template`}
+                    title={`${t.name} CV template`}
                     className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
                     loading="lazy"
                   />

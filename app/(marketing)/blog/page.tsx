@@ -39,9 +39,9 @@ export default async function BlogPage() {
             CVEdge Blog
           </p>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.12] max-w-xl">
-            Get more interviews.<br />
+            CV & job search advice<br />
             <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
-              Start here.
+              that gets you interviews.
             </span>
           </h1>
           <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">

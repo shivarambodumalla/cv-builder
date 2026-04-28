@@ -85,6 +85,7 @@ export default async function HomePage() {
           <div className="grid gap-8 md:grid-cols-[1.5fr_1fr] md:gap-10 items-center">
             {/* Copy */}
             <div className="flex flex-col items-center text-center md:items-start md:text-left gap-4 min-w-0 w-full">
+              <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Free ATS Resume Scanner</span>
               <h1 className="text-[2rem] sm:text-[2.75rem] md:text-[3rem] lg:text-[3.5rem] font-bold tracking-[-0.025em] leading-[1.12] break-words max-w-full">
                 Your resume isn&apos;t getting rejected.{" "}
                 <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
@@ -154,26 +155,26 @@ export default async function HomePage() {
                   <div className="flex gap-3 items-start">
                     <div className="flex-1 flex flex-col gap-3">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/orchid.jpg" alt="Orchid resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/orchid.jpg" alt="Orchid resume template" title="Orchid resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/electric-lilac.jpg" alt="Electric Lilac resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/electric-lilac.jpg" alt="Electric Lilac resume template" title="Electric Lilac resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-10">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/portrait.jpg" alt="Portrait resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/portrait.jpg" alt="Portrait resume template" title="Portrait resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar resume template" title="Clean Sidebar resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-4">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/coastal.jpg" alt="Coastal resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/coastal.jpg" alt="Coastal resume template" title="Coastal resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/aurora.jpg" alt="Aurora resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/aurora.jpg" alt="Aurora resume template" title="Aurora resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                   </div>
@@ -259,7 +260,7 @@ export default async function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Land your next role faster</h2>
                 <p className="mt-1.5 text-white/70 text-sm">AI-powered resume builder and ATS scorer</p>
                 <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-[#34D399] hover:bg-[#2fc48d] text-[#065F46] shadow-md" asChild>
-                  <Link href="/upload-resume">Check my ATS score free</Link>
+                  <Link href="/upload-resume">Get my free ATS score</Link>
                 </Button>
               </div>
               {/* Stat cards */}

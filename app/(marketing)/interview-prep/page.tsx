@@ -161,7 +161,7 @@ export default function InterviewStoriesPage() {
         <h2 className="text-2xl font-bold tracking-tight">Ready to stop winging your interviews?</h2>
         <p className="mt-3 text-muted-foreground">Prepare for your interviews in minutes. Free to start, no credit card needed.</p>
         <Button className="mt-6" asChild>
-          <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>
+          <Link href="/login?returnUrl=%2Finterview-coach">Build my story bank free</Link>
         </Button>
       </div>
     </div>

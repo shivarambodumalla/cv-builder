@@ -324,7 +324,7 @@ export function HeroAnimation() {
                   className={`ti${i === 0 ? " on" : ""}`}
                   data-slug={t.slug}
                 >
-                  <img src={imgSrc(t.slug)} alt={`${t.name} resume template preview`} loading="lazy" />
+                  <img src={imgSrc(t.slug)} alt={`${t.name} resume template preview`} title={`${t.name} resume template preview`} loading="lazy" />
                   <div
                     className={`tier-chip ${t.tier === "Pro" ? "tier-pro" : "tier-free"}`}
                   >

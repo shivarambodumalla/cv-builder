@@ -44,6 +44,7 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
             <Image
               src={featured.coverImage.url}
               alt={featured.title}
+              title={featured.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, 45vw"
@@ -90,6 +91,7 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
                   <Image
                     src={post.coverImage.url}
                     alt={post.title}
+                    title={post.title}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

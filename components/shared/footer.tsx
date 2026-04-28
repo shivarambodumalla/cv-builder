@@ -62,7 +62,7 @@ export function Footer() {
           {/* Brand column */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="group inline-flex items-center">
-              <img src="/img/cvEdge_logo_dark.svg" alt="CVEdge logo" className="h-7 opacity-90 group-hover:opacity-100 transition-opacity" />
+              <img src="/img/cvEdge_logo_dark.svg" alt="CVEdge logo" title="CVEdge — Free ATS Resume Scanner" className="h-7 opacity-90 group-hover:opacity-100 transition-opacity" />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-[#8fa89a] dark:text-[#6a8575] max-w-xs">
               Your CV, your edge. Craft beautiful, ATS-optimised resumes that

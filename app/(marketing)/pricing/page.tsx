@@ -41,10 +41,10 @@ export default function PricingPage() {
       {/* Header */}
       <header className="mx-auto mb-10 max-w-2xl text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Simple, transparent pricing
+          Free forever. Pro from $2.30/week.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          One plan. Full access. Cancel anytime.
+          Simple, transparent pricing — one Pro plan, full access, cancel anytime.
         </p>
       </header>
 

@@ -103,6 +103,7 @@ export default async function BlogPostPage({
             <Image
               src={post.coverImage.url}
               alt={post.title}
+              title={post.title}
               width={0}
               height={0}
               sizes="(max-width: 896px) 100vw, 896px"

@@ -35,8 +35,8 @@ export default function ResumesPage() {
       {/* Header */}
       <div className="mx-auto max-w-2xl text-center mb-14">
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase mb-2">Templates</p>
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Pick your style. Start in seconds.</h1>
-        <p className="text-muted-foreground mt-3">Every template passes ATS filters. All free to try.</p>
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Free ATS-Friendly Resume Templates</h1>
+        <p className="text-muted-foreground mt-3">Pick your style — every template passes ATS filters. All free to try.</p>
       </div>
 
       {/* Template showcase — client component for filter tabs */}
