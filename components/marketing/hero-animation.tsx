@@ -44,7 +44,8 @@ const COL = [
   { c: "#14532D", n: "Forest", hr: -8, sat: 1.2, br: 0.85 },
 ];
 
-const imgSrc = (slug: string) => `/img/templates/${slug}.jpg`;
+const imgSrc = (slug: string) =>
+  `/_next/image?url=${encodeURIComponent(`/img/templates/${slug}.jpg`)}&w=640&q=80`;
 
 export function HeroAnimation() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -323,7 +324,7 @@ export function HeroAnimation() {
                   className={`ti${i === 0 ? " on" : ""}`}
                   data-slug={t.slug}
                 >
-                  <img src={imgSrc(t.slug)} alt="" loading="lazy" />
+                  <img src={imgSrc(t.slug)} alt={`${t.name} resume template preview`} loading="lazy" />
                   <div
                     className={`tier-chip ${t.tier === "Pro" ? "tier-pro" : "tier-free"}`}
                   >

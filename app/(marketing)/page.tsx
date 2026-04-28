@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +26,8 @@ import { TestimonialsCarousel } from "@/components/marketing/testimonials-carous
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
-  title: "Free ATS Resume Scanner — Check Your ATS Score in 60 Seconds | CVEdge",
-  description: "Your resume is getting filtered out by ATS software. CVEdge scans your resume, shows your real ATS score, and fixes critical issues with AI. Free to start. Used by 2,400+ job seekers.",
+  title: "Free ATS Resume Scanner — Check Your ATS Score",
+  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score, fixes issues with AI, and gets you more interviews. Free. 2,400+ users.",
   alternates: { canonical: "https://www.thecvedge.com" },
 };
 
@@ -153,26 +154,26 @@ export default async function HomePage() {
                   <div className="flex gap-3 items-start">
                     <div className="flex-1 flex flex-col gap-3">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/orchid.jpg" alt="Orchid template" className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/orchid.jpg" alt="Orchid resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/electric-lilac.jpg" alt="Electric Lilac template" className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/electric-lilac.jpg" alt="Electric Lilac resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-10">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/portrait.jpg" alt="Portrait template" className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/portrait.jpg" alt="Portrait resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar template" className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-4">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/coastal.jpg" alt="Coastal template" className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/coastal.jpg" alt="Coastal resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <img src="/img/templates/aurora.jpg" alt="Aurora template" className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/aurora.jpg" alt="Aurora resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                   </div>

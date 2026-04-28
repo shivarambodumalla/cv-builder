@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   BarChart3,
@@ -233,7 +234,7 @@ export function FeaturesTabs() {
                     ].map((t) => (
                       <div key={t.name} className="rounded-xl bg-white dark:bg-background border overflow-hidden group">
                         <div className="aspect-[3/4] overflow-hidden">
-                          <img src={t.img} alt={t.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                          <Image src={t.img} alt={`${t.name} resume template`} width={310} height={438} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                         </div>
                         <p className="text-[10px] font-medium text-center py-1.5">{t.name}</p>
                       </div>

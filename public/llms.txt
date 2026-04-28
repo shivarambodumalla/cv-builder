@@ -1,0 +1,42 @@
+# CVEdge
+
+> Free ATS resume scanner and AI-powered CV optimisation platform
+
+CVEdge helps job seekers scan their resume for ATS compatibility, get a real ATS score, fix critical issues with AI, match their CV to job descriptions, and generate tailored cover letters. Free to start. Used by 2,400+ job seekers.
+
+## Core Features
+
+- ATS Score Analysis — instant score across 6 categories with fix suggestions
+- AI CV Rewriting — 4 modes: ATS, Impact, Concise, Grammar
+- Fix All with AI — rewrites entire CV in one pass to maximise ATS score
+- Job Match Scoring — paste a job description and get a match score with gaps
+- CV Tailor for JD — rewrites CV to target a specific job description
+- Cover Letter Generation — professional, conversational, or confident tone
+- Interview Coach — STAR story bank with AI quality scoring and interview prep
+- Job Search — 1M+ live jobs with per-listing match scores
+- 24 Professional Templates — free and Pro tiers
+- 80+ ATS Score Guarantee — money-back guarantee for Pro users
+
+## Plans
+
+- Free: 3 CVs, ATS scans, AI rewrites, job matches, cover letters, PDF export, all templates
+- Pro: unlimited everything, no watermark, 80+ score guarantee, priority support
+
+## Key Pages
+
+- Homepage: https://www.thecvedge.com
+- Pricing: https://www.thecvedge.com/pricing
+- Templates: https://www.thecvedge.com/resumes
+- Jobs: https://www.thecvedge.com/jobs
+- Interview Coach: https://www.thecvedge.com/interview-coach
+- Blog: https://blog.thecvedge.com
+- Privacy Policy: https://www.thecvedge.com/privacy
+- Terms of Service: https://www.thecvedge.com/terms
+
+## Contact
+
+- Website: https://www.thecvedge.com
+- Support: hello@thecvedge.com
+- Twitter/X: https://x.com/thecvedge
+- LinkedIn: https://linkedin.com/company/cv-edge
+- Instagram: https://instagram.com/thecvedge

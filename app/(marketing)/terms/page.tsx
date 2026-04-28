@@ -1,4 +1,18 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
+
+function linkifyEmails(text: string): ReactNode[] {
+  const parts = text.split(/([\w._%+-]+@[\w.-]+\.[a-zA-Z]{2,})/);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <a key={i} href={`mailto:${part}`} className="underline text-foreground">
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  );
+}
 
 export const metadata: Metadata = {
   title: "Terms of Service | CVEdge",
@@ -80,13 +94,13 @@ export default function TermsPage() {
         {sections.map((s) => (
           <section key={s.title}>
             <h2 className="text-lg font-semibold">{s.title}</h2>
-            {s.content && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.content}</p>}
+            {s.content && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{linkifyEmails(s.content)}</p>}
             {s.list && (
               <ul className="mt-2 space-y-1.5">
                 {s.list.map((item) => (
                   <li key={item} className="flex gap-2 text-sm text-muted-foreground">
                     <span className="text-muted-foreground/50">-</span>
-                    {item}
+                    <span>{linkifyEmails(item)}</span>
                   </li>
                 ))}
               </ul>
