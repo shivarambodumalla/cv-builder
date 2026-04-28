@@ -6,6 +6,7 @@ import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { getPost, getAllSlugs, formatDate } from "@/lib/blog/hashnode";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { CtaSection } from "@/components/shared/cta-section";
+import { LinkTracker } from "./link-tracker";
 
 export const revalidate = 3600;
 
@@ -82,6 +83,7 @@ export default async function BlogPostPage({
         ]}
       />
 
+      <LinkTracker postSlug={slug} />
       <div className="container mx-auto max-w-4xl px-4 pt-10 pb-16">
 
         {/* Back link */}

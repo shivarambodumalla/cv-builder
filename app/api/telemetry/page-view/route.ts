@@ -6,10 +6,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const ALLOWED_PATHS = new Set(["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs"]);
 
+function isAllowed(path: string): boolean {
+  return ALLOWED_PATHS.has(path) || path.startsWith("/popup/") || path.startsWith("/blog");
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { path } = await request.json();
-    if (!path || (!ALLOWED_PATHS.has(path) && !path.startsWith("/popup/"))) return NextResponse.json({ ok: true });
+    if (!path || !isAllowed(path)) return NextResponse.json({ ok: true });
 
     const admin = createAdminClient();
     const today = new Date().toISOString().slice(0, 10);

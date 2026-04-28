@@ -236,7 +236,22 @@
       "Bash(curl -s -H \"Referer: https://www.thecvedge.com/jobs\" -H \"User-Agent: Mozilla/5.0\" \"https://public.api.careerjet.net/search?locale_code=en_US&keywords=product+manager&location=remote&affid=46743b137b3795260d6187e084b7648a&user_ip=11.22.33.44&user_agent=Mozilla/5.0&url=https://www.thecvedge.com/jobs&pagesize=2\")",
       "Bash(curl -sv -H \"Referer: https://www.thecvedge.com/jobs\" -H \"User-Agent: Mozilla/5.0\" \"https://public.api.careerjet.net/search?locale_code=en_US&keywords=product+manager&location=remote&affid=46743b137b3795260d6187e084b7648a&user_ip=11.22.33.44&user_agent=Mozilla/5.0&url=https://www.thecvedge.com/jobs&pagesize=2\")",
       "Bash(python3 -c ' *)",
-      "Bash(PORT=3000 npm run dev)"
+      "Bash(PORT=3000 npm run dev)",
+      "Bash(xargs du *)",
+      "Bash(awk -F: '{print $1, $3}')",
+      "Bash(identify /Users/sivaramireddy/work/cv-builder/public/img/templates/executive-sidebar.jpg)",
+      "Bash(node -e \"const s = require\\('fs'\\); const p = '/Users/sivaramireddy/work/cv-builder/public/img'; const files = s.readdirSync\\(p\\).filter\\(f => !s.statSync\\(p+'/'+f\\).isDirectory\\(\\)\\); console.log\\(files.join\\('\\\\n'\\)\\);\")",
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder status)",
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder diff --stat)",
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder add app/\\\\\\(marketing\\\\\\)/page.tsx app/\\\\\\(marketing\\\\\\)/privacy/page.tsx app/\\\\\\(marketing\\\\\\)/terms/page.tsx components/marketing/features-tabs.tsx components/marketing/hero-animation.tsx public/llms.txt public/img/ats-1.png public/img/cover-2.png public/img/cover-bkp.png public/img/cover-new.png public/img/rewrite-1.png public/img/rewrite-bkp.png)",
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder commit -m ' *)",
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder push)",
+      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"{ publication\\(host: \\\\\"blog.thecvedge.com\\\\\"\\) { posts\\(first: 1\\) { edges { node { id title slug } } } } }\"}')",
+      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"{ publication\\(host: \\\\\"blog.thecvedge.com\\\\\"\\) { post\\(slug: \\\\\"how-to-write-resume-bullet-points-that-show-impact-with-examples\\\\\"\\) { id title slug brief publishedAt updatedAt readTimeInMinutes coverImage { url } tags { name slug } content { html } seo { title description } author { name profilePicture } } } }\"}')",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"query GetPosts\\($host: String!, $first: Int!\\) { publication\\(host: $host\\) { posts\\(first: $first\\) { edges { node { id title slug brief publishedAt readTimeInMinutes coverImage { url } tags { name slug } } } } } }\",\"variables\":{\"host\":\"blog.thecvedge.com\",\"first\":20}}')",
+      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"query GetSlugs\\($host: String!\\) { publication\\(host: $host\\) { posts\\(first: 100\\) { edges { node { slug } } } } }\",\"variables\":{\"host\":\"blog.thecvedge.com\"}}')",
+      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"{ publication\\(host: \\\\\"blog.thecvedge.com\\\\\"\\) { posts\\(first: 50\\) { totalDocuments edges { node { slug } } pageInfo { hasNextPage endCursor } } } }\"}')"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",
@@ -244,7 +259,8 @@
       "/Users/sivaramireddy/work/cv-builder/.next",
       "/Users/sivaramireddy/work/cv-builder/components/resume/templates/cv images",
       "/Users/sivaramireddy/work/cv-builder/app/api/cv/[id]",
-      "/Users/sivaramireddy/work/cv-builder/app/(editor)/resume/[id]"
+      "/Users/sivaramireddy/work/cv-builder/app/(editor)/resume/[id]",
+      "/Users/sivaramireddy/work/cv-builder/app/(marketing)/blog"
     ]
   }
 }

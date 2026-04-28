@@ -17,6 +17,7 @@ const NAV_GROUPS = [
       { href: "/admin/analytics", label: "AI Usage" },
       { href: "/admin/funnel", label: "Funnel" },
       { href: "/admin/jobs-analytics", label: "Jobs" },
+      { href: "/admin/blog-analytics", label: "Blog" },
       { href: "/admin/interventions", label: "Interventions" },
     ],
   },
