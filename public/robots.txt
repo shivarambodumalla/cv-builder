@@ -13,8 +13,6 @@ Disallow: /settings
 Disallow: /settings/
 Disallow: /interview-coach
 Disallow: /interview-coach/
-Disallow: /stories
-Disallow: /stories/
 
 # Admin + API
 Disallow: /admin

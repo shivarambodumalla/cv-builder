@@ -9,6 +9,12 @@ const nextConfig = {
     ],
   },
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: "/stories", destination: "/interview-coach", permanent: true },
+      { source: "/stories/:path*", destination: "/interview-coach", permanent: true },
+    ];
+  },
   experimental: {
     serverComponentsExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   },

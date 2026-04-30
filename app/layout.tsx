@@ -54,8 +54,26 @@ const ORGANIZATION_JSONLD = {
   "@type": "Organization",
   name: "CVEdge",
   url: "https://www.thecvedge.com",
-  logo: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg",
-  description: "AI-powered CV optimisation, ATS score analysis, and job search platform.",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg",
+  },
+  description: "CVEdge is an AI-powered resume builder and ATS checker that analyses CV compatibility with applicant tracking systems, rewrites bullet points with AI, matches resumes to job descriptions, and helps job seekers get more interviews.",
+  slogan: "Get more interviews. Fix your CV in 8 minutes.",
+  foundingDate: "2024",
+  areaServed: "Worldwide",
+  knowsAbout: [
+    "ATS resume optimization",
+    "applicant tracking systems",
+    "resume writing",
+    "CV analysis",
+    "job search",
+    "AI resume tools",
+    "cover letter writing",
+    "interview preparation",
+    "keyword optimization",
+    "job description matching",
+  ],
   sameAs: [
     "https://twitter.com/thecvedge",
   ],
@@ -64,6 +82,22 @@ const ORGANIZATION_JSONLD = {
     contactType: "customer support",
     email: "support@thecvedge.com",
     availableLanguage: ["English"],
+  },
+};
+
+const WEBSITE_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "CVEdge",
+  url: "https://www.thecvedge.com",
+  description: "Free AI-powered ATS resume checker and CV builder. Check your ATS score, fix issues with AI, and match your CV to job descriptions.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://www.thecvedge.com/jobs?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
   },
 };
 
@@ -78,6 +112,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSONLD) }}
         />
       </head>
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>

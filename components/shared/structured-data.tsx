@@ -106,6 +106,53 @@ export function FaqJsonLd({ items }: { items: FaqItem[] }) {
   );
 }
 
+interface ServiceJsonLdProps {
+  name: string;
+  description: string;
+  url: string;
+  serviceType: string;
+  price?: string;
+  priceCurrency?: string;
+}
+
+/**
+ * Service JSON-LD — for tool/feature landing pages like /upload-resume, /interview-coach.
+ */
+export function ServiceJsonLd({
+  name,
+  description,
+  url,
+  serviceType,
+  price = "0",
+  priceCurrency = "USD",
+}: ServiceJsonLdProps) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name,
+    description,
+    url,
+    serviceType,
+    provider: {
+      "@type": "Organization",
+      name: "CVEdge",
+      url: "https://www.thecvedge.com",
+    },
+    offers: {
+      "@type": "Offer",
+      price,
+      priceCurrency,
+      availability: "https://schema.org/InStock",
+    },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 interface HowToStep {
   name: string;
   text: string;

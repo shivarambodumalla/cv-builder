@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { UploadResumeContent } from "./upload-resume-content";
-import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
+import { BreadcrumbJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
   title: "Free ATS Resume Checker | Upload Your CV",
@@ -21,8 +21,14 @@ export default function UploadResumePage() {
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "https://www.thecvedge.com" },
-          { name: "Upload Resume", url: "https://www.thecvedge.com/upload-resume" },
+          { name: "ATS Resume Checker", url: "https://www.thecvedge.com/upload-resume" },
         ]}
+      />
+      <ServiceJsonLd
+        name="Free ATS Resume Checker"
+        description="Upload your CV or paste text to instantly check your ATS score. CVEdge analyses your resume across 6 categories — keywords, formatting, measurable results, bullet quality, sections, and contact info — and shows you exactly what to fix."
+        url="https://www.thecvedge.com/upload-resume"
+        serviceType="ATS Resume Analysis"
       />
       <UploadResumeContent />
     </Suspense>

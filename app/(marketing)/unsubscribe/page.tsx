@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Unsubscribed | CVEdge",
   robots: { index: false, follow: false },
+  alternates: { canonical: "https://www.thecvedge.com/unsubscribe" },
 };
 
 const TYPE_LABEL: Record<string, string> = {
