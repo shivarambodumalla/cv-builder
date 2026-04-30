@@ -18,7 +18,14 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const { posts, hasMore, cursor } = await getPosts();
+  let posts: Awaited<ReturnType<typeof getPosts>>["posts"] = [];
+  let hasMore = false;
+  let cursor: string | null = null;
+  try {
+    ({ posts, hasMore, cursor } = await getPosts());
+  } catch {
+    // Hashnode unavailable — render page with empty state
+  }
   const [featured] = posts;
 
   return (
