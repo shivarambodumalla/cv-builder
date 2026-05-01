@@ -5,7 +5,7 @@ import { RoleJobResults } from "./role-job-results";
 import { BrowseRoles } from "@/components/jobs/browse-roles";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 interface RoleDef {
   slug: string;
@@ -47,9 +47,6 @@ const ROLES: RoleDef[] = ALL_ROLES.map((r) => {
 
 const ROLE_MAP = new Map(ROLES.map((r) => [r.slug, r]));
 
-export function generateStaticParams() {
-  return ALL_ROLES.map((r) => ({ role: r.slug }));
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ role: string }> }): Promise<Metadata> {
   const { role: slug } = await params;
