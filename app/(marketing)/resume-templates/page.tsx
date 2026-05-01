@@ -159,7 +159,7 @@ export default function ResumeTemplatesPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{c.intro}</p>
                   <p className="text-[10px] text-primary mt-2 font-medium">
-                    {c.count} templates →
+                    {c.count} templates
                   </p>
                 </Link>
               ))}
@@ -249,7 +249,7 @@ export default function ResumeTemplatesPage() {
               </div>
               <div className="mt-6">
                 <Button asChild>
-                  <Link href="/ats-friendly-resume">Learn how ATS scoring works →</Link>
+                  <Link href="/ats-friendly-resume">Learn how ATS scoring works</Link>
                 </Button>
               </div>
             </div>

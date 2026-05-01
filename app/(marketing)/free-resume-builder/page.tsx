@@ -247,7 +247,7 @@ export default function FreeResumeBuilderPage() {
         </div>
         <div className="mt-4 text-center">
           <Button asChild>
-            <Link href="/pricing">See Pro pricing →</Link>
+            <Link href="/pricing">See Pro pricing</Link>
           </Button>
         </div>
       </div>

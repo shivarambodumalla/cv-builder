@@ -162,7 +162,7 @@ export default async function RoleResumeExamplePage({
             metric-led statements in one click. Paste your bullet, pick a mode, and get a
             better version instantly.{" "}
             <Link href="/login" className="underline hover:text-foreground">
-              Try it free →
+              Try it free
             </Link>
           </p>
         </div>
@@ -194,7 +194,7 @@ export default async function RoleResumeExamplePage({
             CVEdge's Job Match tool compares your resume against any {role.label.toLowerCase()} job description
             and shows which keywords are missing — with one-click add.{" "}
             <Link href="/login" className="underline hover:text-foreground">
-              Try it free →
+              Try it free
             </Link>
           </p>
         </div>
@@ -324,7 +324,7 @@ export default async function RoleResumeExamplePage({
                       {leaf?.headline ?? t.categorySlug.replace(/-/g, " ")}
                     </p>
                     <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-3 py-1.5 text-xs font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
-                      Use template →
+                      Use template
                     </span>
                   </div>
                 </Link>
@@ -333,7 +333,7 @@ export default async function RoleResumeExamplePage({
           </div>
           <div className="mt-4 text-center">
             <Link href="/resume-templates" className="text-sm text-primary hover:underline">
-              View all 24 templates →
+              View all 24 templates
             </Link>
           </div>
         </div>

@@ -193,7 +193,7 @@ export default function CvTemplatesPage() {
                 </p>
               </div>
               <Button variant="outline" asChild className="shrink-0">
-                <Link href="/resume-templates">Browse by role →</Link>
+                <Link href="/resume-templates">Browse by role</Link>
               </Button>
             </div>
           </div>

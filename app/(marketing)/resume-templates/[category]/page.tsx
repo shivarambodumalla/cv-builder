@@ -165,7 +165,7 @@ export default async function TemplateCategoryPage({
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{t.headline}</p>
                     <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-4 py-2 text-xs font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
-                      View template →
+                      View template
                     </span>
                   </div>
                 </Link>

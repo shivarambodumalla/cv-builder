@@ -228,7 +228,7 @@ export function PricingContent() {
           href="/upload-resume"
           className="mt-6 inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-base font-semibold text-[#065F46] hover:bg-white/90 transition-colors"
         >
-          Analyse my CV free →
+          Analyse my CV free
         </Link>
         <p className="mt-4 text-[11px] text-green-300">
           ✓ Free forever &middot; ✓ Upgrade anytime &middot; ✓ Cancel anytime

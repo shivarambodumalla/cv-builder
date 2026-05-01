@@ -495,7 +495,7 @@ export default async function HomePage() {
               href="/jobs"
               className="mt-8 inline-block text-sm font-medium text-primary hover:underline"
             >
-              See all 130+ roles →
+              See all 130+ roles
             </Link>
           </div>
         </div>

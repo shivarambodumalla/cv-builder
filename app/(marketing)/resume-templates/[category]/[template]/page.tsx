@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { TEMPLATE_CATEGORIES, CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
 
@@ -227,8 +227,8 @@ export default async function TemplateLeafPage({
             <div className="mx-auto max-w-5xl">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold tracking-tight">More {cat.label.toLowerCase()} templates</h2>
-                <Link href={`/resume-templates/${cat.slug}`} className="text-sm text-primary flex items-center gap-1 hover:underline">
-                  View all <ArrowRight className="h-3.5 w-3.5" />
+                <Link href={`/resume-templates/${cat.slug}`} className="text-sm text-primary hover:underline">
+                  View all
                 </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
