@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Target, ArrowRight } from "lucide-react";
+import { CheckCircle, XCircle, Target } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getRoleExampleData, generateGenericExampleData } from "@/lib/resume-examples/data";
+import { getLeafData } from "@/lib/resume-templates/data";
 
 export const revalidate = 86400;
 
@@ -75,7 +76,7 @@ export default async function RoleResumeExamplePage({
   const faqs = buildFaqs(role.label);
 
   return (
-    <div className="container mx-auto px-4 py-16 md:py-20">
+    <>
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "https://www.thecvedge.com" },
@@ -88,28 +89,41 @@ export default async function RoleResumeExamplePage({
       />
       <FaqJsonLd items={faqs.map((f) => ({ question: f.question, answer: f.answer }))} />
 
-      {/* Hero */}
-      <div className="mx-auto max-w-2xl text-center mb-14">
-        <p className="text-[10px] tracking-widest text-muted-foreground uppercase mb-2">
-          Resume Example
-        </p>
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          {role.label} Resume Example
-        </h1>
-        <p className="text-muted-foreground mt-3 text-base leading-relaxed">
-          Real bullet point examples, ATS keywords, common mistakes, and free templates
-          specifically for {role.label.toLowerCase()} roles. Build your resume with CVEdge
-          and know your ATS score before you apply.
-        </p>
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild>
-            <Link href="/upload-resume">Upload my CV — free ATS score</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/login">Build {role.label} resume free</Link>
-          </Button>
+      {/* ── HERO ── */}
+      <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
+        <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
+        <div className="relative container mx-auto px-4 py-16 md:py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
+              Resume Example
+            </span>
+            <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl md:text-5xl leading-[1.12]">
+              {role.label}{" "}
+              <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
+                Resume Example 2026
+              </span>
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+              Real bullet examples, ATS keywords, common mistakes, and free templates for{" "}
+              {role.label.toLowerCase()} roles. Know your ATS score before you apply.
+            </p>
+            <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+              <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
+                <Link href="/upload-resume">Upload my CV — free ATS score</Link>
+              </Button>
+              <Button size="lg" variant="outline" className="h-12 px-8" asChild>
+                <Link href="/login">Build {role.label} resume free</Link>
+              </Button>
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              No credit card · No watermarks · ATS score included
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <div className="container mx-auto px-4 py-16 md:py-20">
 
       {/* Role advice paragraph */}
       <div className="mx-auto max-w-3xl mb-14">
@@ -281,27 +295,44 @@ export default async function RoleResumeExamplePage({
             Best resume templates for {role.label.toLowerCase()} roles
           </h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            {data.bestTemplates.map((t) => (
-              <Link
-                key={t.leafSlug}
-                href={`/resume-templates/${t.categorySlug}/${t.leafSlug}`}
-                className="group rounded-xl border bg-card p-4 hover:shadow-sm transition-shadow flex items-center justify-between"
-              >
-                <div>
-                  <p className="text-sm font-semibold">{t.name} template</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {t.categorySlug.replace(/-/g, " ")} category
-                  </p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </Link>
-            ))}
+            {data.bestTemplates.map((t) => {
+              const leaf = getLeafData(t.categorySlug, t.leafSlug);
+              return (
+                <Link
+                  key={t.leafSlug}
+                  href={`/resume-templates/${t.categorySlug}/${t.leafSlug}`}
+                  className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow"
+                >
+                  <div className="aspect-[1242/1754] bg-muted overflow-hidden">
+                    {leaf?.imgPath ? (
+                      <img
+                        src={leaf.imgPath}
+                        alt={`${t.name} resume template`}
+                        title={`${t.name} resume template`}
+                        className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+                        Preview
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <p className="text-xs font-semibold">{t.name} template</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">
+                      {leaf?.headline ?? t.categorySlug.replace(/-/g, " ")}
+                    </p>
+                    <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-3 py-1.5 text-xs font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
+                      Use template →
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
           <div className="mt-4 text-center">
-            <Link
-              href="/resume-templates"
-              className="text-sm text-primary hover:underline"
-            >
+            <Link href="/resume-templates" className="text-sm text-primary hover:underline">
               View all 24 templates →
             </Link>
           </div>
@@ -365,6 +396,7 @@ export default async function RoleResumeExamplePage({
           </Button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
