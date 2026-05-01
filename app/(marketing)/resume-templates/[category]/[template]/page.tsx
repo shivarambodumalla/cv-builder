@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import { TEMPLATE_CATEGORIES, CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
+import { CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
 
 export const revalidate = 86400;
 

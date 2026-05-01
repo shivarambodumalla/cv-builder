@@ -241,7 +241,7 @@ export default function ResumeTemplatesPage() {
                   <ul className="space-y-1 text-muted-foreground">
                     <li>Two-column layouts (some ATS systems misparse)</li>
                     <li>Headers/footers with contact info</li>
-                    <li>Custom section names ("My Career")</li>
+                    <li>Custom section names (&ldquo;My Career&rdquo;)</li>
                     <li>Tables or text boxes</li>
                     <li>Images, logos, or icons in body</li>
                   </ul>

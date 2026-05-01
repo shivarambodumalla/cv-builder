@@ -158,7 +158,7 @@ export default async function RoleResumeExamplePage({
         <div className="mt-5 rounded-xl bg-[rgba(6,95,70,0.04)] border border-[rgba(6,95,70,0.10)] p-4">
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Struggling with your own bullets?</span>{" "}
-            CVEdge's AI rewriter converts weak bullets like "Responsible for X" into strong,
+            CVEdge&apos;s AI rewriter converts weak bullets like &ldquo;Responsible for X&rdquo; into strong,
             metric-led statements in one click. Paste your bullet, pick a mode, and get a
             better version instantly.{" "}
             <Link href="/login" className="underline hover:text-foreground">
@@ -191,7 +191,7 @@ export default async function RoleResumeExamplePage({
         <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-4">
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Get role-specific keywords for your exact job description.</span>{" "}
-            CVEdge's Job Match tool compares your resume against any {role.label.toLowerCase()} job description
+            CVEdge&apos;s Job Match tool compares your resume against any {role.label.toLowerCase()} job description
             and shows which keywords are missing — with one-click add.{" "}
             <Link href="/login" className="underline hover:text-foreground">
               Try it free
