@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 interface Review {
   id: string;
@@ -120,7 +121,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
       {/* LEFT: metadata */}
       <aside className="w-60 shrink-0 border-r bg-muted/20 p-4 space-y-5 overflow-y-auto">
         <div>
-          <a href="/admin/reviews" className="text-xs text-muted-foreground hover:text-foreground">← Reviews</a>
+          <Link href="/admin/reviews" className="text-xs text-muted-foreground hover:text-foreground">← Reviews</Link>
           <h2 className="font-semibold mt-2">{profile?.full_name || "Unknown"}</h2>
           <p className="text-xs text-muted-foreground">{profile?.email}</p>
         </div>

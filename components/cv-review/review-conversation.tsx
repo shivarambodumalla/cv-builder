@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 
 interface Review {
   id: string;
@@ -356,9 +357,9 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                   <div className="pt-2 border-t text-center">
                     <p className="text-xs text-muted-foreground mb-2">All review rounds used.</p>
                     {review.tier !== "pro" && (
-                      <a href="/cv-review/new" className="inline-block px-5 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: "#065F46" }}>
+                      <Link href="/cv-review/new" className="inline-block px-5 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: "#065F46" }}>
                         Get more reviews
-                      </a>
+                      </Link>
                     )}
                   </div>
                 )}

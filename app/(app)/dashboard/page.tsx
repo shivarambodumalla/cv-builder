@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CvList } from "@/components/shared/cv-list";
@@ -124,7 +125,7 @@ export default async function DashboardPage() {
         <div className="mt-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">CV Reviews</h2>
-            <a href="/cv-review/history" className="text-sm text-muted-foreground hover:text-foreground">View all →</a>
+            <Link href="/cv-review/history" className="text-sm text-muted-foreground hover:text-foreground">View all →</Link>
           </div>
           <div className="grid sm:grid-cols-3 gap-3">
             {(activeReviews ?? []).slice(0, 3).map((review) => {
