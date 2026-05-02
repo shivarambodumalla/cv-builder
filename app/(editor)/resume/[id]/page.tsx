@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { ResumeEditor } from "@/components/shared/resume-editor";
 import type { ResumeContent } from "@/lib/resume/types";
 
@@ -7,10 +8,12 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ review_id?: string }>;
 }
 
-export default async function ResumePage({ params: paramsPromise }: Props) {
+export default async function ResumePage({ params: paramsPromise, searchParams: searchParamsPromise }: Props) {
   const params = await paramsPromise;
+  const searchParams = await searchParamsPromise;
   const supabase = await createClient();
 
   const {
@@ -121,6 +124,27 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
     keywordList = kwl;
   }
 
+  // Fetch CV review data if review_id is present in query params
+  let reviewData: { id: string; target_role: string | null; status: string; messages: unknown[] } | null = null;
+  const reviewId = searchParams.review_id;
+  if (reviewId) {
+    const admin = createAdminClient();
+    const { data: review } = await admin
+      .from("cv_reviews")
+      .select("id, target_role, status")
+      .eq("id", reviewId)
+      .eq("user_id", user.id)
+      .single();
+    if (review) {
+      const { data: messages } = await admin
+        .from("cv_review_messages")
+        .select("id, sender_type, message_type, content, created_at")
+        .eq("review_id", reviewId)
+        .order("created_at", { ascending: true });
+      reviewData = { ...review, messages: messages ?? [] };
+    }
+  }
+
   return (
     <ResumeEditor
       cv={cv}
@@ -138,6 +162,7 @@ export default async function ResumePage({ params: paramsPromise }: Props) {
         avatar_url: profile?.avatar_url,
       }}
       plan={(profile?.plan as "free" | "starter" | "pro") || "free"}
+      reviewData={reviewData}
     />
   );
 }

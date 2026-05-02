@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { REVIEW_TIERS, ReviewTier } from "@/lib/cv-review/config";
 
 export async function POST(request: NextRequest) {
   const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
@@ -99,6 +100,104 @@ export async function POST(request: NextRequest) {
         pdf_downloads_this_week: 0,
       }).eq("id", userId);
       console.log(`[webhook] subscription_expired for ${userId}, reverted to free`);
+      break;
+    }
+
+    case "order_created": {
+      const customData = payload.meta?.custom_data || attrs?.custom_data;
+      if (customData?.product_type !== "cv_review") break;
+
+      const reviewTier = customData?.tier as ReviewTier;
+      const reviewConfig = REVIEW_TIERS[reviewTier];
+      if (!reviewTier || !reviewConfig) break;
+
+      const { data: review, error: reviewError } = await supabase
+        .from("cv_reviews")
+        .insert({
+          user_id: customData.user_id,
+          tier: reviewTier,
+          price_paid: reviewConfig.price,
+          status: "pending",
+          target_role: customData.target_role || null,
+          target_country: customData.target_country || null,
+          user_notes: customData.user_notes || null,
+          edit_rounds_used: 1,
+          edit_rounds_limit: reviewConfig.edit_rounds,
+          lemon_squeezy_order_id: String(payload.data?.id),
+        })
+        .select()
+        .single();
+
+      if (reviewError || !review) {
+        console.error("[webhook] Failed to create cv_review", reviewError);
+        break;
+      }
+
+      // System message
+      await supabase.from("cv_review_messages").insert({
+        review_id: review.id,
+        sender_type: "system",
+        message_type: "text",
+        content: { text: "Review submitted successfully. Our expert will respond within 24 hours." },
+      });
+
+      // In-app notification for user
+      await supabase.from("cv_review_notifications").insert({
+        review_id: review.id,
+        user_id: customData.user_id,
+        type: "review_submitted",
+        title: "CV review submitted",
+        body: "We received your CV review request. Expert will respond within 24 hours.",
+        channel: "in_app",
+      });
+
+      // Email user
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, email")
+        .eq("id", customData.user_id)
+        .single();
+
+      if (profile?.email) {
+        try {
+          const { sendEmail } = await import("@/lib/email/sender");
+          await sendEmail({
+            to: profile.email,
+            templateName: "cv_review_submitted",
+            variables: {
+              name: profile.full_name?.split(" ")[0] || "there",
+              tier: reviewTier,
+              target_role: customData.target_role || "",
+              target_country: customData.target_country || "",
+              review_id: review.id,
+            },
+            userId: customData.user_id,
+          });
+        } catch (e) { console.error("[webhook] cv_review email failed", e); }
+      }
+
+      // Email admin
+      const adminEmail = (process.env.ADMIN_EMAIL || "hello@thecvedge.com").split(",")[0].trim();
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.thecvedge.com";
+      try {
+        const { sendEmail } = await import("@/lib/email/sender");
+        await sendEmail({
+          to: adminEmail,
+          templateName: "cv_review_admin_new",
+          variables: {
+            name: profile?.full_name || "Unknown",
+            email: profile?.email || customData.user_id,
+            tier: reviewTier,
+            price: String(reviewConfig.price),
+            target_role: customData.target_role || "",
+            target_country: customData.target_country || "",
+            user_notes: customData.user_notes || "None",
+            review_link: `${appUrl}/admin/reviews/${review.id}`,
+          },
+        });
+      } catch (e) { console.error("[webhook] admin email failed", e); }
+
+      console.log(`[webhook] cv_review created: ${review.id} for user ${customData.user_id}`);
       break;
     }
 

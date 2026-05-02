@@ -21,6 +21,7 @@ const RETURN_MAP: Record<string, string> = {
   "/jobs": "/my-jobs",
   "/interview-prep": "/interview-coach",
   "/pricing": "/pricing",
+  "/cv-review": "/cv-review/new",
 };
 
 function getLoginHref(pathname: string | null): string {
@@ -100,6 +101,12 @@ export function HeaderAuth() {
       stories.textContent = "Interview Coach";
       nav.appendChild(stories);
 
+      const cvReviewAuth = document.createElement("a");
+      cvReviewAuth.href = "/cv-review/new";
+      cvReviewAuth.className = linkClass;
+      cvReviewAuth.textContent = "CV Review";
+      nav.appendChild(cvReviewAuth);
+
       const jobs = document.createElement("a");
       jobs.href = "/my-jobs";
       jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
@@ -125,6 +132,12 @@ export function HeaderAuth() {
       stories.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
       stories.textContent = "Interview Coach";
       nav.appendChild(stories);
+
+      const cvReviewMarketing = document.createElement("a");
+      cvReviewMarketing.href = "/cv-review";
+      cvReviewMarketing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+      cvReviewMarketing.textContent = "CV Review";
+      nav.appendChild(cvReviewMarketing);
 
       const jobs = document.createElement("a");
       jobs.href = "/jobs";

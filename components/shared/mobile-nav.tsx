@@ -49,6 +49,9 @@ export function MobileNav() {
               <Link href="/interview-coach" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
                 Interview Coach
               </Link>
+              <Link href="/cv-review/new" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                CV Review
+              </Link>
             </>
           ) : (
             <>
@@ -57,6 +60,9 @@ export function MobileNav() {
               </Link>
               <Link href="/interview-prep" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
                 Interview Coach
+              </Link>
+              <Link href="/cv-review" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+                CV Review
               </Link>
             </>
           )}

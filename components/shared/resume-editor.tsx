@@ -59,7 +59,9 @@ import {
   Brain,
   X,
   Sparkles,
+  MessageSquare,
 } from "lucide-react";
+import { ExpertReviewPanel } from "@/components/cv-review/expert-review-panel";
 
 interface Cv {
   id: string;
@@ -105,6 +107,13 @@ interface CoverLetter {
   created_at: string;
 }
 
+interface ReviewData {
+  id: string;
+  target_role: string | null;
+  status: string;
+  messages: unknown[];
+}
+
 interface ResumeEditorProps {
   cv: Cv;
   latestReport: AtsReport | null;
@@ -121,6 +130,7 @@ interface ResumeEditorProps {
     avatar_url?: string | null;
   };
   plan: "free" | "starter" | "pro";
+  reviewData?: ReviewData | null;
 }
 
 function formatSavedTime(date: Date): string {
@@ -136,7 +146,7 @@ function formatSavedTime(date: Date): string {
   return `${date.toLocaleDateString([], { month: "short", day: "numeric" })}, ${time}`;
 }
 
-export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan }: ResumeEditorProps) {
+export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData }: ResumeEditorProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { openUpgradeModal } = useUpgradeModal();
@@ -184,6 +194,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
   const [mobilePreview, setMobilePreview] = useState(false);
   const [coverLetterMounted, setCoverLetterMounted] = useState(() => coverLetters.length > 0);
+  const [rightView, setRightView] = useState<"preview" | "expert-review">(() =>
+    reviewData ? "expert-review" : "preview"
+  );
   const titleInputRef = useRef<HTMLInputElement>(null);
   const titleDebounceRef = useRef<NodeJS.Timeout>();
   const designDebounceRef = useRef<NodeJS.Timeout>();
@@ -818,21 +831,58 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             </div>
           )}
 
-          {/* Content + Design tabs: live preview — desktop only (mobile uses mobilePreview above) */}
+          {/* Content + Design tabs: live preview or expert review — desktop only */}
           {(activeTab === "editor" || activeTab === "design") && (
-            <div className="mx-auto w-full">
-              <PaperPreview
-                paperSize={design.paperSize}
-                manualBreaks={design.pageBreaks ?? []}
-                onRemoveManualBreak={(key) => {
-                  handleDesignChange({
-                    ...design,
-                    pageBreaks: (design.pageBreaks ?? []).filter((k) => k !== key),
-                  });
-                }}
-              >
-                <TemplateRenderer content={getPreviewContent(content)} design={design} />
-              </PaperPreview>
+            <div className="mx-auto w-full h-full flex flex-col">
+              {reviewData && (
+                <div className="flex items-center gap-1 mb-4 p-0.5 bg-muted rounded-lg w-fit shrink-0">
+                  <button
+                    onClick={() => setRightView("preview")}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      rightView === "preview"
+                        ? "bg-background shadow-sm text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                    Preview
+                  </button>
+                  <button
+                    onClick={() => setRightView("expert-review")}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      rightView === "expert-review"
+                        ? "bg-background shadow-sm text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <MessageSquare className="h-3.5 w-3.5" />
+                    Expert Review
+                  </button>
+                </div>
+              )}
+              {rightView === "expert-review" && reviewData ? (
+                <div className="flex-1 min-h-0 rounded-xl border bg-background p-4 overflow-hidden flex flex-col">
+                  <ExpertReviewPanel
+                    reviewId={reviewData.id}
+                    targetRole={reviewData.target_role}
+                    status={reviewData.status}
+                    messages={reviewData.messages as Parameters<typeof ExpertReviewPanel>[0]["messages"]}
+                  />
+                </div>
+              ) : (
+                <PaperPreview
+                  paperSize={design.paperSize}
+                  manualBreaks={design.pageBreaks ?? []}
+                  onRemoveManualBreak={(key) => {
+                    handleDesignChange({
+                      ...design,
+                      pageBreaks: (design.pageBreaks ?? []).filter((k) => k !== key),
+                    });
+                  }}
+                >
+                  <TemplateRenderer content={getPreviewContent(content)} design={design} />
+                </PaperPreview>
+              )}
             </div>
           )}
 
