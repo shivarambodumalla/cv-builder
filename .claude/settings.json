@@ -251,7 +251,24 @@
       "Bash(python3 -m json.tool)",
       "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"query GetPosts\\($host: String!, $first: Int!\\) { publication\\(host: $host\\) { posts\\(first: $first\\) { edges { node { id title slug brief publishedAt readTimeInMinutes coverImage { url } tags { name slug } } } } } }\",\"variables\":{\"host\":\"blog.thecvedge.com\",\"first\":20}}')",
       "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"query GetSlugs\\($host: String!\\) { publication\\(host: $host\\) { posts\\(first: 100\\) { edges { node { slug } } } } }\",\"variables\":{\"host\":\"blog.thecvedge.com\"}}')",
-      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"{ publication\\(host: \\\\\"blog.thecvedge.com\\\\\"\\) { posts\\(first: 50\\) { totalDocuments edges { node { slug } } pageInfo { hasNextPage endCursor } } } }\"}')"
+      "Bash(curl -s -X POST https://gql.hashnode.com -H 'Content-Type: application/json' -d '{\"query\":\"{ publication\\(host: \\\\\"blog.thecvedge.com\\\\\"\\) { posts\\(first: 50\\) { totalDocuments edges { node { slug } } pageInfo { hasNextPage endCursor } } } }\"}')",
+      "Bash(sed -n '93,100p' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/resumes/template-showcase.tsx)",
+      "Bash(sed -n '44,52p' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/blog/blog-list.tsx)",
+      "Bash(sed -n '89,98p' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/blog/blog-list.tsx)",
+      "Bash(sed -n '102,113p' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/blog/\\\\[slug\\\\]/page.tsx)",
+      "Bash(sed -n '137,145p' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/blog/\\\\[slug\\\\]/page.tsx)",
+      "Bash(grep -E \"\\\\.\\(md|txt|json\\)$\")",
+      "Bash(mkdir -p /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/resume-templates/\\\\[category\\\\]/\\\\[template\\\\])",
+      "Bash(mkdir -p /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/resume-examples/\\\\[role\\\\])",
+      "Bash(echo \"started PID $!\")",
+      "Bash(curl -s http://localhost:3000/resume-templates -o /dev/null -w \"%{http_code}\")",
+      "Bash(git mv *)",
+      "Bash(supabase --version)",
+      "Bash(echo \"Started PID $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/admin/reviews)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/cv-review/history)",
+      "Bash(wait)",
+      "Bash(curl -s -X POST http://localhost:3000/api/cv-review/mock-create -H 'Content-Type: application/json' -d '{\"tier\":\"standard\",\"target_role\":\"Senior Engineer\",\"target_country\":\"UAE\"}')"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",
@@ -260,7 +277,8 @@
       "/Users/sivaramireddy/work/cv-builder/components/resume/templates/cv images",
       "/Users/sivaramireddy/work/cv-builder/app/api/cv/[id]",
       "/Users/sivaramireddy/work/cv-builder/app/(editor)/resume/[id]",
-      "/Users/sivaramireddy/work/cv-builder/app/(marketing)/blog"
+      "/Users/sivaramireddy/work/cv-builder/app/(marketing)/blog",
+      "/Users/sivaramireddy/work/cv-builder/app/(app)/cv-review"
     ]
   }
 }
