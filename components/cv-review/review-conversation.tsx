@@ -176,7 +176,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold">CV Review</h1>
+          <h1 className="text-2xl font-bold">Review by Experts</h1>
           {review.target_role && <p className="text-muted-foreground text-sm mt-0.5">{review.target_role}</p>}
         </div>
         <div className="flex flex-col items-end gap-2">

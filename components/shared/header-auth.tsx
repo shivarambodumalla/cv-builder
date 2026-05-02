@@ -104,7 +104,7 @@ export function HeaderAuth() {
       const cvReviewAuth = document.createElement("a");
       cvReviewAuth.href = "/cv-review/new";
       cvReviewAuth.className = linkClass;
-      cvReviewAuth.textContent = "CV Review";
+      cvReviewAuth.textContent = "Review by Experts";
       nav.appendChild(cvReviewAuth);
 
       const jobs = document.createElement("a");
@@ -136,7 +136,7 @@ export function HeaderAuth() {
       const cvReviewMarketing = document.createElement("a");
       cvReviewMarketing.href = "/cv-review";
       cvReviewMarketing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
-      cvReviewMarketing.textContent = "CV Review";
+      cvReviewMarketing.textContent = "Review by Experts";
       nav.appendChild(cvReviewMarketing);
 
       const jobs = document.createElement("a");

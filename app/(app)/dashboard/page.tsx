@@ -124,7 +124,7 @@ export default async function DashboardPage() {
       {(activeReviews ?? []).length > 0 && (
         <div className="mt-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">CV Reviews</h2>
+            <h2 className="text-lg font-semibold">Review by Experts</h2>
             <Link href="/cv-review/history" className="text-sm text-muted-foreground hover:text-foreground">View all →</Link>
           </div>
           <div className="grid sm:grid-cols-3 gap-3">

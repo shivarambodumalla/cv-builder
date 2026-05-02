@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ReviewsQueue } from "./reviews-queue";
 
-export const metadata: Metadata = { title: "CV Reviews — Admin" };
+export const metadata: Metadata = { title: "Expert Reviews — Admin" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminReviewsPage() {
@@ -37,7 +37,7 @@ export default async function AdminReviewsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">CV Reviews</h1>
+        <h1 className="text-2xl font-bold">Expert Reviews</h1>
       </div>
 
       {/* Stats */}

@@ -37,7 +37,7 @@ const socialLinks = [
 ];
 
 const productLinks: { label: string; href: string; external?: boolean }[] = [
-  { label: "CV Review", href: "/cv-review" },
+  { label: "Review by Experts", href: "/cv-review" },
   { label: "Jobs", href: "/jobs" },
   { label: "Pricing", href: "/pricing" },
   { label: "Upload Resume", href: "/upload-resume" },

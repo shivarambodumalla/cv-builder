@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { ReviewConversation } from "@/components/cv-review/review-conversation";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "CV Review — CVEdge" };
+export const metadata: Metadata = { title: "Review by Experts — CVEdge" };
 export const dynamic = "force-dynamic";
 
 export default async function CvReviewPage({ params }: { params: { id: string } }) {

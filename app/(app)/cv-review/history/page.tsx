@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "CV Review History — CVEdge" };
+export const metadata: Metadata = { title: "Review by Experts — History | CVEdge" };
 export const dynamic = "force-dynamic";
 
 const STATUS_LABELS: Record<string, { label: string; bg: string; color: string }> = {
@@ -35,7 +35,7 @@ export default async function CvReviewHistoryPage() {
           <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
             ← Dashboard
           </Link>
-          <h1 className="text-2xl font-bold mt-1">CV Review History</h1>
+          <h1 className="text-2xl font-bold mt-1">Review by Experts — History</h1>
         </div>
         <Link
           href="/cv-review/new"

@@ -50,7 +50,7 @@ export function MobileNav() {
                 Interview Coach
               </Link>
               <Link href="/cv-review/new" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-                CV Review
+                Review by Experts
               </Link>
             </>
           ) : (
@@ -62,7 +62,7 @@ export function MobileNav() {
                 Interview Coach
               </Link>
               <Link href="/cv-review" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-                CV Review
+                Review by Experts
               </Link>
             </>
           )}
