@@ -1,23 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
-const STORAGE_KEY = "cvEdge_hello_bar_expert_review_v1";
-
 export function HelloBar() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      setVisible(true);
-    }
-  }, []);
-
-  function dismiss() {
-    localStorage.setItem(STORAGE_KEY, "1");
-    setVisible(false);
-  }
+  const [visible, setVisible] = useState(true);
 
   if (!visible) return null;
 
@@ -33,7 +20,6 @@ export function HelloBar() {
           <Link
             href="/cv-review"
             className="inline-flex items-center gap-1 font-semibold text-[#34D399] hover:opacity-80 transition-opacity"
-            onClick={dismiss}
           >
             Explore now
             <span aria-hidden>→</span>
@@ -41,7 +27,7 @@ export function HelloBar() {
         </p>
       </div>
       <button
-        onClick={dismiss}
+        onClick={() => setVisible(false)}
         aria-label="Dismiss announcement"
         className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors text-xl leading-none"
       >
