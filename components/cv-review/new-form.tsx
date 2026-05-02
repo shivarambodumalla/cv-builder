@@ -280,14 +280,16 @@ export function CvReviewNewForm() {
         {loading ? "Redirecting to payment..." : `Pay $${tier.price} and submit`}
       </button>
 
-      <button
-        type="button"
-        disabled={loading}
-        onClick={handleMockSubmit}
-        className="w-full py-2.5 rounded-lg font-semibold border text-sm text-muted-foreground hover:bg-muted/50 disabled:opacity-50 transition-colors"
-      >
-        {loading ? "Creating..." : "Skip payment (dev)"}
-      </button>
+      {process.env.NODE_ENV !== "production" && (
+        <button
+          type="button"
+          disabled={loading}
+          onClick={handleMockSubmit}
+          className="w-full py-2.5 rounded-lg font-semibold border text-sm text-muted-foreground hover:bg-muted/50 disabled:opacity-50 transition-colors"
+        >
+          {loading ? "Creating..." : "Skip payment (dev)"}
+        </button>
+      )}
     </form>
   );
 }
