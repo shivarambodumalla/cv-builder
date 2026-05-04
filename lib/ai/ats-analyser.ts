@@ -159,16 +159,19 @@ function buildFieldRefs(report: AtsReportData): AtsReportData {
         } else if (desc.includes("skill")) {
           issue.field_ref = { section: "skills", field: null };
         } else if (desc.includes("experience") || desc.includes("bullet")) {
-          issue.field_ref = { section: "experience", field: "bullets", index: 0 };
+          issue.field_ref = { section: "experience", field: null };
         } else {
           issue.field_ref = { section: category, field: null };
         }
       } else if (category === "keywords") {
         issue.field_ref = { section: "skills", field: "skills" };
       } else if (category === "measurable_results" || category === "bullet_quality") {
-        // Match bullet text in single, double, or curly quotes — AI mixes styles.
-        const quoted = (issue.description || "").match(/["'\u2018\u2019\u201C\u201D]([^"'\u2018\u2019\u201C\u201D]{15,}?)["'\u2018\u2019\u201C\u201D]/);
-        issue.field_ref = { section: "experience", field: "bullets", bulletText: quoted?.[1] ?? undefined };
+        // Match bullet text quoted by Gemini — it uses backticks, straight quotes, and curly quotes.
+        const quoted = (issue.description || "").match(/[`"'\u2018\u2019\u201C\u201D]([^`"'\u2018\u2019\u201C\u201D]{10,}?)[`"'\u2018\u2019\u201C\u201D]/);
+        const bulletText = quoted?.[1] ?? undefined;
+        // Only expose field:"bullets" when we have bulletText to navigate to — otherwise Fix button
+        // would always land on the first bullet regardless of which bullet the issue refers to.
+        issue.field_ref = { section: "experience", field: bulletText ? "bullets" : null, bulletText };
       } else {
         issue.field_ref = { section: category, field: null };
       }
