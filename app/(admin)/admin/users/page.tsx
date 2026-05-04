@@ -14,7 +14,7 @@ export default async function AdminUsersPage() {
   const { data: enriched } = await supabase
     .from("user_profile_enriched")
     .select(
-      "id, email, full_name, avatar_url, plan, subscription_status, joined_at, last_sign_in_at, total_cvs, total_pdf_downloads, signup_city, signup_country, signup_country_code, profile_location, country, cv_location"
+      "id, user_number, email, full_name, avatar_url, plan, subscription_status, joined_at, last_sign_in_at, total_cvs, total_pdf_downloads, signup_city, signup_country, signup_country_code, profile_location, country, cv_location"
     )
     .order("joined_at", { ascending: false });
 
@@ -76,6 +76,7 @@ export default async function AdminUsersPage() {
       : (u.last_sign_in_at ?? cvLastActive);
     return {
       id: u.id,
+      user_number: u.user_number ?? 0,
       email: u.email,
       full_name: u.full_name,
       avatar_url: u.avatar_url,

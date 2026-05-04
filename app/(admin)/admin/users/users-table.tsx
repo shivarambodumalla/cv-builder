@@ -10,12 +10,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type SortKey = "name" | "role" | "location" | "total_cvs" | "total_pdf_downloads" | "job_clicks" | "saved_jobs" | "stories" | "plan" | "last_active" | "joined_at";
+type SortKey = "user_number" | "name" | "role" | "location" | "total_cvs" | "total_pdf_downloads" | "job_clicks" | "saved_jobs" | "stories" | "plan" | "last_active" | "joined_at";
 type SortDir = "asc" | "desc";
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250];
 
 export interface AdminUserRow {
   id: string;
+  user_number: number;
   email: string;
   full_name: string | null;
   avatar_url: string | null;
@@ -80,6 +81,7 @@ function locationFor(user: AdminUserRow): { line: string | null; cc: string | nu
 
 function sortValue(u: AdminUserRow, key: SortKey): string | number {
   switch (key) {
+    case "user_number": return u.user_number;
     case "name": return (u.full_name ?? u.email).toLowerCase();
     case "role": return (u.target_role ?? "").toLowerCase();
     case "location": return (locationFor(u).line ?? "").toLowerCase();
@@ -215,6 +217,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b">
+                  <SortHeader label="#" sortKey="user_number" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
                   <SortHeader label="User" sortKey="name" current={sortKey} dir={sortDir} onSort={handleSort} />
                   <SortHeader label="Role" sortKey="role" current={sortKey} dir={sortDir} onSort={handleSort} />
                   <SortHeader label="Location" sortKey="location" current={sortKey} dir={sortDir} onSort={handleSort} />
@@ -233,8 +236,11 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                   const { line: locationLine, cc } = locationFor(user);
                   return (
                     <tr key={user.id} className="border-b last:border-0 hover:bg-muted/40 transition-colors">
+                      <td className="px-4 py-3 text-right tabular-nums text-muted-foreground text-xs font-mono">
+                        {user.user_number}
+                      </td>
                       <td className="px-4 py-3">
-                        <Link href={`/admin/users/${user.id}`} className="flex items-center gap-3 group">
+                        <Link href={`/admin/users/${user.user_number}`} className="flex items-center gap-3 group">
                           <Avatar className="h-8 w-8 shrink-0">
                             {user.avatar_url ? <AvatarImage src={user.avatar_url} alt={user.full_name || user.email} referrerPolicy="no-referrer" /> : null}
                             <AvatarFallback className="bg-muted text-xs font-semibold">
@@ -289,7 +295,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={11} className="px-4 py-8 text-center text-muted-foreground">
+                    <td colSpan={12} className="px-4 py-8 text-center text-muted-foreground">
                       No users match.
                     </td>
                   </tr>

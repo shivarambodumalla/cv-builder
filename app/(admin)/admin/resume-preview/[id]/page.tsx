@@ -33,7 +33,7 @@ export default async function AdminResumePreviewPage({
 
   const { data: owner } = await supabase
     .from("profiles")
-    .select("id, email, full_name")
+    .select("id, user_number, email, full_name")
     .eq("id", cv.user_id)
     .maybeSingle();
 
@@ -55,7 +55,7 @@ export default async function AdminResumePreviewPage({
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
           <div className="min-w-0 flex-1">
             <Link
-              href={owner ? `/admin/users/${owner.id}` : "/admin/users"}
+              href={owner ? `/admin/users/${owner.user_number}` : "/admin/users"}
               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-3.5 w-3.5" />

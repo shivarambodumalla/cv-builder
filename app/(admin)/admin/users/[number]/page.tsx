@@ -54,31 +54,34 @@ function UsageBar({ label, used, limit }: { label: string; used: number; limit: 
 export default async function UserDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ number: string }>;
 }) {
-  const { id } = await params;
+  const { number } = await params;
   const supabase = createAdminClient();
 
-  // Parallel fetch: profile + enriched view + CVs (all just need user id)
-  const [{ data: profile }, { data: enriched }, { data: userCvs }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("id, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, pdf_downloads_this_week, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
-      .eq("id", id)
-      .single(),
+  // Fetch profile by user_number first to get UUID for subsequent queries
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, pdf_downloads_this_week, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
+    .eq("user_number", Number(number))
+    .single();
+
+  if (!profile) notFound();
+
+  const userId = profile.id;
+
+  const [{ data: enriched }, { data: userCvs }] = await Promise.all([
     supabase
       .from("user_profile_enriched")
       .select("current_role, current_company, college, degree, field_of_study, resolved_target_role, resolved_location, cv_location, cv_linkedin, cv_website, resolved_linkedin, resolved_portfolio, github_url, linkedin_url, portfolio_url, phone, target_title_from_cv, last_sign_in_at, last_seen_at, employment_status, preferred_job_type, industry, country, profile_location, experience_level, signup_city, signup_region, signup_country, signup_country_code, signup_location_captured_at")
-      .eq("id", id)
+      .eq("id", userId)
       .maybeSingle(),
     supabase
       .from("cvs")
       .select("id, title, target_role, created_at, updated_at, parsed_json, design_settings, download_count")
-      .eq("user_id", id)
+      .eq("user_id", userId)
       .order("updated_at", { ascending: false }),
   ]);
-
-  if (!profile) notFound();
 
   const cvIds = (userCvs ?? []).map((c) => c.id);
   const cvsCount = cvIds.length;
@@ -193,20 +196,20 @@ export default async function UserDetailPage({
     supabase
       .from("page_sessions")
       .select("path, duration_ms")
-      .eq("user_id", id)
+      .eq("user_id", userId)
       .not("duration_ms", "is", null)
       .order("created_at", { ascending: false })
       .limit(1000),
     supabase
       .from("user_activity")
       .select("id, event, page, metadata, created_at")
-      .eq("user_id", id)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(50),
     supabase
       .from("subscription_history")
       .select("id, plan, period, amount, currency, status, started_at, ended_at")
-      .eq("user_id", id)
+      .eq("user_id", userId)
       .order("started_at", { ascending: false })
       .limit(10),
   ]);
@@ -334,8 +337,8 @@ export default async function UserDetailPage({
                 <dd className="font-medium">{profile.email}</dd>
               </div>
               <div>
-                <dt className="text-muted-foreground">User ID</dt>
-                <dd className="font-mono text-xs">{profile.id}</dd>
+                <dt className="text-muted-foreground">User #</dt>
+                <dd className="font-bold tabular-nums">{profile.user_number}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Name</dt>

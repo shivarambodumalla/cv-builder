@@ -32,6 +32,13 @@ export async function POST(request: NextRequest) {
     .limit(1)
     .single();
 
+  // Get user_number for admin link
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("user_number")
+    .eq("id", user.id)
+    .single();
+
   // Insert claim
   const { error } = await admin.from("guarantee_claims").insert({
     user_id: user.id,
@@ -57,7 +64,7 @@ export async function POST(request: NextRequest) {
 <p><strong>User:</strong> ${user.email}</p>
 <p><strong>Current Score:</strong> ${report?.score ?? "Unknown"}</p>
 <p><strong>CV ID:</strong> ${cv?.id ?? "Unknown"}</p>
-<p><a href="https://www.thecvedge.com/admin/users/${user.id}">View User</a></p>`,
+<p><a href="https://www.thecvedge.com/admin/users/${profile?.user_number}">View User #${profile?.user_number}</a></p>`,
       });
     }
   } catch { /* notification failure shouldn't block claim */ }

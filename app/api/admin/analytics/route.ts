@@ -109,14 +109,14 @@ export async function GET(request: NextRequest) {
 
   // Enrich top users with name + email from profiles
   const topUserIds = topUsersSorted.map(([id]) => id);
-  const profileMap: Record<string, { name: string; email: string }> = {};
+  const profileMap: Record<string, { name: string; email: string; user_number: number }> = {};
   if (topUserIds.length > 0) {
     const { data: profiles } = await admin
       .from("profiles")
-      .select("id, full_name, email")
+      .select("id, user_number, full_name, email")
       .in("id", topUserIds);
     for (const pr of profiles ?? []) {
-      profileMap[pr.id] = { name: pr.full_name ?? "", email: pr.email ?? "" };
+      profileMap[pr.id] = { name: pr.full_name ?? "", email: pr.email ?? "", user_number: pr.user_number ?? 0 };
     }
   }
 
@@ -131,6 +131,7 @@ export async function GET(request: NextRequest) {
     byModel,
     topUsers: topUsersSorted.map(([id, d]) => ({
       id,
+      user_number: profileMap[id]?.user_number ?? 0,
       name: profileMap[id]?.name || "",
       email: profileMap[id]?.email || "",
       ...d,

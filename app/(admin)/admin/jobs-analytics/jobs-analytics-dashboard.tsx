@@ -273,7 +273,7 @@ export function JobsAnalyticsDashboard() {
                   {data.topApplicants.map((u) => (
                     <tr key={u.id} className="border-b last:border-0 hover:bg-muted/20">
                       <td className="px-4 py-2.5">
-                        <a href={`/admin/users/${u.id}`} className="hover:underline">
+                        <a href={`/admin/users/${u.user_number}`} className="hover:underline">
                           <p className="font-medium">{u.name || "—"}</p>
                           <p className="text-[10px] text-muted-foreground">{u.email}</p>
                         </a>

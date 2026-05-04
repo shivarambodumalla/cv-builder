@@ -113,10 +113,10 @@ export async function GET(request: NextRequest) {
 
   // Get user profiles for the clickers
   const clickUserIds = [...new Set((recentClicks ?? []).map(c => c.user_id).filter(Boolean))];
-  const userMap: Record<string, { name: string; email: string; role: string | null; city: string | null }> = {};
+  const userMap: Record<string, { name: string; email: string; role: string | null; city: string | null; user_number: number }> = {};
   if (clickUserIds.length > 0) {
     const [{ data: profiles }, { data: cvRoles }] = await Promise.all([
-      admin.from("profiles").select("id, full_name, email, signup_city, signup_country").in("id", clickUserIds),
+      admin.from("profiles").select("id, user_number, full_name, email, signup_city, signup_country").in("id", clickUserIds),
       admin.from("cvs").select("user_id, target_role").in("user_id", clickUserIds).not("target_role", "is", null).order("updated_at", { ascending: false }),
     ]);
     const roleMap = new Map<string, string>();
@@ -127,6 +127,7 @@ export async function GET(request: NextRequest) {
         email: p.email ?? "",
         role: roleMap.get(p.id) ?? null,
         city: [p.signup_city, p.signup_country].filter(Boolean).join(", ") || null,
+        user_number: p.user_number ?? 0,
       };
     }
   }
@@ -144,7 +145,7 @@ export async function GET(request: NextRequest) {
   }));
 
   // User profiling: aggregate by user — who applies the most, avg match score, locations
-  const userStats: Record<string, { name: string; email: string; role: string | null; city: string | null; clicks: number; saves: number; scores: number[] }> = {};
+  const userStats: Record<string, { name: string; email: string; role: string | null; city: string | null; user_number: number; clicks: number; saves: number; scores: number[] }> = {};
   for (const c of recentClicks ?? []) {
     if (!c.user_id) continue;
     if (!userStats[c.user_id]) {
@@ -157,6 +158,7 @@ export async function GET(request: NextRequest) {
   const topApplicants = Object.entries(userStats)
     .map(([id, u]) => ({
       id,
+      user_number: u.user_number,
       name: u.name,
       email: u.email,
       role: u.role,
