@@ -172,7 +172,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
     } finally {
       setLoading(false);
     }
-  }, [buildParams, selectedCvId, keyword, log]);
+  }, [buildParams, keyword, log]);
 
   // Load saved job IDs on mount
   useEffect(() => {
@@ -293,8 +293,8 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
     return sorted;
   }, [sortBy]);
 
-  const filteredBest = useMemo(() => sortJobs(bestMatches.filter(matchesTypeFilter)), [bestMatches, selectedTypes, sortJobs, matchesTypeFilter]);
-  const filteredMore = useMemo(() => sortJobs(moreJobs.filter(matchesTypeFilter)), [moreJobs, selectedTypes, sortJobs, matchesTypeFilter]);
+  const filteredBest = useMemo(() => sortJobs(bestMatches.filter(matchesTypeFilter)), [bestMatches, sortJobs, matchesTypeFilter]);
+  const filteredMore = useMemo(() => sortJobs(moreJobs.filter(matchesTypeFilter)), [moreJobs, sortJobs, matchesTypeFilter]);
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Loader2, DollarSign, MousePointerClick, Bookmark, Users, ArrowRight, Building2, Briefcase, TrendingUp } from "lucide-react";
+import { Loader2, MousePointerClick, Bookmark, Users, ArrowRight, Building2, Briefcase, TrendingUp } from "lucide-react";
 
 type Preset = "today" | "7d" | "30d" | "90d" | "180d" | "365d" | "custom";
 
@@ -35,7 +35,7 @@ interface RecentApp {
   user: { name: string; email: string; role: string | null; city: string | null };
 }
 interface TopApplicant {
-  id: string; name: string; email: string; role: string | null; city: string | null;
+  id: string; user_number: number; name: string; email: string; role: string | null; city: string | null;
   clicks: number; avgScore: number;
 }
 interface JobsData {
