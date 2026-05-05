@@ -1,0 +1,125 @@
+export const REGIONS = ["Asia Pacific", "Europe", "Americas", "Middle East & Africa"] as const;
+export type Region = typeof REGIONS[number];
+
+export const COUNTRY_MAP: Record<string, { name: string; region: Region }> = {
+  // Asia Pacific
+  AU: { name: "Australia",            region: "Asia Pacific" },
+  BD: { name: "Bangladesh",           region: "Asia Pacific" },
+  CN: { name: "China",                region: "Asia Pacific" },
+  HK: { name: "Hong Kong",            region: "Asia Pacific" },
+  ID: { name: "Indonesia",            region: "Asia Pacific" },
+  IN: { name: "India",                region: "Asia Pacific" },
+  JP: { name: "Japan",                region: "Asia Pacific" },
+  KH: { name: "Cambodia",             region: "Asia Pacific" },
+  KR: { name: "South Korea",          region: "Asia Pacific" },
+  LK: { name: "Sri Lanka",            region: "Asia Pacific" },
+  MM: { name: "Myanmar",              region: "Asia Pacific" },
+  MV: { name: "Maldives",             region: "Asia Pacific" },
+  MY: { name: "Malaysia",             region: "Asia Pacific" },
+  NP: { name: "Nepal",                region: "Asia Pacific" },
+  NZ: { name: "New Zealand",          region: "Asia Pacific" },
+  PH: { name: "Philippines",          region: "Asia Pacific" },
+  PK: { name: "Pakistan",             region: "Asia Pacific" },
+  SG: { name: "Singapore",            region: "Asia Pacific" },
+  TH: { name: "Thailand",             region: "Asia Pacific" },
+  TW: { name: "Taiwan",               region: "Asia Pacific" },
+  VN: { name: "Vietnam",              region: "Asia Pacific" },
+  // Europe
+  AT: { name: "Austria",              region: "Europe" },
+  BE: { name: "Belgium",              region: "Europe" },
+  BG: { name: "Bulgaria",             region: "Europe" },
+  CH: { name: "Switzerland",          region: "Europe" },
+  CY: { name: "Cyprus",               region: "Europe" },
+  CZ: { name: "Czech Republic",       region: "Europe" },
+  DE: { name: "Germany",              region: "Europe" },
+  DK: { name: "Denmark",              region: "Europe" },
+  EE: { name: "Estonia",              region: "Europe" },
+  ES: { name: "Spain",                region: "Europe" },
+  FI: { name: "Finland",              region: "Europe" },
+  FR: { name: "France",               region: "Europe" },
+  GB: { name: "United Kingdom",       region: "Europe" },
+  GR: { name: "Greece",               region: "Europe" },
+  HR: { name: "Croatia",              region: "Europe" },
+  HU: { name: "Hungary",              region: "Europe" },
+  IE: { name: "Ireland",              region: "Europe" },
+  IS: { name: "Iceland",              region: "Europe" },
+  IT: { name: "Italy",                region: "Europe" },
+  LT: { name: "Lithuania",            region: "Europe" },
+  LU: { name: "Luxembourg",           region: "Europe" },
+  LV: { name: "Latvia",               region: "Europe" },
+  MT: { name: "Malta",                region: "Europe" },
+  NL: { name: "Netherlands",          region: "Europe" },
+  NO: { name: "Norway",               region: "Europe" },
+  PL: { name: "Poland",               region: "Europe" },
+  PT: { name: "Portugal",             region: "Europe" },
+  RO: { name: "Romania",              region: "Europe" },
+  RS: { name: "Serbia",               region: "Europe" },
+  RU: { name: "Russia",               region: "Europe" },
+  SE: { name: "Sweden",               region: "Europe" },
+  SI: { name: "Slovenia",             region: "Europe" },
+  SK: { name: "Slovakia",             region: "Europe" },
+  TR: { name: "Turkey",               region: "Europe" },
+  UA: { name: "Ukraine",              region: "Europe" },
+  // Americas
+  AR: { name: "Argentina",            region: "Americas" },
+  BO: { name: "Bolivia",              region: "Americas" },
+  BR: { name: "Brazil",               region: "Americas" },
+  CA: { name: "Canada",               region: "Americas" },
+  CL: { name: "Chile",                region: "Americas" },
+  CO: { name: "Colombia",             region: "Americas" },
+  CR: { name: "Costa Rica",           region: "Americas" },
+  DO: { name: "Dominican Republic",   region: "Americas" },
+  EC: { name: "Ecuador",              region: "Americas" },
+  GT: { name: "Guatemala",            region: "Americas" },
+  MX: { name: "Mexico",               region: "Americas" },
+  PE: { name: "Peru",                 region: "Americas" },
+  PR: { name: "Puerto Rico",          region: "Americas" },
+  TT: { name: "Trinidad & Tobago",    region: "Americas" },
+  US: { name: "United States",        region: "Americas" },
+  UY: { name: "Uruguay",              region: "Americas" },
+  VE: { name: "Venezuela",            region: "Americas" },
+  // Middle East & Africa
+  AE: { name: "United Arab Emirates", region: "Middle East & Africa" },
+  BH: { name: "Bahrain",              region: "Middle East & Africa" },
+  DZ: { name: "Algeria",              region: "Middle East & Africa" },
+  EG: { name: "Egypt",                region: "Middle East & Africa" },
+  ET: { name: "Ethiopia",             region: "Middle East & Africa" },
+  GH: { name: "Ghana",                region: "Middle East & Africa" },
+  IL: { name: "Israel",               region: "Middle East & Africa" },
+  IQ: { name: "Iraq",                 region: "Middle East & Africa" },
+  IR: { name: "Iran",                 region: "Middle East & Africa" },
+  JO: { name: "Jordan",               region: "Middle East & Africa" },
+  KE: { name: "Kenya",                region: "Middle East & Africa" },
+  KW: { name: "Kuwait",               region: "Middle East & Africa" },
+  LB: { name: "Lebanon",              region: "Middle East & Africa" },
+  LY: { name: "Libya",                region: "Middle East & Africa" },
+  MA: { name: "Morocco",              region: "Middle East & Africa" },
+  NG: { name: "Nigeria",              region: "Middle East & Africa" },
+  OM: { name: "Oman",                 region: "Middle East & Africa" },
+  PS: { name: "Palestine",            region: "Middle East & Africa" },
+  QA: { name: "Qatar",                region: "Middle East & Africa" },
+  SA: { name: "Saudi Arabia",         region: "Middle East & Africa" },
+  TN: { name: "Tunisia",              region: "Middle East & Africa" },
+  TZ: { name: "Tanzania",             region: "Middle East & Africa" },
+  UG: { name: "Uganda",               region: "Middle East & Africa" },
+  ZA: { name: "South Africa",         region: "Middle East & Africa" },
+  ZW: { name: "Zimbabwe",             region: "Middle East & Africa" },
+};
+
+export function resolveCountry(
+  code: string | null,
+  rawName: string | null,
+): { code: string; name: string; region: Region } | null {
+  if (code && COUNTRY_MAP[code.toUpperCase()]) {
+    return { code: code.toUpperCase(), ...COUNTRY_MAP[code.toUpperCase()] };
+  }
+  if (rawName) {
+    const upper = rawName.toUpperCase();
+    if (COUNTRY_MAP[upper]) return { code: upper, ...COUNTRY_MAP[upper] };
+    const entry = Object.entries(COUNTRY_MAP).find(
+      ([, v]) => v.name.toLowerCase() === rawName.toLowerCase(),
+    );
+    if (entry) return { code: entry[0], ...entry[1] };
+  }
+  return null;
+}

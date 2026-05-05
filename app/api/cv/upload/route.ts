@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { syncProfileFromCv } from "@/lib/profile/sync";
+import type { ResumeContent } from "@/lib/resume/types";
 
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
@@ -161,6 +163,11 @@ export async function POST(request: NextRequest) {
         contentType: mimeMap[ext] || "application/octet-stream",
         upsert: true,
       });
+  }
+
+  // Fire-and-forget profile enrichment from parsed CV
+  if (parsedJson) {
+    syncProfileFromCv(user.id, cv.id, parsedJson as unknown as ResumeContent).catch(() => {});
   }
 
   return NextResponse.json({ cv_id: cv.id });

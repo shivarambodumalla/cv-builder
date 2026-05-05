@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { syncProfileFromCv } from "@/lib/profile/sync";
+import type { ResumeContent } from "@/lib/resume/types";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -30,6 +32,9 @@ export async function POST(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Fire-and-forget — never blocks the save response
+  syncProfileFromCv(user.id, cv_id, parsed_json as ResumeContent).catch(() => {});
 
   return NextResponse.json({ ok: true });
 }
