@@ -1276,7 +1276,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   function renderTemplateThumb(name: TemplateName, className?: string) {
     const imgSrc = TEMPLATE_IMAGES[name];
     return imgSrc ? (
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={`/img/templates/${imgSrc}`}
         alt=""
