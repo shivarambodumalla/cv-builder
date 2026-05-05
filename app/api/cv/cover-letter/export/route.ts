@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     .single();
 
   const candidateName = profile?.full_name || "";
-  const isFree = (profile?.plan || "free") === "free";
+  const _isFree = (profile?.plan || "free") === "free";
 
   if (format === "txt") {
     const text = letter.content;

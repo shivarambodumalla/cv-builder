@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Check, Pencil } from "lucide-react";
 
@@ -111,10 +110,10 @@ export function FixAllDrawer({
   open,
   onClose,
   result,
-  currentScore,
+  currentScore: _currentScore,
   onApply,
-  mode = "fix-all",
-  jdText,
+  mode: _mode = "fix-all",
+  jdText: _jdText,
 }: FixAllDrawerProps) {
   const [changes, setChanges] = useState<TrackedChange[]>(() =>
     buildTrackedChanges(result)

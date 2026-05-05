@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Upload, BarChart2, Target } from "lucide-react";
 import { JobSearchForm } from "./job-search-form";
 import { SignInCTA } from "./sign-in-cta";

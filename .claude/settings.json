@@ -268,7 +268,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/admin/reviews)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/cv-review/history)",
       "Bash(wait)",
-      "Bash(curl -s -X POST http://localhost:3000/api/cv-review/mock-create -H 'Content-Type: application/json' -d '{\"tier\":\"standard\",\"target_role\":\"Senior Engineer\",\"target_country\":\"UAE\"}')"
+      "Bash(curl -s -X POST http://localhost:3000/api/cv-review/mock-create -H 'Content-Type: application/json' -d '{\"tier\":\"standard\",\"target_role\":\"Senior Engineer\",\"target_country\":\"UAE\"}')",
+      "Bash(grep -rn \"admin/users/\\\\${.*\\\\.id}\" /Users/sivaramireddy/work/cv-builder/app/ /Users/sivaramireddy/work/cv-builder/components/)"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",
@@ -278,7 +279,8 @@
       "/Users/sivaramireddy/work/cv-builder/app/api/cv/[id]",
       "/Users/sivaramireddy/work/cv-builder/app/(editor)/resume/[id]",
       "/Users/sivaramireddy/work/cv-builder/app/(marketing)/blog",
-      "/Users/sivaramireddy/work/cv-builder/app/(app)/cv-review"
+      "/Users/sivaramireddy/work/cv-builder/app/(app)/cv-review",
+      "/Users/sivaramireddy/work/cv-builder/app/(admin)/admin/users/[id]"
     ]
   }
 }

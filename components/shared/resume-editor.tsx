@@ -40,7 +40,6 @@ import { DownloadNudge } from "@/components/popups/download-nudge";
 import { AtsScanNudge } from "@/components/popups/ats-scan-nudge";
 import {
   ArrowLeft,
-  Briefcase,
   Download,
   LogOut,
   Sun,
@@ -57,7 +56,6 @@ import {
   FileText,
   Search,
   Brain,
-  X,
   Sparkles,
   MessageSquare,
 } from "lucide-react";
@@ -545,6 +543,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-8 sm:w-8 shrink-0" onClick={() => router.push("/dashboard")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/img/CV-Edge-Logo-square.svg" alt="CVEdge logo" className="h-7 w-7 shrink-0" />
           {editingTitle ? (
             <input

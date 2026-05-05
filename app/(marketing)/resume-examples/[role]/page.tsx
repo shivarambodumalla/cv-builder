@@ -305,6 +305,7 @@ export default async function RoleResumeExamplePage({
                 >
                   <div className="aspect-[1242/1754] bg-muted overflow-hidden">
                     {leaf?.imgPath ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={leaf.imgPath}
                         alt={`${t.name} resume template`}

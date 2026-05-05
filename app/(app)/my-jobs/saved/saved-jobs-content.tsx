@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bookmark, ArrowLeft } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { JobCard, type JobCardJob } from "@/components/jobs/job-card";
 import Link from "next/link";

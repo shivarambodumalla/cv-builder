@@ -212,7 +212,7 @@ function CategoryRow({
   );
 }
 
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
+export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
   const router = useRouter();
   const { log } = useActivity();
   const { openUpgradeModal } = useUpgradeModal();
@@ -276,7 +276,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
       }
     }
     return { ...report.keywords, found, missing };
-  }, [report?.keywords, currentSkills]);
+  }, [report?.keywords, currentSkills, estimatedScore?.keywords_matched, estimatedScore?.keywords_missing]);
 
   useEffect(() => {
     if (!loading) return;
@@ -484,7 +484,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt, estimatedSc
   /* ── Loading state ── */
   if (loading) {
     const stepIndex = ANALYSIS_STEPS.findIndex((s) => s.key === currentStep);
-    const progress = Math.min(100, ((stepIndex + 0.5) / ANALYSIS_STEPS.length) * 100);
+    const _progress = Math.min(100, ((stepIndex + 0.5) / ANALYSIS_STEPS.length) * 100);
 
     return (
       <StepLoader

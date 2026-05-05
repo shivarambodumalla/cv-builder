@@ -304,12 +304,15 @@ export function HeroAnimation() {
       <div className="stage" data-el="stage">
         <div className="rstack">
           <div className="rcard s2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img data-el="i2" alt="" />
           </div>
           <div className="rcard s1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img data-el="i1" alt="" />
           </div>
           <div className="rcard main">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img data-el="i0" alt="" />
           </div>
         </div>
@@ -324,6 +327,7 @@ export function HeroAnimation() {
                   className={`ti${i === 0 ? " on" : ""}`}
                   data-slug={t.slug}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={imgSrc(t.slug)} alt={`${t.name} resume template preview`} title={`${t.name} resume template preview`} loading="lazy" />
                   <div
                     className={`tier-chip ${t.tier === "Pro" ? "tier-pro" : "tier-free"}`}

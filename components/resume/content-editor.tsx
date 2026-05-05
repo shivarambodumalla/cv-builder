@@ -565,7 +565,7 @@ function DateRangeWithPresent({
                   onChange={(e) => {
                     currentField.onChange(e.target.checked);
                     if (e.target.checked) {
-                      const { setValue } = control._formState ? control : { setValue: () => {} };
+                      const { setValue: _setValue } = control._formState ? control : { setValue: () => {} };
                       if (control._fields?.[endName]) {
                         control._subjects?.values?.next?.({});
                       }

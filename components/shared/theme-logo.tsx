@@ -9,7 +9,9 @@ export function ThemeLogo({ className = "h-7", iconOnly = false }: ThemeLogoProp
 
   return (
     <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={light} alt="CVEdge logo" title="CVEdge — Free ATS Resume Scanner" className={`${className} dark:hidden`} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={dark} alt="CVEdge logo" title="CVEdge — Free ATS Resume Scanner" className={`${className} hidden dark:block`} />
     </>
   );

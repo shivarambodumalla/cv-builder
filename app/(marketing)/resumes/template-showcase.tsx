@@ -91,6 +91,7 @@ export function TemplateShowcase() {
             <div className="aspect-[1242/1754] bg-muted overflow-hidden relative">
               {t.img ? (
                 <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={t.img}
                     alt={`${t.name} CV template`}

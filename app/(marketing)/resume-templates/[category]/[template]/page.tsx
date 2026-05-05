@@ -77,6 +77,7 @@ export default async function TemplateLeafPage({
               {/* Template thumbnail */}
               <div className="rounded-xl border overflow-hidden shadow-sm lg:sticky lg:top-20 self-start">
                 {leaf.imgPath ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={leaf.imgPath}
                     alt={`${leaf.displayName} resume template preview`}
@@ -240,6 +241,7 @@ export default async function TemplateLeafPage({
                   >
                     <div className="aspect-[1242/1754] bg-muted overflow-hidden">
                       {t.imgPath ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={t.imgPath}
                           alt={t.displayName}

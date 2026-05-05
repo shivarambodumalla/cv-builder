@@ -18,6 +18,7 @@ function shapeRadius(shape: AvatarShape, size: number): string | number {
   return 0;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Avatar({
   name,
   photoUrl,

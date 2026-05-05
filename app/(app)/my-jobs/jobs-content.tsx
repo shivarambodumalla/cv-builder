@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Search, MapPin, ChevronDown, Loader2, UploadCloud, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { JobCard, type JobCardJob } from "@/components/jobs/job-card";
 import { PreferredLocationsModal } from "@/components/jobs/preferred-locations-modal";
 import { getSuggestions, COMMON_ROLES, COMMON_LOCATIONS } from "@/lib/jobs/fuzzy-search";
@@ -102,7 +101,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
   }, [locationInput, locations]);
 
   // Debounce ref
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const _debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Client-side type filter — matches against contract_type field, location, and title text
   // Adzuna often returns contract_type as null, so we also infer from text
@@ -173,7 +172,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
     } finally {
       setLoading(false);
     }
-  }, [buildParams, selectedCvId, keyword]);
+  }, [buildParams, selectedCvId, keyword, log]);
 
   // Load saved job IDs on mount
   useEffect(() => {
@@ -294,8 +293,8 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
     return sorted;
   }, [sortBy]);
 
-  const filteredBest = useMemo(() => sortJobs(bestMatches.filter(matchesTypeFilter)), [bestMatches, selectedTypes, sortJobs]);
-  const filteredMore = useMemo(() => sortJobs(moreJobs.filter(matchesTypeFilter)), [moreJobs, selectedTypes, sortJobs]);
+  const filteredBest = useMemo(() => sortJobs(bestMatches.filter(matchesTypeFilter)), [bestMatches, selectedTypes, sortJobs, matchesTypeFilter]);
+  const filteredMore = useMemo(() => sortJobs(moreJobs.filter(matchesTypeFilter)), [moreJobs, selectedTypes, sortJobs, matchesTypeFilter]);
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">

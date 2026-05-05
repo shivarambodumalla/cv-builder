@@ -42,7 +42,7 @@ function SkeletonCard() {
   );
 }
 
-export function JobsWidget({ cvTitle, skills, jdKeywords, cvId }: JobsWidgetProps) {
+export function JobsWidget({ cvTitle, skills: _skills, jdKeywords, cvId }: JobsWidgetProps) {
   const [jobs, setJobs] = useState<JobResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

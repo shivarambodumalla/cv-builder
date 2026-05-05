@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useSignupModal, type SignupTrigger } from "@/components/popups/signup-modal";
-import { AppPopover } from "@/components/popups/app-popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Check, Eye, X, Download, Briefcase, Upload, ArrowRight, BarChart3, Sparkles, BookOpen, FileText } from "lucide-react";

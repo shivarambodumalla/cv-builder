@@ -239,7 +239,7 @@ export async function GET(request: NextRequest) {
 
   // ── Jobs funnel ──
   const pvJobs = Number((await pvRpc("/jobs")).data?.total ?? 0);
-  const jobsPageAuth = visitedEditor.data?.count ?? 0; // reuse "Opened jobs page" event
+  const _jobsPageAuth = visitedEditor.data?.count ?? 0; // reuse "Opened jobs page" event
   const [jobSearches, jobClicks, jobSaves] = await Promise.all([
     admin.from("user_activity").select("id", { count: "exact", head: true })
       .eq("event", "Opened jobs page").gte("created_at", from).lte("created_at", to),

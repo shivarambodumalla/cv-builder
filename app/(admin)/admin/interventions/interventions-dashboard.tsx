@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Loader2, TrendingUp, TrendingDown, Eye, MousePointerClick, XCircle } from "lucide-react";
+import { Loader2, TrendingUp, Eye, MousePointerClick, XCircle } from "lucide-react";
 
 type Preset = "today" | "7d" | "30d" | "90d" | "180d" | "365d" | "custom";
 

@@ -93,7 +93,7 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
   }
 
   function toggleCandidate(i: number) {
-    setSelected((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+    setSelected((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; });
   }
 
   async function handleSaveSelected() {

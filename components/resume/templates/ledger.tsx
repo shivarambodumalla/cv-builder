@@ -422,7 +422,7 @@ export function LedgerTemplate({
         padding: `${marginY}in ${marginX}in`,
       }}
     >
-      {visibleSections.map((key, i) => {
+      {visibleSections.map((key, _i) => {
         const renderer = sectionRenderers[key];
         if (!renderer) return null;
         const node = renderer();

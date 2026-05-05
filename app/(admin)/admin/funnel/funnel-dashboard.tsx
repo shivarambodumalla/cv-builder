@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
-  Loader2, AlertTriangle, UserPlus, Layout, Upload, FileText, Pencil, ScanLine, Sparkles, Wand2,
+  Loader2, UserPlus, Layout, Upload, FileText, Pencil, ScanLine, Sparkles, Wand2,
   Briefcase, Mail, Download, CreditCard, Crown, Home, LogIn, TrendingUp, TrendingDown, ArrowRight,
   Lightbulb, Eye, MousePointerClick, Users, BarChart3,
 } from "lucide-react";
@@ -88,7 +88,7 @@ export function FunnelDashboard() {
   const upgraded = data?.conversion.find(s => s.key === "upgraded")?.count ?? 0;
   const visitToSignup = p(signups, awarenessBase);
   const signupToCV = p(cvsCreated, signups);
-  const signupToDownload = p(downloads, signups);
+  const _signupToDownload = p(downloads, signups);
   const signupToPro = p(upgraded, signups);
 
   return (

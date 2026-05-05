@@ -135,6 +135,7 @@ export default async function TemplateCategoryPage({
                   <div className="aspect-[1242/1754] bg-muted overflow-hidden relative">
                     {t.imgPath ? (
                       <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={t.imgPath}
                           alt={`${t.displayName} preview`}

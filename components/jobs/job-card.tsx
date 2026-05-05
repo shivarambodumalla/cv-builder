@@ -116,6 +116,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
       <div className="flex gap-3">
         {/* Avatar */}
         {job.company_logo ? (
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={job.company_logo} alt="" className="h-10 w-10 shrink-0 rounded-xl object-contain bg-white border" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
         ) : (
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold text-white" style={{ backgroundColor: avatarColor(job.company) }}>{initial}</div>

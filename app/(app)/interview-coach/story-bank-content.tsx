@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
 import {
   Plus,
   Trash2,
@@ -17,21 +15,14 @@ import {
   Loader2,
   BookOpen,
   FileSearch,
-  FileText,
   Sparkles,
   Search,
   Target,
-  ArrowRight,
   CheckCircle2,
   Save,
   ChevronDown,
   LayoutGrid,
-  Link2,
-  GitBranch,
-  FileUp,
   Wand2,
-  Eye,
-  AlertCircle,
   List,
   ArrowUpDown,
 } from "lucide-react";
@@ -53,16 +44,10 @@ interface Story {
 }
 
 interface CvOption { id: string; title: string | null; target_role: string | null; }
-interface ExtractedCandidate { title: string; situation: string; task: string; action: string; result: string; tags: string[]; }
 interface Props { stories: Story[]; cvs: CvOption[]; isPro: boolean; storiesThisWeek: number; }
 
 /* ── Constants ── */
 const COMMON_TAGS = ["Leadership", "Problem Solving", "Teamwork", "Technical", "Communication", "Initiative", "Conflict Resolution", "Growth", "Customer Focus", "Innovation"];
-const EXTRACT_STEPS: LoaderStep[] = [
-  { label: "Reading source", sub: "Parsing content", icon: FileSearch },
-  { label: "Identifying stories", sub: "Finding STAR-worthy achievements", icon: Sparkles },
-  { label: "Structuring stories", sub: "Building Situation-Task-Action-Result", icon: BookOpen },
-];
 const STAR_HINTS: Record<string, string> = {
   situation: "Add specific context: team size, timeline, business impact at stake",
   task: "Clarify YOUR responsibility — what were you specifically asked to do?",
@@ -71,12 +56,6 @@ const STAR_HINTS: Record<string, string> = {
 };
 
 /* ── Helpers ── */
-function qualityColor(score: number): string {
-  if (score >= 7) return "bg-success/15 text-success";
-  if (score >= 4) return "bg-warning/15 text-warning";
-  return "bg-error/15 text-error";
-}
-
 function truncate(text: string | null, max: number): string {
   if (!text) return "";
   return text.length > max ? text.slice(0, max) + "..." : text;
@@ -101,7 +80,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
   const [filterTag, setFilterTag] = useState<string | null>(null);
 
   // Builder (split-pane)
-  const [showBuilder, setShowBuilder] = useState(false);
+  const [_showBuilder, setShowBuilder] = useState(false);
   const [editingStory, setEditingStory] = useState<Story | null>(null);
   const [formTitle, setFormTitle] = useState("");
   const [formSituation, setFormSituation] = useState("");
@@ -124,7 +103,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
 
   /* ── Computed ── */
   const readyCount = useMemo(() => storyList.filter((s) => s.quality_score >= 7).length, [storyList]);
-  const coveredThemes = useMemo(() => {
+  const _coveredThemes = useMemo(() => {
     const t = new Set<string>();
     for (const s of storyList) for (const tag of s.tags) t.add(tag);
     return t.size;
@@ -157,6 +136,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
   }, [storyList, searchQuery, filterTag, sortAsc]);
 
   /* ── Handlers ── */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function openBuilder(story?: Story) {
     setEditingStory(story ?? null);
     setFormTitle(story?.title ?? "");

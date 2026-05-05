@@ -204,6 +204,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
               {/* Template preview if applicable */}
               {ctx.templateImg && (
                 <div className="h-36 bg-muted overflow-hidden relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={ctx.templateImg} alt={ctx.templateName || "Template"} className="w-full h-full object-cover object-top" />
                   <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-[#F5F0E8] to-transparent" />
                 </div>

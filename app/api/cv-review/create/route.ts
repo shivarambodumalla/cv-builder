@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "target_role and target_country are required" }, { status: 400 });
   }
 
-  const tierConfig = REVIEW_TIERS[tier as ReviewTier];
+  const _tierConfig = REVIEW_TIERS[tier as ReviewTier];
 
   // Get variant ID from env
   const variantIdMap: Record<string, string | undefined> = {

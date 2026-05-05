@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
-  ArrowLeft, Save, Loader2, Wand2, CheckCircle2, AlertCircle,
+  ArrowLeft, Save, Loader2, Wand2, CheckCircle2,
   Sparkles, X,
 } from "lucide-react";
 
@@ -43,12 +43,6 @@ const STAR_LABELS: Record<string, { full: string; hint: string }> = {
 
 function starComplete(v: string | null | undefined): boolean {
   return !!v && v.trim().length > 15;
-}
-
-function qualityColor(score: number): string {
-  if (score >= 7) return "text-success";
-  if (score >= 4) return "text-warning";
-  return "text-error";
 }
 
 function qualityBg(score: number): string {
@@ -117,7 +111,7 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
     setAiLoading(true);
     setAiSuggestions([]);
     try {
-      const res = await fetch("/api/stories/save", {
+      await fetch("/api/stories/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _quality_check: true, title, situation, task, action, result }),

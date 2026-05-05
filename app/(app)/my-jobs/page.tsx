@@ -24,7 +24,7 @@ export default async function JobsPage({
   const { cvId: requestedCvId } = await searchParams;
 
   // Only fetch lightweight DB data — no external API calls
-  const [{ data: cvs }, { data: profile }, { data: prefLocs }] = await Promise.all([
+  const [{ data: cvs }, { data: profile }, { data: _prefLocs }] = await Promise.all([
     supabase.from("cvs").select("id, title, target_role").eq("user_id", user.id).order("updated_at", { ascending: false }),
     supabase.from("profiles").select("preferred_locations_set").eq("id", user.id).single(),
     admin.from("preferred_locations").select("location").eq("user_id", user.id).order("priority"),

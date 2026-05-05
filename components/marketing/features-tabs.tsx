@@ -5,19 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   BarChart3,
-  Briefcase,
   Check,
   FileText,
-  Mail,
-
-  MessageSquare,
   PenTool,
   Search,
-  Shield,
-  Sparkles,
   Target,
-  Zap,
-  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AtsAnalysisVisual from "./ats-analysis-visual";

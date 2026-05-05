@@ -10,7 +10,7 @@ export function TwoColumnTemplate({
   marginX = 0.75,
   marginY = 0.5,
   pageBreaks = [],
-  contactSeparator = " | ",
+  contactSeparator: _contactSeparator = " | ",
 }: TemplateProps) {
   const { contact, targetTitle, summary, experience, education, skills, certifications, awards, projects, volunteering, publications } = content;
 
@@ -48,7 +48,6 @@ export function TwoColumnTemplate({
 
   const allSkills = skills.categories.flatMap((cat) => cat.skills);
 
-  type LeftSectionKey = "experience" | "projects" | "volunteering" | "awards" | "publications";
 
   const renderExperience = () =>
     visibleSections.includes("experience") && experience.items.length > 0 ? (
