@@ -64,65 +64,79 @@ export async function POST(request: NextRequest) {
 
   const design: ResumeDesignSettings = normalizeDesignSettings(clientDesign);
 
+  let buffer: Buffer;
   try {
-    const buffer = await renderHtmlToPdf(content, design, watermark);
-    const filename = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
+    buffer = await renderHtmlToPdf(content, design, watermark);
+  } catch (err) {
+    console.error("[pdf export] render failed:", err);
+    alertAdmin("PDF Export", (err as Error).message, { userId: user.id });
+    return NextResponse.json({ error: "PDF generation failed" }, { status: 500 });
+  }
 
-    // Increment usage after success
-    incrementUsage(user.id, "pdf_download").catch(() => {});
+  const filename = `${(title || "cv").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
 
-    // Increment lifetime download counter (admin analytics, fire-and-forget)
-    (async () => {
-      const adminClient = createAdminClient();
-      const { data } = await adminClient
-        .from("profiles")
-        .select("total_pdf_downloads")
-        .eq("id", user.id)
-        .single();
-      await adminClient
-        .from("profiles")
-        .update({ total_pdf_downloads: (data?.total_pdf_downloads ?? 0) + 1 })
-        .eq("id", user.id);
-      await adminClient.from("user_activity").insert({
+  // Track usage — awaited before response so Vercel doesn't freeze the function mid-write.
+  try {
+    const adminClient = createAdminClient();
+    await Promise.all([
+      // Enforce rolling window counter (free-tier limit gate)
+      incrementUsage(user.id, "pdf_download"),
+      // Lifetime counter
+      (async () => {
+        const { data } = await adminClient
+          .from("profiles")
+          .select("total_pdf_downloads")
+          .eq("id", user.id)
+          .single();
+        await adminClient
+          .from("profiles")
+          .update({ total_pdf_downloads: (data?.total_pdf_downloads ?? 0) + 1 })
+          .eq("id", user.id);
+      })(),
+      // Activity event
+      adminClient.from("user_activity").insert({
         user_id: user.id,
         event: "Downloaded PDF",
         page: "/api/cv/export/pdf",
         metadata: { title, plan, cv_id: cvId ?? null },
-      });
-      if (cvId) {
-        const { data: cvRow } = await adminClient
-          .from("cvs")
-          .select("download_count")
-          .eq("id", cvId)
-          .maybeSingle();
-        await adminClient
-          .from("cvs")
-          .update({ download_count: (cvRow?.download_count ?? 0) + 1 })
-          .eq("id", cvId);
-      }
-    })().catch(() => {});
+      }),
+      // Per-CV download count
+      cvId
+        ? (async () => {
+            const { data: cvRow } = await adminClient
+              .from("cvs")
+              .select("download_count")
+              .eq("id", cvId)
+              .maybeSingle();
+            await adminClient
+              .from("cvs")
+              .update({ download_count: (cvRow?.download_count ?? 0) + 1 })
+              .eq("id", cvId);
+          })()
+        : Promise.resolve(),
+    ]);
+  } catch (trackErr) {
+    // Tracking failure must not block the download — log for visibility.
+    console.error("[pdf export] tracking failed:", trackErr);
+  }
 
-    // Send upgrade prompt email to free users after download
-    if (plan === "free" && user.email) {
-      const admin = createAdminClient();
-      const { data: p } = await admin.from("profiles").select("upgrade_email_sent").eq("id", user.id).single();
+  // Send upgrade prompt email to free users (non-critical, fire-and-forget is fine)
+  if (plan === "free" && user.email) {
+    const admin = createAdminClient();
+    admin.from("profiles").select("upgrade_email_sent").eq("id", user.id).single().then(({ data: p }) => {
       if (p && !p.upgrade_email_sent) {
         const meta = user.user_metadata as { full_name?: string; name?: string } | null;
         const firstName = (meta?.full_name || meta?.name || "").split(" ")[0] || "there";
-        sendEmailAsync({ to: user.email, templateName: "upgrade_prompt", variables: { name: firstName }, userId: user.id });
+        sendEmailAsync({ to: user.email!, templateName: "upgrade_prompt", variables: { name: firstName }, userId: user.id });
         admin.from("profiles").update({ upgrade_email_sent: true }).eq("id", user.id).then(() => {});
       }
-    }
-
-    return new NextResponse(new Uint8Array(buffer), {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${filename}"`,
-      },
     });
-  } catch (err) {
-    console.error("[pdf export]", err);
-    alertAdmin("PDF Export", (err as Error).message, { userId: user.id });
-    return NextResponse.json({ error: "PDF generation failed" }, { status: 500 });
   }
+
+  return new NextResponse(new Uint8Array(buffer), {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="${filename}"`,
+    },
+  });
 }

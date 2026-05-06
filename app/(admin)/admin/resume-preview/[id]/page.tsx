@@ -9,6 +9,41 @@ import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { ArrowLeft, Eye } from "lucide-react";
 import type { ResumeContent } from "@/lib/resume/types";
 
+function sanitizeContent(raw: unknown): ResumeContent {
+  const c = (raw ?? {}) as Record<string, unknown>;
+  function arr<T>(v: unknown): T[] { return Array.isArray(v) ? v : []; }
+  function sanitizeItems<T>(section: unknown): T[] {
+    return arr<Record<string, unknown>>(
+      (section as Record<string, unknown>)?.items
+    ).map((item) => ({ ...item, bullets: arr<string>(item.bullets) })) as unknown as T[];
+  }
+  const skills = (c.skills ?? {}) as Record<string, unknown>;
+  return {
+    sections: {
+      contact: true, targetTitle: true, summary: true, experience: true,
+      education: true, skills: true, certifications: true, awards: true,
+      projects: true, volunteering: true, publications: true,
+      ...(typeof c.sections === "object" && c.sections !== null ? c.sections : {}),
+    },
+    contact:        (c.contact ?? {}) as ResumeContent["contact"],
+    targetTitle:    (c.targetTitle ?? {}) as ResumeContent["targetTitle"],
+    summary:        (c.summary ?? {}) as ResumeContent["summary"],
+    experience:     { items: sanitizeItems(c.experience) },
+    education:      { items: sanitizeItems(c.education) },
+    skills: {
+      categories: arr<Record<string, unknown>>(skills.categories).map((cat) => ({
+        name: String(cat.name ?? ""),
+        skills: arr<string>(cat.skills),
+      })),
+    },
+    certifications: { items: sanitizeItems(c.certifications) },
+    awards:         { items: sanitizeItems(c.awards) },
+    projects:       { items: sanitizeItems(c.projects) },
+    volunteering:   { items: sanitizeItems(c.volunteering) },
+    publications:   { items: sanitizeItems(c.publications) },
+  };
+}
+
 export const metadata: Metadata = {
   title: "Resume Preview | CVEdge Admin",
 };
@@ -87,7 +122,7 @@ export default async function AdminResumePreviewPage({
 
         {cv.parsed_json ? (
           <PaperPreview paperSize={design.paperSize}>
-            <TemplateRenderer content={cv.parsed_json as ResumeContent} design={design} />
+            <TemplateRenderer content={sanitizeContent(cv.parsed_json)} design={design} />
           </PaperPreview>
         ) : (
           <p className="text-sm text-muted-foreground">No parsed content available for this CV.</p>

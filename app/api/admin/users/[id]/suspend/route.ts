@@ -48,7 +48,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     job_matches_this_month: 0,
     cover_letters_this_month: 0,
     ai_rewrites_this_month: 0,
-    pdf_downloads_this_week: 0,
+    pdf_downloads_this_window: 0,
   }).eq("id", id);
 
   // Record in history

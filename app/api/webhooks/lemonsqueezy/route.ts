@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         job_matches_this_month: 0,
         cover_letters_this_month: 0,
         ai_rewrites_this_month: 0,
-        pdf_downloads_this_week: 0,
+        pdf_downloads_this_window: 0,
       }).eq("id", userId);
       console.log(`[webhook] subscription_expired for ${userId}, reverted to free`);
       break;

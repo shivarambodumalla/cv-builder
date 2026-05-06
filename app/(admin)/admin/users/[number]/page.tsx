@@ -62,7 +62,7 @@ export default async function UserDetailPage({
   // Fetch profile by user_number first to get UUID for subsequent queries
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, pdf_downloads_this_week, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
+    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
     .eq("user_number", Number(number))
     .single();
 
@@ -611,7 +611,7 @@ export default async function UserDetailPage({
               <div><dt className="text-muted-foreground text-xs">Matches</dt><dd className="font-medium">{profile.job_matches_this_month ?? 0}</dd></div>
               <div><dt className="text-muted-foreground text-xs">Letters</dt><dd className="font-medium">{profile.cover_letters_this_month ?? 0}</dd></div>
               <div><dt className="text-muted-foreground text-xs">Rewrites</dt><dd className="font-medium">{profile.ai_rewrites_this_month ?? 0}</dd></div>
-              <div><dt className="text-muted-foreground text-xs">PDFs</dt><dd className="font-medium">{profile.pdf_downloads_this_week ?? 0}</dd></div>
+              <div><dt className="text-muted-foreground text-xs">PDF downloads</dt><dd className="font-medium">{profile.pdf_downloads_this_window ?? 0}</dd></div>
             </dl>
           </CardContent>
         </Card>

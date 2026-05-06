@@ -20,6 +20,12 @@ function sanitizeContent(raw: unknown): ResumeContent {
     skills: arr<string>(cat.skills),
   }));
 
+  function sanitizeItems<T>(section: unknown): T[] {
+    return arr<Record<string, unknown>>(
+      (section as Record<string, unknown>)?.items
+    ).map((item) => ({ ...item, bullets: arr<string>(item.bullets) })) as unknown as T[];
+  }
+
   return {
     sections: {
       contact:       true,
@@ -38,14 +44,14 @@ function sanitizeContent(raw: unknown): ResumeContent {
     contact:        (c.contact ?? {}) as ResumeContent["contact"],
     targetTitle:    (c.targetTitle ?? {}) as ResumeContent["targetTitle"],
     summary:        (c.summary ?? {}) as ResumeContent["summary"],
-    experience:     { items: arr((c.experience as Record<string, unknown>)?.items) },
-    education:      { items: arr((c.education as Record<string, unknown>)?.items) },
+    experience:     { items: sanitizeItems(c.experience) },
+    education:      { items: sanitizeItems(c.education) },
     skills:         { categories: sanitizedCategories },
-    certifications: { items: arr((c.certifications as Record<string, unknown>)?.items) },
-    awards:         { items: arr((c.awards as Record<string, unknown>)?.items) },
-    projects:       { items: arr((c.projects as Record<string, unknown>)?.items) },
-    volunteering:   { items: arr((c.volunteering as Record<string, unknown>)?.items) },
-    publications:   { items: arr((c.publications as Record<string, unknown>)?.items) },
+    certifications: { items: sanitizeItems(c.certifications) },
+    awards:         { items: sanitizeItems(c.awards) },
+    projects:       { items: sanitizeItems(c.projects) },
+    volunteering:   { items: sanitizeItems(c.volunteering) },
+    publications:   { items: sanitizeItems(c.publications) },
   };
 }
 

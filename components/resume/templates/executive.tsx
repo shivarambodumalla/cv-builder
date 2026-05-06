@@ -173,7 +173,7 @@ export function ExecutiveTemplate({
                   {renderDateRange(item.startDate, item.endDate, item.isCurrent)}
                 </div>
               </div>
-              {item.bullets.filter(Boolean).length > 0 && (
+              {(item.bullets || []).filter(Boolean).length > 0 && (
                 <ul
                   style={{
                     margin: "3px 0 0 0",
@@ -185,7 +185,7 @@ export function ExecutiveTemplate({
                     color: "#333",
                   }}
                 >
-                  {item.bullets.filter(Boolean).map((bullet, j) => (
+                  {(item.bullets || []).filter(Boolean).map((bullet, j) => (
                     <li key={j}>
                       {bulletChar && <span style={{ marginRight: "5px" }}>{bulletChar}</span>}
                       {bullet}
@@ -345,7 +345,7 @@ export function ExecutiveTemplate({
                   {renderDateRange(item.startDate, item.endDate)}
                 </div>
               </div>
-              {item.bullets.filter(Boolean).length > 0 && (
+              {(item.bullets || []).filter(Boolean).length > 0 && (
                 <ul
                   style={{
                     margin: "3px 0 0 0",
@@ -357,7 +357,7 @@ export function ExecutiveTemplate({
                     color: "#333",
                   }}
                 >
-                  {item.bullets.filter(Boolean).map((bullet, j) => (
+                  {(item.bullets || []).filter(Boolean).map((bullet, j) => (
                     <li key={j}>
                       {bulletChar && <span style={{ marginRight: "5px" }}>{bulletChar}</span>}
                       {bullet}
@@ -393,7 +393,7 @@ export function ExecutiveTemplate({
                   {renderDateRange(item.startDate, item.endDate)}
                 </div>
               </div>
-              {item.bullets.filter(Boolean).length > 0 && (
+              {(item.bullets || []).filter(Boolean).length > 0 && (
                 <ul
                   style={{
                     margin: "3px 0 0 0",
@@ -405,7 +405,7 @@ export function ExecutiveTemplate({
                     color: "#333",
                   }}
                 >
-                  {item.bullets.filter(Boolean).map((bullet, j) => (
+                  {(item.bullets || []).filter(Boolean).map((bullet, j) => (
                     <li key={j}>
                       {bulletChar && <span style={{ marginRight: "5px" }}>{bulletChar}</span>}
                       {bullet}

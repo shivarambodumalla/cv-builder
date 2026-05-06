@@ -76,6 +76,7 @@ export const COLUMN_GROUPS: { label: string; cols: ColDef[] }[] = [
     cols: [
       { key: "user_number", label: "#",           defaultOn: true,  sortable: "user_number", align: "right" },
       { key: "name",        label: "Name",         defaultOn: true,  sortable: "name" },
+      { key: "email",       label: "Email",        defaultOn: false },
       { key: "plan",        label: "Plan",         defaultOn: true,  sortable: "plan" },
       { key: "joined_at",   label: "Joined",       defaultOn: true,  sortable: "joined_at" },
       { key: "last_active", label: "Last Active",  defaultOn: true,  sortable: "last_active" },
@@ -321,6 +322,12 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
               <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </div>
           </Link>
+        </td>
+      );
+    case "email":
+      return (
+        <td className="px-4 py-3 text-xs text-muted-foreground">
+          {user.email}
         </td>
       );
     case "plan":

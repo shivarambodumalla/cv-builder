@@ -1261,17 +1261,17 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
 
   const currentTemplate = TEMPLATES.find((t) => t.name === design.template) ?? TEMPLATES[0];
   const [templateDialogOpen, setTemplateDialogOpen] = React.useState(false);
-  const [stagedTemplate, setStagedTemplate] = React.useState<TemplateName>(design.template);
+  const [stagedTemplate, setStagedTemplate] = React.useState<TemplateName | null>(null);
   const [mobileModalView, setMobileModalView] = React.useState<"browse" | "preview">("browse");
 
   React.useEffect(() => {
     if (templateDialogOpen) {
-      setStagedTemplate(design.template);
+      setStagedTemplate(null);
       setMobileModalView("browse");
     }
   }, [templateDialogOpen, design.template]);
 
-  const stagedTemplateMeta = TEMPLATES.find((t) => t.name === stagedTemplate) ?? TEMPLATES[0];
+  const stagedTemplateMeta = TEMPLATES.find((t) => t.name === (stagedTemplate ?? design.template)) ?? TEMPLATES[0];
 
   function renderTemplateThumb(name: TemplateName, className?: string) {
     const imgSrc = TEMPLATE_IMAGES[name];
@@ -1360,7 +1360,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     )}
                   >
                     {tab.label}
-                    {tab.id === "preview" && stagedTemplate !== design.template && (
+                    {tab.id === "preview" && stagedTemplate !== null && stagedTemplate !== design.template && (
                       <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary align-middle" />
                     )}
                   </button>
@@ -1379,7 +1379,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               >
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {TEMPLATES.map((t) => {
-                    const staged = stagedTemplate === t.name;
+                    const staged = stagedTemplate !== null && stagedTemplate === t.name;
                     const applied = design.template === t.name;
                     return (
                       <button
@@ -1428,7 +1428,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     >
                       <TemplateRenderer
                         content={getPreviewContent(content)}
-                        design={{ ...design, template: stagedTemplate }}
+                        design={{ ...design, template: stagedTemplate ?? design.template }}
                       />
                     </PaperPreview>
                   ) : (
@@ -1437,7 +1437,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                         className="w-full overflow-hidden rounded-md border bg-background shadow-sm"
                         style={{ aspectRatio: "210/297" }}
                       >
-                        {renderTemplateThumb(stagedTemplate)}
+                        {renderTemplateThumb(stagedTemplate ?? design.template)}
                       </div>
                     </div>
                   )}
@@ -1457,9 +1457,9 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
               <Button
                 size="sm"
                 className="h-9 px-4"
-                disabled={stagedTemplate === design.template}
+                disabled={stagedTemplate === null || stagedTemplate === design.template}
                 onClick={() => {
-                  update("template", stagedTemplate);
+                  update("template", stagedTemplate!);
                   setTemplateDialogOpen(false);
                 }}
               >

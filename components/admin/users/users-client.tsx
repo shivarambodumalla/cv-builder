@@ -215,6 +215,7 @@ import { resolveCountry } from "./country-data";
 const ALL_CSV_COLS = [
   { key: "user_number",         label: "#" },
   { key: "name",                label: "Name" },
+  { key: "email",               label: "Email" },
   { key: "plan",                label: "Plan" },
   { key: "joined_at",           label: "Joined" },
   { key: "last_active",         label: "Last Active" },
@@ -245,6 +246,7 @@ function getCsvValue(u: AdminUserRow, key: string): string {
   switch (key) {
     case "user_number":       return String(u.user_number);
     case "name":              return u.full_name || "";
+    case "email":             return u.email || "";
     case "plan":              return u.plan;
     case "joined_at":         return new Date(u.joined_at).toISOString().replace("T", " ").slice(0, 16) + " UTC";
     case "last_active":       return u.last_active ? new Date(u.last_active).toISOString().split("T")[0] : "";
