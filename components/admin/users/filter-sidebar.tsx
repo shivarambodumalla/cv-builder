@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { AutocompleteInput } from "./autocomplete-input";
 import { COUNTRY_MAP, REGIONS } from "./country-data";
@@ -91,12 +91,39 @@ function linksCount(f: FilterState) {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
+const STORAGE_KEY = "admin_filter_sections";
+
+function getStoredSections(): Record<string, boolean> {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
 function FilterSection({
   title, activeCount, defaultOpen = false, children,
 }: {
   title: string; activeCount: number; defaultOpen?: boolean; children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(() => {
+    try {
+      const stored = getStoredSections();
+      return title in stored ? stored[title] : defaultOpen;
+    } catch {
+      return defaultOpen;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      const stored = getStoredSections();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...stored, [title]: open }));
+    } catch {
+      // localStorage unavailable — no-op
+    }
+  }, [open, title]);
+
   return (
     <div className="border-b last:border-b-0">
       <button
