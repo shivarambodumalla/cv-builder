@@ -83,7 +83,7 @@ export function JobsWidget({ cvTitle, skills: _skills, jdKeywords, cvId }: JobsW
         <Link
           href="/my-jobs"
           className="text-[11px] font-medium hover:underline"
-          style={{ color: "#065F46" }}
+          style={{ color: "hsl(var(--primary))" }}
         >
           View all
         </Link>
@@ -105,7 +105,7 @@ export function JobsWidget({ cvTitle, skills: _skills, jdKeywords, cvId }: JobsW
           <Link
             href="/my-jobs"
             className="mt-1 inline-flex items-center text-xs font-medium hover:underline"
-            style={{ color: "#065F46" }}
+            style={{ color: "hsl(var(--primary))" }}
           >
             Browse all jobs
           </Link>
@@ -132,7 +132,7 @@ export function JobsWidget({ cvTitle, skills: _skills, jdKeywords, cvId }: JobsW
                 className={cn(
                   "shrink-0 rounded px-2 py-0.5 text-[11px] font-semibold text-white transition-colors",
                 )}
-                style={{ backgroundColor: "#065F46" }}
+                style={{ backgroundColor: "hsl(var(--primary))" }}
               >
                 Apply
               </a>
@@ -163,7 +163,7 @@ export function JobsWidget({ cvTitle, skills: _skills, jdKeywords, cvId }: JobsW
         <Link
           href="/my-jobs"
           className="flex items-center justify-center py-1 text-[12px] font-medium hover:underline"
-          style={{ color: "#065F46" }}
+          style={{ color: "hsl(var(--primary))" }}
         >
           View all matching jobs
         </Link>

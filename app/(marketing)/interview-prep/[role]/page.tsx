@@ -144,7 +144,7 @@ export default async function RoleInterviewPrepPage({
 
         {/* Cross-link to /jobs/[role] */}
         <div className="mx-auto max-w-3xl mb-14">
-          <div className="rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="rounded-xl border bg-[rgba(255,94,89,0.05)] border-[rgba(255,94,89,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold">Looking for {role.label} jobs?</p>
               <p className="text-xs text-muted-foreground mt-0.5">Match your CV to live {role.label.toLowerCase()} listings and prep for the ones that fit.</p>

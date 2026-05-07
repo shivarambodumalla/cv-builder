@@ -18,23 +18,23 @@ export function CtaSection({
   trustItems = ["Free to start", "No credit card", "Cancel anytime"],
 }: CtaSectionProps) {
   return (
-    <div className="rounded-2xl bg-[#065F46] p-8 sm:p-12">
+    <div className="rounded-2xl bg-gradient-to-br from-secondary via-primary to-primary p-8 sm:p-12">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-center">
         {/* Left */}
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#34D399] mb-2.5">{label}</p>
-          <h2 className="text-2xl sm:text-[28px] font-bold text-[#ECFDF5] leading-tight mb-2">{heading}</h2>
-          <p className="text-sm text-[#6EE7B7] mb-6">{subtext}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-accent mb-2.5">{label}</p>
+          <h2 className="text-2xl sm:text-[28px] font-bold text-white leading-tight mb-2">{heading}</h2>
+          <p className="text-sm text-white/70 mb-6">{subtext}</p>
           <Link
             href={buttonHref}
-            className="inline-block rounded-lg bg-white px-7 py-3.5 text-sm font-bold text-[#065F46] hover:bg-white/90 transition-colors mb-4"
+            className="inline-block rounded-lg bg-white px-7 py-3.5 text-sm font-bold text-primary hover:bg-white/90 transition-colors mb-4"
           >
             {buttonText}
           </Link>
           <div className="flex flex-wrap gap-4">
             {trustItems.map((t) => (
               <span key={t} className="text-[11px] text-white/65">
-                <span className="text-[#34D399]">&#10003;</span> {t}
+                <span className="text-accent">&#10003;</span> {t}
               </span>
             ))}
           </div>
@@ -42,13 +42,13 @@ export function CtaSection({
 
         {/* Right — score preview */}
         <div className="hidden lg:flex flex-col items-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[#34D399] bg-[#34D399]/10 mb-2.5">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-accent bg-accent/10 mb-2.5">
             <div className="text-center">
-              <span className="text-[28px] font-extrabold text-[#ECFDF5] leading-none">94</span>
-              <span className="text-xs text-[#34D399]">%</span>
+              <span className="text-[28px] font-extrabold text-white leading-none">94</span>
+              <span className="text-xs text-accent">%</span>
             </div>
           </div>
-          <p className="text-[10px] text-[#6EE7B7] mb-3">Sample ATS score</p>
+          <p className="text-[10px] text-accent mb-3">Sample ATS score</p>
           <div className="space-y-1.5 w-36">
             {[
               { label: "Keywords", pct: 92 },
@@ -56,11 +56,11 @@ export function CtaSection({
               { label: "Sections", pct: 100 },
             ].map((bar) => (
               <div key={bar.label} className="flex items-center gap-2 rounded bg-white/10 px-3 py-1.5">
-                <span className="text-[9px] text-[#D1FAE5] w-14 shrink-0">{bar.label}</span>
+                <span className="text-[9px] text-white/60 w-14 shrink-0">{bar.label}</span>
                 <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#34D399]" style={{ width: `${bar.pct}%` }} />
+                  <div className="h-full rounded-full bg-accent" style={{ width: `${bar.pct}%` }} />
                 </div>
-                <span className="text-[9px] text-[#D1FAE5] w-7 text-right">{bar.pct}%</span>
+                <span className="text-[9px] text-white/60 w-7 text-right">{bar.pct}%</span>
               </div>
             ))}
           </div>

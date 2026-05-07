@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 const STATUS_LABELS: Record<string, { label: string; bg: string; color: string }> = {
   pending: { label: "Awaiting review", bg: "#FEF3C7", color: "#92400E" },
   in_progress: { label: "In progress", bg: "#EFF6FF", color: "#1D4ED8" },
-  completed: { label: "Complete", bg: "#F0FDF4", color: "#065F46" },
+  completed: { label: "Complete", bg: "hsl(var(--primary) / 0.08)", color: "hsl(var(--primary))" },
   cancelled: { label: "Cancelled", bg: "#FEF2F2", color: "#991B1B" },
 };
 
@@ -40,7 +40,7 @@ export default async function CvReviewHistoryPage() {
         <Link
           href="/cv-review/new"
           className="px-4 py-2 rounded-lg text-sm font-semibold text-white"
-          style={{ background: "#065F46" }}
+          style={{ background: "hsl(var(--primary))" }}
         >
           New review
         </Link>
@@ -52,7 +52,7 @@ export default async function CvReviewHistoryPage() {
           <Link
             href="/cv-review/new"
             className="inline-block px-5 py-2 rounded-lg text-sm font-semibold text-white"
-            style={{ background: "#065F46" }}
+            style={{ background: "hsl(var(--primary))" }}
           >
             Request your first review
           </Link>

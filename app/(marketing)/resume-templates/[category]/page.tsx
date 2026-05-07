@@ -75,7 +75,7 @@ export default async function TemplateCategoryPage({
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-secondary/[0.06] blur-3xl" />
         <div className="relative container mx-auto px-4 py-16 md:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <nav className="text-xs text-muted-foreground mb-4 flex items-center justify-center gap-1.5">
@@ -90,12 +90,12 @@ export default async function TemplateCategoryPage({
               {cat.h1.includes("Resume") ? (
                 <>
                   {cat.h1.replace(" Resume Templates", "")}{" "}
-                  <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                     Resume Templates
                   </span>
                 </>
               ) : (
-                <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                   {cat.h1}
                 </span>
               )}
@@ -157,15 +157,15 @@ export default async function TemplateCategoryPage({
                       <span
                         className={
                           t.tier === "pro"
-                            ? "rounded-full px-1.5 py-0.5 text-[9px] font-bold bg-[#1E3A5F] text-white"
-                            : "rounded-full px-1.5 py-0.5 text-[9px] font-bold bg-[#D1FAE5] text-[#065F46]"
+                            ? "rounded-full px-1.5 py-0.5 text-[9px] font-bold bg-secondary text-white"
+                            : "rounded-full px-1.5 py-0.5 text-[9px] font-bold bg-primary/10 text-primary"
                         }
                       >
                         {t.tier === "pro" ? "Pro" : "Free"}
                       </span>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{t.headline}</p>
-                    <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-4 py-2 text-xs font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
+                    <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white group-hover:bg-primary/90 transition-colors">
                       View template
                     </span>
                   </div>

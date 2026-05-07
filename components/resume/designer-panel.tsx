@@ -215,27 +215,27 @@ function TemplatePreview({ template }: { template: TemplateName }) {
     case "sidebar":
       return (
         <svg viewBox="0 0 120 170" className="h-full w-full"><rect width="120" height="170" fill="white"/>
-          <rect width="40" height="170" fill="#065F46"/>
+          <rect width="40" height="170" fill="hsl(var(--primary))"/>
           <rect x="6" y="10" width="28" height="4" rx="1" fill="white"/><rect x="6" y="16" width="20" height="2" rx="1" fill="white" opacity="0.6"/>
           <rect x="6" y="22" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/><rect x="6" y="25" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/>
           <rect x="6" y="34" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="6" y="39" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="6" y="42" width="25" height="1.5" rx="1" fill="white" opacity="0.3"/>
           <rect x="6" y="55" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="6" y="60" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="6" y="63" width="22" height="1.5" rx="1" fill="white" opacity="0.3"/>
-          <rect x="48" y="10" width="30" height="3" rx="1" fill="#065F46"/><rect x="48" y="16" width="60" height="2" rx="1" fill="#F3F4F6"/><rect x="48" y="20" width="55" height="2" rx="1" fill="#F3F4F6"/>
-          <rect x="48" y="32" width="30" height="3" rx="1" fill="#065F46"/><rect x="48" y="38" width="40" height="2.5" rx="1" fill="#555"/>
+          <rect x="48" y="10" width="30" height="3" rx="1" fill="hsl(var(--primary))"/><rect x="48" y="16" width="60" height="2" rx="1" fill="#F3F4F6"/><rect x="48" y="20" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="48" y="32" width="30" height="3" rx="1" fill="hsl(var(--primary))"/><rect x="48" y="38" width="40" height="2.5" rx="1" fill="#555"/>
           <rect x="50" y="43" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="50" y="47" width="50" height="2" rx="1" fill="#F3F4F6"/><rect x="50" y="51" width="55" height="2" rx="1" fill="#F3F4F6"/>
           <rect x="48" y="58" width="35" height="2.5" rx="1" fill="#555"/><rect x="50" y="63" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="50" y="67" width="45" height="2" rx="1" fill="#F3F4F6"/>
-          <rect x="48" y="76" width="30" height="3" rx="1" fill="#065F46"/><rect x="48" y="82" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="48" y="76" width="30" height="3" rx="1" fill="hsl(var(--primary))"/><rect x="48" y="82" width="55" height="2" rx="1" fill="#F3F4F6"/>
         </svg>
       );
     case "sidebar-right":
       return (
         <svg viewBox="0 0 120 170" className="h-full w-full"><rect width="120" height="170" fill="white"/>
-          <rect x="80" width="40" height="170" fill="#065F46"/>
-          <rect x="10" y="10" width="30" height="3" rx="1" fill="#065F46"/><rect x="10" y="16" width="60" height="2" rx="1" fill="#F3F4F6"/><rect x="10" y="20" width="55" height="2" rx="1" fill="#F3F4F6"/>
-          <rect x="10" y="32" width="30" height="3" rx="1" fill="#065F46"/><rect x="10" y="38" width="40" height="2.5" rx="1" fill="#555"/>
+          <rect x="80" width="40" height="170" fill="hsl(var(--primary))"/>
+          <rect x="10" y="10" width="30" height="3" rx="1" fill="hsl(var(--primary))"/><rect x="10" y="16" width="60" height="2" rx="1" fill="#F3F4F6"/><rect x="10" y="20" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="10" y="32" width="30" height="3" rx="1" fill="hsl(var(--primary))"/><rect x="10" y="38" width="40" height="2.5" rx="1" fill="#555"/>
           <rect x="12" y="43" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="12" y="47" width="50" height="2" rx="1" fill="#F3F4F6"/><rect x="12" y="51" width="55" height="2" rx="1" fill="#F3F4F6"/>
           <rect x="10" y="58" width="35" height="2.5" rx="1" fill="#555"/><rect x="12" y="63" width="58" height="2" rx="1" fill="#F3F4F6"/><rect x="12" y="67" width="45" height="2" rx="1" fill="#F3F4F6"/>
-          <rect x="10" y="76" width="30" height="3" rx="1" fill="#065F46"/><rect x="10" y="82" width="55" height="2" rx="1" fill="#F3F4F6"/>
+          <rect x="10" y="76" width="30" height="3" rx="1" fill="hsl(var(--primary))"/><rect x="10" y="82" width="55" height="2" rx="1" fill="#F3F4F6"/>
           <rect x="86" y="10" width="28" height="4" rx="1" fill="white"/><rect x="86" y="16" width="20" height="2" rx="1" fill="white" opacity="0.6"/>
           <rect x="86" y="22" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/><rect x="86" y="25" width="28" height="1.5" rx="1" fill="white" opacity="0.4"/>
           <rect x="86" y="34" width="18" height="2.5" rx="1" fill="white" opacity="0.8"/><rect x="86" y="39" width="28" height="1.5" rx="1" fill="white" opacity="0.3"/><rect x="86" y="42" width="25" height="1.5" rx="1" fill="white" opacity="0.3"/>
@@ -287,18 +287,18 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="6" y="10" width="28" height="5" rx="1" fill="#0F172A"/>
           <rect x="6" y="16" width="28" height="5" rx="1" fill="#0F172A"/>
           <rect x="6" y="24" width="24" height="2" rx="1" fill="#334155"/>
-          <rect x="6" y="34" width="20" height="2" rx="1" fill="#1E3A5F"/>
-          <rect x="6" y="38" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="38" width="28" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="42" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="42" width="25" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="46" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="46" width="22" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="56" width="18" height="2" rx="1" fill="#1E3A5F"/>
-          <rect x="6" y="60" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="60" width="24" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="64" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="64" width="20" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="68" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="68" width="26" height="1.5" rx="1" fill="#475569"/>
-          <rect x="52" y="10" width="22" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="6" y="34" width="20" height="2" rx="1" fill="hsl(var(--secondary))"/>
+          <rect x="6" y="38" width="1.5" height="1.5" rx="0.75" fill="hsl(var(--secondary))"/><rect x="10" y="38" width="28" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="42" width="1.5" height="1.5" rx="0.75" fill="hsl(var(--secondary))"/><rect x="10" y="42" width="25" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="46" width="1.5" height="1.5" rx="0.75" fill="hsl(var(--secondary))"/><rect x="10" y="46" width="22" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="56" width="18" height="2" rx="1" fill="hsl(var(--secondary))"/>
+          <rect x="6" y="60" width="2" height="1.5" rx="1" fill="hsl(var(--secondary))"/><rect x="10" y="60" width="24" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="64" width="2" height="1.5" rx="1" fill="hsl(var(--secondary))"/><rect x="10" y="64" width="20" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="68" width="2" height="1.5" rx="1" fill="hsl(var(--secondary))"/><rect x="10" y="68" width="26" height="1.5" rx="1" fill="#475569"/>
+          <rect x="52" y="10" width="22" height="2" rx="1" fill="hsl(var(--secondary))"/>
           <rect x="52" y="15" width="60" height="1.5" rx="1" fill="#F3F4F6"/>
           <rect x="52" y="18" width="55" height="1.5" rx="1" fill="#F3F4F6"/>
-          <rect x="52" y="28" width="28" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="52" y="28" width="28" height="2" rx="1" fill="hsl(var(--secondary))"/>
           <rect x="52" y="33" width="18" height="1.5" rx="1" fill="#64748B"/>
           <rect x="52" y="37" width="40" height="2" rx="1" fill="#0F172A"/>
           <rect x="52" y="41" width="30" height="1.5" rx="1" fill="#64748B"/>
@@ -320,18 +320,18 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="6" y="10" width="28" height="5" rx="1" fill="#0F172A"/>
           <rect x="6" y="16" width="28" height="5" rx="1" fill="#0F172A"/>
           <rect x="6" y="24" width="24" height="2" rx="1" fill="#334155"/>
-          <rect x="6" y="34" width="20" height="2" rx="1" fill="#1E3A5F"/>
-          <rect x="6" y="38" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="38" width="28" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="42" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="42" width="25" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="46" width="1.5" height="1.5" rx="0.75" fill="#1E3A5F"/><rect x="10" y="46" width="22" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="56" width="18" height="2" rx="1" fill="#1E3A5F"/>
-          <rect x="6" y="60" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="60" width="24" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="64" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="64" width="20" height="1.5" rx="1" fill="#475569"/>
-          <rect x="6" y="68" width="2" height="1.5" rx="1" fill="#1E3A5F"/><rect x="10" y="68" width="26" height="1.5" rx="1" fill="#475569"/>
-          <rect x="52" y="10" width="22" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="6" y="34" width="20" height="2" rx="1" fill="hsl(var(--secondary))"/>
+          <rect x="6" y="38" width="1.5" height="1.5" rx="0.75" fill="hsl(var(--secondary))"/><rect x="10" y="38" width="28" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="42" width="1.5" height="1.5" rx="0.75" fill="hsl(var(--secondary))"/><rect x="10" y="42" width="25" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="46" width="1.5" height="1.5" rx="0.75" fill="hsl(var(--secondary))"/><rect x="10" y="46" width="22" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="56" width="18" height="2" rx="1" fill="hsl(var(--secondary))"/>
+          <rect x="6" y="60" width="2" height="1.5" rx="1" fill="hsl(var(--secondary))"/><rect x="10" y="60" width="24" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="64" width="2" height="1.5" rx="1" fill="hsl(var(--secondary))"/><rect x="10" y="64" width="20" height="1.5" rx="1" fill="#475569"/>
+          <rect x="6" y="68" width="2" height="1.5" rx="1" fill="hsl(var(--secondary))"/><rect x="10" y="68" width="26" height="1.5" rx="1" fill="#475569"/>
+          <rect x="52" y="10" width="22" height="2" rx="1" fill="hsl(var(--secondary))"/>
           <rect x="52" y="15" width="60" height="1.5" rx="1" fill="#E2E8F0"/>
           <rect x="52" y="18" width="55" height="1.5" rx="1" fill="#E2E8F0"/>
-          <rect x="52" y="28" width="28" height="2" rx="1" fill="#1E3A5F"/>
+          <rect x="52" y="28" width="28" height="2" rx="1" fill="hsl(var(--secondary))"/>
           <rect x="52" y="33" width="18" height="1.5" rx="1" fill="#64748B"/>
           <rect x="52" y="37" width="40" height="2" rx="1" fill="#0F172A"/>
           <rect x="52" y="41" width="30" height="1.5" rx="1" fill="#64748B"/>
@@ -764,7 +764,7 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="50" y="98" width="60" height="1.3" rx="0.4" fill="#9CA3AF"/>
           <rect x="50" y="101" width="48" height="1.3" rx="0.4" fill="#9CA3AF"/>
           {/* navy corner wedge */}
-          <path d="M 120 170 L 120 148 A 22 22 0 0 0 98 170 Z" fill="#1E3A5F"/>
+          <path d="M 120 170 L 120 148 A 22 22 0 0 0 98 170 Z" fill="hsl(var(--secondary))"/>
         </svg>
       );
     case "portrait":

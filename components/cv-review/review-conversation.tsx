@@ -42,7 +42,7 @@ interface Props {
 const STATUS_CONFIG = {
   pending: { label: "Awaiting review", bg: "#FEF3C7", color: "#92400E", border: "#F59E0B" },
   in_progress: { label: "In progress", bg: "#EFF6FF", color: "#1D4ED8", border: "#2563EB" },
-  completed: { label: "Complete", bg: "#F0FDF4", color: "#065F46", border: "#10B981" },
+  completed: { label: "Complete", bg: "hsl(var(--primary) / 0.08)", color: "hsl(var(--primary))", border: "hsl(var(--success))" },
   cancelled: { label: "Cancelled", bg: "#FEF2F2", color: "#991B1B", border: "#EF4444" },
 };
 
@@ -192,7 +192,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                 {Math.max(0, limit - roundsUsed)} revision{limit - roundsUsed !== 1 ? "s" : ""} remaining
               </div>
               <div className="w-32 h-1.5 bg-border rounded-full overflow-hidden">
-                <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, (roundsUsed / limit) * 100)}%`, background: "#065F46" }} />
+                <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, (roundsUsed / limit) * 100)}%`, background: "hsl(var(--primary))" }} />
               </div>
             </div>
           )}
@@ -224,25 +224,25 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
             const allFilled = questions.every((q) => (draft[q.id] ?? "").trim());
 
             return (
-              <div key={msg.id} className="rounded-xl border-2 p-5 space-y-5" style={{ borderColor: isAnswered ? "#D1FAE5" : "#F59E0B", background: isAnswered ? "#F0FDF4" : "white" }}>
+              <div key={msg.id} className="rounded-xl border-2 p-5 space-y-5" style={{ borderColor: isAnswered ? "hsl(var(--success) / 0.3)" : "hsl(var(--warning))", background: isAnswered ? "hsl(var(--primary) / 0.06)" : "white" }}>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#065F46" }}>CE</div>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "hsl(var(--primary))" }}>CE</div>
                   <div>
                     <p className="text-sm font-semibold">Your expert has a few questions</p>
                     <p className="text-xs text-muted-foreground">{questions.length} question{questions.length !== 1 ? "s" : ""} · your answers help refine your CV</p>
                   </div>
-                  {isAnswered && <span className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "#D1FAE5", color: "#065F46" }}>Answered ✓</span>}
+                  {isAnswered && <span className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: "hsl(var(--primary) / 0.12)", color: "hsl(var(--primary))" }}>Answered ✓</span>}
                 </div>
 
                 <div className="space-y-4">
                   {questions.map((q, i) => (
                     <div key={q.id}>
                       <label className="block text-sm font-medium mb-1.5">
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold text-white mr-1.5" style={{ background: "#065F46" }}>{i + 1}</span>
+                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold text-white mr-1.5" style={{ background: "hsl(var(--primary))" }}>{i + 1}</span>
                         {q.text}
                       </label>
                       {isAnswered ? (
-                        <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "#F0FDF4", color: "#065F46" }}>
+                        <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "hsl(var(--primary) / 0.08)", color: "hsl(var(--primary))" }}>
                           {draft[q.id] || "—"}
                         </div>
                       ) : (
@@ -251,7 +251,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                           onChange={(e) => setDraftAnswer(msg.id, q.id, e.target.value)}
                           placeholder="Your answer..."
                           rows={2}
-                          className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30"
+                          className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
                         />
                       )}
                     </div>
@@ -263,7 +263,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                     onClick={() => submitAnswers(msg.id, questions)}
                     disabled={!allFilled || sending}
                     className="w-full py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-50 transition-opacity hover:opacity-90"
-                    style={{ background: "#065F46" }}
+                    style={{ background: "hsl(var(--primary))" }}
                   >
                     {sending ? "Submitting..." : "Submit answers →"}
                   </button>
@@ -331,7 +331,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                   <a
                     href={editorCvId ? `/resume/${editorCvId}?review_id=${review.id}` : "/dashboard"}
                     className="flex-1 block text-center py-2.5 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-                    style={{ background: "#065F46" }}
+                    style={{ background: "hsl(var(--primary))" }}
                   >
                     Open in Editor
                   </a>
@@ -357,7 +357,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                   <div className="pt-2 border-t text-center">
                     <p className="text-xs text-muted-foreground mb-2">All review rounds used.</p>
                     {review.tier !== "pro" && (
-                      <Link href="/cv-review/new" className="inline-block px-5 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: "#065F46" }}>
+                      <Link href="/cv-review/new" className="inline-block px-5 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: "hsl(var(--primary))" }}>
                         Get more reviews
                       </Link>
                     )}
@@ -374,8 +374,8 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
             const qa = (msg.content as { question_answers: { question: string; answer: string }[] }).question_answers;
             return (
               <div key={msg.id} className="flex justify-end">
-                <div className="max-w-[85%] rounded-xl border p-3 space-y-2 text-xs" style={{ background: "#F0FDF4", borderColor: "#D1FAE5" }}>
-                  <p className="text-[11px] font-semibold text-[#065F46] uppercase tracking-wider">Your answers</p>
+                <div className="max-w-[85%] rounded-xl border p-3 space-y-2 text-xs" style={{ background: "hsl(var(--primary) / 0.06)", borderColor: "hsl(var(--primary) / 0.15)" }}>
+                  <p className="text-[11px] font-semibold text-primary uppercase tracking-wider">Your answers</p>
                   {qa.map((item, i) => (
                     <div key={i}>
                       <p className="font-medium text-foreground">{item.question}</p>
@@ -390,14 +390,14 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
           return (
             <div key={msg.id} className={`flex ${isUser ? "justify-end" : "justify-start"} items-end gap-2`}>
               {!isUser && (
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "#065F46" }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: "hsl(var(--primary))" }}>
                   CE
                 </div>
               )}
               <div
                 className="max-w-[75%] px-4 py-2.5 text-sm"
                 style={{
-                  background: isUser ? "#065F46" : "#F7F5F0",
+                  background: isUser ? "hsl(var(--primary))" : "#F7F5F0",
                   color: isUser ? "white" : undefined,
                   borderRadius: isUser ? "12px 0 12px 12px" : "0 12px 12px 12px",
                 }}
@@ -424,13 +424,13 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
               placeholder={hasUnansweredQuestions ? "Answer the expert's questions above first…" : "Reply to expert…"}
               rows={2}
               disabled={hasUnansweredQuestions}
-              className="flex-1 border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
               disabled={sending || !text.trim() || hasUnansweredQuestions}
               className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-50 self-end"
-              style={{ background: "#065F46" }}
+              style={{ background: "hsl(var(--primary))" }}
             >
               {sending ? "..." : "Send"}
             </button>

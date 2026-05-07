@@ -21,11 +21,11 @@ export function SignInCTA() {
   if (isLoggedIn === null || isLoggedIn) return null;
 
   return (
-    <div className="mt-10 rounded-2xl bg-[#065F46] text-white p-8 md:p-10 text-center relative overflow-hidden">
-      <div className="absolute -top-8 -right-8 h-40 w-40 rounded-full border-4 border-[#34D399]/20 pointer-events-none" />
-      <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full border-4 border-[#34D399]/15 pointer-events-none" />
+    <div className="mt-10 rounded-2xl bg-primary text-white p-8 md:p-10 text-center relative overflow-hidden">
+      <div className="absolute -top-8 -right-8 h-40 w-40 rounded-full border-4 border-accent/20 pointer-events-none" />
+      <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full border-4 border-accent/15 pointer-events-none" />
       <div className="relative z-10">
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-[#34D399]/20 px-3 py-1 text-xs font-medium text-[#34D399] mb-4">
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent mb-4">
           <Lock className="h-3 w-3" /> Match scores locked
         </div>
         <h2 className="text-xl md:text-2xl font-bold mb-2">
@@ -37,7 +37,7 @@ export function SignInCTA() {
         </p>
         <Button
           onClick={() => showSignupModal({ trigger: "jobs_cta" })}
-          className="bg-white text-[#065F46] hover:bg-white/90 font-semibold gap-2"
+          className="bg-white text-primary hover:bg-white/90 font-semibold gap-2"
         >
           Find jobs matching your CV <ArrowRight className="h-4 w-4" />
         </Button>

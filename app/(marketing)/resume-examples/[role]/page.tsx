@@ -92,7 +92,7 @@ export default async function RoleResumeExamplePage({
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-secondary/[0.06] blur-3xl" />
         <div className="relative container mx-auto px-4 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
@@ -100,7 +100,7 @@ export default async function RoleResumeExamplePage({
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl md:text-5xl leading-[1.12]">
               {role.label}{" "}
-              <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Resume Example 2026
               </span>
             </h1>
@@ -155,7 +155,7 @@ export default async function RoleResumeExamplePage({
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-xl bg-[rgba(6,95,70,0.04)] border border-[rgba(6,95,70,0.10)] p-4">
+        <div className="mt-5 rounded-xl bg-[rgba(255,94,89,0.04)] border border-[rgba(255,94,89,0.10)] p-4">
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Struggling with your own bullets?</span>{" "}
             CVEdge&apos;s AI rewriter converts weak bullets like &ldquo;Responsible for X&rdquo; into strong,
@@ -188,7 +188,7 @@ export default async function RoleResumeExamplePage({
             </span>
           ))}
         </div>
-        <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-4">
+        <div className="rounded-xl border bg-[rgba(255,94,89,0.04)] border-[rgba(255,94,89,0.10)] p-4">
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Get role-specific keywords for your exact job description.</span>{" "}
             CVEdge&apos;s Job Match tool compares your resume against any {role.label.toLowerCase()} job description
@@ -324,7 +324,7 @@ export default async function RoleResumeExamplePage({
                     <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">
                       {leaf?.headline ?? t.categorySlug.replace(/-/g, " ")}
                     </p>
-                    <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-3 py-1.5 text-xs font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
+                    <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white group-hover:bg-primary/90 transition-colors">
                       Use template
                     </span>
                   </div>
@@ -342,7 +342,7 @@ export default async function RoleResumeExamplePage({
 
       {/* Job match cross-link */}
       <div className="mx-auto max-w-3xl mb-14">
-        <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="rounded-xl border bg-[rgba(255,94,89,0.04)] border-[rgba(255,94,89,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold flex items-center gap-2">
               <Target className="h-4 w-4 text-primary" />

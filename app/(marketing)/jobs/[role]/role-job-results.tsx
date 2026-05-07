@@ -37,7 +37,7 @@ function relDate(d: string): string {
 }
 
 function avatarColor(name: string): string {
-  const c = ["#065F46", "#1E3A5F", "#7C3AED", "#B45309", "#0369A1", "#9F1239", "#4338CA", "#0E7490"];
+  const c = ["hsl(var(--primary))", "hsl(var(--secondary))", "#7C3AED", "#B45309", "#0369A1", "#9F1239", "#4338CA", "#0E7490"];
   let h = 0;
   for (let i = 0; i < name.length; i++) h = ((h << 5) - h + name.charCodeAt(i)) | 0;
   return c[Math.abs(h) % c.length];
@@ -87,7 +87,7 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
                   <p className="text-[12px] text-muted-foreground truncate mt-0.5">{company}{location ? ` · ${location}` : ""}</p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-2">
                     {contract && <span className="rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{contract}</span>}
-                    {location?.toLowerCase().includes("remote") && <span className="rounded-md bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-medium text-[#065F46]">Remote</span>}
+                    {location?.toLowerCase().includes("remote") && <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">Remote</span>}
                     {salary && <span className="rounded-md bg-[#FEF3C7]/70 px-2 py-0.5 text-[10px] font-medium text-[#92400E]">{salary}{estimated ? " est." : ""}</span>}
                     {/* Locked match */}
                     <span className="inline-flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
@@ -100,7 +100,7 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
                 <div className="hidden sm:flex items-center gap-2 shrink-0">
                   <button
                     onClick={(e) => { e.stopPropagation(); window.open(job.redirect_url, "_blank", "noopener,noreferrer"); }}
-                    className="flex items-center gap-1.5 rounded-xl bg-[#065F46] px-4 py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors"
                   >
                     Apply
                   </button>

@@ -81,7 +81,7 @@ export function MobileNav() {
                 <Settings className="h-4 w-4" /> Preferences
               </Link>
               {!isPro && (
-                <button onClick={() => { setOpen(false); openUpgradeModal("generic"); }} className="flex w-full items-center gap-2 rounded-md bg-[#065F46] px-3 py-2.5 text-sm font-semibold text-white">
+                <button onClick={() => { setOpen(false); openUpgradeModal("generic"); }} className="flex w-full items-center gap-2 rounded-md bg-primary px-3 py-2.5 text-sm font-semibold text-white">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
                   Go Pro
                 </button>

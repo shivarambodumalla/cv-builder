@@ -4,7 +4,7 @@ import type { TemplateProps } from "./classic";
 const DARK_TEXT = "#1f2937";
 const BODY_TEXT = "#374151";
 const MUTED_TEXT = "#6b7280";
-const DECOR_NAVY = "#1E3A5F";
+const DECOR_NAVY = "hsl(var(--secondary))";
 
 const SERIF_STACK =
   "'Playfair Display', 'Libre Caslon Text', Georgia, 'Times New Roman', serif";

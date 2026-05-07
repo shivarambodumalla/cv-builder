@@ -114,8 +114,8 @@ export function PreferredLocationsModal({
       <DialogContent className="rounded-2xl max-w-md p-6 shadow-lg">
         <DialogHeader className="mb-1">
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#065F46]/10">
-              <MapPin className="h-4 w-4 text-[#065F46]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+              <MapPin className="h-4 w-4 text-primary" />
             </div>
             <DialogTitle className="text-lg font-semibold">
               Where are you looking for work?
@@ -136,7 +136,7 @@ export function PreferredLocationsModal({
               {locations.map((loc, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-1 rounded-md bg-[#065F46] px-2.5 py-0.5 text-sm font-medium text-white"
+                  className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-0.5 text-sm font-medium text-white"
                 >
                   {loc}
                   <button
@@ -201,7 +201,7 @@ export function PreferredLocationsModal({
                 onClick={() => setOpenToRemote(true)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                   openToRemote
-                    ? "bg-[#065F46] text-white"
+                    ? "bg-primary text-white"
                     : "bg-background text-muted-foreground hover:bg-muted"
                 }`}
               >
@@ -212,7 +212,7 @@ export function PreferredLocationsModal({
                 onClick={() => setOpenToRemote(false)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                   !openToRemote
-                    ? "bg-[#065F46] text-white"
+                    ? "bg-primary text-white"
                     : "bg-background text-muted-foreground hover:bg-muted"
                 }`}
               >
@@ -230,7 +230,7 @@ export function PreferredLocationsModal({
             <Button
               onClick={handleSave}
               disabled={saving || (locations.length === 0 && !openToRemote)}
-              className="flex-1 bg-[#065F46] hover:bg-[#065F46]/90 text-white"
+              className="flex-1 bg-primary hover:bg-primary/90 text-white"
             >
               {saving ? (
                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>

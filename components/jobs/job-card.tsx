@@ -39,8 +39,8 @@ interface JobCardProps {
 }
 
 function matchColor(score: number) {
-  if (score >= 80) return { bg: "bg-[#DCFCE7]", text: "text-[#065F46]", border: "border-[#065F46]/20", bar: "bg-[#065F46]" };
-  if (score >= 60) return { bg: "bg-[#D1FAE5]", text: "text-[#065F46]", border: "border-[#065F46]/20", bar: "bg-[#065F46]/70" };
+  if (score >= 80) return { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20", bar: "bg-primary" };
+  if (score >= 60) return { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20", bar: "bg-primary/70" };
   if (score >= 40) return { bg: "bg-[#FEF3C7]", text: "text-[#92400E]", border: "border-[#92400E]/20", bar: "bg-[#D97706]" };
   return { bg: "bg-[#FEE2E2]", text: "text-[#991B1B]", border: "border-[#991B1B]/20", bar: "bg-[#DC2626]" };
 }
@@ -69,7 +69,7 @@ function fmtContract(t: string | null): string | null {
 }
 
 function avatarColor(name: string): string {
-  const c = ["#065F46", "#1E3A5F", "#7C3AED", "#B45309", "#0369A1", "#9F1239", "#4338CA", "#0E7490"];
+  const c = ["hsl(var(--primary))", "hsl(var(--secondary))", "#7C3AED", "#B45309", "#0369A1", "#9F1239", "#4338CA", "#0E7490"];
   let h = 0;
   for (let i = 0; i < name.length; i++) h = ((h << 5) - h + name.charCodeAt(i)) | 0;
   return c[Math.abs(h) % c.length];
@@ -147,7 +147,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
             ) : null}
             {/* Work location type */}
             {job.location?.toLowerCase().includes("remote") ? (
-              <span className="rounded-md bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-medium text-[#065F46] whitespace-nowrap">Remote</span>
+              <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary whitespace-nowrap">Remote</span>
             ) : job.location?.toLowerCase().includes("hybrid") ? (
               <span className="rounded-md bg-[#DBEAFE] px-2 py-0.5 text-[10px] font-medium text-[#1E40AF] whitespace-nowrap">Hybrid</span>
             ) : job.location ? (
@@ -177,7 +177,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
             <Heart className={`h-3.5 w-3.5 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
             {isSaved ? "Saved" : "Save"}
           </button>
-          <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1.5 rounded-xl bg-[#065F46] px-4 py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
+          <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors">
             <ExternalLink className="h-3.5 w-3.5" /> Apply
           </button>
           {isExpired && onRemove && <button onClick={() => onRemove(job.id)} className="text-xs text-muted-foreground hover:text-error px-2">Remove</button>}
@@ -203,7 +203,7 @@ export function JobCard({ job, onSave, onUnsave, isSaved = false, showMatchScore
           <Heart className={`h-3 w-3 ${isSaved ? "fill-rose-500 text-rose-500" : ""}`} />
           {isSaved ? "Saved" : "Save"}
         </button>
-        <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1 rounded-lg bg-[#065F46] px-3 py-1.5 text-[11px] font-semibold text-white">
+        <button data-testid="apply-btn" onClick={apply} className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-[11px] font-semibold text-white">
           <ExternalLink className="h-3 w-3" /> Apply
         </button>
         {isExpired && onRemove && <button onClick={() => onRemove(job.id)} className="text-xs text-muted-foreground hover:text-error px-2">Remove</button>}

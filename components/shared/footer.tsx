@@ -53,9 +53,9 @@ const legalLinks = [
 /* ─── Component ─── */
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[#1a2e1e] text-[#c7d8ca] dark:bg-[#0c1612] dark:text-[#8fa89a]">
+    <footer className="relative overflow-hidden bg-[#18181b] text-zinc-300 dark:bg-[#09090b] dark:text-zinc-400">
       {/* Top gradient accent line */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#1a7a6d] to-transparent" />
+      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-primary to-transparent" />
 
       <div className="container mx-auto px-6 pt-14 pb-8">
         {/* Main grid */}
@@ -66,7 +66,7 @@ export function Footer() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/img/cvEdge_logo_dark.svg" alt="CVEdge logo" title="CVEdge — Free ATS Resume Scanner" className="h-7 opacity-90 group-hover:opacity-100 transition-opacity" />
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-[#8fa89a] dark:text-[#6a8575] max-w-xs">
+            <p className="mt-4 text-sm leading-relaxed text-zinc-400 dark:text-zinc-500 max-w-xs">
               Your CV, your edge. Craft beautiful, ATS-optimised resumes that
               land interviews.
             </p>
@@ -80,7 +80,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="group flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 text-[#8fa89a] transition-all duration-300 hover:bg-[#1a7a6d] hover:text-white hover:scale-110 hover:shadow-[0_0_20px_rgba(26,122,109,0.3)]"
+                  className="group flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 text-zinc-400 transition-all duration-300 hover:bg-primary hover:text-white hover:scale-110 hover:shadow-[0_0_20px_rgba(255,94,89,0.3)]"
                 >
                   <social.Icon className="h-4 w-4" />
                 </a>
@@ -90,7 +90,7 @@ export function Footer() {
 
           {/* Product column */}
           <div>
-            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#4a9e8e]">
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#ff7f7b]">
               Product
             </h4>
             <ul className="space-y-3">
@@ -101,7 +101,7 @@ export function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-1 text-sm text-[#8fa89a] transition-colors duration-200 hover:text-white"
+                      className="group inline-flex items-center gap-1 text-sm text-zinc-400 transition-colors duration-200 hover:text-white"
                     >
                       {link.label}
                       <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0" />
@@ -109,7 +109,7 @@ export function Footer() {
                   ) : (
                     <Link
                       href={link.href}
-                      className="text-sm text-[#8fa89a] transition-colors duration-200 hover:text-white"
+                      className="text-sm text-zinc-400 transition-colors duration-200 hover:text-white"
                     >
                       {link.label}
                     </Link>
@@ -121,7 +121,7 @@ export function Footer() {
 
           {/* Legal column */}
           <div>
-            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#4a9e8e]">
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#ff7f7b]">
               Legal
             </h4>
             <ul className="space-y-3">
@@ -129,7 +129,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#8fa89a] transition-colors duration-200 hover:text-white"
+                    className="text-sm text-zinc-400 transition-colors duration-200 hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -140,20 +140,20 @@ export function Footer() {
 
           {/* Contact / CTA column */}
           <div>
-            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#4a9e8e]">
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#ff7f7b]">
               Get in Touch
             </h4>
             <a
               href="mailto:hello@thecvedge.com"
-              className="group inline-flex items-center gap-2 text-sm text-[#8fa89a] transition-colors duration-200 hover:text-white"
+              className="group inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors duration-200 hover:text-white"
             >
-              <Mail className="h-4 w-4 text-[#1a7a6d]" />
+              <Mail className="h-4 w-4 text-primary" />
               hello@thecvedge.com
             </a>
             <div className="mt-6">
               <Link
                 href="/upload-resume"
-                className="inline-flex items-center gap-2 rounded-lg bg-[#1a7a6d] px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-[#1f8f80] hover:shadow-[0_0_24px_rgba(26,122,109,0.35)] hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-primary/90 hover:shadow-[0_0_24px_rgba(255,94,89,0.35)] hover:scale-[1.02] active:scale-[0.98]"
               >
                 Upload Resume
                 <ArrowUpRight className="h-4 w-4" />
@@ -166,23 +166,23 @@ export function Footer() {
         <div className="mt-12 border-t border-white/10 pt-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             {/* Copyright */}
-            <p className="text-xs text-[#6a8575] dark:text-[#4a6555]">
+            <p className="text-xs text-zinc-500 dark:text-zinc-600">
               &copy; {new Date().getFullYear()} CVEdge. All rights reserved.
             </p>
 
             {/* Powered by badges */}
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-              <span className="text-[11px] text-[#4a6555]">Powered by</span>
+              <span className="text-[11px] text-zinc-600">Powered by</span>
               {["Supabase", "Vercel"].map((t) => (
                 <span
                   key={t}
-                  className="rounded-md border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] text-[#6a8575] transition-colors duration-200 hover:border-[#1a7a6d]/40 hover:text-[#8fa89a]"
+                  className="rounded-md border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] text-zinc-500 transition-colors duration-200 hover:border-primary/40 hover:text-zinc-300"
                 >
                   {t}
                 </span>
               ))}
-              <span className="text-[11px] text-[#4a6555]">Payments by</span>
-              <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] text-[#6a8575] transition-colors duration-200 hover:border-[#1a7a6d]/40 hover:text-[#8fa89a]">
+              <span className="text-[11px] text-zinc-600">Payments by</span>
+              <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] text-zinc-500 transition-colors duration-200 hover:border-primary/40 hover:text-zinc-300">
                 Lemon Squeezy
               </span>
             </div>
@@ -191,7 +191,7 @@ export function Footer() {
       </div>
 
       {/* Subtle background glow */}
-      <div className="pointer-events-none absolute -bottom-32 left-1/2 h-64 w-[600px] -translate-x-1/2 rounded-full bg-[#1a7a6d]/10 blur-[100px]" />
+      <div className="pointer-events-none absolute -bottom-32 left-1/2 h-64 w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-[100px]" />
     </footer>
   );
 }

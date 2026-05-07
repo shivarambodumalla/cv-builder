@@ -4,7 +4,7 @@ import { BarChart3, Target, FileText } from "lucide-react";
 
 const CONFIGS = {
   ats: {
-    icon: <BarChart3 className="h-5 w-5 text-[#34D399]" />,
+    icon: <BarChart3 className="h-5 w-5 text-accent" />,
     label: "Free limit reached",
     heading: "Get your full ATS report",
     features: [
@@ -15,7 +15,7 @@ const CONFIGS = {
     ],
   },
   job_match: {
-    icon: <Target className="h-5 w-5 text-[#34D399]" />,
+    icon: <Target className="h-5 w-5 text-accent" />,
     label: "Free limit reached",
     heading: "Get your full match report",
     features: [
@@ -26,7 +26,7 @@ const CONFIGS = {
     ],
   },
   cover_letter: {
-    icon: <FileText className="h-5 w-5 text-[#34D399]" />,
+    icon: <FileText className="h-5 w-5 text-accent" />,
     label: "Free limit reached",
     heading: "Generate more cover letters",
     features: [
@@ -47,35 +47,35 @@ export function UpgradeBanner({ trigger, onUpgrade }: Props) {
   const config = CONFIGS[trigger];
 
   return (
-    <div className="relative overflow-hidden rounded-[14px] bg-[#065F46] p-6 sm:p-7">
+    <div className="relative overflow-hidden rounded-[14px] bg-gradient-to-br from-primary via-primary to-secondary p-6 sm:p-7">
       {/* Decorative rings */}
       <svg className="absolute -top-5 -right-5 opacity-[0.08] pointer-events-none" width="120" height="120" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="50" stroke="#34D399" strokeWidth="12" fill="none"/>
-        <circle cx="60" cy="60" r="35" stroke="#34D399" strokeWidth="8" fill="none"/>
+        <circle cx="60" cy="60" r="50" stroke="hsl(var(--accent))" strokeWidth="12" fill="none"/>
+        <circle cx="60" cy="60" r="35" stroke="hsl(var(--accent))" strokeWidth="8" fill="none"/>
       </svg>
 
       {/* Header */}
       <div className="relative flex items-center gap-3.5 mb-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#34D399]/20 border border-[#34D399]/35">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/20 border border-accent/35">
           {config.icon}
         </div>
         <div>
-          <p className="text-[10px] font-bold text-[#34D399] tracking-[1.2px] uppercase mb-0.5">{config.label}</p>
-          <h3 className="text-base font-bold text-[#ECFDF5] leading-tight">{config.heading}</h3>
+          <p className="text-[10px] font-bold text-accent tracking-[1.2px] uppercase mb-0.5">{config.label}</p>
+          <h3 className="text-base font-bold text-white leading-tight">{config.heading}</h3>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-[#34D399]/20 mb-3.5" />
+      <div className="h-px bg-accent/20 mb-3.5" />
 
       {/* Features grid */}
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-1.5 mb-4">
         {config.features.map((f) => (
           <div key={f} className="flex items-center gap-1.5 py-1">
-            <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#34D399]/20">
-              <span className="text-[9px] font-bold text-[#34D399]">&#10003;</span>
+            <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/20">
+              <span className="text-[9px] font-bold text-accent">&#10003;</span>
             </div>
-            <span className="text-[11px] text-[#ECFDF5]">{f}</span>
+            <span className="text-[11px] text-white">{f}</span>
           </div>
         ))}
       </div>
@@ -83,7 +83,7 @@ export function UpgradeBanner({ trigger, onUpgrade }: Props) {
       {/* CTA */}
       <button
         onClick={onUpgrade}
-        className="w-full rounded-lg bg-white py-2.5 text-[13px] font-bold text-[#065F46] hover:bg-white/90 transition-colors mb-2"
+        className="w-full rounded-lg bg-white py-2.5 text-[13px] font-bold text-primary hover:bg-white/90 transition-colors mb-2"
       >
         Upgrade to Pro
       </button>

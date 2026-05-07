@@ -87,14 +87,14 @@ export function AppPopover({
     <div className="fixed bottom-6 right-6 z-[80] w-[340px] animate-in slide-in-from-bottom-4 duration-300">
       <div className="rounded-2xl shadow-2xl overflow-hidden border">
         {/* Green header — compact */}
-        <div className="bg-[#1E3A5F] px-4 py-3 flex items-center justify-between">
+        <div className="bg-secondary px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {icon || (
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15">
                 <FileText className="h-3.5 w-3.5 text-white" />
               </div>
             )}
-            <span className="text-white text-xs font-bold">CV<span className="text-[#34D399]">Edge</span></span>
+            <span className="text-white text-xs font-bold">CV<span className="text-accent">Edge</span></span>
           </div>
           <button onClick={dismiss} className="flex h-7 w-7 items-center justify-center rounded-lg bg-black/20 text-white/70 hover:bg-black/30 hover:text-white transition-colors">
             <X className="h-3.5 w-3.5" />
@@ -108,7 +108,7 @@ export function AppPopover({
 
           <button
             onClick={handleAction}
-            className="w-full rounded-lg bg-[#065F46] py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors"
+            className="w-full rounded-lg bg-primary py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors"
           >
             {ctaText}
           </button>

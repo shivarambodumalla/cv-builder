@@ -22,7 +22,7 @@ const PAGE_EVENTS = /^opened /i;
 function eventColor(event: string): string {
   if (LIMIT_EVENTS.test(event)) return "#DC2626";
   if (UPGRADE_EVENTS.test(event)) return "#F59E0B";
-  if (ATS_EVENTS.test(event)) return "#065F46";
+  if (ATS_EVENTS.test(event)) return "hsl(var(--primary))";
   if (JOB_EVENTS.test(event)) return "#2563EB";
   if (CV_EVENTS.test(event)) return "#7C3AED";
   if (PAGE_EVENTS.test(event)) return "#9CA3AF";

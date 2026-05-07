@@ -15,8 +15,8 @@ export function BrowseRoles({ currentSlug }: { currentSlug?: string }) {
               href={`/jobs/${role.slug}`}
               className={`rounded-full px-4 py-2 text-xs font-medium transition-all ${
                 role.slug === currentSlug
-                  ? "bg-[#065F46] text-white border border-[#065F46]"
-                  : "bg-[#065F46]/10 text-[#065F46] border border-[#065F46]/20 hover:bg-[#065F46] hover:text-white hover:border-[#065F46] dark:text-primary dark:border-primary/20 dark:hover:bg-primary dark:hover:text-primary-foreground"
+                  ? "bg-primary text-white border border-primary"
+                  : "bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white hover:border-primary dark:text-primary dark:border-primary/20 dark:hover:bg-primary dark:hover:text-primary-foreground"
               }`}
             >
               {role.label}
@@ -39,7 +39,7 @@ export function BrowseRoles({ currentSlug }: { currentSlug?: string }) {
                     href={`/jobs/${role.slug}`}
                     className={`transition-colors ${
                       role.slug === currentSlug
-                        ? "font-semibold text-[#065F46] dark:text-primary"
+                        ? "font-semibold text-primary dark:text-primary"
                         : "text-muted-foreground hover:text-foreground hover:underline"
                     }`}
                   >

@@ -83,7 +83,7 @@ export function JobSearchForm({ defaultQuery, defaultLocation }: JobSearchFormPr
         )}
       </div>
 
-      <button type="submit" className="h-12 px-6 rounded-xl bg-[#065F46] hover:bg-[#065F46]/90 text-white font-semibold text-sm shrink-0 transition-colors">
+      <button type="submit" className="h-12 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shrink-0 transition-colors">
         Search
       </button>
     </form>

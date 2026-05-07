@@ -145,7 +145,7 @@ export function FunnelDashboard() {
                 return [
                   { label: "Visitors", count: topOfFunnel, color: "bg-purple-500" },
                   { label: "Signups", count: signups, color: "bg-blue-500" },
-                  { label: "CV Created", count: cvsCreated, color: "bg-[#065F46]" },
+                  { label: "CV Created", count: cvsCreated, color: "bg-primary" },
                   { label: "ATS Scanned", count: data.engagement.find(s => s.key === "ats_scanned")?.count ?? 0, color: "bg-emerald-500" },
                   { label: "Downloaded", count: downloads, color: "bg-teal-500" },
                   { label: "Upgraded", count: upgraded, color: "bg-amber-500" },
@@ -245,7 +245,7 @@ export function FunnelDashboard() {
           {/* ── 2b. JOBS FUNNEL ── */}
           <div className="rounded-xl border p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Briefcase className="h-4 w-4 text-[#065F46]" />
+              <Briefcase className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">Jobs Funnel</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -257,7 +257,7 @@ export function FunnelDashboard() {
                     <p className="text-[11px] text-muted-foreground">{step.label}</p>
                     <p className="text-lg font-bold tabular-nums mt-0.5">{step.count.toLocaleString()}</p>
                     {i > 0 && prev > 0 && (
-                      <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-[#065F46]" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
+                      <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-primary" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
                         {fp(convPct)} from prev
                       </p>
                     )}
@@ -321,7 +321,7 @@ export function FunnelDashboard() {
             {/* Right: Authenticated page usage */}
             <div className="rounded-xl border p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Users className="h-4 w-4 text-[#065F46]" />
+                <Users className="h-4 w-4 text-primary" />
                 <h2 className="text-sm font-semibold">Authenticated page usage</h2>
               </div>
               <div className="space-y-2">
@@ -332,7 +332,7 @@ export function FunnelDashboard() {
                     <div key={pv.path} className="flex items-center gap-3">
                       <span className="text-xs font-medium w-28 truncate">{pv.label}</span>
                       <div className="flex-1 h-5 rounded bg-muted/50 overflow-hidden relative">
-                        <div className="h-full rounded bg-[#065F46]/20" style={{ width: `${barW}%` }} />
+                        <div className="h-full rounded bg-primary/20" style={{ width: `${barW}%` }} />
                         <span className="absolute inset-y-0 left-2 flex items-center text-[10px] font-bold tabular-nums">{pv.count.toLocaleString()}</span>
                       </div>
                       <span className="text-[10px] text-muted-foreground tabular-nums w-10 text-right">{signups > 0 ? fp(p(pv.count, signups)) : "—"}</span>
@@ -455,7 +455,7 @@ export function FunnelDashboard() {
           {/* ── 5. FUNNEL STAGES (detailed) ── */}
           <FunnelSection title="Awareness" desc="Anonymous visitors on public pages" stages={data.awareness} base={awarenessBase} accent="bg-purple-500" />
           <FunnelSection title="Acquisition" desc="Post-signup first actions" stages={data.acquisition} base={signups} accent="bg-blue-500" />
-          <FunnelSection title="Engagement" desc="Feature adoption depth" stages={data.engagement} base={signups} accent="bg-[#065F46]" />
+          <FunnelSection title="Engagement" desc="Feature adoption depth" stages={data.engagement} base={signups} accent="bg-primary" />
           <FunnelSection title="Conversion" desc="Path to paid" stages={data.conversion} base={signups} accent="bg-amber-500" />
 
           {/* ── 6. ACTIONABLE RECOMMENDATIONS ── */}

@@ -47,7 +47,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 const CATEGORY_LABELS = { signup_modal: "Signup Modals", popover: "Bottom-Right Popovers", inline: "Inline Nudges" };
-const CATEGORY_COLORS = { signup_modal: "bg-[#065F46] text-white", popover: "bg-primary/10 text-primary", inline: "bg-muted text-muted-foreground" };
+const CATEGORY_COLORS = { signup_modal: "bg-primary text-white", popover: "bg-primary/10 text-primary", inline: "bg-muted text-muted-foreground" };
 const CATEGORY_DESCS = {
   signup_modal: "Full-screen modals for anonymous visitors — drive signups",
   popover: "Non-blocking bottom-right cards for authenticated users — green header + beige body",
@@ -89,7 +89,7 @@ export function PopupAudit() {
           <div key={cat} className="rounded-xl border overflow-hidden">
             <div className="border-b px-4 py-3 bg-muted/20">
               <div className="flex items-center gap-2">
-                <span className={cn("h-2.5 w-2.5 rounded-full", cat === "signup_modal" ? "bg-[#065F46]" : cat === "popover" ? "bg-primary" : "bg-muted-foreground")} />
+                <span className={cn("h-2.5 w-2.5 rounded-full", cat === "signup_modal" ? "bg-primary" : cat === "popover" ? "bg-primary" : "bg-muted-foreground")} />
                 <h2 className="text-sm font-semibold">{CATEGORY_LABELS[cat]} ({items.length})</h2>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">{CATEGORY_DESCS[cat]}</p>
@@ -145,7 +145,7 @@ export function PopupAudit() {
         <div className="fixed bottom-6 right-6 z-[80] w-[340px] animate-in slide-in-from-bottom-4 duration-300">
           <div className="rounded-2xl shadow-2xl overflow-hidden border">
             {/* Green header */}
-            <div className="bg-[#065F46] px-4 py-3 flex items-center justify-between">
+            <div className="bg-primary px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {(() => {
                   const Icon = ICON_MAP[previewPopover.previewIcon || ""] || FileText;
@@ -155,7 +155,7 @@ export function PopupAudit() {
                     </div>
                   );
                 })()}
-                <span className="text-white text-xs font-bold">CV<span className="text-[#34D399]">Edge</span></span>
+                <span className="text-white text-xs font-bold">CV<span className="text-accent">Edge</span></span>
               </div>
               <button onClick={() => setPreviewPopover(null)} className="flex h-7 w-7 items-center justify-center rounded-lg bg-black/20 text-white/70 hover:bg-black/30 hover:text-white transition-colors">
                 <X className="h-3.5 w-3.5" />
@@ -165,7 +165,7 @@ export function PopupAudit() {
             <div className="bg-[#F5F0E8] dark:bg-card px-4 py-4">
               <h3 className="text-sm font-semibold mb-1">{previewPopover.previewTitle}</h3>
               <p className="text-xs text-muted-foreground mb-4">{previewPopover.previewSubtitle}</p>
-              <button className="w-full rounded-lg bg-[#065F46] py-2 text-xs font-semibold text-white hover:bg-[#065F46]/90 transition-colors">
+              <button className="w-full rounded-lg bg-primary py-2 text-xs font-semibold text-white hover:bg-primary/90 transition-colors">
                 {previewPopover.previewCta}
               </button>
               <button onClick={() => setPreviewPopover(null)} className="block w-full text-center text-[11px] text-muted-foreground mt-2 hover:text-foreground transition-colors">

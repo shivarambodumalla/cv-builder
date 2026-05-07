@@ -11,15 +11,15 @@ export function HelloBar() {
   return (
     <div
       className="relative flex items-center justify-center px-10 py-3 text-sm font-medium text-white"
-      style={{ background: "#1E3A5F" }}
+      style={{ background: "hsl(var(--secondary))" }}
     >
       <div className="flex items-center gap-2.5 text-center">
-        <Sparkles className="shrink-0 text-[#34D399]" size={16} />
+        <Sparkles className="shrink-0 text-accent" size={16} />
         <p className="leading-snug">
           Review by Experts — human feedback on your CV in 24 hours.{" "}
           <Link
             href="/cv-review"
-            className="inline-flex items-center gap-1 font-semibold text-[#34D399] hover:opacity-80 transition-opacity"
+            className="inline-flex items-center gap-1 font-semibold text-accent hover:opacity-80 transition-opacity"
           >
             Explore now
             <span aria-hidden>→</span>

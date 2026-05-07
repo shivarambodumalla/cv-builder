@@ -223,13 +223,13 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
     );
   }
 
-  const cardClass = "bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 cursor-pointer transition-colors hover:border-[rgba(6,95,70,0.35)]";
+  const cardClass = "bg-[#F7F5F0] border border-[rgba(255,94,89,0.15)] rounded-xl p-4 cursor-pointer transition-colors hover:border-[rgba(255,94,89,0.35)]";
 
   return (
     <div className="space-y-8">
       {/* Pro banner — only when a free limit is reached */}
       {!isPro && limitReached && (
-        <div className="relative overflow-hidden rounded-2xl border border-[#065F46]/20 bg-[#065F46] p-6 sm:p-8">
+        <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary p-6 sm:p-8">
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/4" />
           <div className="relative flex flex-col sm:flex-row sm:items-center gap-5">
@@ -250,7 +250,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
             <Button
               variant="secondary"
               size="lg"
-              className="shrink-0 sm:self-center bg-white text-[#065F46] hover:bg-white/90 font-semibold h-11 px-6"
+              className="shrink-0 sm:self-center bg-white text-primary hover:bg-white/90 font-semibold h-11 px-6"
               onClick={() => openUpgradeModal("generic")}
             >
               <Crown className="mr-1.5 h-4 w-4" /> Go Pro
@@ -300,14 +300,14 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
               <div className="border border-[#E0D8CC] rounded-lg overflow-hidden flex">
                 <button
                   type="button"
-                  className={`w-[34px] h-[34px] p-0 flex items-center justify-center transition-colors ${view === "list" ? "bg-[#065F46] text-white" : "bg-white text-[#78716C]"}`}
+                  className={`w-[34px] h-[34px] p-0 flex items-center justify-center transition-colors ${view === "list" ? "bg-primary text-white" : "bg-white text-[#78716C]"}`}
                   onClick={() => toggleView("list")}
                 >
                   <List size={15} />
                 </button>
                 <button
                   type="button"
-                  className={`w-[34px] h-[34px] p-0 flex items-center justify-center transition-colors ${view === "grid" ? "bg-[#065F46] text-white" : "bg-white text-[#78716C]"}`}
+                  className={`w-[34px] h-[34px] p-0 flex items-center justify-center transition-colors ${view === "grid" ? "bg-primary text-white" : "bg-white text-[#78716C]"}`}
                   onClick={() => toggleView("grid")}
                 >
                   <LayoutGrid size={15} />
@@ -362,7 +362,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
                       <span className="text-[#9CA3AF] text-[11px]">{formatDate(cv.created_at)}</span>
                     </div>
 
-                    <Separator className="bg-[rgba(6,95,70,0.10)] my-2.5" />
+                    <Separator className="bg-[rgba(255,94,89,0.10)] my-2.5" />
 
                     {/* Chips */}
                     <ChipsRow atsScore={atsScore} matchScore={matchScore} hasCoverLetter={hasCoverLetter} />
@@ -399,7 +399,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
                       </div>
 
                       {/* Vertical divider */}
-                      <Separator orientation="vertical" className="hidden sm:block h-9 bg-[rgba(6,95,70,0.12)]" />
+                      <Separator orientation="vertical" className="hidden sm:block h-9 bg-[rgba(255,94,89,0.12)]" />
 
                       {/* Chips */}
                       <div className="flex flex-wrap gap-1.5 items-center">
@@ -420,41 +420,41 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
       {cvs.length === 0 && (
         <div className="flex items-center justify-center py-4 sm:py-8">
           <div className="relative overflow-hidden rounded-2xl border shadow-sm max-w-xl w-full">
-            <div className="h-1 bg-gradient-to-r from-[#065F46] via-[#34D399] to-[#065F46]" />
+            <div className="h-1 bg-gradient-to-r from-primary via-accent to-primary" />
 
             <div className="px-6 pt-6 pb-7 sm:px-10 sm:pt-8 sm:pb-9">
               <div className="flex flex-col items-center gap-5">
                 {/* Illustration */}
-                <div className="rounded-xl bg-[#F0EDE6] dark:bg-[#065F46]/10 px-4 py-3 flex items-center justify-center">
+                <div className="rounded-xl bg-[#F0EDE6] dark:bg-primary/10 px-4 py-3 flex items-center justify-center">
                   <svg width="230" height="170" viewBox="0 0 270 205" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="20" y="20" width="118" height="165" rx="10" fill="#F7F5F0" stroke="rgba(6,95,70,0.15)" strokeWidth="1"/>
-                    <rect x="20" y="20" width="118" height="38" rx="10" fill="#065F46"/>
-                    <rect x="20" y="46" width="118" height="12" fill="#065F46"/>
+                    <rect x="20" y="20" width="118" height="165" rx="10" fill="#F7F5F0" stroke="rgba(255,94,89,0.15)" strokeWidth="1"/>
+                    <rect x="20" y="20" width="118" height="38" rx="10" fill="hsl(var(--primary))"/>
+                    <rect x="20" y="46" width="118" height="12" fill="hsl(var(--primary))"/>
                     <circle cx="45" cy="39" r="11" fill="rgba(255,255,255,0.15)"/>
                     <rect x="63" y="32" width="50" height="5" rx="2.5" fill="rgba(255,255,255,0.6)"/>
                     <rect x="63" y="42" width="35" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
-                    <rect x="32" y="70" width="90" height="4" rx="2" fill="rgba(6,95,70,0.15)"/>
-                    <rect x="32" y="80" width="74" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
-                    <rect x="32" y="90" width="82" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
-                    <rect x="32" y="106" width="90" height="4" rx="2" fill="rgba(6,95,70,0.15)"/>
-                    <rect x="32" y="116" width="62" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
-                    <rect x="32" y="126" width="78" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
-                    <rect x="32" y="142" width="90" height="4" rx="2" fill="rgba(6,95,70,0.15)"/>
-                    <rect x="32" y="152" width="54" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
-                    <rect x="32" y="162" width="70" height="4" rx="2" fill="rgba(6,95,70,0.1)"/>
-                    <rect x="148" y="44" width="102" height="104" rx="12" fill="#fff" stroke="rgba(6,95,70,0.15)" strokeWidth="1"/>
-                    <circle cx="199" cy="84" r="27" fill="none" stroke="rgba(6,95,70,0.07)" strokeWidth="6"/>
-                    <circle cx="199" cy="84" r="27" fill="none" stroke="#065F46" strokeWidth="6" strokeDasharray="170" strokeDashoffset="14" strokeLinecap="round" transform="rotate(-90 199 84)"/>
-                    <text x="199" y="89" textAnchor="middle" fontSize="16" fontWeight="600" fill="#065F46" fontFamily="system-ui">92</text>
+                    <rect x="32" y="70" width="90" height="4" rx="2" fill="rgba(255,94,89,0.15)"/>
+                    <rect x="32" y="80" width="74" height="4" rx="2" fill="rgba(255,94,89,0.1)"/>
+                    <rect x="32" y="90" width="82" height="4" rx="2" fill="rgba(255,94,89,0.1)"/>
+                    <rect x="32" y="106" width="90" height="4" rx="2" fill="rgba(255,94,89,0.15)"/>
+                    <rect x="32" y="116" width="62" height="4" rx="2" fill="rgba(255,94,89,0.1)"/>
+                    <rect x="32" y="126" width="78" height="4" rx="2" fill="rgba(255,94,89,0.1)"/>
+                    <rect x="32" y="142" width="90" height="4" rx="2" fill="rgba(255,94,89,0.15)"/>
+                    <rect x="32" y="152" width="54" height="4" rx="2" fill="rgba(255,94,89,0.1)"/>
+                    <rect x="32" y="162" width="70" height="4" rx="2" fill="rgba(255,94,89,0.1)"/>
+                    <rect x="148" y="44" width="102" height="104" rx="12" fill="#fff" stroke="rgba(255,94,89,0.15)" strokeWidth="1"/>
+                    <circle cx="199" cy="84" r="27" fill="none" stroke="rgba(255,94,89,0.07)" strokeWidth="6"/>
+                    <circle cx="199" cy="84" r="27" fill="none" stroke="hsl(var(--primary))" strokeWidth="6" strokeDasharray="170" strokeDashoffset="14" strokeLinecap="round" transform="rotate(-90 199 84)"/>
+                    <text x="199" y="89" textAnchor="middle" fontSize="16" fontWeight="600" fill="hsl(var(--primary))" fontFamily="system-ui">92</text>
                     <text x="199" y="134" textAnchor="middle" fontSize="8" fill="#78716C" fontFamily="system-ui">ATS Score</text>
-                    <rect x="148" y="158" width="56" height="17" rx="8.5" fill="#D1FAE5"/>
-                    <text x="176" y="170" textAnchor="middle" fontSize="7.5" fill="#065F46" fontFamily="system-ui" fontWeight="500">Leadership</text>
-                    <rect x="210" y="158" width="40" height="17" rx="8.5" fill="#D1FAE5"/>
-                    <text x="230" y="170" textAnchor="middle" fontSize="7.5" fill="#065F46" fontFamily="system-ui" fontWeight="500">Design</text>
+                    <rect x="148" y="158" width="56" height="17" rx="8.5" fill="hsl(var(--primary) / 0.12)"/>
+                    <text x="176" y="170" textAnchor="middle" fontSize="7.5" fill="hsl(var(--primary))" fontFamily="system-ui" fontWeight="500">Leadership</text>
+                    <rect x="210" y="158" width="40" height="17" rx="8.5" fill="hsl(var(--primary) / 0.12)"/>
+                    <text x="230" y="170" textAnchor="middle" fontSize="7.5" fill="hsl(var(--primary))" fontFamily="system-ui" fontWeight="500">Design</text>
                     <rect x="148" y="180" width="44" height="17" rx="8.5" fill="#FEE2E2"/>
                     <text x="170" y="192" textAnchor="middle" fontSize="7.5" fill="#991B1B" fontFamily="system-ui" fontWeight="500">Missing</text>
-                    <rect x="198" y="180" width="52" height="17" rx="8.5" fill="#D1FAE5"/>
-                    <text x="224" y="192" textAnchor="middle" fontSize="7.5" fill="#065F46" fontFamily="system-ui" fontWeight="500">Strategy</text>
+                    <rect x="198" y="180" width="52" height="17" rx="8.5" fill="hsl(var(--primary) / 0.12)"/>
+                    <text x="224" y="192" textAnchor="middle" fontSize="7.5" fill="hsl(var(--primary))" fontFamily="system-ui" fontWeight="500">Strategy</text>
                   </svg>
                 </div>
 
@@ -476,7 +476,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
                     ].map((step, i) => (
                       <div key={step.num} className="flex items-center gap-1.5">
                         {i > 0 && <span className="text-muted-foreground/30 -ml-3 mr-1">{">"}</span>}
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#065F46] text-[9px] font-bold text-white">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-white">
                           {step.num}
                         </span>
                         <span className="text-xs text-muted-foreground">{step.text}</span>
@@ -487,7 +487,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
                   <Link
                     href="/upload-resume"
                     data-testid="btn-create-resume"
-                    className="inline-flex items-center justify-center rounded-lg bg-[#065F46] px-7 py-2.5 text-sm font-semibold text-white hover:bg-[#065F46]/90 transition-all hover:shadow-lg gap-2"
+                    className="inline-flex items-center justify-center rounded-lg bg-primary px-7 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-all hover:shadow-lg gap-2"
                   >
                     Upload CV
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

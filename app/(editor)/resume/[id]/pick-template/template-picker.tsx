@@ -224,9 +224,9 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                           className={cn(
                             "rounded-full px-1.5 py-0.5 text-[9px] font-bold",
                             tag === "Popular"
-                              ? "bg-[#065F46] text-white"
+                              ? "bg-primary text-white"
                               : tag === "Pro"
-                              ? "bg-[#1E3A5F] text-white"
+                              ? "bg-secondary text-white"
                               : "bg-muted text-muted-foreground"
                           )}
                         >
@@ -245,7 +245,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                         "mt-2 inline-flex w-full items-center justify-center rounded-lg px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold transition-colors",
                         isSelecting
                           ? "bg-primary/60 text-primary-foreground"
-                          : "bg-[#065F46] text-white group-hover:bg-[#065F46]/90"
+                          : "bg-primary text-white group-hover:bg-primary/90"
                       )}
                     >
                       {isSelecting ? (

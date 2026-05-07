@@ -166,9 +166,9 @@ export function SettingsContent({
       <section className="rounded-xl border p-5 sm:p-6 mb-6">
         <h2 className="text-base font-semibold mb-4">Profile</h2>
         <div className="flex items-center gap-4">
-          <Avatar className="h-14 w-14 bg-[#065F46]">
+          <Avatar className="h-14 w-14 bg-primary">
             {avatarUrl && <AvatarImage src={avatarUrl} alt={fullName} className="object-cover" />}
-            <AvatarFallback className="bg-[#065F46] text-white text-lg font-bold">{initials}</AvatarFallback>
+            <AvatarFallback className="bg-primary text-white text-lg font-bold">{initials}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground">{fullName || "No name set"}</p>
@@ -180,7 +180,7 @@ export function SettingsContent({
           </div>
           <div className="hidden sm:block shrink-0">
             {isPro ? (
-              <span className="rounded-full bg-[#065F46] px-3 py-1 text-[11px] font-bold text-white">Pro{period ? ` \u00b7 ${period}` : ""}</span>
+              <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold text-white">Pro{period ? ` \u00b7 ${period}` : ""}</span>
             ) : (
               <span className="rounded-full bg-muted px-3 py-1 text-[11px] font-medium text-muted-foreground">Free</span>
             )}
@@ -200,7 +200,7 @@ export function SettingsContent({
           >
             <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
             {locations.map((loc, i) => (
-              <span key={i} className="inline-flex items-center gap-1 rounded-full bg-[#065F46] px-2.5 py-0.5 text-xs font-medium text-white">
+              <span key={i} className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-white">
                 {loc}
                 <button type="button" onClick={(e) => { e.stopPropagation(); removeLocation(i); }} className="ml-0.5 opacity-70 hover:opacity-100">
                   <X className="h-3 w-3" />
@@ -252,10 +252,10 @@ export function SettingsContent({
             <p className="text-xs text-muted-foreground mt-0.5">Include remote jobs in your matches</p>
           </div>
           <div className="flex rounded-lg border overflow-hidden">
-            <button type="button" onClick={() => { setOpenToRemote(true); setSaved(false); }} className={`px-3 py-1.5 text-xs font-medium transition-colors ${openToRemote ? "bg-[#065F46] text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}>
+            <button type="button" onClick={() => { setOpenToRemote(true); setSaved(false); }} className={`px-3 py-1.5 text-xs font-medium transition-colors ${openToRemote ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}>
               Yes
             </button>
-            <button type="button" onClick={() => { setOpenToRemote(false); setSaved(false); }} className={`px-3 py-1.5 text-xs font-medium transition-colors ${!openToRemote ? "bg-[#065F46] text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}>
+            <button type="button" onClick={() => { setOpenToRemote(false); setSaved(false); }} className={`px-3 py-1.5 text-xs font-medium transition-colors ${!openToRemote ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}>
               No
             </button>
           </div>
@@ -263,7 +263,7 @@ export function SettingsContent({
 
         {error && <p className="text-sm text-error mb-3">{error}</p>}
 
-        <Button onClick={handleSaveLocations} disabled={saving} className="bg-[#065F46] hover:bg-[#065F46]/90 text-white">
+        <Button onClick={handleSaveLocations} disabled={saving} className="bg-primary hover:bg-primary/90 text-white">
           {saving ? (
             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
           ) : saved ? (
@@ -299,7 +299,7 @@ export function SettingsContent({
                 onClick={() => toggleEmailPref(row.key)}
                 className={cn(
                   "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors",
-                  emailPrefs[row.key] ? "bg-[#065F46]" : "bg-muted",
+                  emailPrefs[row.key] ? "bg-primary" : "bg-muted",
                   emailPrefSaving === row.key && "opacity-60"
                 )}
               >

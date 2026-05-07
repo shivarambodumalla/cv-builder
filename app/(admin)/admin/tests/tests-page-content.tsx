@@ -58,7 +58,7 @@ function formatDuration(ms: number): string {
 }
 
 function statusColor(status: string): string {
-  if (status === "passed") return "#065F46";
+  if (status === "passed") return "hsl(var(--primary))";
   if (status === "failed") return "#DC2626";
   return "#F59E0B";
 }
@@ -126,7 +126,7 @@ export function TestsPageContent({
             }`}
             style={
               activeTab === tab
-                ? { backgroundColor: "#065F46" }
+                ? { backgroundColor: "hsl(var(--primary))" }
                 : { borderColor: "#E0D8CC" }
             }
           >
@@ -145,7 +145,7 @@ export function TestsPageContent({
           )}
           {Object.entries(suiteGroups).map(([suite, cases]) => (
             <div key={suite}>
-              <h2 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: "#065F46" }}>
+              <h2 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: "hsl(var(--primary))" }}>
                 {suite}
               </h2>
               <div className="rounded-lg border bg-white overflow-hidden" style={{ borderColor: "#E0D8CC" }}>
@@ -169,7 +169,7 @@ export function TestsPageContent({
                         </td>
                         <td className="px-4 py-3">
                           {tc.is_active ? (
-                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ backgroundColor: "#065F46" }}>Active</span>
+                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ backgroundColor: "hsl(var(--primary))" }}>Active</span>
                           ) : (
                             <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-gray-200 text-gray-600">Inactive</span>
                           )}
@@ -225,7 +225,7 @@ export function TestsPageContent({
                 </div>
                 <div className="flex items-center gap-4 flex-shrink-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ backgroundColor: "#065F46" }}>
+                    <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style={{ backgroundColor: "hsl(var(--primary))" }}>
                       {run.passed} passed
                     </span>
                     {run.failed > 0 && (
@@ -313,7 +313,7 @@ export function TestsPageContent({
             </div>
 
             <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving} className="flex-1" style={{ backgroundColor: "#065F46" }}>
+              <Button onClick={handleSave} disabled={saving} className="flex-1" style={{ backgroundColor: "hsl(var(--primary))" }}>
                 {saving ? "Saving..." : "Save Changes"}
               </Button>
               <Button variant="outline" onClick={() => setEditingCase(null)} className="flex-1">

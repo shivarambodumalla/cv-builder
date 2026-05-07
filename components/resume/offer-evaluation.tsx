@@ -38,7 +38,7 @@ function getBarColor(score: number): string {
 }
 
 function getGradeBadgeStyle(grade: string): { background: string; color: string } {
-  if (grade === "A" || grade === "B") return { background: "#DCFCE7", color: "#065F46" };
+  if (grade === "A" || grade === "B") return { background: "hsl(var(--primary) / 0.1)", color: "hsl(var(--primary))" };
   if (grade === "C") return { background: "#FEF3C7", color: "#92400E" };
   return { background: "#FEF2F2", color: "#DC2626" };
 }

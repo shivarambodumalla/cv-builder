@@ -116,7 +116,7 @@ export default function InterviewStoriesPage() {
               <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{s.body}</p>
               <div className="mt-3 rounded-lg bg-muted p-2">
                 <p className="text-[9px] text-muted-foreground uppercase tracking-wide mb-1">{s.proofLabel}</p>
-                <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded px-1.5 text-[10px] font-medium py-0.5">{s.proofText}</span>
+                <span className="inline-block bg-primary/10 text-primary rounded px-1.5 text-[10px] font-medium py-0.5">{s.proofText}</span>
               </div>
             </div>
           ))}
@@ -145,11 +145,11 @@ export default function InterviewStoriesPage() {
         <p className="text-sm font-medium text-center text-muted-foreground mb-6">Sound familiar?</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PAIN_POINTS.map((p) => (
-            <div key={p.resolve} className="bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] rounded-xl p-4">
+            <div key={p.resolve} className="bg-[rgba(255,94,89,0.05)] border border-[rgba(255,94,89,0.10)] rounded-xl p-4">
               <p className="text-xs text-muted-foreground italic leading-relaxed mb-3">{p.quote}</p>
               <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-[#065F46] rounded-full shrink-0" />
-                <p className="text-xs font-medium text-[#065F46]">{p.resolve}</p>
+                <div className="w-1.5 h-1.5 bg-primary rounded-full shrink-0" />
+                <p className="text-xs font-medium text-primary">{p.resolve}</p>
               </div>
             </div>
           ))}

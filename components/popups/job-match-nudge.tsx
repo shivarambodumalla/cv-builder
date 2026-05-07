@@ -17,7 +17,7 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
 
   if (isStrong) {
     return (
-      <div className="relative overflow-hidden rounded-xl my-4 px-5 py-5 sm:px-6 sm:py-6 text-secondary-foreground shadow-md bg-gradient-to-br from-[#1E3A5F] to-[#2A4F7A]">
+      <div className="relative overflow-hidden rounded-xl my-4 px-5 py-5 sm:px-6 sm:py-6 text-secondary-foreground shadow-md bg-gradient-to-br from-secondary to-secondary">
         <div className="absolute -top-20 -right-20 w-56 h-56 rounded-full bg-white/[0.06] pointer-events-none" />
         <div className="absolute -bottom-24 -left-16 w-52 h-52 rounded-full bg-white/[0.04] pointer-events-none" />
 
@@ -47,7 +47,7 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
         <div className="relative flex flex-wrap items-center gap-2">
           <Link
             href={`/my-jobs?cvId=${encodeURIComponent(cvId)}`}
-            className="inline-flex items-center justify-center rounded-md bg-white text-[#1E3A5F] hover:bg-white/95 px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
+            className="inline-flex items-center justify-center rounded-md bg-white text-secondary hover:bg-white/95 px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
           >
             Find jobs for this CV
           </Link>

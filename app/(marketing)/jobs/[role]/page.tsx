@@ -119,7 +119,7 @@ export default async function RoleJobsPage({ params }: { params: Promise<{ role:
           <RoleJobResults jobs={jobs} roleTitle={role.title} />
 
           {/* Cross-link to interview prep for this role */}
-          <div className="mt-10 rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="mt-10 rounded-xl border bg-[rgba(255,94,89,0.05)] border-[rgba(255,94,89,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold">Got an interview lined up?</p>
               <p className="text-xs text-muted-foreground mt-0.5">Prep STAR stories tailored to {role.title.toLowerCase()} interviews — common questions, answer frameworks, and job-matched practice.</p>

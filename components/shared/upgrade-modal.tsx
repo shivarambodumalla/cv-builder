@@ -131,7 +131,7 @@ export function UpgradeModal() {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold">{opt.label}</span>
                         {opt.popular && (
-                          <span className="rounded-full bg-[#065F46] px-2 py-0.5 text-[10px] font-bold text-white leading-none">
+                          <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-white leading-none">
                             BEST VALUE
                           </span>
                         )}

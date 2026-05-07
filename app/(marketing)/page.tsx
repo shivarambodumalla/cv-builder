@@ -114,7 +114,7 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
         {/* Decorative gradient blobs */}
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-secondary/[0.06] blur-3xl" />
 
         <div className="relative mx-auto max-w-[1200px] px-6 pt-7 pb-6 sm:pt-10 sm:pb-8 md:pt-12 md:pb-10">
           <div className="grid gap-8 md:grid-cols-[1.5fr_1fr] md:gap-10 items-center">
@@ -123,7 +123,7 @@ export default async function HomePage() {
               <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Free ATS Resume Scanner</span>
               <h1 className="text-[2rem] sm:text-[2.75rem] md:text-[3rem] lg:text-[3.5rem] font-bold tracking-[-0.025em] leading-[1.12] break-words max-w-full">
                 Your resume isn&apos;t getting rejected.{" "}
-                <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
               </h1>
               <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
                 Get a real ATS score, fix critical issues, and start getting interview calls — in under 10 minutes.
@@ -172,7 +172,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="mx-auto max-w-[1200px] space-y-6">
             {/* Row 1 — Templates (full width) */}
-            <div className="rounded-[2rem] bg-[#1E3A5F] dark:bg-[#0f2340] border border-[#2A4F7A]/40 overflow-hidden">
+            <div className="rounded-[2rem] bg-secondary dark:bg-secondary/20 border border-secondary/40 overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2">
                 <div className="flex flex-col items-start justify-center gap-5 px-8 sm:px-12 lg:px-14 py-14 lg:py-16">
                   <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/80 uppercase tracking-wider">Templates</span>
@@ -182,7 +182,7 @@ export default async function HomePage() {
                   <p className="max-w-[380px] text-base sm:text-lg text-white/70 leading-relaxed">
                     12 ATS-optimised templates, all free. Every design passes automated filters and looks great on screen.
                   </p>
-                  <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
+                  <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium bg-white text-secondary hover:bg-white/90" asChild>
                     <Link href="/resumes">Browse templates</Link>
                   </Button>
                 </div>
@@ -220,7 +220,7 @@ export default async function HomePage() {
             {/* Row 2 — Job Search + Interview Coach (side by side) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Job Search */}
-              <div className="rounded-[2rem] bg-[#065F46] border border-[#065F46]/20 p-8 sm:p-10 flex flex-col gap-5">
+              <div className="rounded-[2rem] bg-primary border border-primary/20 p-8 sm:p-10 flex flex-col gap-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
                     <Briefcase className="h-5 w-5 text-white" />
@@ -241,20 +241,20 @@ export default async function HomePage() {
                     "Up to 5 preferred locations",
                   ].map((p) => (
                     <li key={p} className="flex items-start gap-2.5">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                       <span className="text-sm text-white/90 leading-relaxed">{p}</span>
                     </li>
                   ))}
                 </ul>
                 <div className="mt-auto pt-3">
-                  <Button className="h-11 px-7 text-sm font-medium bg-white text-[#065F46] hover:bg-white/90" asChild>
+                  <Button className="h-11 px-7 text-sm font-medium bg-white text-primary hover:bg-white/90" asChild>
                     <Link href="/jobs">Search jobs free</Link>
                   </Button>
                 </div>
               </div>
 
               {/* Interview Coach */}
-              <div className="rounded-[2rem] bg-[#1E3A5F] dark:bg-[#0f2340] border border-[#2A4F7A]/40 p-8 sm:p-10 flex flex-col gap-5">
+              <div className="rounded-[2rem] bg-secondary dark:bg-secondary/20 border border-secondary/40 p-8 sm:p-10 flex flex-col gap-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
                     <Brain className="h-5 w-5 text-white" />
@@ -275,13 +275,13 @@ export default async function HomePage() {
                     "Job-matched prep with talking points",
                   ].map((p) => (
                     <li key={p} className="flex items-start gap-2.5">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                       <span className="text-sm text-white/90 leading-relaxed">{p}</span>
                     </li>
                   ))}
                 </ul>
                 <div className="mt-auto pt-3">
-                  <Button className="h-11 px-7 text-sm font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
+                  <Button className="h-11 px-7 text-sm font-medium bg-white text-secondary hover:bg-white/90" asChild>
                     <Link href="/interview-prep">Start interview prep</Link>
                   </Button>
                 </div>
@@ -291,10 +291,10 @@ export default async function HomePage() {
             {/* Row 3 — USP Stats */}
             <div className="rounded-[2rem] overflow-hidden">
               {/* CTA banner */}
-              <div className="bg-[#065F46] px-6 py-8 sm:py-10 text-center">
+              <div className="bg-gradient-to-r from-secondary to-primary px-6 py-8 sm:py-10 text-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Land your next role faster</h2>
                 <p className="mt-1.5 text-white/70 text-sm">AI-powered resume builder and ATS scorer</p>
-                <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-[#34D399] hover:bg-[#2fc48d] text-[#065F46] shadow-md" asChild>
+                <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-white hover:bg-white/90 text-secondary shadow-md" asChild>
                   <Link href="/upload-resume">Get my free ATS score</Link>
                 </Button>
               </div>
@@ -307,7 +307,7 @@ export default async function HomePage() {
                   { icon: DollarSign, stat: "$0", title: "To start", desc: "Others charge $20\u201330/mo" },
                 ].map((s) => (
                   <div key={s.title} className="rounded-xl bg-background border border-border/50 p-4 sm:p-5 space-y-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#065F46] text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
                       <s.icon size={16} />
                     </div>
                     <p className="text-lg sm:text-xl font-bold tracking-tight">{s.stat}</p>
@@ -345,7 +345,7 @@ export default async function HomePage() {
                   title: "Upload your resume",
                   body: "Drop your PDF or paste text. AI parses every section in seconds — no manual entry needed.",
                   proofLabel: "Parsed in seconds",
-                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded-md px-2.5 py-1 text-xs font-medium">14 experiences found</span>,
+                  proof: <span className="inline-block bg-primary/10 text-primary rounded-md px-2.5 py-1 text-xs font-medium">14 experiences found</span>,
                 },
                 {
                   step: "02",
@@ -366,7 +366,7 @@ export default async function HomePage() {
                   title: "Fix and optimise",
                   body: "Apply AI suggestions with one click. Rewrite bullets, add keywords, and watch your score climb.",
                   proofLabel: "Top match for this role",
-                  proof: <p className="text-xs text-[#065F46] font-semibold truncate">#1 Improving Engagement Metrics — 94%</p>,
+                  proof: <p className="text-xs text-primary font-semibold truncate">#1 Improving Engagement Metrics — 94%</p>,
                 },
               ].map((s) => (
                 <div key={s.title} className="bg-background border border-border/60 rounded-2xl p-6 sm:p-7 flex flex-col items-start gap-3 relative z-10 shadow-sm hover:shadow-md transition-shadow">
@@ -416,7 +416,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-[1100px] rounded-[2rem] bg-[#f5f0e8] dark:bg-card border border-border/40 overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr]">
               {/* Left — Comparison table on dark green */}
-              <div className="bg-[#065F46] p-8 sm:p-10">
+              <div className="bg-gradient-to-br from-secondary to-primary p-8 sm:p-10">
                 <p className="text-xs font-semibold text-white/60 uppercase tracking-[0.2em] mb-6">How we compare</p>
                 {/* Table header */}
                 <div className="grid grid-cols-[1fr_auto_auto] gap-x-6 mb-2 pb-3 border-b border-white/15">
@@ -428,7 +428,7 @@ export default async function HomePage() {
                 {COMPARISON.map((row, i) => (
                   <div key={i} className="grid grid-cols-[1fr_auto_auto] gap-x-6 py-3.5 border-b border-white/10 last:border-b-0">
                     <p className="text-sm font-medium text-white">{row.feature}</p>
-                    <p className="text-sm font-semibold text-[#34D399] text-center w-24">{row.us.includes("Yes") ? `\u2713 ${row.us}` : row.us}</p>
+                    <p className="text-sm font-semibold text-accent text-center w-24">{row.us.includes("Yes") ? `\u2713 ${row.us}` : row.us}</p>
                     <p className="text-sm text-white/30 text-center w-20 line-through">{row.them}</p>
                   </div>
                 ))}
@@ -461,16 +461,16 @@ export default async function HomePage() {
                   </div>
 
                   {/* After */}
-                  <div className="flex-1 rounded-xl border border-[#6EE7B7] bg-background p-4 space-y-3">
-                    <p className="text-[10px] uppercase tracking-[1.5px] text-[#065F46] font-medium">After</p>
+                  <div className="flex-1 rounded-xl border border-accent bg-background p-4 space-y-3">
+                    <p className="text-[10px] uppercase tracking-[1.5px] text-primary font-medium">After</p>
                     <div className="space-y-1.5">
-                      <div className="h-2 rounded bg-[#065F46] w-[55%]" />
-                      <div className="h-1.5 rounded bg-[#34D399] w-[80%]" />
-                      <div className="h-1.5 rounded bg-[#6EE7B7] w-[65%]" />
+                      <div className="h-2 rounded bg-primary w-[55%]" />
+                      <div className="h-1.5 rounded bg-accent w-[80%]" />
+                      <div className="h-1.5 rounded bg-accent w-[65%]" />
                     </div>
                     <div className="flex items-center gap-2 pt-1">
-                      <svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="#6EE7B7" strokeWidth="3"/><circle cx="22" cy="22" r="19" stroke="#065F46" strokeWidth="3" strokeDasharray="112 120" strokeLinecap="round" transform="rotate(-90 22 22)"/><text x="22" y="25" textAnchor="middle" fill="#065F46" fontWeight="800" fontSize="13" fontFamily="system-ui">94</text></svg>
-                      <p className="text-xs font-semibold text-[#065F46]">Ready</p>
+                      <svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" stroke="hsl(var(--accent))" strokeWidth="3"/><circle cx="22" cy="22" r="19" stroke="hsl(var(--primary))" strokeWidth="3" strokeDasharray="112 120" strokeLinecap="round" transform="rotate(-90 22 22)"/><text x="22" y="25" textAnchor="middle" fill="hsl(var(--primary))" fontWeight="800" fontSize="13" fontFamily="system-ui">94</text></svg>
+                      <p className="text-xs font-semibold text-primary">Ready</p>
                     </div>
                   </div>
                 </div>
@@ -483,7 +483,7 @@ export default async function HomePage() {
                     { title: "Fully transparent scoring", desc: "See exactly why your score changed" },
                   ].map((t) => (
                     <div key={t.title} className="flex items-start gap-3 rounded-xl bg-background/60 dark:bg-muted/30 border border-border/40 px-4 py-3">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#065F46] mt-0.5">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary mt-0.5">
                         <Check className="h-4 w-4 text-white" />
                       </div>
                       <div>

@@ -44,7 +44,7 @@ function formatDuration(ms: number): string {
 
 function statusIcon(status: string) {
   if (status === "passed")
-    return <span style={{ color: "#065F46", fontWeight: 700 }}>&#10003;</span>;
+    return <span style={{ color: "hsl(var(--primary))", fontWeight: 700 }}>&#10003;</span>;
   if (status === "failed")
     return <span style={{ color: "#DC2626", fontWeight: 700 }}>&#10005;</span>;
   return <span style={{ color: "#9CA3AF", fontWeight: 700 }}>&#9675;</span>;
@@ -52,7 +52,7 @@ function statusIcon(status: string) {
 
 function statusBadgeStyle(status: string): React.CSSProperties {
   if (status === "passed")
-    return { backgroundColor: "#065F46", color: "#fff" };
+    return { backgroundColor: "hsl(var(--primary))", color: "#fff" };
   if (status === "failed")
     return { backgroundColor: "#DC2626", color: "#fff" };
   return { backgroundColor: "#F59E0B", color: "#fff" };
@@ -78,7 +78,7 @@ export function RunDetailContent({
       bg: "#F9FAFB",
       color: "#374151",
     },
-    { label: "Passed", value: run.passed, bg: "#ECFDF5", color: "#065F46" },
+    { label: "Passed", value: run.passed, bg: "white", color: "hsl(var(--primary))" },
     { label: "Failed", value: run.failed, bg: "#FEF2F2", color: "#DC2626" },
     { label: "Skipped", value: run.skipped, bg: "#F9FAFB", color: "#6B7280" },
   ];
@@ -171,7 +171,7 @@ export function RunDetailContent({
           <div key={suite}>
             <h2
               className="text-sm font-semibold uppercase tracking-wider mb-3"
-              style={{ color: "#065F46" }}
+              style={{ color: "hsl(var(--primary))" }}
             >
               {suite}
             </h2>

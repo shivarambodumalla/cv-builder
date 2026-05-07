@@ -199,7 +199,7 @@ export function Coastal({
   const resolvedAccent =
     typeof design.accentColor === "string" && design.accentColor.startsWith("#")
       ? design.accentColor
-      : "#1a7a6d";
+      : "#ff5e59";
 
   const avatarMode = design.avatarMode ?? "photo";
   const avatarShape = design.avatarShape ?? "rounded";

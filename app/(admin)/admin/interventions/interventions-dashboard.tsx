@@ -100,7 +100,7 @@ export function InterventionsDashboard() {
             const items = data.interventions.filter(i => i.category === cat);
             if (items.length === 0) return null;
             const catLabel = cat === "signup_modal" ? "Signup Modals" : cat === "popover" ? "Popovers" : "Inline Nudges";
-            const catColor = cat === "signup_modal" ? "bg-[#065F46]" : cat === "popover" ? "bg-primary" : "bg-muted-foreground";
+            const catColor = cat === "signup_modal" ? "bg-primary" : cat === "popover" ? "bg-primary" : "bg-muted-foreground";
             return (
               <div key={cat} className="rounded-xl border overflow-hidden">
                 <div className="border-b px-4 py-3 bg-muted/20 flex items-center gap-2">

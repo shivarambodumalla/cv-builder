@@ -102,7 +102,7 @@ export default async function AdminDashboardPage() {
     { label: "Page Views",      data: buildSeries(pvByDay),        hex: "#6366f1" },
     { label: "Unique Visitors", data: buildSeries(uvCountByDay),   hex: "#8b5cf6" },
     { label: "Signups",         data: buildSeries(signupsByDay),   hex: "#059669" },
-    { label: "CVs Created",     data: buildSeries(cvsByDay),       hex: "#1a7a6d" },
+    { label: "CVs Created",     data: buildSeries(cvsByDay),       hex: "hsl(var(--primary))" },
     { label: "PDF Downloads",   data: buildSeries(pdfByDay),       hex: "#d97706" },
   ].map((s) => ({
     ...s,

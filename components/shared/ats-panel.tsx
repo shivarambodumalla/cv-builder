@@ -568,7 +568,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               disabled={fixAllLoading || loading || displayScore >= 95}
               data-testid="btn-fix-all"
               style={{
-                background: "#15803d", border: "none", padding: "6px 12px",
+                background: "hsl(var(--success))", border: "none", padding: "6px 12px",
                 borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "white",
                 cursor: displayScore >= 95 ? "not-allowed" : "pointer",
                 display: "flex", alignItems: "center", gap: "5px",
@@ -824,7 +824,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               <div style={{ height: "0.5px", background: "#E0D8CC", margin: "14px 0" }} />
               <div style={{ fontSize: "9.5px", color: "#9CA3AF", textAlign: "center" }}>
                 {isEstimated ? "Estimated score \u00b7 " : ""}
-                <span onClick={handleAnalyse} style={{ color: "#15803d", fontWeight: 500, cursor: "pointer" }}>
+                <span onClick={handleAnalyse} style={{ color: "hsl(var(--success))", fontWeight: 500, cursor: "pointer" }}>
                   Re-analyse for verified score
                 </span>
               </div>

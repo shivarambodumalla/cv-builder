@@ -311,14 +311,14 @@ export function FixAllDrawer({
                         )}
                         <div
                           style={{
-                            background: "#F0FDF4",
+                            background: "hsl(var(--primary) / 0.06)",
                             padding: "8px 12px",
                             display: "flex",
                             gap: 8,
                           }}
                         >
-                          <span style={{ color: "#15803d", fontWeight: 700, flexShrink: 0 }}>+</span>
-                          <span style={{ fontSize: 12, color: "#15803d", lineHeight: 1.6 }}>
+                          <span style={{ color: "hsl(var(--success))", fontWeight: 700, flexShrink: 0 }}>+</span>
+                          <span style={{ fontSize: 12, color: "hsl(var(--success))", lineHeight: 1.6 }}>
                             {change.status === "editing" ? change.editedText : change.rewritten}
                           </span>
                         </div>
@@ -339,7 +339,7 @@ export function FixAllDrawer({
                                 style={{ fontSize: 12, minHeight: 60 }}
                               />
                               <div style={{ display: "flex", gap: 6 }}>
-                                <button onClick={() => saveEdit(change.id)} style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, border: "none", cursor: "pointer", background: "#DCFCE7", color: "#15803d", display: "flex", alignItems: "center", gap: 3 }}>
+                                <button onClick={() => saveEdit(change.id)} style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, border: "none", cursor: "pointer", background: "hsl(var(--primary) / 0.12)", color: "hsl(var(--primary))", display: "flex", alignItems: "center", gap: 3 }}>
                                   <Check size={10} /> Save
                                 </button>
                                 <button onClick={() => cancelEdit(change.id)} style={{ fontSize: 10, color: "#78716C", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}>
@@ -349,7 +349,7 @@ export function FixAllDrawer({
                             </div>
                           ) : (
                             <>
-                              <button onClick={() => toggleAccept(change.id)} style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, border: "none", cursor: "pointer", background: change.status === "accepted" ? "#DCFCE7" : "#F3F4F6", color: change.status === "accepted" ? "#15803d" : "#6B7280" }}>
+                              <button onClick={() => toggleAccept(change.id)} style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, border: "none", cursor: "pointer", background: change.status === "accepted" ? "hsl(var(--primary) / 0.12)" : "hsl(var(--muted))", color: change.status === "accepted" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))" }}>
                                 {change.status === "accepted" ? "\u2713 Accepted" : "Accept"}
                               </button>
                               <button onClick={() => reject(change.id)} style={{ fontSize: 10, color: "#78716C", background: "none", border: "none", cursor: "pointer" }}>Keep original</button>
@@ -369,7 +369,7 @@ export function FixAllDrawer({
                     <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 8 }}>+ Skills to add</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                       {result.skills_to_add.map((skill) => (
-                        <span key={skill} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 100, background: "#F0FDF4", color: "#15803d", border: "0.5px solid #BBF7D0" }}>{skill}</span>
+                        <span key={skill} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 100, background: "hsl(var(--primary) / 0.06)", color: "hsl(var(--success))", border: "0.5px solid #BBF7D0" }}>{skill}</span>
                       ))}
                     </div>
                   </div>
@@ -407,7 +407,7 @@ export function FixAllDrawer({
               data-testid="btn-accept-all"
               style={{
                 flex: 1,
-                background: "#15803d",
+                background: "hsl(var(--success))",
                 color: "white",
                 border: "none",
                 padding: 11,
@@ -425,7 +425,7 @@ export function FixAllDrawer({
               style={{
                 flex: 1,
                 background: "white",
-                color: "#15803d",
+                color: "hsl(var(--success))",
                 border: "1px solid #15803d",
                 padding: 11,
                 borderRadius: 8,

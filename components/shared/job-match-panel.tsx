@@ -427,7 +427,7 @@ export function JobMatchRightPanel({
               disabled={tailorLoading}
               data-testid="btn-tailor-cv"
               style={{
-                background: "#15803d", border: "none", padding: "6px 12px",
+                background: "hsl(var(--success))", border: "none", padding: "6px 12px",
                 borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "white",
                 cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
               }}
@@ -502,15 +502,15 @@ export function JobMatchRightPanel({
       {/* PART 3: Three stat chips */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px", marginBottom: "12px" }}>
         <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: "0.5px solid #EDE8E0" }}>
-          <div style={{ fontSize: "14px", fontWeight: 800, color: "#15803d" }}>{matchedKeywords}/{totalKeywords}</div>
+          <div style={{ fontSize: "14px", fontWeight: 800, color: "hsl(var(--success))" }}>{matchedKeywords}/{totalKeywords}</div>
           <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Keywords</div>
         </div>
         <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: missingKeywords > 0 ? "0.5px solid #FECACA" : "0.5px solid #EDE8E0" }}>
-          <div style={{ fontSize: "14px", fontWeight: 800, color: missingKeywords > 0 ? "#DC2626" : "#065F46" }}>{missingKeywords}</div>
+          <div style={{ fontSize: "14px", fontWeight: 800, color: missingKeywords > 0 ? "#DC2626" : "hsl(var(--primary))" }}>{missingKeywords}</div>
           <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Missing</div>
         </div>
         <div style={{ background: "white", borderRadius: "8px", padding: "8px 6px", textAlign: "center", border: "0.5px solid #EDE8E0" }}>
-          <div style={{ fontSize: "13px", fontWeight: 800, color: "#15803d" }}>{experienceFitLabel}</div>
+          <div style={{ fontSize: "13px", fontWeight: 800, color: "hsl(var(--success))" }}>{experienceFitLabel}</div>
           <div style={{ fontSize: "9px", color: "#9CA3AF", marginTop: "1px" }}>Exp. fit</div>
         </div>
       </div>
@@ -671,11 +671,11 @@ export function JobMatchRightPanel({
         {/* Hero: Find Matching Jobs */}
         <Link
           href={`/my-jobs?cvId=${encodeURIComponent(cvId)}`}
-          className="group relative block overflow-hidden rounded-2xl p-5 text-white shadow-md transition-all hover:shadow-xl hover:shadow-[#065F46]/20"
-          style={{ backgroundColor: "#065F46" }}
+          className="group relative block overflow-hidden rounded-2xl p-5 text-white shadow-md transition-all hover:shadow-xl hover:shadow-primary/20"
+          style={{ backgroundColor: "hsl(var(--primary))" }}
         >
           {/* Decorative rings */}
-          <div className="pointer-events-none absolute -right-10 -top-14 h-36 w-36 rounded-full bg-[#34D399]/20 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute -right-10 -top-14 h-36 w-36 rounded-full bg-accent/20 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-16 -left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute right-6 top-6 h-16 w-16 rounded-full border border-white/10" aria-hidden />
           <div className="pointer-events-none absolute right-12 top-12 h-8 w-8 rounded-full border border-white/10" aria-hidden />
@@ -697,10 +697,10 @@ export function JobMatchRightPanel({
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-base font-semibold tracking-tight text-white">Find Matching Jobs</p>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#34D399]/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#34D399] ring-1 ring-[#34D399]/30">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent ring-1 ring-accent/30">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34D399] opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#34D399]" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
                   </span>
                   Live
                 </span>
@@ -708,7 +708,7 @@ export function JobMatchRightPanel({
               <p className="mt-1 text-sm text-white/80">See live roles your CV fits — ranked by match score</p>
               <div className="mt-2 flex items-center gap-3 text-[11px] text-white/60">
                 <span className="inline-flex items-center gap-1">
-                  <Sparkles size={11} className="text-[#34D399]" />
+                  <Sparkles size={11} className="text-accent" />
                   Personalised
                 </span>
                 <span className="h-3 w-px bg-white/20" aria-hidden />
@@ -718,7 +718,7 @@ export function JobMatchRightPanel({
 
             <Button
               size="sm"
-              className="shrink-0 bg-white px-4 font-semibold text-[#065F46] shadow-sm hover:bg-white/90"
+              className="shrink-0 bg-white px-4 font-semibold text-primary shadow-sm hover:bg-white/90"
             >
               Browse
             </Button>
@@ -733,9 +733,9 @@ export function JobMatchRightPanel({
               onClick={() => {
                 router.push(`/interview-coach?mode=prep&jd=${encodeURIComponent(jdText.slice(0, 2000))}`);
               }}
-              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:border-[#065F46]/30 hover:shadow-md dark:hover:border-[#34D399]/30"
+              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:hover:border-accent/30"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#065F46]/10 text-[#065F46] shadow-sm transition-colors group-hover:bg-[#065F46]/15 dark:bg-[#34D399]/15 dark:text-[#34D399] dark:group-hover:bg-[#34D399]/20">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm transition-colors group-hover:bg-primary/15 dark:bg-accent/15 dark:text-accent dark:group-hover:bg-accent/20">
                 <BookOpen size={18} />
               </div>
               <div className="min-w-0 flex-1">
@@ -752,7 +752,7 @@ export function JobMatchRightPanel({
             }}
             className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#065F46]/10 text-[#065F46] shadow-sm transition-colors group-hover:bg-[#065F46]/15 dark:bg-[#34D399]/15 dark:text-[#34D399] dark:group-hover:bg-[#34D399]/20">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm transition-colors group-hover:bg-primary/15 dark:bg-accent/15 dark:text-accent dark:group-hover:bg-accent/20">
               <FileText size={18} />
             </div>
             <div className="min-w-0 flex-1">
@@ -813,7 +813,7 @@ const CATEGORY_WEIGHTS: Record<string, string> = {
 };
 
 function getCategoryColor(score: number): string {
-  if (score >= 90) return "#15803d";
+  if (score >= 90) return "hsl(var(--success))";
   if (score >= 70) return "#16a34a";
   if (score >= 50) return "#d97706";
   return "#dc2626";

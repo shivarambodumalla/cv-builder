@@ -110,7 +110,7 @@ export function JobsAnalyticsDashboard() {
                 const barPct = Math.max((step.count / maxW) * 100, 3);
                 const prevCount = i > 0 ? arr[i - 1].count : step.count;
                 const convPct = prevCount > 0 ? Math.min(p(step.count, prevCount), 100) : 0;
-                const colors = ["bg-blue-500", "bg-[#065F46]", "bg-amber-500"];
+                const colors = ["bg-blue-500", "bg-primary", "bg-amber-500"];
                 return (
                   <div key={step.step} className="flex items-center flex-1 min-w-[120px]">
                     <div className="flex-1">
@@ -145,7 +145,7 @@ export function JobsAnalyticsDashboard() {
                   return (
                     <div key={d.date} className="flex-1 flex flex-col items-center gap-0.5" title={`${d.date}: ${d.clicks} clicks`}>
                       <span className="text-[8px] tabular-nums text-muted-foreground">{d.clicks || ""}</span>
-                      <div className="w-full bg-[#065F46]/70 rounded-t-sm" style={{ height: `${h}%` }} />
+                      <div className="w-full bg-primary/70 rounded-t-sm" style={{ height: `${h}%` }} />
                     </div>
                   );
                 })}
@@ -199,7 +199,7 @@ export function JobsAnalyticsDashboard() {
                         <span className="text-[10px] font-bold text-muted-foreground w-4">{i + 1}</span>
                         <span className="text-xs font-medium flex-1 truncate">{c.company}</span>
                         <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
-                          <div className="h-full bg-[#065F46] rounded-full" style={{ width: `${(c.clicks / maxC) * 100}%` }} />
+                          <div className="h-full bg-primary rounded-full" style={{ width: `${(c.clicks / maxC) * 100}%` }} />
                         </div>
                         <span className="text-xs font-bold tabular-nums w-8 text-right">{c.clicks}</span>
                       </div>

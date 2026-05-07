@@ -50,7 +50,7 @@ function LoginContent() {
       <div className="w-full max-w-md">
         <div className="rounded-3xl overflow-hidden shadow-xl border border-border/40 bg-card">
           {/* ── Dark green hero ───────────────────────────────────────── */}
-          <div className="bg-[#065F46] px-7 pt-6 pb-6 text-white">
+          <div className="bg-primary px-7 pt-6 pb-6 text-white">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-5">
               <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white/10">
                 <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 text-white" strokeWidth="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
@@ -59,7 +59,7 @@ function LoginContent() {
                 </svg>
               </span>
               <span className="text-lg font-bold tracking-tight">
-                CV<span className="text-[#34D399]">Edge</span>
+                CV<span className="text-accent">Edge</span>
               </span>
             </Link>
 
@@ -88,7 +88,7 @@ function LoginContent() {
           <div className="px-7 py-5 space-y-4">
             {/* Simple bullet list — light, doesn't compete with CTAs */}
             <div className="space-y-1.5">
-              <p className="text-[11px] font-bold text-[#065F46] uppercase tracking-wider mb-2">
+              <p className="text-[11px] font-bold text-primary uppercase tracking-wider mb-2">
                 You will instantly see:
               </p>
               {[
@@ -98,7 +98,7 @@ function LoginContent() {
                 "Exact fixes to improve your chances",
               ].map((text) => (
                 <div key={text} className="flex items-center gap-2.5">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-[#065F46]" strokeWidth={3} />
+                  <Check className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={3} />
                   <span className="text-[13px] text-foreground/90">{text}</span>
                 </div>
               ))}
@@ -119,7 +119,7 @@ function LoginContent() {
         <div className="mt-5 space-y-3 px-1">
           {/* Urgency */}
           <div className="flex items-center gap-2.5">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#065F46]" />
+            <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
             <p className="text-[12.5px] font-medium text-foreground/90">
               Hiring is active right now. Check your resume before applying.
             </p>
@@ -129,7 +129,7 @@ function LoginContent() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
             {["No credit card", "Instant results", "Data secure"].map((t) => (
               <span key={t} className="inline-flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
-                <Check className="h-3 w-3 text-[#065F46]" strokeWidth={3} />
+                <Check className="h-3 w-3 text-primary" strokeWidth={3} />
                 {t}
               </span>
             ))}

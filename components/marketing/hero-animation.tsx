@@ -30,7 +30,7 @@ const ROTATION = TPL.slice(1)
   .concat(DEFAULT_SLUG);
 
 const COL = [
-  { c: "#065F46", n: "Emerald", hr: 0, sat: 1.0, br: 1.0 },
+  { c: "hsl(var(--primary))", n: "Emerald", hr: 0, sat: 1.0, br: 1.0 },
   { c: "#1E3A8A", n: "Navy", hr: -50, sat: 0.85, br: 0.9 },
   { c: "#7E22CE", n: "Violet", hr: 115, sat: 1.4, br: 0.95 },
   { c: "#DC2626", n: "Crimson", hr: 148, sat: 1.6, br: 1.0 },
@@ -435,8 +435,8 @@ export function HeroAnimation() {
 
       <style jsx>{`
         .hero-anim {
-          --a: #065f46;
-          --a2: #34d399;
+          --a: hsl(var(--primary));
+          --a2: hsl(var(--accent));
           --cream: #f7f5f0;
           --border: #e0d8cc;
           --muted: #78716c;

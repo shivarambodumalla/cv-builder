@@ -20,7 +20,7 @@ interface Review {
 const STATUS_CONFIG: Record<ReviewStatus, { label: string; bg: string; color: string }> = {
   pending: { label: "Pending", bg: "#FEF3C7", color: "#92400E" },
   in_progress: { label: "In progress", bg: "#EFF6FF", color: "#1D4ED8" },
-  completed: { label: "Complete", bg: "#F0FDF4", color: "#065F46" },
+  completed: { label: "Complete", bg: "hsl(var(--primary) / 0.08)", color: "hsl(var(--primary))" },
   cancelled: { label: "Cancelled", bg: "#FEF2F2", color: "#991B1B" },
 };
 
@@ -53,7 +53,7 @@ export function ReviewsQueue({ reviews }: { reviews: Review[] }) {
         {FILTERS.map((f) => (
           <button key={f} onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filter === f ? "text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-            style={{ background: filter === f ? "#065F46" : undefined }}>
+            style={{ background: filter === f ? "hsl(var(--primary))" : undefined }}>
             {f === "all" ? "All" : f === "in_progress" ? "In progress" : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
@@ -87,7 +87,7 @@ export function ReviewsQueue({ reviews }: { reviews: Review[] }) {
                       <div className="text-xs text-muted-foreground">{r.profile?.email || "—"}</div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold capitalize" style={{ background: "#F0FDF4", color: "#065F46" }}>{r.tier}</span>
+                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold capitalize" style={{ background: "hsl(var(--primary) / 0.08)", color: "hsl(var(--primary))" }}>{r.tier}</span>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground max-w-[160px] truncate">{r.target_role || "—"}</td>
                     <td className="px-4 py-3 text-muted-foreground">{r.target_country || "—"}</td>
@@ -99,7 +99,7 @@ export function ReviewsQueue({ reviews }: { reviews: Review[] }) {
                       {r.edit_rounds_used}/{r.edit_rounds_limit === 999 ? "∞" : r.edit_rounds_limit}
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/admin/reviews/${r.id}`} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-80" style={{ background: "#065F46" }}>
+                      <Link href={`/admin/reviews/${r.id}`} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-80" style={{ background: "hsl(var(--primary))" }}>
                         Review →
                       </Link>
                     </td>

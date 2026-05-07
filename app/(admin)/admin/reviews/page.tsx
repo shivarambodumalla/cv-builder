@@ -51,7 +51,7 @@ export default async function AdminReviewsPage() {
           <div className="text-sm text-muted-foreground mt-1">In progress</div>
         </div>
         <div className="rounded-xl border p-4">
-          <div className="text-2xl font-bold" style={{ color: "#065F46" }}>{stats.completed}</div>
+          <div className="text-2xl font-bold" style={{ color: "hsl(var(--primary))" }}>{stats.completed}</div>
           <div className="text-sm text-muted-foreground mt-1">Completed</div>
         </div>
         <div className="rounded-xl border p-4">

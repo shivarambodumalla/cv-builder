@@ -109,7 +109,7 @@ export default function ResumeTemplatesPage() {
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-secondary/[0.06] blur-3xl" />
         <div className="relative container mx-auto px-4 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
@@ -117,7 +117,7 @@ export default function ResumeTemplatesPage() {
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl md:text-5xl leading-[1.12]">
               Free Resume Templates —{" "}
-              <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 ATS-Ready for Every Role
               </span>
             </h1>
@@ -221,7 +221,7 @@ export default function ResumeTemplatesPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl">
-            <div className="rounded-2xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-8">
+            <div className="rounded-2xl border bg-[rgba(255,94,89,0.04)] border-[rgba(255,94,89,0.10)] p-8">
               <h2 className="text-xl font-bold tracking-tight mb-4">
                 What makes a resume ATS-friendly?
               </h2>

@@ -113,9 +113,9 @@ export function TemplateShowcase() {
                     key={tag}
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-[9px] font-bold",
-                      tag === "Popular" ? "bg-[#065F46] text-white" :
-                      tag === "Free" ? "bg-[#D1FAE5] text-[#065F46]" :
-                      tag === "Pro" ? "bg-[#1E3A5F] text-white" :
+                      tag === "Popular" ? "bg-primary text-white" :
+                      tag === "Free" ? "bg-primary/10 text-primary" :
+                      tag === "Pro" ? "bg-secondary text-white" :
                       "bg-muted text-muted-foreground"
                     )}
                   >
@@ -124,7 +124,7 @@ export function TemplateShowcase() {
                 ))}
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{t.desc}</p>
-              <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-[#065F46] px-5 py-2.5 text-sm font-semibold text-white group-hover:bg-[#065F46]/90 transition-colors">
+              <span className="mt-2 inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white group-hover:bg-primary/90 transition-colors">
                 Use this template
               </span>
             </div>

@@ -366,7 +366,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
             <div className="flex flex-wrap items-center gap-1 rounded-xl border border-input bg-background px-3 min-h-[48px]">
               <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
               {locations.map((loc) => (
-                <span key={loc} className="inline-flex items-center gap-1 rounded-full bg-[#065F46] px-2.5 py-0.5 text-[11px] font-medium text-white">
+                <span key={loc} className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-medium text-white">
                   {loc}
                   <button type="button" onClick={() => setLocations(prev => prev.filter(l => l !== loc))} className="hover:text-white/70">
                     <X className="h-3 w-3" />
@@ -413,7 +413,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
           <Button
             onClick={fetchJobs}
             disabled={loading}
-            className="h-12 px-6 rounded-xl bg-[#065F46] hover:bg-[#065F46]/90 text-white font-semibold text-sm shrink-0"
+            className="h-12 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shrink-0"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
           </Button>
@@ -445,7 +445,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
                 })}
                 className={`rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
                   isSelected
-                    ? "bg-[#065F46] text-white border-[#065F46]"
+                    ? "bg-primary text-white border-primary"
                     : "bg-background text-muted-foreground border-border hover:border-foreground/30"
                 }`}
               >
@@ -464,16 +464,16 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
 
       {/* No CV banner */}
       {!hasCvs && (
-        <div className="mb-6 flex items-center gap-3 rounded-xl border-2 border-dashed border-[#065F46]/30 bg-[#F0FDF4] px-5 py-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#065F46]/10">
-            <UploadCloud className="h-5 w-5 text-[#065F46]" />
+        <div className="mb-6 flex items-center gap-3 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 px-5 py-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <UploadCloud className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-[#065F46]">Upload your CV for personalised job matches</p>
-            <p className="text-xs text-[#065F46]/60">Get match scores and better recommendations based on your skills</p>
+            <p className="text-sm font-medium text-primary">Upload your CV for personalised job matches</p>
+            <p className="text-xs text-primary/60">Get match scores and better recommendations based on your skills</p>
           </div>
           <Link href="/upload-resume">
-            <Button size="sm" className="bg-[#065F46] hover:bg-[#065F46]/90 text-white text-xs">
+            <Button size="sm" className="bg-primary hover:bg-primary/90 text-white text-xs">
               Upload CV
             </Button>
           </Link>
@@ -629,16 +629,16 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
                 </div>
               )}
               {!hasCvs && !hasActiveFilters && (
-                <div className="rounded-2xl border-2 border-dashed border-[#065F46]/30 bg-[#F0FDF4] p-8 text-center">
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#065F46]/10">
-                    <UploadCloud className="h-7 w-7 text-[#065F46]" />
+                <div className="rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 p-8 text-center">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                    <UploadCloud className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#065F46]">Upload your CV to see matched jobs</h3>
-                  <p className="mt-1 text-sm text-[#065F46]/70 max-w-sm mx-auto">
+                  <h3 className="text-lg font-semibold text-primary">Upload your CV to see matched jobs</h3>
+                  <p className="mt-1 text-sm text-primary/70 max-w-sm mx-auto">
                     We analyse your skills, experience, and preferences to find the best jobs for you. You can still search manually above.
                   </p>
                   <Link href="/upload-resume">
-                    <Button className="mt-5 bg-[#065F46] hover:bg-[#065F46]/90 text-white px-8">Upload CV</Button>
+                    <Button className="mt-5 bg-primary hover:bg-primary/90 text-white px-8">Upload CV</Button>
                   </Link>
                 </div>
               )}

@@ -40,14 +40,14 @@ export default async function BlogPage() {
       {/* Banner */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -right-24 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.05] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -right-24 h-[480px] w-[480px] rounded-full bg-secondary/[0.05] blur-3xl" />
         <div className="relative container mx-auto max-w-5xl px-4 py-16 sm:py-24">
           <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-primary mb-4">
             CVEdge Blog
           </p>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.12] max-w-xl">
             CV & job search advice<br />
-            <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               that gets you interviews.
             </span>
           </h1>

@@ -63,7 +63,7 @@ export default async function TemplateLeafPage({
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
         <div className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-[#1E3A5F]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[480px] w-[480px] rounded-full bg-secondary/[0.06] blur-3xl" />
         <div className="relative container mx-auto px-4 py-12 md:py-16">
           <div className="mx-auto max-w-5xl">
             <nav className="text-xs text-muted-foreground mb-5 flex items-center gap-1.5 flex-wrap">
@@ -111,8 +111,8 @@ export default async function TemplateLeafPage({
                   <span
                     className={
                       leaf.tier === "pro"
-                        ? "rounded-full px-3 py-1 text-xs font-semibold bg-[#1E3A5F] text-white"
-                        : "rounded-full px-3 py-1 text-xs font-semibold bg-[#D1FAE5] text-[#065F46]"
+                        ? "rounded-full px-3 py-1 text-xs font-semibold bg-secondary text-white"
+                        : "rounded-full px-3 py-1 text-xs font-semibold bg-primary/10 text-primary"
                     }
                   >
                     {leaf.tier === "pro" ? "Pro template" : "Free template"}
@@ -166,7 +166,7 @@ export default async function TemplateLeafPage({
                 </ul>
 
                 {/* Inline CTA */}
-                <div className="rounded-xl bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] p-6 mb-8">
+                <div className="rounded-xl bg-[rgba(255,94,89,0.05)] border border-[rgba(255,94,89,0.10)] p-6 mb-8">
                   <p className="font-semibold text-sm mb-1">Start with this template — free</p>
                   <p className="text-xs text-muted-foreground mb-4">
                     Upload your existing CV or start from scratch. CVEdge pre-fills your content

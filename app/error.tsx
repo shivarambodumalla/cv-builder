@@ -31,12 +31,12 @@ export default function Error({
       <div className="mb-8">
         <svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Document */}
-          <rect x="50" y="10" width="100" height="130" rx="6" fill="#DCFCE7" stroke="#065F46" strokeWidth="1.5"/>
-          <rect x="65" y="26" width="50" height="4" rx="2" fill="#065F46" opacity="0.5"/>
-          <rect x="65" y="36" width="70" height="3" rx="1.5" fill="#065F46" opacity="0.25"/>
-          <rect x="65" y="44" width="60" height="3" rx="1.5" fill="#065F46" opacity="0.25"/>
-          <rect x="65" y="52" width="65" height="3" rx="1.5" fill="#065F46" opacity="0.25"/>
-          <rect x="65" y="60" width="40" height="3" rx="1.5" fill="#065F46" opacity="0.15"/>
+          <rect x="50" y="10" width="100" height="130" rx="6" fill="hsl(var(--primary) / 0.12)" stroke="hsl(var(--primary))" strokeWidth="1.5"/>
+          <rect x="65" y="26" width="50" height="4" rx="2" fill="hsl(var(--primary))" opacity="0.5"/>
+          <rect x="65" y="36" width="70" height="3" rx="1.5" fill="hsl(var(--primary))" opacity="0.25"/>
+          <rect x="65" y="44" width="60" height="3" rx="1.5" fill="hsl(var(--primary))" opacity="0.25"/>
+          <rect x="65" y="52" width="65" height="3" rx="1.5" fill="hsl(var(--primary))" opacity="0.25"/>
+          <rect x="65" y="60" width="40" height="3" rx="1.5" fill="hsl(var(--primary))" opacity="0.15"/>
 
           {/* Broken ATS ring */}
           <g className="animate-shake">
@@ -62,7 +62,7 @@ export default function Error({
 
       {/* CTAs */}
       <div className="mt-8 flex flex-col sm:flex-row gap-3">
-        <Button size="lg" className="h-12 px-6 bg-[#065F46] hover:bg-[#064E3B]" onClick={reset}>
+        <Button size="lg" className="h-12 px-6 bg-primary hover:bg-primary/90" onClick={reset}>
           Try again
         </Button>
         <Button size="lg" variant="ghost" className="h-12 px-6" asChild>

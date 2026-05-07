@@ -278,7 +278,11 @@
       "Bash(git -C /Users/sivaramireddy/work/cv-builder diff HEAD -- app/\\\\\\(admin\\\\\\)/admin/page.tsx)",
       "Bash(git -C /Users/sivaramireddy/work/cv-builder diff)",
       "Bash(git -C /Users/sivaramireddy/work/cv-builder add app/api/cv/analyse/route.ts components/shared/ats-panel.tsx lib/ai/client.ts supabase/migrations/00066_ats_prompt_issue_cap.sql)",
-      "Bash(git -C /Users/sivaramireddy/work/cv-builder log --oneline origin/main..HEAD)"
+      "Bash(git -C /Users/sivaramireddy/work/cv-builder log --oneline origin/main..HEAD)",
+      "Bash(sed -i '' 's/#1a7a6d/#ff5e59/g' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/cv-review/page.tsx)",
+      "Bash(sed -i '' 's/rgba\\(26,122,109/rgba\\(255,94,89/g' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(marketing\\\\\\)/cv-review/page.tsx)",
+      "Bash(sed -i '' 's/#1a7a6d/#ff5e59/g' /Users/sivaramireddy/work/cv-builder/app/\\\\\\(admin\\\\\\)/admin/page.tsx)",
+      "Bash(awk -F: '{print $1}')"
     ],
     "additionalDirectories": [
       "/Users/sivaramireddy/work/cv-builder/app/api/cv",

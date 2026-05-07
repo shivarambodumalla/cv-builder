@@ -132,7 +132,7 @@ export default async function DashboardPage() {
               const statusMap: Record<string, { label: string; color: string }> = {
                 pending: { label: "Awaiting review", color: "#92400E" },
                 in_progress: { label: "In progress", color: "#1D4ED8" },
-                completed: { label: "Complete", color: "#065F46" },
+                completed: { label: "Complete", color: "hsl(var(--primary))" },
                 cancelled: { label: "Cancelled", color: "#991B1B" },
               };
               const st = statusMap[review.status] ?? statusMap.pending;
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
                   <p className="font-medium text-sm mt-1 capitalize">{review.tier} Review</p>
                   {review.target_role && <p className="text-xs text-muted-foreground">{review.target_role}</p>}
                   <p className="text-xs text-muted-foreground mt-1">{remaining}</p>
-                  <p className="text-xs font-semibold mt-2" style={{ color: "#065F46" }}>View →</p>
+                  <p className="text-xs font-semibold mt-2" style={{ color: "hsl(var(--primary))" }}>View →</p>
                 </a>
               );
             })}

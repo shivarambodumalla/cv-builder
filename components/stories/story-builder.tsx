@@ -237,8 +237,8 @@ export function StoryBuilder({
                     className={
                       "rounded-full border-[1.5px] px-3.5 py-1.5 text-xs font-medium transition-all " +
                       (selected
-                        ? "bg-[#065F46] text-white border-transparent"
-                        : "bg-transparent text-[#065F46] border-[#065F46] hover:bg-[#065F46]/5 dark:text-primary dark:border-primary")
+                        ? "bg-primary text-white border-transparent"
+                        : "bg-transparent text-primary border-primary hover:bg-primary/5 dark:text-primary dark:border-primary")
                     }
                   >
                     {tag}

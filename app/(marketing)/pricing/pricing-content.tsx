@@ -52,7 +52,7 @@ export function PricingContent() {
     <>
       {/* Guarantee pill */}
       <div className="flex justify-center mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full bg-[#C8F0D6] px-4 py-2 text-[#065F46]">
+        <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-primary">
           <Check className="h-4 w-4" />
           <span className="text-sm font-medium">80+ ATS score guaranteed or money back</span>
         </div>
@@ -71,8 +71,8 @@ export function PricingContent() {
           <ul className="mb-8 flex-1 space-y-3">
             {FREE_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-3 text-sm">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#C8F0D6]">
-                  <Check className="h-3 w-3 text-[#065F46]" />
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <Check className="h-3 w-3 text-primary" />
                 </span>
                 <span>{f}</span>
               </li>
@@ -81,7 +81,7 @@ export function PricingContent() {
 
           <Link
             href="/upload-resume"
-            className="block w-full rounded-xl border border-[#065F46]/30 bg-background px-6 py-3 text-center text-sm font-semibold text-[#065F46] hover:bg-[#065F46]/5 transition-colors"
+            className="block w-full rounded-xl border border-primary/30 bg-background px-6 py-3 text-center text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
           >
             Start free
           </Link>
@@ -89,7 +89,7 @@ export function PricingContent() {
         </div>
 
         {/* PRO CARD */}
-        <div className="relative rounded-2xl bg-[#065F46] p-6 sm:p-8 flex flex-col text-white">
+        <div className="relative rounded-2xl bg-gradient-to-br from-secondary via-primary to-primary p-6 sm:p-8 flex flex-col text-white">
           <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#F59E0B] px-4 py-1 text-[11px] font-bold text-white uppercase tracking-wider">
             Most Popular
           </span>
@@ -109,13 +109,13 @@ export function PricingContent() {
                   onClick={() => setBilling(opt.period)}
                   className={cn(
                     "relative rounded-xl px-3 py-4 text-center transition-all",
-                    isSelected ? "bg-[#0A7A5A] shadow-lg" : "hover:bg-white/5"
+                    isSelected ? "bg-white/15 shadow-lg" : "hover:bg-white/5"
                   )}
                 >
                   <div className={cn("text-xs mb-1", isSelected ? "text-white/90" : "text-white/70")}>
                     {opt.label}
                   </div>
-                  <div className={cn("text-xl sm:text-2xl font-bold", isSelected ? "text-[#34D399]" : "text-white")}>
+                  <div className={cn("text-xl sm:text-2xl font-bold", isSelected ? "text-white" : "text-white/80")}>
                     ${opt.price}
                   </div>
                   {isSelected && (
@@ -136,8 +136,8 @@ export function PricingContent() {
           <ul className="mb-8 flex-1 space-y-3">
             {PRO_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-3 text-sm">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#34D399]/20">
-                  <Check className="h-3 w-3 text-[#34D399]" />
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/20">
+                  <Check className="h-3 w-3 text-accent" />
                 </span>
                 <span>{f}</span>
               </li>
@@ -146,7 +146,7 @@ export function PricingContent() {
 
           <Link
             href="/register"
-            className="block w-full rounded-xl bg-[#34D399] px-6 py-4 text-center text-base font-bold text-[#065F46] hover:bg-[#34D399]/90 transition-colors"
+            className="block w-full rounded-xl bg-accent px-6 py-4 text-center text-base font-bold text-accent-foreground hover:bg-accent/90 transition-colors"
           >
             Get interview-ready today
           </Link>
@@ -164,7 +164,7 @@ export function PricingContent() {
           { n: "2,400+", l: "Keywords checked" },
         ].map((s) => (
           <div key={s.l} className="rounded-2xl border bg-card p-6 text-center">
-            <p className="text-3xl font-bold text-[#065F46]">{s.n}</p>
+            <p className="text-3xl font-bold text-primary">{s.n}</p>
             <p className="mt-1 text-sm text-muted-foreground">{s.l}</p>
           </div>
         ))}
@@ -198,12 +198,12 @@ export function PricingContent() {
                 onClick={() => setOpenFaqs((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
                 className={cn(
                   "flex w-full items-center justify-between py-5 text-left text-base font-medium transition-colors",
-                  openFaqs.has(i) ? "text-[#065F46]" : "text-foreground hover:text-[#065F46]"
+                  openFaqs.has(i) ? "text-primary" : "text-foreground hover:text-primary"
                 )}
                 aria-expanded={openFaqs.has(i)}
               >
                 {faq.question}
-                <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#065F46] transition-transform duration-200", openFaqs.has(i) && "rotate-180")} />
+                <ChevronDown className={cn("h-4 w-4 shrink-0 text-primary transition-transform duration-200", openFaqs.has(i) && "rotate-180")} />
               </button>
               {openFaqs.has(i) && <p className="pb-5 text-[15px] text-muted-foreground leading-relaxed">{faq.answer}</p>}
             </div>
@@ -213,20 +213,20 @@ export function PricingContent() {
 
       {/* Money-back guarantee */}
       <div className="mx-auto max-w-md text-center py-8 mb-8">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#C8F0D6]">
-          <Shield className="h-6 w-6 text-[#065F46]" />
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <Shield className="h-6 w-6 text-primary" />
         </div>
         <p className="text-base font-semibold">14-day money-back guarantee</p>
         <p className="text-sm text-muted-foreground mt-2">If CVEdge doesn&apos;t get your CV to an 80+ ATS score, we refund you in full.</p>
       </div>
 
       {/* Bottom CTA */}
-      <div className="mx-auto max-w-4xl rounded-2xl bg-[#065F46] p-8 sm:p-12 text-center">
+      <div className="mx-auto max-w-4xl rounded-2xl bg-primary p-8 sm:p-12 text-center">
         <h2 className="text-2xl font-bold text-white">Still thinking about it?</h2>
         <p className="mt-2 text-sm text-green-200">Start free — no credit card needed. Upgrade when you&apos;re ready.</p>
         <Link
           href="/upload-resume"
-          className="mt-6 inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-base font-semibold text-[#065F46] hover:bg-white/90 transition-colors"
+          className="mt-6 inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-base font-semibold text-primary hover:bg-white/90 transition-colors"
         >
           Analyse my CV free
         </Link>

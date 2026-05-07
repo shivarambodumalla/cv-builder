@@ -257,7 +257,7 @@ export function Blueprint({
   const resolvedAccent =
     typeof design.accentColor === "string" && design.accentColor.startsWith("#")
       ? design.accentColor
-      : "#1a7a6d";
+      : "#ff5e59";
   const avatarNode = (
     <Avatar
       name={contact.name}

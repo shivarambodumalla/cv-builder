@@ -125,20 +125,20 @@ export function CvReviewNewForm() {
               onClick={() => setSelectedTier(key)}
               className={`rounded-xl p-4 border-2 text-left transition-all ${
                 selectedTier === key
-                  ? "border-[#065F46] bg-[#F0FDF4]"
-                  : "border-border hover:border-[#065F46]/40"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/40"
               }`}
             >
               {"badge" in t && t.badge && (
                 <span
                   className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider mb-1 inline-block"
-                  style={{ background: "#065F46", color: "white" }}
+                  style={{ background: "hsl(var(--primary))", color: "white" }}
                 >
                   {t.badge}
                 </span>
               )}
               <div className="font-semibold">{t.name}</div>
-              <div className="text-xl font-bold mt-0.5" style={{ color: "#065F46" }}>
+              <div className="text-xl font-bold mt-0.5" style={{ color: "hsl(var(--primary))" }}>
                 ${t.price}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
@@ -154,7 +154,7 @@ export function CvReviewNewForm() {
         <h2 className="text-base font-semibold mb-3">Upload your CV</h2>
         <div
           className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-            file ? "border-[#065F46] bg-[#F0FDF4]" : "border-border hover:border-[#065F46]/50"
+            file ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
           }`}
           onClick={() => fileInputRef.current?.click()}
           onDragOver={(e) => e.preventDefault()}
@@ -206,7 +206,7 @@ export function CvReviewNewForm() {
           <select
             value={targetRole}
             onChange={(e) => setTargetRole(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#065F46]/30"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             required
           >
             <option value="">Select a role…</option>
@@ -227,7 +227,7 @@ export function CvReviewNewForm() {
           <select
             value={targetCountry}
             onChange={(e) => setTargetCountry(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#065F46]/30"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           >
             {COUNTRIES.map((c) => (
               <option key={c} value={c}>
@@ -246,7 +246,7 @@ export function CvReviewNewForm() {
             onChange={(e) => setUserNotes(e.target.value.slice(0, 500))}
             placeholder="Anything specific you want the expert to focus on?"
             rows={3}
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#065F46]/30 resize-none"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
           />
           <div className="text-xs text-muted-foreground mt-1 text-right">{userNotes.length}/500</div>
         </div>
@@ -275,7 +275,7 @@ export function CvReviewNewForm() {
         type="submit"
         disabled={loading}
         className="w-full py-3 rounded-lg font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-        style={{ background: "#065F46" }}
+        style={{ background: "hsl(var(--primary))" }}
       >
         {loading ? "Redirecting to payment..." : `Pay $${tier.price} and submit`}
       </button>

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
 };
 
-const DARK_GRADIENT = "linear-gradient(135deg, #0a4a37 0%, #134d3a 60%, #1E3A5F 100%)";
+const DARK_GRADIENT = "linear-gradient(135deg, hsl(var(--primary) / 0.8) 0%, hsl(var(--primary) / 0.6) 60%, hsl(var(--secondary) / 0.8) 100%)";
 
 const EXPERTS = [
   {
@@ -36,21 +36,21 @@ const EXPERTS = [
     name: "James R.",
     role: "Ex-Tech Recruiter, FAANG",
     bio: "12 years hiring engineers and PMs at Google, Meta, and Amazon. Reviewed 4,000+ CVs.",
-    topColor: "#1E3A5F",
+    topColor: "hsl(var(--secondary))",
   },
   {
     initials: "SA",
     name: "Sara A.",
     role: "Senior Finance Recruiter",
     bio: "15 years at Big Four and investment banks. Knows what hits and what doesn't.",
-    topColor: "#1a7a6d",
+    topColor: "hsl(var(--primary))",
   },
   {
     initials: "MK",
     name: "Maya K.",
     role: "Career Coach · Middle East",
     bio: "UAE, Saudi, Qatar specialist. 800+ regional placements at senior levels.",
-    topColor: "#1E3A5F",
+    topColor: "hsl(var(--secondary))",
   },
 ];
 
@@ -64,21 +64,21 @@ const BEFORE_BULLETS = [
 const TESTIMONIALS = [
   {
     initials: "RS",
-    avatarColor: "#1E3A5F",
+    avatarColor: "hsl(var(--secondary))",
     name: "Rahul S.",
     role: "Software Engineer · Pune",
     quote: "After my review, I got 3 interview calls in one week. The 24 hour turnaround was a delight.",
   },
   {
     initials: "AK",
-    avatarColor: "#1a7a6d",
+    avatarColor: "hsl(var(--primary))",
     name: "Aisha K.",
     role: "Product Manager · Riyadh",
     quote: "They completely rewrote my CV — it truly sounds capable, and I'd never have written it like this.",
   },
   {
     initials: "DM",
-    avatarColor: "#1E3A5F",
+    avatarColor: "hsl(var(--secondary))",
     name: "Daniel M.",
     role: "Marketing Lead · London",
     quote: "Way better than other services I've used. Actually personalised to my exact role, not generic edits.",
@@ -123,7 +123,7 @@ export default function CvReviewPage() {
             <div>
               <div
                 className="inline-flex items-center px-3 py-1.5 rounded-full mb-6 font-bold uppercase"
-                style={{ background: "rgba(52,211,153,0.18)", color: "#34D399", fontSize: "12px", letterSpacing: "2px" }}
+                style={{ background: "rgba(52,211,153,0.18)", color: "hsl(var(--accent))", fontSize: "12px", letterSpacing: "2px" }}
               >
                 HUMAN + AI · INDUSTRY EXPERTS
               </div>
@@ -134,18 +134,18 @@ export default function CvReviewPage() {
               >
                 Get your CV reviewed<br />
                 by real hiring experts<br />
-                <span style={{ color: "#34D399" }}>in 24 hours.</span>
+                <span style={{ color: "hsl(var(--accent))" }}>in 24 hours.</span>
               </h1>
 
-              <p className="mb-8" style={{ color: "#b8d4c8", fontSize: "18px", maxWidth: "480px", lineHeight: 1.6 }}>
+              <p className="mb-8" style={{ color: "rgba(255,255,255,0.55)", fontSize: "18px", maxWidth: "480px", lineHeight: 1.6 }}>
                 Your CV is reviewed by professionals with real hiring experience — every bullet rewritten, every section optimised to land interviews.
               </p>
 
               <div className="flex flex-wrap items-center mb-8" style={{ gap: "14px" }}>
                 <Link
                   href="/cv-review/new"
-                  className="inline-flex items-center font-semibold transition-colors bg-[#34D399] hover:bg-[#6ee0b4] rounded-full"
-                  style={{ color: "#0a4a37", padding: "14px 28px", fontSize: "16px" }}
+                  className="inline-flex items-center font-semibold transition-colors bg-accent hover:bg-accent/80 rounded-full"
+                  style={{ color: "hsl(var(--foreground))", padding: "14px 28px", fontSize: "16px" }}
                 >
                   Get your CV reviewed
                 </Link>
@@ -159,18 +159,18 @@ export default function CvReviewPage() {
               </div>
 
               {/* Trust strip */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ fontSize: "13px", color: "#b8d4c8" }}>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)" }}>
                 <span className="flex items-center gap-1.5">
                   <span style={{ color: "#f59e0b" }}>★★★★★</span> 4.8/5 rating
                 </span>
                 <span style={{ color: "rgba(184,212,200,0.4)" }}>·</span>
                 <span className="flex items-center gap-1.5">
-                  <span className="inline-block rounded-full" style={{ width: "6px", height: "6px", background: "#34D399" }} />
+                  <span className="inline-block rounded-full" style={{ width: "6px", height: "6px", background: "hsl(var(--accent))" }} />
                   24hr turnaround
                 </span>
                 <span style={{ color: "rgba(184,212,200,0.4)" }}>·</span>
                 <span className="flex items-center gap-1.5">
-                  <span className="inline-block rounded-full" style={{ width: "6px", height: "6px", background: "#34D399" }} />
+                  <span className="inline-block rounded-full" style={{ width: "6px", height: "6px", background: "hsl(var(--accent))" }} />
                   500+ CVs improved
                 </span>
               </div>
@@ -184,7 +184,7 @@ export default function CvReviewPage() {
                   <div className="rounded-full bg-white p-2" style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.2)" }}>
                     <div
                       className="flex flex-col items-center justify-center rounded-full text-white"
-                      style={{ width: "88px", height: "88px", background: "#065F46", border: "3px solid #34D399" }}
+                      style={{ width: "88px", height: "88px", background: "hsl(var(--primary))", border: "3px solid hsl(var(--accent))" }}
                     >
                       <span className="font-bold leading-none" style={{ fontSize: "28px" }}>93</span>
                       <span className="mt-1" style={{ fontSize: "9px", letterSpacing: "1px" }}>SCORE</span>
@@ -199,12 +199,12 @@ export default function CvReviewPage() {
                 >
                   <div className="flex items-start justify-between mb-5">
                     <div>
-                      <div className="font-bold" style={{ fontSize: "15px", color: "#1a3a2e" }}>Sarah Mitchell</div>
+                      <div className="font-bold" style={{ fontSize: "15px", color: "hsl(var(--foreground))" }}>Sarah Mitchell</div>
                       <div style={{ fontSize: "13px", color: "#5a5a5a", marginTop: "2px" }}>Senior Product Manager</div>
                     </div>
                     <div
                       className="flex items-center justify-center rounded-full text-white font-bold shrink-0 ml-3"
-                      style={{ width: "44px", height: "44px", background: "#1E3A5F", fontSize: "13px" }}
+                      style={{ width: "44px", height: "44px", background: "hsl(var(--secondary))", fontSize: "13px" }}
                       role="img"
                       aria-label="Sample reviewed CV preview"
                     >
@@ -220,13 +220,13 @@ export default function CvReviewPage() {
 
                   <div className="space-y-2 mb-6">
                     {[90, 80, 95].map((w, i) => (
-                      <div key={i} style={{ width: `${w}%`, height: "8px", background: "#34D399", borderRadius: "4px" }} />
+                      <div key={i} style={{ width: `${w}%`, height: "8px", background: "hsl(var(--accent))", borderRadius: "4px" }} />
                     ))}
                   </div>
 
                   <div
                     className="inline-flex items-center gap-1.5 font-bold"
-                    style={{ background: "#d1f1e2", color: "#065F46", padding: "8px 12px", borderRadius: "8px", fontSize: "13px" }}
+                    style={{ background: "hsl(var(--primary) / 0.1)", color: "hsl(var(--primary))", padding: "8px 12px", borderRadius: "8px", fontSize: "13px" }}
                   >
                     ✓ Reviewed by Expert
                   </div>
@@ -242,10 +242,10 @@ export default function CvReviewPage() {
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-4 px-8 py-12 sm:px-20 sm:py-12">
           {(
             [
-              { value: "500+", label: "CVs Reviewed", color: "#1E3A5F" },
-              { value: "4.8★", label: "User Rating", color: "#1E3A5F" },
-              { value: "24hr", label: "Turnaround", color: "#1E3A5F" },
-              { value: "+31pts", label: "Avg ATS Gain", color: "#065F46" },
+              { value: "500+", label: "CVs Reviewed", color: "hsl(var(--secondary))" },
+              { value: "4.8★", label: "User Rating", color: "hsl(var(--secondary))" },
+              { value: "24hr", label: "Turnaround", color: "hsl(var(--secondary))" },
+              { value: "+31pts", label: "Avg ATS Gain", color: "hsl(var(--primary))" },
             ] as const
           ).map((s, i) => (
             <div
@@ -269,10 +269,10 @@ export default function CvReviewPage() {
       <section style={{ background: "#f5f0e8" }} className="px-8 py-16 sm:px-20 sm:py-24">
         <div className="max-w-[1280px] mx-auto">
           <div className="text-center mb-12">
-            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#1a7a6d" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "hsl(var(--primary))" }}>
               WHO REVIEWS YOUR CV
             </p>
-            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "#1a3a2e" }}>
+            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "hsl(var(--foreground))" }}>
               Reviewed by real industry experts
             </h2>
             <p className="mt-4 mx-auto" style={{ fontSize: "19px", color: "#5a5a5a", maxWidth: "600px" }}>
@@ -302,7 +302,7 @@ export default function CvReviewPage() {
                     {e.initials}
                   </div>
                   <div>
-                    <div className="font-bold" style={{ fontSize: "18px", color: "#1a3a2e" }}>{e.name}</div>
+                    <div className="font-bold" style={{ fontSize: "18px", color: "hsl(var(--foreground))" }}>{e.name}</div>
                     <div style={{ fontSize: "13px", color: "#5a5a5a" }}>{e.role}</div>
                   </div>
                 </div>
@@ -314,9 +314,9 @@ export default function CvReviewPage() {
           <div className="mt-10 flex justify-center">
             <div
               className="inline-flex items-center gap-2 bg-white"
-              style={{ border: "1.5px solid #34D399", borderRadius: "999px", padding: "14px 24px", fontSize: "14px", color: "#1a3a2e", fontWeight: 500 }}
+              style={{ border: "1.5px solid hsl(var(--accent))", borderRadius: "999px", padding: "14px 24px", fontSize: "14px", color: "hsl(var(--foreground))", fontWeight: 500 }}
             >
-              <span style={{ color: "#34D399" }}>✓</span>
+              <span style={{ color: "hsl(var(--accent))" }}>✓</span>
               Every CV is manually reviewed and rewritten — not just AI scored.
             </div>
           </div>
@@ -327,10 +327,10 @@ export default function CvReviewPage() {
       <section style={{ background: "#f5f0e8" }} className="px-8 pb-16 sm:px-20 sm:pb-24">
         <div className="max-w-[1280px] mx-auto">
           <div className="text-center mb-12">
-            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#1a7a6d" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "hsl(var(--primary))" }}>
               WHAT YOU GET
             </p>
-            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "#1a3a2e" }}>
+            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "hsl(var(--foreground))" }}>
               From generic CV to<br />interview-ready
             </h2>
           </div>
@@ -376,31 +376,31 @@ export default function CvReviewPage() {
                 borderTop: "1.5px solid #e5dcc8",
                 borderRight: "1.5px solid #e5dcc8",
                 borderBottom: "1.5px solid #e5dcc8",
-                borderLeft: "4px solid #065F46",
+                borderLeft: "4px solid hsl(var(--primary))",
                 padding: "32px",
               }}
             >
               <div className="flex items-center gap-3 mb-6">
                 <div
                   className="flex items-center justify-center rounded-full shrink-0 font-bold"
-                  style={{ width: "28px", height: "28px", background: "#d1f1e2", color: "#065F46", fontSize: "14px" }}
+                  style={{ width: "28px", height: "28px", background: "hsl(var(--primary) / 0.1)", color: "hsl(var(--primary))", fontSize: "14px" }}
                 >
                   ✓
                 </div>
-                <span className="font-bold uppercase" style={{ fontSize: "13px", letterSpacing: "2px", color: "#065F46" }}>
+                <span className="font-bold uppercase" style={{ fontSize: "13px", letterSpacing: "2px", color: "hsl(var(--primary))" }}>
                   AFTER — REVIEWED BY EXPERT
                 </span>
               </div>
               <div className="space-y-3">
                 {(
                   [
-                    <>Led <strong style={{ color: "#065F46" }}>9-person</strong> team, shipped 4 features on time</>,
-                    <>Negotiated <strong style={{ color: "#065F46" }}>$2M</strong> vendor contracts across 3 stakeholders</>,
-                    <>Grew revenue <strong style={{ color: "#065F46" }}>34%</strong> via targeted email campaigns</>,
-                    <>Reduced infrastructure latency by <strong style={{ color: "#065F46" }}>40%</strong> with Redis caching</>,
+                    <>Led <strong style={{ color: "hsl(var(--primary))" }}>9-person</strong> team, shipped 4 features on time</>,
+                    <>Negotiated <strong style={{ color: "hsl(var(--primary))" }}>$2M</strong> vendor contracts across 3 stakeholders</>,
+                    <>Grew revenue <strong style={{ color: "hsl(var(--primary))" }}>34%</strong> via targeted email campaigns</>,
+                    <>Reduced infrastructure latency by <strong style={{ color: "hsl(var(--primary))" }}>40%</strong> with Redis caching</>,
                   ] as ReactNode[]
                 ).map((b, i) => (
-                  <div key={i} style={{ background: "#f0faf5", padding: "14px 16px", borderRadius: "10px", color: "#1a3a2e", fontSize: "14px" }}>
+                  <div key={i} style={{ background: "hsl(var(--primary) / 0.06)", padding: "14px 16px", borderRadius: "10px", color: "hsl(var(--foreground))", fontSize: "14px" }}>
                     {b}
                   </div>
                 ))}
@@ -414,10 +414,10 @@ export default function CvReviewPage() {
       <section style={{ background: "#ece5d8" }} className="px-8 py-16 sm:px-20 sm:py-24">
         <div className="max-w-[1280px] mx-auto">
           <div className="text-center mb-14">
-            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#1a7a6d" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "hsl(var(--primary))" }}>
               HOW IT WORKS
             </p>
-            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "#1a3a2e" }}>
+            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "hsl(var(--foreground))" }}>
               Three steps to a stronger CV
             </h2>
           </div>
@@ -431,9 +431,9 @@ export default function CvReviewPage() {
 
             {(
               [
-                { num: "01", bg: "#1a7a6d", title: "Upload your CV", desc: "PDF or Word. Any format, any template accepted." },
-                { num: "02", bg: "#1E3A5F", title: "Expert reviews it", desc: "Every section rewritten and optimised by hand using your real experience." },
-                { num: "03", bg: "#1a7a6d", title: "Download & apply", desc: "Your reviewed CV in 24 hours, ready to send to recruiters." },
+                { num: "01", bg: "hsl(var(--primary))", title: "Upload your CV", desc: "PDF or Word. Any format, any template accepted." },
+                { num: "02", bg: "hsl(var(--secondary))", title: "Expert reviews it", desc: "Every section rewritten and optimised by hand using your real experience." },
+                { num: "03", bg: "hsl(var(--primary))", title: "Download & apply", desc: "Your reviewed CV in 24 hours, ready to send to recruiters." },
               ] as const
             ).map((step) => (
               <div key={step.num} className="relative flex flex-col items-center text-center">
@@ -453,7 +453,7 @@ export default function CvReviewPage() {
                   {step.num}
                 </div>
                 <div className="w-full bg-white" style={{ padding: "24px", borderRadius: "16px", border: "1.5px solid #d4cdb8" }}>
-                  <h3 className="font-bold mb-2" style={{ fontSize: "20px", color: "#1a3a2e" }}>{step.title}</h3>
+                  <h3 className="font-bold mb-2" style={{ fontSize: "20px", color: "hsl(var(--foreground))" }}>{step.title}</h3>
                   <p style={{ fontSize: "14px", color: "#5a5a5a", lineHeight: 1.55 }}>{step.desc}</p>
                 </div>
               </div>
@@ -466,10 +466,10 @@ export default function CvReviewPage() {
       <section id="pricing" style={{ background: "#f5f0e8" }} className="px-8 py-16 sm:px-20 sm:py-24">
         <div className="max-w-[1280px] mx-auto">
           <div className="text-center mb-12">
-            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#1a7a6d" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "hsl(var(--primary))" }}>
               PRICING
             </p>
-            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "#1a3a2e" }}>
+            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "hsl(var(--foreground))" }}>
               Choose your review
             </h2>
             <p style={{ fontSize: "16px", color: "#5a5a5a", marginTop: "8px" }}>One-time payment · No subscription</p>
@@ -481,23 +481,23 @@ export default function CvReviewPage() {
               className="bg-white flex flex-col"
               style={{ borderRadius: "20px", padding: "36px 28px", border: "1.5px solid #e5dcc8" }}
             >
-              <div className="font-bold" style={{ fontSize: "22px", color: "#1a3a2e" }}>Quick Fix</div>
+              <div className="font-bold" style={{ fontSize: "22px", color: "hsl(var(--foreground))" }}>Quick Fix</div>
               <div style={{ fontSize: "13px", color: "#5a5a5a", marginTop: "4px" }}>For one job application</div>
               <div className="mt-4 mb-5">
-                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$14</span>
+                <span className="font-bold" style={{ fontSize: "44px", color: "hsl(var(--foreground))" }}>$14</span>
                 <span style={{ fontSize: "14px", color: "#5a5a5a", marginLeft: "6px" }}>one-time</span>
               </div>
               <ul className="space-y-3 flex-1 mb-6">
                 {["Human + expert review", "2 edit rounds", "24hr turnaround", "ATS optimised CV"].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "#1a3a2e" }}>
-                    <span style={{ color: "#065F46", marginTop: "1px" }}>✓</span>{f}
+                  <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "hsl(var(--foreground))" }}>
+                    <span style={{ color: "hsl(var(--primary))", marginTop: "1px" }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/cv-review/new"
                 className="block text-center font-semibold transition-colors hover:bg-[#f0f4fa]"
-                style={{ border: "1.5px solid #1E3A5F", color: "#1E3A5F", background: "white", borderRadius: "12px", padding: "12px", fontSize: "15px" }}
+                style={{ border: "1.5px solid hsl(var(--secondary))", color: "hsl(var(--secondary))", background: "white", borderRadius: "12px", padding: "12px", fontSize: "15px" }}
                 aria-label="Get started with Quick Fix"
               >
                 Get started
@@ -507,31 +507,31 @@ export default function CvReviewPage() {
             {/* Job Hunter */}
             <div
               className="bg-white flex flex-col relative md:scale-[1.03]"
-              style={{ borderRadius: "20px", padding: "36px 28px", border: "2.5px solid #1a7a6d", boxShadow: "0 16px 48px rgba(26,122,109,0.18)" }}
+              style={{ borderRadius: "20px", padding: "36px 28px", border: "2.5px solid hsl(var(--primary))", boxShadow: "0 16px 48px rgba(255,94,89,0.18)" }}
             >
               <div
                 className="absolute left-1/2 font-bold uppercase"
-                style={{ top: "-14px", transform: "translateX(-50%)", background: "#1a7a6d", color: "white", padding: "6px 16px", borderRadius: "999px", fontSize: "12px", letterSpacing: "1.5px", whiteSpace: "nowrap" }}
+                style={{ top: "-14px", transform: "translateX(-50%)", background: "hsl(var(--primary))", color: "white", padding: "6px 16px", borderRadius: "999px", fontSize: "12px", letterSpacing: "1.5px", whiteSpace: "nowrap" }}
               >
                 MOST POPULAR
               </div>
-              <div className="font-bold" style={{ fontSize: "22px", color: "#1a3a2e" }}>Job Hunter</div>
+              <div className="font-bold" style={{ fontSize: "22px", color: "hsl(var(--foreground))" }}>Job Hunter</div>
               <div style={{ fontSize: "13px", color: "#5a5a5a", marginTop: "4px" }}>For active job-seekers</div>
               <div className="mt-4 mb-5">
-                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$29</span>
+                <span className="font-bold" style={{ fontSize: "44px", color: "hsl(var(--foreground))" }}>$29</span>
                 <span style={{ fontSize: "14px", color: "#5a5a5a", marginLeft: "6px" }}>one-time</span>
               </div>
               <ul className="space-y-3 flex-1 mb-6">
                 {["Full CV rewrite", "5 edit rounds", "ATS optimisation report", "Multi-role tailoring", "Template recommendations"].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "#1a3a2e" }}>
-                    <span style={{ color: "#065F46", marginTop: "1px" }}>✓</span>{f}
+                  <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "hsl(var(--foreground))" }}>
+                    <span style={{ color: "hsl(var(--primary))", marginTop: "1px" }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/cv-review/new"
                 className="block text-center font-semibold text-white transition-colors hover:opacity-90"
-                style={{ background: "#065F46", borderRadius: "12px", padding: "12px", fontSize: "15px" }}
+                style={{ background: "hsl(var(--primary))", borderRadius: "12px", padding: "12px", fontSize: "15px" }}
                 aria-label="Get started with Job Hunter"
               >
                 Get started
@@ -545,31 +545,31 @@ export default function CvReviewPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="font-bold" style={{ fontSize: "22px", color: "#1a3a2e" }}>Career Upgrade</div>
+                  <div className="font-bold" style={{ fontSize: "22px", color: "hsl(var(--foreground))" }}>Career Upgrade</div>
                   <div style={{ fontSize: "13px", color: "#5a5a5a", marginTop: "4px" }}>For senior or career-switch roles</div>
                 </div>
                 <div
                   className="font-bold shrink-0 ml-3"
-                  style={{ background: "#1E3A5F", color: "white", padding: "4px 10px", borderRadius: "999px", fontSize: "10px", letterSpacing: "1.5px" }}
+                  style={{ background: "hsl(var(--secondary))", color: "white", padding: "4px 10px", borderRadius: "999px", fontSize: "10px", letterSpacing: "1.5px" }}
                 >
                   PREMIUM
                 </div>
               </div>
               <div className="mt-4 mb-5">
-                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$49</span>
+                <span className="font-bold" style={{ fontSize: "44px", color: "hsl(var(--foreground))" }}>$49</span>
                 <span style={{ fontSize: "14px", color: "#5a5a5a", marginLeft: "6px" }}>one-time</span>
               </div>
               <ul className="space-y-3 flex-1 mb-6">
                 {["Unlimited edits", "Priority turnaround", "Personal career advice", "Advanced ATS optimisation", "Cover letter included"].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "#1a3a2e" }}>
-                    <span style={{ color: "#065F46", marginTop: "1px" }}>✓</span>{f}
+                  <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "hsl(var(--foreground))" }}>
+                    <span style={{ color: "hsl(var(--primary))", marginTop: "1px" }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/cv-review/new"
                 className="block text-center font-semibold text-white transition-colors hover:opacity-90"
-                style={{ background: "#1E3A5F", borderRadius: "12px", padding: "12px", fontSize: "15px" }}
+                style={{ background: "hsl(var(--secondary))", borderRadius: "12px", padding: "12px", fontSize: "15px" }}
                 aria-label="Get started with Career Upgrade"
               >
                 Get started
@@ -589,7 +589,7 @@ export default function CvReviewPage() {
           <div className="text-center mb-10">
             <div
               className="inline-flex items-center px-3 py-1.5 rounded-full font-bold uppercase"
-              style={{ background: "rgba(52,211,153,0.18)", color: "#34D399", fontSize: "12px", letterSpacing: "2px" }}
+              style={{ background: "rgba(52,211,153,0.18)", color: "hsl(var(--accent))", fontSize: "12px", letterSpacing: "2px" }}
             >
               OUR GUARANTEE
             </div>
@@ -598,7 +598,7 @@ export default function CvReviewPage() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 mb-10">
             <div
               className="flex flex-col items-center justify-center text-white shrink-0"
-              style={{ width: "200px", height: "200px", borderRadius: "50%", background: "linear-gradient(135deg, #34D399, #065F46)", border: "6px solid rgba(52,211,153,0.2)" }}
+              style={{ width: "200px", height: "200px", borderRadius: "50%", background: "linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary)))", border: "6px solid hsl(var(--accent) / 0.2)" }}
             >
               <span className="font-bold leading-none" style={{ fontSize: "60px" }}>80+</span>
               <span style={{ fontSize: "11px", letterSpacing: "2px", marginTop: "6px" }}>ATS SCORE</span>
@@ -608,7 +608,7 @@ export default function CvReviewPage() {
               <h2 className="font-bold text-white" style={{ fontSize: "clamp(26px, 3.5vw, 40px)", lineHeight: 1.15, letterSpacing: "-1px", marginBottom: "16px" }}>
                 Hit 80+ or we keep working — for free.
               </h2>
-              <p style={{ fontSize: "17px", color: "#b8d4c8", lineHeight: 1.55 }}>
+              <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>
                 If your CV doesn&apos;t reach 80+ ATS score after our review, we&apos;ll keep improving it at no extra cost. No questions asked.
               </p>
             </div>
@@ -619,11 +619,11 @@ export default function CvReviewPage() {
               className="inline-flex items-center justify-center flex-wrap"
               style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "999px", padding: "14px 28px", gap: "8px 16px" }}
             >
-              <span style={{ fontSize: "13px", color: "#b8d4c8" }}>One-time payment</span>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)" }}>One-time payment</span>
               <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
-              <span style={{ fontSize: "13px", color: "#b8d4c8" }}>No subscription</span>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)" }}>No subscription</span>
               <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
-              <span style={{ fontSize: "13px", color: "#b8d4c8" }}>7-day refund</span>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)" }}>7-day refund</span>
             </div>
           </div>
         </div>
@@ -633,10 +633,10 @@ export default function CvReviewPage() {
       <section style={{ background: "#f5f0e8" }} className="px-8 py-16 sm:px-20 sm:py-24">
         <div className="max-w-[1280px] mx-auto">
           <div className="text-center mb-12">
-            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "#1a7a6d" }}>
+            <p style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "hsl(var(--primary))" }}>
               TESTIMONIALS
             </p>
-            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "#1a3a2e" }}>
+            <h2 className="mt-3 font-extrabold" style={{ fontSize: "clamp(30px, 4vw, 44px)", letterSpacing: "-1.5px", color: "hsl(var(--foreground))" }}>
               What our users say
             </h2>
           </div>
@@ -652,12 +652,12 @@ export default function CvReviewPage() {
                   <span style={{ color: "#f59e0b", fontSize: "16px" }} aria-label="5 out of 5 stars">★★★★★</span>
                   <span
                     className="font-bold uppercase"
-                    style={{ fontSize: "11px", letterSpacing: "1px", color: "#1E3A5F", background: "#e8eef5", padding: "3px 8px", borderRadius: "4px" }}
+                    style={{ fontSize: "11px", letterSpacing: "1px", color: "hsl(var(--secondary))", background: "#e8eef5", padding: "3px 8px", borderRadius: "4px" }}
                   >
                     EARLY USER
                   </span>
                 </div>
-                <p style={{ fontSize: "15px", color: "#1a3a2e", lineHeight: 1.6, marginBottom: "24px" }}>
+                <p style={{ fontSize: "15px", color: "hsl(var(--foreground))", lineHeight: 1.6, marginBottom: "24px" }}>
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
@@ -668,7 +668,7 @@ export default function CvReviewPage() {
                     {t.initials}
                   </div>
                   <div>
-                    <div className="font-bold" style={{ fontSize: "14px", color: "#1a3a2e" }}>{t.name}</div>
+                    <div className="font-bold" style={{ fontSize: "14px", color: "hsl(var(--foreground))" }}>{t.name}</div>
                     <div style={{ fontSize: "12px", color: "#5a5a5a" }}>{t.role}</div>
                   </div>
                 </div>
@@ -687,20 +687,20 @@ export default function CvReviewPage() {
           <h2 className="font-bold text-white" style={{ fontSize: "clamp(30px, 4.5vw, 48px)", lineHeight: 1.1, letterSpacing: "-1.5px", marginBottom: "16px" }}>
             Stop getting rejected<br />by ATS systems.
           </h2>
-          <p style={{ fontSize: "19px", color: "#b8d4c8", marginBottom: "36px" }}>
+          <p style={{ fontSize: "19px", color: "rgba(255,255,255,0.55)", marginBottom: "36px" }}>
             Get your CV reviewed by industry experts in 24 hours.
           </p>
           <Link
             href="/cv-review/new"
-            className="inline-block font-semibold transition-colors bg-[#34D399] hover:bg-[#6ee0b4]"
-            style={{ color: "#0a4a37", padding: "16px 32px", borderRadius: "999px", fontSize: "17px" }}
+            className="inline-block font-semibold transition-colors bg-accent hover:bg-accent/80"
+            style={{ color: "hsl(var(--foreground))", padding: "16px 32px", borderRadius: "999px", fontSize: "17px" }}
           >
             Get your CV reviewed →
           </Link>
           <div className="flex flex-wrap justify-center mt-8" style={{ gap: "12px 28px" }}>
             {["24-hour turnaround", "500+ CVs reviewed", "Built for UAE & global roles", "Real human experts — not just AI"].map((item) => (
-              <div key={item} className="flex items-center gap-2" style={{ fontSize: "14px", color: "#b8d4c8" }}>
-                <span style={{ color: "#34D399" }}>✓</span>{item}
+              <div key={item} className="flex items-center gap-2" style={{ fontSize: "14px", color: "rgba(255,255,255,0.55)" }}>
+                <span style={{ color: "hsl(var(--accent))" }}>✓</span>{item}
               </div>
             ))}
           </div>

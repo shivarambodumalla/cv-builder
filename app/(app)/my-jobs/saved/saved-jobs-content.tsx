@@ -83,7 +83,7 @@ export function SavedJobsContent({ activeJobs, expiredJobs }: SavedJobsContentPr
             Browse jobs and tap the heart icon to save listings for later.
           </p>
           <Link href="/my-jobs">
-            <Button size="sm" className="mt-2 bg-[#065F46] hover:bg-[#065F46]/90 text-white">
+            <Button size="sm" className="mt-2 bg-primary hover:bg-primary/90 text-white">
               Browse Jobs
             </Button>
           </Link>

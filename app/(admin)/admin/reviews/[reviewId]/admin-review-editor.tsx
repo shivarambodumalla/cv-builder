@@ -44,7 +44,7 @@ interface Props {
 const STATUS_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
   pending: { label: "Pending", bg: "#FEF3C7", color: "#92400E" },
   in_progress: { label: "In progress", bg: "#EFF6FF", color: "#1D4ED8" },
-  completed: { label: "Complete", bg: "#F0FDF4", color: "#065F46" },
+  completed: { label: "Complete", bg: "hsl(var(--primary) / 0.08)", color: "hsl(var(--primary))" },
   cancelled: { label: "Cancelled", bg: "#FEF2F2", color: "#991B1B" },
 };
 
@@ -169,7 +169,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
         )}
 
         <div className="space-y-2">
-          <button onClick={() => setShowFeedbackModal(true)} className="w-full py-2 rounded-lg text-xs font-semibold text-white" style={{ background: "#065F46" }}>
+          <button onClick={() => setShowFeedbackModal(true)} className="w-full py-2 rounded-lg text-xs font-semibold text-white" style={{ background: "hsl(var(--primary))" }}>
             Send feedback
           </button>
           {currentStatus !== "completed" && (
@@ -188,8 +188,8 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
                 <div className="font-medium">v{f.version_number} — {f.uploaded_by === "admin" ? "Admin" : "User"}</div>
                 <div className="text-muted-foreground truncate">{f.file_name || "file"}</div>
                 <div className="flex gap-2 mt-1">
-                  <a href={f.file_url} target="_blank" rel="noreferrer" className="text-[#065F46] hover:underline">View</a>
-                  <a href={f.file_url} download={f.file_name || "cv"} className="text-[#065F46] hover:underline">Download</a>
+                  <a href={f.file_url} target="_blank" rel="noreferrer" className="text-primary hover:underline">View</a>
+                  <a href={f.file_url} download={f.file_name || "cv"} className="text-primary hover:underline">Download</a>
                 </div>
               </div>
             ))}
@@ -204,7 +204,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
           <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ background: "#FEF3C7", color: "#92400E" }}>Editing as admin</span>
           {files.length > 0 && (
             <a href={files[files.length - 1]?.file_url} target="_blank" rel="noreferrer"
-              className="px-3 py-1 rounded text-xs font-medium text-white" style={{ background: "#065F46" }}>
+              className="px-3 py-1 rounded text-xs font-medium text-white" style={{ background: "hsl(var(--primary))" }}>
               Open latest CV
             </a>
           )}
@@ -226,7 +226,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
                   </div>
                   <div className="flex gap-2">
                     <a href={f.file_url} target="_blank" rel="noreferrer" className="px-3 py-1.5 rounded text-xs border hover:bg-muted/50">View</a>
-                    <a href={f.file_url} download={f.file_name || "cv"} className="px-3 py-1.5 rounded text-xs font-semibold text-white" style={{ background: "#065F46" }}>Download</a>
+                    <a href={f.file_url} download={f.file_name || "cv"} className="px-3 py-1.5 rounded text-xs font-semibold text-white" style={{ background: "hsl(var(--primary))" }}>Download</a>
                   </div>
                 </div>
               ))}
@@ -241,7 +241,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
         <div className="flex border-b">
           {(["suggestions", "conversation"] as const).map((tab) => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-3 text-xs font-semibold capitalize transition-colors ${activeTab === tab ? "border-b-2 border-[#065F46] text-[#065F46]" : "text-muted-foreground hover:text-foreground"}`}>
+              className={`flex-1 py-3 text-xs font-semibold capitalize transition-colors ${activeTab === tab ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}>
               {tab === "suggestions" ? `AI Suggestions (${suggestions.length})` : "Conversation"}
             </button>
           ))}
@@ -303,7 +303,7 @@ function SuggestionsPanel({ suggestions, onUpdate, onRunAI, aiLoading, acceptedC
     <div className="space-y-3">
       <button onClick={onRunAI} disabled={aiLoading}
         className="w-full py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-60 transition-opacity hover:opacity-90"
-        style={{ background: "#065F46" }}>
+        style={{ background: "hsl(var(--primary))" }}>
         {aiLoading ? "Analysing..." : "Analyse CV with AI →"}
       </button>
 
@@ -323,7 +323,7 @@ function SuggestionsPanel({ suggestions, onUpdate, onRunAI, aiLoading, acceptedC
       {/* Accepted (collapsed) */}
       {accepted.length > 0 && (
         <details className="text-xs">
-          <summary className="cursor-pointer font-semibold py-2 text-[#065F46]">Applied to CV ({accepted.length})</summary>
+          <summary className="cursor-pointer font-semibold py-2 text-primary">Applied to CV ({accepted.length})</summary>
           <ul className="mt-1 space-y-1 pl-2">
             {accepted.map((s) => <li key={s.id} className="flex gap-1"><span style={{ color: "#059669" }}>✓</span><span>{s.suggestion_text}</span></li>)}
           </ul>
@@ -348,7 +348,7 @@ function SuggestionCard({ s, noteValue, onNoteChange, onAccept, onReject, onNeed
   onAccept: () => void; onReject: () => void; onNeedsInput: () => void;
 }) {
   const [showNote, setShowNote] = useState(false);
-  const SECTION_COLORS: Record<string, string> = { experience: "#EFF6FF", skills: "#F0FDF4", education: "#FEF3C7", contact: "#FDF4FF", summary: "#FFF7ED" };
+  const SECTION_COLORS: Record<string, string> = { experience: "#EFF6FF", skills: "hsl(var(--primary) / 0.06)", education: "#FEF3C7", contact: "#FDF4FF", summary: "#FFF7ED" };
   return (
     <div className="rounded-xl border p-3 text-xs space-y-2">
       <div className="flex items-center gap-2 flex-wrap">
@@ -363,7 +363,7 @@ function SuggestionCard({ s, noteValue, onNoteChange, onAccept, onReject, onNeed
         <span>Confidence {s.confidence_score}%</span>
       </div>
       <div className="flex gap-1.5 flex-wrap">
-        <button onClick={onAccept} className="px-2.5 py-1 rounded-lg text-white text-[10px] font-semibold" style={{ background: "#065F46" }}>✓ Accept</button>
+        <button onClick={onAccept} className="px-2.5 py-1 rounded-lg text-white text-[10px] font-semibold" style={{ background: "hsl(var(--primary))" }}>✓ Accept</button>
         <button onClick={onReject} className="px-2.5 py-1 rounded-lg border text-[10px] font-semibold hover:bg-muted/50">✗ Reject</button>
         <button onClick={() => setShowNote(!showNote)} className="px-2.5 py-1 rounded-lg text-[10px] font-semibold" style={{ background: "#FEF3C7", color: "#92400E" }}>⏳ Needs input</button>
       </div>
@@ -437,8 +437,8 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
           const qa = (msg.content as { question_answers?: { question: string; answer: string }[] }).question_answers;
           if (isUser && qa) {
             return (
-              <div key={msg.id} className="rounded-lg border p-3 text-xs space-y-2" style={{ background: "#F0FDF4", borderColor: "#D1FAE5" }}>
-                <p className="font-semibold" style={{ color: "#065F46" }}>User answered questions</p>
+              <div key={msg.id} className="rounded-lg border p-3 text-xs space-y-2" style={{ background: "hsl(var(--primary) / 0.06)", borderColor: "hsl(var(--primary) / 0.15)" }}>
+                <p className="font-semibold" style={{ color: "hsl(var(--primary))" }}>User answered questions</p>
                 {qa.map((item, i) => (
                   <div key={i} className="border-t pt-2 first:border-t-0 first:pt-0">
                     <p className="font-medium">{item.question}</p>
@@ -452,7 +452,7 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
           const isAdmin = msg.sender_type === "admin";
           return (
             <div key={msg.id} className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}>
-              <div className="max-w-[80%] px-3 py-2 text-xs rounded-xl" style={{ background: isAdmin ? "#065F46" : "#F7F5F0", color: isAdmin ? "white" : undefined }}>
+              <div className="max-w-[80%] px-3 py-2 text-xs rounded-xl" style={{ background: isAdmin ? "hsl(var(--primary))" : "#F7F5F0", color: isAdmin ? "white" : undefined }}>
                 {(msg.content as { text?: string; summary?: string }).text || (msg.content as { summary?: string }).summary || "[feedback]"}
               </div>
             </div>
@@ -491,13 +491,13 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
       )}
 
       <div className="space-y-2">
-        <textarea value={adminText} onChange={(e) => onTextChange(e.target.value)} placeholder="Write feedback..." rows={3} className="w-full border rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30" />
+        <textarea value={adminText} onChange={(e) => onTextChange(e.target.value)} placeholder="Write feedback..." rows={3} className="w-full border rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
         <div className="flex gap-2 flex-wrap">
           <button onClick={onSend} disabled={sendingMsg || !adminText.trim()} className="flex-1 py-2 rounded-lg text-xs font-semibold border hover:bg-muted/50 disabled:opacity-50">Send message</button>
           <button onClick={() => setShowQuestionForm(!showQuestionForm)} className="flex-1 py-2 rounded-lg text-xs font-semibold border hover:bg-amber-50" style={{ color: "#92400E", borderColor: "#F59E0B" }}>
             Ask questions
           </button>
-          <button onClick={onOpenFeedback} className="w-full py-2 rounded-lg text-xs font-semibold text-white" style={{ background: "#065F46" }}>Send final feedback</button>
+          <button onClick={onOpenFeedback} className="w-full py-2 rounded-lg text-xs font-semibold text-white" style={{ background: "hsl(var(--primary))" }}>Send final feedback</button>
         </div>
       </div>
     </div>
@@ -552,15 +552,15 @@ function FeedbackModal({ reviewId, acceptedChanges, pendingItems, templates, onC
           <div className="p-5 space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1.5">Expert summary</label>
-              <textarea value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="Write your summary of changes and recommendations" rows={4} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30" />
+              <textarea value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="Write your summary of changes and recommendations" rows={4} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Accepted changes (one per line)</label>
-              <textarea value={accepted} onChange={(e) => setAccepted(e.target.value)} rows={4} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30" />
+              <textarea value={accepted} onChange={(e) => setAccepted(e.target.value)} rows={4} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Items needing user input (one per line)</label>
-              <textarea value={pending} onChange={(e) => setPending(e.target.value)} rows={3} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30" />
+              <textarea value={pending} onChange={(e) => setPending(e.target.value)} rows={3} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Primary template recommendation</label>
@@ -571,7 +571,7 @@ function FeedbackModal({ reviewId, acceptedChanges, pendingItems, templates, onC
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Template reasoning</label>
-              <textarea value={templateReasoning} onChange={(e) => setTemplateReasoning(e.target.value)} placeholder="Why this template works for this candidate..." rows={2} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30" />
+              <textarea value={templateReasoning} onChange={(e) => setTemplateReasoning(e.target.value)} placeholder="Why this template works for this candidate..." rows={2} className="w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">Alternative templates</label>
@@ -584,7 +584,7 @@ function FeedbackModal({ reviewId, acceptedChanges, pendingItems, templates, onC
                 ))}
               </div>
             </div>
-            <button onClick={send} disabled={sending || !summary.trim()} className="w-full py-3 rounded-lg font-semibold text-white disabled:opacity-60" style={{ background: "#065F46" }}>
+            <button onClick={send} disabled={sending || !summary.trim()} className="w-full py-3 rounded-lg font-semibold text-white disabled:opacity-60" style={{ background: "hsl(var(--primary))" }}>
               {sending ? "Sending..." : "Send feedback to user →"}
             </button>
           </div>

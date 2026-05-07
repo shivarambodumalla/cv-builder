@@ -28,7 +28,7 @@ interface Props {
 const STATUS_CONFIG = {
   pending: { label: "Awaiting review", color: "#92400E", bg: "#FEF3C7", border: "#F59E0B" },
   in_progress: { label: "In progress", color: "#1D4ED8", bg: "#EFF6FF", border: "#2563EB" },
-  completed: { label: "Complete", color: "#065F46", bg: "#F0FDF4", border: "#10B981" },
+  completed: { label: "Complete", color: "hsl(var(--primary))", bg: "hsl(var(--primary) / 0.08)", border: "hsl(var(--success))" },
   cancelled: { label: "Cancelled", color: "#991B1B", bg: "#FEF2F2", border: "#EF4444" },
 };
 
@@ -136,7 +136,7 @@ export function ExpertReviewPanel({ reviewId, targetRole, status, messages }: Pr
                 {!isUser && (
                   <div
                     className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-                    style={{ background: "#065F46" }}
+                    style={{ background: "hsl(var(--primary))" }}
                   >
                     CE
                   </div>
@@ -144,7 +144,7 @@ export function ExpertReviewPanel({ reviewId, targetRole, status, messages }: Pr
                 <div
                   className="max-w-[80%] px-3 py-2 text-xs leading-relaxed"
                   style={{
-                    background: isUser ? "#065F46" : "hsl(var(--muted))",
+                    background: isUser ? "hsl(var(--primary))" : "hsl(var(--muted))",
                     color: isUser ? "white" : undefined,
                     borderRadius: isUser ? "10px 2px 10px 10px" : "2px 10px 10px 10px",
                   }}

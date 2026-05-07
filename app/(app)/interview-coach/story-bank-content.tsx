@@ -365,7 +365,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 const allFilled = [story.situation, story.task, story.action, story.result].every(starCompleteness);
                 const isReady = story.quality_score >= 7 && allFilled;
                 return (
-                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 flex flex-col gap-2.5 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
+                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(255,94,89,0.15)] rounded-xl p-4 flex flex-col gap-2.5 cursor-pointer hover:border-[rgba(255,94,89,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
                     {/* Title + Score */}
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-[13px] font-medium text-[#0C1A0E] truncate flex-1">{story.title}</p>
@@ -377,7 +377,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                     <div className="flex items-center gap-1.5">
                       {(["S", "T", "A", "R"] as const).map((letter, i) => {
                         const filled = starCompleteness([story.situation, story.task, story.action, story.result][i]);
-                        return <span key={letter} className={`inline-flex items-center justify-center w-[22px] h-[22px] rounded-md text-[10px] font-bold ${filled ? "bg-[#065F46] text-white" : "bg-[rgba(6,95,70,0.10)] text-[#065F46]"}`}>{letter}</span>;
+                        return <span key={letter} className={`inline-flex items-center justify-center w-[22px] h-[22px] rounded-md text-[10px] font-bold ${filled ? "bg-primary text-white" : "bg-[rgba(255,94,89,0.10)] text-primary"}`}>{letter}</span>;
                       })}
                       <span className={`ml-auto rounded-full px-2.5 py-0.5 text-[10px] font-medium ${isReady ? "bg-success/15 text-success" : "bg-warning/15 text-warning"}`}>
                         {isReady ? "Ready" : "Draft"}
@@ -386,14 +386,14 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                     {/* Theme chips */}
                     {story.tags?.length > 0 && (
                       <div className="flex flex-wrap gap-1">
-                        {story.tags.slice(0, 3).map((tag) => <span key={tag} className="rounded-full bg-[rgba(6,95,70,0.07)] text-[#065F46] px-2 py-0.5 text-[10px] font-medium">{tag}</span>)}
+                        {story.tags.slice(0, 3).map((tag) => <span key={tag} className="rounded-full bg-[rgba(255,94,89,0.07)] text-primary px-2 py-0.5 text-[10px] font-medium">{tag}</span>)}
                         {story.tags.length > 3 && <span className="text-[10px] text-[#9CA3AF]">+{story.tags.length - 3}</span>}
                       </div>
                     )}
                     {/* Excerpt */}
                     {story.situation && <p className="text-[11px] text-[#78716C] line-clamp-2">{truncate(story.situation, 80)}</p>}
                     {/* Divider */}
-                    <div className="h-px bg-[rgba(6,95,70,0.10)]" />
+                    <div className="h-px bg-[rgba(255,94,89,0.10)]" />
                     {/* Footer */}
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] text-[#9CA3AF]">{new Date(story.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
@@ -417,22 +417,22 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 const allFilled = [story.situation, story.task, story.action, story.result].every(starCompleteness);
                 const isReady = story.quality_score >= 7 && allFilled;
                 return (
-                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
+                  <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(255,94,89,0.15)] rounded-xl p-4 cursor-pointer hover:border-[rgba(255,94,89,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                       {/* STAR letters */}
                       <div className="flex gap-0.5 shrink-0">
                         {(["S", "T", "A", "R"] as const).map((letter, i) => {
                           const filled = starCompleteness([story.situation, story.task, story.action, story.result][i]);
-                          return <span key={letter} className={`inline-flex items-center justify-center w-[18px] h-[18px] rounded-md text-[9px] font-bold ${filled ? "bg-[#065F46] text-white" : "bg-[rgba(6,95,70,0.10)] text-[#065F46]"}`}>{letter}</span>;
+                          return <span key={letter} className={`inline-flex items-center justify-center w-[18px] h-[18px] rounded-md text-[9px] font-bold ${filled ? "bg-primary text-white" : "bg-[rgba(255,94,89,0.10)] text-primary"}`}>{letter}</span>;
                         })}
                       </div>
                       {/* Vertical divider */}
-                      <div className="hidden sm:block w-px h-9 bg-[rgba(6,95,70,0.12)]" />
+                      <div className="hidden sm:block w-px h-9 bg-[rgba(255,94,89,0.12)]" />
                       {/* Info */}
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] font-medium text-[#0C1A0E] truncate">{story.title}</p>
                         <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                          {story.tags?.slice(0, 2).map((tag) => <span key={tag} className="rounded-full bg-[rgba(6,95,70,0.07)] text-[#065F46] px-2 py-0.5 text-[10px] font-medium">{tag}</span>)}
+                          {story.tags?.slice(0, 2).map((tag) => <span key={tag} className="rounded-full bg-[rgba(255,94,89,0.07)] text-primary px-2 py-0.5 text-[10px] font-medium">{tag}</span>)}
                           {story.tags?.length > 0 && <span className="text-[#D1D5DB] text-[10px]">&middot;</span>}
                           <span className="text-[10px] text-[#9CA3AF]">{new Date(story.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
                         </div>
@@ -471,7 +471,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
 
           {/* Step cards */}
           <div className="relative mb-3">
-            <div className="hidden md:block absolute top-[18px] left-[calc(16.67%+10px)] right-[calc(16.67%+10px)] h-px bg-[rgba(6,95,70,0.15)] z-0" />
+            <div className="hidden md:block absolute top-[18px] left-[calc(16.67%+10px)] right-[calc(16.67%+10px)] h-px bg-[rgba(255,94,89,0.15)] z-0" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
               {[
                 {
@@ -479,7 +479,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                   title: "Scan your sources",
                   body: "Add your CV, portfolio or GitHub. AI finds your best achievements.",
                   proofLabel: "Parsed in seconds",
-                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded px-1.5 py-0.5 text-[10px] font-medium">14 experiences found</span>,
+                  proof: <span className="inline-block bg-primary/10 text-primary rounded px-1.5 py-0.5 text-[10px] font-medium">14 experiences found</span>,
                 },
                 {
                   icon: Wand2,
@@ -488,7 +488,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                   proofLabel: "Answer quality score",
                   proof: (
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1 rounded-full bg-[rgba(6,95,70,0.1)]"><div className="h-1 rounded-full bg-[#059669]" style={{ width: "80%" }} /></div>
+                      <div className="flex-1 h-1 rounded-full bg-[rgba(255,94,89,0.1)]"><div className="h-1 rounded-full bg-[#059669]" style={{ width: "80%" }} /></div>
                       <span className="text-[10px] font-medium text-[#059669]">8/10</span>
                     </div>
                   ),
@@ -498,16 +498,16 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                   title: "Ace your interviews",
                   body: "Paste a JD before any interview. Get your most relevant stories.",
                   proofLabel: "Top match for this role",
-                  proof: <p className="text-[10px] text-[#065F46] font-medium truncate">#1 Improving Engagement — 94%</p>,
+                  proof: <p className="text-[10px] text-primary font-medium truncate">#1 Improving Engagement — 94%</p>,
                 },
               ].map((s) => (
-                <div key={s.title} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-3.5 flex flex-col items-center gap-2 relative z-10">
-                  <div className="w-9 h-9 bg-[#065F46] rounded-full flex items-center justify-center shrink-0">
+                <div key={s.title} className="bg-[#F7F5F0] border border-[rgba(255,94,89,0.15)] rounded-xl p-3.5 flex flex-col items-center gap-2 relative z-10">
+                  <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center shrink-0">
                     <s.icon size={15} className="text-white" />
                   </div>
                   <p className="text-xs font-medium text-[#0C1A0E] text-center">{s.title}</p>
                   <p className="text-[11px] text-[#78716C] text-center leading-relaxed">{s.body}</p>
-                  <div className="bg-white border border-[rgba(6,95,70,0.12)] rounded-lg p-2 w-full mt-1">
+                  <div className="bg-white border border-[rgba(255,94,89,0.12)] rounded-lg p-2 w-full mt-1">
                     <p className="text-[9px] text-[#9CA3AF] uppercase tracking-wide mb-1">{s.proofLabel}</p>
                     {s.proof}
                   </div>
@@ -523,11 +523,11 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
               { quote: "\u201cI prep for hours then get asked something different and freeze.\u201d", resolve: "8 themes covered, always ready" },
               { quote: "\u201cI give the same stories for every role even when they\u2019re not the best fit.\u201d", resolve: "Role-matched story shortlist" },
             ].map((p) => (
-              <div key={p.resolve} className="bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] rounded-xl p-3">
+              <div key={p.resolve} className="bg-[rgba(255,94,89,0.05)] border border-[rgba(255,94,89,0.10)] rounded-xl p-3">
                 <p className="text-[10px] text-[#78716C] italic leading-relaxed mb-2">{p.quote}</p>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-[#065F46] rounded-full shrink-0" />
-                  <p className="text-[10px] font-medium text-[#065F46]">{p.resolve}</p>
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full shrink-0" />
+                  <p className="text-[10px] font-medium text-primary">{p.resolve}</p>
                 </div>
               </div>
             ))}

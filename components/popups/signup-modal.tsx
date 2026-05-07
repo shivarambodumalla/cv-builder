@@ -187,7 +187,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
           <div className="hidden sm:flex fixed inset-0 z-[100] items-center justify-center bg-black/50" onClick={handleDismiss}>
             <div className="w-[460px] rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
               {/* Green header */}
-              <div className="bg-[#065F46] rounded-t-2xl px-8 pt-8 pb-6 relative">
+              <div className="bg-primary rounded-t-2xl px-8 pt-8 pb-6 relative">
                 <button onClick={handleDismiss} className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-xl bg-black/20 text-white/80 hover:bg-black/30 hover:text-white transition-colors">
                   <X className="h-4.5 w-4.5" />
                 </button>
@@ -195,7 +195,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
                     <FileText className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-white text-base font-bold tracking-tight">CV<span className="text-[#34D399]">Edge</span></span>
+                  <span className="text-white text-base font-bold tracking-tight">CV<span className="text-accent">Edge</span></span>
                 </div>
                 <h2 className="text-2xl font-bold text-white leading-tight">{title}</h2>
                 <p className="text-sm text-white/50 mt-1.5">{subtitle}</p>
@@ -263,7 +263,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
           <div className="sm:hidden fixed inset-0 z-[100] flex items-end bg-black/50" onClick={handleDismiss}>
             <div className="w-full rounded-t-2xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300" onClick={(e) => e.stopPropagation()}>
               {/* Green header */}
-              <div className="bg-[#065F46] px-6 pt-6 pb-5 relative">
+              <div className="bg-primary px-6 pt-6 pb-5 relative">
                 <button onClick={handleDismiss} className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-xl bg-black/20 text-white/80 hover:bg-black/30 transition-colors">
                   <X className="h-4 w-4" />
                 </button>
@@ -271,7 +271,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15">
                     <FileText className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-white text-base font-bold">CV<span className="text-[#34D399]">Edge</span></span>
+                  <span className="text-white text-base font-bold">CV<span className="text-accent">Edge</span></span>
                 </div>
                 <h2 className="text-xl font-bold text-white leading-tight">{title}</h2>
                 <p className="text-sm text-white/50 mt-1">{subtitle}</p>
