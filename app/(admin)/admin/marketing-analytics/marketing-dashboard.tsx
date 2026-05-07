@@ -314,47 +314,75 @@ function StatCard({
 }
 
 function TrendChart({ trend }: { trend: TrendPoint[] }) {
-  const [metric, setMetric] = useState<"clicks" | "impressions">("clicks");
-  const maxVal = Math.max(...trend.map((d) => d[metric]), 1);
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  const maxClicks = Math.max(...trend.map((d) => d.clicks), 1);
+  const maxImpressions = Math.max(...trend.map((d) => d.impressions), 1);
+  const totalClicks = trend.reduce((s, d) => s + d.clicks, 0);
+  const totalImpressions = trend.reduce((s, d) => s + d.impressions, 0);
 
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold">Daily trend</h3>
-        <div className="flex gap-1 rounded-lg bg-muted p-0.5">
-          {(["clicks", "impressions"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMetric(m)}
-              className={cn(
-                "rounded-md px-2.5 py-1 text-xs capitalize transition-colors",
-                metric === m
-                  ? "bg-background shadow-sm font-medium"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {m}
-            </button>
-          ))}
+        <div className="flex items-center gap-4 text-[11px]">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-primary opacity-80" />
+            <span className="text-muted-foreground">Clicks</span>
+            <span className="font-semibold tabular-nums">{fmt(totalClicks)}</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-blue-400 opacity-60" />
+            <span className="text-muted-foreground">Impressions</span>
+            <span className="font-semibold tabular-nums">{fmt(totalImpressions)}</span>
+          </span>
         </div>
       </div>
+
       {trend.length === 0 ? (
         <p className="text-sm text-muted-foreground py-6 text-center">No trend data yet.</p>
       ) : (
         <>
-          <div className="flex items-end gap-0.5 h-28">
-            {trend.map((d) => {
-              const h = Math.max(2, (d[metric] / maxVal) * 100);
+          <div className="relative flex items-end gap-0.5 h-32">
+            {trend.map((d, i) => {
+              const clickH = Math.max(2, (d.clicks / maxClicks) * 100);
+              const impH = Math.max(2, (d.impressions / maxImpressions) * 100);
+              const isHov = hovered === i;
               return (
                 <div
                   key={d.date}
-                  className="group relative flex-1"
-                  style={{ height: `${h}%` }}
+                  className="relative flex-1 h-full flex items-end cursor-default"
+                  onMouseEnter={() => setHovered(i)}
+                  onMouseLeave={() => setHovered(null)}
                 >
-                  <div className="w-full h-full rounded-t bg-primary opacity-70 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-popover border rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap z-10 shadow-sm">
-                    {fmtDate(d.date)}: {d[metric].toLocaleString()}
-                  </div>
+                  {/* Impressions — ghost background bar, own scale */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 rounded-t bg-blue-400 transition-opacity duration-100"
+                    style={{ height: `${impH}%`, opacity: isHov ? 0.35 : 0.18 }}
+                  />
+                  {/* Clicks — foreground bar, own scale */}
+                  <div
+                    className="relative z-10 w-full rounded-t bg-primary transition-opacity duration-100"
+                    style={{ height: `${clickH}%`, opacity: isHov ? 1 : 0.72 }}
+                  />
+                  {/* Tooltip */}
+                  {isHov && (
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-popover border rounded-lg px-2.5 py-2 text-[11px] whitespace-nowrap z-20 shadow-md pointer-events-none">
+                      <p className="font-semibold mb-1 text-foreground">{fmtDate(d.date)}</p>
+                      <div className="space-y-0.5">
+                        <p className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-sm bg-primary opacity-80 shrink-0" />
+                          <span className="text-muted-foreground">Clicks</span>
+                          <span className="font-medium text-foreground ml-auto pl-3 tabular-nums">{d.clicks.toLocaleString()}</span>
+                        </p>
+                        <p className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-sm bg-blue-400 opacity-60 shrink-0" />
+                          <span className="text-muted-foreground">Impressions</span>
+                          <span className="font-medium text-foreground ml-auto pl-3 tabular-nums">{d.impressions.toLocaleString()}</span>
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
