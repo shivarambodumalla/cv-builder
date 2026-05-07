@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import {
   Loader2,
   MousePointerClick,
@@ -11,6 +12,12 @@ import {
   Search,
   BarChart2,
   Settings,
+  Smartphone,
+  Monitor,
+  Tablet,
+  ArrowUp,
+  ArrowDown,
+  Minus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +29,12 @@ interface QueryRow {
   impressions: number;
   ctr: number;
   position: number;
+  prevPosition: number | null;
+  positionDelta: number | null;
+  page: string | null;
+  sessions: number | null;
+  engagementRate: number | null;
+  avgDuration: number | null;
 }
 
 interface PageRow {
@@ -44,6 +57,61 @@ interface Channel {
   newUsers: number;
 }
 
+interface GeoRow {
+  country: string;
+  countryCode: string;
+  sessions: number;
+  newUsers: number;
+  engagedSessions: number;
+}
+
+interface DeviceRow {
+  device: string;
+  sessions: number;
+  sharePercent: number;
+  engagementRate: number;
+  avgDuration: number;
+  pagesPerSession: number;
+  qualityScore: number;
+}
+
+interface NvRRow {
+  type: "new" | "returning";
+  sessions: number;
+  engagementRate: number;
+  avgDuration: number;
+  pagesPerSession: number;
+}
+
+interface SessionQualityRow {
+  channel: string;
+  sessions: number;
+  engagementRate: number;
+  avgDuration: number;
+  pagesPerSession: number;
+  bounceRate: number;
+  qualityScore: number;
+}
+
+interface LandingPageRow {
+  page: string;
+  sessions: number;
+  engagementRate: number;
+  avgDuration: number;
+  bounceRate: number;
+  newUsersPercent: number;
+}
+
+interface DayRow {
+  day: string;
+  sessions: number;
+}
+
+interface HourRow {
+  hour: number;
+  sessions: number;
+}
+
 interface Summary {
   totalClicks: number;
   totalImpressions: number;
@@ -60,6 +128,13 @@ interface Data {
   topPages: PageRow[];
   trend: TrendPoint[];
   channels: Channel[];
+  geo: GeoRow[];
+  devices: DeviceRow[];
+  newVsReturning: NvRRow[];
+  sessionQuality: SessionQualityRow[];
+  landingPages: LandingPageRow[];
+  dayOfWeek: DayRow[];
+  hourly: HourRow[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -73,7 +148,6 @@ const PRESETS: { key: Preset; label: string }[] = [
 ];
 
 function getRange(preset: Preset) {
-  // GSC has a 3–4 day lag, so end date is 3 days ago
   const to = new Date(Date.now() - 3 * 86400000);
   const from = new Date(to);
   if (preset === "7d") from.setDate(from.getDate() - 6);
@@ -97,17 +171,60 @@ function fmtDate(iso: string) {
   return new Date(iso + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function positionColor(pos: number) {
-  if (pos <= 3) return "text-success";
-  if (pos <= 10) return "text-warning";
-  return "text-muted-foreground";
+function fmtDuration(secs: number) {
+  if (secs < 60) return `${secs}s`;
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return s > 0 ? `${m}m ${s}s` : `${m}m`;
 }
 
 function positionBadge(pos: number) {
-  if (pos <= 3) return "bg-success/15 text-success";
-  if (pos <= 10) return "bg-warning/15 text-warning";
-  return "bg-muted text-muted-foreground";
+  if (pos <= 3) return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400";
+  if (pos <= 10) return "bg-amber-500/15 text-amber-700 dark:text-amber-500";
+  return "bg-slate-500/10 text-slate-600 dark:text-slate-400";
 }
+
+function qualityBadge(score: number) {
+  if (score >= 70) return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400";
+  if (score >= 40) return "bg-amber-500/15 text-amber-700 dark:text-amber-500";
+  return "bg-red-500/15 text-red-700 dark:text-red-400";
+}
+
+function qualityLabel(score: number) {
+  if (score >= 70) return "High";
+  if (score >= 40) return "Medium";
+  return "Low";
+}
+
+function countryFlag(code: string): string {
+  if (!code || code.length !== 2) return "🌐";
+  try {
+    return String.fromCodePoint(...[...code.toUpperCase()].map((c) => c.charCodeAt(0) + 127397));
+  } catch {
+    return "🌐";
+  }
+}
+
+// Topojson uses longer country names; map to what GA4 returns
+const TOPO_TO_GA4: Record<string, string> = {
+  "United States of America": "United States",
+  "Russian Federation": "Russia",
+  "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
+  "Korea, Republic of": "South Korea",
+  "Democratic People's Republic of Korea": "North Korea",
+  "Iran, Islamic Republic of": "Iran",
+  "Viet Nam": "Vietnam",
+  "Syrian Arab Republic": "Syria",
+  "Congo, Democratic Republic of the": "DR Congo",
+  "Tanzania, United Republic of": "Tanzania",
+  "Bolivia, Plurinational State of": "Bolivia",
+  "Venezuela, Bolivarian Republic of": "Venezuela",
+  "Moldova, Republic of": "Moldova",
+  "Lao People's Democratic Republic": "Laos",
+  "Taiwan, Province of China": "Taiwan",
+  "Palestine, State of": "Palestinian Territories",
+  "Trinidad and Tobago": "Trinidad & Tobago",
+};
 
 const CHANNEL_COLORS: Record<string, string> = {
   "Organic Search": "bg-primary",
@@ -117,11 +234,46 @@ const CHANNEL_COLORS: Record<string, string> = {
   "Email": "bg-amber-500",
   "Paid Search": "bg-orange-500",
   "Organic Video": "bg-red-500",
-  "(Other)": "bg-muted-foreground",
+};
+function channelColor(name: string) {
+  return CHANNEL_COLORS[name] ?? "bg-slate-400";
+}
+
+// ─── Intent classification ────────────────────────────────────────────────────
+
+type Intent =
+  | "transactional"
+  | "informational"
+  | "navigational"
+  | "comparison"
+  | "interview prep"
+  | "template";
+
+function classifyIntent(query: string): Intent {
+  const q = query.toLowerCase();
+  if (/cvedge|cv edge|thecvedge/.test(q)) return "navigational";
+  if (/template|format|sample resume|cv template|resume format|resume design/.test(q)) return "template";
+  if (/interview|behavioral|star method|tell me about|weakness|strengths|common question/.test(q))
+    return "interview prep";
+  if (/\bvs\b|versus|alternative|compare|best \d|top \d|review/.test(q)) return "comparison";
+  if (/how to|what is|what are|guide|tips|examples?|definition|meaning|why use/.test(q))
+    return "informational";
+  if (/checker|builder|maker|tool|generator|create|free|download|online|editor|scanner|analyzer/.test(q))
+    return "transactional";
+  return "informational";
+}
+
+const INTENT_STYLES: Record<Intent, string> = {
+  transactional: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
+  informational: "bg-slate-500/10 text-slate-600 dark:text-slate-400",
+  navigational: "bg-teal-500/15 text-teal-700 dark:text-teal-400",
+  comparison: "bg-orange-500/15 text-orange-700 dark:text-orange-400",
+  "interview prep": "bg-violet-500/15 text-violet-700 dark:text-violet-400",
+  template: "bg-amber-500/15 text-amber-700 dark:text-amber-500",
 };
 
-function channelColor(name: string) {
-  return CHANNEL_COLORS[name] ?? "bg-muted-foreground";
+function isBranded(query: string) {
+  return /cvedge|cv edge|thecvedge/.test(query.toLowerCase());
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -184,12 +336,10 @@ function TrendChart({ trend }: { trend: TrendPoint[] }) {
               return (
                 <div
                   key={d.date}
-                  className="group relative flex-1 flex flex-col items-center justify-end h-full"
+                  className="group relative flex-1"
+                  style={{ height: `${h}%` }}
                 >
-                  <div
-                    className="w-full rounded-t bg-primary/70 hover:bg-primary transition-colors min-h-[2px]"
-                    style={{ height: `${h}%` }}
-                  />
+                  <div className="w-full h-full rounded-t bg-primary opacity-70 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-popover border rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap z-10 shadow-sm">
                     {fmtDate(d.date)}: {d[metric].toLocaleString()}
                   </div>
@@ -220,20 +370,18 @@ function ChannelChart({ channels }: { channels: Channel[] }) {
             <div key={c.channel}>
               <div className="flex items-center justify-between text-xs mb-1">
                 <div className="flex items-center gap-2">
-                  <span
-                    className={cn("inline-block w-2 h-2 rounded-full", channelColor(c.channel))}
-                  />
+                  <span className={cn("inline-block w-2 h-2 rounded-full", channelColor(c.channel))} />
                   <span className="font-medium">{c.channel}</span>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground tabular-nums">
                   <span>{c.sessions.toLocaleString()} sessions</span>
-                  <span className="text-xs">{Math.round((c.sessions / total) * 100)}%</span>
+                  <span>{Math.round((c.sessions / total) * 100)}%</span>
                 </div>
               </div>
               <div className="h-1.5 rounded-full bg-muted overflow-hidden">
                 <div
-                  className={cn("h-full rounded-full", channelColor(c.channel))}
-                  style={{ width: `${(c.sessions / total) * 100}%`, opacity: 0.75 }}
+                  className={cn("h-full rounded-full opacity-75", channelColor(c.channel))}
+                  style={{ width: `${(c.sessions / total) * 100}%` }}
                 />
               </div>
             </div>
@@ -244,72 +392,690 @@ function ChannelChart({ channels }: { channels: Channel[] }) {
   );
 }
 
-function QueryTable({ rows }: { rows: QueryRow[] }) {
-  const [search, setSearch] = useState("");
-  const filtered = rows.filter((r) => r.query.toLowerCase().includes(search.toLowerCase()));
-  const maxClicks = Math.max(...rows.map((r) => r.clicks), 1);
+// ─── Geographic Intelligence ──────────────────────────────────────────────────
+
+const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+
+function WorldMap({ geo }: { geo: GeoRow[] }) {
+  const [tooltip, setTooltip] = useState<{
+    name: string;
+    sessions: number;
+    newUsers: number;
+    engagedSessions: number;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const sessionMap = new Map(geo.map((g) => [g.country, g]));
+  const maxSessions = Math.max(...geo.map((g) => g.sessions), 1);
+
+  function getColor(topoName: string): string {
+    const ga4Name = TOPO_TO_GA4[topoName] ?? topoName;
+    const data = sessionMap.get(ga4Name);
+    if (!data || data.sessions === 0) return "#e5e7eb";
+    const ratio = Math.log(data.sessions + 1) / Math.log(maxSessions + 1);
+    const lightness = Math.round(88 - ratio * 60);
+    return `hsl(173, 64%, ${lightness}%)`;
+  }
 
   return (
-    <div className="space-y-3">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Filter keywords…"
-          className="w-full pl-9 pr-3 py-2 text-sm border rounded-lg bg-background focus:outline-none focus:ring-1 focus:ring-ring"
-        />
+    <div className="relative select-none">
+      <ComposableMap
+        projectionConfig={{ scale: 140, center: [0, 10] }}
+        style={{ width: "100%", height: "auto" }}
+      >
+        <Geographies geography={GEO_URL}>
+          {({ geographies }) =>
+            geographies.map((geo) => {
+              const ga4Name = TOPO_TO_GA4[geo.properties.name] ?? geo.properties.name;
+              const data = sessionMap.get(ga4Name);
+              return (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  fill={getColor(geo.properties.name)}
+                  stroke="#ffffff"
+                  strokeWidth={0.4}
+                  style={{
+                    default: { outline: "none" },
+                    hover: { fill: "#1a7a6d", outline: "none", cursor: data ? "pointer" : "default" },
+                    pressed: { fill: "#155f54", outline: "none" },
+                  }}
+                  onMouseEnter={(e: React.MouseEvent) => {
+                    if (data) {
+                      setTooltip({
+                        name: ga4Name,
+                        sessions: data.sessions,
+                        newUsers: data.newUsers,
+                        engagedSessions: data.engagedSessions,
+                        x: e.clientX,
+                        y: e.clientY,
+                      });
+                    }
+                  }}
+                  onMouseMove={(e: React.MouseEvent) => {
+                    if (tooltip) setTooltip((t) => t && { ...t, x: e.clientX, y: e.clientY });
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                />
+              );
+            })
+          }
+        </Geographies>
+      </ComposableMap>
+
+      {tooltip && (
+        <div
+          className="fixed z-50 pointer-events-none bg-popover border rounded-lg px-3 py-2 text-xs shadow-lg"
+          style={{ left: tooltip.x + 14, top: tooltip.y - 60 }}
+        >
+          <p className="font-semibold mb-1">{tooltip.name}</p>
+          <div className="space-y-0.5 text-muted-foreground">
+            <p>{tooltip.sessions.toLocaleString()} sessions</p>
+            <p>{tooltip.newUsers.toLocaleString()} new users</p>
+            <p>
+              {tooltip.sessions > 0
+                ? Math.round((tooltip.engagedSessions / tooltip.sessions) * 100)
+                : 0}
+              % engaged
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Legend */}
+      <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground">
+        <span>Low</span>
+        <div className="flex h-2 rounded overflow-hidden flex-1 max-w-[120px]">
+          {Array.from({ length: 10 }, (_, i) => {
+            const l = Math.round(88 - i * 6);
+            return (
+              <div key={i} className="flex-1" style={{ background: `hsl(173, 64%, ${l}%)` }} />
+            );
+          })}
+        </div>
+        <span>High</span>
+        <span className="ml-2 inline-block w-3 h-2 rounded" style={{ background: "#e5e7eb" }} />
+        <span>No data</span>
       </div>
-      <div className="rounded-xl border bg-card overflow-hidden">
-        {filtered.length === 0 ? (
-          <p className="p-6 text-sm text-muted-foreground">No keywords found.</p>
-        ) : (
-          <table className="w-full text-sm">
+    </div>
+  );
+}
+
+function GeoTable({ geo }: { geo: GeoRow[] }) {
+  const total = geo.reduce((s, g) => s + g.sessions, 0) || 1;
+  return (
+    <div className="rounded-xl border bg-card overflow-hidden">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b bg-muted/40">
+            <th className="text-left px-4 py-2.5 text-xs font-medium text-muted-foreground">Country</th>
+            <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-20">Sessions</th>
+            <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-16">Share</th>
+            <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-20">New</th>
+            <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-20">Engaged</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y">
+          {geo.slice(0, 12).map((row) => (
+            <tr key={row.country} className="hover:bg-muted/30 transition-colors">
+              <td className="px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-base leading-none">{countryFlag(row.countryCode)}</span>
+                  <span className="font-medium text-xs">{row.country}</span>
+                </div>
+              </td>
+              <td className="px-4 py-2.5 text-right tabular-nums text-xs">{row.sessions.toLocaleString()}</td>
+              <td className="px-4 py-2.5 text-right text-xs text-muted-foreground">
+                {Math.round((row.sessions / total) * 100)}%
+              </td>
+              <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                {row.newUsers.toLocaleString()}
+              </td>
+              <td className="px-4 py-2.5 text-right text-xs text-muted-foreground">
+                {row.sessions > 0 ? Math.round((row.engagedSessions / row.sessions) * 100) : 0}%
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function GeographicIntelligence({ geo }: { geo: GeoRow[] }) {
+  return (
+    <div className="rounded-xl border bg-card p-5 space-y-4">
+      <h3 className="text-sm font-semibold">Geographic Intelligence</h3>
+      {geo.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No geographic data available.</p>
+      ) : (
+        <>
+          <WorldMap geo={geo} />
+          <GeoTable geo={geo} />
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Device Intelligence ──────────────────────────────────────────────────────
+
+const DEVICE_ICONS: Record<string, React.ElementType> = {
+  desktop: Monitor,
+  mobile: Smartphone,
+  tablet: Tablet,
+};
+
+function DeviceIntelligence({ devices }: { devices: DeviceRow[] }) {
+  return (
+    <div className="rounded-xl border bg-card p-5 space-y-4">
+      <h3 className="text-sm font-semibold">Device Intelligence</h3>
+      {devices.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No device data available.</p>
+      ) : (
+        <>
+          {/* Share bars */}
+          <div className="flex rounded-lg overflow-hidden h-3">
+            {devices.map((d, i) => (
+              <div
+                key={d.device}
+                className={cn(
+                  "h-full transition-all",
+                  i === 0 ? "bg-primary" : i === 1 ? "bg-blue-500" : "bg-violet-500"
+                )}
+                style={{ width: `${d.sharePercent}%`, opacity: 0.8 }}
+                title={`${d.device}: ${d.sharePercent}%`}
+              />
+            ))}
+          </div>
+
+          {/* Device cards */}
+          <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${devices.length}, 1fr)` }}>
+            {devices.map((d, i) => {
+              const Icon = DEVICE_ICONS[d.device.toLowerCase()] ?? Monitor;
+              const color = i === 0 ? "text-primary" : i === 1 ? "text-blue-500" : "text-violet-500";
+              return (
+                <div key={d.device} className="rounded-lg border bg-muted/20 p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Icon className={cn("h-3.5 w-3.5", color)} />
+                    <span className="text-xs font-medium capitalize">{d.device}</span>
+                    <span className="ml-auto text-xs font-bold">{d.sharePercent}%</span>
+                  </div>
+                  <div className="space-y-1 text-[11px] text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span>Sessions</span>
+                      <span className="tabular-nums font-medium text-foreground">
+                        {d.sessions.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Engaged</span>
+                      <span className="tabular-nums font-medium text-foreground">{d.engagementRate}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Avg time</span>
+                      <span className="tabular-nums font-medium text-foreground">
+                        {fmtDuration(d.avgDuration)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Pages/visit</span>
+                      <span className="tabular-nums font-medium text-foreground">{d.pagesPerSession}</span>
+                    </div>
+                  </div>
+                  <div
+                    className={cn(
+                      "text-[10px] font-medium px-1.5 py-0.5 rounded w-fit",
+                      qualityBadge(d.qualityScore)
+                    )}
+                  >
+                    {qualityLabel(d.qualityScore)} quality · {d.qualityScore}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Visitor Intelligence (New vs Returning + Session Quality) ────────────────
+
+function NewVsReturning({ rows }: { rows: NvRRow[] }) {
+  const total = rows.reduce((s, r) => s + r.sessions, 0) || 1;
+  const newRow = rows.find((r) => r.type === "new");
+  const retRow = rows.find((r) => r.type === "returning");
+
+  return (
+    <div className="rounded-xl border bg-card p-5 space-y-4">
+      <h3 className="text-sm font-semibold">New vs Returning</h3>
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No data available.</p>
+      ) : (
+        <>
+          {/* Split bar */}
+          <div className="flex rounded-lg overflow-hidden h-3">
+            <div
+              className="h-full bg-blue-500"
+              style={{ width: `${Math.round(((newRow?.sessions ?? 0) / total) * 100)}%`, opacity: 0.8 }}
+            />
+            <div
+              className="h-full bg-primary"
+              style={{ width: `${Math.round(((retRow?.sessions ?? 0) / total) * 100)}%`, opacity: 0.8 }}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { row: newRow, label: "New visitors", color: "bg-blue-500" },
+              { row: retRow, label: "Returning", color: "bg-primary" },
+            ].map(({ row, label, color }) => (
+              <div key={label} className="rounded-lg border bg-muted/20 p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className={cn("inline-block w-2 h-2 rounded-full", color)} />
+                  <span className="text-xs font-medium">{label}</span>
+                  <span className="ml-auto text-xs font-bold">
+                    {row ? Math.round((row.sessions / total) * 100) : 0}%
+                  </span>
+                </div>
+                {row ? (
+                  <div className="space-y-1 text-[11px] text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span>Sessions</span>
+                      <span className="tabular-nums font-medium text-foreground">
+                        {row.sessions.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Engaged</span>
+                      <span className="tabular-nums font-medium text-foreground">{row.engagementRate}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Avg time</span>
+                      <span className="tabular-nums font-medium text-foreground">
+                        {fmtDuration(row.avgDuration)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Pages/visit</span>
+                      <span className="tabular-nums font-medium text-foreground">{row.pagesPerSession}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-muted-foreground">No data</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {retRow && newRow && retRow.engagementRate > newRow.engagementRate && (
+            <p className="text-[11px] text-muted-foreground border-t pt-3">
+              Returning visitors are{" "}
+              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                {retRow.engagementRate - newRow.engagementRate}% more engaged
+              </span>{" "}
+              — strong remarketing signal.
+            </p>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function SessionQualityTable({ rows }: { rows: SessionQualityRow[] }) {
+  return (
+    <div className="rounded-xl border bg-card p-5 space-y-3">
+      <h3 className="text-sm font-semibold">Session Quality by Channel</h3>
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No session data available.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
             <thead>
-              <tr className="border-b bg-muted/40">
-                <th className="text-left px-4 py-2.5 text-xs font-medium text-muted-foreground">Keyword</th>
-                <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-20">Clicks</th>
-                <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-24">Impressions</th>
-                <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-16">CTR</th>
-                <th className="text-right px-4 py-2.5 text-xs font-medium text-muted-foreground w-20">Position</th>
-                <th className="px-4 py-2.5 w-28" />
+              <tr className="border-b">
+                <th className="text-left py-2 text-muted-foreground font-medium">Channel</th>
+                <th className="text-right py-2 text-muted-foreground font-medium w-16">Sessions</th>
+                <th className="text-right py-2 text-muted-foreground font-medium w-16">Engaged</th>
+                <th className="text-right py-2 text-muted-foreground font-medium w-16">Avg time</th>
+                <th className="text-right py-2 text-muted-foreground font-medium w-14">Pg/visit</th>
+                <th className="text-right py-2 text-muted-foreground font-medium w-14">Bounce</th>
+                <th className="text-right py-2 text-muted-foreground font-medium w-20">Quality</th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {filtered.map((row) => (
-                <tr key={row.query} className="hover:bg-muted/30 transition-colors">
-                  <td className="px-4 py-3 font-medium max-w-xs">
-                    <span className="line-clamp-1">{row.query}</span>
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums font-medium">{row.clicks.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">{row.impressions.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">{row.ctr}%</td>
-                  <td className="px-4 py-3 text-right">
-                    <span className={cn("text-xs font-medium px-1.5 py-0.5 rounded", positionBadge(row.position))}>
-                      #{row.position}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-primary/60"
-                        style={{ width: `${(row.clicks / maxClicks) * 100}%` }}
-                      />
+              {rows.map((r) => (
+                <tr key={r.channel} className="hover:bg-muted/30 transition-colors">
+                  <td className="py-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className={cn("inline-block w-2 h-2 rounded-full shrink-0", channelColor(r.channel))} />
+                      <span className="font-medium">{r.channel}</span>
                     </div>
+                  </td>
+                  <td className="py-2.5 text-right tabular-nums">{r.sessions.toLocaleString()}</td>
+                  <td className="py-2.5 text-right tabular-nums">{r.engagementRate}%</td>
+                  <td className="py-2.5 text-right tabular-nums">{fmtDuration(r.avgDuration)}</td>
+                  <td className="py-2.5 text-right tabular-nums">{r.pagesPerSession}</td>
+                  <td className="py-2.5 text-right tabular-nums text-muted-foreground">{r.bounceRate}%</td>
+                  <td className="py-2.5 text-right">
+                    <span className={cn("px-1.5 py-0.5 rounded font-medium", qualityBadge(r.qualityScore))}>
+                      {qualityLabel(r.qualityScore)} · {r.qualityScore}
+                    </span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Time Intelligence ────────────────────────────────────────────────────────
+
+function MiniBarChart({
+  data,
+  label,
+  xLabels,
+}: {
+  data: { label: string; sessions: number }[];
+  label: string;
+  xLabels: string[];
+}) {
+  const maxVal = Math.max(...data.map((d) => d.sessions), 1);
+  return (
+    <div className="rounded-xl border bg-card p-5">
+      <h3 className="text-sm font-semibold mb-4">{label}</h3>
+      <div className="flex items-end gap-0.5 h-20">
+        {data.map((d) => {
+          const h = Math.max(2, (d.sessions / maxVal) * 100);
+          return (
+            <div
+              key={d.label}
+              className="group relative flex-1"
+              style={{ height: `${h}%` }}
+            >
+              <div className="w-full h-full rounded-t bg-primary opacity-60 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block bg-popover border rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap z-10 shadow-sm">
+                {d.label}: {d.sessions.toLocaleString()}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex justify-between mt-1 text-[10px] text-muted-foreground">
+        {xLabels.map((l) => (
+          <span key={l}>{l}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TimeIntelligence({ dayOfWeek, hourly }: { dayOfWeek: DayRow[]; hourly: HourRow[] }) {
+  const dayData = dayOfWeek.map((d) => ({ label: d.day, sessions: d.sessions }));
+  const hourData = hourly.map((h) => ({ label: String(h.hour), sessions: h.sessions }));
+
+  const peakDay = dayOfWeek.reduce((a, b) => (a.sessions > b.sessions ? a : b), dayOfWeek[0]);
+  const peakHour = hourly.reduce((a, b) => (a.sessions > b.sessions ? a : b), hourly[0]);
+  const fmtHour = (h: number) => {
+    if (h === 0) return "12am";
+    if (h < 12) return `${h}am`;
+    if (h === 12) return "12pm";
+    return `${h - 12}pm`;
+  };
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <MiniBarChart
+        data={dayData}
+        label="Traffic by day of week"
+        xLabels={["Sun", "", "Tue", "", "Thu", "", "Sat"]}
+      />
+      <div className="rounded-xl border bg-card p-5">
+        <h3 className="text-sm font-semibold mb-4">Traffic by hour of day</h3>
+        <div className="flex items-end gap-px h-20">
+          {hourData.map((d) => {
+            const maxVal = Math.max(...hourData.map((h) => h.sessions), 1);
+            const h = Math.max(2, (d.sessions / maxVal) * 100);
+            return (
+              <div key={d.label} className="group relative flex-1" style={{ height: `${h}%` }}>
+                <div className="w-full h-full rounded-t bg-primary opacity-60 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:block bg-popover border rounded px-1.5 py-0.5 text-[10px] whitespace-nowrap z-10 shadow-sm">
+                  {fmtHour(parseInt(d.label))}: {d.sessions.toLocaleString()}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-between mt-1 text-[10px] text-muted-foreground">
+          <span>12am</span>
+          <span>6am</span>
+          <span>12pm</span>
+          <span>6pm</span>
+          <span>11pm</span>
+        </div>
+      </div>
+
+      {peakDay && peakHour && (
+        <div className="lg:col-span-2 text-[11px] text-muted-foreground bg-muted/40 rounded-lg px-4 py-2.5 flex flex-wrap gap-4">
+          <span>
+            Peak day:{" "}
+            <span className="font-medium text-foreground">{peakDay.day}</span>{" "}
+            ({peakDay.sessions.toLocaleString()} sessions)
+          </span>
+          <span>
+            Peak hour:{" "}
+            <span className="font-medium text-foreground">{fmtHour(peakHour.hour)}</span>{" "}
+            ({peakHour.sessions.toLocaleString()} sessions)
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Enhanced Query Intelligence ──────────────────────────────────────────────
+
+function PositionDelta({ delta }: { delta: number | null }) {
+  if (delta === null) return <span className="text-muted-foreground">—</span>;
+  if (delta === 0) return (
+    <span className="inline-flex items-center gap-0.5 text-muted-foreground">
+      <Minus className="h-2.5 w-2.5" />
+    </span>
+  );
+  const improved = delta > 0;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-0.5 text-[10px] font-medium",
+        improved ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+      )}
+    >
+      {improved ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
+      {Math.abs(delta)}
+    </span>
+  );
+}
+
+function EnhancedQueryTable({ rows, hasGa4 }: { rows: QueryRow[]; hasGa4: boolean }) {
+  const [search, setSearch] = useState("");
+  const [intentFilter, setIntentFilter] = useState<Intent | "all">("all");
+  const [brandedFilter, setBrandedFilter] = useState<"all" | "branded" | "non-branded">("all");
+
+  const enriched = rows.map((r) => ({
+    ...r,
+    intent: classifyIntent(r.query),
+    branded: isBranded(r.query),
+  }));
+
+  const filtered = enriched.filter((r) => {
+    if (search && !r.query.toLowerCase().includes(search.toLowerCase())) return false;
+    if (intentFilter !== "all" && r.intent !== intentFilter) return false;
+    if (brandedFilter === "branded" && !r.branded) return false;
+    if (brandedFilter === "non-branded" && r.branded) return false;
+    return true;
+  });
+
+  const intents: (Intent | "all")[] = [
+    "all", "transactional", "informational", "template", "interview prep", "comparison", "navigational",
+  ];
+
+  const maxClicks = Math.max(...rows.map((r) => r.clicks), 1);
+
+  return (
+    <div className="space-y-3">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Filter keywords…"
+            className="pl-9 pr-3 py-1.5 text-xs border rounded-lg bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+        </div>
+        <div className="flex gap-1 rounded-lg bg-muted p-0.5">
+          {(["all", "branded", "non-branded"] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setBrandedFilter(v)}
+              className={cn(
+                "rounded-md px-2.5 py-1 text-xs capitalize transition-colors",
+                brandedFilter === v ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-1">
+          {intents.map((i) => (
+            <button
+              key={i}
+              onClick={() => setIntentFilter(i)}
+              className={cn(
+                "rounded-md px-2 py-1 text-[10px] capitalize transition-colors border",
+                intentFilter === i
+                  ? "bg-primary text-primary-foreground border-transparent"
+                  : "border-border text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {i}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-xl border bg-card overflow-hidden">
+        {filtered.length === 0 ? (
+          <p className="p-6 text-sm text-muted-foreground">No keywords match filters.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b bg-muted/40">
+                  <th className="text-left px-4 py-2.5 font-medium text-muted-foreground">Keyword</th>
+                  <th className="px-4 py-2.5 font-medium text-muted-foreground w-24">Intent</th>
+                  <th className="text-left px-4 py-2.5 font-medium text-muted-foreground">Page</th>
+                  <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-20">Position</th>
+                  <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-12">CTR</th>
+                  <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-14">Clicks</th>
+                  {hasGa4 && (
+                    <>
+                      <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-16">Sessions</th>
+                      <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-16">Engaged</th>
+                    </>
+                  )}
+                  <th className="px-4 py-2.5 w-20" />
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {filtered.map((row) => (
+                  <tr key={row.query} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-medium line-clamp-1 max-w-[180px]">{row.query}</span>
+                        {row.branded && (
+                          <span className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-teal-500/15 text-teal-700 dark:text-teal-400 font-medium">
+                            brand
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={cn(
+                          "text-[10px] px-1.5 py-0.5 rounded font-medium capitalize",
+                          INTENT_STYLES[row.intent]
+                        )}
+                      >
+                        {row.intent}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 max-w-[140px]">
+                      {row.page ? (
+                        <span className="text-muted-foreground line-clamp-1 text-[11px]">{row.page}</span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <span
+                          className={cn(
+                            "px-1.5 py-0.5 rounded font-medium",
+                            positionBadge(row.position)
+                          )}
+                        >
+                          #{row.position}
+                        </span>
+                        <PositionDelta delta={row.positionDelta} />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">{row.ctr}%</td>
+                    <td className="px-4 py-3 text-right tabular-nums font-medium">{row.clicks.toLocaleString()}</td>
+                    {hasGa4 && (
+                      <>
+                        <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
+                          {row.sessions != null ? row.sessions.toLocaleString() : "—"}
+                        </td>
+                        <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
+                          {row.engagementRate != null ? `${row.engagementRate}%` : "—"}
+                        </td>
+                      </>
+                    )}
+                    <td className="px-4 py-3">
+                      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-primary"
+                          style={{ width: `${(row.clicks / maxClicks) * 100}%`, opacity: 0.6 }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
+
+      <p className="text-[11px] text-muted-foreground">
+        {filtered.length} of {rows.length} keywords
+        {hasGa4 && " · Sessions and engagement rate are from the keyword's associated landing page"}
+      </p>
     </div>
   );
 }
 
 function PageTable({ rows }: { rows: PageRow[] }) {
   const maxClicks = Math.max(...rows.map((r) => r.clicks), 1);
-
   return (
     <div className="rounded-xl border bg-card overflow-hidden">
       {rows.length === 0 ? (
@@ -353,8 +1119,8 @@ function PageTable({ rows }: { rows: PageRow[] }) {
                   <td className="px-4 py-3">
                     <div className="h-1.5 rounded-full bg-muted overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-primary/60"
-                        style={{ width: `${(row.clicks / maxClicks) * 100}%` }}
+                        className="h-full rounded-full bg-primary"
+                        style={{ width: `${(row.clicks / maxClicks) * 100}%`, opacity: 0.6 }}
                       />
                     </div>
                   </td>
@@ -368,6 +1134,72 @@ function PageTable({ rows }: { rows: PageRow[] }) {
   );
 }
 
+// ─── Landing Page Quality ─────────────────────────────────────────────────────
+
+function LandingPageQuality({ rows }: { rows: LandingPageRow[] }) {
+  return (
+    <div className="rounded-xl border bg-card overflow-hidden">
+      <div className="px-5 py-4 border-b">
+        <h3 className="text-sm font-semibold">Landing Page Quality</h3>
+        <p className="text-[11px] text-muted-foreground mt-0.5">Which entry points engage users vs bounce them</p>
+      </div>
+      {rows.length === 0 ? (
+        <p className="p-6 text-sm text-muted-foreground">No landing page data available.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b bg-muted/40">
+                <th className="text-left px-4 py-2.5 font-medium text-muted-foreground">Page</th>
+                <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-16">Sessions</th>
+                <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-16">Engaged</th>
+                <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-16">Avg time</th>
+                <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-14">Bounce</th>
+                <th className="text-right px-4 py-2.5 font-medium text-muted-foreground w-14">New %</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {rows.map((row) => (
+                <tr key={row.page} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-2.5 font-medium text-[11px] max-w-xs">
+                    <span className="line-clamp-1 text-muted-foreground">{row.page || "/"}</span>
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums">{row.sessions.toLocaleString()}</td>
+                  <td className="px-4 py-2.5 text-right tabular-nums">
+                    <span
+                      className={cn(
+                        "px-1 py-0.5 rounded",
+                        row.engagementRate >= 60
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : row.engagementRate >= 40
+                          ? "text-amber-600 dark:text-amber-500"
+                          : "text-red-600 dark:text-red-400"
+                      )}
+                    >
+                      {row.engagementRate}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
+                    {fmtDuration(row.avgDuration)}
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
+                    {row.bounceRate}%
+                  </td>
+                  <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
+                    {row.newUsersPercent}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Not Configured ───────────────────────────────────────────────────────────
+
 function NotConfigured() {
   return (
     <div className="rounded-xl border bg-card p-8 text-center space-y-4 max-w-lg mx-auto mt-8">
@@ -377,20 +1209,19 @@ function NotConfigured() {
       <div>
         <h3 className="font-semibold text-sm">Google integration not configured</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Add these env vars to enable GSC keyword data and GA4 channel breakdown.
+          Add these env vars to enable GSC keyword data and GA4 analytics.
         </p>
       </div>
       <div className="rounded-lg bg-muted p-4 text-left space-y-1 font-mono text-xs">
-        <p className="text-muted-foreground"># Google service account JSON key</p>
-        <p>GOOGLE_SERVICE_ACCOUNT_JSON={"'{"+"...}'"}</p>
+        <p className="text-muted-foreground"># Google OAuth credentials</p>
+        <p>GOOGLE_OAUTH_CLIENT_ID=...</p>
+        <p>GOOGLE_OAUTH_CLIENT_SECRET=...</p>
+        <p>GOOGLE_OAUTH_REFRESH_TOKEN=...</p>
         <p className="text-muted-foreground mt-2"># Search Console site URL</p>
         <p>GSC_SITE_URL=sc-domain:thecvedge.com</p>
-        <p className="text-muted-foreground mt-2"># GA4 numeric property ID (not G-XXXXXXX)</p>
+        <p className="text-muted-foreground mt-2"># GA4 numeric property ID</p>
         <p>GA4_PROPERTY_ID=123456789</p>
       </div>
-      <p className="text-xs text-muted-foreground">
-        Grant the service account Restricted access in GSC and Viewer role in GA4.
-      </p>
     </div>
   );
 }
@@ -490,20 +1321,41 @@ export function MarketingDashboard() {
             </div>
           )}
 
-          {/* Trend + Channels side by side */}
+          {/* Trend + Channels */}
           <div className={cn("grid gap-4", data.ga4Configured ? "lg:grid-cols-2" : "lg:grid-cols-1")}>
             {data.gscConfigured && <TrendChart trend={data.trend} />}
             {data.ga4Configured && <ChannelChart channels={data.channels} />}
           </div>
 
-          {/* Keywords / Pages tabs */}
+          {/* Geographic + Device */}
+          {data.ga4Configured && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <GeographicIntelligence geo={data.geo} />
+              <DeviceIntelligence devices={data.devices} />
+            </div>
+          )}
+
+          {/* Visitor Intelligence */}
+          {data.ga4Configured && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <NewVsReturning rows={data.newVsReturning} />
+              <SessionQualityTable rows={data.sessionQuality} />
+            </div>
+          )}
+
+          {/* Time Intelligence */}
+          {data.ga4Configured && data.dayOfWeek.some((d) => d.sessions > 0) && (
+            <TimeIntelligence dayOfWeek={data.dayOfWeek} hourly={data.hourly} />
+          )}
+
+          {/* Query Intelligence / Pages tabs */}
           {data.gscConfigured && (
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex gap-1 rounded-lg bg-muted p-0.5 w-fit">
                   {(
                     [
-                      { key: "keywords", label: "Top keywords", icon: Search },
+                      { key: "keywords", label: "Query Intelligence", icon: Search },
                       { key: "pages", label: "Top pages", icon: BarChart2 },
                     ] as { key: Tab; label: string; icon: React.ElementType }[]
                   ).map(({ key, label, icon: Icon }) => (
@@ -529,9 +1381,16 @@ export function MarketingDashboard() {
                 </p>
               </div>
 
-              {tab === "keywords" && <QueryTable rows={data.topQueries} />}
+              {tab === "keywords" && (
+                <EnhancedQueryTable rows={data.topQueries} hasGa4={data.ga4Configured} />
+              )}
               {tab === "pages" && <PageTable rows={data.topPages} />}
             </div>
+          )}
+
+          {/* Landing Page Quality */}
+          {data.ga4Configured && data.landingPages.length > 0 && (
+            <LandingPageQuality rows={data.landingPages} />
           )}
         </>
       )}
