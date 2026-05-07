@@ -129,6 +129,9 @@ interface ResumeEditorProps {
   };
   plan: "free" | "starter" | "pro";
   reviewData?: ReviewData | null;
+  initialTab?: string;
+  autoScan?: boolean;
+  pdfDownloadsThisWindow?: number;
 }
 
 function formatSavedTime(date: Date): string {
@@ -144,7 +147,7 @@ function formatSavedTime(date: Date): string {
   return `${date.toLocaleDateString([], { month: "short", day: "numeric" })}, ${time}`;
 }
 
-export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData }: ResumeEditorProps) {
+export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData, initialTab = "editor", autoScan = false, pdfDownloadsThisWindow = 0 }: ResumeEditorProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { openUpgradeModal } = useUpgradeModal();
@@ -172,8 +175,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [design, setDesign] = useState<ResumeDesignSettings>(() =>
     normalizeDesignSettings(cv.design_settings)
   );
-  const [activeTab, setActiveTabRaw] = useState("editor");
-  const prevTabRef = useRef("editor");
+  const [activeTab, setActiveTabRaw] = useState(initialTab);
+  const prevTabRef = useRef(initialTab);
 
   const setActiveTab = useCallback((tab: string) => {
     if (tab === "cover-letter") {
@@ -581,26 +584,33 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           >
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
-          <Button
-            size="sm"
-            className="h-8 px-2 sm:px-3"
-            onClick={handlePdfDownload}
-            disabled={downloading}
-            title="Download PDF"
-            aria-label="Download PDF"
-          >
-            {downloading ? (
-              <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin sm:mr-1.5" />
-                <span className="hidden sm:inline">Downloading...</span>
-              </>
-            ) : (
-              <>
-                <Download className="h-3.5 w-3.5 sm:mr-1.5" />
-                <span className="hidden sm:inline">Download</span>
-              </>
+          <div className="flex items-center gap-1.5">
+            {plan === "free" && pdfDownloadsThisWindow >= 1 && pdfDownloadsThisWindow < 3 && (
+              <span className="hidden sm:inline text-[10px] text-warning font-semibold tabular-nums">
+                {3 - pdfDownloadsThisWindow} left
+              </span>
             )}
-          </Button>
+            <Button
+              size="sm"
+              className="h-8 px-2 sm:px-3"
+              onClick={handlePdfDownload}
+              disabled={downloading}
+              title="Download PDF"
+              aria-label="Download PDF"
+            >
+              {downloading ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin sm:mr-1.5" />
+                  <span className="hidden sm:inline">Downloading...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="h-3.5 w-3.5 sm:mr-1.5" />
+                  <span className="hidden sm:inline">Download</span>
+                </>
+              )}
+            </Button>
+          </div>
           <button
             type="button"
             onClick={() => router.push(`/my-jobs?cvId=${cv.id}`)}
@@ -714,7 +724,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </div>
                 <div className="lg:hidden">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
+                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} autoScan={autoScan} onDownload={handlePdfDownload} />
                 </div>
               </>
             )}
@@ -889,7 +899,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} autoScan={autoScan} onDownload={handlePdfDownload} />
             </div>
           )}
 

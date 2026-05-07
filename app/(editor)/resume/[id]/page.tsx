@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ review_id?: string }>;
+  searchParams: Promise<{ review_id?: string; from?: string }>;
 }
 
 export default async function ResumePage({ params: paramsPromise, searchParams: searchParamsPromise }: Props) {
@@ -95,7 +95,7 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("credits_job_match, credits_cover_letter, full_name, avatar_url, plan")
+    .select("credits_job_match, credits_cover_letter, full_name, avatar_url, plan, pdf_downloads_this_window")
     .eq("id", user.id)
     .single();
 
@@ -123,6 +123,10 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
       .single();
     keywordList = kwl;
   }
+
+  // Auto-land on ATS tab when CV is freshly uploaded (has content, no scan yet)
+  const isFirstScan = !!cv.raw_text && (!rawReports || rawReports.length === 0);
+  const initialTab = isFirstScan ? "analyser" : "editor";
 
   // Fetch CV review data if review_id is present in query params
   let reviewData: { id: string; target_role: string | null; status: string; messages: unknown[] } | null = null;
@@ -163,6 +167,9 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
       }}
       plan={(profile?.plan as "free" | "starter" | "pro") || "free"}
       reviewData={reviewData}
+      initialTab={initialTab}
+      autoScan={isFirstScan}
+      pdfDownloadsThisWindow={profile?.pdf_downloads_this_window ?? 0}
     />
   );
 }
