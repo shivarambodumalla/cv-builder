@@ -585,11 +585,6 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
           <div className="flex items-center gap-1.5">
-            {plan === "free" && pdfDownloadsThisWindow >= 1 && pdfDownloadsThisWindow < 3 && (
-              <span className="hidden sm:inline text-[10px] text-warning font-semibold tabular-nums">
-                {3 - pdfDownloadsThisWindow} left
-              </span>
-            )}
             <Button
               size="sm"
               className="h-8 px-2 sm:px-3"

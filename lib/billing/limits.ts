@@ -13,7 +13,7 @@ export const PLAN_LIMITS = {
     portfolio_scan: 3,
     story_summary: 10,
     interview_prep: 5,
-    pdf_downloads: 3,
+    pdf_downloads: 10,
     templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "bold-accent", "clean-sidebar", "blueprint", "orchid", "coastal", "portrait"],
     watermark: false,
   },

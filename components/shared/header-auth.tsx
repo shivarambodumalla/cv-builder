@@ -21,7 +21,7 @@ const RETURN_MAP: Record<string, string> = {
   "/jobs": "/my-jobs",
   "/interview-prep": "/interview-coach",
   "/pricing": "/pricing",
-  "/cv-review": "/cv-review/new",
+  "/cv-review": "/cv-review",
 };
 
 function getLoginHref(pathname: string | null): string {
@@ -102,7 +102,7 @@ export function HeaderAuth() {
       nav.appendChild(stories);
 
       const cvReviewAuth = document.createElement("a");
-      cvReviewAuth.href = "/cv-review/new";
+      cvReviewAuth.href = "/cv-review";
       cvReviewAuth.className = linkClass;
       cvReviewAuth.textContent = "Review by Experts";
       nav.appendChild(cvReviewAuth);

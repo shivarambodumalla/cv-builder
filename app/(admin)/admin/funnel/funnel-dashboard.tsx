@@ -120,7 +120,16 @@ export function FunnelDashboard() {
         <>
           {/* ── 1. HERO METRICS ── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <MetricCard icon={Eye} label="Visitors" value={heroVisitors} sub={uniqueVisitors > 0 ? "Unique anonymous visitors" : "Page views (no UUID yet)"} />
+            <MetricCard
+              icon={Eye}
+              label="Visitors"
+              value={heroVisitors}
+              sub={
+                uniqueVisitors > 0
+                  ? `Unique · ${(data?.totalAnonVisits ?? 0).toLocaleString()} total page views`
+                  : "Page views (no UUID yet)"
+              }
+            />
             <MetricCard icon={UserPlus} label="Signups" value={signups} sub={awarenessBase > 0 ? `${fp(visitToSignup)} of visitors` : undefined} trend={visitToSignup >= 5 ? "up" : visitToSignup > 0 ? "flat" : "down"} />
             <MetricCard icon={FileText} label="CVs Created" value={cvsCreated} sub={signups > 0 ? `${fp(signupToCV)} of signups` : undefined} trend={signupToCV >= 50 ? "up" : signupToCV > 0 ? "flat" : "down"} />
             <MetricCard icon={Crown} label="Pro Upgrades" value={upgraded} sub={signups > 0 ? `${fp(signupToPro)} conversion` : undefined} highlight />
@@ -183,10 +192,16 @@ export function FunnelDashboard() {
                 {data.anonToSignup.map((step, i) => {
                   const prev = i > 0 ? data.anonToSignup[i - 1].count : step.count;
                   const convPct = prev > 0 ? p(step.count, prev) : 0;
+                  const showPageViews = i === 0 && uniqueVisitors > 0 && data.totalAnonVisits > step.count;
                   return (
                     <div key={step.key} className="rounded-lg border p-3">
                       <p className="text-[11px] text-muted-foreground">{step.label}</p>
                       <p className="text-lg font-bold tabular-nums mt-0.5">{step.count.toLocaleString()}</p>
+                      {showPageViews && (
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          {data.totalAnonVisits.toLocaleString()} total views
+                        </p>
+                      )}
                       {i > 0 && prev > 0 && (
                         <p className={cn("text-[10px] font-medium mt-0.5", convPct >= 30 ? "text-success" : convPct >= 10 ? "text-warning" : "text-error")}>
                           {fp(convPct)} from prev

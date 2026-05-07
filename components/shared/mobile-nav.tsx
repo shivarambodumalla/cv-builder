@@ -49,7 +49,7 @@ export function MobileNav() {
               <Link href="/interview-coach" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
                 Interview Coach
               </Link>
-              <Link href="/cv-review/new" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
+              <Link href="/cv-review" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
                 Review by Experts
               </Link>
             </>

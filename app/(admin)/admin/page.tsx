@@ -41,6 +41,7 @@ export default async function AdminDashboardPage() {
     { count: totalAtsReports },
     { data: engagementRows },
     { data: pageViewRows },
+    { data: visitorViewRows },
     { data: cvsCreatedRows },
     { data: pdfDownloadRows },
   ] = await Promise.all([
@@ -49,6 +50,7 @@ export default async function AdminDashboardPage() {
     supabase.from("ats_reports").select("*", { count: "exact", head: true }),
     supabase.from("user_activity_metrics").select("dau, wau, mau, stickiness_pct"),
     supabase.from("page_views").select("view_date, count").gte("view_date", thirtyDaysAgoDate),
+    supabase.from("visitor_page_views").select("view_date, visitor_id").gte("view_date", thirtyDaysAgoDate).limit(20000),
     supabase.from("cvs").select("created_at").gte("created_at", thirtyDaysAgoISO),
     supabase.from("user_activity").select("created_at").eq("event", "Downloaded PDF").gte("created_at", thirtyDaysAgoISO),
   ]);
@@ -70,6 +72,16 @@ export default async function AdminDashboardPage() {
     pvByDay.set(key, (pvByDay.get(key) ?? 0) + Number(r.count));
   }
 
+  // Unique visitors per day: deduplicate (visitor_id, view_date) pairs
+  const uvByDay = new Map<string, Set<string>>();
+  for (const r of visitorViewRows ?? []) {
+    const row = r as { view_date: string; visitor_id: string };
+    const key = String(row.view_date).slice(0, 10);
+    if (!uvByDay.has(key)) uvByDay.set(key, new Set());
+    uvByDay.get(key)!.add(row.visitor_id);
+  }
+  const uvCountByDay = new Map([...uvByDay.entries()].map(([k, s]) => [k, s.size]));
+
   const groupByDay = (rows: { created_at: string }[]) => {
     const m = new Map<string, number>();
     for (const r of rows) {
@@ -87,10 +99,11 @@ export default async function AdminDashboardPage() {
 
   // hex fill colours for each row — safe for inline style
   const activitySeries = [
-    { label: "Page Views",    data: buildSeries(pvByDay),       hex: "#6366f1" },
-    { label: "Signups",       data: buildSeries(signupsByDay),  hex: "#059669" },
-    { label: "CVs Created",   data: buildSeries(cvsByDay),      hex: "#1a7a6d" },
-    { label: "PDF Downloads", data: buildSeries(pdfByDay),      hex: "#d97706" },
+    { label: "Page Views",      data: buildSeries(pvByDay),        hex: "#6366f1" },
+    { label: "Unique Visitors", data: buildSeries(uvCountByDay),   hex: "#8b5cf6" },
+    { label: "Signups",         data: buildSeries(signupsByDay),   hex: "#059669" },
+    { label: "CVs Created",     data: buildSeries(cvsByDay),       hex: "#1a7a6d" },
+    { label: "PDF Downloads",   data: buildSeries(pdfByDay),       hex: "#d97706" },
   ].map((s) => ({
     ...s,
     total: s.data.reduce((sum, d) => sum + d.value, 0),

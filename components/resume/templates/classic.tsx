@@ -330,7 +330,7 @@ export function ClassicTemplate({
                   {renderDateRange(item.startDate, item.endDate)}
                 </div>
               </div>
-              {item.bullets.filter(Boolean).length > 0 && (
+              {(item.bullets ?? []).filter(Boolean).length > 0 && (
                 <ul
                   style={{
                     margin: "4px 0 0 0",
@@ -342,7 +342,7 @@ export function ClassicTemplate({
                     color: "#333",
                   }}
                 >
-                  {item.bullets.filter(Boolean).map((bullet, j) => (
+                  {(item.bullets ?? []).filter(Boolean).map((bullet, j) => (
                     <li key={j}>
                       {bulletChar && <span style={{ marginRight: "6px" }}>{bulletChar}</span>}
                       {bullet}
@@ -380,7 +380,7 @@ export function ClassicTemplate({
                   {renderDateRange(item.startDate, item.endDate)}
                 </div>
               </div>
-              {item.bullets.filter(Boolean).length > 0 && (
+              {(item.bullets ?? []).filter(Boolean).length > 0 && (
                 <ul
                   style={{
                     margin: "4px 0 0 0",
@@ -392,7 +392,7 @@ export function ClassicTemplate({
                     color: "#333",
                   }}
                 >
-                  {item.bullets.filter(Boolean).map((bullet, j) => (
+                  {(item.bullets ?? []).filter(Boolean).map((bullet, j) => (
                     <li key={j}>
                       {bulletChar && <span style={{ marginRight: "6px" }}>{bulletChar}</span>}
                       {bullet}
