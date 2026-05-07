@@ -528,13 +528,13 @@ export function AdminUsersTable({
   return (
     <Card className="overflow-hidden">
       <CardHeader className="border-b">
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Filter toggle — first, always visible */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          {/* Filters — desktop position (leftmost) */}
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-8 gap-1.5 text-xs shrink-0"
+            className="h-8 gap-1.5 text-xs shrink-0 hidden sm:flex"
             onClick={onToggleFilters}
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -546,8 +546,8 @@ export function AdminUsersTable({
             )}
           </Button>
 
-          {/* Search — grows to fill remaining space */}
-          <div className="relative flex-1 min-w-[160px]">
+          {/* Search — full width on mobile, flex-1 on desktop */}
+          <div className="relative flex-1 min-w-0">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search name, email, role…"
@@ -557,27 +557,46 @@ export function AdminUsersTable({
             />
           </div>
 
-          {/* Right-side controls */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-muted-foreground hidden sm:inline">Show</span>
-            <select
-              className="rounded-md border bg-background px-2 py-1 text-xs"
-              value={pageSize}
-              onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            >
-              {PAGE_SIZE_OPTIONS.map((n) => <option key={n} value={n}>{n}</option>)}
-            </select>
-            <ColumnPicker visible={visibleCols} onChange={setVisibleCols} />
+          {/* Controls row — second row on mobile, rightmost on desktop */}
+          <div className="flex items-center justify-between gap-2 sm:justify-start">
+            {/* Filters — mobile only */}
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="h-8 gap-1.5 text-xs"
-              onClick={() => onExport(visibleCols)}
+              className="h-8 gap-1.5 text-xs sm:hidden"
+              onClick={onToggleFilters}
             >
-              <Download className="h-3.5 w-3.5" />
-              Export CSV
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              Filters
+              {filtersActive > 0 && (
+                <span className="rounded-full bg-primary text-primary-foreground text-[10px] px-1.5 font-medium leading-4">
+                  {filtersActive}
+                </span>
+              )}
             </Button>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground hidden sm:inline">Show</span>
+              <select
+                className="rounded-md border bg-background px-2 py-1 text-xs hidden sm:block"
+                value={pageSize}
+                onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              >
+                {PAGE_SIZE_OPTIONS.map((n) => <option key={n} value={n}>{n}</option>)}
+              </select>
+              <ColumnPicker visible={visibleCols} onChange={setVisibleCols} />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 text-xs hidden sm:flex"
+                onClick={() => onExport(visibleCols)}
+              >
+                <Download className="h-3.5 w-3.5" />
+                Export CSV
+              </Button>
+            </div>
           </div>
         </div>
       </CardHeader>

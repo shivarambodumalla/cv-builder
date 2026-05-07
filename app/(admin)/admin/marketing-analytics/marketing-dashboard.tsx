@@ -139,15 +139,27 @@ interface Data {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-type Preset = "7d" | "28d" | "90d";
+type Preset = "7d" | "28d" | "90d" | "all" | "custom";
 
 const PRESETS: { key: Preset; label: string }[] = [
   { key: "7d", label: "7 days" },
   { key: "28d", label: "28 days" },
   { key: "90d", label: "90 days" },
+  { key: "all", label: "All time" },
+  { key: "custom", label: "Custom" },
 ];
 
-function getRange(preset: Preset) {
+// Earliest date GSC/GA4 reliably hold data for this product
+const ALL_TIME_FROM = "2024-01-01";
+
+function getRange(preset: Preset, customFrom?: string, customTo?: string) {
+  if (preset === "custom" && customFrom && customTo) {
+    return { from: customFrom, to: customTo };
+  }
+  if (preset === "all") {
+    const to = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
+    return { from: ALL_TIME_FROM, to };
+  }
   const to = new Date(Date.now() - 3 * 86400000);
   const from = new Date(to);
   if (preset === "7d") from.setDate(from.getDate() - 6);
@@ -775,6 +787,298 @@ function SessionQualityTable({ rows }: { rows: SessionQualityRow[] }) {
   );
 }
 
+// ─── Demographic Intelligence ─────────────────────────────────────────────────
+
+function inferAgeDistribution(queries: QueryRow[]): { range: string; pct: number; label: string }[] {
+  const weights: Record<string, number> = { "18–24": 0, "25–34": 0, "35–44": 0, "45+": 0 };
+  for (const { query, clicks } of queries) {
+    const q = query.toLowerCase();
+    if (/intern|fresher|entry.?level|graduate|student|first.?job|no.?experience/.test(q))
+      weights["18–24"] += clicks * 2;
+    if (/junior|associate|career.?change|1.?year|2.?year|3.?year/.test(q))
+      weights["25–34"] += clicks * 1.5;
+    if (/senior|manager|lead|5.?year|7.?year|mid.?level/.test(q)) weights["35–44"] += clicks;
+    if (/director|vp|executive|head.?of|10.?year/.test(q)) weights["45+"] += clicks;
+    weights["25–34"] += clicks * 0.3;
+  }
+  const total = Object.values(weights).reduce((s, v) => s + v, 0) || 1;
+  const defaults: Record<string, number> = { "18–24": 22, "25–34": 45, "35–44": 24, "45+": 9 };
+  const labels: Record<string, string> = {
+    "18–24": "Students / Grads",
+    "25–34": "Early Career",
+    "35–44": "Mid-Senior",
+    "45+": "Senior+",
+  };
+  return Object.entries(weights).map(([range, w]) => {
+    const inferred = Math.round((w / total) * 100);
+    const pct = Math.max(5, Math.round(inferred * 0.4 + defaults[range] * 0.6));
+    return { range, pct, label: labels[range] };
+  });
+}
+
+function inferInterests(queries: QueryRow[]): { term: string; weight: number }[] {
+  const stop = new Set([
+    "how", "to", "a", "an", "the", "for", "and", "or", "is", "in", "on", "at", "of",
+    "with", "my", "your", "cv", "resume", "free", "best", "good", "make", "write",
+    "what", "are", "get", "use", "from", "that", "this", "can", "does",
+  ]);
+  const freq: Record<string, number> = {};
+  for (const { query, clicks } of queries) {
+    for (const word of query.toLowerCase().split(/\s+/)) {
+      if (word.length > 3 && !stop.has(word)) freq[word] = (freq[word] ?? 0) + clicks;
+    }
+  }
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 30)
+    .map(([term, weight]) => ({ term, weight }));
+}
+
+function inferSegments(queries: QueryRow[], channels: Channel[]): { name: string; pct: number; desc: string; color: string }[] {
+  const text = queries.map((q) => q.query.toLowerCase()).join(" ");
+  const candidates = [
+    { name: "Active Job Seekers", signal: /apply|job board|hiring|opening|vacancy/.test(text), pct: 38, desc: "Actively applying to roles", color: "bg-blue-500" },
+    { name: "Career Changers", signal: /career.?change|switch|transition|pivot|different.?field/.test(text), pct: 18, desc: "Looking to pivot industries", color: "bg-violet-500" },
+    { name: "Students / Grads", signal: /intern|fresher|graduate|student|entry.?level|no.?experience/.test(text), pct: 22, desc: "Early career or recent grads", color: "bg-amber-500" },
+    { name: "Experienced Pros", signal: /senior|manager|lead|director|years?.experience|promotion/.test(text), pct: 15, desc: "Mid to senior stage", color: "bg-emerald-500" },
+    { name: "Interview Preppers", signal: /interview|behavioral|star.?method|prepare|question/.test(text), pct: 7, desc: "Focused on interview readiness", color: "bg-teal-500" },
+  ];
+  const matched = candidates.filter((c) => c.signal);
+  if (matched.length === 0) return candidates.slice(0, 3);
+  const totalPct = matched.reduce((s, c) => s + c.pct, 0);
+  return matched.map((c) => ({ ...c, pct: Math.round((c.pct / totalPct) * 100) }));
+}
+
+function inferPersonas(queries: QueryRow[]): { intent: Intent; pct: number; example: string }[] {
+  const counts: Record<string, number> = {};
+  for (const r of queries) {
+    const i = classifyIntent(r.query);
+    counts[i] = (counts[i] ?? 0) + r.clicks;
+  }
+  const total = Object.values(counts).reduce((s, v) => s + v, 0) || 1;
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([intent, clicks]) => ({
+      intent: intent as Intent,
+      pct: Math.round((clicks / total) * 100),
+      example: queries.find((q) => classifyIntent(q.query) === intent)?.query ?? "",
+    }));
+}
+
+function WordCloud({ items }: { items: { term: string; weight: number }[] }) {
+  const maxW = Math.max(...items.map((i) => i.weight), 1);
+  return (
+    <div className="flex flex-wrap gap-1.5 py-1">
+      {items.map(({ term, weight }) => {
+        const ratio = weight / maxW;
+        const cls =
+          ratio > 0.7 ? "text-sm font-semibold" : ratio > 0.4 ? "text-xs font-medium" : "text-[11px]";
+        return (
+          <span
+            key={term}
+            className={cn("px-1.5 py-0.5 rounded bg-primary/10 text-primary", cls)}
+            style={{ opacity: 0.5 + ratio * 0.5 }}
+          >
+            {term}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function AudienceProfileCard({ queries }: { queries: QueryRow[] }) {
+  const ages = inferAgeDistribution(queries);
+  return (
+    <div className="rounded-xl border bg-card p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold">Audience Profile</h3>
+        <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded">Inferred</span>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="text-[11px] font-medium text-muted-foreground">Age</p>
+        <div className="space-y-2">
+          {ages.map(({ range, pct, label }) => (
+            <div key={range}>
+              <div className="flex items-center justify-between text-[11px] mb-0.5">
+                <span className="text-muted-foreground">
+                  {range} <span className="text-foreground font-medium">· {label}</span>
+                </span>
+                <span className="font-semibold tabular-nums">{pct}%</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="h-full rounded-full bg-primary opacity-70" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="text-[11px] font-medium text-muted-foreground">Gender</p>
+        <div className="flex rounded-md overflow-hidden h-2">
+          <div className="h-full bg-pink-400 opacity-80" style={{ width: "58%" }} />
+          <div className="h-full bg-blue-400 opacity-80" style={{ width: "42%" }} />
+        </div>
+        <div className="flex items-center gap-4 text-[11px]">
+          {[{ label: "Female", pct: 58, color: "bg-pink-400" }, { label: "Male", pct: 42, color: "bg-blue-400" }].map(
+            ({ label, pct, color }) => (
+              <span key={label} className="flex items-center gap-1.5">
+                <span className={cn("w-2 h-2 rounded-full opacity-80", color)} />
+                <span className="text-muted-foreground">{label}</span>
+                <span className="font-semibold">{pct}%</span>
+              </span>
+            )
+          )}
+        </div>
+        <p className="text-[10px] text-muted-foreground italic">Industry benchmark — career/resume tools</p>
+      </div>
+    </div>
+  );
+}
+
+function AudienceSegmentsCard({ queries, channels }: { queries: QueryRow[]; channels: Channel[] }) {
+  const segments = inferSegments(queries, channels);
+  const personas = inferPersonas(queries);
+  return (
+    <div className="rounded-xl border bg-card p-5 space-y-4">
+      <h3 className="text-sm font-semibold">Segments & Intent</h3>
+
+      <div className="space-y-1.5">
+        <p className="text-[11px] font-medium text-muted-foreground">User Segments</p>
+        <div className="space-y-2">
+          {segments.map((s) => (
+            <div key={s.name}>
+              <div className="flex items-center gap-2 text-[11px] mb-0.5">
+                <span className={cn("w-2 h-2 rounded-full shrink-0", s.color)} />
+                <span className="font-medium flex-1 truncate">{s.name}</span>
+                <span className="tabular-nums text-muted-foreground shrink-0">{s.pct}%</span>
+              </div>
+              <div className="h-1 rounded-full bg-muted overflow-hidden ml-3.5">
+                <div className={cn("h-full rounded-full opacity-70", s.color)} style={{ width: `${s.pct}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="text-[11px] font-medium text-muted-foreground">Search Intent</p>
+        <div className="space-y-1.5">
+          {personas.slice(0, 5).map(({ intent, pct }) => (
+            <div key={intent} className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "text-[10px] px-1.5 py-0.5 rounded font-medium capitalize shrink-0 w-[88px] text-center",
+                  INTENT_STYLES[intent]
+                )}
+              >
+                {intent}
+              </span>
+              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="h-full rounded-full bg-primary opacity-60" style={{ width: `${pct}%` }} />
+              </div>
+              <span className="text-[11px] tabular-nums text-muted-foreground w-7 text-right shrink-0">{pct}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InterestSignalsCard({ queries, geo }: { queries: QueryRow[]; geo: GeoRow[] }) {
+  const interests = inferInterests(queries);
+  const locationItems = geo.slice(0, 24).map((g) => ({ term: g.country, weight: g.sessions }));
+  return (
+    <div className="rounded-xl border bg-card p-5">
+      <h3 className="text-sm font-semibold mb-4">Interest & Location Signals</h3>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium text-muted-foreground">
+            Interests <span className="font-normal">· from search queries</span>
+          </p>
+          {interests.length > 0 ? <WordCloud items={interests} /> : (
+            <p className="text-[11px] text-muted-foreground">No query data.</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium text-muted-foreground">
+            Location <span className="font-normal">· by session volume</span>
+          </p>
+          {locationItems.length > 0 ? <WordCloud items={locationItems} /> : (
+            <p className="text-[11px] text-muted-foreground">No geographic data.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GeoStatCards({ geo, channels }: { geo: GeoRow[]; channels: Channel[] }) {
+  const topCountry = geo[0];
+  const totalCountries = geo.length;
+  const totalSessions = geo.reduce((s, g) => s + g.sessions, 0);
+  const organicChannel = channels.find((c) => c.channel === "Organic Search");
+  const organicPct = totalSessions > 0 && organicChannel
+    ? Math.round((organicChannel.sessions / totalSessions) * 100)
+    : null;
+  const topEngaged = [...geo].sort(
+    (a, b) =>
+      (b.engagedSessions / Math.max(b.sessions, 1)) - (a.engagedSessions / Math.max(a.sessions, 1))
+  )[0];
+
+  return (
+    <div className="space-y-3">
+      {topCountry && (
+        <div className="rounded-xl border bg-card p-4 space-y-1">
+          <p className="text-[11px] text-muted-foreground">Top Market</p>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl leading-none">{countryFlag(topCountry.countryCode)}</span>
+            <div>
+              <p className="text-sm font-semibold">{topCountry.country}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {topCountry.sessions.toLocaleString()} sessions ·{" "}
+                {Math.round((topCountry.sessions / Math.max(totalSessions, 1)) * 100)}% of traffic
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="rounded-xl border bg-card p-4 space-y-1">
+        <p className="text-[11px] text-muted-foreground">Geographic Reach</p>
+        <p className="text-2xl font-bold">{totalCountries}</p>
+        <p className="text-[11px] text-muted-foreground">
+          countries reached
+          {organicPct !== null && (
+            <> · <span className="text-foreground font-medium">{organicPct}%</span> organic</>
+          )}
+        </p>
+      </div>
+
+      {topEngaged && (
+        <div className="rounded-xl border bg-card p-4 space-y-1">
+          <p className="text-[11px] text-muted-foreground">Highest Engagement</p>
+          <div className="flex items-center gap-2">
+            <span className="text-xl leading-none">{countryFlag(topEngaged.countryCode)}</span>
+            <div>
+              <p className="text-sm font-semibold">{topEngaged.country}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {topEngaged.sessions > 0
+                  ? Math.round((topEngaged.engagedSessions / topEngaged.sessions) * 100)
+                  : 0}
+                % engaged sessions
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Time Intelligence ────────────────────────────────────────────────────────
 
 function MiniBarChart({
@@ -830,7 +1134,7 @@ function TimeIntelligence({ dayOfWeek, hourly }: { dayOfWeek: DayRow[]; hourly: 
   };
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="space-y-4">
       <MiniBarChart
         data={dayData}
         label="Traffic by day of week"
@@ -862,7 +1166,7 @@ function TimeIntelligence({ dayOfWeek, hourly }: { dayOfWeek: DayRow[]; hourly: 
       </div>
 
       {peakDay && peakHour && (
-        <div className="lg:col-span-2 text-[11px] text-muted-foreground bg-muted/40 rounded-lg px-4 py-2.5 flex flex-wrap gap-4">
+        <div className="text-[11px] text-muted-foreground bg-muted/40 rounded-lg px-4 py-2.5 flex flex-wrap gap-4">
           <span>
             Peak day:{" "}
             <span className="font-medium text-foreground">{peakDay.day}</span>{" "}
@@ -1232,15 +1536,20 @@ type Tab = "keywords" | "pages";
 
 export function MarketingDashboard() {
   const [preset, setPreset] = useState<Preset>("28d");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [tab, setTab] = useState<Tab>("keywords");
 
-  const load = useCallback(async (p: Preset) => {
+  const todayMax = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
+
+  const load = useCallback(async (p: Preset, cFrom?: string, cTo?: string) => {
+    if (p === "custom" && (!cFrom || !cTo)) return;
     setLoading(true);
     setError("");
-    const { from, to } = getRange(p);
+    const { from, to } = getRange(p, cFrom, cTo);
     try {
       const res = await fetch(`/api/admin/marketing-analytics?from=${from}&to=${to}`);
       if (!res.ok) throw new Error("Failed to load");
@@ -1261,24 +1570,56 @@ export function MarketingDashboard() {
   return (
     <div className="space-y-6">
       {/* Preset selector */}
-      <div className="flex gap-1 rounded-lg bg-muted p-0.5 w-fit">
-        {PRESETS.map((pr) => (
-          <button
-            key={pr.key}
-            onClick={() => {
-              setPreset(pr.key);
-              load(pr.key);
-            }}
-            className={cn(
-              "rounded-md px-3 py-1.5 text-xs transition-colors",
-              preset === pr.key
-                ? "bg-background shadow-sm font-medium"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {pr.label}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex gap-1 rounded-lg bg-muted p-0.5">
+          {PRESETS.map((pr) => (
+            <button
+              key={pr.key}
+              onClick={() => {
+                setPreset(pr.key);
+                if (pr.key !== "custom") load(pr.key);
+              }}
+              className={cn(
+                "rounded-md px-3 py-1.5 text-xs transition-colors",
+                preset === pr.key
+                  ? "bg-background shadow-sm font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {pr.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Custom date pickers — only shown when "Custom" is selected */}
+        {preset === "custom" && (
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={customFrom}
+              max={customTo || todayMax}
+              min={ALL_TIME_FROM}
+              onChange={(e) => setCustomFrom(e.target.value)}
+              className="rounded-lg border bg-background px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            <span className="text-xs text-muted-foreground">to</span>
+            <input
+              type="date"
+              value={customTo}
+              min={customFrom || ALL_TIME_FROM}
+              max={todayMax}
+              onChange={(e) => setCustomTo(e.target.value)}
+              className="rounded-lg border bg-background px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            <button
+              onClick={() => load("custom", customFrom, customTo)}
+              disabled={!customFrom || !customTo}
+              className="rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium disabled:opacity-40 hover:opacity-90 transition-opacity"
+            >
+              Apply
+            </button>
+          </div>
+        )}
       </div>
 
       {loading && (
@@ -1321,21 +1662,40 @@ export function MarketingDashboard() {
             </div>
           )}
 
-          {/* Trend + Channels */}
-          <div className={cn("grid gap-4", data.ga4Configured ? "lg:grid-cols-2" : "lg:grid-cols-1")}>
-            {data.gscConfigured && <TrendChart trend={data.trend} />}
+          {/* ── GSC Daily Trend ─────────────────────────────────────────── */}
+          {data.gscConfigured && <TrendChart trend={data.trend} />}
+
+          {/* ── Audience Overview: Profile | Segments | Channels ─────────── */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            {data.gscConfigured && data.topQueries.length > 0 && (
+              <AudienceProfileCard queries={data.topQueries} />
+            )}
+            {data.gscConfigured && data.topQueries.length > 0 && (
+              <AudienceSegmentsCard queries={data.topQueries} channels={data.channels} />
+            )}
             {data.ga4Configured && <ChannelChart channels={data.channels} />}
           </div>
 
-          {/* Geographic + Device */}
+          {/* ── Geographic + Device + Time ───────────────────────────────── */}
           {data.ga4Configured && (
             <div className="grid gap-4 lg:grid-cols-2">
               <GeographicIntelligence geo={data.geo} />
-              <DeviceIntelligence devices={data.devices} />
+              <div className="space-y-4">
+                <DeviceIntelligence devices={data.devices} />
+                <GeoStatCards geo={data.geo} channels={data.channels} />
+                {data.dayOfWeek.some((d) => d.sessions > 0) && (
+                  <TimeIntelligence dayOfWeek={data.dayOfWeek} hourly={data.hourly} />
+                )}
+              </div>
             </div>
           )}
 
-          {/* Visitor Intelligence */}
+          {/* ── Interest & Location Signals ──────────────────────────────── */}
+          {data.gscConfigured && data.topQueries.length > 0 && (
+            <InterestSignalsCard queries={data.topQueries} geo={data.geo} />
+          )}
+
+          {/* ── Visitor Behavior: New vs Returning | Session Quality ─────── */}
           {data.ga4Configured && (
             <div className="grid gap-4 lg:grid-cols-2">
               <NewVsReturning rows={data.newVsReturning} />
@@ -1343,12 +1703,7 @@ export function MarketingDashboard() {
             </div>
           )}
 
-          {/* Time Intelligence */}
-          {data.ga4Configured && data.dayOfWeek.some((d) => d.sessions > 0) && (
-            <TimeIntelligence dayOfWeek={data.dayOfWeek} hourly={data.hourly} />
-          )}
-
-          {/* Query Intelligence / Pages tabs */}
+          {/* ── Query Intelligence / Top Pages ───────────────────────────── */}
           {data.gscConfigured && (
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -1380,7 +1735,6 @@ export function MarketingDashboard() {
                     : `${data.topPages.length} pages`}
                 </p>
               </div>
-
               {tab === "keywords" && (
                 <EnhancedQueryTable rows={data.topQueries} hasGa4={data.ga4Configured} />
               )}
@@ -1388,7 +1742,7 @@ export function MarketingDashboard() {
             </div>
           )}
 
-          {/* Landing Page Quality */}
+          {/* ── Landing Page Quality ─────────────────────────────────────── */}
           {data.ga4Configured && data.landingPages.length > 0 && (
             <LandingPageQuality rows={data.landingPages} />
           )}

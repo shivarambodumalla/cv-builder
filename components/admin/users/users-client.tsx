@@ -65,7 +65,7 @@ export function UsersClient() {
   const [users, setUsers]     = useState<AdminUserRow[]>([]);
   const [total, setTotal]     = useState(0);
   const [loading, setLoading] = useState(true);
-  const [desktopOpen, setDesktopOpen] = useState(true);
+  const [desktopOpen, setDesktopOpen] = useState(false);
   const [mobileOpen, setMobileOpen]   = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
