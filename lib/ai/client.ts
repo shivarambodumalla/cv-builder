@@ -5,6 +5,13 @@ import { logUsage } from "@/lib/ai/usage-logger";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+export class TruncatedResponseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TruncatedResponseError";
+  }
+}
+
 /* ── Rate-limit queue: 6s minimum gap between Gemini requests ── */
 const MIN_GAP_MS = 6000;
 let lastRequestTime = 0;
@@ -164,11 +171,14 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
   text = text.trim();
 
   if (!parseJson) return text;
+  const finishReason = result.response.candidates?.[0]?.finishReason;
   try {
     return extractJSON(text);
   } catch (err) {
-    const finishReason = result.response.candidates?.[0]?.finishReason;
     console.error(`[callAI] JSON parse failed for ${promptName} (feature=${feature}, finishReason=${finishReason}, length=${text.length}, maxTokens=${settings.max_tokens}, outputTokens=${outputTokens})`);
+    if (finishReason === "MAX_TOKENS") {
+      throw new TruncatedResponseError(`Response hit token limit for ${promptName} — CV may be too long`);
+    }
     throw err;
   }
 }

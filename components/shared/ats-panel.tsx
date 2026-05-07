@@ -22,6 +22,7 @@ import {
   Sparkles,
   Wand2,
   Shield,
+  Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
@@ -50,6 +51,8 @@ interface AtsPanelProps {
   content?: ResumeContent;
   onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
   plan?: string;
+  autoScan?: boolean;
+  onDownload?: () => void;
 }
 
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
@@ -212,7 +215,7 @@ function CategoryRow({
   );
 }
 
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free" }: AtsPanelProps) {
+export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free", autoScan = false, onDownload }: AtsPanelProps) {
   const router = useRouter();
   const { log } = useActivity();
   const { openUpgradeModal } = useUpgradeModal();
@@ -248,6 +251,14 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
       if (data.limitReached) setLimitReached(true);
     }).catch(() => {});
   }, [plan]);
+
+  // Auto-trigger scan on first landing when CV was just uploaded
+  useEffect(() => {
+    if (autoScan && !initialReport) {
+      handleAnalyse();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isPaidContent = plan === "pro" || !limitReached;
 
@@ -498,18 +509,38 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
 
   /* ── Error state (no report) ── */
   if (error && !report) {
+    const isIncomplete = errorCode === "incomplete_cv";
+    const isTooLarge = errorCode === "cv_too_large";
     return (
       <div className="flex flex-col items-center gap-4 py-8 text-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
           <AlertCircle className="h-6 w-6 text-destructive" />
         </div>
         <div>
-          <p className="font-medium">Analysis failed</p>
+          <p className="font-medium">{isIncomplete ? "Your CV needs a few more details" : isTooLarge ? "CV too long to analyse" : "Analysis failed"}</p>
           <p className="mt-1 text-sm text-muted-foreground">{error}</p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleAnalyse}>
-          <RotateCcw className="mr-2 h-3.5 w-3.5" />Try again
-        </Button>
+        <div className="flex flex-col items-center gap-2">
+          {isTooLarge && (
+            <Button
+              size="sm"
+              onClick={() => window.dispatchEvent(new CustomEvent("switch-tab", { detail: "editor" }))}
+            >
+              Edit CV →
+            </Button>
+          )}
+          {isIncomplete && (
+            <Button
+              size="sm"
+              onClick={() => window.dispatchEvent(new CustomEvent("switch-tab", { detail: "editor" }))}
+            >
+              Complete your CV →
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={handleAnalyse}>
+            <RotateCcw className="mr-2 h-3.5 w-3.5" />{isIncomplete ? "Try anyway" : "Try again"}
+          </Button>
+        </div>
       </div>
     );
   }
@@ -672,6 +703,19 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               <ConfidenceChip level={confidenceValue} size="sm" />
             </div>
           </div>
+
+          {/* Download CTA — shown after scan when score is actionable */}
+          {onDownload && displayScore >= 60 && (
+            <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 mb-3 flex items-center justify-between gap-3">
+              <p className="text-sm text-foreground">
+                <span className="font-semibold">Ready to apply?</span>{" "}
+                <span className="text-muted-foreground">Download your CV and start sending it out.</span>
+              </p>
+              <Button size="sm" className="shrink-0" onClick={onDownload}>
+                <Download className="mr-1.5 h-3.5 w-3.5" />Download PDF
+              </Button>
+            </div>
+          )}
 
           {/* Paywall */}
           {!isPaidContent && (

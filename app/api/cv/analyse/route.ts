@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { analyseCV } from "@/lib/ai/ats-analyser";
+import { TruncatedResponseError } from "@/lib/ai/client";
 import { getDomainForRole } from "@/lib/resume/roles";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
@@ -79,6 +80,14 @@ export async function POST(request: NextRequest) {
           role: error.role,
         },
         { status: 400 }
+      );
+    }
+
+    if (err instanceof TruncatedResponseError) {
+      console.warn("[cv/analyse] Token limit hit — CV too large:", error.message);
+      return NextResponse.json(
+        { error: "Your CV has too many bullets for a single analysis pass. Try keeping each role to 6 bullets or fewer, then re-analyse.", code: "cv_too_large" },
+        { status: 422 }
       );
     }
 
