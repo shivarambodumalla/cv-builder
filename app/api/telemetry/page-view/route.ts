@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // No auth required — tracks anonymous page views
 // GDPR-safe: no personal data stored, just path + daily aggregate count
 
-const ALLOWED_PATHS = new Set(["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs"]);
+const ALLOWED_PATHS = new Set(["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs", "/cv-review"]);
 
 function isAllowed(path: string): boolean {
   return ALLOWED_PATHS.has(path) || path.startsWith("/popup/") || path.startsWith("/blog");
