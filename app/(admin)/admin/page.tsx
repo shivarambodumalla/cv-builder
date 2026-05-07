@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   Card,
@@ -6,9 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Users, FileText, CreditCard, BarChart3, MousePointerClick, Activity } from "lucide-react";
-
-const CPC = 0.15;
+import { Badge } from "@/components/ui/badge";
+import { Users, FileText, CreditCard, BarChart3, Activity, ArrowRight, TrendingUp } from "lucide-react";
+import { ActivityChart } from "./activity-chart";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | CVEdge",
@@ -28,47 +29,73 @@ export default async function AdminDashboardPage() {
   const monthStart = new Date(now);
   monthStart.setUTCDate(1);
   monthStart.setUTCHours(0, 0, 0, 0);
+  const thirtyDaysAgo = new Date(now);
+  thirtyDaysAgo.setUTCDate(now.getUTCDate() - 29);
+  thirtyDaysAgo.setUTCHours(0, 0, 0, 0);
+  const thirtyDaysAgoDate = thirtyDaysAgo.toISOString().slice(0, 10);
+  const thirtyDaysAgoISO = thirtyDaysAgo.toISOString();
 
   const [
     { data: profiles },
     { count: totalCvs },
     { count: totalAtsReports },
-    { data: jobClicks },
     { data: engagementRows },
-    { data: dauDailyRows },
+    { data: pageViewRows },
+    { data: cvsCreatedRows },
+    { data: pdfDownloadRows },
   ] = await Promise.all([
-    supabase.from("profiles").select("plan"),
+    supabase.from("profiles").select("plan, created_at, email, full_name"),
     supabase.from("cvs").select("*", { count: "exact", head: true }),
     supabase.from("ats_reports").select("*", { count: "exact", head: true }),
-    supabase.from("job_clicks").select("id, company, job_title, match_score, created_at"),
     supabase.from("user_activity_metrics").select("dau, wau, mau, stickiness_pct"),
-    supabase.from("user_activity_daily").select("day, dau"),
+    supabase.from("page_views").select("view_date, count").gte("view_date", thirtyDaysAgoDate),
+    supabase.from("cvs").select("created_at").gte("created_at", thirtyDaysAgoISO),
+    supabase.from("user_activity").select("created_at").eq("event", "Downloaded PDF").gte("created_at", thirtyDaysAgoISO),
   ]);
 
   const engagement = engagementRows?.[0] ?? { dau: 0, wau: 0, mau: 0, stickiness_pct: 0 };
 
-  // Pad missing days with 0 so the chart always shows a full 30-day window.
-  const dauByDay = new Map<string, number>();
-  for (const r of dauDailyRows ?? []) {
-    if (r.day) dauByDay.set(String(r.day), Number(r.dau ?? 0));
-  }
-  const dauSeries: { day: string; dau: number }[] = [];
+  // Build the 30-day date spine (oldest → newest)
+  const days30: string[] = [];
   for (let i = 29; i >= 0; i--) {
     const d = new Date(now);
     d.setUTCDate(now.getUTCDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    dauSeries.push({ day: key, dau: dauByDay.get(key) ?? 0 });
+    days30.push(d.toISOString().slice(0, 10));
   }
-  const dauMax = Math.max(1, ...dauSeries.map((p) => p.dau));
-  const dauTotal = dauSeries.reduce((s, p) => s + p.dau, 0);
-  const dauAvg = Math.round(dauTotal / dauSeries.length);
-  const firstHalf = dauSeries.slice(0, 15).reduce((s, p) => s + p.dau, 0);
-  const secondHalf = dauSeries.slice(15).reduce((s, p) => s + p.dau, 0);
-  const dauTrendPct = firstHalf > 0
-    ? Math.round(((secondHalf - firstHalf) / firstHalf) * 100)
-    : secondHalf > 0
-      ? 100
-      : 0;
+
+  // Aggregate each data source into a day → count map
+  const pvByDay = new Map<string, number>();
+  for (const r of pageViewRows ?? []) {
+    const key = String(r.view_date).slice(0, 10);
+    pvByDay.set(key, (pvByDay.get(key) ?? 0) + Number(r.count));
+  }
+
+  const groupByDay = (rows: { created_at: string }[]) => {
+    const m = new Map<string, number>();
+    for (const r of rows) {
+      const k = r.created_at.slice(0, 10);
+      m.set(k, (m.get(k) ?? 0) + 1);
+    }
+    return m;
+  };
+  const signupsByDay  = groupByDay(profiles?.map((p) => ({ created_at: p.created_at })) ?? []);
+  const cvsByDay      = groupByDay(cvsCreatedRows ?? []);
+  const pdfByDay      = groupByDay(pdfDownloadRows ?? []);
+
+  const buildSeries = (byDay: Map<string, number>) =>
+    days30.map((day) => ({ day, value: byDay.get(day) ?? 0 }));
+
+  // hex fill colours for each row — safe for inline style
+  const activitySeries = [
+    { label: "Page Views",    data: buildSeries(pvByDay),       hex: "#6366f1" },
+    { label: "Signups",       data: buildSeries(signupsByDay),  hex: "#059669" },
+    { label: "CVs Created",   data: buildSeries(cvsByDay),      hex: "#1a7a6d" },
+    { label: "PDF Downloads", data: buildSeries(pdfByDay),      hex: "#d97706" },
+  ].map((s) => ({
+    ...s,
+    total: s.data.reduce((sum, d) => sum + d.value, 0),
+    max:   Math.max(1, ...s.data.map((d) => d.value)),
+  }));
 
   const totalUsers = profiles?.length ?? 0;
   const planCounts: Record<string, number> = { free: 0, starter: 0, pro: 0 };
@@ -77,61 +104,31 @@ export default async function AdminDashboardPage() {
   }
 
   const paidCount = planCounts.starter + planCounts.pro;
+  const conversionRate = totalUsers ? Math.round((paidCount / totalUsers) * 100) : 0;
 
-  // Job clicks aggregation
-  const clicks = jobClicks ?? [];
   const todayISO = todayStart.toISOString();
   const weekISO = weekStart.toISOString();
   const monthISO = monthStart.toISOString();
-  const todayClicks = clicks.filter((c) => c.created_at >= todayISO).length;
-  const weekClicks = clicks.filter((c) => c.created_at >= weekISO).length;
-  const monthClicks = clicks.filter((c) => c.created_at >= monthISO).length;
-  const allTimeClicks = clicks.length;
 
-  // Top 5 companies
-  const companyMap: Record<string, number> = {};
-  for (const c of clicks) {
-    if (c.company) companyMap[c.company] = (companyMap[c.company] ?? 0) + 1;
-  }
-  const topCompanies = Object.entries(companyMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
-    .map(([company, count]) => ({ company, count }));
+  // New signups
+  const newToday = profiles?.filter((p) => p.created_at >= todayISO).length ?? 0;
+  const newThisWeek = profiles?.filter((p) => p.created_at >= weekISO).length ?? 0;
+  const newThisMonth = profiles?.filter((p) => p.created_at >= monthISO).length ?? 0;
 
-  // Top 5 roles
-  const roleMap: Record<string, { count: number; totalScore: number; scoreCount: number }> = {};
-  for (const c of clicks) {
-    if (c.job_title) {
-      if (!roleMap[c.job_title]) roleMap[c.job_title] = { count: 0, totalScore: 0, scoreCount: 0 };
-      roleMap[c.job_title].count++;
-      if (c.match_score != null) {
-        roleMap[c.job_title].totalScore += c.match_score;
-        roleMap[c.job_title].scoreCount++;
-      }
-    }
-  }
-  const topRoles = Object.entries(roleMap)
-    .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 5)
-    .map(([role, d]) => ({
-      role,
-      count: d.count,
-      avgMatchScore: d.scoreCount > 0 ? Math.round(d.totalScore / d.scoreCount) : null,
-    }));
+  // Recent signups (last 6)
+  const recentSignups = [...(profiles ?? [])]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 6)
+    .map((p) => {
+      const diffMs = now.getTime() - new Date(p.created_at).getTime();
+      const diffH = Math.floor(diffMs / 3_600_000);
+      const diffD = Math.floor(diffH / 24);
+      const ago = diffH < 1 ? "just now" : diffH < 24 ? `${diffH}h ago` : `${diffD}d ago`;
+      return { email: p.email, name: p.full_name, plan: p.plan, ago };
+    });
 
-  const stats = [
-    {
-      title: "Total Users",
-      value: totalUsers.toLocaleString(),
-      detail: `Free: ${planCounts.free} · Starter: ${planCounts.starter} · Pro: ${planCounts.pro}`,
-      icon: Users,
-    },
-    {
-      title: "Paid Subscriptions",
-      value: paidCount.toLocaleString(),
-      detail: `${totalUsers ? Math.round((paidCount / totalUsers) * 100) : 0}% conversion rate`,
-      icon: CreditCard,
-    },
+
+  const nonClickableStats = [
     {
       title: "Total CVs",
       value: (totalCvs ?? 0).toLocaleString(),
@@ -146,12 +143,70 @@ export default async function AdminDashboardPage() {
     },
   ];
 
+  const planBars = [
+    { label: "Free", count: planCounts.free, color: "bg-muted-foreground/30" },
+    { label: "Starter", count: planCounts.starter, color: "bg-primary/50" },
+    { label: "Pro", count: planCounts.pro, color: "bg-primary" },
+  ].filter((b) => b.count > 0);
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="mb-6 text-2xl font-bold tracking-tight">Dashboard</h1>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
+
+          {/* Total Users — clickable */}
+          <Link href="/admin/users" className="group">
+            <Card className="h-full transition-colors group-hover:border-primary/40 group-hover:bg-muted/40">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
+                <div className="flex items-center gap-1">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="text-2xl font-bold">{totalUsers.toLocaleString()}</div>
+                {/* Plan split bar */}
+                <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  {planBars.map((b) => (
+                    <div
+                      key={b.label}
+                      className={`${b.color} h-full`}
+                      style={{ width: `${Math.round((b.count / totalUsers) * 100)}%` }}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Free: {planCounts.free} · Starter: {planCounts.starter} · Pro: {planCounts.pro}
+                </p>
+                {newThisWeek > 0 && (
+                  <p className="flex items-center gap-1 text-xs text-success font-medium">
+                    <TrendingUp className="h-3 w-3" />
+                    +{newThisWeek} this week · +{newToday} today
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Paid Subscriptions */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Paid Subscriptions</CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="text-2xl font-bold">{paidCount.toLocaleString()}</div>
+              {/* Conversion bar */}
+              <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full bg-primary" style={{ width: `${conversionRate}%` }} />
+              </div>
+              <p className="text-xs text-muted-foreground">{conversionRate}% conversion rate</p>
+            </CardContent>
+          </Card>
+
+          {nonClickableStats.map((stat) => (
             <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -161,13 +216,59 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {stat.detail}
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{stat.detail}</p>
               </CardContent>
             </Card>
           ))}
         </div>
+      </div>
+
+      {/* Recent Signups */}
+      <div>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight flex items-center gap-2">
+          <Users className="h-5 w-5 text-muted-foreground" />
+          Recent Signups
+        </h2>
+        <Card>
+          <CardContent className="p-0">
+            {recentSignups.length === 0 ? (
+              <p className="px-6 py-4 text-sm text-muted-foreground">No signups yet.</p>
+            ) : (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-6 py-2 text-left text-xs font-medium text-muted-foreground">User</th>
+                    <th className="px-6 py-2 text-left text-xs font-medium text-muted-foreground">Plan</th>
+                    <th className="px-6 py-2 text-right text-xs font-medium text-muted-foreground">Joined</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentSignups.map((u, i) => (
+                    <tr key={i} className="border-b last:border-0">
+                      <td className="px-6 py-2.5">
+                        <p className="font-medium truncate max-w-[220px]">{u.name ?? u.email}</p>
+                        {u.name && <p className="text-xs text-muted-foreground truncate max-w-[220px]">{u.email}</p>}
+                      </td>
+                      <td className="px-6 py-2.5">
+                        <Badge
+                          variant="secondary"
+                          className={`capitalize text-[10px] ${
+                            u.plan === "pro" ? "bg-primary/10 text-primary" :
+                            u.plan === "starter" ? "bg-blue-500/10 text-blue-600" :
+                            "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {u.plan}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-2.5 text-right text-xs text-muted-foreground tabular-nums">{u.ago}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Engagement — engaged active users (excludes passive popover events) */}
@@ -200,154 +301,9 @@ export default async function AdminDashboardPage() {
           ))}
         </div>
 
-        {/* 30-day DAU trend */}
-        <Card>
-          <CardHeader className="pb-3 flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-sm font-semibold">DAU — last 30 days</CardTitle>
-              <p className="mt-1 text-xs text-muted-foreground">
-                30-day avg {dauAvg.toLocaleString()} · 2nd half vs 1st{" "}
-                <span
-                  className={
-                    dauTrendPct > 10
-                      ? "text-success font-medium"
-                      : dauTrendPct < -10
-                        ? "text-error font-medium"
-                        : "text-muted-foreground"
-                  }
-                >
-                  {dauTrendPct > 0 ? `+${dauTrendPct}%` : `${dauTrendPct}%`}
-                </span>
-              </p>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-end gap-1" style={{ height: 140 }}>
-              {dauSeries.map((p, i) => {
-                const h = Math.max((p.dau / dauMax) * 120, p.dau > 0 ? 3 : 0);
-                const showLabel = i === 0 || i === dauSeries.length - 1 || i % 7 === 0;
-                return (
-                  <div
-                    key={p.day}
-                    className="group relative flex flex-1 flex-col items-center gap-1"
-                    title={`${p.day}: ${p.dau} DAU`}
-                  >
-                    <div className="flex w-full items-end justify-center" style={{ height: 120 }}>
-                      <div
-                        className="w-full max-w-[18px] rounded-t bg-primary/40 transition-colors group-hover:bg-primary/70"
-                        style={{ height: h }}
-                      />
-                    </div>
-                    <span className="text-[9px] text-muted-foreground tabular-nums truncate w-full text-center">
-                      {showLabel ? p.day.slice(5) : ""}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <ActivityChart series={activitySeries} days30={days30} />
       </div>
 
-      {/* Job Clicks Revenue */}
-      <div>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight flex items-center gap-2">
-          <MousePointerClick className="h-5 w-5 text-muted-foreground" />
-          Job Clicks Revenue
-          <span className="text-xs font-normal text-muted-foreground">@ $0.15 CPC</span>
-        </h2>
-
-        {/* Click + Revenue stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-          {[
-            { label: "Today", clicks: todayClicks },
-            { label: "This Week", clicks: weekClicks },
-            { label: "This Month", clicks: monthClicks },
-            { label: "All Time", clicks: allTimeClicks },
-          ].map(({ label, clicks: c }) => (
-            <Card key={label}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{c.toLocaleString()}</div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  ${(c * CPC).toFixed(2)} estimated revenue
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Tables */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Top Companies */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold">Top Companies by Clicks</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {topCompanies.length === 0 ? (
-                <p className="px-6 py-4 text-sm text-muted-foreground">No data yet.</p>
-              ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="px-6 py-2 text-left text-xs font-medium text-muted-foreground">Company</th>
-                      <th className="px-6 py-2 text-right text-xs font-medium text-muted-foreground">Clicks</th>
-                      <th className="px-6 py-2 text-right text-xs font-medium text-muted-foreground">Revenue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topCompanies.map(({ company, count }) => (
-                      <tr key={company} className="border-b last:border-0">
-                        <td className="px-6 py-2.5 font-medium">{company}</td>
-                        <td className="px-6 py-2.5 text-right tabular-nums">{count}</td>
-                        <td className="px-6 py-2.5 text-right tabular-nums text-muted-foreground">
-                          ${(count * CPC).toFixed(2)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Top Roles */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold">Top Roles by Clicks</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {topRoles.length === 0 ? (
-                <p className="px-6 py-4 text-sm text-muted-foreground">No data yet.</p>
-              ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="px-6 py-2 text-left text-xs font-medium text-muted-foreground">Role</th>
-                      <th className="px-6 py-2 text-right text-xs font-medium text-muted-foreground">Clicks</th>
-                      <th className="px-6 py-2 text-right text-xs font-medium text-muted-foreground">Avg Match</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topRoles.map(({ role, count, avgMatchScore }) => (
-                      <tr key={role} className="border-b last:border-0">
-                        <td className="px-6 py-2.5 font-medium">{role}</td>
-                        <td className="px-6 py-2.5 text-right tabular-nums">{count}</td>
-                        <td className="px-6 py-2.5 text-right tabular-nums text-muted-foreground">
-                          {avgMatchScore != null ? `${avgMatchScore}%` : "—"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
     </div>
   );
 }
