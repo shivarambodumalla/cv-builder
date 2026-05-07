@@ -28,7 +28,19 @@ import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 export const metadata: Metadata = {
   title: "Free ATS Resume Scanner — Check Your ATS Score",
   description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score, fixes issues with AI, and gets you more interviews. Free. 2,400+ users.",
-  alternates: { canonical: "https://www.thecvedge.com" },
+  alternates: {
+    canonical: "https://www.thecvedge.com",
+    languages: {
+      "en-US": "https://www.thecvedge.com",
+      "en-GB": "https://www.thecvedge.com",
+      "en-AU": "https://www.thecvedge.com",
+      "en-AE": "https://www.thecvedge.com",
+      "en-SA": "https://www.thecvedge.com",
+      "en-QA": "https://www.thecvedge.com",
+      "en-KW": "https://www.thecvedge.com",
+      "x-default": "https://www.thecvedge.com",
+    },
+  },
 };
 
 // Revalidate every hour — homepage stats don't need to be real-time
@@ -58,6 +70,22 @@ export default async function HomePage() {
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
     aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "124" },
     featureList: ["ATS Score Analysis", "AI CV Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
+    areaServed: [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Country", "name": "Canada" },
+      { "@type": "Country", "name": "Australia" },
+      { "@type": "Country", "name": "Ireland" },
+      { "@type": "Country", "name": "Germany" },
+      { "@type": "Country", "name": "France" },
+      { "@type": "Country", "name": "Netherlands" },
+      { "@type": "Country", "name": "United Arab Emirates" },
+      { "@type": "Country", "name": "Saudi Arabia" },
+      { "@type": "Country", "name": "Qatar" },
+      { "@type": "Country", "name": "Kuwait" },
+      { "@type": "Country", "name": "Bahrain" },
+      { "@type": "Country", "name": "Oman" },
+    ],
   };
 
   const faqJsonLd = {
@@ -73,6 +101,8 @@ export default async function HomePage() {
       { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for core features including ATS score checking, AI bullet rewrites, job matching, and resume templates. No credit card is required to start." } },
       { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge Pro users are guaranteed an 80+ ATS score after using Fix All. If your score does not reach 80+, contact us within 14 days of signing up and we will personally review your CV. If we still cannot reach 80+, we refund you in full." } },
       { "@type": "Question", name: "Does CVEdge have a job search?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge includes a free AI job search across 1 million+ live listings. Every job shows a match score against your CV so you can prioritise the roles you are most qualified for." } },
+      { "@type": "Question", name: "Does CVEdge work for jobs in the UAE, Saudi Arabia, and the Middle East?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is used by job seekers across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. ATS screening is standard among large GCC employers and multinationals in the region. CVEdge scores your CV against the same criteria, helps you match keywords from local job descriptions, and generates cover letters for GCC-specific applications. The cv-review service also includes a Middle East specialist." } },
+      { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimisation in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology throughout (not just 'resume'), supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
     ],
   };
 
