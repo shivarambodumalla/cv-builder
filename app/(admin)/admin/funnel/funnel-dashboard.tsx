@@ -21,7 +21,7 @@ interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
   jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[];
   anonToSignup: FunnelStep[]; loginToDownload: FunnelStep[];
-  pageVisits: PageVisit[]; totalAnonVisits: number; newSignups: number;
+  pageVisits: PageVisit[]; totalAnonVisits: number; totalUniqueVisitors: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
   popups: PopupMetric[];
   visitsOverTime: TimePoint[]; signupsOverTime: TimePoint[];
@@ -81,12 +81,14 @@ export function FunnelDashboard() {
 
   function handlePreset(pr: Preset) { setPreset(pr); if (pr !== "custom") fetchFunnel(pr); }
 
+  const uniqueVisitors = data?.totalUniqueVisitors ?? 0;
   const awarenessBase = data?.awareness[0]?.count ?? 0;
+  const heroVisitors = uniqueVisitors || awarenessBase;
   const signups = data?.newSignups ?? 0;
   const cvsCreated = data?.engagement.find(s => s.key === "cv_created")?.count ?? 0;
   const downloads = data?.engagement.find(s => s.key === "pdf_downloaded")?.count ?? 0;
   const upgraded = data?.conversion.find(s => s.key === "upgraded")?.count ?? 0;
-  const visitToSignup = p(signups, awarenessBase);
+  const visitToSignup = p(signups, heroVisitors);
   const signupToCV = p(cvsCreated, signups);
   const _signupToDownload = p(downloads, signups);
   const signupToPro = p(upgraded, signups);
@@ -118,7 +120,7 @@ export function FunnelDashboard() {
         <>
           {/* ── 1. HERO METRICS ── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <MetricCard icon={Eye} label="Visitors" value={awarenessBase} sub="Anonymous page views" />
+            <MetricCard icon={Eye} label="Visitors" value={heroVisitors} sub={uniqueVisitors > 0 ? "Unique anonymous visitors" : "Page views (no UUID yet)"} />
             <MetricCard icon={UserPlus} label="Signups" value={signups} sub={awarenessBase > 0 ? `${fp(visitToSignup)} of visitors` : undefined} trend={visitToSignup >= 5 ? "up" : visitToSignup > 0 ? "flat" : "down"} />
             <MetricCard icon={FileText} label="CVs Created" value={cvsCreated} sub={signups > 0 ? `${fp(signupToCV)} of signups` : undefined} trend={signupToCV >= 50 ? "up" : signupToCV > 0 ? "flat" : "down"} />
             <MetricCard icon={Crown} label="Pro Upgrades" value={upgraded} sub={signups > 0 ? `${fp(signupToPro)} conversion` : undefined} highlight />
@@ -130,7 +132,7 @@ export function FunnelDashboard() {
             <div className="flex items-center gap-0 overflow-x-auto pb-2">
               {(() => {
                 // Use the larger of visitors vs signups as the true top-of-funnel
-                const topOfFunnel = Math.max(awarenessBase, signups);
+                const topOfFunnel = Math.max(heroVisitors, signups);
                 return [
                   { label: "Visitors", count: topOfFunnel, color: "bg-purple-500" },
                   { label: "Signups", count: signups, color: "bg-blue-500" },

@@ -26,6 +26,8 @@ export async function GET(request: NextRequest) {
   const toDate = to.slice(0, 10);
   const pvRpc = (path: string) =>
     admin.rpc("funnel_page_views", { from_date: fromDate, to_date: toDate, page_path: path }).single<{ total: number }>();
+  const uvRpc = (path?: string) =>
+    admin.rpc("funnel_unique_visitors", { from_date: fromDate, to_date: toDate, ...(path ? { page_path: path } : {}) }).single<{ unique_visitors: number }>();
 
   const [
     // Pre-signup (anonymous page views)
@@ -34,6 +36,8 @@ export async function GET(request: NextRequest) {
     pvUpload,
     pvLogin,
     pvResumes,
+    // Unique anonymous visitors (across all public pages)
+    uniqueVisitors,
     // Signup
     signups,
     // Post-signup activity
@@ -57,6 +61,8 @@ export async function GET(request: NextRequest) {
     pvRpc("/upload-resume"),
     pvRpc("/login"),
     pvRpc("/resumes"),
+    // Unique anonymous visitors
+    uvRpc(),
     // Signup count (excluding test users)
     admin.from("profiles").select("id", { count: "exact", head: true })
       .gte("created_at", from).lte("created_at", to)
@@ -183,6 +189,7 @@ export async function GET(request: NextRequest) {
 
   // Total anonymous visits (sum of all public page views)
   const totalAnonVisits = publicPageVisits.reduce((sum, p) => sum + p.count, 0);
+  const totalUniqueVisitors = Number(uniqueVisitors.data?.unique_visitors ?? 0);
 
   // ── Bounce analysis: public pages that don't lead to login/signup ──
   const loginViews = Number(pvLogin.data?.total ?? 0);
@@ -276,7 +283,7 @@ export async function GET(request: NextRequest) {
 
   // ── Anonymous → Signup funnel ──
   const anonToSignup = [
-    { key: "anon_visitors", label: "Anonymous Visitors", count: totalAnonVisits },
+    { key: "anon_visitors", label: "Unique Visitors", count: totalUniqueVisitors || totalAnonVisits },
     { key: "anon_login_page", label: "Reached Login", count: Number(pvLogin.data?.total ?? 0) },
     { key: "signed_up", label: "Signed Up", count: signupCount },
   ];
@@ -338,6 +345,7 @@ export async function GET(request: NextRequest) {
     loginToDownload,
     pageVisits,
     totalAnonVisits,
+    totalUniqueVisitors,
     newSignups: signupCount,
     bounceAnalysis,
     signupSources,

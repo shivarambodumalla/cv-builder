@@ -10,15 +10,23 @@ function isAllowed(path: string): boolean {
   return ALLOWED_PATHS.has(path) || path.startsWith("/popup/") || path.startsWith("/blog");
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function POST(request: NextRequest) {
   try {
-    const { path } = await request.json();
+    const { path, visitor_id } = await request.json();
     if (!path || !isAllowed(path)) return NextResponse.json({ ok: true });
 
     const admin = createAdminClient();
     const today = new Date().toISOString().slice(0, 10);
 
-    await admin.rpc("increment_page_view", { page_path: path, view_day: today });
+    const validVisitorId = visitor_id && UUID_RE.test(String(visitor_id)) ? String(visitor_id) : null;
+
+    await admin.rpc("increment_page_view", {
+      page_path: path,
+      view_day: today,
+      p_visitor_id: validVisitorId,
+    });
 
     return NextResponse.json({ ok: true });
   } catch {
