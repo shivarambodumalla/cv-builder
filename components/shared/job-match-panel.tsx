@@ -565,7 +565,7 @@ export function JobMatchRightPanel({
       {isPaidContent && result.quick_wins?.length > 0 && (
         <div className="space-y-2" style={{ marginBottom: "14px" }}>
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">
-            <Zap className="h-4 w-4 text-amber-500" /> Quick Wins
+            <Zap className="h-4 w-4 text-warning" /> Quick Wins
           </h4>
           <ul className="space-y-1.5 text-sm text-muted-foreground">
             {result.quick_wins.slice(0, 3).map((w, i) => (

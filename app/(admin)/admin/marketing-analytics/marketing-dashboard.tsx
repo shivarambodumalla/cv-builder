@@ -191,15 +191,15 @@ function fmtDuration(secs: number) {
 }
 
 function positionBadge(pos: number) {
-  if (pos <= 3) return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400";
-  if (pos <= 10) return "bg-amber-500/15 text-amber-700 dark:text-amber-500";
+  if (pos <= 3) return "bg-success/15 text-success";
+  if (pos <= 10) return "bg-warning/15 text-warning";
   return "bg-slate-500/10 text-slate-600 dark:text-slate-400";
 }
 
 function qualityBadge(score: number) {
-  if (score >= 70) return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400";
-  if (score >= 40) return "bg-amber-500/15 text-amber-700 dark:text-amber-500";
-  return "bg-red-500/15 text-red-700 dark:text-red-400";
+  if (score >= 70) return "bg-success/15 text-success";
+  if (score >= 40) return "bg-warning/15 text-warning";
+  return "bg-error/15 text-error";
 }
 
 function qualityLabel(score: number) {
@@ -754,7 +754,7 @@ function NewVsReturning({ rows }: { rows: NvRRow[] }) {
           {retRow && newRow && retRow.engagementRate > newRow.engagementRate && (
             <p className="text-[11px] text-muted-foreground border-t pt-3">
               Returning visitors are{" "}
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+              <span className="text-success font-medium">
                 {retRow.engagementRate - newRow.engagementRate}% more engaged
               </span>{" "}
               — strong remarketing signal.
@@ -1225,7 +1225,7 @@ function PositionDelta({ delta }: { delta: number | null }) {
     <span
       className={cn(
         "inline-flex items-center gap-0.5 text-[10px] font-medium",
-        improved ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+        improved ? "text-success" : "text-error"
       )}
     >
       {improved ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
@@ -1502,10 +1502,10 @@ function LandingPageQuality({ rows }: { rows: LandingPageRow[] }) {
                       className={cn(
                         "px-1 py-0.5 rounded",
                         row.engagementRate >= 60
-                          ? "text-emerald-600 dark:text-emerald-400"
+                          ? "text-success"
                           : row.engagementRate >= 40
-                          ? "text-amber-600 dark:text-amber-500"
-                          : "text-red-600 dark:text-red-400"
+                          ? "text-warning"
+                          : "text-error"
                       )}
                     >
                       {row.engagementRate}%

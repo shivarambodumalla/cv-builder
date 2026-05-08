@@ -199,8 +199,8 @@ export function TestimonialsManager({
         <div
           className={`rounded-lg px-4 py-2.5 text-sm font-medium ${
             message.type === "success"
-              ? "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300"
-              : "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"
+              ? "bg-success/10 text-success"
+              : "bg-error/10 text-error"
           }`}
         >
           {message.text}

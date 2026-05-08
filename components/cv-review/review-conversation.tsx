@@ -201,7 +201,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
 
       {/* Unanswered questions banner */}
       {hasUnansweredQuestions && (
-        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="mb-4 rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">
           Please answer the expert&apos;s questions below before sending new messages.
         </div>
       )}
@@ -275,7 +275,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
           if (msg.message_type === "final_feedback") {
             const c = msg.content as FinalFeedbackContent;
             return (
-              <div key={msg.id} className="rounded-xl border p-5 space-y-5" style={{ background: "white", borderColor: "#E0D8CC" }}>
+              <div key={msg.id} className="rounded-xl border p-5 space-y-5" style={{ background: "var(--card)", borderColor: "var(--border)" }}>
                 {c.summary && (
                   <div>
                     <h3 className="font-semibold text-sm mb-2">Expert summary</h3>

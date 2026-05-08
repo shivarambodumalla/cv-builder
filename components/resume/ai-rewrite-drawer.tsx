@@ -52,8 +52,8 @@ function defaultMode(category: string): RewriteMode {
 }
 
 function charCountColor(len: number): string {
-  if (len >= 120 && len <= 180) return "text-green-600";
-  if (len > 0) return "text-amber-600";
+  if (len >= 120 && len <= 180) return "text-success";
+  if (len > 0) return "text-warning";
   return "text-muted-foreground";
 }
 

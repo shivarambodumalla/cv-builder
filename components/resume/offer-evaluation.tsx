@@ -32,21 +32,21 @@ const DIMENSION_LABELS: Record<string, string> = {
 };
 
 function getBarColor(score: number): string {
-  if (score >= 70) return "#16A34A";
-  if (score >= 50) return "#D97706";
-  return "#DC2626";
+  if (score >= 70) return "var(--success)";
+  if (score >= 50) return "var(--warning)";
+  return "var(--error)";
 }
 
 function getGradeBadgeStyle(grade: string): { background: string; color: string } {
   if (grade === "A" || grade === "B") return { background: "#DCFCE7", color: "#065F46" };
   if (grade === "C") return { background: "#FEF3C7", color: "#92400E" };
-  return { background: "#FEF2F2", color: "#DC2626" };
+  return { background: "#FEF2F2", color: "var(--error)" };
 }
 
 function getSignalDotColor(status: string): string {
-  if (status === "green") return "#16A34A";
-  if (status === "amber") return "#D97706";
-  return "#DC2626";
+  if (status === "green") return "var(--success)";
+  if (status === "amber") return "var(--warning)";
+  return "var(--error)";
 }
 
 export function OfferEvaluation({ jdText, enabled }: OfferEvaluationProps) {

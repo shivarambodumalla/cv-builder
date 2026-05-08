@@ -12,7 +12,7 @@ export async function PendingReviewCount() {
   return (
     <span
       className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white"
-      style={{ background: "#DC2626" }}
+      style={{ background: "var(--error)" }}
     >
       {count}
     </span>

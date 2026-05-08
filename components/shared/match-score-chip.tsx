@@ -5,10 +5,10 @@ type MatchLevel = "strong" | "good" | "average" | "poor";
 type ChipSize = "sm" | "md";
 
 const CONFIG: Record<MatchLevel, { label: string; bg: string; icon: typeof CheckCircle2 }> = {
-  strong: { label: "Strong Match", bg: "bg-green-500", icon: CheckCircle2 },
+  strong: { label: "Strong Match", bg: "bg-success", icon: CheckCircle2 },
   good: { label: "Good Match", bg: "bg-blue-500", icon: ThumbsUp },
-  average: { label: "Average Match", bg: "bg-amber-500", icon: Minus },
-  poor: { label: "Poor Match", bg: "bg-red-500", icon: XCircle },
+  average: { label: "Average Match", bg: "bg-warning", icon: Minus },
+  poor: { label: "Poor Match", bg: "bg-error", icon: XCircle },
 };
 
 const SIZE: Record<ChipSize, string> = {

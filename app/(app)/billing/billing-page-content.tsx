@@ -191,7 +191,7 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
               <Button
                 variant="outline"
                 size="sm"
-                className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+                className="border-error/50 text-error hover:bg-error/10"
                 onClick={() => setShowCancelConfirm(true)}
               >
                 Cancel subscription
@@ -230,7 +230,7 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
             )}
 
             {profile.subscription_status === "cancelled" && renewalDate && (
-              <p className="text-xs text-amber-600 dark:text-amber-400">
+              <p className="text-xs text-warning">
                 Your subscription has been cancelled. You have Pro access until {renewalDate}.
               </p>
             )}
@@ -369,7 +369,7 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+            className="gap-2 border-error/50 text-error hover:bg-error/10"
             onClick={() => setShowDeleteConfirm(true)}
           >
             <Trash2 className="h-4 w-4" /> Delete Account

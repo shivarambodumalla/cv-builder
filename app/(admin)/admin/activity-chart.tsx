@@ -40,11 +40,12 @@ export function ActivityChart({
     top: number; // SVG top edge in viewport (px from top)
   } | null>(null);
 
-  // Precompute SVG paths
+  // Precompute SVG paths — all series share the same scale (global max)
+  const globalMax = Math.max(1, ...series.map((s) => s.max));
   const paths = series.map((s) => {
     const pts = s.data.map((d, i) => ({
       x: xAt(i, n),
-      y: yAt(s.max > 0 ? d.value / s.max : 0),
+      y: yAt(globalMax > 0 ? d.value / globalMax : 0),
     }));
     const line = pts
       .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`)
@@ -126,7 +127,7 @@ export function ActivityChart({
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-semibold">Activity — last 30 days</CardTitle>
         <p className="mt-1 text-xs text-muted-foreground">
-          {days30[0].slice(5)} → {days30[n - 1].slice(5)} · each series scaled to its own peak
+          {days30[0].slice(5)} → {days30[n - 1].slice(5)} · all series on a shared scale
         </p>
       </CardHeader>
       <CardContent className="space-y-3">

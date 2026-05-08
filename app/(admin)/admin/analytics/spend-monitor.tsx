@@ -94,7 +94,7 @@ export function SpendMonitor({ currentSpend, currentCap, currentRate }: Props) {
               {saving ? "Saving..." : "Save Settings"}
             </Button>
             {status === "saved" && <span className="text-xs text-success">Saved</span>}
-            {status === "error" && <span className="text-xs text-red-600">Failed to save | check console</span>}
+            {status === "error" && <span className="text-xs text-error">Failed to save | check console</span>}
           </div>
         </div>
       </div>

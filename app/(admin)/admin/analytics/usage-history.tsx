@@ -312,9 +312,9 @@ export function UsageHistory() {
 
 function Card({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
   return (
-    <div className={`rounded-lg border p-3 ${highlight ? "border-red-300 dark:border-red-800" : ""}`}>
+    <div className={`rounded-lg border p-3 ${highlight ? "border-error/50" : ""}`}>
       <p className="text-xs text-muted-foreground">{label}</p>
-      <p className={`text-lg font-bold ${highlight ? "text-red-600" : ""}`}>{value}</p>
+      <p className={`text-lg font-bold ${highlight ? "text-error" : ""}`}>{value}</p>
       {sub && <p className="text-[10px] text-muted-foreground">{sub}</p>}
     </div>
   );

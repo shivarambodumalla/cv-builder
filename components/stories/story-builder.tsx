@@ -260,9 +260,9 @@ export function StoryBuilder({
                   className={
                     "text-sm font-semibold " +
                     (score >= 80
-                      ? "text-green-600"
+                      ? "text-success"
                       : score >= 50
-                        ? "text-amber-600"
+                        ? "text-warning"
                         : "text-muted-foreground")
                   }
                 >
@@ -277,8 +277,8 @@ export function StoryBuilder({
                       className={
                         "inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium " +
                         (hint.color === "green"
-                          ? "bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400"
-                          : "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400")
+                          ? "bg-success/10 text-success"
+                          : "bg-warning/10 text-warning")
                       }
                     >
                       {hint.label}

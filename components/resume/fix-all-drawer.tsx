@@ -299,26 +299,26 @@ export function FixAllDrawer({
                         {change.original && (
                           <div
                             style={{
-                              background: "#FEF2F2",
+                              background: "color-mix(in srgb, var(--error) 8%, transparent)",
                               padding: "8px 12px",
                               display: "flex",
                               gap: 8,
                             }}
                           >
-                            <span style={{ color: "#DC2626", fontWeight: 700, flexShrink: 0 }}>&minus;</span>
-                            <span style={{ fontSize: 12, color: "#DC2626", lineHeight: 1.6 }}>{change.original}</span>
+                            <span style={{ color: "var(--error)", fontWeight: 700, flexShrink: 0 }}>&minus;</span>
+                            <span style={{ fontSize: 12, color: "var(--error)", lineHeight: 1.6 }}>{change.original}</span>
                           </div>
                         )}
                         <div
                           style={{
-                            background: "#F0FDF4",
+                            background: "color-mix(in srgb, var(--success) 8%, transparent)",
                             padding: "8px 12px",
                             display: "flex",
                             gap: 8,
                           }}
                         >
-                          <span style={{ color: "#15803d", fontWeight: 700, flexShrink: 0 }}>+</span>
-                          <span style={{ fontSize: 12, color: "#15803d", lineHeight: 1.6 }}>
+                          <span style={{ color: "var(--success)", fontWeight: 700, flexShrink: 0 }}>+</span>
+                          <span style={{ fontSize: 12, color: "var(--success)", lineHeight: 1.6 }}>
                             {change.status === "editing" ? change.editedText : change.rewritten}
                           </span>
                         </div>
@@ -407,7 +407,7 @@ export function FixAllDrawer({
               data-testid="btn-accept-all"
               style={{
                 flex: 1,
-                background: "#15803d",
+                background: "#065F46",
                 color: "white",
                 border: "none",
                 padding: 11,

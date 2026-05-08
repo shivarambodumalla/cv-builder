@@ -21,7 +21,7 @@ const variantStyles: Record<ChipVariant, string> = {
   active: "bg-[#065F46] text-white border-transparent",
   outline: "bg-transparent text-[#065F46] border-[#065F46] dark:text-primary dark:border-primary",
   trust: "bg-white text-[#0C1A0E] border-[#E0D8CC] dark:bg-card dark:text-foreground dark:border-border",
-  red: "bg-transparent text-red-700 border-red-300 dark:text-red-400 dark:border-red-800",
+  red: "bg-transparent text-error border-error/40",
   amber: "bg-[#FEF3C7] text-[#B45309] border-transparent dark:bg-amber-950/30 dark:text-amber-400",
 };
 

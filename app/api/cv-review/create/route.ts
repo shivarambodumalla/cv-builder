@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
   };
   const variantId = variantIdMap[tier];
   if (!variantId) {
+    console.error(`[cv-review/create] Missing env var for tier "${tier}": LS_CV_REVIEW_${tier.toUpperCase()}_VARIANT_ID`);
     return NextResponse.json({ error: "Payment not configured for this tier" }, { status: 500 });
   }
 
@@ -54,8 +55,8 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
-    console.error("[cv-review/create]", error);
-    return NextResponse.json({ error: "Failed to create checkout" }, { status: 500 });
+    console.error("[cv-review/create] LemonSqueezy error:", JSON.stringify(error));
+    return NextResponse.json({ error: "Failed to create checkout", detail: error.message }, { status: 500 });
   }
 
   return NextResponse.json({ checkout_url: data!.data.attributes.url });

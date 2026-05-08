@@ -278,12 +278,12 @@ export function UploadResumeContent() {
               className={cn(
                 "flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 transition-all",
                 dragOver ? "border-primary bg-primary/5 scale-[1.01]" : "border-foreground/20 hover:border-primary/50 hover:bg-muted/30",
-                file && "border-green-500/50 bg-green-50 dark:bg-green-950/20"
+                file && "border-success/50 bg-success/10"
               )}
             >
               {file ? (
                 <>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-success/15">
                     <CheckCircle2 className="h-6 w-6 text-success" />
                   </div>
                   <p className="text-sm font-semibold">{file.name}</p>

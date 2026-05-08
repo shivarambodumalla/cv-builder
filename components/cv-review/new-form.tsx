@@ -193,7 +193,7 @@ export function CvReviewNewForm() {
             </div>
           )}
         </div>
-        {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+        {fileError && <p className="text-error text-sm mt-2">{fileError}</p>}
       </div>
 
       {/* Additional info */}
@@ -201,7 +201,7 @@ export function CvReviewNewForm() {
         <h2 className="text-base font-semibold mb-1">Additional info</h2>
         <div>
           <label className="block text-sm font-medium mb-1.5">
-            Target role <span className="text-red-500">*</span>
+            Target role <span className="text-error">*</span>
           </label>
           <select
             value={targetRole}
@@ -222,7 +222,7 @@ export function CvReviewNewForm() {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1.5">
-            Target country <span className="text-red-500">*</span>
+            Target country <span className="text-error">*</span>
           </label>
           <select
             value={targetCountry}
@@ -269,7 +269,7 @@ export function CvReviewNewForm() {
         </div>
       </div>
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-error text-sm">{error}</p>}
 
       <button
         type="submit"

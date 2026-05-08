@@ -355,8 +355,8 @@ function SuggestionCard({ s, noteValue, onNoteChange, onAccept, onReject, onNeed
         {s.section && <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold capitalize" style={{ background: SECTION_COLORS[s.section] || "#F5F5F5" }}>{s.section}</span>}
         <span className="font-semibold">{s.suggestion_text}</span>
       </div>
-      {s.original_text && <div className="bg-red-50 px-2 py-1 rounded line-through text-muted-foreground">{s.original_text}</div>}
-      {s.improved_text && <div className="bg-green-50 px-2 py-1 rounded">{s.improved_text}</div>}
+      {s.original_text && <div className="bg-error/8 px-2 py-1 rounded line-through text-muted-foreground">{s.original_text}</div>}
+      {s.improved_text && <div className="bg-success/8 px-2 py-1 rounded">{s.improved_text}</div>}
       {s.reasoning && <div className="text-muted-foreground leading-relaxed">{s.reasoning}</div>}
       <div className="flex gap-3 text-muted-foreground">
         <span>ATS +{s.ats_impact}</span>
@@ -425,8 +425,8 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
           if (msg.message_type === "question_list") {
             const qs = (msg.content as { questions?: { id: string; text: string }[] }).questions ?? [];
             return (
-              <div key={msg.id} className="rounded-lg border-2 p-3 text-xs space-y-2" style={{ borderColor: "#F59E0B", background: "#FFFBEB" }}>
-                <p className="font-semibold text-amber-800">Questions sent ({qs.length})</p>
+              <div key={msg.id} className="rounded-lg border-2 border-warning/50 bg-warning/8 p-3 text-xs space-y-2">
+                <p className="font-semibold text-warning">Questions sent ({qs.length})</p>
                 {qs.map((q, i) => <p key={q.id} className="text-muted-foreground"><span className="font-medium text-foreground">{i + 1}.</span> {q.text}</p>)}
               </div>
             );
@@ -462,8 +462,8 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
 
       {/* Ask questions form */}
       {showQuestionForm && (
-        <div className="rounded-lg border p-3 space-y-2 bg-amber-50 border-amber-200">
-          <p className="text-xs font-semibold text-amber-900">Ask the user questions</p>
+        <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 space-y-2">
+          <p className="text-xs font-semibold text-warning">Ask the user questions</p>
           {questions.map((q, i) => (
             <div key={q.id} className="flex gap-1.5">
               <textarea
@@ -474,12 +474,12 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
                 className="flex-1 border rounded px-2 py-1.5 text-xs resize-none focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
               {questions.length > 1 && (
-                <button onClick={() => removeQuestion(i)} className="text-muted-foreground hover:text-red-500 text-base self-start mt-1">×</button>
+                <button onClick={() => removeQuestion(i)} className="text-muted-foreground hover:text-error text-base self-start mt-1">×</button>
               )}
             </div>
           ))}
           <div className="flex gap-2">
-            <button onClick={addQuestion} className="text-xs text-amber-800 hover:text-amber-900 underline">+ Add question</button>
+            <button onClick={addQuestion} className="text-xs text-warning underline">+ Add question</button>
             <div className="ml-auto flex gap-1.5">
               <button onClick={() => setShowQuestionForm(false)} className="px-2.5 py-1 rounded text-xs border hover:bg-muted/50">Cancel</button>
               <button onClick={sendQuestions} disabled={sendingQuestions || !questions.some((q) => q.text.trim())} className="px-2.5 py-1 rounded text-xs font-semibold text-white disabled:opacity-50" style={{ background: "#92400E" }}>
@@ -494,7 +494,7 @@ function ConversationPanel({ reviewId, messages, adminText, onTextChange, onSend
         <textarea value={adminText} onChange={(e) => onTextChange(e.target.value)} placeholder="Write feedback..." rows={3} className="w-full border rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:ring-2 focus:ring-[#065F46]/30" />
         <div className="flex gap-2 flex-wrap">
           <button onClick={onSend} disabled={sendingMsg || !adminText.trim()} className="flex-1 py-2 rounded-lg text-xs font-semibold border hover:bg-muted/50 disabled:opacity-50">Send message</button>
-          <button onClick={() => setShowQuestionForm(!showQuestionForm)} className="flex-1 py-2 rounded-lg text-xs font-semibold border hover:bg-amber-50" style={{ color: "#92400E", borderColor: "#F59E0B" }}>
+          <button onClick={() => setShowQuestionForm(!showQuestionForm)} className="flex-1 py-2 rounded-lg text-xs font-semibold border text-warning border-warning/50 hover:bg-warning/10">
             Ask questions
           </button>
           <button onClick={onOpenFeedback} className="w-full py-2 rounded-lg text-xs font-semibold text-white" style={{ background: "#065F46" }}>Send final feedback</button>
@@ -547,7 +547,7 @@ function FeedbackModal({ reviewId, acceptedChanges, pendingItems, templates, onC
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xl">×</button>
         </div>
         {sent ? (
-          <div className="p-8 text-center text-green-600 font-semibold">Feedback sent!</div>
+          <div className="p-8 text-center text-success font-semibold">Feedback sent!</div>
         ) : (
           <div className="p-5 space-y-4">
             <div>

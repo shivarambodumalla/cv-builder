@@ -242,7 +242,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
               <div className="flex flex-wrap gap-3 pt-1">
                 {["Unlimited scans", "AI rewrites", "All templates", "From $2.30/week"].map((t) => (
                   <span key={t} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/90">
-                    <Check className="h-3 w-3 text-emerald-400" /> {t}
+                    <Check className="h-3 w-3 text-success" /> {t}
                   </span>
                 ))}
               </div>

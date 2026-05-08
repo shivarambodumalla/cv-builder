@@ -598,9 +598,9 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
 
       {/* ── Inline errors ── */}
       {error && errorCode === "keyword_list_required" && (
-        <div className="rounded-lg border border-yellow-300 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-950/30" style={{ marginBottom: "12px" }}>
+        <div className="rounded-lg border border-warning/30 bg-warning/10 p-4" style={{ marginBottom: "12px" }}>
           <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-yellow-600" />
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
             <div className="space-y-2">
               <p className="text-sm font-medium">Keywords not yet configured for &quot;{errorRole}&quot;</p>
               <p className="text-xs text-muted-foreground">ATS scoring requires a keyword list for your target role.</p>
@@ -610,7 +610,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
       )}
 
       {error && errorCode?.endsWith("_limit") && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/30" style={{ marginBottom: "12px" }}>
+        <div className="rounded-lg border border-warning/30 bg-warning/10 p-4" style={{ marginBottom: "12px" }}>
           <p className="text-sm font-medium">{error}</p>
           <Button size="sm" className="mt-3" onClick={() => openUpgradeModal("ats_limit" as UpgradeTrigger, limitDaysReset ?? undefined)}>
             Upgrade for unlimited
@@ -767,7 +767,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
                             "inline-flex items-center gap-1 rounded-full border-[1.5px] px-3 py-1 text-xs font-medium transition-all",
                             added
                               ? "border-success text-success cursor-default"
-                              : "bg-transparent text-red-700 border-red-400 hover:bg-red-50 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-950"
+                              : "bg-transparent text-error border-error/60 hover:bg-error/10"
                           )}
                         >
                           {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
@@ -798,7 +798,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
             <div style={{ marginBottom: "14px" }}>
               <button
                 type="button"
-                className="flex items-center gap-2 text-sm font-semibold hover:text-success dark:hover:text-green-400 transition-colors"
+                className="flex items-center gap-2 text-sm font-semibold hover:text-success transition-colors"
                 onClick={() => setEnhancementsOpen(!enhancementsOpen)}
               >
                 <Lightbulb className="h-4 w-4" />

@@ -82,6 +82,13 @@ export default async function AdminDashboardPage() {
   }
   const uvCountByDay = new Map([...uvByDay.entries()].map(([k, s]) => [k, s.size]));
 
+  const adminEmails = new Set(
+    (process.env.ADMIN_EMAIL ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)
+  );
+  const nonAdminProfiles = (profiles ?? []).filter(
+    (p) => !adminEmails.has((p.email ?? "").toLowerCase())
+  );
+
   const groupByDay = (rows: { created_at: string }[]) => {
     const m = new Map<string, number>();
     for (const r of rows) {
@@ -90,24 +97,24 @@ export default async function AdminDashboardPage() {
     }
     return m;
   };
-  const signupsByDay  = groupByDay(profiles?.map((p) => ({ created_at: p.created_at })) ?? []);
-  const cvsByDay      = groupByDay(cvsCreatedRows ?? []);
-  const pdfByDay      = groupByDay(pdfDownloadRows ?? []);
+  const signupsByDay = groupByDay(nonAdminProfiles.map((p) => ({ created_at: p.created_at })));
+  const cvsByDay = groupByDay(cvsCreatedRows ?? []);
+  const pdfByDay = groupByDay(pdfDownloadRows ?? []);
 
   const buildSeries = (byDay: Map<string, number>) =>
     days30.map((day) => ({ day, value: byDay.get(day) ?? 0 }));
 
   // hex fill colours for each row — safe for inline style
   const activitySeries = [
-    { label: "Page Views",      data: buildSeries(pvByDay),        hex: "#6366f1" },
-    { label: "Unique Visitors", data: buildSeries(uvCountByDay),   hex: "#8b5cf6" },
-    { label: "Signups",         data: buildSeries(signupsByDay),   hex: "#059669" },
-    { label: "CVs Created",     data: buildSeries(cvsByDay),       hex: "#1a7a6d" },
-    { label: "PDF Downloads",   data: buildSeries(pdfByDay),       hex: "#d97706" },
+    { label: "Page Views", data: buildSeries(pvByDay), hex: "#6366f1" },
+    { label: "Unique Visitors", data: buildSeries(uvCountByDay), hex: "#8b5cf6" },
+    { label: "Signups", data: buildSeries(signupsByDay), hex: "#059669" },
+    { label: "CVs Created", data: buildSeries(cvsByDay), hex: "#1a7a6d" },
+    { label: "PDF Downloads", data: buildSeries(pdfByDay), hex: "#d97706" },
   ].map((s) => ({
     ...s,
     total: s.data.reduce((sum, d) => sum + d.value, 0),
-    max:   Math.max(1, ...s.data.map((d) => d.value)),
+    max: Math.max(1, ...s.data.map((d) => d.value)),
   }));
 
   const totalUsers = profiles?.length ?? 0;
@@ -128,8 +135,8 @@ export default async function AdminDashboardPage() {
   const newThisWeek = profiles?.filter((p) => p.created_at >= weekISO).length ?? 0;
   const newThisMonth = profiles?.filter((p) => p.created_at >= monthISO).length ?? 0;
 
-  // Recent signups (last 6)
-  const recentSignups = [...(profiles ?? [])]
+  // Recent signups (last 6, excluding admins)
+  const recentSignups = [...nonAdminProfiles]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(0, 6)
     .map((p) => {
@@ -237,7 +244,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Recent Signups */}
-      <div>
+      {/* <div>
         <h2 className="mb-4 text-lg font-semibold tracking-tight flex items-center gap-2">
           <Users className="h-5 w-5 text-muted-foreground" />
           Recent Signups
@@ -282,7 +289,7 @@ export default async function AdminDashboardPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       {/* Engagement — engaged active users (excludes passive popover events) */}
       <div>

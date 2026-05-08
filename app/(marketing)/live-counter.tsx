@@ -52,7 +52,7 @@ export function LiveCounter({ initialCount, lastReportAt }: Props) {
   if (count === 0 && !lastAt && weeklyImproved === null) {
     return (
       <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+        <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
         Be the first to analyse today
       </p>
     );
@@ -61,7 +61,7 @@ export function LiveCounter({ initialCount, lastReportAt }: Props) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
       <p className="flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+        <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
         {weeklyImproved !== null ? weeklyImproved : count} CV{(weeklyImproved !== null ? weeklyImproved : count) !== 1 ? "s" : ""} improved this week
       </p>
       {avgImprovement !== null && avgImprovement > 0 && (
