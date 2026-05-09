@@ -1,7 +1,7 @@
 export const REVIEW_TIERS = {
   starter: {
     name: 'Quick Fix',
-    price: 14,
+    price: 9,
     edit_rounds: 2,
     label: 'For one job application',
     features: [
@@ -13,7 +13,7 @@ export const REVIEW_TIERS = {
   },
   standard: {
     name: 'Job Hunter',
-    price: 29,
+    price: 17,
     edit_rounds: 5,
     label: 'For active job seekers',
     badge: 'Most popular',
@@ -27,7 +27,7 @@ export const REVIEW_TIERS = {
   },
   pro: {
     name: 'Career Upgrade',
-    price: 49,
+    price: 35,
     edit_rounds: 999,
     label: 'For career switch / senior roles',
     features: [

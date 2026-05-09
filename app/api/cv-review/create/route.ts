@@ -37,17 +37,22 @@ export async function POST(request: NextRequest) {
   const storeId = process.env.LEMONSQUEEZY_STORE_ID!;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.thecvedge.com";
 
+  // Build custom data – LemonSqueezy requires all values to be non-empty strings
+  const customData: Record<string, string> = {
+    user_id: user.id,
+    tier,
+    target_role,
+    target_country,
+    product_type: "cv_review",
+  };
+  if (user_notes && typeof user_notes === "string" && user_notes.trim()) {
+    customData.user_notes = user_notes.trim();
+  }
+
   const { data, error } = await lsCreateCheckout(storeId, variantId, {
     checkoutData: {
       email: user.email!,
-      custom: {
-        user_id: user.id,
-        tier,
-        target_role,
-        target_country,
-        user_notes: user_notes || "",
-        product_type: "cv_review",
-      },
+      custom: customData,
     },
     productOptions: {
       redirectUrl: `${appUrl}/cv-review/pending`,

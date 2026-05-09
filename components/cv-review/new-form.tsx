@@ -94,7 +94,8 @@ export function CvReviewNewForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to create checkout.");
+        console.error("[cv-review] create failed:", data);
+        setError(data.detail ? `${data.error}: ${data.detail}` : data.error || "Failed to create checkout.");
         setLoading(false);
         return;
       }

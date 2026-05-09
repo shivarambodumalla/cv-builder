@@ -98,9 +98,9 @@ const jsonLd = {
       "areaServed": ["AE", "SA", "QA", "GB", "US", "CA", "AU", "IN"],
       "serviceType": "CV Review",
       "offers": [
-        { "@type": "Offer", "name": "Quick Fix", "price": "14", "priceCurrency": "USD" },
-        { "@type": "Offer", "name": "Job Hunter", "price": "29", "priceCurrency": "USD" },
-        { "@type": "Offer", "name": "Career Upgrade", "price": "49", "priceCurrency": "USD" },
+        { "@type": "Offer", "name": "Quick Fix", "price": "9", "priceCurrency": "USD" },
+        { "@type": "Offer", "name": "Job Hunter", "price": "17", "priceCurrency": "USD" },
+        { "@type": "Offer", "name": "Career Upgrade", "price": "35", "priceCurrency": "USD" },
       ],
     },
   ],
@@ -125,7 +125,7 @@ export default function CvReviewPage() {
                 className="inline-flex items-center px-3 py-1.5 rounded-full mb-6 font-bold uppercase"
                 style={{ background: "rgba(52,211,153,0.18)", color: "#34D399", fontSize: "12px", letterSpacing: "2px" }}
               >
-                HUMAN + AI · INDUSTRY EXPERTS
+                REVIEWED BY INDUSTRY EXPERTS
               </div>
 
               <h1
@@ -276,7 +276,7 @@ export default function CvReviewPage() {
               Reviewed by real industry experts
             </h2>
             <p className="mt-4 mx-auto" style={{ fontSize: "19px", color: "#5a5a5a", maxWidth: "600px" }}>
-              Not generic writers. Not just AI. Real people with real hiring experience.
+              Not generic writers. Real people with real hiring experience.
             </p>
           </div>
 
@@ -317,7 +317,7 @@ export default function CvReviewPage() {
               style={{ border: "1.5px solid #34D399", borderRadius: "999px", padding: "14px 24px", fontSize: "14px", color: "#1a3a2e", fontWeight: 500 }}
             >
               <span style={{ color: "#34D399" }}>✓</span>
-              Every CV is manually reviewed and rewritten — not just AI scored.
+              Every CV is manually reviewed and rewritten by hiring experts.
             </div>
           </div>
         </div>
@@ -484,11 +484,11 @@ export default function CvReviewPage() {
               <div className="font-bold" style={{ fontSize: "22px", color: "#1a3a2e" }}>Quick Fix</div>
               <div style={{ fontSize: "13px", color: "#5a5a5a", marginTop: "4px" }}>For one job application</div>
               <div className="mt-4 mb-5">
-                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$14</span>
+                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$9</span>
                 <span style={{ fontSize: "14px", color: "#5a5a5a", marginLeft: "6px" }}>one-time</span>
               </div>
               <ul className="space-y-3 flex-1 mb-6">
-                {["Human + expert review", "2 edit rounds", "24hr turnaround", "ATS optimised CV"].map((f) => (
+                {["Expert review", "2 edit rounds", "24hr turnaround", "ATS optimised CV"].map((f) => (
                   <li key={f} className="flex items-start gap-2.5" style={{ fontSize: "14px", color: "#1a3a2e" }}>
                     <span style={{ color: "#065F46", marginTop: "1px" }}>✓</span>{f}
                   </li>
@@ -518,7 +518,7 @@ export default function CvReviewPage() {
               <div className="font-bold" style={{ fontSize: "22px", color: "#1a3a2e" }}>Job Hunter</div>
               <div style={{ fontSize: "13px", color: "#5a5a5a", marginTop: "4px" }}>For active job-seekers</div>
               <div className="mt-4 mb-5">
-                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$29</span>
+                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$17</span>
                 <span style={{ fontSize: "14px", color: "#5a5a5a", marginLeft: "6px" }}>one-time</span>
               </div>
               <ul className="space-y-3 flex-1 mb-6">
@@ -556,7 +556,7 @@ export default function CvReviewPage() {
                 </div>
               </div>
               <div className="mt-4 mb-5">
-                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$49</span>
+                <span className="font-bold" style={{ fontSize: "44px", color: "#1a3a2e" }}>$35</span>
                 <span style={{ fontSize: "14px", color: "#5a5a5a", marginLeft: "6px" }}>one-time</span>
               </div>
               <ul className="space-y-3 flex-1 mb-6">
@@ -698,7 +698,7 @@ export default function CvReviewPage() {
             Get your CV reviewed →
           </Link>
           <div className="flex flex-wrap justify-center mt-8" style={{ gap: "12px 28px" }}>
-            {["24-hour turnaround", "500+ CVs reviewed", "Built for UAE & global roles", "Real human experts — not just AI"].map((item) => (
+            {["24-hour turnaround", "500+ CVs reviewed", "Built for UAE & global roles", "Real human experts"].map((item) => (
               <div key={item} className="flex items-center gap-2" style={{ fontSize: "14px", color: "#b8d4c8" }}>
                 <span style={{ color: "#34D399" }}>✓</span>{item}
               </div>
