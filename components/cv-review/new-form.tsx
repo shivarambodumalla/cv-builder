@@ -99,15 +99,12 @@ export function CvReviewNewForm() {
         setLoading(false);
         return;
       }
-      const reader = new FileReader();
-      reader.onload = () => {
-        sessionStorage.setItem("cv_review_pending_file_name", file.name);
-        sessionStorage.setItem("cv_review_pending_file_type", file.type);
-        sessionStorage.setItem("cv_review_pending_file_data", reader.result as string);
-        window.location.href = data.checkout_url;
-      };
-      reader.readAsDataURL(file);
-    } catch {
+      
+      const { savePendingCV } = await import("@/lib/cv-review/storage");
+      await savePendingCV(file);
+      window.location.href = data.checkout_url;
+    } catch (err) {
+      console.error(err);
       setError("Something went wrong. Please try again.");
       setLoading(false);
     }

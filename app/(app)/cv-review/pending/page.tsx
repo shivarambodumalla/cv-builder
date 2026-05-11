@@ -9,10 +9,10 @@ export default function CvReviewPendingPage() {
   useEffect(() => {
     async function run() {
       await new Promise((r) => setTimeout(r, 3000));
-      const fileName = sessionStorage.getItem("cv_review_pending_file_name");
-      const fileData = sessionStorage.getItem("cv_review_pending_file_data");
-      const fileType = sessionStorage.getItem("cv_review_pending_file_type");
-      if (!fileName || !fileData) {
+      const { getPendingCV, clearPendingCV } = await import("@/lib/cv-review/storage");
+      const file = await getPendingCV();
+      
+      if (!file) {
         router.push("/cv-review/history");
         return;
       }
@@ -32,16 +32,12 @@ export default function CvReviewPendingPage() {
         router.push("/cv-review/history");
         return;
       }
-      const res2 = await fetch(fileData);
-      const blob = await res2.blob();
-      const file = new File([blob], fileName, { type: fileType || "application/pdf" });
+      
       const form = new FormData();
       form.append("review_id", pending.id);
       form.append("file", file);
       await fetch("/api/cv-review/upload", { method: "POST", body: form });
-      sessionStorage.removeItem("cv_review_pending_file_name");
-      sessionStorage.removeItem("cv_review_pending_file_data");
-      sessionStorage.removeItem("cv_review_pending_file_type");
+      await clearPendingCV();
       router.push(`/cv-review/${pending.id}`);
     }
     run().catch(() => router.push("/cv-review/history"));

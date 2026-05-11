@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CvReviewPageTracker, CvReviewCtaTracker } from "./tracker";
 
 export const metadata: Metadata = {
   title: "Review by Experts — CV Reviewed by Real Hiring Experts in 24 Hours | CVEdge",
@@ -109,6 +110,7 @@ const jsonLd = {
 export default function CvReviewPage() {
   return (
     <div>
+      <CvReviewPageTracker />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ── 1. HERO ─────────────────────────────────────────────────────────── */}
@@ -142,13 +144,15 @@ export default function CvReviewPage() {
               </p>
 
               <div className="flex flex-wrap items-center mb-8" style={{ gap: "14px" }}>
-                <Link
-                  href="/cv-review/new"
-                  className="inline-flex items-center font-semibold transition-colors bg-[#34D399] hover:bg-[#6ee0b4] rounded-full"
-                  style={{ color: "#0a4a37", padding: "14px 28px", fontSize: "16px" }}
-                >
-                  Get your CV reviewed
-                </Link>
+                <CvReviewCtaTracker ctaName="hero_primary">
+                  <Link
+                    href="/cv-review/new"
+                    className="inline-flex items-center font-semibold transition-colors bg-[#34D399] hover:bg-[#6ee0b4] rounded-full"
+                    style={{ color: "#0a4a37", padding: "14px 28px", fontSize: "16px" }}
+                  >
+                    Get your CV reviewed
+                  </Link>
+                </CvReviewCtaTracker>
                 <Link
                   href="#pricing"
                   className="inline-flex items-center font-medium transition-colors"
