@@ -153,7 +153,11 @@ export async function GET(request: NextRequest) {
 
   // ── Page-level visits (public + private) ──
   // Public pages (anonymous aggregate counts from page_views table)
-  const publicPaths = ["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs"];
+  const publicPaths = [
+    "/", "/pricing", "/upload-resume", "/login", "/register", "/resumes",
+    "/interview-prep", "/jobs", "/cv-review",
+    "/ats-friendly-resume", "/cv-templates", "/free-resume-builder", "/resume-templates",
+  ];
   const publicVisitPromises = publicPaths.map(p => pvRpc(p));
   const publicVisitResults = await Promise.all(publicVisitPromises);
 
@@ -304,9 +308,12 @@ export async function GET(request: NextRequest) {
     .lte("view_date", toDate);
 
   const byDate = new Map<string, number>();
+  let totalPageViews = 0;
   for (const r of visitRows ?? []) {
     const d = (r as { view_date: string; count: number }).view_date;
-    byDate.set(d, (byDate.get(d) ?? 0) + (r as { count: number }).count);
+    const c = (r as { count: number }).count;
+    byDate.set(d, (byDate.get(d) ?? 0) + c);
+    totalPageViews += c;
   }
 
   // Fill gaps with 0 so the chart has a continuous x-axis
@@ -346,6 +353,7 @@ export async function GET(request: NextRequest) {
     pageVisits,
     totalAnonVisits,
     totalUniqueVisitors,
+    totalPageViews,
     newSignups: signupCount,
     bounceAnalysis,
     signupSources,

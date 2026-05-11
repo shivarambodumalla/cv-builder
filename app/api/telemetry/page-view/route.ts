@@ -4,10 +4,22 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // No auth required — tracks anonymous page views
 // GDPR-safe: no personal data stored, just path + daily aggregate count
 
-const ALLOWED_PATHS = new Set(["/", "/pricing", "/upload-resume", "/login", "/register", "/resumes", "/interview-prep", "/jobs", "/cv-review"]);
+const ALLOWED_EXACT = new Set([
+  "/", "/pricing", "/upload-resume", "/login", "/register", "/resumes",
+  "/interview-prep", "/jobs", "/cv-review",
+  "/ats-friendly-resume", "/cv-templates", "/free-resume-builder",
+  "/resume-templates", "/privacy", "/terms",
+]);
+
+const ALLOWED_PREFIXES = [
+  "/popup/", "/blog/", "/blog",
+  "/jobs/", "/interview-prep/",
+  "/resume-templates/", "/resume-examples/",
+];
 
 function isAllowed(path: string): boolean {
-  return ALLOWED_PATHS.has(path) || path.startsWith("/popup/") || path.startsWith("/blog");
+  if (ALLOWED_EXACT.has(path)) return true;
+  return ALLOWED_PREFIXES.some(prefix => path.startsWith(prefix));
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

@@ -702,6 +702,12 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   )}
                 </TabsTrigger>
                 <TabsTrigger value="cover-letter" data-testid="tab-cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
+                {reviewData && (
+                  <TabsTrigger value="expert-review" className="lg:hidden flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1">
+                    <MessageSquare className="h-3 w-3 shrink-0" />
+                    Review
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
@@ -804,6 +810,18 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 plan={plan}
               />
             )}
+
+            {/* Expert Review tab — mobile only */}
+            {activeTab === "expert-review" && reviewData && (
+              <div className="lg:hidden h-full">
+                <ExpertReviewPanel
+                  reviewId={reviewData.id}
+                  targetRole={reviewData.target_role}
+                  status={reviewData.status}
+                  messages={reviewData.messages as Parameters<typeof ExpertReviewPanel>[0]["messages"]}
+                />
+              </div>
+            )}
             </div>
           </Tabs>
         </div>
@@ -837,7 +855,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
 
           {/* Content + Design tabs: live preview or expert review — desktop only */}
           {(activeTab === "editor" || activeTab === "design") && (
-            <div className="mx-auto w-full h-full flex flex-col">
+            <div className="hidden lg:flex mx-auto w-full h-full flex-col">
               {reviewData && (
                 <div className="flex items-center gap-1 mb-4 p-0.5 bg-muted rounded-lg w-fit shrink-0">
                   <button

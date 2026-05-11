@@ -21,7 +21,7 @@ interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
   jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[];
   anonToSignup: FunnelStep[]; loginToDownload: FunnelStep[];
-  pageVisits: PageVisit[]; totalAnonVisits: number; totalUniqueVisitors: number; newSignups: number;
+  pageVisits: PageVisit[]; totalAnonVisits: number; totalUniqueVisitors: number; totalPageViews: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
   popups: PopupMetric[];
   visitsOverTime: TimePoint[]; signupsOverTime: TimePoint[];
@@ -122,13 +122,9 @@ export function FunnelDashboard() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <MetricCard
               icon={Eye}
-              label="Visitors"
-              value={heroVisitors}
-              sub={
-                uniqueVisitors > 0
-                  ? `Unique · ${(data?.totalAnonVisits ?? 0).toLocaleString()} total page views`
-                  : "Page views (no UUID yet)"
-              }
+              label="Page Views"
+              value={data?.totalPageViews ?? 0}
+              sub={uniqueVisitors > 0 ? `${uniqueVisitors.toLocaleString()} unique visitors` : undefined}
             />
             <MetricCard icon={UserPlus} label="Signups" value={signups} sub={awarenessBase > 0 ? `${fp(visitToSignup)} of visitors` : undefined} trend={visitToSignup >= 5 ? "up" : visitToSignup > 0 ? "flat" : "down"} />
             <MetricCard icon={FileText} label="CVs Created" value={cvsCreated} sub={signups > 0 ? `${fp(signupToCV)} of signups` : undefined} trend={signupToCV >= 50 ? "up" : signupToCV > 0 ? "flat" : "down"} />
