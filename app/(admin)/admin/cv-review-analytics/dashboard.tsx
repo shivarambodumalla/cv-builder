@@ -218,83 +218,120 @@ const FUNNEL_ICONS: Record<string, React.ElementType> = {
   purchases: Package,
 };
 
+const STEP_COLORS = [
+  "bg-violet-500",
+  "bg-blue-500",
+  "bg-[#1a7a6d]",
+  "bg-amber-500",
+  "bg-[#065F46]",
+];
+
 function SalesFunnel({ funnel, ga4Available }: { funnel: FunnelStep[]; ga4Available: boolean }) {
   const top = funnel[0]?.count || 1;
+  const last = funnel[funnel.length - 1];
+  const endToEnd = last && funnel[0] ? pct(last.count, funnel[0].count) : 0;
 
   return (
-    <div className="rounded-xl border p-5">
-      <div className="flex items-center gap-2 mb-1">
+    <div className="rounded-xl border">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-5 py-3.5 border-b">
         <BarChart3 className="h-4 w-4 text-muted-foreground" />
         <h2 className="text-sm font-semibold">Sales Funnel</h2>
-        <span className="text-[10px] text-muted-foreground ml-auto">Visit → CTA → Checkout → Purchase</span>
+        {funnel[0]?.count > 0 && last?.count > 0 && (
+          <div className="ml-auto flex items-center gap-1.5">
+            <span className="text-[11px] text-muted-foreground">End-to-end</span>
+            <span className={cn(
+              "text-xs font-bold px-2 py-0.5 rounded-full",
+              endToEnd >= 5 ? "bg-success/15 text-success" :
+              endToEnd >= 1 ? "bg-warning/15 text-warning" :
+              "bg-error/15 text-error"
+            )}>
+              {fp(endToEnd)}
+            </span>
+          </div>
+        )}
       </div>
 
       {!ga4Available && (
-        <div className="flex items-center gap-2 mb-3 rounded-md bg-warning/10 border border-warning/20 px-3 py-2">
+        <div className="flex items-center gap-2 mx-5 mt-4 rounded-md bg-warning/10 border border-warning/20 px-3 py-2">
           <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
           <p className="text-[11px] text-warning">
-            GA4 data unavailable — add the service account as a viewer to your GA4 property to see top-of-funnel steps.
-            Purchases are from the database (real-time).
+            GA4 not connected — top-of-funnel steps show 0. Purchases are live from the database.
           </p>
         </div>
       )}
 
-      {/* Funnel bars — classic tapering visual */}
-      <div className="flex flex-col items-center gap-0 py-2">
+      {/* Steps */}
+      <div className="px-5 py-4 space-y-0">
         {funnel.map((step, i) => {
-          const widthPct = Math.max((step.count / top) * 100, step.count > 0 ? 8 : 4);
           const prev = i > 0 ? funnel[i - 1] : null;
           const convPct = prev && prev.count > 0 ? pct(step.count, prev.count) : null;
-          const isDb = step.source === "db";
+          const dropPct = convPct !== null ? 100 - convPct : null;
+          const fillPct = top > 0 ? Math.max((step.count / top) * 100, step.count > 0 ? 1 : 0) : 0;
           const Icon = FUNNEL_ICONS[step.key] ?? Package;
-
-          // amber/yellow bars need dark text — white on #f59e0b is ~2.3:1
-          const isLightBar = step.color.includes("amber") || step.color.includes("yellow");
-          const textPrimary = isLightBar ? "text-amber-950" : "text-white";
-          const textSecondary = isLightBar ? "text-amber-800" : "text-white/80";
-          const iconColor = isLightBar ? "text-amber-900" : "text-white/90";
+          const barColor = STEP_COLORS[i] ?? "bg-primary";
+          const isLast = i === funnel.length - 1;
 
           return (
-            <div key={step.key} className="w-full flex flex-col items-center">
-              {/* Connector with drop-off rate */}
+            <div key={step.key}>
+              {/* Drop connector between steps */}
               {i > 0 && (
-                <div className="flex flex-col items-center py-1">
-                  <div className="w-px h-3 bg-border" />
-                  {convPct !== null && (
-                    <span className={cn(
-                      "text-[10px] font-bold px-2 py-0.5 rounded-full my-0.5",
-                      convPct >= 50 ? "bg-success/15 text-success" :
-                      convPct >= 20 ? "bg-warning/15 text-warning" :
-                      "bg-error/15 text-error"
-                    )}>
-                      {fp(convPct)} continue
-                    </span>
+                <div className="flex items-center gap-3 py-1.5 pl-8">
+                  <div className="w-px h-5 bg-border ml-1.5" />
+                  {convPct !== null && dropPct !== null && (
+                    <div className="flex items-center gap-2 text-[11px]">
+                      <span className={cn(
+                        "font-semibold tabular-nums",
+                        convPct >= 50 ? "text-success" : convPct >= 20 ? "text-warning" : "text-error"
+                      )}>
+                        {fp(convPct)}
+                      </span>
+                      <span className="text-muted-foreground">continued</span>
+                      <span className="text-muted-foreground/50">·</span>
+                      <span className="text-muted-foreground tabular-nums">{fp(dropPct)} dropped</span>
+                    </div>
                   )}
-                  <div className="w-px h-3 bg-border" />
                 </div>
               )}
 
-              {/* Funnel bar */}
-              <div className="flex items-center justify-center w-full" style={{ maxWidth: `${widthPct}%` }}>
-                <div className={cn("w-full rounded-lg flex items-center gap-3 px-4 py-3 transition-all", step.color)}>
-                  <Icon className={cn("h-4 w-4 shrink-0", iconColor)} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className={cn("text-sm font-semibold", textPrimary)}>{step.label}</span>
-                      {isDb && (
-                        <span className={cn("flex items-center gap-1 text-[9px]", textSecondary)}>
-                          <Database className="h-2.5 w-2.5" /> live
-                        </span>
-                      )}
-                    </div>
-                    <span className={cn("text-xl font-bold tabular-nums", textPrimary)}>{fmt(step.count)}</span>
+              {/* Step row */}
+              <div className={cn("flex items-center gap-3 rounded-lg px-3 py-2.5", isLast && "bg-success/5 border border-success/15")}>
+                {/* Step number */}
+                <span className={cn(
+                  "h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0",
+                  isLast ? "bg-success text-white" : "bg-muted text-muted-foreground"
+                )}>
+                  {i + 1}
+                </span>
+
+                {/* Icon + label */}
+                <div className="flex items-center gap-2 w-32 shrink-0">
+                  <Icon className={cn("h-3.5 w-3.5 shrink-0", isLast ? "text-success" : "text-muted-foreground")} />
+                  <div>
+                    <p className={cn("text-xs font-medium leading-tight", isLast && "text-success")}>{step.label}</p>
+                    {step.source === "db" && (
+                      <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mt-0.5">
+                        <Database className="h-2 w-2" /> live
+                      </p>
+                    )}
                   </div>
-                  {/* Drop-off on right */}
-                  {i > 0 && convPct !== null && (
-                    <div className="shrink-0 text-right">
-                      <p className={cn("text-[10px]", textSecondary)}>dropped</p>
-                      <p className={cn("text-sm font-bold", textSecondary)}>{fp(100 - convPct)}</p>
-                    </div>
+                </div>
+
+                {/* Bar */}
+                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className={cn("h-full rounded-full transition-all duration-500", isLast ? "bg-success" : barColor)}
+                    style={{ width: `${fillPct}%` }}
+                  />
+                </div>
+
+                {/* Count + pct of top */}
+                <div className="text-right shrink-0 w-24">
+                  <span className={cn("text-sm font-bold tabular-nums", isLast && "text-success")}>{fmt(step.count)}</span>
+                  {i > 0 && top > 0 && (
+                    <span className="text-[10px] text-muted-foreground ml-1.5 tabular-nums">
+                      {fp(pct(step.count, top))} of top
+                    </span>
                   )}
                 </div>
               </div>
@@ -302,26 +339,6 @@ function SalesFunnel({ funnel, ga4Available }: { funnel: FunnelStep[]; ga4Availa
           );
         })}
       </div>
-
-      {/* Summary row */}
-      {funnel[0]?.count > 0 && funnel[funnel.length - 1]?.count > 0 && (
-        <div className="mt-4 pt-3 border-t flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-muted-foreground">End-to-end conversion:</span>
-          <span className={cn(
-            "text-sm font-bold tabular-nums",
-            pct(funnel[funnel.length - 1].count, funnel[0].count) >= 5 ? "text-success" :
-            pct(funnel[funnel.length - 1].count, funnel[0].count) >= 1 ? "text-warning" : "text-error"
-          )}>
-            {fp(pct(funnel[funnel.length - 1].count, funnel[0].count))}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            ({fmt(funnel[funnel.length - 1].count)} of {fmt(funnel[0].count)} page views → purchase)
-          </span>
-          <span className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
-            <ArrowRight className="h-3 w-3" /> View → Purchase
-          </span>
-        </div>
-      )}
     </div>
   );
 }
@@ -396,7 +413,7 @@ function RevenueTimeline({ timeline, ga4Available }: { timeline: TimelinePoint[]
                         {/* Revenue bar */}
                         {revH > 0 && (
                           <div
-                            className={cn("w-full max-w-[24px] rounded-t transition-colors absolute bottom-0", isHover ? "bg-success" : "bg-success/70")}
+                            className={cn("w-full max-w-[24px] rounded-t transition-opacity absolute bottom-0 bg-success", !isHover && "opacity-60")}
                             style={{ height: revH }}
                           />
                         )}
@@ -414,7 +431,7 @@ function RevenueTimeline({ timeline, ga4Available }: { timeline: TimelinePoint[]
           </div>
 
           <div className="flex items-center gap-4 pt-1 text-[10px] text-muted-foreground">
-            <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-success/70 inline-block" /> Revenue</span>
+            <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-success opacity-70 inline-block" /> Revenue</span>
             {ga4Available && <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-purple-400/40 inline-block" /> GA4 page views</span>}
             <span className="text-muted-foreground/60 ml-auto">· Hover for details</span>
           </div>
