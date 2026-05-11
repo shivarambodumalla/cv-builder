@@ -285,6 +285,35 @@ export async function GET(request: NextRequest) {
     { key: "stories_scored", label: "Quality Scored", count: qualityScoredCount.count ?? 0 },
   ];
 
+  // ── CV Review funnel ──
+  const pvCvReview = Number((await pvRpc("/cv-review")).data?.total ?? 0);
+  const pvCvReviewNew = Number((await pvRpc("/cv-review/new")).data?.total ?? 0);
+  const [cvReviewCreated, cvReviewPaid, cvReviewCompleted, cvReviewRevenue] = await Promise.all([
+    admin.from("cv_reviews").select("id", { count: "exact", head: true })
+      .gte("created_at", from).lte("created_at", to),
+    admin.from("cv_reviews").select("id", { count: "exact", head: true })
+      .not("lemon_squeezy_order_id", "like", "mock_%")
+      .not("lemon_squeezy_order_id", "is", null)
+      .gte("created_at", from).lte("created_at", to),
+    admin.from("cv_reviews").select("id", { count: "exact", head: true })
+      .eq("status", "completed")
+      .gte("created_at", from).lte("created_at", to),
+    admin.from("cv_reviews").select("price_paid")
+      .not("lemon_squeezy_order_id", "like", "mock_%")
+      .not("lemon_squeezy_order_id", "is", null)
+      .gte("created_at", from).lte("created_at", to),
+  ]);
+  const cvReviewRevenueTotal = (cvReviewRevenue.data ?? []).reduce((sum, r) => sum + ((r as { price_paid: number }).price_paid ?? 0), 0);
+
+  const cvReviewFunnel = [
+    { key: "cv_review_landing", label: "Landing Page", count: pvCvReview },
+    { key: "cv_review_form", label: "Started Form", count: pvCvReviewNew },
+    { key: "cv_review_created", label: "Order Created", count: cvReviewCreated.count ?? 0 },
+    { key: "cv_review_paid", label: "Paid Orders", count: cvReviewPaid.count ?? 0 },
+    { key: "cv_review_completed", label: "Completed", count: cvReviewCompleted.count ?? 0 },
+    { key: "cv_review_revenue", label: `Revenue ($${cvReviewRevenueTotal})`, count: cvReviewRevenueTotal },
+  ];
+
   // ── Anonymous → Signup funnel ──
   const anonToSignup = [
     { key: "anon_visitors", label: "Unique Visitors", count: totalUniqueVisitors || totalAnonVisits },
@@ -348,6 +377,7 @@ export async function GET(request: NextRequest) {
     extras,
     jobsFunnel,
     interviewFunnel,
+    cvReviewFunnel,
     anonToSignup,
     loginToDownload,
     pageVisits,

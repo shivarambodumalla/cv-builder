@@ -19,7 +19,7 @@ interface PopupMetric { id: string; label: string; shown: number; clicked: numbe
 interface TimePoint { date: string; count: number }
 interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
-  jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[];
+  jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[]; cvReviewFunnel: FunnelStep[];
   anonToSignup: FunnelStep[]; loginToDownload: FunnelStep[];
   pageVisits: PageVisit[]; totalAnonVisits: number; totalUniqueVisitors: number; totalPageViews: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
@@ -279,6 +279,34 @@ export function FunnelDashboard() {
                     <p className="text-lg font-bold tabular-nums mt-0.5">{step.count.toLocaleString()}</p>
                     {i > 0 && prev > 0 && (
                       <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-[#7C3AED]" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
+                        {fp(convPct)} from prev
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── 2d. CV REVIEW FUNNEL ── */}
+          <div className="rounded-xl border p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="h-4 w-4 text-[#1a7a6d]" />
+              <h2 className="text-sm font-semibold">CV Review Funnel</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {data.cvReviewFunnel.map((step, i) => {
+                const prev = i > 0 ? data.cvReviewFunnel[i - 1].count : step.count;
+                const convPct = prev > 0 ? p(step.count, prev) : 0;
+                const isRevenue = step.key === "cv_review_revenue";
+                return (
+                  <div key={step.key} className="rounded-lg border p-3">
+                    <p className="text-[11px] text-muted-foreground">{step.label}</p>
+                    <p className="text-lg font-bold tabular-nums mt-0.5">
+                      {isRevenue ? `$${step.count}` : step.count.toLocaleString()}
+                    </p>
+                    {i > 0 && !isRevenue && prev > 0 && (
+                      <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-[#1a7a6d]" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
                         {fp(convPct)} from prev
                       </p>
                     )}
