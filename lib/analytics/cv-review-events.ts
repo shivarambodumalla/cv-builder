@@ -1,9 +1,3 @@
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
-
 function gtag(...args: unknown[]) {
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag(...args);
