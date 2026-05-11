@@ -79,7 +79,7 @@ export function ExpertReviewPanel({ reviewId, targetRole, status, messages }: Pr
               <p className="text-sm font-semibold text-foreground mb-1">Your review is on the way</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Your expert will respond within 24 hours.{" "}
-                <span className="hidden sm:inline">We'll email you when it's ready.</span>
+                <span className="hidden sm:inline">We&apos;ll email you when it&apos;s ready.</span>
               </p>
             </div>
           </div>

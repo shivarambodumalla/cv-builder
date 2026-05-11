@@ -167,6 +167,7 @@ export default function CvReviewPage() {
                     "https://randomuser.me/api/portraits/women/44.jpg",
                     "https://randomuser.me/api/portraits/men/68.jpg",
                   ].map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={src}
@@ -185,6 +186,7 @@ export default function CvReviewPage() {
                     "https://randomuser.me/api/portraits/women/29.jpg",
                     "https://randomuser.me/api/portraits/men/77.jpg",
                   ].map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={src}
