@@ -30,14 +30,14 @@ interface FunnelData {
 type Preset = "today" | "7d" | "30d" | "90d" | "180d" | "365d" | "custom";
 
 function getRange(preset: Preset): { from: string; to: string } {
-  const to = new Date(); to.setHours(23, 59, 59, 999);
-  const from = new Date(); from.setHours(0, 0, 0, 0);
+  const to = new Date(); to.setUTCHours(23, 59, 59, 999);
+  const from = new Date(); from.setUTCHours(0, 0, 0, 0);
   switch (preset) {
-    case "7d": from.setDate(from.getDate() - 6); break;
-    case "30d": from.setDate(from.getDate() - 29); break;
-    case "90d": from.setDate(from.getDate() - 89); break;
-    case "180d": from.setDate(from.getDate() - 179); break;
-    case "365d": from.setDate(from.getDate() - 364); break;
+    case "7d": from.setUTCDate(from.getUTCDate() - 6); break;
+    case "30d": from.setUTCDate(from.getUTCDate() - 29); break;
+    case "90d": from.setUTCDate(from.getUTCDate() - 89); break;
+    case "180d": from.setUTCDate(from.getUTCDate() - 179); break;
+    case "365d": from.setUTCDate(from.getUTCDate() - 364); break;
   }
   return { from: from.toISOString(), to: to.toISOString() };
 }

@@ -8,7 +8,7 @@ const ALLOWED_EXACT = new Set([
   "/", "/pricing", "/upload-resume", "/login", "/register", "/resumes",
   "/interview-prep", "/jobs", "/cv-review", "/cv-review/new",
   "/ats-friendly-resume", "/cv-templates", "/free-resume-builder",
-  "/resume-templates", "/privacy", "/terms",
+  "/resume-templates", "/privacy", "/terms", "/unsubscribe",
 ]);
 
 const ALLOWED_PREFIXES = [

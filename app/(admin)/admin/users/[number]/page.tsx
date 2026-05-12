@@ -205,7 +205,7 @@ export default async function UserDetailPage({
       .select("id, event, page, metadata, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
-      .limit(50),
+      .limit(200),
     supabase
       .from("subscription_history")
       .select("id, plan, period, amount, currency, status, started_at, ended_at")

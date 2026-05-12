@@ -121,7 +121,7 @@ export function ActivityTimeline({ events }: { events: ActivityEvent[] }) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Activity</CardTitle>
-          <span className="text-xs text-muted-foreground">Last {totalActions} actions</span>
+          <span className="text-xs text-muted-foreground">Last {totalActions} events</span>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
