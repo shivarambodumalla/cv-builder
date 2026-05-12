@@ -30,6 +30,8 @@ interface TimelinePoint {
   ga4Views: number;
   ga4Clicks: number;
   ga4Checkouts: number;
+  ga4Purchases: number;
+  ga4SectionViews: number;
 }
 
 interface GscQuery { query: string; clicks: number; impressions: number; ctr: number; position: number }
@@ -215,6 +217,7 @@ const FUNNEL_ICONS: Record<string, React.ElementType> = {
   cta_clicks: MousePointerClick,
   checkout_views: ShoppingCart,
   begin_checkout: CreditCard,
+  ga4_purchases: TrendingUp,
   purchases: Package,
 };
 
@@ -224,6 +227,7 @@ const STEP_COLORS = [
   "bg-[#1a7a6d]",
   "bg-amber-500",
   "bg-[#065F46]",
+  "bg-emerald-700",
 ];
 
 function SalesFunnel({ funnel, ga4Available }: { funnel: FunnelStep[]; ga4Available: boolean }) {

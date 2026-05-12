@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import {
   trackCvReviewFunnelView,
   trackCvReviewFunnelClick,
+  trackCvReviewCheckoutView,
 } from "@/lib/analytics/cv-review-events";
 
 export function CvReviewPageTracker() {
@@ -19,4 +20,11 @@ export function CvReviewCtaTracker({ ctaName, children }: { ctaName: string; chi
       {children}
     </span>
   );
+}
+
+export function CvReviewCheckoutTracker() {
+  useEffect(() => {
+    trackCvReviewCheckoutView();
+  }, []);
+  return null;
 }

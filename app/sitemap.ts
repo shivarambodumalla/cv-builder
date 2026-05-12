@@ -74,6 +74,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: "https://www.thecvedge.com", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 1 },
     { url: "https://www.thecvedge.com/cv-review", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
+    { url: "https://www.thecvedge.com/cv-review/uae", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.85 },
+    { url: "https://www.thecvedge.com/cv-review/saudi-arabia", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.85 },
+    { url: "https://www.thecvedge.com/cv-review/gcc", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.85 },
     { url: "https://www.thecvedge.com/pricing", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
     { url: "https://www.thecvedge.com/upload-resume", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
     { url: "https://www.thecvedge.com/resumes", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.7 },

@@ -86,7 +86,7 @@ async function fetchGA4DailyTrend(
         dimensionFilter: {
           filter: {
             fieldName: "eventName",
-            inListFilter: { values: ["cv_review_funnel_view", "cv_review_funnel_click", "begin_checkout"] },
+            inListFilter: { values: ["cv_review_funnel_view", "cv_review_funnel_click", "begin_checkout", "cv_review_section_view", "purchase"] },
           },
         },
         orderBys: [{ dimension: { dimensionName: "date" } }],
@@ -248,6 +248,7 @@ export async function GET(request: NextRequest) {
           "cv_review_funnel_click",
           "cv_review_checkout_view",
           "begin_checkout",
+          "purchase",
         ])
       : Promise.resolve(null),
     ga4Token && propertyId
@@ -266,6 +267,7 @@ export async function GET(request: NextRequest) {
   const ctaClicks = ga4Events?.cv_review_funnel_click ?? 0;
   const checkoutViews = ga4Events?.cv_review_checkout_view ?? 0;
   const beginCheckout = ga4Events?.begin_checkout ?? 0;
+  const ga4Purchases = ga4Events?.purchase ?? 0;
   const purchases = all.length;
 
   const funnel = [
@@ -273,17 +275,20 @@ export async function GET(request: NextRequest) {
     { key: "cta_clicks", label: "CTA Clicks", count: ctaClicks, source: "ga4", color: "bg-blue-500" },
     { key: "checkout_views", label: "Checkout Views", count: checkoutViews, source: "ga4", color: "bg-[#1a7a6d]" },
     { key: "begin_checkout", label: "Begin Checkout", count: beginCheckout, source: "ga4", color: "bg-amber-500" },
-    { key: "purchases", label: "Purchases", count: purchases, source: "db", color: "bg-[#065F46]" },
+    { key: "ga4_purchases", label: "GA4 Purchases", count: ga4Purchases, source: "ga4", color: "bg-[#065F46]" },
+    { key: "purchases", label: "DB Orders", count: purchases, source: "db", color: "bg-emerald-700" },
   ];
 
   // Daily GA4 trend keyed by date
-  const ga4ByDate: Record<string, { views: number; clicks: number; checkouts: number }> = {};
+  const ga4ByDate: Record<string, { views: number; clicks: number; checkouts: number; purchases: number; sectionViews: number }> = {};
   for (const row of ga4DailyRows) {
     const dateKey = `${row.date.slice(0, 4)}-${row.date.slice(4, 6)}-${row.date.slice(6, 8)}`;
-    if (!ga4ByDate[dateKey]) ga4ByDate[dateKey] = { views: 0, clicks: 0, checkouts: 0 };
+    if (!ga4ByDate[dateKey]) ga4ByDate[dateKey] = { views: 0, clicks: 0, checkouts: 0, purchases: 0, sectionViews: 0 };
     if (row.event === "cv_review_funnel_view") ga4ByDate[dateKey].views += row.count;
     if (row.event === "cv_review_funnel_click") ga4ByDate[dateKey].clicks += row.count;
     if (row.event === "begin_checkout") ga4ByDate[dateKey].checkouts += row.count;
+    if (row.event === "purchase") ga4ByDate[dateKey].purchases = (ga4ByDate[dateKey].purchases ?? 0) + row.count;
+    if (row.event === "cv_review_section_view") ga4ByDate[dateKey].sectionViews = (ga4ByDate[dateKey].sectionViews ?? 0) + row.count;
   }
 
   // Merge revenue timeline with GA4 daily
@@ -292,6 +297,8 @@ export async function GET(request: NextRequest) {
     ga4Views: ga4ByDate[pt.date]?.views ?? 0,
     ga4Clicks: ga4ByDate[pt.date]?.clicks ?? 0,
     ga4Checkouts: ga4ByDate[pt.date]?.checkouts ?? 0,
+    ga4Purchases: ga4ByDate[pt.date]?.purchases ?? 0,
+    ga4SectionViews: ga4ByDate[pt.date]?.sectionViews ?? 0,
   }));
 
   return NextResponse.json({

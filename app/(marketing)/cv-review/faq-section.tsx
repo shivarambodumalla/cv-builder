@@ -20,8 +20,8 @@ const FAQS = [
     a: "The free tool diagnoses what's wrong. This service fixes it for you — a real human + AI rewrite using your actual experience. Diagnosis vs treatment.",
   },
   {
-    q: "Which countries / job markets do you cover?",
-    a: "Strongest expertise: India, UAE, Saudi Arabia, UK, US. If you're targeting elsewhere, email us first at hello@thecvedge.com — we'll let you know honestly if we can help.",
+    q: "Do you cover GCC markets — UAE, Saudi Arabia, Qatar, Kuwait?",
+    a: "Yes — GCC is one of our strongest markets. We have a dedicated Middle East hiring specialist with deep expertise across UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. If you're targeting roles in Dubai, Abu Dhabi, Riyadh, Jeddah, or Doha, your CV will be reviewed and rewritten by someone who knows exactly what GCC recruiters and local ATS systems look for. We also cover India, UK, and US.",
   },
 ];
 

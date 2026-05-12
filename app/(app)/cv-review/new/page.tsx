@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CvReviewNewForm } from "@/components/cv-review/new-form";
+import { CvReviewCheckoutTracker } from "@/app/(marketing)/cv-review/tracker";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ChevronLeft, ShieldCheck, Zap, RotateCcw } from "lucide-react";
@@ -37,6 +38,7 @@ export default async function CvReviewNewPage() {
           <span className="flex items-center gap-1.5"><RotateCcw className="w-3.5 h-3.5 text-primary" /> Revision rounds included</span>
         </div>
 
+        <CvReviewCheckoutTracker />
         <CvReviewNewForm />
       </div>
     </div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { REVIEW_TIERS, ReviewTier } from "@/lib/cv-review/config";
+import { sendGA4Event } from "@/lib/analytics/ga4-server";
 
 export async function POST(request: NextRequest) {
   const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
@@ -196,6 +197,25 @@ export async function POST(request: NextRequest) {
           },
         });
       } catch (e) { console.error("[webhook] admin email failed", e); }
+
+      // Fire server-side GA4 purchase event (ad-blocker proof)
+      sendGA4Event({
+        events: [{
+          name: "purchase",
+          params: {
+            currency: "USD",
+            value: reviewConfig.price,
+            transaction_id: String(payload.data?.id),
+            item_id: `cv_review_${reviewTier}`,
+            item_name: `CV Review - ${reviewTier}`,
+            event_category: "cv_review_funnel",
+          },
+        }],
+        userId: customData.user_id,
+        cookieHeader: request.headers.get("cookie"),
+        userAgent: request.headers.get("user-agent"),
+        ipAddress: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip"),
+      });
 
       console.log(`[webhook] cv_review created: ${review.id} for user ${customData.user_id}`);
       break;

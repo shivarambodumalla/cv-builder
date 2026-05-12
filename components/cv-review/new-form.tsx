@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { REVIEW_TIERS, ReviewTier } from "@/lib/cv-review/config";
 import { ROLE_CATEGORIES } from "@/lib/jobs/role-categories";
+import { trackCvReviewCheckoutStart, trackCvReviewFormEvent } from "@/lib/analytics/cv-review-events";
 import { Check, Upload, FileText, X, Search, ChevronDown } from "lucide-react";
 
 const SECONDARY = "#1E3A5F";
@@ -135,15 +136,43 @@ export function CvReviewNewForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const submitted = useRef(false);
   const tier = REVIEW_TIERS[selectedTier];
+
+  useEffect(() => {
+    function handleAbandon() {
+      if (submitted.current) return;
+      const step = file ? (targetRole ? "order_summary" : "role_missing") : "no_file";
+      trackCvReviewFormEvent("form_abandoned", { step, tier: selectedTier });
+    }
+    function handleBeforeUnload() { handleAbandon(); }
+    function handleVisibilityChange() {
+      if (document.visibilityState === "hidden") handleAbandon();
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [file, targetRole, selectedTier]);
 
   function handleFileChange(f: File | null) {
     setFileError("");
     if (!f) return;
-    if (f.size > 5 * 1024 * 1024) { setFileError("File too large. Max 5MB."); return; }
+    if (f.size > 5 * 1024 * 1024) {
+      setFileError("File too large. Max 5MB.");
+      trackCvReviewFormEvent("file_error", { reason: "too_large", size_kb: Math.round(f.size / 1024) });
+      return;
+    }
     const ext = f.name.split(".").pop()?.toLowerCase();
-    if (ext !== "pdf" && ext !== "docx") { setFileError("Only PDF and DOCX files are accepted."); return; }
+    if (ext !== "pdf" && ext !== "docx") {
+      setFileError("Only PDF and DOCX files are accepted.");
+      trackCvReviewFormEvent("file_error", { reason: "wrong_type", ext: ext ?? "unknown" });
+      return;
+    }
     setFile(f);
+    trackCvReviewFormEvent("file_selected", { ext: ext ?? "unknown", size_kb: Math.round(f.size / 1024) });
   }
 
   async function handleMockSubmit() {
@@ -174,8 +203,16 @@ export function CvReviewNewForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!file) { setError("Please upload your CV."); return; }
-    if (!targetRole.trim()) { setError("Please enter your target role."); return; }
+    if (!file) {
+      setError("Please upload your CV.");
+      trackCvReviewFormEvent("validation_error", { reason: "no_file" });
+      return;
+    }
+    if (!targetRole.trim()) {
+      setError("Please enter your target role.");
+      trackCvReviewFormEvent("validation_error", { reason: "no_role" });
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/cv-review/create", {
@@ -185,12 +222,16 @@ export function CvReviewNewForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.detail ? `${data.error}: ${data.detail}` : data.error || "Failed to create checkout.");
+        const msg = data.detail ? `${data.error}: ${data.detail}` : data.error || "Failed to create checkout.";
+        setError(msg);
+        trackCvReviewFormEvent("submit_error", { reason: data.error ?? "unknown", tier: selectedTier });
         setLoading(false);
         return;
       }
       const { savePendingCV } = await import("@/lib/cv-review/storage");
       await savePendingCV(file);
+      trackCvReviewCheckoutStart(selectedTier, tier.price);
+      submitted.current = true;
       window.location.href = data.checkout_url;
     } catch (err) {
       console.error(err);
