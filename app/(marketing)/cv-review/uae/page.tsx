@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CvReviewPageTracker, CvReviewCtaTracker } from "../tracker";
 import { CvReviewFaqSection } from "../faq-section";
-import { Check, ShieldCheck, Zap, Award, Quote, Clock, Upload, FileEdit, Download } from "lucide-react";
+import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Expert CV Review for Dubai & UAE Jobs — Interview-Ready in 24h | CVEdge",

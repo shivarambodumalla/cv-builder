@@ -11,8 +11,12 @@ import { LinkTracker } from "./link-tracker";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const slugs = await getAllSlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -21,7 +25,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPost(slug);
+  let post;
+  try { post = await getPost(slug); } catch { return {}; }
   if (!post) return {};
 
   const title = post.seo?.title ?? post.title;
@@ -50,7 +55,8 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPost(slug);
+  let post;
+  try { post = await getPost(slug); } catch { notFound(); return null; }
   if (!post) notFound();
 
   const jsonLd = {
