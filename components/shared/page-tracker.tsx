@@ -21,7 +21,6 @@ const PAGE_NAMES: Record<string, string> = {
   "/interview-prep": "Opened interview prep page",
   "/resume-templates": "Opened resume templates page",
   "/resume-examples": "Opened resume examples page",
-  "/resume-examples": "Opened resume examples page",
   "/ats-friendly-resume": "Opened ATS guide page",
   "/cv-templates": "Opened CV templates page",
   "/free-resume-builder": "Opened free resume builder page",
