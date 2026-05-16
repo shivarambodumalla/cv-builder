@@ -41,7 +41,8 @@ async function getAccessToken(): Promise<string | null> {
     if (!token) return null;
     _cached = { token, expiresAt: (res?.data?.expiry_date as number) ?? Date.now() + 3600 * 1000 };
     return token;
-  } catch {
+  } catch (err) {
+    console.error("[gsc/client] getAccessToken failed:", err);
     return null;
   }
 }
