@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Users, FileText, CreditCard, BarChart3, Activity, ArrowRight, TrendingUp } from "lucide-react";
 import { ActivityChart } from "./activity-chart";
+import { RegistrationsChart } from "./registrations-chart";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | CVEdge",
@@ -103,6 +104,12 @@ export default async function AdminDashboardPage() {
 
   const buildSeries = (byDay: Map<string, number>) =>
     days30.map((day) => ({ day, value: byDay.get(day) ?? 0 }));
+
+  const regToday = nonAdminProfiles.filter((p) => p.created_at >= todayISO).length;
+  const regThisWeek = nonAdminProfiles.filter((p) => p.created_at >= weekISO).length;
+  const regThisMonth = nonAdminProfiles.filter((p) => p.created_at >= monthISO).length;
+  const signupSeries = buildSeries(signupsByDay);
+  const signupTotal30 = signupSeries.reduce((s, d) => s + d.value, 0);
 
   // hex fill colours for each row — safe for inline style
   const activitySeries = [
@@ -290,6 +297,16 @@ export default async function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div> */}
+
+      {/* Registrations histogram */}
+      <RegistrationsChart
+        data={signupSeries}
+        days30={days30}
+        newToday={regToday}
+        newThisWeek={regThisWeek}
+        newThisMonth={regThisMonth}
+        total={signupTotal30}
+      />
 
       {/* Engagement — engaged active users (excludes passive popover events) */}
       <div>

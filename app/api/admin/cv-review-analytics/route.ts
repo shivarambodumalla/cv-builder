@@ -167,6 +167,7 @@ async function fetchGSCCvReview(
 }
 
 export async function GET(request: NextRequest) {
+  try {
   const auth = await requireAdmin();
   if (auth instanceof NextResponse) return auth;
 
@@ -327,4 +328,8 @@ export async function GET(request: NextRequest) {
     ga4Available: !!ga4Events,
     gscAvailable: gscData.totalImpressions > 0,
   });
+  } catch (err) {
+    console.error("[cv-review-analytics]", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }

@@ -36,10 +36,14 @@ async function getAccessToken(): Promise<string | null> {
   }
   const client = oauthClient();
   if (!client) return null;
-  const { token, res } = await client.getAccessToken();
-  if (!token) return null;
-  _cached = { token, expiresAt: (res?.data?.expiry_date as number) ?? Date.now() + 3600 * 1000 };
-  return token;
+  try {
+    const { token, res } = await client.getAccessToken();
+    if (!token) return null;
+    _cached = { token, expiresAt: (res?.data?.expiry_date as number) ?? Date.now() + 3600 * 1000 };
+    return token;
+  } catch {
+    return null;
+  }
 }
 
 // Both GSC and GA4 now use the same OAuth2 token
