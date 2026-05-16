@@ -105,12 +105,6 @@ export default async function AdminDashboardPage() {
   const buildSeries = (byDay: Map<string, number>) =>
     days30.map((day) => ({ day, value: byDay.get(day) ?? 0 }));
 
-  const regToday = nonAdminProfiles.filter((p) => p.created_at >= todayISO).length;
-  const regThisWeek = nonAdminProfiles.filter((p) => p.created_at >= weekISO).length;
-  const regThisMonth = nonAdminProfiles.filter((p) => p.created_at >= monthISO).length;
-  const signupSeries = buildSeries(signupsByDay);
-  const signupTotal30 = signupSeries.reduce((s, d) => s + d.value, 0);
-
   // hex fill colours for each row — safe for inline style
   const activitySeries = [
     { label: "Page Views", data: buildSeries(pvByDay), hex: "#6366f1" },
@@ -141,6 +135,12 @@ export default async function AdminDashboardPage() {
   const newToday = profiles?.filter((p) => p.created_at >= todayISO).length ?? 0;
   const newThisWeek = profiles?.filter((p) => p.created_at >= weekISO).length ?? 0;
   const newThisMonth = profiles?.filter((p) => p.created_at >= monthISO).length ?? 0;
+
+  const regToday = nonAdminProfiles.filter((p) => p.created_at >= todayISO).length;
+  const regThisWeek = nonAdminProfiles.filter((p) => p.created_at >= weekISO).length;
+  const regThisMonth = nonAdminProfiles.filter((p) => p.created_at >= monthISO).length;
+  const signupSeries = buildSeries(signupsByDay);
+  const signupTotal30 = signupSeries.reduce((s, d) => s + d.value, 0);
 
   // Recent signups (last 6, excluding admins)
   const recentSignups = [...nonAdminProfiles]
