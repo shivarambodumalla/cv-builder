@@ -106,7 +106,7 @@ export function SavedJobsContent({ activeJobs, expiredJobs }: SavedJobsContentPr
                 job={rowToCardJob(row)}
                 onUnsave={handleUnsave}
                 isSaved={savedIds.has(row.job_id)}
-                showMatchScore={row.match_score != null}
+                showMatchScore={false}
                 savedAt={row.saved_at}
                 isExpired={false}
               />
@@ -131,7 +131,7 @@ export function SavedJobsContent({ activeJobs, expiredJobs }: SavedJobsContentPr
                 job={rowToCardJob(row)}
                 onUnsave={handleUnsave}
                 isSaved={savedIds.has(row.job_id)}
-                showMatchScore={row.match_score != null}
+                showMatchScore={false}
                 savedAt={row.saved_at}
                 isExpired={true}
                 onRemove={handleUnsave}

@@ -470,7 +470,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-[#065F46]">Upload your CV for personalised job matches</p>
-            <p className="text-xs text-[#065F46]/60">Get match scores and better recommendations based on your skills</p>
+            <p className="text-xs text-[#065F46]/60">Get better recommendations based on your skills and experience</p>
           </div>
           <Link href="/upload-resume">
             <Button size="sm" className="bg-[#065F46] hover:bg-[#065F46]/90 text-white text-xs">
@@ -522,7 +522,6 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
                     className="h-8 appearance-none rounded-lg border border-input bg-background pl-3 pr-7 text-xs font-medium text-muted-foreground focus:outline-none"
                   >
                     <option value="relevance">Relevance</option>
-                    <option value="match">Match score</option>
                     <option value="date">Most recent</option>
                   </select>
                   <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
@@ -536,7 +535,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
                     onSave={handleSave}
                     onUnsave={handleUnsave}
                     isSaved={savedJobIds.has(job.id)}
-                    showMatchScore={hasCvs}
+                    showMatchScore={false}
                     hasCV={hasCvs}
                   />
                 ))}
@@ -577,7 +576,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
                     onSave={handleSave}
                     onUnsave={handleUnsave}
                     isSaved={savedJobIds.has(job.id)}
-                    showMatchScore={hasCvs}
+                    showMatchScore={false}
                     hasCV={hasCvs}
                   />
                 ))}

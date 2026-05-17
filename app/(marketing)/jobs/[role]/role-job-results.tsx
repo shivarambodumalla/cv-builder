@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lock } from "lucide-react";
 import { useSignupModal } from "@/components/popups/signup-modal";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -89,10 +88,6 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
                     {contract && <span className="rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{contract}</span>}
                     {location?.toLowerCase().includes("remote") && <span className="rounded-md bg-[#DCFCE7] px-2 py-0.5 text-[10px] font-medium text-[#065F46]">Remote</span>}
                     {salary && <span className="rounded-md bg-[#FEF3C7]/70 px-2 py-0.5 text-[10px] font-medium text-[#92400E]">{salary}{estimated ? " est." : ""}</span>}
-                    {/* Locked match */}
-                    <span className="inline-flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                      <Lock className="h-2.5 w-2.5" /> Sign in to see match
-                    </span>
                   </div>
                 </div>
 
