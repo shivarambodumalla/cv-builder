@@ -30,7 +30,24 @@ import {
   Target,
   AlignLeft,
   Sparkles,
+  GripVertical,
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface ContentEditorProps {
   cvId: string;
@@ -583,6 +600,26 @@ function DateRangeWithPresent({
   );
 }
 
+function SortableItem({ id, children }: { id: string; children: (dragHandle: React.ReactNode) => React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+  const handle = (
+    <button
+      type="button"
+      className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground p-0.5 touch-none"
+      {...listeners}
+      {...attributes}
+    >
+      <GripVertical className="h-4 w-4" />
+    </button>
+  );
+  return (
+    <div ref={setNodeRef} style={style} className={isDragging ? "opacity-50 z-50 relative" : ""}>
+      {children(handle)}
+    </div>
+  );
+}
+
 function EmptyState({ message, onAdd, buttonText }: { message: string; onAdd: () => void; buttonText: string }) {
   return (
     <div className="flex flex-col items-center gap-2 py-4 text-center">
@@ -596,7 +633,17 @@ function EmptyState({ message, onAdd, buttonText }: { message: string; onAdd: ()
 }
 
 function ExperienceFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "experience.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "experience.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex((f) => f.id === active.id);
+      const newIndex = fields.findIndex((f) => f.id === over.id);
+      move(oldIndex, newIndex);
+    }
+  }
 
   if (fields.length === 0) {
     return (
@@ -610,9 +657,17 @@ function ExperienceFields({ control, register, watched }: { control: any; regist
 
   return (
     <div className="space-y-4">
-      {fields.map((field, i) => (
-        <ExpItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} />
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <ExpItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} />
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button
         type="button" variant="outline" size="sm"
         onClick={() => append({ company: "", role: "", location: "", startDate: "", endDate: "", isCurrent: false, bullets: [""] })}
@@ -623,7 +678,7 @@ function ExperienceFields({ control, register, watched }: { control: any; regist
   );
 }
 
-function ExpItem({ index, control, register, onRemove, watched }: { index: number; control: any; register: any; onRemove: () => void; watched?: any }) {
+function ExpItem({ index, control, register, onRemove, watched, dragHandle }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode }) {
   const { fields: bulletFields, append, remove } = useFieldArray({ control, name: `experience.items.${index}.bullets` as any });
   const [open, setOpen] = useState(false);
 
@@ -641,6 +696,7 @@ function ExpItem({ index, control, register, onRemove, watched }: { index: numbe
         className="flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors cursor-pointer"
       >
         <span className="flex items-center gap-2 min-w-0">
+          {dragHandle}
           <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
           <span className="truncate font-medium">{headerText}</span>
         </span>
@@ -689,7 +745,15 @@ function ExpItem({ index, control, register, onRemove, watched }: { index: numbe
 }
 
 function EducationFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "education.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "education.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      move(fields.findIndex((f) => f.id === active.id), fields.findIndex((f) => f.id === over.id));
+    }
+  }
 
   if (fields.length === 0) {
     return (
@@ -699,9 +763,17 @@ function EducationFields({ control, register, watched }: { control: any; registe
 
   return (
     <div className="space-y-4">
-      {fields.map((field, i) => (
-        <EduItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} />
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <EduItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} />
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button type="button" variant="outline" size="sm" onClick={() => append({ institution: "", degree: "", field: "", startDate: "", endDate: "" })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Education
       </Button>
@@ -709,7 +781,7 @@ function EducationFields({ control, register, watched }: { control: any; registe
   );
 }
 
-function EduItem({ index, control, register, onRemove, watched }: { index: number; control: any; register: any; onRemove: () => void; watched?: any }) {
+function EduItem({ index, control, register, onRemove, watched, dragHandle }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const institution = watched?.education?.items?.[index]?.institution || "";
   const degree = watched?.education?.items?.[index]?.degree || "";
@@ -725,6 +797,7 @@ function EduItem({ index, control, register, onRemove, watched }: { index: numbe
         className="flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors cursor-pointer"
       >
         <span className="flex items-center gap-2 min-w-0">
+          {dragHandle}
           <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
           <span className="truncate font-medium">{headerText}</span>
         </span>
@@ -844,7 +917,15 @@ function SkillsFields({ control, getValues, setValue }: { control: any; getValue
 }
 
 function CertificationFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "certifications.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "certifications.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      move(fields.findIndex((f) => f.id === active.id), fields.findIndex((f) => f.id === over.id));
+    }
+  }
 
   if (fields.length === 0) {
     return <EmptyState message="No certifications added yet" onAdd={() => append({ name: "", issuer: "", startDate: "", endDate: "", isCurrent: false })} buttonText="Add Certification" />;
@@ -852,9 +933,17 @@ function CertificationFields({ control, register, watched }: { control: any; reg
 
   return (
     <div className="space-y-4">
-      {fields.map((field, i) => (
-        <CertItem key={field.id} index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} />
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <CertItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} />
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", issuer: "", startDate: "", endDate: "", isCurrent: false })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Certification
       </Button>
@@ -862,7 +951,7 @@ function CertificationFields({ control, register, watched }: { control: any; reg
   );
 }
 
-function CertItem({ index, control, register, onRemove, watched }: { index: number; control: any; register: any; onRemove: () => void; watched?: any }) {
+function CertItem({ index, control, register, onRemove, watched, dragHandle }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const name = watched?.certifications?.items?.[index]?.name || "";
   const issuer = watched?.certifications?.items?.[index]?.issuer || "";
@@ -878,6 +967,7 @@ function CertItem({ index, control, register, onRemove, watched }: { index: numb
         className="flex w-full items-center justify-between px-3 py-2.5 text-sm hover:bg-muted/40 transition-colors cursor-pointer"
       >
         <span className="flex items-center gap-2 min-w-0">
+          {dragHandle}
           <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
           <span className="truncate font-medium">{headerText}</span>
         </span>
@@ -911,7 +1001,15 @@ function CertItem({ index, control, register, onRemove, watched }: { index: numb
 }
 
 function AwardFields({ control, register }: { control: any; register: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "awards.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "awards.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      move(fields.findIndex((f) => f.id === active.id), fields.findIndex((f) => f.id === over.id));
+    }
+  }
 
   if (fields.length === 0) {
     return <EmptyState message="Add awards to stand out" onAdd={() => append({ title: "", issuer: "", date: "", description: "" })} buttonText="Add Award" />;
@@ -919,19 +1017,28 @@ function AwardFields({ control, register }: { control: any; register: any }) {
 
   return (
     <div className="space-y-3">
-      {fields.map((field, i) => (
-        <div key={field.id} className="flex items-start gap-2">
-          <div className="grid flex-1 grid-cols-2 gap-2">
-            <Input {...register(`awards.items.${i}.title`)} placeholder="Award Title" />
-            <Input {...register(`awards.items.${i}.issuer`)} placeholder="Issuer" />
-            <DateField control={control} name={`awards.items.${i}.date`} label="Date" />
-            <Input {...register(`awards.items.${i}.description`)} placeholder="Description" className="col-span-2" />
-          </div>
-          <Button type="button" variant="ghost" size="icon" className="mt-0.5 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <div className="flex items-start gap-2">
+                  <div className="mt-1.5">{dragHandle}</div>
+                  <div className="grid flex-1 grid-cols-2 gap-2">
+                    <Input {...register(`awards.items.${i}.title`)} placeholder="Award Title" />
+                    <Input {...register(`awards.items.${i}.issuer`)} placeholder="Issuer" />
+                    <DateField control={control} name={`awards.items.${i}.date`} label="Date" />
+                    <Input {...register(`awards.items.${i}.description`)} placeholder="Description" className="col-span-2" />
+                  </div>
+                  <Button type="button" variant="ghost" size="icon" className="mt-0.5 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button type="button" variant="outline" size="sm" onClick={() => append({ title: "", issuer: "", date: "", description: "" })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Award
       </Button>
@@ -940,7 +1047,15 @@ function AwardFields({ control, register }: { control: any; register: any }) {
 }
 
 function ProjectFields({ control, register }: { control: any; register: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "projects.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "projects.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      move(fields.findIndex((f) => f.id === active.id), fields.findIndex((f) => f.id === over.id));
+    }
+  }
 
   if (fields.length === 0) {
     return <EmptyState message="No projects added yet" onAdd={() => append({ name: "", url: "", startDate: "", endDate: "", bullets: [""] })} buttonText="Add Project" />;
@@ -948,22 +1063,31 @@ function ProjectFields({ control, register }: { control: any; register: any }) {
 
   return (
     <div className="space-y-4">
-      {fields.map((field, i) => (
-        <div key={field.id} className="rounded-lg border p-3 space-y-3">
-          <div className="flex items-start justify-between">
-            <div className="grid flex-1 grid-cols-2 gap-2">
-              <Input {...register(`projects.items.${i}.name`)} placeholder="Project Name" />
-              <Input {...register(`projects.items.${i}.url`)} placeholder="URL" />
-              <DateField control={control} name={`projects.items.${i}.startDate`} label="Start" />
-              <DateField control={control} name={`projects.items.${i}.endDate`} label="End" />
-            </div>
-            <Button type="button" variant="ghost" size="icon" className="ml-2 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-          <BulletFields control={control} register={register} basePath={`projects.items.${i}.bullets`} />
-        </div>
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <div className="rounded-lg border p-3 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="mt-1 mr-1">{dragHandle}</div>
+                    <div className="grid flex-1 grid-cols-2 gap-2">
+                      <Input {...register(`projects.items.${i}.name`)} placeholder="Project Name" />
+                      <Input {...register(`projects.items.${i}.url`)} placeholder="URL" />
+                      <DateField control={control} name={`projects.items.${i}.startDate`} label="Start" />
+                      <DateField control={control} name={`projects.items.${i}.endDate`} label="End" />
+                    </div>
+                    <Button type="button" variant="ghost" size="icon" className="ml-2 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                  <BulletFields control={control} register={register} basePath={`projects.items.${i}.bullets`} />
+                </div>
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", url: "", startDate: "", endDate: "", bullets: [""] })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Project
       </Button>
@@ -972,7 +1096,15 @@ function ProjectFields({ control, register }: { control: any; register: any }) {
 }
 
 function VolunteeringFields({ control, register }: { control: any; register: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "volunteering.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "volunteering.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      move(fields.findIndex((f) => f.id === active.id), fields.findIndex((f) => f.id === over.id));
+    }
+  }
 
   if (fields.length === 0) {
     return <EmptyState message="No volunteering added yet" onAdd={() => append({ role: "", organization: "", startDate: "", endDate: "", bullets: [""] })} buttonText="Add Volunteering" />;
@@ -980,22 +1112,31 @@ function VolunteeringFields({ control, register }: { control: any; register: any
 
   return (
     <div className="space-y-4">
-      {fields.map((field, i) => (
-        <div key={field.id} className="rounded-lg border p-3 space-y-3">
-          <div className="flex items-start justify-between">
-            <div className="grid flex-1 grid-cols-2 gap-2">
-              <Input {...register(`volunteering.items.${i}.role`)} placeholder="Role" />
-              <Input {...register(`volunteering.items.${i}.organization`)} placeholder="Organization" />
-              <DateField control={control} name={`volunteering.items.${i}.startDate`} label="Start" />
-              <DateField control={control} name={`volunteering.items.${i}.endDate`} label="End" />
-            </div>
-            <Button type="button" variant="ghost" size="icon" className="ml-2 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-          <BulletFields control={control} register={register} basePath={`volunteering.items.${i}.bullets`} />
-        </div>
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <div className="rounded-lg border p-3 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="mt-1 mr-1">{dragHandle}</div>
+                    <div className="grid flex-1 grid-cols-2 gap-2">
+                      <Input {...register(`volunteering.items.${i}.role`)} placeholder="Role" />
+                      <Input {...register(`volunteering.items.${i}.organization`)} placeholder="Organization" />
+                      <DateField control={control} name={`volunteering.items.${i}.startDate`} label="Start" />
+                      <DateField control={control} name={`volunteering.items.${i}.endDate`} label="End" />
+                    </div>
+                    <Button type="button" variant="ghost" size="icon" className="ml-2 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                  <BulletFields control={control} register={register} basePath={`volunteering.items.${i}.bullets`} />
+                </div>
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button type="button" variant="outline" size="sm" onClick={() => append({ role: "", organization: "", startDate: "", endDate: "", bullets: [""] })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Volunteering
       </Button>
@@ -1004,7 +1145,15 @@ function VolunteeringFields({ control, register }: { control: any; register: any
 }
 
 function PublicationFields({ control, register }: { control: any; register: any }) {
-  const { fields, append, remove } = useFieldArray({ control, name: "publications.items" });
+  const { fields, append, remove, move } = useFieldArray({ control, name: "publications.items" });
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      move(fields.findIndex((f) => f.id === active.id), fields.findIndex((f) => f.id === over.id));
+    }
+  }
 
   if (fields.length === 0) {
     return <EmptyState message="No publications added yet" onAdd={() => append({ title: "", publisher: "", date: "", url: "" })} buttonText="Add Publication" />;
@@ -1012,19 +1161,28 @@ function PublicationFields({ control, register }: { control: any; register: any 
 
   return (
     <div className="space-y-3">
-      {fields.map((field, i) => (
-        <div key={field.id} className="flex items-start gap-2">
-          <div className="grid flex-1 grid-cols-2 gap-2">
-            <Input {...register(`publications.items.${i}.title`)} placeholder="Title" />
-            <Input {...register(`publications.items.${i}.publisher`)} placeholder="Publisher" />
-            <DateField control={control} name={`publications.items.${i}.date`} label="Date" />
-            <Input {...register(`publications.items.${i}.url`)} placeholder="URL" />
-          </div>
-          <Button type="button" variant="ghost" size="icon" className="mt-0.5 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      ))}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={fields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+          {fields.map((field, i) => (
+            <SortableItem key={field.id} id={field.id}>
+              {(dragHandle) => (
+                <div className="flex items-start gap-2">
+                  <div className="mt-1.5">{dragHandle}</div>
+                  <div className="grid flex-1 grid-cols-2 gap-2">
+                    <Input {...register(`publications.items.${i}.title`)} placeholder="Title" />
+                    <Input {...register(`publications.items.${i}.publisher`)} placeholder="Publisher" />
+                    <DateField control={control} name={`publications.items.${i}.date`} label="Date" />
+                    <Input {...register(`publications.items.${i}.url`)} placeholder="URL" />
+                  </div>
+                  <Button type="button" variant="ghost" size="icon" className="mt-0.5 h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive" onClick={() => remove(i)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              )}
+            </SortableItem>
+          ))}
+        </SortableContext>
+      </DndContext>
       <Button type="button" variant="outline" size="sm" onClick={() => append({ title: "", publisher: "", date: "", url: "" })}>
         <Plus className="mr-1 h-3.5 w-3.5" /> Add Publication
       </Button>
