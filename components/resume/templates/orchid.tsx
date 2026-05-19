@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TemplateProps } from "./classic";
+import { CONTACT_SEPARATOR_MAP } from "@/lib/resume/types";
+import { SkillsItems } from "./skills-renderer";
 
 const DARK_TEXT = "#1f2937";
 const BODY_TEXT = "#374151";
@@ -148,6 +150,14 @@ export function OrchidTemplate({
   const avatarSize = design.avatarSize ?? 108;
   const avatarInitialsBg = design.avatarInitialsBg ?? "accent";
 
+  const headerAlign = design.headerAlignment ?? "center";
+  const alignItems =
+    headerAlign === "left" ? "flex-start" : headerAlign === "right" ? "flex-end" : "center";
+  const textAlign = headerAlign as "left" | "center" | "right";
+
+  const contactSep = design.contactSeparator ?? "none";
+  const sepChar = contactSep !== "none" ? CONTACT_SEPARATOR_MAP[contactSep] : null;
+
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
     const e = isCurrent ? "Present" : formatDate(end);
@@ -234,8 +244,8 @@ export function OrchidTemplate({
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
+        alignItems,
+        textAlign,
         marginBottom: 18,
       }}
     >
@@ -287,15 +297,22 @@ export function OrchidTemplate({
             fontSize: "calc(var(--resume-body-size) - 0.5pt)",
             color: BODY_TEXT,
             lineHeight: 1.5,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
             wordBreak: "break-word",
+            ...(sepChar
+              ? { display: "flex", flexWrap: "wrap" as const, justifyContent: alignItems === "center" ? "center" : alignItems === "flex-end" ? "flex-end" : "flex-start" }
+              : { display: "flex", flexDirection: "column" as const, gap: 2 }),
           }}
         >
-          {contactLines.map((line, i) => (
-            <div key={i}>{line}</div>
-          ))}
+          {sepChar
+            ? contactLines.map((line, i) => (
+                <span key={i}>
+                  {i > 0 && <span style={{ color: MUTED_TEXT, whiteSpace: "pre" }}>{sepChar}</span>}
+                  {line}
+                </span>
+              ))
+            : contactLines.map((line, i) => (
+                <div key={i}>{line}</div>
+              ))}
         </div>
       )}
     </div>
@@ -329,70 +346,18 @@ export function OrchidTemplate({
       ) : null,
 
     skills: (isFirst) => {
-      const categoriesWithSkills = skills.categories
-        .map((cat) => ({
-          name: String((cat as any).name || "").trim(),
-          items: cat.skills.map(skillName).filter(Boolean),
-        }))
-        .filter((c) => c.items.length > 0);
-      if (categoriesWithSkills.length === 0) return null;
-      const hasCategoryNames = categoriesWithSkills.some((c) => c.name);
-      const flatList = categoriesWithSkills.flatMap((c) => c.items);
+      if (skills.categories.length === 0) return null;
       return (
         <div key="skills">
           {sectionHeading("Skills", isFirst ? 0 : 8)}
-          {hasCategoryNames ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {categoriesWithSkills.map((cat, ci) => (
-                <div
-                  key={ci}
-                  style={{
-                    fontFamily: "var(--resume-font)",
-                    fontSize: "var(--resume-body-size)",
-                    lineHeight: "var(--resume-line-spacing)",
-                    color: BODY_TEXT,
-                  }}
-                >
-                  {cat.name && (
-                    <span style={{ fontWeight: 600, color: DARK_TEXT }}>
-                      {cat.name}:{" "}
-                    </span>
-                  )}
-                  {cat.items.join(", ")}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <ul
-              style={{
-                margin: 0,
-                padding: 0,
-                listStyle: "none",
-                fontFamily: "var(--resume-font)",
-                fontSize: "var(--resume-body-size)",
-                lineHeight: "var(--resume-line-spacing)",
-                color: BODY_TEXT,
-              }}
-            >
-              {flatList.map((s, i) => (
-                <li
-                  key={i}
-                  style={{
-                    marginBottom: 3,
-                    paddingLeft: bulletChar ? 14 : 0,
-                    textIndent: bulletChar ? -12 : 0,
-                  }}
-                >
-                  {bulletChar && (
-                    <span style={{ marginRight: 6, color: accent }}>
-                      {bulletChar}
-                    </span>
-                  )}
-                  {s}
-                </li>
-              ))}
-            </ul>
-          )}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor={DARK_TEXT}
+            textColor={BODY_TEXT}
+          />
         </div>
       );
     },

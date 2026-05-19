@@ -10,6 +10,7 @@ export type FontWeight = "light" | "regular" | "medium" | "bold" | "black";
 export type TextCase = "as-written" | "uppercase" | "capitalize";
 export type ContactSeparator = "pipe" | "dot" | "dash" | "comma" | "none";
 export type AvatarMode = "photo" | "initials" | "off";
+export type SkillsStyle = "inline" | "chips" | "bullets" | "grouped";
 export type AvatarShape = "circle" | "rounded" | "square";
 export type AvatarPosition = "left" | "right";
 export type AvatarInitialsBg = "accent" | "white";
@@ -60,6 +61,7 @@ export interface ResumeDesignSettings {
   avatarSize?: number;
   avatarPosition?: AvatarPosition;
   avatarInitialsBg?: AvatarInitialsBg;
+  skillsStyle?: SkillsStyle;
   /** True when the user explicitly selected a template (e.g. via ?template=
    *  on the upload page). False/undefined means we fell back to the default.
    *  Used by the post-login/claim flow to decide whether to show the picker. */

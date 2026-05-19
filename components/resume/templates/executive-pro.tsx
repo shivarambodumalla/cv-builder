@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -479,33 +480,14 @@ export function ExecutiveProTemplate({
       skills.categories.length > 0 ? (
         <div key="skills" data-resume-section="">
           {sectionHeader("skills", SECTION_TITLES.skills, isFirst)}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              columnGap: 10,
-              rowGap: 8,
-              fontFamily: "var(--resume-font)",
-              fontSize: "var(--resume-body-size)",
-              color: bodyText,
-              lineHeight: 1.5,
-            }}
-          >
-            {skills.categories.flatMap((cat, i) => {
-              const items: React.ReactNode[] = [];
-              if (cat.name) {
-                items.push(
-                  <div key={`n-${i}`} style={{ fontWeight: 700, color: darkText }}>
-                    {cat.name}
-                  </div>
-                );
-              }
-              cat.skills.filter(Boolean).forEach((s, j) => {
-                items.push(<div key={`s-${i}-${j}`}>{s}</div>);
-              });
-              return items;
-            })}
-          </div>
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={accentRaw}
+            labelColor={darkText}
+            textColor={bodyText}
+          />
         </div>
       ) : null,
 

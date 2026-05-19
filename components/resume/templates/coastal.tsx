@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -369,40 +370,14 @@ export function Coastal({
     skills.categories.length > 0 ? (
       <div key="skills">
         {sectionTitle("Skills")}
-        {skills.categories.map((cat, i) => {
-          const filtered = cat.skills.filter(Boolean);
-          if (filtered.length === 0) return null;
-          return (
-            <div key={i} style={{ marginBottom: i < skills.categories.length - 1 ? 8 : 0 }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: 4,
-                  fontFamily: "var(--resume-font)",
-                  fontWeight: 700,
-                  color: darkText,
-                  fontSize: "calc(var(--resume-body-size) + 0.5pt)",
-                }}
-              >
-                {triangle}
-                <span>{cat.name || "Skills"}</span>
-              </div>
-              <div
-                style={{
-                  marginTop: 2,
-                  marginLeft: 14,
-                  fontFamily: "var(--resume-font)",
-                  fontSize: "var(--resume-body-size)",
-                  lineHeight: "var(--resume-line-spacing)",
-                  color: bodyText,
-                }}
-              >
-                - {filtered.join(", ")}
-              </div>
-            </div>
-          );
-        })}
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={design.accentColor as string}
+          labelColor={darkText}
+          textColor={bodyText}
+        />
       </div>
     ) : null;
 

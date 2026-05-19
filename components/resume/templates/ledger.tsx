@@ -1,7 +1,9 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 export function LedgerTemplate({
   content,
+  design,
   formatDate,
   bulletChar,
   visibleSections,
@@ -227,26 +229,14 @@ export function LedgerTemplate({
       skills.categories.length > 0 ? (
         <div key="skills">
           {renderSectionRow("Skills", (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 0 }}>
-              {skills.categories.flatMap((cat) =>
-                cat.skills.map((skill, si) => (
-                  <div
-                    key={`${cat.name}-${si}`}
-                    style={{
-                      width: "50%",
-                      borderBottom: "0.5px solid #F1F5F9",
-                      paddingTop: 2,
-                      paddingBottom: 2,
-                      fontFamily: "var(--resume-font)",
-                    }}
-                  >
-                    <span style={{ fontSize: "var(--resume-body-size)", fontWeight: 600, color: "#111" }}>
-                      {skill}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
+            <SkillsItems
+              categories={skills.categories}
+              skillsStyle={design.skillsStyle ?? "inline"}
+              bulletChar={bulletChar}
+              accentColor={design.accentColor as string}
+              labelColor="#111"
+              textColor="#111"
+            />
           ))}
         </div>
       ) : null,

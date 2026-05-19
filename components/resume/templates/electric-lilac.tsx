@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -446,43 +447,20 @@ export function ElectricLilac({
       </div>
     ) : null;
 
-  // Skills — plain list, one per line. No chips, no dots.
+  // Skills — delegated to shared SkillsItems component.
   const renderSkills = (isFirst: boolean) => {
-    const allSkills: string[] = [];
-    skills.categories.forEach((cat) => {
-      cat.skills.filter(Boolean).forEach((s) => allSkills.push(s));
-    });
-    if (allSkills.length === 0) return null;
+    if (skills.categories.length === 0) return null;
     return (
       <div key="skills">
         {sectionHeading("Skills", isFirst)}
-        <ul
-          style={{
-            margin: 0,
-            paddingLeft: bulletChar ? 14 : 0,
-            listStyle: "none",
-            fontFamily: "var(--resume-font)",
-            fontSize: "var(--resume-body-size)",
-            lineHeight: "var(--resume-line-spacing)",
-            color: darkText,
-          }}
-        >
-          {allSkills.map((skill, i) => (
-            <li
-              key={i}
-              style={{
-                marginBottom: 3,
-                textIndent: bulletChar ? "-12px" : 0,
-                paddingLeft: bulletChar ? 12 : 0,
-              }}
-            >
-              {bulletChar && (
-                <span style={{ marginRight: 6, color: accent }}>{bulletChar}</span>
-              )}
-              {skill}
-            </li>
-          ))}
-        </ul>
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={accent}
+          labelColor={darkText}
+          textColor={darkText}
+        />
       </div>
     );
   };

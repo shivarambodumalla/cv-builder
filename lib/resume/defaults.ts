@@ -39,6 +39,7 @@ export const DEFAULT_DESIGN: ResumeDesignSettings = {
   avatarSize: 84,
   avatarPosition: "right",
   avatarInitialsBg: "accent",
+  skillsStyle: "inline",
 };
 
 export const DEFAULT_CONTENT: ResumeContent = {

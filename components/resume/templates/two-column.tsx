@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 export function TwoColumnTemplate({
   content,
@@ -249,12 +250,17 @@ export function TwoColumnTemplate({
     ) : null;
 
   const renderSkills = () =>
-    visibleSections.includes("skills") && allSkills.length > 0 ? (
+    visibleSections.includes("skills") && skills.categories.length > 0 ? (
       <div style={{ marginBottom: `${sectionSpacing}px` }}>
         {sectionHeading("Skills")}
-        <div style={{ fontSize: "var(--resume-body-size)", color: "#444444", lineHeight: "var(--resume-line-spacing)", fontFamily: "var(--resume-font)" }}>
-          {allSkills.join(" · ")}
-        </div>
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={design.accentColor as string}
+          labelColor="#444444"
+          textColor="#444444"
+        />
       </div>
     ) : null;
 

@@ -211,14 +211,44 @@ export async function renderCvPdf(
       ));
     }
     if (key === "skills" && data.skills?.categories?.length) {
-      addSection("skills", "Skills", data.skills.categories.map((x, i) =>
-        e(View, { key: `sk${i}`, style: { marginBottom: 3 } },
+      const skillsStyle = ds.skillsStyle ?? "inline";
+      const accent = ds.accentColor || "#0D9488";
+      addSection("skills", "Skills", data.skills.categories.map((x, i) => {
+        const marginBottom = i < (data.skills?.categories?.length ?? 1) - 1 ? 6 : 0;
+        if (skillsStyle === "bullets") {
+          return e(View, { key: `sk${i}`, style: { marginBottom } },
+            x.name ? e(Text, { style: boldStyle }, x.name) : null,
+            ...(x.skills || []).map((skill: string, j: number) =>
+              e(Text, { key: j, style: { ...bodyStyle, color: "#444" } }, `${bullet} ${skill}`)
+            )
+          );
+        }
+        if (skillsStyle === "chips") {
+          return e(View, { key: `sk${i}`, style: { marginBottom } },
+            x.name ? e(Text, { style: { ...boldStyle, marginBottom: 3 } }, x.name) : null,
+            e(View, { style: { flexDirection: "row", flexWrap: "wrap", gap: 4 } },
+              ...(x.skills || []).map((skill: string, j: number) =>
+                e(View, { key: j, style: { border: `1pt solid ${accent}`, borderRadius: 99, paddingHorizontal: 6, paddingVertical: 1.5, marginBottom: 3 } },
+                  e(Text, { style: { ...bodyStyle, color: accent } }, skill)
+                )
+              )
+            )
+          );
+        }
+        if (skillsStyle === "grouped") {
+          return e(View, { key: `sk${i}`, style: { marginBottom } },
+            x.name ? e(Text, { style: { ...boldStyle, color: accent, fontSize: bodyStyle.fontSize - 0.5, textTransform: "uppercase", marginBottom: 2, paddingBottom: 2, borderBottom: `0.5pt solid ${accent}` } }, x.name) : null,
+            e(Text, { style: { ...bodyStyle, color: "#444" } }, (x.skills || []).join(" · "))
+          );
+        }
+        // inline (default)
+        return e(View, { key: `sk${i}`, style: { marginBottom: 3 } },
           e(Text, null,
-            e(Text, { style: boldStyle }, (x.name || "") + ": "),
+            x.name ? e(Text, { style: boldStyle }, x.name + ": ") : null,
             e(Text, { style: { ...bodyStyle, color: "#444" } }, (x.skills || []).join(", "))
           )
-        )
-      ));
+        );
+      }));
     }
     if (key === "certifications" && data.certifications?.items?.length) {
       addSection("certifications", "Certifications", data.certifications.items.map((x, i) =>

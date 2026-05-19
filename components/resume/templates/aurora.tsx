@@ -1,8 +1,5 @@
 import type { TemplateProps } from "./classic";
-
-type SkillEntry = { name: string; highlight: boolean };
-
-const HIGHLIGHTED_PER_CATEGORY = 2;
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -208,53 +205,6 @@ export function AuroraTemplate({
     );
   };
 
-  const renderChip = (label: string, filled: boolean, key: React.Key) => (
-    <span
-      key={key}
-      style={{
-        display: "inline-block",
-        fontFamily: "var(--resume-font)",
-        fontSize: "calc(var(--resume-body-size) - 0.5pt)",
-        padding: "3px 9px",
-        borderRadius: 999,
-        whiteSpace: "nowrap",
-        background: filled ? accent : "transparent",
-        color: filled ? "#fff" : darkText,
-        border: filled ? `1px solid ${accent}` : `1px solid ${darkText}33`,
-        lineHeight: 1.3,
-      }}
-    >
-      {label}
-    </span>
-  );
-
-  const renderSkillCategory = (category: { name: string; skills: string[] }, idx: number) => {
-    const entries: SkillEntry[] = category.skills.map((skill, i) => ({
-      name: skill,
-      highlight: i < HIGHLIGHTED_PER_CATEGORY,
-    }));
-    return (
-      <div key={idx} style={{ marginBottom: 10 }}>
-        <div
-          style={{
-            fontFamily: "var(--resume-font)",
-            fontSize: "calc(var(--resume-body-size) - 1.5pt)",
-            fontWeight: 700,
-            color: mutedText,
-            textTransform: "uppercase",
-            letterSpacing: 1,
-            marginBottom: 6,
-          }}
-        >
-          {category.name}
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-          {entries.map((e, i) => renderChip(e.name, e.highlight, i))}
-        </div>
-      </div>
-    );
-  };
-
   const leftRenderers: Record<string, () => React.ReactNode> = {
     summary: () =>
       summary.content ? (
@@ -385,7 +335,14 @@ export function AuroraTemplate({
       skills.categories.length > 0 ? (
         <div key="skills">
           {sectionHeading("Skills")}
-          {skills.categories.map((cat, i) => renderSkillCategory(cat, i))}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor={darkText}
+            textColor={bodyText}
+          />
         </div>
       ) : null,
     education: () =>

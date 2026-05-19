@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ResumeEditor } from "@/components/shared/resume-editor";
+import { structureCvText } from "@/lib/ai/gemini";
 import type { ResumeContent } from "@/lib/resume/types";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,19 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
 
   if (!cv) {
     notFound();
+  }
+
+  // If Gemini failed during upload, parsed_json will be null but raw_text exists.
+  // Retry parsing transparently so the editor loads with content.
+  if (!cv.parsed_json && cv.raw_text) {
+    try {
+      const parsed = await structureCvText(cv.raw_text, { userId: user.id });
+      const admin = createAdminClient();
+      await admin.from("cvs").update({ parsed_json: parsed }).eq("id", cv.id);
+      cv.parsed_json = parsed;
+    } catch {
+      // Still down — editor loads empty, user can try again later
+    }
   }
 
   const templatePicked =

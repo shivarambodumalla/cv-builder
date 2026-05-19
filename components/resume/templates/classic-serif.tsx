@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./classic";
 import { ACCENT_COLORS, type AccentColor } from "@/lib/resume/types";
+import { SkillsItems } from "./skills-renderer";
 
 function resolveAccentHex(color: string): string {
   if (color in ACCENT_COLORS) return ACCENT_COLORS[color as AccentColor];
@@ -273,21 +274,14 @@ export function ClassicSerifTemplate({
       skills.categories.length > 0 ? (
         <div key="skills">
           {renderSectionTitle("Skills")}
-          <div
-            style={{
-              fontFamily: "var(--resume-font)",
-              fontSize: "var(--resume-body-size)",
-              lineHeight: "var(--resume-line-spacing)",
-              color: "#333",
-            }}
-          >
-            {skills.categories.map((cat, i) => (
-              <div key={i} style={{ marginBottom: i < skills.categories.length - 1 ? 8 : 0 }}>
-                <span style={{ fontWeight: 700, color: "#111" }}>{cat.name}: </span>
-                <span>{cat.skills.join(" · ")}</span>
-              </div>
-            ))}
-          </div>
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={accentHex}
+            labelColor="#111"
+            textColor="#333"
+          />
         </div>
       ) : null,
 

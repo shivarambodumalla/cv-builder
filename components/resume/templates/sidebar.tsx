@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ResumeContent, ResumeDesignSettings, SectionKey } from "@/lib/resume/types";
+import { SkillsItems } from "./skills-renderer";
 
 export interface TemplateProps {
   content: ResumeContent;
@@ -230,18 +231,14 @@ function SidebarLayout({
         return (
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sLabel("Skills")}
-            {skills.categories.map((cat, i) => (
-              <div key={i} style={{ marginBottom: "8px" }}>
-                {cat.name && (
-                  <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 600, color: "rgba(255,255,255,0.9)", marginBottom: "3px", fontFamily: "var(--resume-font)" }}>
-                    {cat.name}
-                  </div>
-                )}
-                <div style={{ fontSize: "var(--resume-body-size)", color: "rgba(255,255,255,0.65)", lineHeight: "var(--resume-line-spacing)", fontFamily: "var(--resume-font)" }}>
-                  {cat.skills.join(", ")}
-                </div>
-              </div>
-            ))}
+            <SkillsItems
+              categories={skills.categories}
+              skillsStyle={design.skillsStyle ?? "inline"}
+              bulletChar={bulletChar}
+              accentColor="rgba(255,255,255,0.9)"
+              labelColor="rgba(255,255,255,0.9)"
+              textColor="rgba(255,255,255,0.65)"
+            />
           </div>
         );
 
@@ -406,12 +403,14 @@ function SidebarLayout({
         return (
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {mLabel("Skills")}
-            {skills.categories.map((cat, i) => (
-              <div key={i} style={{ marginBottom: "6px", fontFamily: "var(--resume-font)" }}>
-                {cat.name && <span style={{ fontSize: "var(--resume-body-size)", fontWeight: 600, color: "#111" }}>{cat.name}: </span>}
-                <span style={{ fontSize: "var(--resume-body-size)", color: "#555" }}>{cat.skills.join(", ")}</span>
-              </div>
-            ))}
+            <SkillsItems
+              categories={skills.categories}
+              skillsStyle={design.skillsStyle ?? "inline"}
+              bulletChar={bulletChar}
+              accentColor={design.accentColor as string}
+              labelColor="#111"
+              textColor="#555"
+            />
           </div>
         );
 

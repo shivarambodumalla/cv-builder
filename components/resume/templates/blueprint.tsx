@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -431,57 +432,14 @@ export function Blueprint({
     skills.categories.length > 0 ? (
       <div key="skills">
         <div style={labelStyle}>PROFESSIONAL SKILLS:</div>
-        {skills.categories.map((cat, i) => {
-          const filtered = cat.skills.filter(Boolean);
-          if (filtered.length === 0) return null;
-          return (
-            <div key={i} style={{ marginBottom: 6 }}>
-              {cat.name && (
-                <div
-                  style={{
-                    fontFamily: "var(--resume-font)",
-                    fontSize: "calc(var(--resume-body-size) - 0.5pt)",
-                    fontWeight: 700,
-                    color: darkText,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.8,
-                    marginBottom: 3,
-                  }}
-                >
-                  {cat.name}
-                </div>
-              )}
-              <ul
-                style={{
-                  margin: 0,
-                  padding: 0,
-                  listStyle: "none",
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  columnGap: 12,
-                  rowGap: 2,
-                  fontFamily: "var(--resume-font)",
-                  fontSize: "var(--resume-body-size)",
-                  lineHeight: "var(--resume-line-spacing)",
-                  color: bodyText,
-                }}
-              >
-                {filtered.map((s, j) => (
-                  <li
-                    key={j}
-                    style={{
-                      textIndent: bulletChar ? -12 : 0,
-                      paddingLeft: bulletChar ? 12 : 0,
-                    }}
-                  >
-                    {bulletChar && <span style={{ marginRight: 6, color: accent }}>{bulletChar}</span>}
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={design.accentColor as string}
+          labelColor={darkText}
+          textColor={bodyText}
+        />
       </div>
     ) : null;
 

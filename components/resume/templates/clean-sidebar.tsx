@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TemplateProps } from "./classic";
 import type { SectionKey } from "@/lib/resume/types";
+import { SkillsItems } from "./skills-renderer";
 
 const DARK_TEXT = "#111111";
 const MUTED_TEXT = "#6B6B6B";
@@ -567,48 +568,18 @@ export function CleanSidebar({
       ) : null,
 
     skills: () => {
-      const categoriesWithSkills = skills.categories
-        .map((cat) => ({
-          name: String((cat as any).name || "").trim(),
-          items: cat.skills.map(skillName).filter(Boolean),
-        }))
-        .filter((c) => c.items.length > 0);
-      if (categoriesWithSkills.length === 0) return null;
-      const hasCategoryNames = categoriesWithSkills.some((c) => c.name);
+      if (skills.categories.length === 0) return null;
       return (
         <div key="skills">
           {rightLabel("Skills")}
-          {hasCategoryNames ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {categoriesWithSkills.map((cat, ci) => (
-                <div
-                  key={ci}
-                  style={{
-                    fontFamily: "var(--resume-font)",
-                    fontSize: "var(--resume-body-size)",
-                    lineHeight: "var(--resume-line-spacing)",
-                    color: BODY_TEXT,
-                  }}
-                >
-                  {cat.name && (
-                    <span style={{ fontWeight: 600, color: DARK_TEXT }}>{cat.name}: </span>
-                  )}
-                  {cat.items.join(", ")}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div
-              style={{
-                fontFamily: "var(--resume-font)",
-                fontSize: "var(--resume-body-size)",
-                lineHeight: "var(--resume-line-spacing)",
-                color: BODY_TEXT,
-              }}
-            >
-              {categoriesWithSkills.flatMap((c) => c.items).join(", ")}
-            </div>
-          )}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor={DARK_TEXT}
+            textColor={BODY_TEXT}
+          />
         </div>
       );
     },

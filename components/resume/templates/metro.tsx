@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function contactIcon(label: string) {
   switch (label.toLowerCase()) {
@@ -13,6 +14,7 @@ function contactIcon(label: string) {
 
 export function MetroTemplate({
   content,
+  design,
   formatDate,
   bulletChar,
   visibleSections,
@@ -187,18 +189,14 @@ export function MetroTemplate({
             {hasSkills && (
               <div style={{ width: "40%", flexShrink: 0 }}>
                 {renderSectionHeading("Skills")}
-                <div style={{ fontFamily: "var(--resume-font)" }}>
-                  {skills.categories.map((cat, ci) => (
-                    <div key={ci} style={{ marginBottom: "6px" }}>
-                      <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 700, color: "#111", marginBottom: "2px" }}>
-                        {cat.name}
-                      </div>
-                      <div style={{ fontSize: "calc(var(--resume-body-size) - 0.5pt)", color: "#374151", lineHeight: "var(--resume-line-spacing)" }}>
-                        {cat.skills.join(", ")}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <SkillsItems
+                  categories={skills.categories}
+                  skillsStyle={design.skillsStyle ?? "inline"}
+                  bulletChar={bulletChar}
+                  accentColor={design.accentColor as string}
+                  labelColor="#111"
+                  textColor="#374151"
+                />
               </div>
             )}
           </div>

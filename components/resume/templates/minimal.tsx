@@ -4,6 +4,7 @@ import type {
 
   SectionKey,
 } from "@/lib/resume/types";
+import { SkillsItems } from "./skills-renderer";
 
 export interface TemplateProps {
   content: ResumeContent;
@@ -226,20 +227,14 @@ export function MinimalTemplate({
       skills.categories.length > 0 ? (
         <div key="skills">
           {renderSectionTitle("Skills")}
-          {skills.categories.map((cat, i) => (
-            <div
-              key={i}
-              style={{
-                fontFamily: "var(--resume-font)",
-                fontSize: "var(--resume-body-size)",
-                lineHeight: "var(--resume-line-spacing)",
-                marginBottom: "3px",
-              }}
-            >
-              <span style={{ fontWeight: 600, color: "#333" }}>{cat.name}: </span>
-              <span style={{ color: "#555" }}>{cat.skills.join(", ")}</span>
-            </div>
-          ))}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor="#333"
+            textColor="#555"
+          />
         </div>
       ) : null,
 

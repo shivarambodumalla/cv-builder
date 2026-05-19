@@ -44,6 +44,7 @@ import type {
   AvatarPosition,
   AvatarInitialsBg,
   SectionVisibility,
+  SkillsStyle,
 } from "@/lib/resume/types";
 import { fileToResizedDataUrl } from "@/lib/resume/avatar";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
@@ -1081,11 +1082,11 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   // options that have no visual effect.
   const CONTACT_SEPARATOR_TEMPLATES = new Set<string>([
     "classic", "classic-serif", "sharp", "minimal", "executive",
-    "sidebar", "sidebar-right", "two-column", "blueprint", "wentworth",
+    "sidebar", "sidebar-right", "two-column", "blueprint", "wentworth", "orchid",
   ]);
   const HEADER_ALIGNMENT_TEMPLATES = new Set<string>([
     "classic", "classic-serif", "sharp", "minimal", "executive",
-    "executive-pro", "blueprint", "wentworth",
+    "executive-pro", "blueprint", "wentworth", "orchid",
   ]);
   const supportsContactSeparator = CONTACT_SEPARATOR_TEMPLATES.has(design.template);
   const supportsHeaderAlignment = HEADER_ALIGNMENT_TEMPLATES.has(design.template);
@@ -1882,6 +1883,22 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                   size="sm"
                   className="h-8 min-w-8 px-2 text-xs"
                   onClick={() => update("bulletStyle", value)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          </FieldRow>
+
+          <FieldRow label="Skills style">
+            <div className="flex gap-1 flex-wrap">
+              {([ ["inline", "List"], ["chips", "Chips"], ["bullets", "Bullets"], ["grouped", "Grouped"] ] as [SkillsStyle, string][]).map(([value, label]) => (
+                <Button
+                  key={value}
+                  variant={(design.skillsStyle ?? "inline") === value ? "default" : "outline"}
+                  size="sm"
+                  className="h-8 px-2 text-xs"
+                  onClick={() => update("skillsStyle", value)}
                 >
                   {label}
                 </Button>

@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -645,38 +646,14 @@ export function Wentworth({
       skills.categories.length > 0 ? (
         <div key="skills">
           {sectionHeading("Skills")}
-          {skills.categories.map((cat, i) => (
-            <div
-              key={i}
-              style={{
-                marginBottom: i < skills.categories.length - 1 ? 8 : 0,
-                fontFamily: "var(--resume-font)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.15em",
-                  color: titleMuted,
-                  marginBottom: 3,
-                }}
-              >
-                {"// "}
-                {cat.name}
-              </div>
-              <div
-                style={{
-                  fontSize: 10.5,
-                  lineHeight: 1.55,
-                  color: bodyText,
-                }}
-              >
-                {cat.skills.join(", ")}
-              </div>
-            </div>
-          ))}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor={titleMuted}
+            textColor={bodyText}
+          />
         </div>
       ) : null,
   };

@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./classic";
 import type { SectionKey } from "@/lib/resume/types";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -347,35 +348,14 @@ export function ExecutiveSidebar({
     return (
       <div>
         {leftHeading("Skills")}
-        {skills.categories.map((cat, i) => (
-          <div key={i} style={{ marginBottom: i < skills.categories.length - 1 ? 8 : 0 }}>
-            {cat.name && (
-              <div
-                style={{
-                  fontFamily: "var(--resume-font)",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: sidebarHeading,
-                  marginBottom: 3,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                }}
-              >
-                {cat.name}
-              </div>
-            )}
-            <div
-              style={{
-                fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
-                color: sidebarText,
-                lineHeight: 1.5,
-              }}
-            >
-              {cat.skills.join(", ")}
-            </div>
-          </div>
-        ))}
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={design.accentColor as string}
+          labelColor={sidebarHeading}
+          textColor={sidebarText}
+        />
       </div>
     );
   };

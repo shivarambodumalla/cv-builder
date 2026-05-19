@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -447,48 +448,14 @@ export function BoldAccent({
 
     skills: () =>
       skills.categories.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {skills.categories.map((cat, i) => (
-            <div key={i}>
-              {cat.name && (
-                <div
-                  style={{
-                    fontFamily: "var(--resume-font)",
-                    fontSize: "calc(var(--resume-body-size) - 1pt)",
-                    fontWeight: 700,
-                    color: mutedText,
-                    textTransform: "uppercase",
-                    letterSpacing: 1,
-                    marginBottom: 5,
-                  }}
-                >
-                  {cat.name}
-                </div>
-              )}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {cat.skills.filter(Boolean).map((sk, j) => (
-                  <span
-                    key={j}
-                    style={{
-                      display: "inline-block",
-                      fontFamily: "var(--resume-font)",
-                      fontSize: "calc(var(--resume-body-size) - 0.5pt)",
-                      padding: "4px 12px",
-                      borderRadius: 999,
-                      background: accent,
-                      color: "#ffffff",
-                      whiteSpace: "nowrap",
-                      lineHeight: 1.3,
-                      fontWeight: 500,
-                    }}
-                  >
-                    {sk}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={design.accentColor as string}
+          labelColor={mutedText}
+          textColor={bodyText}
+        />
       ) : null,
 
     certifications: () =>

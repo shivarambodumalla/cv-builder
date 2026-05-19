@@ -1,7 +1,9 @@
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 export function HarvardTemplate({
   content,
+  design,
   formatDate,
   bulletChar,
   visibleSections,
@@ -342,20 +344,14 @@ export function HarvardTemplate({
       return (
         <div key="skills">
           {renderSectionTitle("Skills & Interests")}
-          {skills.categories.map((cat, i) => (
-            <div
-              key={i}
-              style={{
-                fontFamily: "var(--resume-font)",
-                fontSize: "var(--resume-body-size)",
-                lineHeight: 1.7,
-                color: "#111",
-              }}
-            >
-              <span style={{ fontWeight: 700 }}>{cat.name}: </span>
-              <span>{cat.skills.join(", ")}</span>
-            </div>
-          ))}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor="#111"
+            textColor="#111"
+          />
           {hasCerts &&
             certifications.items.map((item, i) => (
               <div

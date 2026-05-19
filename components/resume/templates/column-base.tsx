@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TemplateProps } from "./classic";
+import { SkillsItems } from "./skills-renderer";
 
 interface ColumnBaseProps extends TemplateProps {
   leftBackground: string;
@@ -163,24 +164,14 @@ export function ColumnBase({
         return (
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Skills")}
-            {skills.categories.map((cat, ci) => (
-              <div key={ci} style={{ marginBottom: ci < skills.categories.length - 1 ? 8 : 0 }}>
-                {cat.name && (
-                  <div style={{
-                    fontSize: "var(--resume-body-size)", fontWeight: 700, color: "#0F172A",
-                    marginBottom: 2, fontFamily: "var(--resume-font)",
-                  }}>
-                    {cat.name}
-                  </div>
-                )}
-                <div style={{
-                  fontSize: "var(--resume-body-size)", color: "#475569",
-                  lineHeight: "var(--resume-line-spacing)", fontFamily: "var(--resume-font)",
-                }}>
-                  {cat.skills.join(", ")}
-                </div>
-              </div>
-            ))}
+            <SkillsItems
+              categories={skills.categories}
+              skillsStyle={design.skillsStyle ?? "inline"}
+              bulletChar={bulletChar}
+              accentColor={design.accentColor as string}
+              labelColor="#0F172A"
+              textColor="#475569"
+            />
           </div>
         );
 
@@ -375,13 +366,18 @@ export function ColumnBase({
         );
 
       case "skills":
-        if (allSkills.length === 0) return null;
+        if (skills.categories.length === 0) return null;
         return (
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Skills")}
-            <div style={{ fontSize: "var(--resume-body-size)", color: "#374151", lineHeight: "var(--resume-line-spacing)", fontFamily: "var(--resume-font)" }}>
-              {allSkills.join(" · ")}
-            </div>
+            <SkillsItems
+              categories={skills.categories}
+              skillsStyle={design.skillsStyle ?? "inline"}
+              bulletChar={bulletChar}
+              accentColor={design.accentColor as string}
+              labelColor="#0F172A"
+              textColor="#374151"
+            />
           </div>
         );
 
