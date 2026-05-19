@@ -126,6 +126,40 @@ ${templateHtml}
     const page = await browser.newPage();
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
+    // Linkify emails and URLs so they are clickable in the exported PDF.
+    await page.evaluate(() => {
+      const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
+      const FULL_URL_RE = /^https?:\/\/.+/i;
+      const KNOWN_DOMAIN_RE = /^(?:www\.|linkedin\.com|github\.com|twitter\.com|x\.com|behance\.net|dribbble\.com|gitlab\.com|portfolio\.).+/i;
+
+      function getHref(raw: string): string | null {
+        const t = raw.trim();
+        if (!t) return null;
+        if (EMAIL_RE.test(t)) return `mailto:${t}`;
+        if (FULL_URL_RE.test(t)) return t;
+        if (KNOWN_DOMAIN_RE.test(t)) return `https://${t}`;
+        return null;
+      }
+
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      const hits: Text[] = [];
+      let node: Node | null;
+      while ((node = walker.nextNode())) {
+        const el = (node as Text).parentElement;
+        if (!el || el.tagName === "A" || el.tagName === "SCRIPT" || el.tagName === "STYLE") continue;
+        if (getHref((node as Text).textContent ?? "")) hits.push(node as Text);
+      }
+      for (const textNode of hits) {
+        const href = getHref(textNode.textContent ?? "");
+        if (!href || !textNode.parentNode) continue;
+        const a = document.createElement("a");
+        a.href = href;
+        a.textContent = textNode.textContent;
+        a.style.cssText = "color:inherit;text-decoration:none;";
+        textNode.parentNode.replaceChild(a, textNode);
+      }
+    });
+
     const pdfBuffer = await page.pdf({
       width: paper.width,
       height: paper.height,

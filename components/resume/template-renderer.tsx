@@ -199,7 +199,8 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
     : (SECTION_HEADING_SIZE_PT[design.sectionHeadingSize] ?? 9);
   const headingWeight = FONT_WEIGHT_MAP[(design.sectionHeadingWeight ?? "bold") as FontWeight];
   const headingCase = (design.sectionHeadingCase ?? "uppercase") as TextCase;
-  const contactSep = CONTACT_SEPARATOR_MAP[(design.contactSeparator ?? "pipe") as ContactSeparator];
+  const contactSepDefault = design.template === "orchid" ? "dot" : "pipe";
+  const contactSep = CONTACT_SEPARATOR_MAP[(design.contactSeparator ?? contactSepDefault) as ContactSeparator];
 
   const visibleSections = orderedSections.filter(
     (key) => content.sections[key as keyof typeof content.sections]

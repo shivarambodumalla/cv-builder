@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TemplateProps } from "./classic";
-import { CONTACT_SEPARATOR_MAP } from "@/lib/resume/types";
 import { SkillsItems } from "./skills-renderer";
 
 const DARK_TEXT = "#1f2937";
@@ -115,6 +114,7 @@ export function OrchidTemplate({
   marginX = 0.4,
   marginY = 0.45,
   pageBreaks = [],
+  contactSeparator = " | ",
 }: TemplateProps) {
   const {
     contact,
@@ -155,8 +155,9 @@ export function OrchidTemplate({
     headerAlign === "left" ? "flex-start" : headerAlign === "right" ? "flex-end" : "center";
   const textAlign = headerAlign as "left" | "center" | "right";
 
-  const contactSep = design.contactSeparator ?? "none";
-  const sepChar = contactSep !== "none" ? CONTACT_SEPARATOR_MAP[contactSep] : null;
+  // "pipe" was the global default before orchid had separator support — treat it as dot.
+  const rawSep = design.contactSeparator;
+  const sepChar = rawSep === "none" ? null : rawSep === "pipe" || !rawSep ? " · " : contactSeparator;
 
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
@@ -298,16 +299,16 @@ export function OrchidTemplate({
             color: BODY_TEXT,
             lineHeight: 1.5,
             wordBreak: "break-word",
-            ...(sepChar
-              ? { display: "flex", flexWrap: "wrap" as const, justifyContent: alignItems === "center" ? "center" : alignItems === "flex-end" ? "flex-end" : "flex-start" }
-              : { display: "flex", flexDirection: "column" as const, gap: 2 }),
+            ...(sepChar ? {} : { display: "flex", flexDirection: "column" as const, gap: 2 }),
           }}
         >
           {sepChar
             ? contactLines.map((line, i) => (
                 <span key={i}>
-                  {i > 0 && <span style={{ color: MUTED_TEXT, whiteSpace: "pre" }}>{sepChar}</span>}
                   {line}
+                  {i < contactLines.length - 1 && (
+                    <span style={{ color: MUTED_TEXT }}>{sepChar}</span>
+                  )}
                 </span>
               ))
             : contactLines.map((line, i) => (
