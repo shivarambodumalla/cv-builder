@@ -6,6 +6,15 @@ const PAPER_SIZES: Record<string, { width: string; height: string }> = {
   letter: { width: "8.5in", height: "11in" },
 };
 
+// Viewport must match the PDF page width exactly so the initial DOM layout
+// uses the same line-wrap budget as the final PDF render. Mismatch causes
+// 1–2px height differences that push content onto a second page.
+// Values are CSS pixel equivalents at 96 DPI (Chromium's default DPI).
+const PAPER_VIEWPORT: Record<string, { width: number; height: number }> = {
+  a4: { width: 794, height: 1123 },       // 210mm × 297mm at 96 DPI
+  letter: { width: 816, height: 1056 },   // 8.5in × 11in at 96 DPI
+};
+
 // Cache the extracted chromium binary path across warm-lambda invocations.
 // sparticuz/chromium extracts the binary to /tmp on first resolve; re-resolving
 // can race with a still-open write fd and the kernel returns ETXTBSY.
@@ -82,19 +91,22 @@ export async function renderHtmlToPdf(
   );
 
   const paper = PAPER_SIZES[design.paperSize] || PAPER_SIZES.a4;
+  const viewport = PAPER_VIEWPORT[design.paperSize] || PAPER_VIEWPORT.a4;
+
+  const GOOGLE_FONTS_URL =
+    "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700;900&family=Lora:wght@400;500;600;700&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700;800;900&display=swap";
 
   const fullHtml = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700;900&family=Lora:wght@400;500;600;700&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700;800;900&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     width: ${paper.width};
-    height: ${paper.height};
+    /* no height — @page controls PDF page size; fixing height here can cause
+       content that slightly exceeds one page to overflow onto a blank page 2 */
     margin: 0;
     padding: 0;
     -webkit-print-color-adjust: exact;
@@ -124,7 +136,18 @@ ${templateHtml}
   const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
+    // Set viewport to match the PDF page dimensions exactly so the initial
+    // DOM layout uses the same line-wrap budget as the final PDF render.
+    await page.setViewport({ width: viewport.width, height: viewport.height, deviceScaleFactor: 1 });
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
+    // Load fonts separately so Puppeteer tracks the stylesheet request, then
+    // wait for document.fonts.ready to confirm metrics are applied to the DOM.
+    try {
+      await page.addStyleTag({ url: GOOGLE_FONTS_URL });
+      await page.evaluate(() => document.fonts.ready);
+    } catch {
+      // Font loading failure must not abort PDF export — system fallbacks apply.
+    }
 
     // Linkify emails and URLs so they are clickable in the exported PDF.
     await page.evaluate(() => {

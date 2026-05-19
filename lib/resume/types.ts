@@ -71,7 +71,7 @@ export interface ResumeDesignSettings {
 export const FONT_STACKS: Record<FontFamily, string> = {
   classic: "Georgia, 'Times New Roman', serif",
   clean: "Inter, Helvetica, Arial, sans-serif",
-  elegant: "Garamond, Palatino, 'Book Antiqua', serif",
+  elegant: "'EB Garamond', Palatino, 'Book Antiqua', serif",
   strong: "Roboto, system-ui, sans-serif",
 };
 
