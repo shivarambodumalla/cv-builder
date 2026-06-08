@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Eye, Upload, ImageUp, Loader2, CalendarClock } from "lucide-react";
+import { ArrowLeft, Save, Eye, Upload, ImageUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,8 +12,6 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
-
-type PublishMode = "draft" | "now" | "schedule";
 
 interface PostForm {
   slug: string;
@@ -26,7 +24,6 @@ interface PostForm {
   seo_description: string;
   read_time_minutes: number;
   is_published: boolean;
-  scheduled_at: string;
 }
 
 const EMPTY: PostForm = {
@@ -40,7 +37,6 @@ const EMPTY: PostForm = {
   seo_description: "",
   read_time_minutes: 5,
   is_published: false,
-  scheduled_at: "",
 };
 
 function slugify(text: string) {
@@ -70,18 +66,9 @@ function estimateReadTime(text: string) {
   return Math.max(1, Math.round(text.trim().split(/\s+/).length / 200));
 }
 
-// Convert UTC ISO string to local datetime-local input value
-function toLocalDatetimeInput(iso: string): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
 export function BlogEditorClient({ postId }: { postId?: string }) {
   const router = useRouter();
   const [form, setForm] = useState<PostForm>(EMPTY);
-  const [publishMode, setPublishMode] = useState<PublishMode>("draft");
   const [loading, setLoading] = useState(!!postId);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -109,7 +96,6 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
         seo_description: fm.seoDescription ?? fm.seo_description ?? fm.brief ?? "",
         read_time_minutes: estimateReadTime(content),
         is_published: false,
-        scheduled_at: "",
       });
     };
     reader.readAsText(file);
@@ -132,11 +118,7 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
           seo_description: data.seo_description ?? "",
           read_time_minutes: data.read_time_minutes ?? 5,
           is_published: data.is_published ?? false,
-          scheduled_at: data.scheduled_at ? toLocalDatetimeInput(data.scheduled_at) : "",
         });
-        if (data.is_published) setPublishMode("now");
-        else if (data.scheduled_at) setPublishMode("schedule");
-        else setPublishMode("draft");
         setLoading(false);
       });
   }, [postId]);
@@ -169,27 +151,14 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
     e.target.value = "";
   }
 
-  async function handleSave() {
+  async function handleSave(publish?: boolean) {
     setError("");
-    if (publishMode === "schedule" && !form.scheduled_at) {
-      setError("Please pick a date and time to schedule.");
-      return;
-    }
     setSaving(true);
-
-    const isPublished = publishMode === "now";
-    const scheduledAt = publishMode === "schedule"
-      ? new Date(form.scheduled_at).toISOString()
-      : null;
-
     const payload = {
       ...form,
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
-      is_published: isPublished,
-      scheduled_at: scheduledAt,
-      published_at: isPublished ? (form.scheduled_at ? new Date(form.scheduled_at).toISOString() : new Date().toISOString()) : null,
+      is_published: publish !== undefined ? publish : form.is_published,
     };
-
     const url = isEdit ? `/api/admin/blog/${postId}` : "/api/admin/blog";
     const method = isEdit ? "PUT" : "POST";
     const res = await fetch(url, {
@@ -225,21 +194,13 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
               </Button>
             </>
           )}
-          <Button
-            variant={saving ? "outline" : "default"}
-            size="sm"
-            disabled={saving}
-            onClick={handleSave}
-            className="gap-1.5"
-          >
-            {saving
-              ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              : publishMode === "draft"
-                ? <Save className="h-3.5 w-3.5" />
-                : publishMode === "schedule"
-                  ? <CalendarClock className="h-3.5 w-3.5" />
-                  : <Eye className="h-3.5 w-3.5" />}
-            {saving ? "Saving…" : publishMode === "draft" ? "Save draft" : publishMode === "schedule" ? "Schedule" : "Publish now"}
+          <Button variant="outline" size="sm" disabled={saving} onClick={() => handleSave(false)} className="gap-1.5">
+            <Save className="h-3.5 w-3.5" />
+            Save draft
+          </Button>
+          <Button size="sm" disabled={saving} onClick={() => handleSave(true)} className="gap-1.5">
+            {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Eye className="h-3.5 w-3.5" />}
+            {saving ? "Saving…" : form.is_published ? "Update & publish" : "Publish"}
           </Button>
         </div>
       </div>
@@ -301,39 +262,6 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
           </div>
         </div>
 
-        {/* Publish options */}
-        <div className="grid gap-3 rounded-lg border p-4 bg-muted/30">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Publish</p>
-          <div className="flex gap-2 flex-wrap">
-            {(["draft", "now", "schedule"] as PublishMode[]).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setPublishMode(mode)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors ${
-                  publishMode === mode
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-muted-foreground border-border hover:text-foreground"
-                }`}
-              >
-                {mode === "draft" ? "Save as draft" : mode === "now" ? "Publish now" : "Schedule"}
-              </button>
-            ))}
-          </div>
-          {publishMode === "schedule" && (
-            <div className="grid gap-1.5">
-              <Label>Publish date & time <span className="text-muted-foreground font-normal">(your local time)</span></Label>
-              <Input
-                type="datetime-local"
-                value={form.scheduled_at}
-                onChange={(e) => set("scheduled_at", e.target.value)}
-                min={new Date().toISOString().slice(0, 16)}
-                className="max-w-xs"
-              />
-            </div>
-          )}
-        </div>
-
         {/* SEO */}
         <div className="grid gap-3 rounded-lg border p-4 bg-muted/30">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">SEO</p>
@@ -347,7 +275,7 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
           </div>
         </div>
 
-        {/* Markdown editor — full height, resizable */}
+        {/* Markdown editor */}
         <div className="grid gap-1.5">
           <Label>Content</Label>
           <div data-color-mode="light" className="rounded-lg border overflow-hidden">

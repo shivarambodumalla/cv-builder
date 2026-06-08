@@ -23,10 +23,6 @@
     {
       "path": "/api/cron/download-nudge",
       "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/publish-scheduled-posts",
-      "schedule": "0 9 * * *"
     }
   ]
 }
