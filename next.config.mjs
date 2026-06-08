@@ -6,6 +6,7 @@ const nextConfig = {
       { protocol: "https", hostname: "cdn.hashnode.com" },
       { protocol: "https", hostname: "**.hashnode.com" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "*.supabase.co" },
     ],
   },
   poweredByHeader: false,

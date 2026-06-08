@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Clock, ArrowRight, Loader2 } from "lucide-react";
-import { type BlogPost, formatDate } from "@/lib/blog/hashnode";
+import { type BlogPost, formatDate } from "@/lib/blog/posts";
 import { loadMorePosts } from "./actions";
 
 interface Props {

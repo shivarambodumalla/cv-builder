@@ -26,6 +26,7 @@ const NAV_GROUPS = [
   {
     title: "AI & Content",
     links: [
+      { href: "/admin/blog", label: "Blog Posts" },
       { href: "/admin/prompts", label: "Prompts" },
       { href: "/admin/keywords", label: "Keywords" },
       { href: "/admin/missing-roles", label: "Missing Roles" },

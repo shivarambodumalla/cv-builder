@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getPosts } from "@/lib/blog/hashnode";
+import { getPosts } from "@/lib/blog/posts";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { BlogList } from "./blog-list";
 
@@ -14,6 +14,13 @@ export const metadata: Metadata = {
     title: "CVEdge Blog — CV & Job Search Advice",
     description: "Practical advice on CV writing, ATS optimisation, and job searching.",
     url: "https://www.thecvedge.com/blog",
+    images: [{ url: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg", width: 1200, height: 630, alt: "CVEdge Blog" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CVEdge Blog — CV & Job Search Advice",
+    description: "Practical advice on CV writing, ATS optimisation, and job searching.",
+    images: ["https://www.thecvedge.com/img/CV-Edge-Logo-square.svg"],
   },
 };
 
@@ -24,7 +31,7 @@ export default async function BlogPage() {
   try {
     ({ posts, hasMore, cursor } = await getPosts());
   } catch {
-    // Hashnode unavailable — render page with empty state
+    // Supabase unavailable — render page with empty state
   }
   const [featured] = posts;
 

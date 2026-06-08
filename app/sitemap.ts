@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
-import { getAllSlugs, getPosts } from "@/lib/blog/hashnode";
+import { getAllPostsForSitemap } from "@/lib/blog/posts";
 import { TEMPLATE_CATEGORIES, getAllLeafParams } from "@/lib/resume-templates/data";
 
 // Stable baseline timestamp — bump manually when content materially changes.
@@ -22,21 +22,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Fetch all blog post slugs + publish dates for accurate lastModified
+  // Fetch all blog post slugs + publish dates in a single query
   let blogPostPages: MetadataRoute.Sitemap = [];
   try {
-    const slugs = await getAllSlugs();
-    const { posts } = await getPosts();
-    const dateMap = new Map(posts.map((p) => [p.slug, new Date(p.publishedAt)]));
-
-    blogPostPages = slugs.map((slug) => ({
+    const posts = await getAllPostsForSitemap();
+    blogPostPages = posts.map(({ slug, published_at }) => ({
       url: `https://www.thecvedge.com/blog/${slug}`,
-      lastModified: dateMap.get(slug) ?? STABLE_LAST_MODIFIED,
+      lastModified: published_at ? new Date(published_at) : STABLE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));
   } catch {
-    // Hashnode unavailable at build time — blog posts omitted from sitemap
+    // Supabase unavailable at build time — blog posts omitted from sitemap
   }
 
   // --- SEO money pages ---

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
-import { getPost, getAllSlugs, formatDate } from "@/lib/blog/hashnode";
+import { getPost, getAllSlugs, formatDate } from "@/lib/blog/posts";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { CtaSection } from "@/components/shared/cta-section";
 import { LinkTracker } from "./link-tracker";
@@ -44,6 +44,12 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
+      ...(image ? { images: [{ url: image, alt: title }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
       ...(image ? { images: [image] } : {}),
     },
   };
@@ -66,16 +72,15 @@ export default async function BlogPostPage({
     description: post.brief,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
-    author: post.author
-      ? { "@type": "Person", name: post.author.name }
-      : { "@type": "Organization", name: "CVEdge" },
+    author: { "@type": "Organization", name: "CVEdge", url: "https://www.thecvedge.com" },
     publisher: {
       "@type": "Organization",
       name: "CVEdge",
       logo: { "@type": "ImageObject", url: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg" },
     },
-    mainEntityOfPage: `https://www.thecvedge.com/blog/${slug}`,
-    ...(post.coverImage ? { image: post.coverImage.url } : {}),
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.thecvedge.com/blog/${slug}` },
+    ...(post.coverImage ? { image: { "@type": "ImageObject", url: post.coverImage.url } } : {}),
+    ...(post.tags.length > 0 ? { keywords: post.tags.map((t) => t.name).join(", ") } : {}),
   };
 
   return (
