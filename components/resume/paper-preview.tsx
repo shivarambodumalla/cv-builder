@@ -8,7 +8,7 @@ const MM_TO_PX = 3.7795275591;
 
 const PAGE_HEIGHTS: Record<PaperSize, number> = {
   a4: 297 * MM_TO_PX,
-  letter: 279 * MM_TO_PX,
+  letter: 279.4 * MM_TO_PX, // 11in exactly = 279.4mm → matches PDF viewport 1056px
 };
 
 interface PageBreak {

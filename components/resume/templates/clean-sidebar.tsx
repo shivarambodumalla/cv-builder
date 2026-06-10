@@ -803,6 +803,10 @@ export function CleanSidebar({
     .map((key) => ({ key, node: rightRenderers[key]?.() }))
     .filter((x): x is { key: string; node: React.ReactNode } => !!x.node);
 
+  // Background gradient on outer wrapper — avoids Chromium's print/PDF bug where flex-item
+  // backgrounds clipped to intrinsic height cause the sidebar colour to disappear on page 2.
+  const bgGradient = `linear-gradient(to right, ${LEFT_BG} 32%, #ffffff 32%)`;
+
   return (
     <div
       style={{
@@ -813,6 +817,7 @@ export function CleanSidebar({
         display: "flex",
         minHeight: "100%",
         padding: 0,
+        background: bgGradient,
       }}
     >
       {/* LEFT COLUMN */}
@@ -820,7 +825,6 @@ export function CleanSidebar({
         style={{
           width: "32%",
           flexShrink: 0,
-          background: LEFT_BG,
           color: DARK_TEXT,
           padding: "28px 20px",
         }}
@@ -853,7 +857,6 @@ export function CleanSidebar({
         style={{
           flex: 1,
           minWidth: 0,
-          background: "#FFFFFF",
           padding: 0,
           display: "flex",
           flexDirection: "column",

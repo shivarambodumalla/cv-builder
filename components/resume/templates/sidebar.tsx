@@ -467,20 +467,28 @@ function SidebarLayout({
   }
 
   /* ── Layout ── */
+  // Background is applied to the outer wrapper as a linear-gradient instead of on individual
+  // column divs. Chromium's print/PDF renderer can clip flex-item backgrounds to intrinsic
+  // (content) height rather than the stretched height, causing the sidebar colour to vanish on
+  // page 2. A gradient on the container avoids the flex-stretch paint issue entirely.
+  const bgGradient = side === "left"
+    ? "linear-gradient(to right, var(--resume-accent) 35%, white 35%)"
+    : "linear-gradient(to left, var(--resume-accent) 35%, white 35%)";
+
   const sidebarContent = (
-    <div style={{ width: "35%", backgroundColor: "var(--resume-accent)", padding: "24px 18px", flexShrink: 0 }}>
+    <div style={{ width: "35%", padding: "24px 18px", flexShrink: 0 }}>
       {sidebarOrdered.map((key) => renderSidebarSection(key))}
     </div>
   );
 
   const mainContent = (
-    <div style={{ flex: 1, padding: "24px 22px", backgroundColor: "white", fontFamily: "var(--resume-font)" }}>
+    <div style={{ flex: 1, padding: "24px 22px", fontFamily: "var(--resume-font)" }}>
       {mainOrdered.map((key) => renderMainSection(key))}
     </div>
   );
 
   return (
-    <div style={{ display: "flex", minHeight: "100%", fontFamily: "var(--resume-font)" }}>
+    <div style={{ display: "flex", minHeight: "100%", fontFamily: "var(--resume-font)", background: bgGradient }}>
       {side === "left" && hasSidebar && sidebarContent}
       {mainContent}
       {side === "right" && hasSidebar && sidebarContent}

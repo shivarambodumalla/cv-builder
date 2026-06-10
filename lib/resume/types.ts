@@ -103,7 +103,7 @@ export const BULLET_CHARS: Record<BulletStyle, string> = {
 
 export const PAPER_DIMENSIONS: Record<PaperSize, { width: string; height: string }> = {
   a4: { width: "210mm", height: "297mm" },
-  letter: { width: "216mm", height: "279mm" },
+  letter: { width: "216mm", height: "279.4mm" }, // 11in exactly = 279.4mm → matches PDF viewport 1056px
 };
 
 // --- Content types ---

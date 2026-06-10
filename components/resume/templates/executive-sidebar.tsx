@@ -867,6 +867,10 @@ export function ExecutiveSidebar({
     })
     .filter((x): x is { key: string; node: React.ReactNode } => !!x.node);
 
+  // Background gradient on outer wrapper — avoids Chromium's print/PDF bug where flex-item
+  // backgrounds clipped to intrinsic height cause column backgrounds to disappear on page 2.
+  const bgGradient = `linear-gradient(to right, #ffffff 30%, ${leftBg} 30%)`;
+
   return (
     <div
       style={{
@@ -876,6 +880,7 @@ export function ExecutiveSidebar({
         fontSize: "var(--resume-body-size)",
         lineHeight: "var(--resume-line-spacing)",
         color: bodyText,
+        background: bgGradient,
       }}
     >
       {/* LEFT COLUMN (30%) — sidebar, white */}
@@ -883,7 +888,6 @@ export function ExecutiveSidebar({
         style={{
           width: "30%",
           flexShrink: 0,
-          background: "#ffffff",
           color: sidebarText,
           padding: `${marginY}in calc(${marginX}in - 0.15in)`,
           display: "flex",
@@ -906,12 +910,11 @@ export function ExecutiveSidebar({
         })}
       </div>
 
-      {/* RIGHT COLUMN (70%) — main content, tinted */}
+      {/* RIGHT COLUMN (70%) — main content, tinted (bg via outer gradient) */}
       <div
         style={{
           flex: 1,
           minWidth: 0,
-          background: leftBg,
           padding: `${marginY}in calc(${marginX}in + 0.1in)`,
           display: "flex",
           flexDirection: "column",

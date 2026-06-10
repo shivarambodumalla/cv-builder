@@ -504,14 +504,20 @@ export function ColumnBase({
   }
 
   /* ── Layout ── */
+  // Background gradient on outer wrapper — avoids Chromium's print/PDF bug where flex-item
+  // backgrounds clipped to intrinsic height cause the sidebar colour to vanish when the main
+  // column is taller (on page 1 and all subsequent pages).
+  const bgGradient = `linear-gradient(to right, ${leftBackground} 260px, white 260px)`;
+
   return (
     <div style={{
       display: "flex", minHeight: "100%", fontFamily: "var(--resume-font)",
       fontSize: "var(--resume-body-size)", lineHeight: "var(--resume-line-spacing)",
+      background: bgGradient,
     }}>
       {/* LEFT COLUMN */}
       <div style={{
-        width: 260, backgroundColor: leftBackground,
+        width: 260,
         borderRight: showDivider ? "1pt solid #E2E8F0" : "none",
         padding: `${marginY}in ${marginX * 0.6}in`, flexShrink: 0,
         fontFamily: "var(--resume-font)",
@@ -522,7 +528,7 @@ export function ColumnBase({
 
       {/* RIGHT COLUMN */}
       <div style={{
-        flex: 1, backgroundColor: "white",
+        flex: 1,
         padding: `${marginY}in ${marginX * 0.7}in`,
         fontFamily: "var(--resume-font)",
       }}>

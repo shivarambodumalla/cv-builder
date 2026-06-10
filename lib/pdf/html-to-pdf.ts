@@ -92,6 +92,11 @@ export async function renderHtmlToPdf(
 
   const paper = PAPER_SIZES[design.paperSize] || PAPER_SIZES.a4;
   const viewport = PAPER_VIEWPORT[design.paperSize] || PAPER_VIEWPORT.a4;
+  // marginY drives the top margin injected on pages 2+ via @page.
+  // @page :first keeps page-1 at 0 so template padding handles the first-page spacing.
+  const marginYIn = design.marginY ?? 0.5;
+  // Watermark footer needs bottom space on every page.
+  const pageBottomMargin = watermark ? "20px" : "0";
 
   const GOOGLE_FONTS_URL =
     "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700;900&family=Lora:wght@400;500;600;700&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700;800;900&display=swap";
@@ -124,7 +129,12 @@ export async function renderHtmlToPdf(
 
   @page {
     size: ${paper.width} ${paper.height};
-    margin: 0;
+    /* Pages 2+ get top margin so content doesn't start at the very edge */
+    margin: ${marginYIn}in 0 ${pageBottomMargin} 0;
+  }
+  /* First page: template's own padding handles the top spacing */
+  @page :first {
+    margin: 0 0 ${pageBottomMargin} 0;
   }
 </style>
 </head>
@@ -148,6 +158,70 @@ ${templateHtml}
     } catch {
       // Font loading failure must not abort PDF export — system fallbacks apply.
     }
+
+    // Generic fix: Chromium's print/PDF renderer can clip flex-item backgrounds to the item's
+    // intrinsic (content) height rather than its flex-stretched height, causing sidebar/column
+    // backgrounds to vanish wherever the shorter column's content ends — on any page.
+    // Solution: detect all wide horizontal flex containers, build a linear-gradient from the
+    // children's resolved background-colors, apply it to the container, and clear the children.
+    // This runs after font loading so computed widths are stable.
+    await page.evaluate(() => {
+      const root = document.querySelector("body > div");
+      if (!root) return;
+
+      function fixFlexColumnBg(el: Element) {
+        const cs = getComputedStyle(el as HTMLElement);
+        if (cs.display !== "flex" || cs.flexDirection === "column") return;
+
+        const containerW = (el as HTMLElement).getBoundingClientRect().width;
+        // Only target page-spanning columns (≥ 50 % viewport width). Chip rows, buttons,
+        // nav items etc. are left untouched.
+        if (containerW < window.innerWidth * 0.5) return;
+
+        const kids = Array.from(el.children).filter(
+          (k) => getComputedStyle(k as HTMLElement).display !== "none"
+        ) as HTMLElement[];
+        if (kids.length < 2) return;
+
+        const stops: string[] = [];
+        let pos = 0;
+        let hasColor = false;
+
+        kids.forEach((kid) => {
+          const bg = getComputedStyle(kid).backgroundColor;
+          const pct = (kid.getBoundingClientRect().width / containerW) * 100;
+
+          // Transparent = rgba(0,0,0,0); white = rgb(255,255,255) — no gradient needed.
+          const isColored =
+            bg !== "rgba(0, 0, 0, 0)" && bg !== "rgb(255, 255, 255)";
+          if (isColored) hasColor = true;
+
+          stops.push(`${bg} ${pos.toFixed(3)}%`);
+          pos += pct;
+          stops.push(`${bg} ${pos.toFixed(3)}%`);
+
+          // Clear the child background so the parent gradient shows through.
+          kid.style.background = "transparent";
+          kid.style.backgroundColor = "transparent";
+        });
+
+        if (hasColor) {
+          (el as HTMLElement).style.background =
+            `linear-gradient(to right, ${stops.join(", ")})`;
+        }
+      }
+
+      // Walk up to 4 levels from the template root.
+      function walk(node: Element, depth: number) {
+        if (depth === 0) return;
+        Array.from(node.children).forEach((child) => {
+          fixFlexColumnBg(child);
+          walk(child, depth - 1);
+        });
+      }
+
+      walk(root, 4);
+    });
 
     // Linkify emails and URLs so they are clickable in the exported PDF.
     await page.evaluate(() => {
