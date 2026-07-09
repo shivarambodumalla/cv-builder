@@ -899,25 +899,27 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   />
                 </div>
               ) : (
-                <PaperPreview
-                  paperSize={design.paperSize}
-                  manualBreaks={design.pageBreaks ?? []}
-                  onRemoveManualBreak={(key) => {
-                    handleDesignChange({
-                      ...design,
-                      pageBreaks: (design.pageBreaks ?? []).filter((k) => k !== key),
-                    });
-                  }}
-                >
-                  <TemplateRenderer content={getPreviewContent(content)} design={design} />
-                </PaperPreview>
-                {plan !== "pro" && (
-                  <div className="mt-4 flex justify-center">
-                    <div className="w-full max-w-sm bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-6 text-sm text-muted-foreground">
-                      Advertisement
+                <>
+                  <PaperPreview
+                    paperSize={design.paperSize}
+                    manualBreaks={design.pageBreaks ?? []}
+                    onRemoveManualBreak={(key) => {
+                      handleDesignChange({
+                        ...design,
+                        pageBreaks: (design.pageBreaks ?? []).filter((k) => k !== key),
+                      });
+                    }}
+                  >
+                    <TemplateRenderer content={getPreviewContent(content)} design={design} />
+                  </PaperPreview>
+                  {plan !== "pro" && (
+                    <div className="mt-4 flex justify-center">
+                      <div className="w-full max-w-sm bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-6 text-sm text-muted-foreground">
+                        Advertisement
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </>
               )}
             </div>
           )}
