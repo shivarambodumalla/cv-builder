@@ -14,10 +14,6 @@ export interface AdSlotProps {
  * Reserves min-height to prevent layout shift when ad loads.
  */
 export function AdSlot({ slot, format = "horizontal", plan = "free" }: AdSlotProps) {
-  // Hide ads for Pro users
-  if (plan === "pro") return null;
-
-  // Determine slot ID and dimensions based on slot name
   const slotConfig: Record<string, { slotId: string; minHeight: string }> = {
     editor: { slotId: process.env.NEXT_PUBLIC_ADSENSE_SLOT_EDITOR || "editor", minHeight: "90px" },
     dashboard: { slotId: process.env.NEXT_PUBLIC_ADSENSE_SLOT_DASHBOARD || "dashboard", minHeight: "90px" },
@@ -29,7 +25,6 @@ export function AdSlot({ slot, format = "horizontal", plan = "free" }: AdSlotPro
   };
 
   const config = slotConfig[slot];
-  if (!config) return null;
 
   useEffect(() => {
     // Push ad unit to AdSense queue if adsbygoogle exists
@@ -42,6 +37,8 @@ export function AdSlot({ slot, format = "horizontal", plan = "free" }: AdSlotPro
       }
     }
   }, [slot]);
+
+  if (plan === "pro" || !config) return null;
 
   return (
     <div className="my-4 flex justify-center" style={{ minHeight: config.minHeight }}>
