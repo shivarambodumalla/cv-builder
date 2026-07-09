@@ -304,6 +304,15 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
           </div>
         )}
 
+        {/* Ad Banner */}
+        {!isPro && (
+          <div className="my-4 flex justify-center">
+            <div className="w-full bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-6 text-sm text-muted-foreground">
+              Advertisement
+            </div>
+          </div>
+        )}
+
         {/* ── Story Library ── */}
         <div id="stories-library">
           {/* Toolbar */}

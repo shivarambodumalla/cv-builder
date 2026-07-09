@@ -61,7 +61,8 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
       </h2>
 
       <div className="space-y-3">
-        {typedJobs.map((job) => {
+        {typedJobs.map((job, index) => {
+          const showAd = index > 0 && index % 5 === 0;
           const company = typeof job.company === "string" ? job.company : job.company?.display_name ?? "";
           const location = typeof job.location === "string" ? job.location : job.location?.display_name ?? "";
           const salary = fmtSalary(job.salary_min, job.salary_max);
@@ -71,11 +72,17 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
           const contract = job.contract_type === "full_time" || job.contract_type === "permanent" ? "Full-time" : job.contract_type === "contract" ? "Contract" : job.contract_type === "part_time" ? "Part-time" : null;
 
           return (
-            <div
-              key={job.id}
-              className="rounded-2xl border bg-card p-4 transition-shadow hover:shadow-md cursor-pointer"
-              onClick={() => showSignupModal({ trigger: "role_page", roleName: roleTitle })}
-            >
+            <>
+              {showAd && (
+                <div key={`ad-${index}`} className="rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 p-6 flex items-center justify-center text-sm text-muted-foreground h-32">
+                  Advertisement
+                </div>
+              )}
+              <div
+                key={job.id}
+                className="rounded-2xl border bg-card p-4 transition-shadow hover:shadow-md cursor-pointer"
+                onClick={() => showSignupModal({ trigger: "role_page", roleName: roleTitle })}
+              >
               <div className="flex gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold text-white" style={{ backgroundColor: avatarColor(company) }}>{initial}</div>
                 <div className="flex-1 min-w-0">
@@ -102,6 +109,7 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
                 </div>
               </div>
             </div>
+            </>
           );
         })}
       </div>

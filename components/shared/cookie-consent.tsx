@@ -106,7 +106,7 @@ export function CookieConsent() {
       <div className="pointer-events-auto mx-auto max-w-lg rounded-xl border bg-background shadow-lg p-5">
         <p className="text-sm text-foreground mb-1 font-medium">We value your privacy</p>
         <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-          We use cookies for analytics and to improve your experience. Your CV data is never shared with advertisers.{" "}
+          We use cookies for analytics and ads. Your CV content is never sent to advertisers — only anonymous browsing data.{" "}
           <Link href="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>
         </p>
         <div className="flex gap-2">

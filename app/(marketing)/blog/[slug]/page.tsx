@@ -169,6 +169,13 @@ export default async function BlogPostPage({
           </div>
         </header>
 
+        {/* Ad Banner */}
+        <div className="my-8 flex justify-center">
+          <div className="w-full max-w-2xl bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-8 text-sm text-muted-foreground">
+            Advertisement
+          </div>
+        </div>
+
         {/* Article content */}
         <article
           className="
@@ -187,6 +194,13 @@ export default async function BlogPostPage({
           "
           dangerouslySetInnerHTML={{ __html: post.content.html }}
         />
+
+        {/* Ad Banner */}
+        <div className="my-12 flex justify-center">
+          <div className="w-full max-w-2xl bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-8 text-sm text-muted-foreground">
+            Advertisement
+          </div>
+        </div>
 
         {/* CTA */}
         <div className="mt-16">

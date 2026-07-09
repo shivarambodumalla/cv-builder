@@ -89,6 +89,13 @@ export function JobsWidget({ cvTitle, skills: _skills, jdKeywords, cvId }: JobsW
         </Link>
       </div>
 
+      {/* Ad Banner */}
+      <div className="flex justify-center">
+        <div className="w-full bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-4 text-sm text-muted-foreground">
+          Advertisement
+        </div>
+      </div>
+
       {/* Loading skeletons */}
       {loading && (
         <div className="space-y-2">
