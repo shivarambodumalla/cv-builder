@@ -112,13 +112,6 @@ export default async function DashboardPage() {
         lastCvId={lastCv?.id ?? null}
         lastSignInAt={lastSignInAt}
       />
-      {!isPro && (
-        <div className="mb-6 flex justify-center">
-          <div className="w-full max-w-2xl bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-8 text-sm text-muted-foreground">
-            Advertisement
-          </div>
-        </div>
-      )}
       <CvList
         cvs={cvs ?? []}
         isPro={isPro}

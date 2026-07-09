@@ -77,13 +77,6 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
         </div>
       </Link>
 
-      {/* Ad Banner */}
-      <div className="my-6 flex justify-center">
-        <div className="w-full max-w-2xl bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-8 text-sm text-muted-foreground">
-          Advertisement
-        </div>
-      </div>
-
       {/* Rest of posts */}
       {rest.length > 0 && (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

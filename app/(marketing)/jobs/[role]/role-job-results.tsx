@@ -73,11 +73,6 @@ export function RoleJobResults({ jobs, roleTitle }: { jobs: unknown[]; roleTitle
 
           return (
             <>
-              {showAd && (
-                <div key={`ad-${index}`} className="rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 p-6 flex items-center justify-center text-sm text-muted-foreground h-32">
-                  Advertisement
-                </div>
-              )}
               <div
                 key={job.id}
                 className="rounded-2xl border bg-card p-4 transition-shadow hover:shadow-md cursor-pointer"
