@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
       name,
       email,
       phone,
+      country,
       country_code,
       experience_level,
       utm_source,
@@ -21,6 +22,7 @@ export async function POST(request: NextRequest) {
       name: string;
       email: string;
       phone?: string;
+      country?: string;
       country_code?: string;
       experience_level?: string;
       utm_source?: string;
@@ -37,9 +39,10 @@ export async function POST(request: NextRequest) {
 
     const admin = createAdminClient();
 
-    // Optionally validate country: exclude India
-    if (country_code === "IN") {
-      return NextResponse.json({ error: "Service not available in India yet" }, { status: 403 });
+    // India excluded in v1 — check both the ISO code and Vercel's geo header
+    const geoCountry = request.headers.get("x-vercel-ip-country");
+    if (country_code === "IN" || geoCountry === "IN") {
+      return NextResponse.json({ error: "Not available in India yet" }, { status: 403 });
     }
 
     // Upsert lead by email (idempotent)
@@ -50,7 +53,8 @@ export async function POST(request: NextRequest) {
           name,
           email,
           phone: phone || null,
-          country_code: country_code || null,
+          country: country || null,
+          country_code: country_code || geoCountry || null,
           experience_level: experience_level || null,
           utm_source: utm_source || null,
           utm_medium: utm_medium || null,
