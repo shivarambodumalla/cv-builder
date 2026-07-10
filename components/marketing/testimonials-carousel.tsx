@@ -150,7 +150,11 @@ function TestimonialCard({
   );
 }
 
-export function TestimonialsCarousel() {
+export function TestimonialsCarousel({
+  title = "What customers say about us",
+}: {
+  title?: string;
+}) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(FALLBACK);
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -199,7 +203,7 @@ export function TestimonialsCarousel() {
       {/* Heading */}
       <div className="container mx-auto px-4 mb-12 md:mb-14">
         <h2 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-          What customers say about us
+          {title}
         </h2>
       </div>
 

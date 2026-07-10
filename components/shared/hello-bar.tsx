@@ -1,12 +1,17 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
+
+// Pages with their own conversion goal — the CV-review banner competes with them
+const HIDDEN_PATHS = ["/ai-product-design"];
 
 export function HelloBar() {
   const [visible, setVisible] = useState(true);
+  const pathname = usePathname();
 
-  if (!visible) return null;
+  if (!visible || HIDDEN_PATHS.some((p) => pathname?.startsWith(p))) return null;
 
   return (
     <div

@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
+import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 
 export const dynamic = "force-dynamic";
 
@@ -192,7 +193,7 @@ export default async function AIProductDesignPage() {
                   <span className="text-lg font-normal text-muted-foreground ml-2">USD</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Founding tuition · Standard tuition <span className="line-through">$1,499</span>
+                  Founding tuition — standard tuition is $1,499
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -373,6 +374,9 @@ export default async function AIProductDesignPage() {
             </p>
           </div>
         </section>
+
+        {/* ── Testimonials (CVEdge platform — swap for student quotes after cohort 1) ── */}
+        <TestimonialsCarousel title="What learners say about CVEdge" />
 
         {/* ── FAQ ──────────────────────────────────────────── */}
         <section id="faq" className="border-t border-border bg-card/60 py-16 md:py-24">
