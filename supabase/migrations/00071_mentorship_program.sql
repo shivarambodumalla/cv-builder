@@ -17,6 +17,7 @@ CREATE INDEX IF NOT EXISTS idx_mvv_visitor ON mentorship_visitor_views(visitor_i
 CREATE INDEX IF NOT EXISTS idx_mvv_date ON mentorship_visitor_views(view_date);
 
 ALTER TABLE mentorship_visitor_views ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "service_all_mentorship_visitor_views" ON mentorship_visitor_views;
 CREATE POLICY "service_all_mentorship_visitor_views" ON mentorship_visitor_views FOR ALL USING (true);
 
 -- Lead records for mentorship program
@@ -56,6 +57,7 @@ CREATE INDEX IF NOT EXISTS idx_ml_owner ON mentorship_leads(owner_admin_email);
 CREATE INDEX IF NOT EXISTS idx_ml_score ON mentorship_leads(score DESC);
 
 ALTER TABLE mentorship_leads ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "service_all_mentorship_leads" ON mentorship_leads;
 CREATE POLICY "service_all_mentorship_leads" ON mentorship_leads FOR ALL USING (true);
 
 -- HubSpot-style activity timeline
@@ -72,6 +74,7 @@ CREATE INDEX IF NOT EXISTS idx_mla_created_at ON mentorship_lead_activities(crea
 CREATE INDEX IF NOT EXISTS idx_mla_event ON mentorship_lead_activities(event);
 
 ALTER TABLE mentorship_lead_activities ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "service_all_mentorship_lead_activities" ON mentorship_lead_activities;
 CREATE POLICY "service_all_mentorship_lead_activities" ON mentorship_lead_activities FOR ALL USING (true);
 
 -- Helper: increment mentorship visitor views (mirrors increment_page_view)
