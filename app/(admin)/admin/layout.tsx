@@ -61,6 +61,13 @@ const NAV_GROUPS = [
     ],
   },
   {
+    title: "Mentorship",
+    links: [
+      { href: "/admin/mentorship", label: "Dashboard" },
+      { href: "/admin/mentorship/leads", label: "Leads" },
+    ],
+  },
+  {
     title: "Tools",
     links: [
       { href: "/admin/tests", label: "E2E Tests" },
