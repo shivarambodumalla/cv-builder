@@ -2,16 +2,40 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getScore } from "@/lib/mentorship/scoring";
 
+type Intent = "curriculum" | "brochure" | "call";
+
+// Each CTA tier maps to an activity event and a pipeline status
+const INTENT_MAP: Record<Intent, { event: string; status: string }> = {
+  curriculum: { event: "viewed_curriculum", status: "viewed_curriculum" },
+  brochure: { event: "downloaded_pdf", status: "downloaded_curriculum" },
+  call: { event: "booked_call", status: "call_booked" },
+};
+
+// Status only ever moves forward through the pipeline
+const STATUS_RANK: Record<string, number> = {
+  new: 0,
+  viewed_curriculum: 1,
+  downloaded_curriculum: 2,
+  call_booked: 3,
+  applied: 4,
+  interview: 5,
+  enrolled: 6,
+  rejected: 7,
+  lost: 8,
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
+      intent = "curriculum",
       name,
       email,
       phone,
       country,
       country_code,
       experience_level,
+      preferred_time,
       utm_source,
       utm_medium,
       utm_campaign,
@@ -19,12 +43,14 @@ export async function POST(request: NextRequest) {
       utm_term,
       visitor_id,
     }: {
+      intent?: Intent;
       name: string;
       email: string;
       phone?: string;
       country?: string;
       country_code?: string;
       experience_level?: string;
+      preferred_time?: string;
       utm_source?: string;
       utm_medium?: string;
       utm_campaign?: string;
@@ -37,15 +63,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
     }
 
+    const mapping = INTENT_MAP[intent] ?? INTENT_MAP.curriculum;
     const admin = createAdminClient();
 
-    // India excluded in v1 — check both the ISO code and Vercel's geo header
+    // India excluded in v1: check both the ISO code and Vercel's geo header
     const geoCountry = request.headers.get("x-vercel-ip-country");
     if (country_code === "IN" || geoCountry === "IN") {
       return NextResponse.json({ error: "Not available in India yet" }, { status: 403 });
     }
 
-    // Upsert lead by email (idempotent)
+    // Upsert lead by email (idempotent); status handled separately so it never regresses
     const { data: lead, error: upsertError } = await admin
       .from("mentorship_leads")
       .upsert(
@@ -63,11 +90,10 @@ export async function POST(request: NextRequest) {
           utm_term: utm_term || null,
           visitor_id: visitor_id || null,
           consent_at: new Date().toISOString(),
-          status: "viewed_curriculum",
         },
         { onConflict: "email" }
       )
-      .select("id")
+      .select("id, status, score")
       .single();
 
     if (upsertError || !lead) {
@@ -84,7 +110,6 @@ export async function POST(request: NextRequest) {
         .like("event", "attributed:%");
 
       if ((existingActivities ?? 0) === 0) {
-        // Fetch visitor views and attribute them
         const { data: visits } = await admin
           .from("mentorship_visitor_views")
           .select("path, utm_source, utm_medium, utm_campaign, utm_content, utm_term")
@@ -109,46 +134,43 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Log viewed_curriculum activity and apply score
-    const scoreAdded = getScore("viewed_curriculum");
-    const { error: activityError } = await admin
-      .from("mentorship_lead_activities")
-      .insert({
-        lead_id: lead.id,
-        event: "viewed_curriculum",
-        metadata: { utm_source, utm_medium, utm_campaign },
-      });
+    // Log the intent activity with its context
+    await admin.from("mentorship_lead_activities").insert({
+      lead_id: lead.id,
+      event: mapping.event,
+      metadata: {
+        intent,
+        ...(preferred_time ? { preferred_time } : {}),
+        ...(utm_source ? { utm_source } : {}),
+        ...(utm_campaign ? { utm_campaign } : {}),
+      },
+    });
 
-    if (activityError) {
-      console.error("Activity log error:", activityError);
-    }
-
-    // Atomic score update (same pattern as consumeLimit)
-    const { data: currentLead } = await admin
-      .from("mentorship_leads")
-      .select("score")
-      .eq("id", lead.id)
-      .single();
-
-    const newScore = (currentLead?.score ?? 0) + scoreAdded;
+    // Score + forward-only status in one update
+    const currentRank = STATUS_RANK[lead.status] ?? 0;
+    const newRank = STATUS_RANK[mapping.status] ?? 0;
     await admin
       .from("mentorship_leads")
       .update({
-        score: newScore,
+        score: (lead.score ?? 0) + getScore(mapping.event),
+        ...(newRank > currentRank ? { status: mapping.status } : {}),
         updated_at: new Date().toISOString(),
       })
       .eq("id", lead.id);
 
-    // Generate signed URL for curriculum PDF (assume stored in mentorship bucket)
-    // For now, return a placeholder — curriculum PDF must be uploaded to Supabase Storage
-    const { data: signedUrl } = await admin.storage
-      .from("mentorship")
-      .createSignedUrl(`curriculum/ai-product-design.pdf`, 3600);
+    // Call requests don't need the PDF; curriculum/brochure get a signed URL
+    let curriculumUrl: string | null = null;
+    if (intent !== "call") {
+      const { data: signedUrl } = await admin.storage
+        .from("mentorship")
+        .createSignedUrl("curriculum/ai-product-design.pdf", 3600);
+      curriculumUrl = signedUrl?.signedUrl || null;
+    }
 
     return NextResponse.json({
       ok: true,
       lead_id: lead.id,
-      curriculum_url: signedUrl?.signedUrl || null,
+      curriculum_url: curriculumUrl,
     });
   } catch (error) {
     console.error("Lead submission error:", error);
