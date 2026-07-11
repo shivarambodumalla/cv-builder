@@ -227,13 +227,10 @@ export default async function AIProductDesignPage() {
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <CtaButton mode="call" className="px-8">
-                    <PhoneCall className="w-4 h-4 mr-2" />
-                    Book a Free Discovery Call
-                  </CtaButton>
-                  <CtaButton mode="curriculum" variant="outline" className="px-8">
-                    View Curriculum
+                <div className="flex justify-center lg:justify-start">
+                  <CtaButton mode="curriculum" className="px-10">
+                    <Eye className="w-4 h-4 mr-2" />
+                    View the Curriculum
                   </CtaButton>
                 </div>
               )}
@@ -544,52 +541,23 @@ export default async function AIProductDesignPage() {
         </div>
       </section>
 
-      {/* ── Final: three paths, three intents ── */}
+      {/* ── Closer: highest intent, one focused ask ── */}
       <section className="relative overflow-hidden bg-[#065F46] text-white">
         <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full border-[24px] border-[#34D399]/15" aria-hidden />
         <div className="pointer-events-none absolute -top-20 -left-20 w-60 h-60 rounded-full border-[18px] border-[#34D399]/10" aria-hidden />
-        <div className="container max-w-5xl mx-auto px-4 py-20 md:py-28 relative">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Start Where You Are</h2>
-            <p className="text-white/70">
-              Curious, serious, or ready. Pick your path.
-            </p>
-          </div>
+        <div className="container max-w-2xl mx-auto px-4 py-20 md:py-28 relative text-center">
+          <PhoneCall className="w-8 h-8 text-[#34D399] mx-auto mb-6" />
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Still Deciding? Talk It Through.</h2>
+          <p className="text-white/70 mb-10 max-w-lg mx-auto">
+            A free 30 minute career consultation with your mentor. No pitch,
+            no pressure. WhatsApp or Google Meet, your pick.
+          </p>
           {indiaRestricted ? (
-            <p className="text-center font-medium">Coming Soon in India</p>
+            <p className="font-medium">Coming Soon in India</p>
           ) : (
-            <div className="grid md:grid-cols-3 gap-5">
-              <div className="rounded-2xl bg-white/10 p-7 flex flex-col">
-                <Eye className="w-6 h-6 text-[#34D399] mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Explore the Curriculum</h3>
-                <p className="text-sm text-white/60 mb-6 flex-1">
-                  See all 5 phases, session by session, before you decide anything.
-                </p>
-                <CtaButton mode="curriculum" variant="secondary" className="w-full">
-                  View Curriculum
-                </CtaButton>
-              </div>
-              <div className="rounded-2xl bg-white/10 p-7 flex flex-col">
-                <Download className="w-6 h-6 text-[#34D399] mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Take It With You</h3>
-                <p className="text-sm text-white/60 mb-6 flex-1">
-                  The complete program brochure and curriculum as a PDF.
-                </p>
-                <CtaButton mode="brochure" variant="secondary" className="w-full">
-                  Download Brochure
-                </CtaButton>
-              </div>
-              <div className="rounded-2xl bg-white text-foreground p-7 flex flex-col ring-2 ring-[#34D399]">
-                <PhoneCall className="w-6 h-6 text-[#065F46] mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Talk It Through</h3>
-                <p className="text-sm text-muted-foreground mb-6 flex-1">
-                  A free 30 minute career consultation. WhatsApp or Google Meet, your pick.
-                </p>
-                <CtaButton mode="call" className="w-full">
-                  Book a Discovery Call
-                </CtaButton>
-              </div>
-            </div>
+            <CtaButton mode="call" variant="secondary" className="px-12">
+              Book a Free Discovery Call
+            </CtaButton>
           )}
         </div>
       </section>
