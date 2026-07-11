@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import {
   GraduationCap, Cpu, Palette, Rocket, Target, Bot, BookOpen, Globe,
-  CheckCircle2, ArrowDown, Sparkles, Users, CalendarDays, Infinity as InfinityIcon,
+  CheckCircle2, ArrowRight, Sparkles, Mic, MonitorPlay, LayoutDashboard, Compass,
 } from "lucide-react";
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
@@ -63,6 +63,13 @@ const OFFER_STACK = [
   },
 ];
 
+const FUTURE_PERKS = [
+  { icon: Mic, title: "AI Mock Interviews", desc: "Practice with AI interviewers trained on real design interviews." },
+  { icon: MonitorPlay, title: "Interview Studio", desc: "Record, review and refine your interview presence." },
+  { icon: LayoutDashboard, title: "Portfolio Builder", desc: "Build and host your portfolio inside CVEdge." },
+  { icon: Compass, title: "Career Hub", desc: "Jobs, referrals and career resources in one place." },
+];
+
 const TRANSFORMATION = [
   "Think like a Product Designer",
   "Design like a Senior Designer",
@@ -105,13 +112,6 @@ const PHASES = [
   },
 ];
 
-const PRICE_ROADMAP = [
-  { label: "Founding", price: "$599", current: true },
-  { label: "Early Cohorts", price: "$799" },
-  { label: "Growth", price: "$999" },
-  { label: "Standard", price: "$1,499" },
-];
-
 const FAQS = [
   {
     q: "Who is this mentorship for?",
@@ -138,8 +138,8 @@ const FAQS = [
     a: "A shipped capstone product, a production-ready portfolio, a complete case study, an ATS-optimised resume, a rebuilt LinkedIn profile — plus lifetime CVEdge Pro, lifetime portfolio reviews, and a seat in the alumni community.",
   },
   {
-    q: "Why is founding tuition $599 when standard is $1,499?",
-    a: "It's founding member pricing, not a discount. Early cohorts help refine the curriculum, and founding members get the lowest price the program will ever have. Tuition steps up with each stage: $599 → $799 → $999 → $1,499.",
+    q: "Why is founding tuition so much lower than standard?",
+    a: "It's founding member pricing, not a discount. Early cohorts help refine the curriculum, and founding members lock in the lowest tuition the program will ever have. Tuition steps up with every stage until it reaches standard.",
   },
   {
     q: "What happens after I graduate?",
@@ -155,141 +155,179 @@ export default async function AIProductDesignPage() {
   return (
     <MentorshipCtaProvider>
       <PageTracker />
-      <div className="bg-background">
-        {/* ── Hero ─────────────────────────────────────────── */}
-        <section className="container max-w-5xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28 text-center">
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+
+      {/* ── Hero — no price here; the pricing section owns it ── */}
+      <section className="bg-background">
+        <div className="container max-w-5xl mx-auto px-4 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
+          <div className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
             <Sparkles className="w-4 h-4" />
             Founding Cohort — Now Enrolling
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight leading-[1.05]">
             AI Product Design
             <br />
-            Mentorship
+            <span className="text-primary">Mentorship</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            100 hours of live 1:1 mentorship. Learn to think, design, build and ship
-            AI-powered products — and leave with the portfolio to prove it.
+          <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Learn to think, design, build and ship AI-powered products —
+            and leave with the portfolio to prove it.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-8">
-            <span className="inline-flex items-center gap-1.5"><Users className="w-4 h-4" /> Live 1:1 — not recordings</span>
-            <span className="inline-flex items-center gap-1.5"><CalendarDays className="w-4 h-4" /> Weekday &amp; weekend batches</span>
-            <span className="inline-flex items-center gap-1.5"><InfinityIcon className="w-4 h-4" /> Lifetime access &amp; updates</span>
+          {/* Stat anchors */}
+          <div className="grid grid-cols-3 max-w-2xl mx-auto mb-12">
+            {[
+              { big: "100", small: "hours live" },
+              { big: "1:1", small: "mentorship" },
+              { big: "5", small: "phases, one arc" },
+            ].map((s) => (
+              <div key={s.small}>
+                <div className="text-4xl md:text-5xl font-bold text-primary">{s.big}</div>
+                <div className="text-xs md:text-sm text-muted-foreground mt-1">{s.small}</div>
+              </div>
+            ))}
           </div>
 
           {indiaRestricted ? (
-            <div className="inline-block bg-warning/10 border border-warning/30 px-6 py-4 rounded-lg">
+            <div className="inline-block bg-warning/10 px-6 py-4 rounded-2xl">
               <p className="font-semibold text-warning">Coming Soon in India</p>
               <p className="text-sm text-muted-foreground mt-1">
                 We&apos;re preparing the program for the Indian market. Check back soon.
               </p>
             </div>
           ) : (
-            <>
-              <div className="mb-8">
-                <div className="text-5xl font-bold">
-                  $599
-                  <span className="text-lg font-normal text-muted-foreground ml-2">USD</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Founding tuition — standard tuition is $1,499
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <CtaButton className="px-8">Apply Now</CtaButton>
-                <CtaButton variant="outline" className="px-8">View Curriculum</CtaButton>
-              </div>
-            </>
-          )}
-        </section>
-
-        {/* ── Transformation ───────────────────────────────── */}
-        <section className="border-y border-border bg-card/60 py-16 md:py-20">
-          <div className="container max-w-3xl mx-auto px-4 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              You&apos;re not buying 100 hours.
-            </h2>
-            <p className="text-muted-foreground mb-10">
-              You&apos;re buying the transformation those hours produce.
-            </p>
-            <div className="flex flex-col items-center gap-1">
-              {TRANSFORMATION.map((step, i) => (
-                <div key={step} className="flex flex-col items-center">
-                  <div className="px-6 py-3 rounded-lg border border-border bg-background font-medium">
-                    {step}
-                  </div>
-                  {i < TRANSFORMATION.length - 1 && (
-                    <ArrowDown className="w-4 h-4 text-primary my-1.5" />
-                  )}
-                </div>
-              ))}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <CtaButton className="px-10">Apply Now</CtaButton>
+              <CtaButton variant="outline" className="px-10">View Curriculum</CtaButton>
             </div>
-          </div>
-        </section>
+          )}
+        </div>
+      </section>
 
-        {/* ── Everything Included (offer stack) ────────────── */}
-        <section id="included" className="container max-w-6xl mx-auto px-4 py-16 md:py-24">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-3">Everything Included</h2>
+      {/* ── Transformation — brand-green canvas ── */}
+      <section className="relative overflow-hidden bg-[#065F46] text-white">
+        <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full border-[24px] border-[#34D399]/15" />
+        <div className="pointer-events-none absolute -bottom-32 -left-16 w-80 h-80 rounded-full border-[28px] border-[#34D399]/10" />
+        <div className="container max-w-5xl mx-auto px-4 py-20 md:py-28 relative">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-center">
+            You&apos;re not buying 100 hours.
+          </h2>
+          <p className="text-white/70 mb-14 text-center">
+            You&apos;re buying the transformation those hours produce.
+          </p>
+          <div className="flex flex-col md:flex-row md:flex-wrap items-center justify-center gap-3">
+            {TRANSFORMATION.map((step, i) => (
+              <div key={step} className="flex flex-col md:flex-row items-center gap-3">
+                <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/10">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#34D399] text-[#065F46] text-xs font-bold shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-medium text-sm md:text-base whitespace-nowrap">{step}</span>
+                </div>
+                {i < TRANSFORMATION.length - 1 && (
+                  <ArrowRight className="w-4 h-4 text-[#34D399] rotate-90 md:rotate-0" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Everything Included ── */}
+      <section id="included" className="bg-background">
+        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-28">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Everything Included</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               One tuition. Every tool, every review, every update — most of it for life.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-6">
             {OFFER_STACK.map((item) => (
               <div
                 key={item.title}
                 className={
                   item.highlight
-                    ? "border border-primary/40 bg-primary/5 rounded-lg p-6"
-                    : "border border-border bg-card rounded-lg p-6"
+                    ? "rounded-2xl p-7 bg-primary/5 ring-2 ring-primary/30 shadow-sm"
+                    : "rounded-2xl p-7 bg-card shadow-sm"
                 }
               >
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary shrink-0">
-                    <item.icon className="w-5 h-5" />
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary shrink-0">
+                    <item.icon className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full bg-secondary text-secondary-foreground">
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">
                     {item.tag}
                   </span>
                 </div>
-                <h3 className="font-semibold mb-1.5">{item.title}</h3>
+                <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
                 <p className="text-sm text-muted-foreground">{item.desc}</p>
                 {item.note && (
-                  <p className="text-xs text-muted-foreground/80 mt-3 border-t border-border pt-3">
-                    {item.note}
-                  </p>
+                  <p className="text-xs text-muted-foreground/80 mt-4">{item.note}</p>
                 )}
               </div>
             ))}
           </div>
-          <p className="text-center text-sm text-muted-foreground mt-8 max-w-2xl mx-auto">
-            As CVEdge evolves, planned features — AI mock interviews, interview studio,
-            portfolio builder, career hub — roll out to alumni at no extra cost.
-          </p>
-        </section>
+        </div>
+      </section>
 
-        {/* ── Curriculum ───────────────────────────────────── */}
-        <section id="curriculum" className="border-y border-border bg-card/60 py-16 md:py-24">
-          <div className="container max-w-5xl mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">The Curriculum</h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
-                Built around how products are actually built — not isolated UX topics.
-                Five phases, one arc.
-              </p>
+      {/* ── Future perks — free as CVEdge evolves ── */}
+      <section className="bg-card">
+        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-28">
+          <div className="text-center mb-14">
+            <div className="inline-block mb-4 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+              Free for alumni — forever
             </div>
-            <div className="space-y-4">
-              {PHASES.map((phase) => (
-                <div key={phase.n} className="border border-border bg-background rounded-lg p-6 md:flex md:gap-8">
-                  <div className="md:w-48 shrink-0 mb-3 md:mb-0">
-                    <div className="text-sm text-primary font-mono mb-1">Phase {phase.n}</div>
-                    <h3 className="text-xl font-bold">{phase.name}</h3>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              The Program Keeps Growing. You Never Pay Again.
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              As CVEdge evolves, planned features roll out to every alumnus automatically —
+              at no extra cost.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FUTURE_PERKS.map((perk) => (
+              <div key={perk.title} className="rounded-2xl p-6 bg-background shadow-sm text-center">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mx-auto mb-4">
+                  <perk.icon className="w-6 h-6" />
+                </div>
+                <h3 className="font-semibold mb-1.5">{perk.title}</h3>
+                <p className="text-sm text-muted-foreground">{perk.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Curriculum — numbered phase anchors ── */}
+      <section id="curriculum" className="bg-background">
+        <div className="container max-w-5xl mx-auto px-4 py-20 md:py-28">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">The Curriculum</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Built around how products are actually built — not isolated UX topics.
+              Five phases, one arc.
+            </p>
+          </div>
+          <div className="space-y-6">
+            {PHASES.map((phase) => (
+              <div key={phase.n} className="relative rounded-2xl bg-card shadow-sm p-7 md:p-9 overflow-hidden">
+                <span
+                  aria-hidden
+                  className="absolute -top-6 right-2 text-[7rem] md:text-[9rem] font-black leading-none text-primary/[0.07] select-none"
+                >
+                  {phase.n}
+                </span>
+                <div className="relative md:flex md:gap-10">
+                  <div className="md:w-44 shrink-0 mb-4 md:mb-0">
+                    <div className="text-xs text-primary font-semibold tracking-widest uppercase mb-1">
+                      Phase {phase.n}
+                    </div>
+                    <h3 className="text-2xl font-bold">{phase.name}</h3>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground mb-3">{phase.desc}</p>
-                    <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                    <p className="text-sm text-muted-foreground mb-4">{phase.desc}</p>
+                    <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2">
                       {phase.topics.map((t) => (
                         <li key={t} className="text-sm flex items-start gap-2">
                           <CheckCircle2 className="w-4 h-4 text-success mt-0.5 shrink-0" />
@@ -299,69 +337,49 @@ export default async function AIProductDesignPage() {
                     </ul>
                   </div>
                 </div>
-              ))}
-            </div>
-            {!indiaRestricted && (
-              <div className="text-center mt-10">
-                <p className="text-sm text-muted-foreground mb-4">
-                  The full session-by-session curriculum isn&apos;t public.
-                </p>
-                <CtaButton variant="secondary" className="px-8">Get the Full Curriculum</CtaButton>
               </div>
-            )}
+            ))}
           </div>
-        </section>
+          {!indiaRestricted && (
+            <div className="text-center mt-12">
+              <p className="text-sm text-muted-foreground mb-4">
+                The full session-by-session curriculum isn&apos;t public.
+              </p>
+              <CtaButton variant="secondary" className="px-10">Get the Full Curriculum</CtaButton>
+            </div>
+          )}
+        </div>
+      </section>
 
-        {/* ── Capstone ─────────────────────────────────────── */}
-        <section className="container max-w-4xl mx-auto px-4 py-16 md:py-24 text-center">
-          <h2 className="text-3xl font-bold mb-4">The Industry Capstone</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-            From session 40 onwards, you stop doing exercises. Every remaining session
-            contributes to shipping one complete, real product — yours.
+      {/* ── Capstone — brand-green canvas ── */}
+      <section className="relative overflow-hidden bg-[#065F46] text-white">
+        <div className="pointer-events-none absolute -top-20 -left-20 w-64 h-64 rounded-full border-[20px] border-[#34D399]/15" />
+        <div className="container max-w-4xl mx-auto px-4 py-20 md:py-28 text-center relative">
+          <div className="inline-block mb-5 px-4 py-1.5 bg-white/10 rounded-full text-sm font-medium">
+            Session 40 onwards
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">The Industry Capstone</h2>
+          <p className="text-white/70 max-w-2xl mx-auto mb-12">
+            You stop doing exercises. Every remaining session contributes to shipping
+            one complete, real product — yours.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {["Shipped Product", "Portfolio", "Case Study", "Resume & LinkedIn", "Final Presentation"].map((item) => (
-              <div key={item} className="border border-border bg-card rounded-lg px-3 py-4 text-sm font-medium">
+              <div key={item} className="rounded-xl bg-white/10 px-3 py-5 text-sm font-medium">
                 {item}
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── Pricing roadmap ──────────────────────────────── */}
-        <section id="pricing" className="border-y border-border bg-card/60 py-16 md:py-24">
-          <div className="container max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-3">Founding Member Pricing</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto mb-10">
-              Not a discount — a roadmap. Founding members get the lowest tuition this
-              program will ever have, and every benefit later cohorts pay more for.
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-              {PRICE_ROADMAP.map((tier) => (
-                <div
-                  key={tier.label}
-                  className={
-                    tier.current
-                      ? "border-2 border-primary bg-primary/5 rounded-lg p-5"
-                      : "border border-border bg-background rounded-lg p-5 opacity-70"
-                  }
-                >
-                  <div className="text-xs font-medium text-muted-foreground mb-1">{tier.label}</div>
-                  <div className="text-2xl font-bold">{tier.price}</div>
-                  {tier.current && (
-                    <div className="text-xs text-primary font-medium mt-1">You are here</div>
-                  )}
-                </div>
-              ))}
-            </div>
-            {!indiaRestricted && <CtaButton className="px-10">Apply for the Founding Cohort</CtaButton>}
-          </div>
-        </section>
-
-        {/* ── Mentor ───────────────────────────────────────── */}
-        <section id="mentor" className="container max-w-3xl mx-auto px-4 py-16 md:py-24">
-          <h2 className="text-3xl font-bold mb-6 text-center">Learn From a Builder, Not a Lecturer</h2>
-          <div className="border border-border bg-card rounded-lg p-8">
+      {/* ── Mentor ── */}
+      <section id="mentor" className="bg-card">
+        <div className="container max-w-3xl mx-auto px-4 py-20 md:py-28">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+            Learn From a Builder, Not a Lecturer
+          </h2>
+          <div className="rounded-2xl bg-background shadow-sm p-8 md:p-10">
             <p className="text-muted-foreground mb-4">
               This mentorship is taught by Shiva — the designer-founder behind{" "}
               <span className="text-foreground font-medium">CVEdge</span>, the AI-powered
@@ -373,47 +391,52 @@ export default async function AIProductDesignPage() {
               AI-first product team works — because your mentor runs one.
             </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── Testimonials (CVEdge platform — swap for student quotes after cohort 1) ── */}
-        <TestimonialsCarousel title="What learners say about CVEdge" />
+      {/* ── Testimonials (CVEdge platform — swap for student quotes after cohort 1) ── */}
+      <TestimonialsCarousel title="What learners say about CVEdge" />
 
-        {/* ── FAQ ──────────────────────────────────────────── */}
-        <section id="faq" className="border-t border-border bg-card/60 py-16 md:py-24">
-          <div className="container max-w-3xl mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-10 text-center">Questions, Answered</h2>
-            <div className="space-y-4">
-              {FAQS.map((item) => (
-                <details key={item.q} className="border border-border bg-background rounded-lg p-5 group">
-                  <summary className="font-medium cursor-pointer list-none flex justify-between items-center gap-4">
-                    {item.q}
-                    <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none">+</span>
-                  </summary>
-                  <p className="text-sm text-muted-foreground mt-3">{item.a}</p>
-                </details>
-              ))}
+      {/* ── FAQ ── */}
+      <section id="faq" className="bg-background">
+        <div className="container max-w-3xl mx-auto px-4 py-20 md:py-28">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Questions, Answered</h2>
+          <div className="space-y-4">
+            {FAQS.map((item) => (
+              <details key={item.q} className="rounded-xl bg-card shadow-sm p-5 group">
+                <summary className="font-medium cursor-pointer list-none flex justify-between items-center gap-4">
+                  {item.q}
+                  <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none">+</span>
+                </summary>
+                <p className="text-sm text-muted-foreground mt-3">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA — brand-green canvas, no numbers ── */}
+      <section className="relative overflow-hidden bg-[#065F46] text-white">
+        <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full border-[24px] border-[#34D399]/15" />
+        <div className="container max-w-2xl mx-auto px-4 py-20 md:py-28 text-center relative">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            The Founding Cohort Won&apos;t Reopen
+          </h2>
+          <p className="text-white/70 mb-10">
+            When this cohort fills, founding tuition is gone for good.
+          </p>
+          {indiaRestricted ? (
+            <p className="font-medium">Coming Soon in India</p>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <CtaButton variant="secondary" className="px-10">Apply Now</CtaButton>
+              <CtaButton variant="outline" className="px-10 border-white/40 bg-transparent text-white hover:bg-white/10 hover:text-white">
+                Get the Full Curriculum
+              </CtaButton>
             </div>
-          </div>
-        </section>
-
-        {/* ── Final CTA ────────────────────────────────────── */}
-        <section className="border-t border-border py-16 md:py-24">
-          <div className="container max-w-2xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">The Founding Cohort Won&apos;t Reopen</h2>
-            <p className="text-muted-foreground mb-8">
-              $599 founding tuition exists once. When this cohort fills, the next price is $799.
-            </p>
-            {indiaRestricted ? (
-              <p className="font-medium text-warning">Coming Soon in India</p>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <CtaButton className="px-8">Apply Now</CtaButton>
-                <CtaButton variant="outline" className="px-8">Get the Full Curriculum</CtaButton>
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
+          )}
+        </div>
+      </section>
     </MentorshipCtaProvider>
   );
 }
