@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
-import Link from "next/link";
 import {
-  GraduationCap, Cpu, Palette, Rocket, Target, Bot, BookOpen,
+  GraduationCap, Palette, Rocket, Target, Bot, BookOpen,
   CheckCircle2, Mic, MonitorPlay, LayoutDashboard, Compass,
   FileText, Award, Library, ClipboardCheck,
   CalendarDays, Download, PhoneCall, Briefcase, BrainCircuit,
@@ -10,7 +9,7 @@ import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
 import {
   ScribbleUnderline, DoodleArrow, SparkleDoodle, DotGrid,
-  MentorshipScene, CapstoneScene, MentorMedallion,
+  MentorshipScene, CapstoneScene,
   FigmaLogo, ClaudeLogo, CursorLogo,
 } from "./illustrations";
 
@@ -35,15 +34,6 @@ const FEATURED_PERK = {
 
 const PERKS = [
   {
-    icon: Cpu,
-    brands: ["claude", "cursor"],
-    title: "Claude Pro / Cursor Pro",
-    desc: "Your professional AI workspace for the first 3 months, fully set up and onboarded. You buy nothing separately during the mentorship.",
-    tag: "3 months",
-    highlight: true,
-    note: "Depending on cohort and partner availability, learners receive tools such as Claude Pro, Cursor Pro, and other professional AI software used throughout the mentorship.",
-  },
-  {
     icon: Palette,
     brands: ["figma"],
     title: "Figma Professional",
@@ -58,6 +48,7 @@ const PERKS = [
     title: "CVEdge Pro",
     desc: "Every current and future Pro feature: resume, ATS, portfolio, cover letters, career tools.",
     tag: "Lifetime",
+    highlight: true,
   },
   {
     icon: Bot,
@@ -179,8 +170,8 @@ const FAQS = [
     a: "Five phases: Think, Understand, Design, Build, Launch. Live sessions with daily assignments and personalised feedback. From session 40 onwards, every session contributes to your industry capstone project.",
   },
   {
-    q: "Do I need to buy AI tools like Cursor or Claude?",
-    a: "No. A professional AI workspace is included for your first 3 months, with full setup and onboarding. Depending on cohort and partner availability, that includes tools such as Cursor Pro and Claude Code.",
+    q: "What tools will I need?",
+    a: "You will learn with Claude, Cursor and Figma. Figma Professional is included for 6 months. For AI tools, we set everything up together during onboarding and free tiers are enough to start; a paid plan is recommended as you move into the Build phase.",
   },
   {
     q: "Do I need coding experience?",
@@ -258,8 +249,6 @@ export default async function AIProductDesignPage() {
                 </div>
                 <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
                   {[
-                    { logo: <ClaudeLogo className="w-6 h-6" />, name: "Claude Pro", tag: "3 months" },
-                    { logo: <CursorLogo className="w-6 h-6" />, name: "Cursor Pro", tag: "3 months" },
                     { logo: <FigmaLogo className="h-6 w-auto" />, name: "Figma Professional", tag: "6 months" },
                     {
                       logo: (
@@ -429,7 +418,7 @@ export default async function AIProductDesignPage() {
               <div
                 key={perk.title}
                 className={[
-                  i < 2 ? "md:col-span-3 p-7" : i === PERKS.length - 1 ? "md:col-span-6 p-5" : "md:col-span-2 p-5",
+                  i < 2 ? "md:col-span-3 p-7" : "md:col-span-2 p-5",
                   perk.highlight ? "bg-primary/5 ring-2 ring-primary/30" : "bg-card",
                   "rounded-2xl shadow-sm",
                 ].join(" ")}
@@ -605,11 +594,24 @@ export default async function AIProductDesignPage() {
       <section id="mentor" className="bg-background">
         <div className="container max-w-5xl mx-auto px-4 py-16 md:py-20">
           <div className="grid md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-4 text-center">
-              <MentorMedallion className="w-36 h-36 mx-auto mb-4" />
-              <div className="text-xl font-bold">Shiva</div>
-              <div className="text-sm text-muted-foreground">
-                Designer-founder, CVEdge
+            <div className="md:col-span-4">
+              <div className="relative max-w-[300px] mx-auto">
+                <DotGrid id="mentor-dots" className="absolute -top-5 -left-5 w-28 h-28 text-primary/30" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/img/mentor-shiva.jpg"
+                  alt="B Sivarami Reddy, Principal Product Designer and mentor"
+                  className="relative rounded-3xl shadow-lg w-full"
+                />
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-[#065F46] text-white shadow-md px-5 py-2 text-sm font-medium whitespace-nowrap">
+                  10+ years · AI Product Design
+                </div>
+              </div>
+              <div className="text-center mt-8">
+                <div className="text-xl font-bold">B Sivarami Reddy</div>
+                <div className="text-sm text-muted-foreground">
+                  Principal Product Designer · Founder, CVEdge
+                </div>
               </div>
             </div>
             <div className="md:col-span-8">
@@ -620,15 +622,16 @@ export default async function AIProductDesignPage() {
                 Learn From a Builder, Not a Lecturer
               </h2>
               <p className="text-muted-foreground mb-6">
-                Every AI workflow in this curriculum is one your mentor uses daily
-                to design, build and ship real product. The proof is not a slide
+                Every AI workflow in this curriculum is one Shiva uses daily to
+                design, build and ship real product. The proof is not a slide
                 deck. It is the platform you are reading this on.
               </p>
               <ul className="space-y-2.5 mb-6">
                 {[
-                  "Designed and shipped CVEdge solo: AI resume builder, ATS analysis engine, job matching, interview coach",
-                  "Builds with the exact stack you will learn: Claude, Cursor, Figma, AI-first workflows",
-                  "Every founding cohort session is taught 1:1 by him. No TAs, no recordings-as-teaching",
+                  "10+ years designing AI-powered SaaS products; Principal Product Designer at a global edtech company",
+                  "Shipped AI products end to end: AI grading, QC automation, resume tooling, cutting manual effort by 70% and driving $6M+ in annual business impact",
+                  "Founder of CVEdge, designed and built solo with Claude Code, Cursor, React and Next.js, the exact stack you will learn",
+                  "Certified User Experience Analyst (CXA), Human Factors International",
                 ].map((fact) => (
                   <li key={fact} className="flex items-start gap-2.5 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-success mt-0.5 shrink-0" />
@@ -636,9 +639,24 @@ export default async function AIProductDesignPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/" className="text-sm font-medium text-primary underline underline-offset-4">
-                See CVEdge live, the product this mentorship is built on
-              </Link>
+              <div className="flex flex-wrap gap-6">
+                <a
+                  href="https://linkedin.com/in/uxsiva"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-primary underline underline-offset-4"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="https://uxsiva.onrender.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-primary underline underline-offset-4"
+                >
+                  Portfolio
+                </a>
+              </div>
             </div>
           </div>
         </div>

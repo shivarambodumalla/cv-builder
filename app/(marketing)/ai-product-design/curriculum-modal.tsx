@@ -12,26 +12,33 @@ export type CtaMode = "curriculum" | "brochure" | "call";
 const MODE_COPY: Record<CtaMode, { title: string; desc: string; submit: string }> = {
   curriculum: {
     title: "View the Full Curriculum",
-    desc: "All 5 phases, session by session. Instant access after you submit.",
+    desc: "All 5 phases, session by session. Instant access.",
     submit: "View Curriculum",
   },
   brochure: {
     title: "Download the Program Brochure",
-    desc: "The complete program guide as a PDF, including the full curriculum.",
+    desc: "The complete program guide as a PDF.",
     submit: "Download PDF",
   },
   call: {
     title: "Book a Discovery Call",
-    desc: "A free 30 minute career consultation on WhatsApp or Google Meet.",
+    desc: "A free 30 minute career consultation. We confirm your slot on WhatsApp.",
     submit: "Request My Call",
   },
 };
 
-const TIME_SLOTS = [
-  "Weekday morning",
-  "Weekday evening",
-  "Weekend morning",
-  "Weekend evening",
+const COUNTRY_CODES = [
+  { iso: "US", label: "United States", dial: "+1" },
+  { iso: "CA", label: "Canada", dial: "+1" },
+  { iso: "GB", label: "United Kingdom", dial: "+44" },
+  { iso: "AU", label: "Australia", dial: "+61" },
+  { iso: "DE", label: "Germany", dial: "+49" },
+  { iso: "NL", label: "Netherlands", dial: "+31" },
+  { iso: "IE", label: "Ireland", dial: "+353" },
+  { iso: "AE", label: "UAE", dial: "+971" },
+  { iso: "SA", label: "Saudi Arabia", dial: "+966" },
+  { iso: "QA", label: "Qatar", dial: "+974" },
+  { iso: "SG", label: "Singapore", dial: "+65" },
 ];
 
 interface CurriculumModalProps {
@@ -42,11 +49,9 @@ interface CurriculumModalProps {
 export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [dialIso, setDialIso] = useState("US");
   const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("");
   const [experience, setExperience] = useState("");
-  const [preferredTime, setPreferredTime] = useState("");
-  const [consentChecked, setConsentChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -67,8 +72,8 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
       if (!mode) return;
       setError("");
 
-      if (!name || !email || !consentChecked) {
-        setError("Please fill in your name, email and accept the consent box.");
+      if (!name || !email) {
+        setError("Please fill in your name and email.");
         return;
       }
       if (mode === "call" && !phone) {
@@ -79,6 +84,7 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
       setLoading(true);
       try {
         const params = new URLSearchParams(window.location.search);
+        const selected = COUNTRY_CODES.find((c) => c.iso === dialIso);
         const response = await fetch("/api/mentorship/lead", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -86,10 +92,10 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
             intent: mode,
             name,
             email,
-            phone: phone || undefined,
-            country: country || undefined,
+            phone: phone ? `${selected?.dial ?? ""} ${phone}`.trim() : undefined,
+            country: selected?.label,
+            country_code: selected?.iso,
             experience_level: experience || undefined,
-            preferred_time: mode === "call" ? preferredTime || undefined : undefined,
             visitor_id: localStorage.getItem(VISITOR_ID_KEY) || undefined,
             utm_source: params.get("utm_source") || undefined,
             utm_medium: params.get("utm_medium") || undefined,
@@ -113,7 +119,7 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
         setLoading(false);
       }
     },
-    [mode, name, email, consentChecked, phone, country, experience, preferredTime]
+    [mode, name, email, phone, dialIso, experience]
   );
 
   if (!mode) return null;
@@ -121,7 +127,7 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md bg-card rounded-2xl shadow-lg p-6 relative max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-sm bg-card rounded-2xl shadow-lg p-6 relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           aria-label="Close"
@@ -137,8 +143,7 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
               <>
                 <h2 className="text-xl font-semibold mb-2">Request received</h2>
                 <p className="text-sm text-muted-foreground mb-6">
-                  We will confirm your slot on WhatsApp shortly. Check{" "}
-                  <strong>{email}</strong> for the details.
+                  We will confirm your slot on WhatsApp shortly.
                 </p>
               </>
             ) : (
@@ -164,109 +169,66 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
           <>
             <h2 className="text-xl font-semibold mb-1">{copy.title}</h2>
             <p className="text-sm text-muted-foreground mb-5">{copy.desc}</p>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Name *</label>
-                <Input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
-                  required
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Name *"
+                required
+                disabled={loading}
+              />
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email *"
+                required
+                disabled={loading}
+              />
+              <div className="flex gap-2">
+                <select
+                  value={dialIso}
+                  onChange={(e) => setDialIso(e.target.value)}
                   disabled={loading}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Email *</label>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Phone {mode === "call" ? "*" : ""}
-                </label>
+                  aria-label="Country code"
+                  className="w-28 shrink-0 px-2 py-2 border border-input rounded-md bg-background text-foreground text-sm disabled:opacity-50"
+                >
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={c.iso} value={c.iso}>
+                      {c.iso} {c.dial}
+                    </option>
+                  ))}
+                </select>
                 <Input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 555 123 4567"
+                  placeholder={mode === "call" ? "Phone *" : "Phone"}
                   required={mode === "call"}
                   disabled={loading}
+                  className="flex-1"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Country</label>
-                <Input
-                  type="text"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="United States"
-                  disabled={loading}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Experience Level</label>
-                <select
-                  value={experience}
-                  onChange={(e) => setExperience(e.target.value)}
-                  disabled={loading}
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground text-sm disabled:opacity-50"
-                >
-                  <option value="">Select an option</option>
-                  <option value="student">Student / Career switcher</option>
-                  <option value="junior">Junior designer (0-2 yrs)</option>
-                  <option value="mid">Mid-level (2-5 yrs)</option>
-                  <option value="senior">Senior (5+ yrs)</option>
-                </select>
-              </div>
-
-              {mode === "call" && (
-                <div>
-                  <label className="block text-sm font-medium mb-1">Preferred Time</label>
-                  <select
-                    value={preferredTime}
-                    onChange={(e) => setPreferredTime(e.target.value)}
-                    disabled={loading}
-                    className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground text-sm disabled:opacity-50"
-                  >
-                    <option value="">No preference</option>
-                    {TIME_SLOTS.map((slot) => (
-                      <option key={slot} value={slot}>{slot}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              <select
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+                disabled={loading}
+                aria-label="Experience level"
+                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground text-sm disabled:opacity-50"
+              >
+                <option value="">Experience level</option>
+                <option value="student">Student / Career switcher</option>
+                <option value="junior">Junior designer (0-2 yrs)</option>
+                <option value="mid">Mid-level (2-5 yrs)</option>
+                <option value="senior">Senior (5+ yrs)</option>
+              </select>
 
               {error && (
                 <div className="text-sm text-error bg-error/10 p-3 rounded">{error}</div>
               )}
 
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  id="consent"
-                  checked={consentChecked}
-                  onChange={(e) => setConsentChecked(e.target.checked)}
-                  disabled={loading}
-                  className="mt-1"
-                  required
-                />
-                <label htmlFor="consent" className="text-sm text-muted-foreground">
-                  I agree to receive emails, WhatsApp messages and course updates. *
-                </label>
-              </div>
-
-              <Button type="submit" disabled={loading || !consentChecked} className="w-full">
+              <Button type="submit" disabled={loading} className="w-full">
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -276,6 +238,10 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
                   copy.submit
                 )}
               </Button>
+              <p className="text-[11px] text-muted-foreground text-center leading-snug">
+                By submitting, you agree to receive emails and WhatsApp updates
+                about the program.
+              </p>
             </form>
           </>
         )}
