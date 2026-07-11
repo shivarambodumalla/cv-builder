@@ -8,6 +8,10 @@ import {
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
+import {
+  ScribbleUnderline, DoodleArrow, SparkleDoodle, DotGrid,
+  MentorshipScene, CapstoneScene, MentorMedallion,
+} from "./illustrations";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +128,9 @@ const TRANSFORMATION = [
   "Get Hired",
 ];
 
+// Brand palette rotation for the five phase markers (teal, brand green, navy, mid navy, mint)
+const PHASE_COLORS = ["#1a7a6d", "#065F46", "#1E3A5F", "#2A4F7A", "#0d9488"];
+
 const PHASES = [
   {
     n: "01",
@@ -202,7 +209,12 @@ export default async function AIProductDesignPage() {
       <PageTracker />
 
       {/* ── Hero: asymmetric split, text left, session composition right ── */}
-      <section className="bg-background overflow-hidden">
+      <section className="relative bg-background overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(60% 50% at 75% 20%, rgba(26,122,109,0.10) 0%, transparent 70%)" }}
+          aria-hidden
+        />
         <div className="container max-w-6xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 text-center lg:text-left">
@@ -213,7 +225,10 @@ export default async function AIProductDesignPage() {
               <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight leading-[1.05]">
                 Become an
                 <br />
-                <span className="text-primary">AI Product Designer</span>
+                <span className="relative inline-block text-primary">
+                  AI Product Designer
+                  <ScribbleUnderline className="absolute -bottom-3 left-0 w-full h-4 text-[#34D399]" />
+                </span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
                 100 hours of live 1:1 mentorship. Think, design, build and ship
@@ -238,6 +253,8 @@ export default async function AIProductDesignPage() {
 
             {/* Layered session cards */}
             <div className="lg:col-span-5 hidden lg:block relative h-[420px]" aria-hidden>
+              <DotGrid id="hero-dots" className="absolute -top-8 -right-8 w-48 h-48 text-primary/25" />
+              <SparkleDoodle className="absolute -top-2 left-6 w-10 h-10 text-[#34D399]" />
               <div className="absolute top-0 right-4 w-72 rounded-2xl bg-card shadow-lg p-5 rotate-2">
                 <div className="text-xs text-primary font-semibold tracking-widest uppercase mb-2">Phase 04 · Build</div>
                 <div className="font-semibold mb-3">AI Product Design</div>
@@ -283,6 +300,7 @@ export default async function AIProductDesignPage() {
         <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
+              <MentorshipScene className="w-full max-w-sm -mb-2 -mt-6" />
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 The Product Is the Mentorship
               </h2>
@@ -323,9 +341,11 @@ export default async function AIProductDesignPage() {
       </section>
 
       {/* ── Included with every enrollment: featured perk + bento ── */}
-      <section id="included" className="bg-background">
-        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-28">
-          <div className="mb-14 max-w-2xl">
+      <section id="included" className="relative bg-background overflow-hidden">
+        <DotGrid id="perks-dots" className="pointer-events-none absolute top-12 right-0 w-56 h-56 text-primary/15" />
+        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-28 relative">
+          <div className="mb-14 max-w-2xl relative">
+            <SparkleDoodle className="absolute -top-8 -left-3 w-9 h-9 text-primary/60" />
             <h2 className="text-3xl md:text-4xl font-bold mb-3">Included With Every Enrollment</h2>
             <p className="text-muted-foreground">
               You are not buying a course. You are buying a lifetime membership
@@ -364,7 +384,13 @@ export default async function AIProductDesignPage() {
                 ].join(" ")}
               >
                 <div className="flex items-center justify-between gap-3 mb-3">
-                  <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 text-primary shrink-0">
+                  <span
+                    className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
+                    style={{
+                      color: PHASE_COLORS[i % PHASE_COLORS.length],
+                      backgroundColor: `${PHASE_COLORS[i % PHASE_COLORS.length]}1a`,
+                    }}
+                  >
                     <perk.icon className="w-4.5 h-4.5" />
                   </span>
                   <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground whitespace-nowrap">
@@ -420,7 +446,8 @@ export default async function AIProductDesignPage() {
       {/* ── Curriculum: vertical timeline ── */}
       <section id="curriculum" className="bg-background">
         <div className="container max-w-4xl mx-auto px-4 py-20 md:py-28">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 relative">
+            <DoodleArrow className="hidden md:block absolute right-8 top-2 w-16 h-12 text-primary/50" />
             <h2 className="text-3xl md:text-4xl font-bold mb-3">The Curriculum</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Built around how products are actually built, not isolated UX topics.
@@ -433,14 +460,18 @@ export default async function AIProductDesignPage() {
             <div className="space-y-12">
               {PHASES.map((phase, i) => (
                 <div key={phase.n} className="relative md:grid md:grid-cols-2 md:gap-12">
-                  <span className="absolute left-6 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground font-bold shadow-md z-10">
+                  <span
+                    className="absolute left-6 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-12 h-12 rounded-full text-white font-bold shadow-md z-10"
+                    style={{ backgroundColor: PHASE_COLORS[i] }}
+                  >
                     {phase.n}
                   </span>
                   <div
                     className={[
-                      "ml-16 md:ml-0 rounded-2xl bg-card shadow-sm p-6 md:p-7",
+                      "ml-16 md:ml-0 rounded-2xl bg-card shadow-sm p-6 md:p-7 border-t-4",
                       i % 2 === 0 ? "md:col-start-1 md:mr-10" : "md:col-start-2 md:ml-10",
                     ].join(" ")}
+                    style={{ borderTopColor: PHASE_COLORS[i] }}
                   >
                     <h3 className="text-xl font-bold mb-2">{phase.name}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{phase.desc}</p>
@@ -476,13 +507,16 @@ export default async function AIProductDesignPage() {
       <section className="bg-card">
         <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-4 text-center lg:text-left">
-              <div className="text-[8rem] md:text-[11rem] font-black leading-none text-primary">40</div>
-              <div className="text-sm text-muted-foreground -mt-2">
-                From session 40, exercises end.
+            <div className="lg:col-span-5">
+              <div className="flex items-end gap-4 justify-center lg:justify-start">
+                <div className="text-[7rem] md:text-[9rem] font-black leading-none text-primary">40</div>
+                <div className="text-sm text-muted-foreground pb-5 max-w-[10rem]">
+                  From session 40, exercises end.
+                </div>
               </div>
+              <CapstoneScene className="w-full max-w-md mx-auto lg:mx-0 mt-2" />
             </div>
-            <div className="lg:col-span-8">
+            <div className="lg:col-span-7">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">The Industry Capstone</h2>
               <p className="text-muted-foreground mb-8 max-w-xl">
                 Every remaining session contributes to shipping one complete,
@@ -503,8 +537,8 @@ export default async function AIProductDesignPage() {
       {/* ── Mentor ── */}
       <section id="mentor" className="bg-background">
         <div className="container max-w-3xl mx-auto px-4 py-20 md:py-24 text-center">
-          <span className="text-6xl text-primary/20 font-serif leading-none" aria-hidden>&ldquo;</span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 -mt-4">
+          <MentorMedallion className="w-28 h-28 mx-auto mb-6" />
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Learn From a Builder, Not a Lecturer
           </h2>
           <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
