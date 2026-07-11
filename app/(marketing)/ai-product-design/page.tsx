@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import {
   GraduationCap, Cpu, Palette, Rocket, Target, Bot, BookOpen,
   CheckCircle2, Mic, MonitorPlay, LayoutDashboard, Compass,
@@ -187,7 +188,7 @@ const FAQS = [
   },
   {
     q: "What do I walk away with?",
-    a: "A shipped capstone product, a production-ready portfolio, a complete case study, an ATS-optimised resume, a rebuilt LinkedIn profile, plus lifetime CVEdge Pro, lifetime portfolio reviews, and a seat in the alumni community.",
+    a: "A shipped capstone product, a production-ready portfolio, a complete case study, an ATS-optimised resume, a rebuilt LinkedIn profile, plus lifetime CVEdge Pro and lifetime portfolio reviews.",
   },
   {
     q: "Why is founding tuition lower than standard?",
@@ -195,7 +196,7 @@ const FAQS = [
   },
   {
     q: "What happens after I graduate?",
-    a: "You keep everything: recordings, curriculum updates, future AI modules, portfolio reviews, and the alumni community. As CVEdge evolves, planned features like AI mock interviews and the interview studio roll out to alumni at no extra cost.",
+    a: "You keep everything: session recordings, lifetime portfolio reviews, and lifetime CVEdge Pro. As CVEdge evolves, planned features like AI mock interviews and the interview studio roll out to alumni at no extra cost.",
   },
 ];
 
@@ -226,9 +227,13 @@ export default async function AIProductDesignPage() {
                   <ScribbleUnderline className="absolute -bottom-3 left-0 w-full h-4 text-[#34D399]" />
                 </span>
               </h1>
-              <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
+              <p className="text-lg text-muted-foreground mb-3 max-w-xl mx-auto lg:mx-0">
                 100 hours of live 1:1 mentorship. Think, design, build and ship
                 AI-powered products, and leave with the portfolio to prove it.
+              </p>
+              <p className="text-sm text-muted-foreground mb-8">
+                Taught 1:1 by the designer-founder of{" "}
+                <a href="#mentor" className="font-medium text-primary underline underline-offset-4">CVEdge</a>.
               </p>
               {indiaRestricted ? (
                 <div className="inline-block bg-warning/10 px-6 py-4 rounded-2xl">
@@ -245,6 +250,36 @@ export default async function AIProductDesignPage() {
                   </CtaButton>
                 </div>
               )}
+
+              {/* Top perks, first fold */}
+              <div className="mt-10">
+                <div className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+                  Enrollment includes
+                </div>
+                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                  {[
+                    { logo: <ClaudeLogo className="w-6 h-6" />, name: "Claude Pro", tag: "3 months" },
+                    { logo: <CursorLogo className="w-6 h-6" />, name: "Cursor Pro", tag: "3 months" },
+                    { logo: <FigmaLogo className="h-6 w-auto" />, name: "Figma Professional", tag: "6 months" },
+                    {
+                      logo: (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src="/img/CV-Edge-Logo-square.svg" alt="" className="w-6 h-6" />
+                      ),
+                      name: "CVEdge Pro",
+                      tag: "Lifetime",
+                    },
+                  ].map((perk) => (
+                    <div key={perk.name} className="flex items-center gap-2.5 rounded-full bg-card shadow-sm pl-3 pr-4 py-2">
+                      {perk.logo}
+                      <span className="text-sm font-medium">{perk.name}</span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${tagClasses(perk.tag)}`}>
+                        {perk.tag}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Layered session cards */}
@@ -293,7 +328,7 @@ export default async function AIProductDesignPage() {
 
       {/* ── Core value: what you are actually paying for ── */}
       <section className="bg-card">
-        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
+        <div className="container max-w-6xl mx-auto px-4 py-16 md:py-20">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -358,7 +393,7 @@ export default async function AIProductDesignPage() {
       {/* ── Included with every enrollment: featured perk + bento ── */}
       <section id="included" className="relative bg-background overflow-hidden">
         <DotGrid id="perks-dots" className="pointer-events-none absolute top-12 right-0 w-56 h-56 text-primary/15" />
-        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-28 relative">
+        <div className="container max-w-6xl mx-auto px-4 py-16 md:py-20 relative">
           <div className="mb-14 max-w-2xl relative">
             <SparkleDoodle className="absolute -top-8 -left-3 w-9 h-9 text-primary/60" />
             <div className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">The Offer</div>
@@ -477,7 +512,7 @@ export default async function AIProductDesignPage() {
 
       {/* ── Curriculum: vertical timeline ── */}
       <section id="curriculum" className="bg-background">
-        <div className="container max-w-4xl mx-auto px-4 py-20 md:py-28">
+        <div className="container max-w-4xl mx-auto px-4 py-16 md:py-20">
           <div className="text-center mb-16 relative">
             <DoodleArrow className="hidden md:block absolute right-8 top-2 w-16 h-12 text-primary/50" />
             <h2 className="text-3xl md:text-4xl font-bold mb-3">The Curriculum</h2>
@@ -537,7 +572,7 @@ export default async function AIProductDesignPage() {
 
       {/* ── Capstone: split with giant numeral ── */}
       <section className="bg-card">
-        <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
+        <div className="container max-w-6xl mx-auto px-4 py-16 md:py-20">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-5">
               <div className="flex items-end gap-4 justify-center lg:justify-start">
@@ -568,28 +603,51 @@ export default async function AIProductDesignPage() {
 
       {/* ── Mentor ── */}
       <section id="mentor" className="bg-background">
-        <div className="container max-w-3xl mx-auto px-4 py-20 md:py-24 text-center">
-          <MentorMedallion className="w-28 h-28 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Learn From a Builder, Not a Lecturer
-          </h2>
-          <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
-            This mentorship is taught by Shiva, the designer-founder behind{" "}
-            <span className="text-foreground font-medium">CVEdge</span>, the AI-powered
-            career platform this program lives on. Every AI workflow in the curriculum
-            is one he uses daily to design, build and ship real product.
-          </p>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            You will not learn theory from slides. You will work the way a modern
-            AI-first product team works, because your mentor runs one.
-          </p>
+        <div className="container max-w-5xl mx-auto px-4 py-16 md:py-20">
+          <div className="grid md:grid-cols-12 gap-10 items-center">
+            <div className="md:col-span-4 text-center">
+              <MentorMedallion className="w-36 h-36 mx-auto mb-4" />
+              <div className="text-xl font-bold">Shiva</div>
+              <div className="text-sm text-muted-foreground">
+                Designer-founder, CVEdge
+              </div>
+            </div>
+            <div className="md:col-span-8">
+              <div className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">
+                Your Mentor
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Learn From a Builder, Not a Lecturer
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Every AI workflow in this curriculum is one your mentor uses daily
+                to design, build and ship real product. The proof is not a slide
+                deck. It is the platform you are reading this on.
+              </p>
+              <ul className="space-y-2.5 mb-6">
+                {[
+                  "Designed and shipped CVEdge solo: AI resume builder, ATS analysis engine, job matching, interview coach",
+                  "Builds with the exact stack you will learn: Claude, Cursor, Figma, AI-first workflows",
+                  "Every founding cohort session is taught 1:1 by him. No TAs, no recordings-as-teaching",
+                ].map((fact) => (
+                  <li key={fact} className="flex items-start gap-2.5 text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-success mt-0.5 shrink-0" />
+                    {fact}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/" className="text-sm font-medium text-primary underline underline-offset-4">
+                See CVEdge live, the product this mentorship is built on
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ── Course testimonials: renders only when real quotes exist ── */}
       {COURSE_TESTIMONIALS.length > 0 && (
         <section className="bg-card">
-          <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
+          <div className="container max-w-6xl mx-auto px-4 py-16 md:py-20">
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
               What Mentees Say
             </h2>
@@ -617,7 +675,7 @@ export default async function AIProductDesignPage() {
 
       {/* ── FAQ ── */}
       <section id="faq" className="bg-background">
-        <div className="container max-w-3xl mx-auto px-4 py-20 md:py-24">
+        <div className="container max-w-3xl mx-auto px-4 py-16 md:py-20">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Questions, Answered</h2>
           <div className="space-y-4">
             {FAQS.map((item) => (
@@ -637,7 +695,7 @@ export default async function AIProductDesignPage() {
       <section className="relative overflow-hidden bg-[#065F46] text-white">
         <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full border-[24px] border-[#34D399]/15" aria-hidden />
         <div className="pointer-events-none absolute -top-20 -left-20 w-60 h-60 rounded-full border-[18px] border-[#34D399]/10" aria-hidden />
-        <div className="container max-w-2xl mx-auto px-4 py-20 md:py-28 relative text-center">
+        <div className="container max-w-2xl mx-auto px-4 py-16 md:py-20 relative text-center">
           <PhoneCall className="w-8 h-8 text-[#34D399] mx-auto mb-6" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Still Deciding? Talk It Through.</h2>
           <p className="text-white/70 mb-10 max-w-lg mx-auto">
