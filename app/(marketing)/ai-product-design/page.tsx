@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
-import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import {
   ScribbleUnderline, DoodleArrow, SparkleDoodle, DotGrid,
   MentorshipScene, CapstoneScene, MentorMedallion,
@@ -159,6 +158,11 @@ const PHASES = [
     topics: ["Portfolio & case study", "Resume & LinkedIn", "Interview preparation & career planning", "Capstone final presentation"],
   },
 ];
+
+/* Real quotes only. Fill with mentees Shiva has actually mentored
+   (LinkedIn recommendations count); swap in founding-cohort student
+   quotes after cohort 1. Section stays hidden while this is empty. */
+const COURSE_TESTIMONIALS: { quote: string; name: string; role: string; highlight?: string }[] = [];
 
 const FAQS = [
   {
@@ -582,8 +586,34 @@ export default async function AIProductDesignPage() {
         </div>
       </section>
 
-      {/* ── Testimonials (CVEdge platform, swap for student quotes after cohort 1) ── */}
-      <TestimonialsCarousel title="What learners say about CVEdge" />
+      {/* ── Course testimonials: renders only when real quotes exist ── */}
+      {COURSE_TESTIMONIALS.length > 0 && (
+        <section className="bg-card">
+          <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+              What Mentees Say
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {COURSE_TESTIMONIALS.map((t, i) => (
+                <figure key={t.name} className="rounded-2xl bg-background shadow-sm p-7 flex flex-col">
+                  <span
+                    className="text-4xl font-serif leading-none mb-3"
+                    style={{ color: PHASE_COLORS[i % PHASE_COLORS.length] }}
+                    aria-hidden
+                  >
+                    &ldquo;
+                  </span>
+                  <blockquote className="text-sm text-muted-foreground flex-1">{t.quote}</blockquote>
+                  <figcaption className="mt-5 pt-4 border-t border-border/50">
+                    <div className="text-sm font-semibold">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.role}</div>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── FAQ ── */}
       <section id="faq" className="bg-background">
