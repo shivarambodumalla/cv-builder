@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import {
-  GraduationCap, Cpu, Palette, Rocket, Target, Bot, BookOpen, Globe,
-  CheckCircle2, Sparkles, Mic, MonitorPlay, LayoutDashboard, Compass,
-  FileText, Award, RefreshCw, Library, SlidersHorizontal, ClipboardCheck,
-  CalendarDays, Download, Eye, PhoneCall, Briefcase, BrainCircuit,
+  GraduationCap, Cpu, Palette, Rocket, Target, Bot, BookOpen,
+  CheckCircle2, Mic, MonitorPlay, LayoutDashboard, Compass,
+  FileText, Award, Library, ClipboardCheck,
+  CalendarDays, Download, PhoneCall, Briefcase, BrainCircuit,
 } from "lucide-react";
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
@@ -11,6 +11,7 @@ import { TestimonialsCarousel } from "@/components/marketing/testimonials-carous
 import {
   ScribbleUnderline, DoodleArrow, SparkleDoodle, DotGrid,
   MentorshipScene, CapstoneScene, MentorMedallion,
+  FigmaLogo, ClaudeLogo, CursorLogo,
 } from "./illustrations";
 
 export const dynamic = "force-dynamic";
@@ -34,35 +35,34 @@ const FEATURED_PERK = {
 
 const PERKS = [
   {
-    icon: Rocket,
-    title: "CVEdge Pro",
-    desc: "Every current and future Pro feature: resume, ATS, portfolio, cover letters, career tools.",
-    tag: "Lifetime",
-    highlight: true,
-  },
-  {
     icon: Cpu,
-    title: "AI Workspace",
-    desc: "Professional AI tooling for your first 3 months, fully set up and onboarded.",
+    brands: ["claude", "cursor"],
+    title: "Claude Pro / Cursor Pro",
+    desc: "Your professional AI workspace for the first 3 months, fully set up and onboarded. You buy nothing separately during the mentorship.",
     tag: "3 months",
-    note: "Depending on cohort and partner availability, learners receive tools such as Cursor Pro, Claude Code, and other professional AI software used throughout the mentorship.",
+    highlight: true,
+    note: "Depending on cohort and partner availability, learners receive tools such as Claude Pro, Cursor Pro, and other professional AI software used throughout the mentorship.",
   },
   {
     icon: Palette,
-    title: "Design Workspace",
-    desc: "Figma Professional through education and partner benefits, where available.",
-    tag: "3 to 6 months",
+    brands: ["figma"],
+    title: "Figma Professional",
+    desc: "The industry-standard design workspace, yours for 6 months through education and partner benefits.",
+    tag: "6 months",
+    highlight: true,
+    note: "Subject to education and partner program availability in your region.",
+  },
+  {
+    icon: Rocket,
+    brands: ["cvedge"],
+    title: "CVEdge Pro",
+    desc: "Every current and future Pro feature: resume, ATS, portfolio, cover letters, career tools.",
+    tag: "Lifetime",
   },
   {
     icon: Bot,
     title: "Claude Skills Pack",
     desc: "Custom skills built in-house for design work.",
-    tag: "Lifetime",
-  },
-  {
-    icon: SlidersHorizontal,
-    title: "Cursor Rules Pack",
-    desc: "Production rules for AI-assisted building.",
     tag: "Lifetime",
   },
   {
@@ -75,18 +75,6 @@ const PERKS = [
     icon: BookOpen,
     title: "Course Recordings",
     desc: "Every session, yours forever.",
-    tag: "Lifetime",
-  },
-  {
-    icon: RefreshCw,
-    title: "Course Updates",
-    desc: "New AI modules as the field evolves.",
-    tag: "Lifetime",
-  },
-  {
-    icon: Globe,
-    title: "Alumni Community",
-    desc: "Private. Referrals, critiques, opportunities.",
     tag: "Lifetime",
   },
   {
@@ -130,6 +118,14 @@ const TRANSFORMATION = [
 
 // Brand palette rotation for the five phase markers (teal, brand green, navy, mid navy, mint)
 const PHASE_COLORS = ["#1a7a6d", "#065F46", "#1E3A5F", "#2A4F7A", "#0d9488"];
+
+// Duration tags colored by type: lifetime green, timed teal, program-scoped navy
+function tagClasses(tag: string): string {
+  if (tag === "Lifetime")
+    return "bg-[#065F46]/10 text-[#065F46] dark:bg-[#34D399]/15 dark:text-[#34D399]";
+  if (tag.includes("month")) return "bg-primary/10 text-primary";
+  return "bg-[#1E3A5F]/10 text-[#1E3A5F] dark:bg-[#9DB8D9]/15 dark:text-[#9DB8D9]";
+}
 
 const PHASES = [
   {
@@ -218,10 +214,6 @@ export default async function AIProductDesignPage() {
         <div className="container max-w-6xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                <Sparkles className="w-4 h-4" />
-                Founding Cohort Now Enrolling
-              </div>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight leading-[1.05]">
                 Become an
                 <br />
@@ -244,7 +236,7 @@ export default async function AIProductDesignPage() {
               ) : (
                 <div className="flex justify-center lg:justify-start">
                   <CtaButton mode="curriculum" className="px-10">
-                    <Eye className="w-4 h-4 mr-2" />
+                    <BookOpen className="w-4 h-4 mr-2" />
                     View the Curriculum
                   </CtaButton>
                 </div>
@@ -298,42 +290,61 @@ export default async function AIProductDesignPage() {
       {/* ── Core value: what you are actually paying for ── */}
       <section className="bg-card">
         <div className="container max-w-6xl mx-auto px-4 py-20 md:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <MentorshipScene className="w-full max-w-sm -mb-2 -mt-6" />
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 The Product Is the Mentorship
               </h2>
-              <p className="text-muted-foreground mb-8">
+              <p className="text-muted-foreground mb-10">
                 Not videos, not templates, not a Discord full of strangers.
                 You work directly with your mentor for 100 hours until you can
                 think, design, build and ship on your own.
               </p>
-              <ul className="space-y-4">
-                {CORE_VALUE.map((item) => (
-                  <li key={item.text} className="flex items-center gap-4">
-                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary shrink-0">
+              <div className="grid sm:grid-cols-2 gap-4">
+                {CORE_VALUE.map((item, i) => (
+                  <div key={item.text} className="rounded-2xl bg-background shadow-sm p-5">
+                    <span
+                      className="flex items-center justify-center w-10 h-10 rounded-xl mb-3"
+                      style={{
+                        color: PHASE_COLORS[i % PHASE_COLORS.length],
+                        backgroundColor: `${PHASE_COLORS[i % PHASE_COLORS.length]}1a`,
+                      }}
+                    >
                       <item.icon className="w-5 h-5" />
                     </span>
-                    <span className="font-medium">{item.text}</span>
-                  </li>
+                    <span className="font-medium text-sm leading-snug block">{item.text}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-            {/* Transformation ladder as vertical rail */}
-            <div className="relative pl-8">
-              <div className="absolute left-[13px] top-3 bottom-3 w-0.5 bg-primary/20" aria-hidden />
-              <ol className="space-y-5">
-                {TRANSFORMATION.map((step, i) => (
-                  <li key={step} className="relative flex items-center gap-4">
-                    <span className="absolute -left-8 flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                      {i + 1}
-                    </span>
-                    <span className={i === TRANSFORMATION.length - 1 ? "font-bold text-lg" : "font-medium text-muted-foreground"}>
-                      {step}
-                    </span>
-                  </li>
-                ))}
+
+            {/* The journey: illustration + colored ladder in one card */}
+            <div className="rounded-3xl bg-background shadow-sm p-8 md:p-10">
+              <MentorshipScene className="w-full max-w-[260px] mx-auto mb-6" />
+              <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-5 text-center">
+                The Journey
+              </div>
+              <ol className="space-y-3.5 max-w-xs mx-auto">
+                {TRANSFORMATION.map((step, i) => {
+                  const isLast = i === TRANSFORMATION.length - 1;
+                  const color = isLast ? "#34D399" : PHASE_COLORS[i % PHASE_COLORS.length];
+                  return (
+                    <li key={step} className="flex items-center gap-3.5">
+                      <span
+                        className="flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold shrink-0"
+                        style={{
+                          backgroundColor: color,
+                          color: isLast ? "#065F46" : "#fff",
+                        }}
+                      >
+                        {i + 1}
+                      </span>
+                      <span className={isLast ? "font-bold" : "font-medium text-muted-foreground text-sm"}>
+                        {step}
+                      </span>
+                    </li>
+                  );
+                })}
               </ol>
             </div>
           </div>
@@ -346,6 +357,7 @@ export default async function AIProductDesignPage() {
         <div className="container max-w-6xl mx-auto px-4 py-20 md:py-28 relative">
           <div className="mb-14 max-w-2xl relative">
             <SparkleDoodle className="absolute -top-8 -left-3 w-9 h-9 text-primary/60" />
+            <div className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">The Offer</div>
             <h2 className="text-3xl md:text-4xl font-bold mb-3">Included With Every Enrollment</h2>
             <p className="text-muted-foreground">
               You are not buying a course. You are buying a lifetime membership
@@ -378,22 +390,38 @@ export default async function AIProductDesignPage() {
               <div
                 key={perk.title}
                 className={[
-                  i < 3 ? "md:col-span-2 p-6" : "md:col-span-2 p-5",
+                  i < 2 ? "md:col-span-3 p-7" : i === PERKS.length - 1 ? "md:col-span-6 p-5" : "md:col-span-2 p-5",
                   perk.highlight ? "bg-primary/5 ring-2 ring-primary/30" : "bg-card",
                   "rounded-2xl shadow-sm",
                 ].join(" ")}
               >
                 <div className="flex items-center justify-between gap-3 mb-3">
-                  <span
-                    className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
-                    style={{
-                      color: PHASE_COLORS[i % PHASE_COLORS.length],
-                      backgroundColor: `${PHASE_COLORS[i % PHASE_COLORS.length]}1a`,
-                    }}
-                  >
-                    <perk.icon className="w-4.5 h-4.5" />
-                  </span>
-                  <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground whitespace-nowrap">
+                  {"brands" in perk && perk.brands ? (
+                    <span className="flex items-center gap-2">
+                      {perk.brands.map((brand) => (
+                        <span key={brand} className="flex items-center justify-center w-10 h-10 rounded-lg bg-background shadow-sm p-2">
+                          {brand === "claude" && <ClaudeLogo className="w-full h-full" />}
+                          {brand === "cursor" && <CursorLogo className="w-full h-full" />}
+                          {brand === "figma" && <FigmaLogo className="h-full w-auto" />}
+                          {brand === "cvedge" && (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src="/img/CV-Edge-Logo-square.svg" alt="CVEdge" className="w-full h-full" />
+                          )}
+                        </span>
+                      ))}
+                    </span>
+                  ) : (
+                    <span
+                      className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
+                      style={{
+                        color: PHASE_COLORS[i % PHASE_COLORS.length],
+                        backgroundColor: `${PHASE_COLORS[i % PHASE_COLORS.length]}1a`,
+                      }}
+                    >
+                      <perk.icon className="w-4.5 h-4.5" />
+                    </span>
+                  )}
+                  <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${tagClasses(perk.tag)}`}>
                     {perk.tag}
                   </span>
                 </div>
@@ -495,7 +523,7 @@ export default async function AIProductDesignPage() {
                 The full session-by-session curriculum is not public.
               </p>
               <CtaButton mode="curriculum" variant="secondary" className="px-8">
-                <Eye className="w-4 h-4 mr-2" />
+                <BookOpen className="w-4 h-4 mr-2" />
                 Get the Full Curriculum
               </CtaButton>
             </div>

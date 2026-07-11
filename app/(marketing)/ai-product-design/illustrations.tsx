@@ -138,6 +138,59 @@ export function CapstoneScene({ className }: { className?: string }) {
   );
 }
 
+/** Figma brand mark. */
+export function FigmaLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 36" className={className} aria-hidden>
+      <path fill="#F24E1E" d="M12 0H6a6 6 0 0 0 0 12h6V0z" />
+      <path fill="#FF7262" d="M12 0h6a6 6 0 0 1 0 12h-6V0z" />
+      <path fill="#A259FF" d="M12 12H6a6 6 0 0 0 0 12h6V12z" />
+      <circle fill="#1ABCFE" cx="18" cy="18" r="6" />
+      <path fill="#0ACF83" d="M12 24v6a6 6 0 1 1-6-6h6z" />
+    </svg>
+  );
+}
+
+/** Claude brand mark: radiating coral starburst. */
+export function ClaudeLogo({ className }: { className?: string }) {
+  const spokes = Array.from({ length: 12 }, (_, i) => {
+    const a = (i * 30 * Math.PI) / 180;
+    const inner = i % 2 ? 5 : 3.5;
+    const outer = i % 2 ? 14 : 17;
+    return {
+      x1: 20 + inner * Math.cos(a),
+      y1: 20 + inner * Math.sin(a),
+      x2: 20 + outer * Math.cos(a),
+      y2: 20 + outer * Math.sin(a),
+    };
+  });
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden>
+      {spokes.map((s, i) => (
+        <line
+          key={i}
+          x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
+          stroke="#D97757"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+      ))}
+    </svg>
+  );
+}
+
+/** Cursor brand mark: isometric cube. */
+export function CursorLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden>
+      <path d="M20 3 L35 11.5 L20 20 L5 11.5 Z" fill="#9CA3AF" />
+      <path d="M35 11.5 V28.5 L20 37 V20 Z" fill="#4B5563" />
+      <path d="M5 11.5 V28.5 L20 37 V20 Z" fill="#6B7280" />
+      <path d="M20 3 L35 11.5 V28.5 L20 20 Z" fill="#374151" opacity="0.35" />
+    </svg>
+  );
+}
+
 /** Abstract mentor portrait medallion. */
 export function MentorMedallion({ className }: { className?: string }) {
   return (
