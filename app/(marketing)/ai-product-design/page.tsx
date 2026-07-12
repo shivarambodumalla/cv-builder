@@ -2,7 +2,8 @@ import { headers } from "next/headers";
 import {
   GraduationCap, Palette, Rocket, Target, Bot, BookOpen,
   CheckCircle2, Mic, MonitorPlay, LayoutDashboard, Compass,
-  FileText, Award, Library, ClipboardCheck,
+  FileText, Award, Library, ClipboardCheck, ArrowRight, Sparkles,
+  Users, Clock, TrendingUp, Infinity as InfinityIcon,
   CalendarDays, Download, PhoneCall, Briefcase, BrainCircuit,
 } from "lucide-react";
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
@@ -200,16 +201,21 @@ export default async function AIProductDesignPage() {
     <MentorshipCtaProvider>
       <PageTracker />
 
-      {/* ── Hero: asymmetric split, text left, session composition right ── */}
+      {/* ── Hero: mockup layout — text + includes left, photo + floating cards right ── */}
       <section className="relative bg-background overflow-hidden">
         <div
           className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(60% 50% at 75% 20%, rgba(26,122,109,0.10) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(55% 60% at 68% 35%, rgba(52,211,153,0.12) 0%, transparent 70%)" }}
           aria-hidden
         />
-        <div className="container max-w-6xl mx-auto px-4 pt-16 pb-20 md:pt-24 md:pb-28">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-7 text-center lg:text-left">
+        <div className="container max-w-7xl mx-auto px-4 pt-12 pb-8 md:pt-16 md:pb-12 relative">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-6 items-start">
+            {/* Left */}
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 bg-primary/10 rounded-full text-xs font-semibold tracking-widest uppercase text-primary">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                Live 1:1 Mentorship Program
+              </div>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight leading-[1.05]">
                 Become an
                 <br />
@@ -218,14 +224,18 @@ export default async function AIProductDesignPage() {
                   <ScribbleUnderline className="absolute -bottom-3 left-0 w-full h-4 text-[#34D399]" />
                 </span>
               </h1>
-              <p className="text-lg text-muted-foreground mb-3 max-w-xl mx-auto lg:mx-0">
-                100 hours of live 1:1 mentorship. Think, design, build and ship
-                AI-powered products, and leave with the portfolio to prove it.
+              <p className="text-lg text-muted-foreground mb-5 max-w-xl mx-auto lg:mx-0">
+                Master product thinking, AI workflows, and design end-to-end
+                products with 1:1 mentorship from a{" "}
+                <a href="#mentor" className="font-medium text-foreground underline underline-offset-4 decoration-primary">
+                  designer-founder
+                </a>{" "}
+                who has built and scaled real products.
               </p>
-              <p className="text-sm text-muted-foreground mb-8">
-                Taught 1:1 by the designer-founder of{" "}
-                <a href="#mentor" className="font-medium text-primary underline underline-offset-4">CVEdge</a>.
+              <p className="text-sm font-medium text-muted-foreground mb-7">
+                100+ designers mentored over 10 years
               </p>
+
               {indiaRestricted ? (
                 <div className="inline-block bg-warning/10 px-6 py-4 rounded-2xl">
                   <p className="font-semibold text-warning">Coming Soon in India</p>
@@ -234,36 +244,46 @@ export default async function AIProductDesignPage() {
                   </p>
                 </div>
               ) : (
-                <div className="flex justify-center lg:justify-start">
-                  <CtaButton mode="curriculum" className="px-10">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                  <CtaButton mode="call" className="px-8">
+                    Start Building Today
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </CtaButton>
+                  <CtaButton mode="curriculum" variant="outline" className="px-8">
                     <BookOpen className="w-4 h-4 mr-2" />
-                    View the Curriculum
+                    View Curriculum
                   </CtaButton>
                 </div>
               )}
 
-              {/* Top perks, first fold */}
-              <div className="mt-10">
-                <div className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">
-                  Enrollment includes
+              {/* Enrollment includes panel */}
+              <div className="mt-8 rounded-2xl bg-card shadow-sm p-6 text-left">
+                <div className="text-xs font-semibold tracking-widest uppercase text-primary mb-4">
+                  Enrollment Includes
                 </div>
-                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5">
                   {[
-                    { logo: <FigmaLogo className="h-6 w-auto" />, name: "Figma Professional", tag: "6 months" },
+                    { logo: <FigmaLogo className="h-5 w-auto" />, name: "Figma Professional", sub: "6 months" },
                     {
                       logo: (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src="/img/CV-Edge-Logo-square.svg" alt="" className="w-6 h-6" />
+                        <img src="/img/CV-Edge-Logo-square.svg" alt="" className="w-5 h-5" />
                       ),
                       name: "CVEdge Pro",
-                      tag: "Lifetime",
+                      sub: "Lifetime access",
                     },
-                  ].map((perk) => (
-                    <div key={perk.name} className="flex items-center gap-2.5 rounded-full bg-card shadow-sm pl-3 pr-4 py-2">
-                      {perk.logo}
-                      <span className="text-sm font-medium">{perk.name}</span>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${tagClasses(perk.tag)}`}>
-                        {perk.tag}
+                    { logo: <Sparkles className="w-5 h-5 text-primary" />, name: "AI Prompt Library", sub: "Lifetime" },
+                    { logo: <LayoutDashboard className="w-5 h-5 text-[#1E3A5F] dark:text-[#9DB8D9]" />, name: "Portfolio Templates", sub: "Included" },
+                    { logo: <FileText className="w-5 h-5 text-[#065F46] dark:text-[#34D399]" />, name: "Resume Review", sub: "During program" },
+                    { logo: <Users className="w-5 h-5 text-[#0d9488]" />, name: "Discord Community", sub: "Lifetime" },
+                  ].map((item) => (
+                    <div key={item.name} className="flex items-start gap-3">
+                      <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-background shadow-sm shrink-0">
+                        {item.logo}
+                      </span>
+                      <span>
+                        <span className="block text-sm font-semibold leading-tight">{item.name}</span>
+                        <span className="block text-xs text-muted-foreground mt-0.5">{item.sub}</span>
                       </span>
                     </div>
                   ))}
@@ -271,44 +291,83 @@ export default async function AIProductDesignPage() {
               </div>
             </div>
 
-            {/* Layered session cards */}
-            <div className="lg:col-span-5 hidden lg:block relative h-[420px]" aria-hidden>
-              <DotGrid id="hero-dots" className="absolute -top-8 -right-8 w-48 h-48 text-primary/25" />
-              <SparkleDoodle className="absolute -top-2 left-6 w-10 h-10 text-[#34D399]" />
-              <div className="absolute top-0 right-4 w-72 rounded-2xl bg-card shadow-lg p-5 rotate-2">
-                <div className="text-xs text-primary font-semibold tracking-widest uppercase mb-2">Phase 04 · Build</div>
-                <div className="font-semibold mb-3">AI Product Design</div>
-                <div className="h-2 rounded-full bg-secondary mb-2">
-                  <div className="h-2 w-3/4 rounded-full bg-primary" />
+            {/* Right: photo + floating session cards */}
+            <div className="relative lg:pl-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/img/mentorship-hero.jpg"
+                alt="A designer learning in a live mentorship session"
+                className="rounded-3xl w-full max-w-xl mx-auto"
+              />
+              <div className="hidden md:block" aria-hidden>
+                <div className="absolute top-4 -right-1 lg:right-0 w-60 rounded-2xl bg-card/95 shadow-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#065F46] text-white shrink-0">
+                      <Rocket className="w-5 h-5" />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-bold">Portfolio Shipped</span>
+                      <span className="block text-xs text-muted-foreground">Build. Validate. Launch.</span>
+                    </span>
+                    <CheckCircle2 className="w-5 h-5 text-success ml-auto shrink-0" />
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground">Session 74 of 100</div>
-              </div>
-              <div className="absolute top-40 left-0 w-72 rounded-2xl bg-[#065F46] text-white shadow-xl p-5 -rotate-2">
-                <div className="flex items-center gap-2 text-[#34D399] text-xs font-semibold tracking-widest uppercase mb-2">
-                  <CalendarDays className="w-3.5 h-3.5" /> Today, 7:00 PM
+                <div className="absolute top-1/3 -right-1 lg:right-0 w-60 rounded-2xl bg-card/95 shadow-lg p-4">
+                  <div className="flex items-center gap-3 mb-2.5">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#065F46] text-white shrink-0">
+                      <TrendingUp className="w-5 h-5" />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-bold">Session Progress</span>
+                      <span className="block text-xs text-muted-foreground">74 of 100 sessions</span>
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-secondary">
+                    <div className="h-1.5 w-3/4 rounded-full bg-primary" />
+                  </div>
                 </div>
-                <div className="font-semibold mb-1">Capstone review with your mentor</div>
-                <div className="text-sm text-white/60">Live 1:1 · Google Meet</div>
-              </div>
-              <div className="absolute bottom-4 right-10 rounded-full bg-card shadow-md px-4 py-2 text-sm font-medium rotate-1">
-                Claude · Cursor · MCP · Figma
-              </div>
-              <div className="absolute top-28 left-24 rounded-full bg-success/15 text-success shadow-sm px-4 py-2 text-sm font-medium -rotate-3">
-                Portfolio shipped ✓
+                <div className="absolute top-[62%] -right-1 lg:right-0 w-60 rounded-2xl bg-card/95 shadow-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#065F46] text-white shrink-0">
+                      <CalendarDays className="w-5 h-5" />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-bold">Next Live Review</span>
+                      <span className="block text-xs text-muted-foreground">
+                        Today, 7:00 PM{" "}
+                        <span className="px-1.5 py-0.5 rounded-full bg-secondary text-[10px] font-medium">Google Meet</span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div className="absolute bottom-6 right-2 lg:right-6 text-right">
+                  <p className="font-serif italic text-sm leading-snug text-foreground/80">
+                    Real projects.<br />Real feedback.<br />Real growth.
+                  </p>
+                  <ScribbleUnderline className="w-24 h-2.5 text-[#34D399] ml-auto mt-1" />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Stat strip */}
-          <div className="mt-16 grid grid-cols-3 max-w-2xl mx-auto lg:mx-0 text-center lg:text-left">
+          {/* Stat bar */}
+          <div className="mt-10 rounded-2xl bg-card shadow-sm px-6 py-6 grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { big: "100", small: "hours live" },
-              { big: "1:1", small: "mentorship" },
-              { big: "5", small: "phases, one arc" },
+              { icon: Clock, big: "100", label: "Hours Live", sub: "Hands-on learning" },
+              { icon: GraduationCap, big: "1:1", label: "Personal Mentorship", sub: "Direct guidance" },
+              { icon: Compass, big: "5", label: "Phases, One Arc", sub: "Think → Design → Build → Ship" },
+              { icon: InfinityIcon, big: "Lifetime", label: "Access", sub: "Learn. Build. Grow." },
             ].map((s) => (
-              <div key={s.small}>
-                <div className="text-4xl md:text-5xl font-bold text-primary">{s.big}</div>
-                <div className="text-xs md:text-sm text-muted-foreground mt-1">{s.small}</div>
+              <div key={s.label} className="flex items-center gap-4">
+                <span className="flex items-center justify-center w-11 h-11 rounded-full border border-border text-primary shrink-0">
+                  <s.icon className="w-5 h-5" />
+                </span>
+                <span>
+                  <span className="block text-xl font-bold leading-tight">
+                    {s.big} <span className="text-sm font-semibold">{s.label}</span>
+                  </span>
+                  <span className="block text-xs text-muted-foreground">{s.sub}</span>
+                </span>
               </div>
             ))}
           </div>

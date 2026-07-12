@@ -158,12 +158,16 @@ export async function POST(request: NextRequest) {
       })
       .eq("id", lead.id);
 
-    // Call requests don't need the PDF; curriculum/brochure get a signed URL
+    // Call requests don't need a PDF; curriculum/brochure each get their own signed URL
     let curriculumUrl: string | null = null;
     if (intent !== "call") {
+      const file =
+        intent === "brochure"
+          ? "cvedge-mentorship-brochure.pdf"
+          : "cvedge-mentorship-curriculum.pdf";
       const { data: signedUrl } = await admin.storage
         .from("mentorship")
-        .createSignedUrl("curriculum/ai-product-design.pdf", 3600);
+        .createSignedUrl(file, 3600);
       curriculumUrl = signedUrl?.signedUrl || null;
     }
 
