@@ -295,17 +295,74 @@ export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boole
 
         {/* Gated curriculum bar */}
         {!indiaRestricted && (
-          <div className="mt-6 rounded-2xl bg-white dark:bg-background shadow-sm px-6 py-4 flex flex-col sm:flex-row items-center sm:justify-between gap-4 max-w-3xl mx-auto">
-            <span className="flex items-center gap-3 text-sm text-muted-foreground text-center sm:text-left">
-              <span className="hidden sm:flex items-center justify-center w-9 h-9 rounded-lg bg-[#065F46]/[0.07] dark:bg-[#34D399]/10 shrink-0">
-                <Sparkles className="w-4 h-4 text-[#065F46] dark:text-[#34D399]" />
-              </span>
-              The full session-by-session curriculum is not public.
-            </span>
-            <CtaButton mode="curriculum" className="px-6 shrink-0 w-full sm:w-auto">
-              <BookOpen className="w-4 h-4 mr-2" />
-              Get the Full Curriculum
-            </CtaButton>
+          <div className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a6b50] to-[#04382b] text-white p-7 md:p-10">
+            <div className="pointer-events-none absolute -top-20 -right-20 w-64 h-64 rounded-full border-[20px] border-[#34D399]/10" aria-hidden />
+            <div className="grid lg:grid-cols-12 gap-8 items-center relative">
+              <div className="lg:col-span-7">
+                <div className="inline-flex items-center gap-2 mb-4 px-3.5 py-1.5 bg-[#34D399]/15 text-[#34D399] rounded-full text-xs font-bold tracking-widest uppercase">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  The Lead Curriculum · Free PDF
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold mb-3">
+                  Get the complete 50-session curriculum
+                </h3>
+                <p className="text-white/70 text-sm mb-6 max-w-lg">
+                  The version on this page is the outline. The full document maps
+                  every single session before you spend a dollar.
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    "All 50 sessions mapped: UX topic, UI craft, AI tooling and daily assignment",
+                    "The anatomy of a session: exactly how every 2-hour block is spent",
+                    "The capstone brief, from session 40 kickoff to Demo Day",
+                    "Instant access, straight to your email",
+                  ].map((line) => (
+                    <li key={line} className="flex items-start gap-3 text-sm">
+                      <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#34D399] shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-[#04382b]" strokeWidth={3} />
+                      </span>
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* PDF preview + CTA */}
+              <div className="lg:col-span-5 flex flex-col items-center gap-6">
+                <div className="relative" aria-hidden>
+                  <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-xl bg-white/10 rotate-3" />
+                  <div className="relative w-48 rounded-xl bg-[#F5F0E8] text-[#065F46] shadow-2xl p-5 -rotate-2">
+                    <div className="flex items-center gap-1.5 mb-5">
+                      <span className="w-5 h-5 rounded-md bg-[#065F46]" />
+                      <span className="text-xs font-bold text-[#1f2a28]">CVEdge</span>
+                    </div>
+                    <div className="text-[9px] font-bold tracking-widest uppercase mb-1.5">AI Product Design</div>
+                    <div className="text-xl font-black leading-tight text-[#1f2a28]">
+                      The Full <span className="text-[#065F46]">Curriculum</span>
+                    </div>
+                    <div className="h-1.5 w-12 rounded-full bg-[#34D399] mt-2 mb-4" />
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[["100", "hours"], ["1:1", "live"], ["50", "sessions"], ["5", "phases"]].map(([big, small]) => (
+                        <div key={small} className="rounded-md bg-white px-2 py-1.5">
+                          <div className="text-sm font-bold text-[#065F46] leading-none">{big}</div>
+                          <div className="text-[8px] text-[#6b7570] mt-0.5">{small}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full text-center">
+                  <CtaButton
+                    mode="curriculum"
+                    className="w-full sm:w-auto px-10 bg-white text-[#065F46] hover:bg-white/90 text-base h-12"
+                  >
+                    <BookOpen className="w-5 h-5 mr-2" />
+                    Get the Full Curriculum
+                  </CtaButton>
+                  <p className="text-xs text-white/50 mt-3">Free · Instant access · 9-page PDF</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
