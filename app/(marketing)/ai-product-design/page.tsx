@@ -127,6 +127,42 @@ const FAQS = [
   },
 ];
 
+// Course structured data — only claims that appear on the page (no price: page shows none)
+const COURSE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  name: "AI Product Design Mentorship",
+  description:
+    "100 hours of live 1:1 mentorship. Think, design, and ship AI-powered products, with a portfolio, capstone, and career support included.",
+  url: "https://www.thecvedge.com/ai-product-design",
+  provider: {
+    "@type": "Organization",
+    name: "CVEdge",
+    url: "https://www.thecvedge.com",
+  },
+  instructor: {
+    "@type": "Person",
+    name: "B Sivarami Reddy",
+    jobTitle: "AI Product Designer",
+    sameAs: ["https://linkedin.com/in/uxsiva", "https://uxsiva.onrender.com"],
+  },
+  hasCourseInstance: {
+    "@type": "CourseInstance",
+    courseMode: "Online",
+    courseWorkload: "PT100H",
+    instructor: { "@type": "Person", name: "B Sivarami Reddy" },
+  },
+  teaches: [
+    "Product thinking",
+    "AI product design",
+    "Design systems",
+    "AI-assisted prototyping and building",
+    "Portfolio and career preparation",
+  ],
+  educationalLevel: "Beginner to Intermediate",
+  inLanguage: "en",
+};
+
 export default async function AIProductDesignPage() {
   const headerList = await headers();
   const countryCode = headerList.get("x-vercel-ip-country");
@@ -134,6 +170,10 @@ export default async function AIProductDesignPage() {
 
   return (
     <MentorshipCtaProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(COURSE_JSON_LD) }}
+      />
       <PageTracker />
 
       {/* ── Hero: mockup layout — text + includes left, photo + floating cards right ── */}
@@ -238,9 +278,12 @@ export default async function AIProductDesignPage() {
               {/* Mobile: plain image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/img/mentorship-hero.png"
+                src="/img/mentorship-hero.webp"
                 alt="A designer learning in a live mentorship session"
-                className="lg:hidden w-full"
+                width={1100}
+                height={733}
+                fetchPriority="high"
+                className="lg:hidden w-full h-auto"
               />
 
               {/* Desktop: photo blends into bg over a glow */}
@@ -252,9 +295,12 @@ export default async function AIProductDesignPage() {
                 <SparkleDoodle className="absolute right-10 top-2 w-7 h-7 text-primary/60 z-10" aria-hidden />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/img/mentorship-hero.png"
+                  src="/img/mentorship-hero.webp"
                   alt=""
-                  className="absolute bottom-0 inset-x-0 mx-auto w-[94%]"
+                  width={1100}
+                  height={733}
+                  fetchPriority="high"
+                  className="absolute bottom-0 inset-x-0 mx-auto w-[94%] h-auto"
                 />
               </div>
             </div>

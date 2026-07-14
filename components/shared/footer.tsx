@@ -42,6 +42,7 @@ const productLinks: { label: string; href: string; external?: boolean }[] = [
   { label: "Pricing", href: "/pricing" },
   { label: "Upload Resume", href: "/upload-resume" },
   { label: "Interview Coach", href: "/interview-prep" },
+  { label: "AI Product Design Mentorship", href: "/ai-product-design" },
   { label: "Blog", href: "/blog" },
 ];
 

@@ -36,6 +36,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Supabase unavailable at build time — blog posts omitted from sitemap
   }
 
+  // --- Mentorship funnel pages ---
+  const MENTORSHIP_LAST_MODIFIED = new Date("2026-07-12T00:00:00Z");
+  const mentorshipPages: MetadataRoute.Sitemap = [
+    { url: "https://www.thecvedge.com/ai-product-design", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.95 },
+    { url: "https://www.thecvedge.com/product-design-course", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
+    { url: "https://www.thecvedge.com/ux-mentorship", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
+    { url: "https://www.thecvedge.com/product-design-mentor", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
+    { url: "https://www.thecvedge.com/learn-product-design", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
+  ];
+
   // --- SEO money pages ---
   const seoMoneyPages: MetadataRoute.Sitemap = [
     { url: "https://www.thecvedge.com/resume-templates", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 1.0 },
@@ -80,6 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "https://www.thecvedge.com/interview-prep", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.8 },
     { url: "https://www.thecvedge.com/jobs", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "daily", priority: 0.8 },
     { url: "https://www.thecvedge.com/blog", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
+    ...mentorshipPages,
     ...seoMoneyPages,
     ...templateCategoryPages,
     ...templateLeafPages,
