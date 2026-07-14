@@ -2,11 +2,12 @@ import { headers } from "next/headers";
 import {
   GraduationCap, Target, Bot, BookOpen,
   CheckCircle2, Check, Mic, MonitorPlay, LayoutDashboard, Compass,
-  FileText, Award, Library, ClipboardCheck, ArrowRight, Sparkles,
+  FileText, Award, Library, ClipboardCheck, Sparkles,
   Users, Clock, Star, User, Network, BrainCircuit,
   Infinity as InfinityIcon,
   CalendarDays, Download, PhoneCall, Briefcase,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { MentorshipCtaProvider, CtaButton } from "./cta-provider";
 import { PageTracker } from "./page-tracker";
 import { CurriculumExplorer } from "./curriculum-explorer";
@@ -229,12 +230,13 @@ export default async function AIProductDesignPage() {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                   <CtaButton mode="call" className="px-8">
                     Start Building Today
-                    <ArrowRight className="w-4 h-4 ml-2" />
                   </CtaButton>
-                  <CtaButton mode="curriculum" variant="outline" className="px-8">
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    View Curriculum
-                  </CtaButton>
+                  <Button asChild size="lg" variant="outline" className="px-8">
+                    <a href="#curriculum">
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      View Curriculum
+                    </a>
+                  </Button>
                 </div>
               )}
 

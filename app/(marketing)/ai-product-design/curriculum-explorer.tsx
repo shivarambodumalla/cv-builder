@@ -6,7 +6,7 @@ import {
   Brain, Search, PenTool, Rocket, Target, User, Lightbulb, Eye,
   Briefcase, FileText, Network, LayoutGrid, Accessibility, BarChart3,
   Bot, Cpu, Mic, Award, Check, ArrowRight, ArrowLeft, BookOpen,
-  Sparkles, ChevronRight,
+  Sparkles, ChevronRight, Download,
 } from "lucide-react";
 import { CtaButton } from "./cta-provider";
 
@@ -117,7 +117,7 @@ export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boole
   const phase = PHASES[active];
 
   return (
-    <section id="curriculum" className="bg-card">
+    <section id="curriculum" className="bg-card scroll-mt-16">
       <div className="container max-w-6xl mx-auto px-4 py-16 md:py-20">
         {/* Header */}
         <div className="text-center mb-10">
@@ -133,6 +133,19 @@ export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boole
           <p className="text-muted-foreground">
             Five phases. One arc. Built for real-world impact.
           </p>
+          {!indiaRestricted && (
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <CtaButton
+                mode="curriculum"
+                variant="outline"
+                className="border-[#065F46]/30 text-[#065F46] hover:bg-[#065F46]/5 hover:text-[#065F46] dark:border-[#34D399]/30 dark:text-[#34D399] dark:hover:bg-[#34D399]/10 dark:hover:text-[#34D399]"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Full Curriculum
+              </CtaButton>
+              <span className="text-xs text-muted-foreground">Free · All 50 sessions · PDF to your inbox</span>
+            </div>
+          )}
         </div>
 
         {/* Mobile stepper */}
