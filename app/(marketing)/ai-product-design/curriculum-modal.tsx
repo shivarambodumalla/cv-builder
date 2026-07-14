@@ -76,8 +76,8 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
         setError("Please fill in your name and email.");
         return;
       }
-      if (mode === "call" && !phone) {
-        setError("Please add your phone number so we can confirm your call.");
+      if (!phone) {
+        setError("Please add your phone number.");
         return;
       }
 
@@ -92,7 +92,7 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
             intent: mode,
             name,
             email,
-            phone: phone ? `${selected?.dial ?? ""} ${phone}`.trim() : undefined,
+            phone: `${selected?.dial ?? ""} ${phone}`.trim(),
             country: selected?.label,
             country_code: selected?.iso,
             experience_level: experience || undefined,
@@ -204,8 +204,8 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder={mode === "call" ? "Phone *" : "Phone"}
-                  required={mode === "call"}
+                  placeholder="Phone *"
+                  required
                   disabled={loading}
                   className="flex-1"
                 />

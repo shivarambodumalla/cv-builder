@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getScore } from "@/lib/mentorship/scoring";
+import { firstName, MENTORSHIP_ASSETS, downloadMentorshipAsset } from "@/lib/mentorship/email-drip";
+import { sendEmailAsync } from "@/lib/email/sender";
 
 type Intent = "curriculum" | "brochure" | "call";
 
@@ -59,8 +61,11 @@ export async function POST(request: NextRequest) {
       visitor_id?: string;
     } = body;
 
-    if (!name || !email) {
-      return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
+    if (!name || !email || !phone) {
+      return NextResponse.json(
+        { error: "Name, email and phone are required" },
+        { status: 400 }
+      );
     }
 
     const mapping = INTENT_MAP[intent] ?? INTENT_MAP.curriculum;
@@ -93,7 +98,7 @@ export async function POST(request: NextRequest) {
         },
         { onConflict: "email" }
       )
-      .select("id, status, score")
+      .select("id, status, score, email_stage")
       .single();
 
     if (upsertError || !lead) {
@@ -170,6 +175,48 @@ export async function POST(request: NextRequest) {
         .createSignedUrl(file, 3600);
       curriculumUrl = signedUrl?.signedUrl || null;
     }
+
+    // Day-0 welcome (drip stage 1), once per lead. The requested PDF rides
+    // along as an attachment; call bookers get the curriculum as well.
+    if (!lead.email_stage || lead.email_stage === 0) {
+      const assetKey = intent === "brochure" ? "brochure" : "curriculum";
+      const attachment = await downloadMentorshipAsset(admin.storage, assetKey);
+      sendEmailAsync({
+        to: email,
+        templateName: "mentorship_welcome",
+        variables: { name: firstName(name), asset_name: MENTORSHIP_ASSETS[assetKey].label },
+        attachments: attachment ? [attachment] : undefined,
+      });
+      await admin
+        .from("mentorship_leads")
+        .update({ email_stage: 1, email_stage_at: new Date().toISOString() })
+        .eq("id", lead.id);
+    }
+
+    // Notify admin on every capture (same pattern as guarantee claims)
+    try {
+      const adminEmails = (process.env.ADMIN_EMAIL || "").split(",").map((e) => e.trim()).filter(Boolean);
+      if (adminEmails.length > 0 && process.env.RESEND_API_KEY) {
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const newScore = (lead.score ?? 0) + getScore(mapping.event);
+        await resend.emails.send({
+          from: "CVEdge <hello@thecvedge.com>",
+          to: adminEmails,
+          subject: `Mentorship lead: ${mapping.event} — ${name} (${email})`,
+          html: `<h2>New mentorship activity: ${mapping.event}</h2>
+<p><strong>Name:</strong> ${name}</p>
+<p><strong>Email:</strong> ${email}</p>
+<p><strong>Phone:</strong> ${phone || "not given"}</p>
+<p><strong>Country:</strong> ${country || country_code || geoCountry || "unknown"}</p>
+<p><strong>Experience:</strong> ${experience_level || "not given"}</p>
+<p><strong>Intent:</strong> ${intent}</p>
+<p><strong>Score:</strong> ${newScore}${newScore >= 100 ? " 🔥 hot lead" : ""}</p>
+${utm_source ? `<p><strong>UTM:</strong> ${utm_source} / ${utm_campaign || ""}</p>` : ""}
+<p><a href="https://www.thecvedge.com/admin/mentorship/leads/${lead.id}">Open lead in CRM</a></p>`,
+        });
+      }
+    } catch { /* notification failure must not block the lead flow */ }
 
     return NextResponse.json({
       ok: true,

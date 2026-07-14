@@ -47,14 +47,20 @@ function warnOnUnreplacedVars(templateName: string, ...parts: Array<string | und
   }
 }
 
+export interface EmailAttachment {
+  filename: string;
+  content: Buffer;
+}
+
 interface SendEmailParams {
   to: string;
   templateName: string;
   variables?: Record<string, string>;
   userId?: string | null;
+  attachments?: EmailAttachment[];
 }
 
-export async function sendEmail({ to, templateName, variables = {}, userId }: SendEmailParams): Promise<void> {
+export async function sendEmail({ to, templateName, variables = {}, userId, attachments }: SendEmailParams): Promise<void> {
   const supabase = createAdminClient();
 
   try {
@@ -125,6 +131,7 @@ export async function sendEmail({ to, templateName, variables = {}, userId }: Se
       to,
       subject,
       html,
+      ...(attachments && attachments.length > 0 ? { attachments } : {}),
     });
 
     if (error) throw new Error(error.message);
