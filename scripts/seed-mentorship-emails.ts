@@ -19,17 +19,39 @@ const TEMPLATES = [
 
 Thanks for your interest in the AI Product Design Mentorship.
 
-Your {{asset_name}} is attached to this email as a PDF. It covers all five phases: Think, Understand, Design, Build and Launch, across 50 live 1:1 sessions.
+Your curriculum and the program brochure are attached to this email as PDFs. The curriculum maps all five phases: Think, Understand, Design, Build and Launch, across 50 live 1:1 sessions. The brochure covers everything included with enrollment.
 
 What happens next:
-1. Read the PDF and note any questions
+1. Read the PDFs and note any questions
 2. Book a free discovery call whenever you are ready
 3. We will map your background to the program together, no pressure
 
 Every session in the program is live and 1:1, so the pace adapts to you.
 
 If you would rather not hear from us, just reply to this email and we will remove you.`,
-    cta_text: "Book a free discovery call",
+    cta_text: "View the Program",
+    cta_url: PROGRAM_URL,
+    after_cta_html: MENTOR_SECTION,
+    enabled: true,
+  },
+  {
+    name: "mentorship_call_welcome",
+    subject: "Your discovery call request is in",
+    heading: "Request received, {{name}}",
+    subheading: "We will confirm your slot on WhatsApp shortly.",
+    body_html: `Hi {{name}},
+
+Thanks for requesting a discovery call for the AI Product Design Mentorship.
+
+What happens next:
+1. We message you on WhatsApp to agree a time that works for you
+2. The call is 30 minutes, free, and about fit, not a pitch
+3. Bring your hardest questions, that is what it is for
+
+To help you prepare, the full curriculum and the program brochure are attached as PDFs.
+
+If anything changes before we speak, just reply to this email.`,
+    cta_text: "View the Program",
     cta_url: PROGRAM_URL,
     after_cta_html: MENTOR_SECTION,
     enabled: true,
@@ -50,7 +72,7 @@ The arc: Think teaches product framing before pixels. Understand covers research
 From session 40 onwards, everything feeds your capstone: a real product you shipped, not a fictional portfolio piece.
 
 Questions about fit? Book a free discovery call and ask them directly.`,
-    cta_text: "Book a free discovery call",
+    cta_text: "Explore the Program",
     cta_url: PROGRAM_URL,
     enabled: true,
   },
@@ -86,8 +108,8 @@ Ask what we have shipped. Ask to see the work. Ask how much of each session is y
 The program is led by B Sivarami Reddy, a designer-founder with 10+ years in AI product design who built and runs CVEdge itself. His work and background are public, so you can check everything before you book.
 
 No pressure either way. The call is about fit, not a pitch.`,
-    cta_text: "Book a free discovery call",
-    cta_url: PROGRAM_URL,
+    cta_text: "Meet Your Mentor",
+    cta_url: `${PROGRAM_URL}#mentor`,
     enabled: true,
   },
   {
@@ -120,7 +142,7 @@ This is the last email in this series. No tricks, we just do not believe in emai
 If AI product design is still on your roadmap, everything is where you left it: the curriculum, the program page, and the free discovery call. Cohorts are small because every session is 1:1, so when you are ready, reach out and we will find you a slot.
 
 Whatever you decide, good luck with the career. It is a good time to be a designer who can build.`,
-    cta_text: "Book a discovery call",
+    cta_text: "View the Program",
     cta_url: PROGRAM_URL,
     enabled: true,
   },

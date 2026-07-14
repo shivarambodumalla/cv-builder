@@ -36,12 +36,32 @@ export const MENTORSHIP_ASSETS = {
 
 // Supabase client is passed in (not imported) so this stays usable from
 // both the lead route and the cron without a client-side bundle leak.
+type StorageClient = {
+  from: (bucket: string) => { download: (path: string) => Promise<{ data: Blob | null; error: unknown }> };
+};
+
 export async function downloadMentorshipAsset(
-  storage: { from: (bucket: string) => { download: (path: string) => Promise<{ data: Blob | null; error: unknown }> } },
+  storage: StorageClient,
   asset: keyof typeof MENTORSHIP_ASSETS
 ): Promise<{ filename: string; content: Buffer } | null> {
   const { storageFile, attachmentName } = MENTORSHIP_ASSETS[asset];
   const { data } = await storage.from("mentorship").download(storageFile);
   if (!data) return null;
   return { filename: attachmentName, content: Buffer.from(await data.arrayBuffer()) };
+}
+
+// Every welcome carries both PDFs: the curriculum answers "what will I
+// learn", the brochure answers "what do I get".
+export async function downloadAllMentorshipAssets(
+  storage: StorageClient
+): Promise<{ filename: string; content: Buffer }[]> {
+  const files = await Promise.all([
+    downloadMentorshipAsset(storage, "curriculum"),
+    downloadMentorshipAsset(storage, "brochure"),
+  ]);
+  return files.filter((f): f is NonNullable<typeof f> => f !== null);
+}
+
+export function welcomeTemplateForIntent(intent: string): string {
+  return intent === "call" ? "mentorship_call_welcome" : "mentorship_welcome";
 }

@@ -5,8 +5,7 @@ import {
   DRIP_STAGES,
   FINAL_DRIP_STAGE,
   DRIP_EXCLUDED_STATUSES,
-  MENTORSHIP_ASSETS,
-  downloadMentorshipAsset,
+  downloadAllMentorshipAssets,
   firstName,
 } from "@/lib/mentorship/email-drip";
 
@@ -54,20 +53,21 @@ export async function GET(request: NextRequest) {
     }
 
     // Stage 1 is normally sent inline at capture; if the cron is catching a
-    // lead up, the welcome still delivers the curriculum PDF as an attachment.
+    // lead up, the welcome still carries both PDFs, and call bookers get
+    // the call-specific variant.
     const isWelcome = nextStage.stage === 1;
-    const attachment = isWelcome
-      ? await downloadMentorshipAsset(supabase.storage, "curriculum")
-      : null;
+    const template = isWelcome && lead.status === "call_booked"
+      ? "mentorship_call_welcome"
+      : nextStage.template;
+    const attachments = isWelcome
+      ? await downloadAllMentorshipAssets(supabase.storage)
+      : undefined;
 
     await sendEmail({
       to: lead.email,
-      templateName: nextStage.template,
-      variables: {
-        name: firstName(lead.name),
-        ...(isWelcome ? { asset_name: MENTORSHIP_ASSETS.curriculum.label } : {}),
-      },
-      attachments: attachment ? [attachment] : undefined,
+      templateName: template,
+      variables: { name: firstName(lead.name) },
+      attachments,
     });
 
     await supabase
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     await supabase.from("mentorship_lead_activities").insert({
       lead_id: lead.id,
       event: "email_sent",
-      metadata: { template: nextStage.template, stage: nextStage.stage, day: nextStage.day },
+      metadata: { template, stage: nextStage.stage, day: nextStage.day },
     });
 
     sent++;

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getScore } from "@/lib/mentorship/scoring";
-import { firstName, MENTORSHIP_ASSETS, downloadMentorshipAsset } from "@/lib/mentorship/email-drip";
+import { firstName, downloadAllMentorshipAssets, welcomeTemplateForIntent } from "@/lib/mentorship/email-drip";
 import { sendEmailAsync } from "@/lib/email/sender";
 
 type Intent = "curriculum" | "brochure" | "call";
@@ -176,16 +176,15 @@ export async function POST(request: NextRequest) {
       curriculumUrl = signedUrl?.signedUrl || null;
     }
 
-    // Day-0 welcome (drip stage 1), once per lead. The requested PDF rides
-    // along as an attachment; call bookers get the curriculum as well.
+    // Day-0 welcome (drip stage 1), once per lead. Both PDFs ride along as
+    // attachments; call bookers get a call-specific welcome.
     if (!lead.email_stage || lead.email_stage === 0) {
-      const assetKey = intent === "brochure" ? "brochure" : "curriculum";
-      const attachment = await downloadMentorshipAsset(admin.storage, assetKey);
+      const attachments = await downloadAllMentorshipAssets(admin.storage);
       sendEmailAsync({
         to: email,
-        templateName: "mentorship_welcome",
-        variables: { name: firstName(name), asset_name: MENTORSHIP_ASSETS[assetKey].label },
-        attachments: attachment ? [attachment] : undefined,
+        templateName: welcomeTemplateForIntent(intent),
+        variables: { name: firstName(name) },
+        attachments,
       });
       await admin
         .from("mentorship_leads")
