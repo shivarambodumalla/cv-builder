@@ -39,6 +39,7 @@ const COUNTRY_CODES = [
   { iso: "SA", label: "Saudi Arabia", dial: "+966" },
   { iso: "QA", label: "Qatar", dial: "+974" },
   { iso: "SG", label: "Singapore", dial: "+65" },
+  { iso: "IN", label: "India", dial: "+91" },
 ];
 
 interface CurriculumModalProps {

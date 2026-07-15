@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import {
   GraduationCap, Target, Bot, BookOpen,
   CheckCircle2, Check, Mic, MonitorPlay, LayoutDashboard, Compass,
@@ -16,7 +15,6 @@ import {
   CapstoneScene, FigmaLogo,
 } from "./illustrations";
 
-export const dynamic = "force-dynamic";
 
 // ── Included with every enrollment ──
 const FEATURED_PERK = {
@@ -164,11 +162,7 @@ const COURSE_JSON_LD = {
   inLanguage: "en",
 };
 
-export default async function AIProductDesignPage() {
-  const headerList = await headers();
-  const countryCode = headerList.get("x-vercel-ip-country");
-  const indiaRestricted = countryCode === "IN";
-
+export default function AIProductDesignPage() {
   return (
     <MentorshipCtaProvider>
       <script
@@ -219,26 +213,17 @@ export default async function AIProductDesignPage() {
                 <span className="text-muted-foreground font-medium">100+ Designers Mentored</span>
               </div>
 
-              {indiaRestricted ? (
-                <div className="inline-block bg-warning/10 px-6 py-4 rounded-2xl">
-                  <p className="font-semibold text-warning">Coming Soon in India</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    We are preparing the program for the Indian market. Check back soon.
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <CtaButton mode="call" className="px-8">
-                    Start Building Today
-                  </CtaButton>
-                  <Button asChild size="lg" variant="outline" className="px-8">
-                    <a href="#curriculum">
-                      <BookOpen className="w-4 h-4 mr-2" />
-                      View Curriculum
-                    </a>
-                  </Button>
-                </div>
-              )}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <CtaButton mode="call" className="px-8">
+                  Start Building Today
+                </CtaButton>
+                <Button asChild size="lg" variant="outline" className="px-8">
+                  <a href="#curriculum">
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    View Curriculum
+                  </a>
+                </Button>
+              </div>
 
               {/* Enrollment includes panel */}
               <div className="mt-8 rounded-2xl bg-white dark:bg-card shadow-sm p-6 text-left">
@@ -556,16 +541,14 @@ export default async function AIProductDesignPage() {
             ))}
           </div>
 
-          {!indiaRestricted && (
-            <div className="mt-12 flex items-center justify-center gap-4">
-              <SparkleDoodle className="w-6 h-6 text-[#34D399] -scale-x-100" aria-hidden />
-              <CtaButton mode="brochure" className="px-8">
-                <Download className="w-4 h-4 mr-2" />
-                Download the Program Brochure
-              </CtaButton>
-              <SparkleDoodle className="w-6 h-6 text-[#34D399]" aria-hidden />
-            </div>
-          )}
+          <div className="mt-12 flex items-center justify-center gap-4">
+            <SparkleDoodle className="w-6 h-6 text-[#34D399] -scale-x-100" aria-hidden />
+            <CtaButton mode="brochure" className="px-8">
+              <Download className="w-4 h-4 mr-2" />
+              Download the Program Brochure
+            </CtaButton>
+            <SparkleDoodle className="w-6 h-6 text-[#34D399]" aria-hidden />
+          </div>
         </div>
       </section>
 
@@ -597,7 +580,7 @@ export default async function AIProductDesignPage() {
       </section>
 
       {/* ── Curriculum: interactive phase explorer ── */}
-      <CurriculumExplorer indiaRestricted={indiaRestricted} />
+      <CurriculumExplorer />
 
       {/* ── Capstone: split with giant numeral ── */}
       <section className="bg-card">
@@ -760,13 +743,9 @@ export default async function AIProductDesignPage() {
             A free 30 minute career consultation with your mentor. No pitch,
             no pressure. WhatsApp or Google Meet, your pick.
           </p>
-          {indiaRestricted ? (
-            <p className="font-medium">Coming Soon in India</p>
-          ) : (
-            <CtaButton mode="call" variant="secondary" className="px-12">
-              Book a Free Discovery Call
-            </CtaButton>
-          )}
+          <CtaButton mode="call" variant="secondary" className="px-12">
+            Book a Free Discovery Call
+          </CtaButton>
         </div>
       </section>
     </MentorshipCtaProvider>

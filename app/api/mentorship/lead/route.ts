@@ -71,11 +71,8 @@ export async function POST(request: NextRequest) {
     const mapping = INTENT_MAP[intent] ?? INTENT_MAP.curriculum;
     const admin = createAdminClient();
 
-    // India excluded in v1: check both the ISO code and Vercel's geo header
+    // Geo header kept as a country_code fallback (open worldwide, incl. India)
     const geoCountry = request.headers.get("x-vercel-ip-country");
-    if (country_code === "IN" || geoCountry === "IN") {
-      return NextResponse.json({ error: "Not available in India yet" }, { status: 403 });
-    }
 
     // Upsert lead by email (idempotent); status handled separately so it never regresses
     const { data: lead, error: upsertError } = await admin

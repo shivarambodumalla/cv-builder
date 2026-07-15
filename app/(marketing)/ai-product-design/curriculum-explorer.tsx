@@ -112,7 +112,7 @@ const STRIP = [
   { icon: Briefcase, title: "Outcome Driven", sub: "From learning to hired" },
 ];
 
-export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boolean }) {
+export function CurriculumExplorer() {
   const [active, setActive] = useState(0);
   const phase = PHASES[active];
 
@@ -133,19 +133,16 @@ export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boole
           <p className="text-muted-foreground">
             Five phases. One arc. Built for real-world impact.
           </p>
-          {!indiaRestricted && (
-            <div className="mt-6 flex flex-col items-center gap-2">
-              <CtaButton
-                mode="curriculum"
-                variant="outline"
-                className="border-[#065F46]/30 text-[#065F46] hover:bg-[#065F46]/5 hover:text-[#065F46] dark:border-[#34D399]/30 dark:text-[#34D399] dark:hover:bg-[#34D399]/10 dark:hover:text-[#34D399]"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Download Full Curriculum
-              </CtaButton>
-              <span className="text-xs text-muted-foreground">Free · All 50 sessions · PDF to your inbox</span>
-            </div>
-          )}
+          <div className="mt-6 flex justify-center">
+            <CtaButton
+              mode="curriculum"
+              variant="outline"
+              className="border-[#065F46]/30 text-[#065F46] hover:bg-[#065F46]/5 hover:text-[#065F46] dark:border-[#34D399]/30 dark:text-[#34D399] dark:hover:bg-[#34D399]/10 dark:hover:text-[#34D399]"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Full Curriculum
+            </CtaButton>
+          </div>
         </div>
 
         {/* Mobile stepper */}
@@ -307,8 +304,7 @@ export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boole
         </div>
 
         {/* Gated curriculum bar */}
-        {!indiaRestricted && (
-          <div className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a6b50] to-[#04382b] text-white p-7 md:p-10">
+        <div className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a6b50] to-[#04382b] text-white p-7 md:p-10">
             <div className="pointer-events-none absolute -top-20 -right-20 w-64 h-64 rounded-full border-[20px] border-[#34D399]/10" aria-hidden />
             <div className="grid lg:grid-cols-12 gap-8 items-center relative">
               <div className="lg:col-span-7">
@@ -376,8 +372,7 @@ export function CurriculumExplorer({ indiaRestricted }: { indiaRestricted: boole
                 </div>
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
     </section>
   );
