@@ -21,6 +21,16 @@ interface Props {
 export function AdminSidebarNav({ groups }: Props) {
   const pathname = usePathname();
 
+  // Longest matching href wins, so "/admin/mentorship" isn't lit on /admin/mentorship/leads
+  const activeHref = groups
+    .flatMap((g) => g.links)
+    .filter(
+      (l) =>
+        pathname === l.href ||
+        (l.href !== "/admin" && pathname?.startsWith(`${l.href}/`))
+    )
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+
   return (
     <nav className="p-4 space-y-5">
       {groups.map((group) => (
@@ -30,10 +40,7 @@ export function AdminSidebarNav({ groups }: Props) {
           </p>
           <div className="space-y-0.5">
             {group.links.map((link) => {
-              const isActive =
-                link.href === "/admin"
-                  ? pathname === "/admin"
-                  : pathname?.startsWith(link.href);
+              const isActive = link.href === activeHref;
 
               return (
                 <Link

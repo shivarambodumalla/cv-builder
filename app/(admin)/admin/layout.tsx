@@ -5,6 +5,13 @@ import { AdminSidebarNav } from "./admin-sidebar-nav";
 
 const NAV_GROUPS = [
   {
+    title: "AI Product Design Course",
+    links: [
+      { href: "/admin/mentorship", label: "Course Funnel & Visitors" },
+      { href: "/admin/mentorship/leads", label: "Leads (CRM)" },
+    ],
+  },
+  {
     title: "Overview",
     links: [
       { href: "/admin", label: "Dashboard" },
@@ -58,13 +65,6 @@ const NAV_GROUPS = [
     links: [
       { href: "/admin/marketing-analytics", label: "SEO & Channels" },
       { href: "/admin/testimonials", label: "Testimonials" },
-    ],
-  },
-  {
-    title: "Mentorship",
-    links: [
-      { href: "/admin/mentorship", label: "Dashboard" },
-      { href: "/admin/mentorship/leads", label: "Leads" },
     ],
   },
   {

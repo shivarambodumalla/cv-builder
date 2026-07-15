@@ -25,9 +25,11 @@ const TOOLTIP_W = 208; // w-52 in px
 export function ActivityChart({
   series,
   days30,
+  title = "Activity — last 30 days",
 }: {
   series: ChartSeries[];
   days30: string[];
+  title?: string;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const n = days30.length;
@@ -125,7 +127,7 @@ export function ActivityChart({
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold">Activity — last 30 days</CardTitle>
+        <CardTitle className="text-sm font-semibold">{title}</CardTitle>
         <p className="mt-1 text-xs text-muted-foreground">
           {days30[0].slice(5)} → {days30[n - 1].slice(5)} · all series on a shared scale
         </p>

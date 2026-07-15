@@ -3,6 +3,7 @@
 import { createContext, useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CurriculumModal, type CtaMode } from "./curriculum-modal";
+import { trackCtaClick } from "./telemetry";
 
 const CtaContext = createContext<{ open: (mode: CtaMode) => void }>({ open: () => {} });
 
@@ -30,7 +31,15 @@ export function CtaButton({
 }) {
   const { open } = useContext(CtaContext);
   return (
-    <Button size="lg" variant={variant} className={className} onClick={() => open(mode)}>
+    <Button
+      size="lg"
+      variant={variant}
+      className={className}
+      onClick={() => {
+        trackCtaClick(mode);
+        open(mode);
+      }}
+    >
       {children}
     </Button>
   );

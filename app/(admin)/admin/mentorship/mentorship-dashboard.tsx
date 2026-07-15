@@ -1,12 +1,26 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2, Users, Eye, Download, Phone, FileText, GraduationCap, Flame, TrendingUp } from "lucide-react";
+import { Loader2, Users, Eye, Download, Phone, FileText, GraduationCap, Flame, TrendingUp, MousePointerClick, MapPin } from "lucide-react";
+import { ActivityChart, type ChartSeries } from "../activity-chart";
+
+interface DailyPoint {
+  day: string;
+  visitors: number;
+  clicks: number;
+}
+
+interface LocationRow {
+  country_code: string | null;
+  city: string | null;
+  visitors: number;
+}
 
 interface Stats {
   visitors: number;
+  ctaClicks: number;
   leads: number;
   curriculumViews: number;
   downloads: number;
@@ -18,6 +32,8 @@ interface Stats {
   conversionPct: number;
   leadConversionPct: number;
   byStatus: Record<string, number>;
+  daily: DailyPoint[];
+  locations: LocationRow[];
 }
 
 type Preset = "7d" | "30d" | "90d" | "all";
@@ -39,6 +55,15 @@ const PRESETS: { key: Preset; label: string }[] = [
   { key: "90d", label: "3 Months" },
   { key: "all", label: "All Time" },
 ];
+
+const countryName = (code: string | null): string => {
+  if (!code) return "Unknown";
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+};
 
 export function MentorshipDashboard() {
   const [preset, setPreset] = useState<Preset>("30d");
@@ -70,6 +95,7 @@ export function MentorshipDashboard() {
   const cards = stats
     ? [
         { label: "Visitors", value: stats.visitors, icon: Users },
+        { label: "CTA Clicks", value: stats.ctaClicks, icon: MousePointerClick },
         { label: "Leads", value: stats.leads, icon: FileText },
         { label: "Curriculum Views", value: stats.curriculumViews, icon: Eye },
         { label: "Downloads", value: stats.downloads, icon: Download },
@@ -82,13 +108,36 @@ export function MentorshipDashboard() {
       ]
     : [];
 
+  // Daily visitors + CTA clicks as chart series (shared scale)
+  const { chartSeries, chartDays } = useMemo(() => {
+    const daily = stats?.daily ?? [];
+    if (daily.length < 2) return { chartSeries: null, chartDays: [] };
+    const days = daily.map((d) => d.day);
+    const mkSeries = (label: string, hex: string, values: number[]): ChartSeries => ({
+      label,
+      hex,
+      total: values.reduce((a, b) => a + b, 0),
+      max: Math.max(...values),
+      data: values.map((value, i) => ({ day: days[i], value })),
+    });
+    return {
+      chartDays: days,
+      chartSeries: [
+        mkSeries("Visitors", "#1a7a6d", daily.map((d) => d.visitors)),
+        mkSeries("CTA Clicks", "#D97706", daily.map((d) => d.clicks)),
+      ],
+    };
+  }, [stats]);
+
+  const maxLocationVisitors = stats?.locations[0]?.visitors ?? 0;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Mentorship</h1>
+          <h1 className="text-2xl font-bold">AI Product Design — Course Funnel</h1>
           <p className="text-sm text-muted-foreground">
-            AI Product Design mentorship program — leads &amp; funnel
+            Mentorship landing page traffic, leads &amp; pipeline (admin visits excluded)
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -128,15 +177,62 @@ export function MentorshipDashboard() {
             ))}
           </div>
 
-          <div className="border border-border rounded-lg p-4 bg-card">
-            <h2 className="text-sm font-semibold mb-3">Pipeline by Status</h2>
-            <div className="flex flex-wrap gap-3">
-              {["new", "viewed_curriculum", "downloaded_curriculum", "call_booked", "applied", "interview", "enrolled", "rejected", "lost"].map((s) => (
-                <div key={s} className="px-3 py-2 rounded-md bg-secondary/50 text-sm">
-                  <span className="text-muted-foreground">{s.replace(/_/g, " ")}:</span>{" "}
-                  <span className="font-semibold">{stats.byStatus[s] ?? 0}</span>
+          {chartSeries && (
+            <ActivityChart
+              series={chartSeries}
+              days30={chartDays}
+              title="Daily visitors & CTA clicks"
+            />
+          )}
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="border border-border rounded-lg p-4 bg-card">
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
+                <h2 className="text-sm font-semibold">Visitor Locations</h2>
+              </div>
+              {stats.locations.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No location data yet — collected from the next visit onwards.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {stats.locations.map((loc) => (
+                    <div
+                      key={`${loc.country_code}-${loc.city}`}
+                      className="flex items-center gap-3 text-sm"
+                    >
+                      <span className="flex-1 truncate">
+                        {loc.city ? `${loc.city}, ` : ""}
+                        {countryName(loc.country_code)}
+                      </span>
+                      <div className="w-28 h-1.5 rounded-full bg-secondary/60 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-primary"
+                          style={{
+                            width: `${maxLocationVisitors ? Math.max(6, (loc.visitors / maxLocationVisitors) * 100) : 0}%`,
+                          }}
+                        />
+                      </div>
+                      <span className="w-8 text-right font-semibold tabular-nums">
+                        {loc.visitors}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+            </div>
+
+            <div className="border border-border rounded-lg p-4 bg-card">
+              <h2 className="text-sm font-semibold mb-3">Pipeline by Status</h2>
+              <div className="flex flex-wrap gap-3">
+                {["new", "viewed_curriculum", "downloaded_curriculum", "call_booked", "applied", "interview", "enrolled", "rejected", "lost"].map((s) => (
+                  <div key={s} className="px-3 py-2 rounded-md bg-secondary/50 text-sm">
+                    <span className="text-muted-foreground">{s.replace(/_/g, " ")}:</span>{" "}
+                    <span className="font-semibold">{stats.byStatus[s] ?? 0}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </>
