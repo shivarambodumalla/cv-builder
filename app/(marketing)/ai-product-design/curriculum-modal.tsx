@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, X, CheckCircle2 } from "lucide-react";
 import { COUNTRY_CODES } from "./country-codes";
+import { trackMentorshipLead } from "@/lib/analytics/events";
 
 const VISITOR_ID_KEY = "mentorship_visitor_id";
 
@@ -100,6 +101,7 @@ export function CurriculumModal({ mode, onClose }: CurriculumModalProps) {
         const data = await response.json();
         setCurriculumUrl(data.curriculum_url ?? null);
         setSubmitted(true);
+        trackMentorshipLead(mode);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {

@@ -49,6 +49,11 @@ export function trackCoverLetter() {
   logActivity("Generated cover letter");
 }
 
+// GA4 recommended event — mark as key event in GA4 and import into Google Ads as a conversion
+export function trackMentorshipLead(intent: string) {
+  gtag("event", "generate_lead", { intent, event_category: "conversion", currency: "USD", value: 599 });
+}
+
 export function trackSignup(method: string = "google") {
   gtag("event", "sign_up", { method, event_category: "conversion" });
 }

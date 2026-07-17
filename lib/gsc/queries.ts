@@ -76,6 +76,59 @@ export async function fetchGSCPrevPeriodQueries(token: string, siteUrl: string, 
   });
 }
 
+// ─── GSC (page-filtered, e.g. mentorship cluster) ────────────────────────────
+
+function pageFilter(pageRegex: string) {
+  return {
+    dimensionFilterGroups: [
+      { filters: [{ dimension: "page", operator: "includingRegex", expression: pageRegex }] },
+    ],
+  };
+}
+
+export async function fetchGSCFilteredQueries(token: string, siteUrl: string, from: string, to: string, pageRegex: string) {
+  return gscQuery(token, siteUrl, {
+    startDate: from,
+    endDate: to,
+    dimensions: ["query"],
+    rowLimit: 50,
+    orderBy: [{ fieldName: "impressions", sortOrder: "DESCENDING" }],
+    ...pageFilter(pageRegex),
+  });
+}
+
+export async function fetchGSCFilteredCountries(token: string, siteUrl: string, from: string, to: string, pageRegex: string) {
+  return gscQuery(token, siteUrl, {
+    startDate: from,
+    endDate: to,
+    dimensions: ["country"],
+    rowLimit: 25,
+    orderBy: [{ fieldName: "impressions", sortOrder: "DESCENDING" }],
+    ...pageFilter(pageRegex),
+  });
+}
+
+export async function fetchGSCFilteredTrend(token: string, siteUrl: string, from: string, to: string, pageRegex: string) {
+  return gscQuery(token, siteUrl, {
+    startDate: from,
+    endDate: to,
+    dimensions: ["date"],
+    rowLimit: 500,
+    ...pageFilter(pageRegex),
+  });
+}
+
+export async function fetchGSCFilteredPages(token: string, siteUrl: string, from: string, to: string, pageRegex: string) {
+  return gscQuery(token, siteUrl, {
+    startDate: from,
+    endDate: to,
+    dimensions: ["page"],
+    rowLimit: 25,
+    orderBy: [{ fieldName: "impressions", sortOrder: "DESCENDING" }],
+    ...pageFilter(pageRegex),
+  });
+}
+
 // ─── GA4 ─────────────────────────────────────────────────────────────────────
 
 export async function fetchGA4Channels(token: string, propertyId: string, from: string, to: string): Promise<Ga4Row[]> {
