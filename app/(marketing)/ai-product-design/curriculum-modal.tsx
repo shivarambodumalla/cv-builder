@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, X, CheckCircle2 } from "lucide-react";
+import { COUNTRY_CODES } from "./country-codes";
 
 const VISITOR_ID_KEY = "mentorship_visitor_id";
 
@@ -26,21 +27,6 @@ const MODE_COPY: Record<CtaMode, { title: string; desc: string; submit: string }
     submit: "Request My Call",
   },
 };
-
-const COUNTRY_CODES = [
-  { iso: "US", label: "United States", dial: "+1" },
-  { iso: "CA", label: "Canada", dial: "+1" },
-  { iso: "GB", label: "United Kingdom", dial: "+44" },
-  { iso: "AU", label: "Australia", dial: "+61" },
-  { iso: "DE", label: "Germany", dial: "+49" },
-  { iso: "NL", label: "Netherlands", dial: "+31" },
-  { iso: "IE", label: "Ireland", dial: "+353" },
-  { iso: "AE", label: "UAE", dial: "+971" },
-  { iso: "SA", label: "Saudi Arabia", dial: "+966" },
-  { iso: "QA", label: "Qatar", dial: "+974" },
-  { iso: "SG", label: "Singapore", dial: "+65" },
-  { iso: "IN", label: "India", dial: "+91" },
-];
 
 interface CurriculumModalProps {
   mode: CtaMode | null;
