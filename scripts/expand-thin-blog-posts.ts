@@ -517,6 +517,294 @@ const POSTS: PostUpdate[] = [
 <p><a href="/upload-resume">Upload your CV to CVEdge free</a> for a breakdown of how it parses, whether your summary and titles are doing their job, and which sections are costing you attention in that first pass.</p>`,
   },
 
+  // ── Second pass ─────────────────────────────────────────────────────────────
+  // A deeper audit (threshold raised from 360 to 400 words) surfaced five more
+  // borderline posts. Expanded for the same reason as the first batch.
+  {
+    slug: "devops-engineer-resume-guide-2026",
+    title: "DevOps Engineer Resume Guide 2026: The Metrics That Get You Hired",
+    brief:
+      "DevOps is one of the most quantifiable disciplines in tech, and most DevOps CVs contain no numbers. Here are the metrics hiring managers compare, with before/after bullet examples.",
+    seo_title: "DevOps Engineer Resume Guide 2026 — DORA Metrics & Examples | CVEdge",
+    seo_description:
+      "How to write a DevOps engineer resume: the DORA metrics that matter, cost and reliability numbers, before/after bullets, and the tool-list mistake that gets CVs rejected.",
+    read_time_minutes: 9,
+    content_html: `<p>DevOps is among the most measurable disciplines in technology — deployment frequency, lead time, failure rate, recovery time and cloud spend are all tracked as a matter of course. Which makes it striking how many DevOps CVs contain no numbers at all, listing tools instead. That gap is the single biggest opportunity available to you.</p>
+
+<h2>Speak in DORA metrics</h2>
+<p>The four DORA metrics are the shared vocabulary of the discipline, and hiring managers use them to compare candidates directly:</p>
+<ul>
+<li><strong>Deployment frequency</strong> — how often you ship</li>
+<li><strong>Lead time for change</strong> — commit to production</li>
+<li><strong>Change-failure rate</strong> — what proportion of deploys cause a problem</li>
+<li><strong>Mean time to recovery (MTTR)</strong> — how fast you recover when they do</li>
+</ul>
+<p>The most persuasive DevOps bullet shape moves speed and stability together, because improving one at the cost of the other is easy and improving both is the actual job: "Raised deploy frequency from weekly to 40x/day while cutting change-failure rate from 18% to 4%."</p>
+<p>Alongside DORA, two more families of number carry weight: reliability (uptime against SLO, incident volume, alert and page counts) and cost (monthly cloud spend reduced, in percentage and absolute terms).</p>
+
+<h2>Before and after: DevOps bullets</h2>
+
+<p><strong>Weak:</strong> "Managed CI/CD pipelines and automated deployment processes."</p>
+<p><strong>Strong:</strong> "Rebuilt 30 Jenkins pipelines as reusable GitHub Actions workflows, cutting mean pipeline time from 22 to 6 minutes and lifting deploy frequency from weekly to 40x/day."</p>
+<p><em>Why:</em> managing pipelines is the role's baseline. The migration scope, the time saved and the deployment-frequency change tie the work to the metric the discipline is judged on.</p>
+
+<p><strong>Weak:</strong> "Responsible for cloud infrastructure and cost optimisation on AWS."</p>
+<p><strong>Strong:</strong> "Cut AWS spend 34% ($780k/yr) by rightsizing 200 over-provisioned instances, moving batch workloads to spot, and adding per-team cost alerting — with no SLO regression."</p>
+<p><em>Why:</em> cost bullets are only credible with a reliability caveat attached, because anyone can save money by degrading service. Naming three mechanisms shows the analysis; "no SLO regression" pre-empts the obvious challenge.</p>
+
+<p><strong>Weak:</strong> "Monitored systems and responded to incidents as part of the on-call rotation."</p>
+<p><strong>Strong:</strong> "Cut MTTR from 47 to 12 minutes by replacing 140 threshold alerts with 18 SLO-based ones and adding runbook links to every page, reducing after-hours pages ~70%."</p>
+<p><em>Why:</em> being on-call is participation, not achievement. The alert reduction demonstrates judgement about signal versus noise — and after-hours page volume is a number every hiring manager instantly understands.</p>
+
+<h2>A summary that positions you</h2>
+<blockquote><p>DevOps engineer with 6 years running Kubernetes platforms for regulated fintech. Took deploy frequency from weekly to 40x/day while cutting change-failure rate from 18% to 4%, and reduced AWS spend 34% ($780k/yr) through rightsizing and spot adoption. Owns SLO definition and the blameless postmortem process.</p></blockquote>
+
+<h2>Skills worth listing</h2>
+<p><strong>Core:</strong> infrastructure as code, Kubernetes operations, CI/CD design, observability and alerting, incident response, cloud cost management, Linux and networking, scripting, secrets management.</p>
+<p><strong>Tools:</strong> Terraform, Kubernetes, Docker, AWS, Azure, GCP, GitHub Actions, Jenkins, ArgoCD, Helm, Prometheus, Grafana, Datadog, Ansible, Vault, Bash, Python.</p>
+<p>List these compactly. A wall of forty tools is the characteristic DevOps CV mistake — it reads as exposure rather than depth, and it crowds out the numbers that would actually differentiate you.</p>
+
+<h2>What gets DevOps CVs rejected</h2>
+<ul>
+<li><strong>Tool lists with no metrics.</strong> The dominant failure, and unusually costly here because the metrics are so readily available.</li>
+<li><strong>No incident stories</strong>, which suggests you have not carried production responsibility.</li>
+<li><strong>"Automated processes" with no before/after timing.</strong></li>
+<li><strong>Cost savings with no reliability context</strong>, which reads as risk-taking rather than engineering.</li>
+</ul>
+
+<h2>DevOps or SRE?</h2>
+<p>They overlap but weight differently. DevOps centres on delivery — pipelines, infrastructure as code, developer experience — measured on how fast and safely teams ship. SRE centres on reliability of running systems, formalised through SLOs and error budgets, with more software engineering and more on-call. Loops reflect this: SRE includes more coding, DevOps more tooling and pipeline design. Position your CV for whichever you are applying to.</p>
+
+<h2>Next steps</h2>
+<p>See <a href="/resume-examples/devops-engineer">DevOps engineer CV examples</a> with level-by-level positioning, or work through <a href="/interview-prep/devops-engineer">DevOps interview questions</a> — including the live troubleshooting round that carries the most weight. You can also <a href="/upload-resume">check your CV's ATS score free</a>.</p>`,
+  },
+
+  {
+    slug: "how-to-write-resume-bullet-points-that-show-impact-with-examples",
+    title: "How to Write Resume Bullet Points That Show Impact (With Examples)",
+    brief:
+      "Most bullets describe duties. The ones that get interviews state what changed and by how much. Here is the structure, what to do when you have no numbers, and twelve before/after rewrites.",
+    seo_title: "How to Write Resume Bullet Points That Show Impact | CVEdge",
+    seo_description:
+      "The structure behind resume bullets that get interviews: action verb, specific work, measurable result. Includes what to do when you have no metrics and 12 before/after examples.",
+    read_time_minutes: 9,
+    content_html: `<p>The difference between a CV that gets calls and one that does not is usually not the experience — it is whether the bullets describe duties or outcomes. "Responsible for managing the reporting process" and "Automated 30 recurring reports, removing 12 analyst-hours per week" can describe the same job. Only one gets read.</p>
+
+<h2>The structure</h2>
+<p>Strong bullets share a consistent shape: <strong>a strong action verb + the specific thing you did + a measurable result</strong>.</p>
+<p>Each part is doing work. The verb establishes agency. The specific work makes it credible and gives the interviewer something to ask about. The result is what makes a reviewer stop scanning.</p>
+<p>A useful ordering trick: because the left edge of each line gets scanned and line-ends often do not, move the result toward the front where it fits naturally. "Cut p99 latency 78% by batching ORM queries" lands harder than the same content with the number buried at the end.</p>
+
+<h2>Twelve rewrites</h2>
+<ol>
+<li><strong>Before:</strong> "Responsible for social media accounts." <strong>After:</strong> "Grew LinkedIn following from 4k to 27k in 11 months, driving 18% of inbound demo requests."</li>
+<li><strong>Before:</strong> "Helped improve the onboarding process." <strong>After:</strong> "Redesigned onboarding around a single activation moment, lifting week-1 activation from 22% to 34%."</li>
+<li><strong>Before:</strong> "Worked on the company website." <strong>After:</strong> "Rebuilt the marketing site in Next.js, cutting LCP from 4.1s to 1.6s and lifting mobile conversion 8%."</li>
+<li><strong>Before:</strong> "Managed a team of engineers." <strong>After:</strong> "Grew and led a team of 7 engineers, cutting median PR review time from 3 days to 6 hours and reducing voluntary attrition to zero over two years."</li>
+<li><strong>Before:</strong> "Handled customer support tickets." <strong>After:</strong> "Resolved ~60 tickets/week at 96% CSAT, and wrote the billing runbook that cut escalations to engineering 40%."</li>
+<li><strong>Before:</strong> "Assisted with financial reporting." <strong>After:</strong> "Rebuilt the monthly close model, cutting close from 9 days to 4 and eliminating three recurring reconciliation errors."</li>
+<li><strong>Before:</strong> "Performed data analysis for the marketing team." <strong>After:</strong> "Identified that 31% of signup drop-off came from one verification step; removing it lifted completed signups 22% with no increase in fraud."</li>
+<li><strong>Before:</strong> "Used SQL to pull reports." <strong>After:</strong> "Automated 30 recurring reporting requests into self-serve Looker explores, removing ~12 analyst-hours per week."</li>
+<li><strong>Before:</strong> "Involved in the migration project." <strong>After:</strong> "Led the zero-downtime migration of a 400M-row Postgres table across two sprints with no customer-visible errors."</li>
+<li><strong>Before:</strong> "Created training materials for new hires." <strong>After:</strong> "Built a 12-module onboarding curriculum that cut new-hire time-to-first-deploy from 3 weeks to 6 days."</li>
+<li><strong>Before:</strong> "Participated in the on-call rotation." <strong>After:</strong> "Cut MTTR from 47 to 12 minutes by replacing 140 threshold alerts with 18 SLO-based ones."</li>
+<li><strong>Before:</strong> "Worked with stakeholders to gather requirements." <strong>After:</strong> "Ran 40 customer interviews that reframed a requested export feature as a reporting-trust problem; the resulting feature hit 60% adoption versus 8% for the original request."</li>
+</ol>
+
+<h2>What to do when you have no numbers</h2>
+<p>This is the most common objection, and it has three good answers.</p>
+<p><strong>Estimate a defensible range.</strong> "Reduced processing time by roughly 40%" is credible and can be discussed in an interview. An honest approximation beats both false precision and no number at all.</p>
+<p><strong>Use a different dimension.</strong> If you cannot measure the outcome, measure the scope: how many people, how many systems, how much data, how often, over what period. "Supported 14 internal teams across 3 time zones" carries real information without an outcome metric.</p>
+<p><strong>State the before and after qualitatively.</strong> "Replaced a manual spreadsheet process with an automated pipeline, ending weekly reconciliation errors" has no percentage and still shows a clear change of state.</p>
+<p>What not to do is invent figures. Numbers you cannot defend become the worst possible interview topic, and interviewers probe them precisely because they are easy to check.</p>
+
+<h2>Verbs to use and to avoid</h2>
+<p><strong>Use:</strong> built, led, cut, grew, shipped, designed, migrated, automated, negotiated, rebuilt, launched, reduced, unblocked.</p>
+<p><strong>Avoid:</strong> responsible for, helped with, worked on, involved in, assisted, participated in, tasked with. These consume the highest-value position on the line — its first words — while conveying nothing about what you actually did.</p>
+<p>Also worth retiring: "successfully" (if it were unsuccessful you would not list it) and "various" (which hides scope rather than summarising it).</p>
+
+<h2>How many bullets, and how much detail</h2>
+<p>Three to five bullets for your current role, two to four for the previous one, and one to two for anything older than about eight years. Weight detail toward recency, because that is where reviewers concentrate.</p>
+<p>Aim for a result on most bullets rather than all of them. Some genuinely have none, and forcing one produces obviously manufactured figures — which does more damage than the missing number would have.</p>
+
+<h2>Rewrite yours automatically</h2>
+<p>If you are staring at a bullet and cannot see the version with the result in it, <a href="/upload-resume">upload your CV to CVEdge</a>. The AI rewriter converts duty-shaped bullets into outcome-shaped ones and flags where a number is missing, using <code>[X]</code> placeholders rather than inventing figures.</p>`,
+  },
+
+  {
+    slug: "cybersecurity-analyst-resume-guide-2026",
+    title: "Cybersecurity Analyst Resume Guide 2026: Proving You Can Actually Defend",
+    brief:
+      "Security CVs are heavy on certifications and light on evidence. Here is what hiring managers look for, the metrics that make detection work credible, and before/after bullets.",
+    seo_title: "Cybersecurity Analyst Resume Guide 2026 — Skills & Examples | CVEdge",
+    seo_description:
+      "How to write a cybersecurity analyst resume: the detection and response metrics that matter, certifications worth listing, before/after bullet examples, and common rejections.",
+    read_time_minutes: 9,
+    content_html: `<p>Security hiring has an evidence problem. Certifications are easy to list and hard to interpret, so hiring managers have learned to look past them for signs you have actually detected, investigated and contained something. That is what your CV needs to demonstrate.</p>
+
+<h2>What hiring managers screen for</h2>
+<p><strong>Detection and response experience.</strong> Alerts triaged, incidents investigated, dwell time, false-positive rate. Concrete numbers here separate people who have worked a SOC queue from people who have studied for an exam.</p>
+<p><strong>Tooling depth over tooling breadth.</strong> Genuine fluency in one SIEM is worth more than a list of six. Interviewers ask how you built a detection rule, how you tuned it, and what it missed.</p>
+<p><strong>Judgement about risk.</strong> Security work is a constant negotiation between control and friction. Evidence that you have made that trade-off deliberately — and can explain a case where you accepted a risk — is a senior signal.</p>
+<p><strong>Communication.</strong> Much of the job is persuading engineers and executives to do something inconvenient. Bullets showing you drove adoption of a control matter as much as the control itself.</p>
+
+<h2>Metrics that make security work credible</h2>
+<ul>
+<li>Alerts triaged per week, and false-positive rate before and after tuning</li>
+<li>Mean time to detect and mean time to respond</li>
+<li>Incidents investigated, and how many were true positives</li>
+<li>Vulnerabilities remediated, weighted by severity, and time-to-patch</li>
+<li>Phishing simulation click-through rate before and after training</li>
+<li>Coverage: endpoints, systems or business units monitored</li>
+<li>Audit or compliance outcomes — findings closed, controls passed</li>
+</ul>
+
+<h2>Before and after: security bullets</h2>
+
+<p><strong>Weak:</strong> "Monitored security alerts and responded to incidents using Splunk."</p>
+<p><strong>Strong:</strong> "Triaged ~400 alerts/week in Splunk across 12k endpoints, and cut false positives 62% by rewriting 40 detection rules — reducing analyst time on noise by roughly 15 hours/week."</p>
+<p><em>Why:</em> monitoring alerts is the job description. Volume, coverage and the tuning work show you improved the queue rather than just working it.</p>
+
+<p><strong>Weak:</strong> "Performed vulnerability assessments and reported findings."</p>
+<p><strong>Strong:</strong> "Ran quarterly authenticated scans across 800 hosts and drove critical-severity time-to-patch from 45 days to 9 by agreeing SLAs with four engineering teams and publishing a shared remediation dashboard."</p>
+<p><em>Why:</em> finding vulnerabilities is easy; getting them fixed is the hard part and the part that reduces risk. The SLA negotiation shows the influence dimension of the role.</p>
+
+<p><strong>Weak:</strong> "Assisted with security awareness training for employees."</p>
+<p><strong>Strong:</strong> "Redesigned phishing simulation and training for 2,400 staff, cutting click-through from 18% to 4% over three campaigns and raising report rate to 61%."</p>
+<p><em>Why:</em> the report rate is the detail that shows real understanding — reducing clicks matters, but training people to report is what shortens detection time on a genuine attack.</p>
+
+<h2>A summary that positions you</h2>
+<blockquote><p>Security analyst with 4 years in a 24/7 SOC covering 12k endpoints. Cut alert false positives 62% by rewriting detection logic, and reduced critical time-to-patch from 45 days to 9 by negotiating remediation SLAs with engineering. GIAC-certified, strongest in detection engineering and incident triage.</p></blockquote>
+
+<h2>Certifications: which ones, and where</h2>
+<p>Certifications matter more in security than in most disciplines, because they are frequently used as hard filters. Security+ for entry level, GIAC certifications (GCIA, GCIH) for detection and response depth, CISSP for senior and management-track roles, OSCP where offensive skill is relevant.</p>
+<p>List them prominently — a dedicated line near the top rather than buried at the bottom. Write the acronym and the full name, since postings vary in which they use. But keep them in proportion: a CV that leads with five certifications and contains no evidence of applied work reads as someone who studies rather than defends.</p>
+
+<h2>Skills worth listing</h2>
+<p><strong>Core:</strong> SIEM operation and detection engineering, incident response, threat hunting, vulnerability management, log analysis, network fundamentals, malware triage, MITRE ATT&amp;CK, risk assessment.</p>
+<p><strong>Tools:</strong> Splunk, Microsoft Sentinel, CrowdStrike, Wireshark, Nessus, Qualys, Burp Suite, Suricata, Python, PowerShell.</p>
+
+<h2>What gets security CVs rejected</h2>
+<ul>
+<li><strong>Certifications with no applied evidence.</strong> The most common pattern, and hiring managers are explicitly wary of it.</li>
+<li><strong>Long tool lists with no depth in any one.</strong></li>
+<li><strong>No volume or coverage numbers</strong>, which makes the environment you worked in impossible to gauge.</li>
+<li><strong>Vague incident language.</strong> "Responded to security incidents" without type, scope or outcome tells a reviewer nothing.</li>
+<li><strong>Overclaiming.</strong> Security interviewers probe hard, and inflated claims fail fast in a discipline built on scepticism.</li>
+</ul>
+
+<h2>Next steps</h2>
+<p>See <a href="/resume-examples/security-analyst">security analyst CV examples</a>, or <a href="/upload-resume">check your CV's ATS score free</a> to find which sections are costing you points before you apply.</p>`,
+  },
+
+  {
+    slug: "ai-resume-builder-vs-manual",
+    title: "AI Resume Builder vs Writing It Yourself: An Honest Comparison",
+    brief:
+      "AI is genuinely good at some parts of resume writing and bad at others. Here is where each approach wins, where AI-written CVs fail, and how to combine them.",
+    seo_title: "AI Resume Builder vs Manual Writing — Honest Comparison 2026 | CVEdge",
+    seo_description:
+      "Should you use an AI resume builder or write it yourself? Where AI genuinely helps, where it fails, how recruiters spot AI-written CVs, and the hybrid approach that works best.",
+    read_time_minutes: 8,
+    content_html: `<p>We build an AI resume tool, so treat what follows with appropriate scepticism — but the honest answer is that AI is genuinely good at some parts of this and genuinely bad at others, and knowing which is which will get you a better CV than committing fully to either approach.</p>
+
+<h2>Where AI genuinely helps</h2>
+
+<h3>Restructuring bullets you have already written</h3>
+<p>This is the strongest use case by a distance. You know what you did; the difficulty is compressing it into a line that leads with the result. Give a model "I was in charge of the reporting process and made it faster by automating some of it" and it will reliably return something closer to "Automated recurring reporting, cutting turnaround from 2 days to same-day." The raw material is yours; the compression is mechanical.</p>
+
+<h3>Vocabulary alignment</h3>
+<p>Spotting that a posting says "stakeholder management" where your CV says "worked with business partners" is tedious and error-prone by hand. Comparing two documents for terminology gaps is exactly what these systems are good at.</p>
+
+<h3>Formatting and consistency</h3>
+<p>Tense consistency, parallel bullet structure, date formatting, and parser-safe layout are rule-following tasks. Doing them manually is a poor use of your time.</p>
+
+<h3>Beating the blank page</h3>
+<p>A mediocre first draft you can react to is more useful than an empty document. Editing is easier than generating.</p>
+
+<h2>Where AI fails</h2>
+
+<h3>It does not know what you did</h3>
+<p>The fundamental limit. A model given a job title will produce plausible-sounding achievements for that title — which are fiction. Every number it invents is a trap you walk into during the interview, and interviewers probe numbers precisely because they are checkable.</p>
+<p>Any tool that generates achievements from a title alone is producing liabilities, not a CV.</p>
+
+<h3>It flattens voice</h3>
+<p>Unconstrained models converge on the same register: "spearheaded", "leveraged", "cutting-edge solutions", "results-driven professional". Recruiters read hundreds of CVs a week and this pattern has become conspicuous. Uniform polish across every bullet reads as generated, and generated reads as unexamined.</p>
+
+<h3>It cannot judge relevance</h3>
+<p>Deciding that your two years in logistics matter more than your five in retail <em>for this particular application</em> requires understanding the target role's priorities. That judgement remains yours.</p>
+
+<h3>It over-claims</h3>
+<p>Models trained to be helpful tend to upgrade "helped with" to "led". Sometimes that is a fair reframing; sometimes it is a misrepresentation you will have to defend. Always check the seniority implied by a rewrite.</p>
+
+<h2>Can recruiters tell?</h2>
+<p>Often, yes — not through detection tools, which are unreliable, but through pattern recognition. The signals are consistent: every bullet the same length and rhythm, uniformly grandiose verbs, achievements with suspiciously round numbers, and a summary of generic superlatives with no specific claim.</p>
+<p>Worth being clear about what is actually penalised. Using AI is not the problem; nobody objects to spell-check. What gets penalised is a CV that reads as though the candidate did not think about it — because that predicts how they will approach the job.</p>
+
+<h2>The hybrid approach</h2>
+<ol>
+<li><strong>You write the raw material.</strong> Brain-dump what you did, in whatever form. Include numbers wherever you can recall or reconstruct them.</li>
+<li><strong>AI restructures it.</strong> Compress into result-first bullets, enforce parallel structure, fix tense.</li>
+<li><strong>AI finds keyword gaps</strong> against the specific posting.</li>
+<li><strong>You verify every claim.</strong> Check each number, each verb's seniority, each implied scope. Remove anything you would not want examined.</li>
+<li><strong>You re-inject specificity.</strong> Restore the concrete detail that makes it yours — the odd system name, the unusual constraint, the thing only someone who was there would mention.</li>
+</ol>
+<p>Step five is what most people skip, and it is where the difference shows. Specific detail is the strongest available signal of authenticity, and it also gives the interviewer something to ask about — which is the point of the document.</p>
+
+<h2>What good tooling should do</h2>
+<p>Judge a resume tool by whether it refuses to invent. Ours uses <code>[X]</code> placeholders where a metric is missing rather than filling in a plausible figure, because a blank you fill in honestly is worth more than a number you have to defend. That constraint is the difference between a tool that helps and one that hands you a problem.</p>
+
+<h2>Try the middle path</h2>
+<p><a href="/upload-resume">Upload your CV to CVEdge</a> for a free ATS score and bullet-level rewrite suggestions — you keep the underlying claims, the tool handles structure and keyword alignment, and nothing gets fabricated on your behalf.</p>`,
+  },
+
+  {
+    slug: "resume-vs-cv-what-recruiters-actually-expect-in-2026",
+    title: "Resume vs CV: What Recruiters Actually Expect in 2026",
+    brief:
+      "The difference depends entirely on where you are applying. Here is what each term means by region, what each document should contain, and the details that get international applications rejected.",
+    seo_title: "Resume vs CV — What Recruiters Expect by Region in 2026 | CVEdge",
+    seo_description:
+      "Resume vs CV: what the terms mean in the US, UK, Europe, Middle East and Asia, what each document should contain, and the regional details that get applications rejected.",
+    read_time_minutes: 8,
+    content_html: `<p>"Resume" and "CV" mean different things depending on who is asking, and applying with the wrong assumption is a genuine and avoidable source of rejection — particularly for international applications. Here is what each term means where.</p>
+
+<h2>United States and Canada</h2>
+<p><strong>Resume</strong> is the default: one to two pages, tailored per application, covering relevant experience rather than everything you have done.</p>
+<p><strong>CV</strong> in North America means something specific and narrow — an exhaustive academic document listing publications, grants, conference presentations and teaching. It is used for academia, research and some medical roles, and it can run to many pages. If a US employer outside those fields asks for a CV, they almost certainly mean a resume.</p>
+<p><strong>Critically:</strong> no photo, no date of birth, no marital status, no nationality. US and Canadian employers frequently discard applications containing these, because their presence creates discrimination-liability exposure. This is the single most common mistake on applications sent from regions where photos are standard.</p>
+
+<h2>United Kingdom and Ireland</h2>
+<p><strong>CV</strong> is the standard term for what Americans call a resume. Two pages is the norm; one page is acceptable early-career.</p>
+<p>No photo, and date of birth is not expected. A brief personal statement at the top is conventional. Listing "References available on request" is unnecessary — it is assumed, and it consumes a line you could use better.</p>
+
+<h2>Continental Europe</h2>
+<p>Conventions vary meaningfully by country, and the differences are worth checking rather than assuming.</p>
+<p>In <strong>Germany</strong>, applications are traditionally more formal and photos have been common, though the practice has been declining since anti-discrimination legislation. German applications may also include certificates and references as attachments.</p>
+<p>In <strong>France</strong>, one to two pages, and photos are common though not required. In the <strong>Netherlands</strong> and <strong>Scandinavia</strong>, conventions run closer to the UK, and photos are less usual.</p>
+<p>The <strong>Europass</strong> format exists and is accepted across the EU, though many private-sector recruiters find it rigid and it is rarely the strongest choice outside public-sector or cross-border applications.</p>
+
+<h2>Middle East (UAE, Saudi Arabia, Qatar)</h2>
+<p><strong>CV</strong> is the term used. Expectations here differ most from Western norms, and applications that ignore them stand out.</p>
+<p>Photos are common and often expected. Nationality is frequently included, and is genuinely relevant to employers navigating visa and quota requirements. Date of birth and marital status appear more often than in Western markets. Also worth stating explicitly: your visa status, notice period, and whether you hold a local driving licence — these are practical screening criteria in the region.</p>
+<p>Three pages is more acceptable than in the UK or US.</p>
+
+<h2>India, Singapore and much of Asia</h2>
+<p><strong>Resume</strong> and <strong>CV</strong> are used more or less interchangeably in India, with "resume" more common in the private sector. Two to three pages is normal, and more personal detail traditionally appears than would be usual in the West.</p>
+<p>For multinational employers in <strong>Singapore</strong> and <strong>Hong Kong</strong>, conventions run closer to UK and US norms — brief, no photo. Match the company's origin rather than the country you are applying from.</p>
+
+<h2>The practical rule</h2>
+<p>Match the destination, not your origin. If you are applying from a region where photos are standard to a company in one where they are a liability, remove the photo. If you are applying from the UK to the Gulf, adding visa status and notice period will help you.</p>
+<p>Where the employer is a multinational, follow the conventions of the country the role is based in — that is where the hiring manager sits.</p>
+
+<h2>What does not change</h2>
+<p>Regional formatting differs; the substance does not. Everywhere, the CV that wins states what you did, at what scale, and what changed as a result. Everywhere, bullets that describe duties rather than outcomes underperform. Everywhere, the top third of page one carries disproportionate weight.</p>
+<p>Get the substance right once, then adjust the regional presentation per application. That is a ten-minute change, not a rewrite.</p>
+
+<h2>Build both versions</h2>
+<p>CVEdge lets you keep multiple versions of the same underlying content, so you can maintain a photo-free two-page version for UK and US applications and a fuller version for the Gulf without rewriting anything. <a href="/upload-resume">Start free</a>, or read our region-specific guides on <a href="/blog/uae-resume-format-2026">UAE resume format</a> and <a href="/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV format</a>.</p>`,
+  },
+
   // ────────────────────────────────────────────────────────────────────────────
   // The duplicate PM guide. Two near-identical posts compete with each other and
   // read as scaled content; retire the weaker one rather than expanding it.

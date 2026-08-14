@@ -2,6 +2,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Search, Sparkles, Target, CheckCircle, BarChart3, Brain, Briefcase } from "lucide-react";
 import { BreadcrumbJsonLd, HowToJsonLd } from "@/components/shared/structured-data";
+import { ALL_ROLES } from "@/lib/jobs/role-categories";
+import { hasRoleContent } from "@/lib/roles/role-content";
+
+/** Only roles with published guides — linking to noindex pages wastes crawl. */
+const ROLE_GUIDES = ALL_ROLES.filter((r) => hasRoleContent(r.slug));
 
 export const metadata = {
   title: "Interview Coach — Prepare STAR Stories from Your CV | CVEdge",
@@ -155,6 +160,31 @@ export default function InterviewStoriesPage() {
           ))}
         </div>
       </div>
+
+      {/* Published role guides — without this the guides are orphaned from the hub */}
+      {ROLE_GUIDES.length > 0 && (
+        <div className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-2">Interview guides by role</h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Real questions asked in each loop, what every round is scored on, and the numbers that make your answers
+            land.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {ROLE_GUIDES.map((r) => (
+              <Link
+                key={r.slug}
+                href={`/interview-prep/${r.slug}`}
+                className="rounded-xl border bg-card p-4 hover:bg-accent transition-colors"
+              >
+                <p className="text-sm font-semibold">{r.label} interview questions</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Technical and behavioural questions, plus what each round tests.
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* CTA */}
       <div className="mx-auto max-w-xl text-center">
