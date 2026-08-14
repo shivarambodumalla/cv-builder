@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { ROLE_CATEGORIES, TRENDING_ROLES } from "@/lib/jobs/role-categories";
+import { ROLE_CATEGORIES, TRENDING_ROLES, ALL_ROLES } from "@/lib/jobs/role-categories";
+import { hasRoleContent } from "@/lib/roles/role-content";
+import { getRoleExampleData } from "@/lib/resume-examples/data";
+
+/** Roles whose guide pages are indexable — the only ones worth linking for SEO. */
+const GUIDE_ROLES = ALL_ROLES.filter((r) => getRoleExampleData(r.slug) || hasRoleContent(r.slug));
 
 export function BrowseRoles({ currentSlug }: { currentSlug?: string }) {
   return (
@@ -54,6 +59,33 @@ export function BrowseRoles({ currentSlug }: { currentSlug?: string }) {
           ))}
         </div>
       </section>
+
+      {/* Career guides.
+          Every link above points at /jobs/[role], which is noindex while the
+          site is under AdSense review — so from an indexed page they are crawl
+          spend with no return. This section points at the guide pages we do
+          want ranked, giving them inbound internal links from the jobs hub. */}
+      {GUIDE_ROLES.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-sm font-semibold mb-1">Career guides by role</h2>
+          <p className="text-xs text-muted-foreground mb-4">
+            CV examples, before/after bullets and the metrics reviewers look for.
+          </p>
+          <p className="text-xs leading-7">
+            {GUIDE_ROLES.map((role, i) => (
+              <span key={role.slug}>
+                <Link
+                  href={`/resume-examples/${role.slug}`}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {role.label} CV example
+                </Link>
+                {i < GUIDE_ROLES.length - 1 && <span className="mx-1 text-border">|</span>}
+              </span>
+            ))}
+          </p>
+        </section>
+      )}
     </>
   );
 }

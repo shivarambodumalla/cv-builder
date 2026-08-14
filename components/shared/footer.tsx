@@ -41,6 +41,10 @@ const productLinks: { label: string; href: string; external?: boolean }[] = [
   { label: "Jobs", href: "/jobs" },
   { label: "Pricing", href: "/pricing" },
   { label: "Upload Resume", href: "/upload-resume" },
+  { label: "Resume Templates", href: "/resume-templates" },
+  // High-priority SEO pages that previously had no inbound internal links.
+  { label: "CV Templates", href: "/cv-templates" },
+  { label: "Free Resume Builder", href: "/free-resume-builder" },
   { label: "Interview Coach", href: "/interview-prep" },
   { label: "AI Product Design Mentorship", href: "/ai-product-design" },
   { label: "Blog", href: "/blog" },

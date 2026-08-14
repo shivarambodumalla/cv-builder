@@ -806,6 +806,21 @@ const POSTS: PostUpdate[] = [
   },
 
   // ────────────────────────────────────────────────────────────────────────────
+  // Metadata-only fix. This post carried the seo_title and seo_description of
+  // "why-you-re-not-hearing-back-after-applying" — evidently copy-pasted at
+  // creation — so Google saw a title about job applications on an article about
+  // ATS software, and two URLs competed on identical metadata. Body is fine
+  // (only 6% overlap between the two), so only the metadata is corrected.
+  {
+    slug: "what-is-ats-software-and-how-does-it-work",
+    seo_title: "What Is ATS Software and How Does It Work? (2026 Guide) | CVEdge",
+    seo_description:
+      "What an applicant tracking system actually does with your CV — parsing, keyword search, ranking and knockout questions — and what it does not do.",
+    brief:
+      "Applicant tracking systems are widely misunderstood. Here is what ATS software actually does with your CV, how recruiters really use it, and which myths to ignore.",
+  },
+
+  // ────────────────────────────────────────────────────────────────────────────
   // The duplicate PM guide. Two near-identical posts compete with each other and
   // read as scaled content; retire the weaker one rather than expanding it.
   {

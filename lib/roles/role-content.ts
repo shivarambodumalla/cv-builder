@@ -1847,6 +1847,716 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "No cost awareness, despite inference economics constraining most AI roadmaps.",
     ],
   },
+  "mobile-app-developer": {
+    intro:
+      "Mobile interviews test constraints general software interviews ignore: battery, memory pressure, intermittent connectivity, and an app-store release cycle you cannot hotfix your way out of. Expect a platform-specific round, questions about lifecycle and state restoration, and probing on app size and startup time. CVs are read for shipped apps, install scale and store ratings.",
+    interviewFocus: [
+      { area: "Platform lifecycle", detail: "Activity/fragment or view-controller lifecycle, process death and state restoration, background execution limits. The area where mobile differs most from web and where candidates most often reveal shallow experience." },
+      { area: "Offline and sync", detail: "Local persistence, conflict resolution, and what the UI does on a flaky connection. Almost always asked because it is the defining mobile constraint." },
+      { area: "Performance and size", detail: "Cold start time, frame drops during scrolling, memory pressure, and app binary size — which directly affects install conversion." },
+      { area: "Release discipline", detail: "Store review, staged rollout, crash monitoring, and how you handle a bad release you cannot instantly revert." },
+    ],
+    technicalQuestions: [
+      "Explain what happens when the OS kills your app in the background, and how you restore state.",
+      "Design offline-first sync for a note-taking app. How do you resolve conflicts?",
+      "Your list scrolls at 40fps with images. Walk me through diagnosing and fixing it.",
+      "How do you reduce app size, and why does it matter commercially?",
+      "How would you handle a crash affecting 3% of users on one OS version, given store review latency?",
+      "Explain the difference between the main thread and background work on your platform, and what breaks if you get it wrong.",
+      "How do you test something that only reproduces on a low-memory device?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a bad release. How did you detect it and what did you change?",
+      "Describe a bug that only appeared on specific devices or OS versions.",
+      "Tell me about a time you argued against a design that would not work on mobile.",
+      "Describe optimising an app that users complained was slow or heavy.",
+      "Tell me about shipping under an app-store review constraint.",
+    ],
+    questionsToAsk: [
+      "What is the release cadence, and do you use staged rollout?",
+      "What are your crash-free session rate and cold start time today?",
+      "Native, cross-platform, or both — and how was that decided?",
+      "What is your minimum supported OS version and device tier?",
+    ],
+    faq: [
+      {
+        question: "Native or cross-platform — which is more employable?",
+        answer:
+          "Both have healthy demand and they serve different segments. Native (Swift/Kotlin) dominates where performance, platform integration or a premium feel matter, and it usually pays better at the senior end. React Native and Flutter dominate where a small team must ship both platforms, which describes most startups and a lot of mid-market work. The strongest position is depth in one native platform plus working cross-platform experience, because it lets you argue the trade-off credibly rather than defending whichever you happen to know.",
+      },
+      {
+        question: "What metrics belong on a mobile developer CV?",
+        answer:
+          "Install and usage scale first, then quality and performance. Downloads or MAU, store rating, crash-free session rate, cold start time, app size, and ANR rate on Android. \"Cut cold start from 3.4s to 1.1s and app size from 78MB to 41MB, lifting install conversion 9%\" is a strong bullet because app size has a direct, well-understood commercial effect that few candidates think to quantify.",
+      },
+      {
+        question: "How important is the app store link on my CV?",
+        answer:
+          "Very — this is one of the few disciplines where reviewers will download your work. A live app with real users beats any description, and the store listing itself gives them rating, review count and update history at a glance. If your commercial work is under NDA or you were one of many contributors, ship something small of your own; a modest published app demonstrates you can navigate review, signing and release, which is a meaningful part of the job.",
+      },
+      {
+        question: "What do mobile interviews test that web interviews do not?",
+        answer:
+          "Lifecycle and constraint reasoning. Web developers rarely think about the OS terminating their process, about restoring state after that happens, about background execution budgets, or about a release they cannot roll back for a day or two. Expect specific questions on process death and state restoration, offline behaviour, memory pressure on low-tier devices, and how you would handle a crash in production given store review latency.",
+      },
+    ],
+    summaryExample:
+      "Mobile engineer with 6 years shipping native Android and cross-platform apps, currently on a product with 2.4M MAU and a 4.6 store rating. Cut cold start from 3.4s to 1.1s and app size from 78MB to 41MB, lifting install conversion 9%. Raised crash-free sessions from 98.1% to 99.7% by instrumenting and fixing low-memory terminations.",
+    bulletExamples: [
+      {
+        weak: "Developed mobile applications for Android and iOS using React Native.",
+        strong: "Shipped 14 releases of a React Native app with 2.4M MAU across both stores, holding a 4.6 rating and 99.7% crash-free sessions through staged rollout and per-release crash gating.",
+        why: "Every mobile CV lists the platform and framework. Install scale, rating, crash-free rate and the release discipline behind them are what a hiring manager can actually compare between candidates.",
+      },
+      {
+        weak: "Improved app performance and reduced loading times.",
+        strong: "Cut cold start from 3.4s to 1.1s by deferring non-critical initialisation and lazy-loading feature modules, and reduced app size 78MB to 41MB — lifting install conversion 9%.",
+        why: "\"Improved performance\" is unverifiable. Naming the technique, the before/after on two distinct metrics, and connecting app size to install conversion shows you understand the commercial consequence, not just the engineering.",
+      },
+      {
+        weak: "Fixed bugs and crashes reported by users.",
+        strong: "Raised crash-free sessions from 98.1% to 99.7% by instrumenting low-memory terminations that Crashlytics was not capturing, fixing a bitmap cache that failed only on sub-3GB devices.",
+        why: "Bug fixing is undifferentiated. The specific class of failure — invisible to standard crash reporting, device-tier dependent — is exactly the mobile-specific depth interviewers probe for.",
+      },
+    ],
+    coreSkills: ["Platform lifecycle & state restoration", "Offline-first architecture", "Performance profiling", "Memory management", "App release & staged rollout", "Crash monitoring", "Push notifications", "Accessibility on mobile", "API integration"],
+    tools: ["Kotlin", "Swift", "React Native", "Flutter", "Jetpack Compose", "SwiftUI", "Firebase", "Crashlytics", "Fastlane", "Xcode Instruments", "Android Studio Profiler", "Git"],
+    metrics: ["Downloads / MAU", "Store rating and review volume", "Crash-free session rate", "Cold start time", "App binary size", "ANR rate (Android)", "Install conversion", "Release frequency"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Builds screens to spec. CV should show a published app and one platform properly." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns features including release. CV should show install scale and a performance or stability number." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and release process. CV should show a migration, offline architecture, or major performance work." },
+      { level: "Lead (8+ yrs)", expectation: "Sets mobile direction. CV should show platform decisions and team-level outcomes." },
+    ],
+    redFlags: [
+      "No published app or store link — conspicuous in this discipline.",
+      "No install, rating or crash metrics, making quality unrankable.",
+      "No mention of lifecycle, offline or release process — the mobile-specific parts of the job.",
+      "Cross-platform framework listed with no evidence of native understanding underneath.",
+    ],
+  },
+
+  "cloud-engineer": {
+    intro:
+      "Cloud Engineer interviews test whether you can design for failure and for the bill in equal measure. Expect an architecture round on a described workload, hands-on infrastructure-as-code, and detailed cost questions — because cloud spend is where most organisations feel the consequences of engineering decisions most directly. CVs are read for the scale of the estate and for cost and reliability numbers.",
+    interviewFocus: [
+      { area: "Architecture design", detail: "Designing a workload end to end — compute choice, networking, storage, availability zones, failover. Interviewers check whether you design to a stated availability target rather than over-engineering by default." },
+      { area: "Infrastructure as code", detail: "Terraform or CloudFormation: module structure, state management, drift, and how you avoid a destructive plan reaching production." },
+      { area: "Cost engineering", detail: "Rightsizing, reserved versus spot, storage tiering, egress charges, and the ability to estimate what a design will cost before building it." },
+      { area: "Reliability and security posture", detail: "Multi-AZ versus multi-region trade-offs, backup and restore testing, IAM least privilege, and network isolation." },
+    ],
+    technicalQuestions: [
+      "Design a highly available web application for 99.95% uptime. What does each nine cost you?",
+      "When would you choose containers over serverless, and what does each lock you into?",
+      "Explain how Terraform state works and what happens when two engineers apply at once.",
+      "Your monthly bill jumped 40% with no traffic change. How do you investigate?",
+      "How do you design least-privilege IAM without blocking every deployment?",
+      "Walk me through a disaster recovery plan. What is your RTO and RPO, and have you tested it?",
+      "How would you reduce data transfer costs in a multi-AZ architecture?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a cloud outage you were involved in. What changed afterwards?",
+      "Describe a significant cost reduction you drove and what you had to trade.",
+      "Tell me about a migration that did not go to plan.",
+      "Describe pushing back on an architecture you thought was over-engineered.",
+      "Tell me about a security misconfiguration you found or caused.",
+    ],
+    questionsToAsk: [
+      "What is the current monthly spend, and is anyone accountable for it?",
+      "How much of the estate is defined in code versus clicked together?",
+      "Has disaster recovery ever been tested end to end?",
+      "Single cloud or multi-cloud, and what drove that decision?",
+    ],
+    faq: [
+      {
+        question: "Which cloud should I specialise in?",
+        answer:
+          "AWS still has the largest share of postings and the deepest job market, so it is the safest default. Azure is strong in enterprises with existing Microsoft agreements, particularly finance, healthcare and government. GCP is smaller but concentrated in data and ML-heavy organisations. The concepts transfer well — compute, networking, IAM and storage tiers map across providers — so go deep in one and be conversant in a second rather than shallow in three.",
+      },
+      {
+        question: "What metrics belong on a Cloud Engineer CV?",
+        answer:
+          "Cost, scale and reliability. Monthly spend managed and reduced (in percentage and absolute terms), workloads or accounts under management, uptime against SLO, RTO and RPO achieved, and percentage of infrastructure defined in code. \"Cut AWS spend 38% ($1.1M/yr) through rightsizing, savings plans and storage tiering with no SLO regression\" works because it shows financial impact with the reliability caveat that makes it credible.",
+      },
+      {
+        question: "How much cost knowledge do interviews really expect?",
+        answer:
+          "More than most candidates prepare for. It is common to be asked to estimate roughly what a design will cost, to explain why egress charges surprise people, or to walk through investigating an unexplained bill increase. This is because cloud cost is a direct output of architecture decisions, and engineers who cannot reason about it design expensive systems. You do not need pricing memorised — you need the mental model of which choices are expensive and why.",
+      },
+      {
+        question: "Cloud Engineer or DevOps Engineer — what is the difference?",
+        answer:
+          "They overlap heavily and titles are used loosely. Cloud Engineer skews toward infrastructure design, provisioning and cost — what the platform is. DevOps skews toward delivery pipelines, automation and developer experience — how software reaches it. In smaller organisations one person does both. Read the posting's tools: heavy Terraform, networking and cost language means cloud; heavy CI/CD, release and pipeline language means DevOps.",
+      },
+    ],
+    summaryExample:
+      "Cloud engineer with 6 years running multi-account AWS estates in regulated healthcare. Manage 40 accounts and ~$3M annual spend, cut 38% ($1.1M/yr) through rightsizing, savings plans and S3 tiering with no SLO regression. Took infrastructure-as-code coverage from 45% to 98% and ran the first tested DR failover in the company's history.",
+    bulletExamples: [
+      {
+        weak: "Managed AWS cloud infrastructure and services for the organisation.",
+        strong: "Own 40 AWS accounts and ~$3M annual spend across 3 regions, taking Terraform coverage from 45% to 98% and eliminating manual console changes as a source of production drift.",
+        why: "\"Managed infrastructure\" gives no scale. Account count, spend and IaC coverage let a reviewer size the estate immediately, and eliminating drift names the actual problem the coverage solved.",
+      },
+      {
+        weak: "Worked on cost optimisation initiatives for cloud spending.",
+        strong: "Cut AWS spend 38% ($1.1M/yr) by rightsizing 300 instances, moving to compute savings plans, and tiering 400TB of S3 to intelligent-tiering — with no SLO regression across the period.",
+        why: "Cost bullets need mechanism and a reliability caveat. Three named levers plus the absolute saving show real analysis rather than a one-off instance purge, and the SLO note pre-empts the obvious challenge.",
+      },
+      {
+        weak: "Implemented backup and disaster recovery procedures.",
+        strong: "Designed and executed the first end-to-end DR failover test in the company's history, achieving 22-minute RTO against a 4-hour target and exposing 3 undocumented cross-region dependencies.",
+        why: "Untested DR is common and nearly worthless. The tested failover, the RTO against target, and the dependencies it surfaced prove the plan is real rather than a document.",
+      },
+    ],
+    coreSkills: ["Cloud architecture design", "Infrastructure as code", "Networking & VPC design", "IAM & least privilege", "Cost engineering", "High availability & DR", "Container orchestration", "Monitoring & observability", "Migration planning"],
+    tools: ["AWS", "Azure", "GCP", "Terraform", "CloudFormation", "Kubernetes", "Docker", "Ansible", "CloudWatch", "Datadog", "Python", "Bash", "Git"],
+    metrics: ["Monthly / annual cloud spend managed and reduced", "Accounts, regions or workloads managed", "Uptime against SLO", "RTO / RPO achieved and tested", "Infrastructure-as-code coverage", "Migration scale (workloads, data volume)"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Provisions resources to a design. CV should show one cloud platform and basic IaC." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns infrastructure for a product area. CV should show spend managed and IaC ownership." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs multi-account architecture. CV should show a migration or major cost/reliability programme." },
+      { level: "Principal / Architect (8+ yrs)", expectation: "Sets cloud strategy. CV should show estate-wide standards, governance and financial outcomes." },
+    ],
+    redFlags: [
+      "Service names listed with no architecture you can describe end to end.",
+      "No cost figures, in a discipline where spend is the primary business concern.",
+      "DR mentioned but never tested.",
+      "No IaC evidence, implying console-driven infrastructure.",
+    ],
+  },
+
+  "ai-engineer": {
+    intro:
+      "AI Engineer has become distinct from ML Engineer: the work centres on building products on top of foundation models rather than training them. Interviews test retrieval design, evaluation, latency and cost control, and — most of all — how you handle a model that is confidently wrong. CVs are read for systems shipped to real users with quality measured rather than asserted.",
+    interviewFocus: [
+      { area: "RAG and retrieval design", detail: "Chunking, embedding choice, hybrid search, reranking, and diagnosing whether a bad answer came from retrieval or generation. The most common technical round." },
+      { area: "Evaluation", detail: "Building an eval set, choosing metrics for open-ended output, LLM-as-judge and its failure modes, and detecting regression when you change a prompt or model." },
+      { area: "Production concerns", detail: "Latency budgets, streaming, cost per request, caching, fallback when the provider degrades, and rate-limit handling." },
+      { area: "Safety and reliability", detail: "Prompt injection, guardrails, structured output enforcement, and designing the interface for the case where the model is wrong." },
+    ],
+    technicalQuestions: [
+      "Design a RAG system over 500k internal documents. Where does it fail first?",
+      "Your RAG answers are wrong. How do you determine whether it is retrieval or generation?",
+      "How do you evaluate a summarisation feature with no single correct answer?",
+      "Explain prompt injection and how you would defend a system that reads untrusted content.",
+      "How do you get reliable structured output from a model, and what do you do when it fails schema validation?",
+      "Your p95 latency is 8 seconds. Walk me through reducing it.",
+      "When would you fine-tune rather than improve retrieval or prompting?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about an AI feature you shipped and what broke in production.",
+      "Describe deciding a model was not the right solution.",
+      "Tell me about improving quality without changing the model.",
+      "Describe managing expectations with stakeholders about what the model could do.",
+      "Tell me about a harmful or embarrassing output and how you responded.",
+    ],
+    questionsToAsk: [
+      "How is quality measured before a prompt or model change ships?",
+      "What is the current cost per request, and does it constrain the roadmap?",
+      "Who owns the eval set and how often is it refreshed?",
+      "What is the fallback when the model provider has an incident?",
+    ],
+    faq: [
+      {
+        question: "What is the difference between an AI Engineer and an ML Engineer?",
+        answer:
+          "AI Engineers build products on top of existing foundation models; ML Engineers build and serve models themselves. The AI Engineer skill set centres on retrieval, prompting, evaluation, latency and cost — closer to backend and product engineering than to research. ML Engineering involves training pipelines, feature stores and model serving infrastructure. Interviews differ accordingly: AI Engineer loops rarely ask you to derive backpropagation, and frequently ask you to design a RAG system and defend how you would know it works.",
+      },
+      {
+        question: "What is the most common RAG interview question?",
+        answer:
+          "Diagnosing a wrong answer. Interviewers describe a system returning poor responses and expect you to separate retrieval failure from generation failure — checking whether the correct chunk was retrieved at all, whether it ranked highly enough to survive the context window, whether chunking split the answer across boundaries, and only then whether the model ignored what it was given. Candidates who jump straight to prompt tweaking without inspecting retrieval reveal they have not debugged one in production.",
+      },
+      {
+        question: "What should an AI Engineer CV show?",
+        answer:
+          "Shipped systems with quality and cost numbers. Users served, eval set size and the metric you hold, p95 latency, cost per request, and the business outcome. \"Built a RAG assistant over 500k documents serving 40k users at 82% answer accuracy on a 400-case eval set, p95 2.1s, $0.008 per query\" demonstrates the whole discipline. Prompt engineering described without evaluation reads as experimentation rather than engineering.",
+      },
+      {
+        question: "Do I need a machine learning background to become an AI Engineer?",
+        answer:
+          "No, and many strong AI engineers come from backend or full-stack engineering. What matters is solid software engineering, comfort with APIs and data pipelines, and a rigorous instinct for measurement. The concepts you genuinely need — embeddings, vector search, context limits, sampling parameters, evaluation design — are learnable without formal ML training. Deep learning theory becomes relevant only if you move toward fine-tuning or model training, which is the ML Engineer path.",
+      },
+    ],
+    summaryExample:
+      "AI engineer with 4 years building LLM-backed products, currently on an internal knowledge assistant serving 40k users over 500k documents. Holds 82% answer accuracy against a 400-case eval set at p95 2.1s and $0.008 per query, having cut cost 60% through semantic caching and model routing. Strongest in retrieval design and evaluation.",
+    bulletExamples: [
+      {
+        weak: "Built AI features using LLMs and prompt engineering.",
+        strong: "Built a RAG assistant over 500k documents for 40k users, reaching 82% answer accuracy on a 400-case eval set with hybrid search and a cross-encoder reranker.",
+        why: "Prompt engineering without measurement is unfalsifiable. The corpus size, user scale, eval-backed accuracy and the specific retrieval architecture show engineering rather than experimentation.",
+      },
+      {
+        weak: "Optimised AI system performance and reduced API costs.",
+        strong: "Cut inference cost 60% ($240k/yr) and p95 latency from 8.1s to 2.1s via semantic caching, streaming responses, and routing 70% of traffic to a smaller model after eval showed no quality difference.",
+        why: "Latency and cost are the two production constraints in this field. Naming three mechanisms and grounding the model routing in eval evidence shows the decisions were measured rather than guessed.",
+      },
+      {
+        weak: "Worked on improving the accuracy of AI-generated responses.",
+        strong: "Diagnosed that 60% of wrong answers were retrieval failures rather than generation, and fixed them by re-chunking on semantic boundaries and adding metadata filtering — lifting accuracy from 64% to 82%.",
+        why: "\"Improving accuracy\" says nothing about method. Splitting retrieval from generation failure is the core RAG debugging skill, and the before/after proves the diagnosis was correct.",
+      },
+    ],
+    coreSkills: ["RAG & retrieval design", "Evaluation design", "Prompt engineering", "Vector search & embeddings", "Latency & cost optimisation", "Structured output enforcement", "Guardrails & prompt-injection defence", "API integration", "Observability for LLM systems"],
+    tools: ["Python", "OpenAI / Anthropic APIs", "LangChain", "LlamaIndex", "Pinecone", "pgvector", "Weaviate", "LangSmith", "Ragas", "FastAPI", "Redis", "Docker"],
+    metrics: ["Answer accuracy against an eval set", "Eval set size and coverage", "p95 latency", "Cost per request", "Users / queries served", "Retrieval precision & recall", "Hallucination or error rate reported by users"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Implements against an existing AI system. CV should show one shipped feature with some measurement." },
+      { level: "Mid (2–4 yrs)", expectation: "Owns an AI feature end to end. CV should show an eval set and latency/cost numbers." },
+      { level: "Senior (4–7 yrs)", expectation: "Designs AI system architecture. CV should show retrieval design decisions and quality programmes." },
+      { level: "Staff (7+ yrs)", expectation: "Sets AI engineering direction. CV should show platform work and organisation-wide evaluation standards." },
+    ],
+    redFlags: [
+      "Prompt engineering claimed with no evaluation methodology.",
+      "Demos and prototypes only, with nothing shown serving real users.",
+      "No latency or cost figures, despite both constraining every production AI system.",
+      "Framework names (LangChain, vector DBs) substituting for architecture you can defend.",
+    ],
+  },
+
+  "cybersecurity-engineer": {
+    intro:
+      "Cybersecurity Engineer sits between analyst and architect: you are expected to build and operate controls, not just monitor or design them. Interviews test hands-on depth across at least two domains, incident experience, and whether you can automate security work rather than performing it manually. CVs are read for controls implemented and risk measurably reduced.",
+    interviewFocus: [
+      { area: "Hands-on control implementation", detail: "Deploying and tuning a control end to end — EDR, WAF, SIEM detections, vulnerability management. Interviewers probe what broke and how you handled it." },
+      { area: "Incident response", detail: "A described scenario walked through from detection to containment to eradication and lessons learned. Expected to be a real story, not a framework recital." },
+      { area: "Security automation", detail: "Scripting and tooling to remove manual work — enrichment, response playbooks, policy-as-code. Increasingly the senior differentiator." },
+      { area: "Secure engineering", detail: "How you work with development teams: SAST/DAST in CI, dependency management, secrets scanning, and why teams adopt or bypass your controls." },
+    ],
+    technicalQuestions: [
+      "Walk me through your response to ransomware detected on 3 endpoints at 2am.",
+      "How would you roll out EDR to 5,000 endpoints without breaking production?",
+      "Explain how you would secure a CI/CD pipeline against supply-chain compromise.",
+      "You have 4,000 open vulnerabilities. How do you decide what gets fixed?",
+      "How do you detect and prevent secrets being committed to repositories?",
+      "Design detection for lateral movement in a Windows domain.",
+      "A team wants an exception to a security control. How do you evaluate it?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about the most serious incident you have worked. What was your role?",
+      "Describe a security control that engineering teams routed around. What did you do?",
+      "Tell me about automating something that had been manual toil.",
+      "Describe a time you were wrong about a risk.",
+      "Tell me about influencing a team that saw security as an obstacle.",
+    ],
+    questionsToAsk: [
+      "How is the security team structured, and where does this role sit?",
+      "What is the current vulnerability backlog and how is it prioritised?",
+      "How much of the team's work is automated versus manual?",
+      "How do engineering teams perceive security here, honestly?",
+    ],
+    faq: [
+      {
+        question: "What is the difference between a Security Engineer and a Security Analyst?",
+        answer:
+          "Engineers build and automate controls; analysts operate and monitor them. A security engineer deploys the EDR, writes the detection logic, integrates scanning into CI and automates response playbooks. An analyst triages the alerts those systems produce and investigates incidents. Engineering roles expect real coding ability and pay accordingly; analyst roles are the more common entry point and frequently lead into engineering after two or three years.",
+      },
+      {
+        question: "How much programming do security engineering interviews require?",
+        answer:
+          "Enough Python to automate meaningfully, and increasingly it is tested directly. Typical asks include parsing and enriching log data, calling an API to pull threat intelligence, or writing a script that quarantines an endpoint via an EDR API. You are not expected to pass an algorithm loop, but security engineers who cannot code are limited to clicking through consoles, and interviewers screen for that explicitly now.",
+      },
+      {
+        question: "What metrics belong on a Cybersecurity Engineer CV?",
+        answer:
+          "Coverage, risk reduction and toil removed. Endpoints or systems protected, controls deployed and their coverage percentage, critical vulnerability time-to-patch, mean time to detect and respond, alerts auto-triaged through automation, and audit findings closed. \"Deployed EDR across 5,000 endpoints reaching 98% coverage and automated tier-1 triage, cutting analyst manual handling 60%\" pairs scale with the operational gain.",
+      },
+      {
+        question: "Which certifications are worth having?",
+        answer:
+          "Security+ establishes a baseline for entry-level roles. GIAC certifications (GCIH, GCIA, GCED) carry genuine weight for hands-on engineering because they are practical. CISSP matters for senior and management-track roles and is often a screening filter in enterprises. Cloud security certifications are increasingly valuable as estates move. The general rule holds though: certifications get you past filters, and evidence of applied work gets you the offer.",
+      },
+    ],
+    summaryExample:
+      "Security engineer with 6 years building and operating controls for a 5,000-endpoint estate in fintech. Deployed EDR to 98% coverage and automated tier-1 triage, cutting analyst manual handling 60%. Drove critical vulnerability time-to-patch from 40 days to 7 by integrating scanning into CI and agreeing SLAs with engineering. Python-first; GCIH certified.",
+    bulletExamples: [
+      {
+        weak: "Implemented and managed security tools across the organisation.",
+        strong: "Deployed CrowdStrike EDR to 5,000 endpoints reaching 98% coverage in 9 weeks, running a phased detect-only rollout that caught 40 legitimate applications before prevention was enabled.",
+        why: "Tool deployment is the role's baseline. Coverage, timeline and the phased approach show a rollout that did not break production — which is the part that actually distinguishes competent security engineering.",
+      },
+      {
+        weak: "Managed vulnerability scanning and remediation efforts.",
+        strong: "Cut critical vulnerability time-to-patch from 40 days to 7 by embedding scanning into CI, auto-filing tickets with owning-team routing, and agreeing remediation SLAs with 6 engineering leads.",
+        why: "Finding vulnerabilities is easy; the hard part is getting them fixed. The time-to-patch movement plus the mechanism — automation and negotiated SLAs — shows both engineering and influence.",
+      },
+      {
+        weak: "Responded to security incidents and performed investigations.",
+        strong: "Automated tier-1 alert triage with enrichment and auto-containment playbooks, cutting analyst manual handling 60% and mean time to contain from 4 hours to 25 minutes across 200 incidents.",
+        why: "Incident response participation is expected. Automating it is the engineering contribution, and containment time across a stated incident volume is the number a security leader compares directly.",
+      },
+    ],
+    coreSkills: ["Security automation & scripting", "EDR deployment & tuning", "Detection engineering", "Vulnerability management", "Incident response", "Cloud security", "Secure CI/CD", "Identity & access controls", "Threat modelling"],
+    tools: ["Python", "CrowdStrike", "Splunk", "Microsoft Sentinel", "Tenable", "Qualys", "Burp Suite", "Snyk", "Terraform", "AWS Security Hub", "PowerShell", "MITRE ATT&CK"],
+    metrics: ["Endpoints / systems protected and coverage %", "Critical vulnerability time-to-patch", "Mean time to detect and contain", "Alerts auto-triaged", "Manual toil removed", "Audit findings closed", "Controls deployed"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Operates existing tooling. CV should show hands-on work with one security platform and scripting basics." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a control domain. CV should show a deployment with coverage numbers and incident experience." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs and automates controls across domains. CV should show automation and risk-reduction metrics." },
+      { level: "Principal (8+ yrs)", expectation: "Sets security engineering direction. CV should show programme-level outcomes and engineering partnership." },
+    ],
+    redFlags: [
+      "Tool lists with no coverage or outcome numbers.",
+      "No coding or automation evidence, limiting the role to console operation.",
+      "Incident response described in framework language with no specific incident.",
+      "Certifications leading the CV ahead of applied work.",
+    ],
+  },
+
+  "security-analyst": {
+    intro:
+      "Security Analyst interviews centre on triage judgement under time pressure. Expect a live investigation scenario, questions about how you distinguish a true positive from noise, and probing on what you escalated and why. The discipline is entered more often than any other in security, so interviewers screen hard for people who have actually worked a queue rather than studied one.",
+    interviewFocus: [
+      { area: "Alert triage and investigation", detail: "Given an alert, describe what you check, in what order, and what would make you escalate. The defining round — interviewers watch whether you gather evidence before forming a conclusion." },
+      { area: "Log and telemetry analysis", detail: "Reading authentication logs, process trees and network telemetry to reconstruct what happened. Often a hands-on exercise against sample data." },
+      { area: "Attack knowledge", detail: "MITRE ATT&CK techniques, common attack chains, and what a given technique looks like in logs rather than in theory." },
+      { area: "Communication", detail: "Writing an incident summary a non-security manager can act on, and escalating without crying wolf." },
+    ],
+    technicalQuestions: [
+      "An alert fires for PowerShell spawning from Word. Walk me through your investigation.",
+      "How do you distinguish a legitimate admin action from a compromised admin account?",
+      "You see 200 failed logins followed by one success. What do you do?",
+      "How would you investigate a suspected data exfiltration?",
+      "What does lateral movement look like in Windows event logs?",
+      "An alert has fired 400 times this week and every one has been benign. What now?",
+      "How do you decide whether something is worth escalating to incident response?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a true positive you caught that others had dismissed.",
+      "Describe an alert you escalated that turned out to be nothing. How did you handle it?",
+      "Tell me about improving a detection or process rather than just working the queue.",
+      "Describe explaining a security issue to someone non-technical.",
+      "Tell me about a shift where you were overwhelmed by alert volume.",
+    ],
+    questionsToAsk: [
+      "What is the current daily alert volume per analyst, and the true-positive rate?",
+      "Do analysts get time to improve detections, or is it queue work only?",
+      "What does the escalation path to incident response look like?",
+      "What is the progression from analyst here?",
+    ],
+    faq: [
+      {
+        question: "What does a Security Analyst interview focus on?",
+        answer:
+          "Investigation process above knowledge recall. The central round describes an alert — PowerShell spawning from a Word document is the classic — and asks what you check and in what order. Interviewers score whether you gather evidence systematically (parent process, command line, user context, network connections, whether this is normal for that host) before concluding, and whether you know what would make you escalate. Candidates who jump to \"it's malware, isolate the host\" without investigating fail this round even when the conclusion is right.",
+      },
+      {
+        question: "How do I get a Security Analyst job with no experience?",
+        answer:
+          "It is the most common entry point into security, and the realistic routes are a home lab you can discuss in detail, Security+ or an equivalent baseline certification, and demonstrable log-analysis practice through platforms like TryHackMe or Blue Team Labs. Adjacent internal moves work well too — service desk and systems administration convert into SOC roles regularly because the troubleshooting instinct transfers. What interviewers want is evidence you have actually looked at logs and reasoned from them, not that you have watched courses about doing so.",
+      },
+      {
+        question: "What metrics belong on a Security Analyst CV?",
+        answer:
+          "Volume, accuracy and improvement. Alerts triaged per week, true-positive rate, mean time to triage, incidents escalated and confirmed, and detections you tuned or wrote. \"Triaged ~350 alerts/week across 8,000 endpoints, and cut false positives 58% by rewriting 30 detection rules\" is strong because it shows both that you worked at real volume and that you improved the queue rather than only consuming it.",
+      },
+      {
+        question: "Is a SOC analyst role a dead end?",
+        answer:
+          "Not if you treat it as a starting point, which is how the industry generally treats it. Typical progressions run to detection engineering, incident response, threat hunting, or security engineering — usually within two to four years. What accelerates it is doing more than the queue: writing detections, automating enrichment, building a home lab, learning Python. Analysts who only triage tend to plateau; those who improve the systems around the queue move quickly.",
+      },
+    ],
+    summaryExample:
+      "Security analyst with 3 years in a 24/7 SOC covering 8,000 endpoints. Triage ~350 alerts/week and cut false positives 58% by rewriting 30 detection rules, freeing roughly 12 analyst-hours weekly. Caught the credential-stuffing campaign that standard detections missed by baselining authentication patterns. Security+ and GCIH; automating enrichment in Python.",
+    bulletExamples: [
+      {
+        weak: "Monitored security alerts and escalated incidents as needed.",
+        strong: "Triaged ~350 alerts/week across 8,000 endpoints in Splunk, escalating 40 confirmed incidents with a 91% true-positive rate on escalations.",
+        why: "Monitoring is the role definition. Volume, estate size and — critically — the true-positive rate on your escalations show you exercise judgement rather than forwarding everything upward.",
+      },
+      {
+        weak: "Investigated potential security threats and documented findings.",
+        strong: "Identified a credential-stuffing campaign that signature detections missed, by baselining normal authentication timing and spotting a 3am success pattern from 40 source IPs — leading to MFA enforcement on 1,200 legacy accounts.",
+        why: "\"Investigated threats\" is unmeasurable. A specific catch that standard tooling missed, the method behind it, and the control change it drove is the single most persuasive bullet an analyst can have.",
+      },
+      {
+        weak: "Helped tune security tools to reduce false positives.",
+        strong: "Rewrote 30 detection rules using process-lineage context instead of filename matching, cutting false positives 58% and returning ~12 analyst-hours per week to real investigation.",
+        why: "Tuning is common; the mechanism and the hours returned are what make it credible. Naming why the old rules were noisy shows genuine detection understanding rather than threshold-raising.",
+      },
+    ],
+    coreSkills: ["Alert triage & investigation", "Log analysis", "SIEM querying", "MITRE ATT&CK", "Incident documentation", "Endpoint & network forensics basics", "Detection tuning", "Threat intelligence usage", "Escalation judgement"],
+    tools: ["Splunk", "Microsoft Sentinel", "CrowdStrike", "Wireshark", "KQL", "Elastic", "VirusTotal", "MITRE ATT&CK", "Python", "PowerShell", "TheHive"],
+    metrics: ["Alerts triaged per week", "True-positive rate on escalations", "Mean time to triage", "Incidents confirmed", "False positives reduced through tuning", "Endpoints / estate covered", "Detections written or improved"],
+    seniority: [
+      { level: "Tier 1 (0–2 yrs)", expectation: "Triages alerts against runbooks. CV should show volume handled and log-analysis fundamentals." },
+      { level: "Tier 2 (2–4 yrs)", expectation: "Investigates independently and tunes detections. CV should show a catch others missed and tuning outcomes." },
+      { level: "Tier 3 / Senior (4–7 yrs)", expectation: "Leads investigations and hunts proactively. CV should show detection engineering and automation." },
+      { level: "Lead (7+ yrs)", expectation: "Owns SOC process and mentoring. CV should show operational metrics moved across the team." },
+    ],
+    redFlags: [
+      "No alert volume or estate size, making the environment impossible to gauge.",
+      "No specific investigation described — the discipline is judged on what you caught.",
+      "Only tool names, with no evidence of investigation methodology.",
+      "No sign of improving detections, which reads as pure queue consumption.",
+    ],
+  },
+
+  "business-analyst": {
+    intro:
+      "Business Analyst interviews test whether you can turn a vague business ask into something a team can build and verify. Expect a requirements-elicitation scenario, process-mapping questions, and probing on how you handle stakeholders who disagree. The recurring weakness is candidates who describe documenting requirements rather than shaping them.",
+    interviewFocus: [
+      { area: "Requirements elicitation", detail: "Given a vague request, what questions do you ask and who do you ask? Interviewers check whether you find the underlying problem rather than transcribing the stated solution." },
+      { area: "Process analysis", detail: "Mapping a current-state process, identifying waste and handoffs, and designing a future state. Often a whiteboard exercise." },
+      { area: "Documentation and specification", detail: "Writing requirements or user stories precise enough to build from, with acceptance criteria and edge cases covered." },
+      { area: "Stakeholder management", detail: "Handling conflicting priorities between departments, and getting agreement without simply escalating." },
+    ],
+    technicalQuestions: [
+      "A stakeholder asks for a new report. How do you find out what they actually need?",
+      "Map the current-state process for employee onboarding. Where would you look for waste?",
+      "Two departments want conflicting things from the same system. What do you do?",
+      "How do you write acceptance criteria for a requirement with lots of edge cases?",
+      "How do you validate that a delivered solution actually solved the problem?",
+      "Walk me through how you would gather requirements for replacing a legacy system.",
+      "How do you handle a stakeholder who keeps changing scope?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a requirement you pushed back on.",
+      "Describe a project where the stated problem was not the real problem.",
+      "Tell me about a solution that was delivered as specified and still failed.",
+      "Describe getting agreement between stakeholders who did not want to agree.",
+      "Tell me about working with a technical team on something you did not fully understand.",
+    ],
+    questionsToAsk: [
+      "How early are BAs involved — at problem definition or after a solution is chosen?",
+      "How is success measured after delivery?",
+      "What is the working relationship between BAs, product and engineering?",
+      "How much of the role is process improvement versus systems requirements?",
+    ],
+    faq: [
+      {
+        question: "What is the most common Business Analyst interview question?",
+        answer:
+          "A vague stakeholder request that you must unpack — typically \"someone asks for a new report, what do you do?\" The expected answer is not to gather report specifications. It is to establish what decision the report is meant to support, who makes it, how often, what they do today, and whether existing data already answers it. Interviewers are checking whether you find the underlying need rather than transcribing the requested solution, because that distinction is the entire value of the role.",
+      },
+      {
+        question: "What is the difference between a Business Analyst and a Product Owner?",
+        answer:
+          "BAs analyse problems and specify solutions; Product Owners prioritise and own outcomes. In practice the roles overlap heavily and many organisations use the titles interchangeably. The clearest distinction is decision authority — a Product Owner decides what gets built and in what order, while a BA informs that decision with analysis and then specifies it properly. If you want the decision rights, target PO or PM roles; the analysis skills transfer directly.",
+      },
+      {
+        question: "What metrics belong on a Business Analyst CV?",
+        answer:
+          "Process outcomes and delivery impact. Cycle time reduced, manual hours removed, error rates cut, cost saved, systems or users affected, and requirements delivered without rework. \"Mapped and redesigned the claims intake process across 4 teams, cutting handling time from 6 days to 2 and removing 3 duplicate approval steps\" works because it names the scope, the mechanism and the measurable result — which is unusual on BA CVs and therefore stands out.",
+      },
+      {
+        question: "Do Business Analysts need technical skills?",
+        answer:
+          "SQL is the one that consistently pays back, because it lets you validate assumptions yourself rather than queuing for data. Beyond that, understanding how systems integrate, being able to read an API specification, and comfort with process notation (BPMN) cover most expectations. You do not need to code. What is increasingly expected is data literacy — being able to define a metric precisely and check whether the change you specified actually moved it.",
+      },
+    ],
+    summaryExample:
+      "Business analyst with 6 years in insurance operations and systems change. Redesigned claims intake across 4 teams, cutting handling time from 6 days to 2 and removing 3 duplicate approval steps. Led requirements for a policy-admin migration affecting 400 users, delivered with under 5% post-release change requests. SQL-fluent; validates assumptions in the data before specifying.",
+    bulletExamples: [
+      {
+        weak: "Gathered and documented business requirements from stakeholders.",
+        strong: "Ran 30 stakeholder interviews across 4 departments for a policy-admin migration affecting 400 users, producing specifications that delivered with under 5% post-release change requests.",
+        why: "Requirements gathering is the role definition. Scope, user scale, and the post-release change rate prove the specifications were actually right — which is the only real measure of BA quality.",
+      },
+      {
+        weak: "Analysed business processes and recommended improvements.",
+        strong: "Mapped the claims intake process end to end, finding 3 duplicate approval steps and a handoff causing 2-day queues; the redesign cut handling time from 6 days to 2 with no headcount change.",
+        why: "\"Recommended improvements\" often means recommendations that went nowhere. Naming the specific waste found, the redesign and the outcome — with the constraint that headcount stayed flat — makes it concrete and credible.",
+      },
+      {
+        weak: "Created user stories and acceptance criteria for the development team.",
+        strong: "Reframed a requested 'export button' as a reporting-trust problem after finding users were exporting to rebuild figures they did not believe; the scheduled-reports feature that followed reached 60% adoption versus 8% for the original request.",
+        why: "Writing stories is transcription. Changing what got built based on analysis is the BA's actual contribution, and the adoption comparison proves the reframing was right rather than merely clever.",
+      },
+    ],
+    coreSkills: ["Requirements elicitation", "Process mapping & analysis", "Stakeholder management", "User story & acceptance criteria writing", "Gap analysis", "Data analysis (SQL)", "Workshop facilitation", "UAT planning", "Change impact assessment"],
+    tools: ["Jira", "Confluence", "Visio", "Lucidchart", "BPMN", "SQL", "Excel", "Power BI", "Miro", "Figma"],
+    metrics: ["Cycle time reduced", "Manual hours removed", "Error or rework rate cut", "Cost saved", "Users or teams affected", "Post-release change request rate", "Adoption of delivered solutions"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Documents requirements within a defined scope. CV should show a delivered project and process-mapping ability." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns analysis for a workstream. CV should show a process outcome you measured." },
+      { level: "Senior (5–8 yrs)", expectation: "Leads analysis across teams and shapes solutions. CV should show a reframed problem and cross-functional agreement." },
+      { level: "Lead / Principal (8+ yrs)", expectation: "Sets analysis practice and owns programme-level change. CV should show organisational outcomes." },
+    ],
+    redFlags: [
+      "Documentation output described with no outcome attached.",
+      "No metrics anywhere, which is common on BA CVs and therefore an easy differentiator.",
+      "Methodology names (Agile, BPMN, MoSCoW) without a decision they produced.",
+      "No evidence of ever challenging a stated requirement.",
+    ],
+  },
+
+  "ui-designer": {
+    intro:
+      "UI Designer interviews weight craft more heavily than UX roles — typography, spacing, hierarchy and colour are assessed directly — but modern hiring also expects systems thinking and enough accessibility knowledge to avoid shipping something unusable. Portfolios are judged on visual quality and on whether your decisions are defensible rather than decorative.",
+    interviewFocus: [
+      { area: "Visual craft", detail: "Typography, spacing rhythm, hierarchy, colour and contrast, assessed directly through your portfolio and any exercise. The area where UI roles differ most from UX." },
+      { area: "Design systems", detail: "Component structure, tokens, variants, and documentation. Increasingly the core of the job rather than an adjunct." },
+      { area: "Design exercise", detail: "Redesigning a screen or building a component set to a brief, judged on decision-making as much as on the result." },
+      { area: "Handoff and feasibility", detail: "How you specify for engineers, what you know about responsive behaviour and states, and whether your designs survive implementation." },
+    ],
+    technicalQuestions: [
+      "Walk me through your typographic scale and why you chose those steps.",
+      "Redesign this settings screen. What is the hierarchy problem you are solving?",
+      "How do you build a component with 6 variants without creating an unmaintainable mess?",
+      "How do you check colour contrast, and what do you do when the brand palette fails AA?",
+      "What states does a button need, and which do designers most often forget?",
+      "How do you design a data table that works on mobile?",
+      "How do you decide spacing values — and why not just eyeball it?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about design feedback you disagreed with. How did you handle it?",
+      "Describe a design that did not survive implementation. What went wrong?",
+      "Tell me about working within a brand or system you found restrictive.",
+      "Describe convincing a stakeholder to simplify something.",
+      "Tell me about a design you shipped and later thought was wrong.",
+    ],
+    questionsToAsk: [
+      "Is there a design system, and who owns it?",
+      "How closely do designers work with engineers during build?",
+      "How much visual latitude is there versus following brand?",
+      "Is accessibility checked in the design phase or after?",
+    ],
+    faq: [
+      {
+        question: "What is the difference between a UI Designer and a UX Designer?",
+        answer:
+          "UI focuses on the visual and interactive surface — typography, layout, colour, components, states. UX focuses on the problem and flow — research, information architecture, usability. In practice many roles combine both under the Product Designer title, and pure UI roles are most common at larger organisations with dedicated researchers, or in agency work. Read the responsibilities rather than the title: if the posting emphasises research and discovery it is a UX role regardless of what it is called.",
+      },
+      {
+        question: "What should a UI portfolio show?",
+        answer:
+          "High-craft work with visible reasoning. Show the typographic scale and spacing system you used, not just finished screens; show component sets with their states and variants; show a before and after where you fixed a hierarchy problem and can articulate why the new version works. Reviewers are assessing craft directly, so quality of execution matters more here than in UX portfolios — but decoration without rationale reads as styling rather than design.",
+      },
+      {
+        question: "How much do UI designers need to know about accessibility?",
+        answer:
+          "Enough to not ship something excluding people, and it is increasingly asked about directly. The practical minimum is colour contrast ratios and how to check them, focus states and visible focus indicators, touch target sizing, and not using colour alone to convey meaning. A common interview question is what you do when the brand palette fails AA contrast — a strong answer involves adjusting values for interface use while preserving brand identity, rather than either ignoring it or refusing to work.",
+      },
+      {
+        question: "Do UI designers still need to know how to code?",
+        answer:
+          "Not to build production interfaces, but understanding how CSS layout actually behaves makes your designs far more likely to ship as intended. Knowing what flexbox and grid can do, how components handle overflow and long content, and what is expensive to build changes the designs you produce. Designers who hand over compositions that cannot responsively survive real content are the ones engineers quietly redesign.",
+      },
+    ],
+    summaryExample:
+      "UI designer with 5 years on B2B SaaS interfaces. Built and maintain a 70-component design system with tokens and documented states, adopted by 4 product teams and cutting new-screen design time roughly 35%. Led the contrast remediation that brought a 60-screen product to WCAG 2.2 AA without abandoning the existing brand palette.",
+    bulletExamples: [
+      {
+        weak: "Designed user interfaces and visual assets for web and mobile products.",
+        strong: "Redesigned the analytics dashboard around a 4-step typographic scale and 8px spacing system, cutting the number of distinct text styles from 23 to 6 and making density adjustable for power users.",
+        why: "\"Designed interfaces\" is the role title. Naming the systems you imposed and the reduction in inconsistent styles shows craft discipline, which is exactly what UI hiring assesses.",
+      },
+      {
+        weak: "Created and maintained the company's design system in Figma.",
+        strong: "Built a 70-component library with tokens, documented states and variant logic, adopted by 4 product teams and cutting new-screen design time ~35% while eliminating 12 near-duplicate button styles.",
+        why: "Design system work needs adoption attached to matter. The team count, time saved and the duplicate elimination convert an internal project into measurable organisational value.",
+      },
+      {
+        weak: "Ensured designs met accessibility standards.",
+        strong: "Brought 60 screens to WCAG 2.2 AA by rebuilding the palette's interface tokens for contrast while preserving brand colours for marketing, closing 90+ contrast violations without a rebrand.",
+        why: "\"Met standards\" is unverifiable. The specific tension — accessibility versus an existing brand — and how it was resolved shows judgement, and the violation count makes it concrete.",
+      },
+    ],
+    coreSkills: ["Typography & type systems", "Layout & spacing systems", "Colour theory & contrast", "Design systems & tokens", "Component & variant architecture", "Interaction states", "Responsive design", "Accessibility (WCAG)", "Design handoff"],
+    tools: ["Figma", "Figma Variables", "Storybook", "Adobe Creative Suite", "Framer", "Principle", "Zeplin", "Stark", "Miro"],
+    metrics: ["Components shipped and reused", "Design system adoption across teams", "Design-to-build time reduced", "Contrast / accessibility violations closed", "Style or component duplication removed", "Task completion or conversion where measured"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Executes to an existing system. Portfolio should show craft and consistency." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns interfaces for a product area. Portfolio should show a system you built or extended." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns visual direction and systems. Portfolio should show adoption and measurable design-process gains." },
+      { level: "Lead (8+ yrs)", expectation: "Sets visual language across products. Portfolio should show standards and team-level impact." },
+    ],
+    redFlags: [
+      "Screens with no visible system — inconsistent spacing and type across a single portfolio piece.",
+      "No design system work at all, now central to most UI roles.",
+      "No accessibility awareness, increasingly a scored area.",
+      "Dribbble-style concepts with no real product constraints as primary work.",
+    ],
+  },
+
+  "solutions-architect": {
+    intro:
+      "Solutions Architect interviews are conversation-led: you are assessed on how you handle ambiguity, elicit constraints, and defend trade-offs in front of people who may disagree. Expect an open-ended design round, questions about cost and delivery reality, and — in pre-sales-leaning roles — an exercise in explaining a technical decision to a non-technical audience.",
+    interviewFocus: [
+      { area: "Open-ended architecture design", detail: "A deliberately underspecified problem where the first move should be asking about scale, budget, timeline, existing estate and non-functional requirements. Jumping to a diagram is the classic failure." },
+      { area: "Trade-off reasoning", detail: "Build versus buy, monolith versus services, managed versus self-hosted — and what you give up in each case. Interviewers push back to see whether you defend or fold." },
+      { area: "Commercial awareness", detail: "What the design costs to build and run, and how it fits a delivery timeline and team capability. Architecture divorced from budget is a common weakness." },
+      { area: "Communication", detail: "Explaining the same decision to an engineer and to a CFO. Central in customer-facing and pre-sales architecture roles." },
+    ],
+    technicalQuestions: [
+      "A retailer wants to modernise a legacy monolith. Where do you start?",
+      "Design an integration between 3 systems that were never meant to talk to each other.",
+      "When would you recommend against microservices?",
+      "How do you design for a stated 99.9% availability target, and what does 99.99% add in cost?",
+      "The customer wants multi-cloud. How do you evaluate whether they should?",
+      "How do you architect for a team that does not yet have the skills to run it?",
+      "Explain your architecture decision to a CFO who wants to know why it costs what it does.",
+    ],
+    behaviouralQuestions: [
+      "Tell me about an architecture you recommended that was rejected.",
+      "Describe a design that failed in production. What did you miss?",
+      "Tell me about telling a customer or stakeholder they were asking for the wrong thing.",
+      "Describe balancing an ideal architecture against a delivery deadline.",
+      "Tell me about aligning engineering and business stakeholders who disagreed.",
+    ],
+    questionsToAsk: [
+      "Is this role customer-facing, internal, or pre-sales?",
+      "How much authority does architecture have over delivery decisions?",
+      "How are architecture decisions documented and revisited?",
+      "What is the gap between the current estate and where you want to be?",
+    ],
+    faq: [
+      {
+        question: "What do Solutions Architect interviews actually test?",
+        answer:
+          "Whether you gather constraints before designing. The signature round gives you a deliberately vague problem, and strong candidates spend the first several minutes asking questions — expected scale, budget, timeline, existing systems, team capability, compliance requirements, availability targets — before proposing anything. Candidates who start drawing boxes immediately are marked down regardless of the quality of the architecture, because the failure being tested for is designing confidently for the wrong problem.",
+      },
+      {
+        question: "How is a Solutions Architect different from a Software Architect?",
+        answer:
+          "Solutions Architects design across systems and often across organisational boundaries, frequently customer-facing and with heavy commercial input. Software Architects go deeper within one system or product, closer to the code and the engineering team. Solutions roles weight communication, trade-off negotiation and cost; software architecture roles weight technical depth. Enterprise Architect sits above both, concerned with portfolio-level standards rather than individual solutions.",
+      },
+      {
+        question: "What metrics belong on a Solutions Architect CV?",
+        answer:
+          "Scale, commercial outcome and adoption. Systems or users the architecture serves, cost of the solution and any savings against the alternative, delivery timeline achieved, and whether what you designed was actually built and adopted. \"Designed the integration platform connecting 12 systems for 8,000 users, delivered in 7 months against a 12-month estimate and £1.4M under the vendor alternative\" works because architecture is judged on delivered outcomes rather than diagrams.",
+      },
+      {
+        question: "Do I need certifications for architecture roles?",
+        answer:
+          "Cloud provider architect certifications — AWS Solutions Architect Professional, Azure Solutions Architect Expert — carry genuine weight, particularly in consultancies and for partner-status reasons, and are often used as screening filters. TOGAF appears in enterprise architecture functions. That said, they establish credibility rather than capability: interviews test whether you can hold an ambiguous design conversation, and no certification prepares you for that. Get the one matching your target cloud, then practise designing aloud.",
+      },
+    ],
+    summaryExample:
+      "Solutions architect with 9 years across retail and logistics, spanning pre-sales and delivery. Designed the integration platform connecting 12 systems for 8,000 users, delivered in 7 months against a 12-month estimate and £1.4M under the vendor alternative. Comfortable defending trade-offs to both engineering teams and finance. AWS Solutions Architect Professional.",
+    bulletExamples: [
+      {
+        weak: "Designed solution architectures for enterprise clients.",
+        strong: "Designed and delivered an event-driven integration platform connecting 12 systems for 8,000 users, delivered in 7 months against a 12-month estimate and £1.4M below the packaged-vendor alternative.",
+        why: "Architecture claims need delivery and commercial outcomes. The system count, user scale, timeline against estimate and cost comparison show the design survived contact with reality — which diagrams alone never demonstrate.",
+      },
+      {
+        weak: "Provided technical guidance and recommendations to stakeholders.",
+        strong: "Recommended against a proposed microservices rewrite after modelling the operational cost against a 6-engineer team, proposing a modular monolith instead — delivered 5 months earlier with no reliability regression.",
+        why: "\"Provided guidance\" is unmeasurable and often ignored. Talking a stakeholder out of a fashionable decision, with the reasoning and the outcome stated, is the strongest possible architecture bullet.",
+      },
+      {
+        weak: "Worked with clients to understand their technical requirements.",
+        strong: "Ran discovery across 4 business units to establish real availability needs, finding the stated 99.99% requirement applied to one workflow rather than the platform — cutting projected infrastructure cost 45%.",
+        why: "Requirements gathering becomes compelling when it changes the answer. Challenging an assumed non-functional requirement and quantifying the saving demonstrates exactly the commercial judgement the role exists for.",
+      },
+    ],
+    coreSkills: ["Architecture design & documentation", "Requirements & constraint elicitation", "Trade-off analysis", "Integration patterns", "Cloud architecture", "Cost modelling", "Stakeholder communication", "Migration strategy", "Non-functional requirements"],
+    tools: ["AWS", "Azure", "GCP", "Terraform", "Kubernetes", "Kafka", "MuleSoft", "Lucidchart", "C4 model", "ArchiMate", "Confluence"],
+    metrics: ["Systems integrated / users served", "Solution cost and savings against alternatives", "Delivery timeline against estimate", "Availability target achieved", "Architectures adopted and built", "Migration scale"],
+    seniority: [
+      { level: "Associate (3–5 yrs)", expectation: "Designs within a defined domain. CV should show hands-on engineering depth plus one solution you owned." },
+      { level: "Solutions Architect (5–9 yrs)", expectation: "Owns designs end to end including delivery. CV should show a built system with commercial outcomes." },
+      { level: "Senior / Principal (9+ yrs)", expectation: "Owns architecture across programmes. CV should show portfolio decisions and executive-level influence." },
+    ],
+    redFlags: [
+      "Diagrams and designs with no evidence anything was built.",
+      "No cost or commercial awareness, which the role is substantially about.",
+      "Technology preferences stated as universal truths rather than trade-offs.",
+      "No hands-on engineering background, which undermines credibility with delivery teams.",
+    ],
+  },
 };
 
 /** Roles with genuine hand-written content. Others render noindex. */

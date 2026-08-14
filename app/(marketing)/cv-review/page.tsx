@@ -831,6 +831,31 @@ export default function CvReviewPage() {
           </div>
         </div>
       </section>
+
+      {/* Regional guides — these pages had no inbound internal links */}
+      <section className="container mx-auto max-w-4xl px-4 py-14">
+        <h2 className="text-xl font-bold tracking-tight mb-2">CV review by region</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Hiring conventions differ by market — photo, nationality, visa status and length expectations all change.
+          These guides cover what reviewers in each region look for.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { href: "/cv-review/uae", label: "UAE CV review", detail: "Dubai and Abu Dhabi conventions, visa status, photo expectations." },
+            { href: "/cv-review/saudi-arabia", label: "Saudi Arabia CV review", detail: "Saudisation context, credential expectations and formatting." },
+            { href: "/cv-review/gcc", label: "GCC CV review", detail: "Qatar, Kuwait, Bahrain and Oman — shared regional norms." },
+          ].map((r) => (
+            <Link
+              key={r.href}
+              href={r.href}
+              className="rounded-xl border bg-card p-4 hover:bg-accent transition-colors"
+            >
+              <p className="text-sm font-semibold">{r.label}</p>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{r.detail}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
