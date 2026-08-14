@@ -2,20 +2,23 @@ import { MetadataRoute } from "next";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getAllPostsForSitemap } from "@/lib/blog/posts";
 import { TEMPLATE_CATEGORIES, getAllLeafParams } from "@/lib/resume-templates/data";
+import { hasRoleContent } from "@/lib/roles/role-content";
+import { getRoleExampleData } from "@/lib/resume-examples/data";
 
 // Stable baseline timestamp — bump manually when content materially changes.
 // Avoids `new Date()` triggering a re-crawl on every build with no real update.
 const STABLE_LAST_MODIFIED = new Date("2026-04-30T00:00:00Z");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const rolePages: MetadataRoute.Sitemap = ALL_ROLES.map(({ slug }) => ({
-    url: `https://www.thecvedge.com/jobs/${slug}`,
-    lastModified: STABLE_LAST_MODIFIED,
-    changeFrequency: "daily",
-    priority: 0.7,
-  }));
+  // /jobs/[role] pages render third-party listings that rotate constantly. They
+  // are noindex while the site is under AdSense review, so they stay out of the
+  // sitemap — advertising URLs we tell Google not to index is a mixed signal.
 
-  const interviewPrepRolePages: MetadataRoute.Sitemap = ALL_ROLES.map(({ slug }) => ({
+  // Interview-prep and resume-examples pages are only listed once they have
+  // genuine role-specific content behind them (see lib/roles/role-content.ts).
+  // Roles still awaiting content render noindex, so listing them here would
+  // contradict the page-level directive.
+  const interviewPrepRolePages: MetadataRoute.Sitemap = ALL_ROLES.filter(({ slug }) => hasRoleContent(slug)).map(({ slug }) => ({
     url: `https://www.thecvedge.com/interview-prep/${slug}`,
     lastModified: STABLE_LAST_MODIFIED,
     changeFrequency: "weekly",
@@ -71,7 +74,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // --- Resume examples pages ---
-  const resumeExamplesPages: MetadataRoute.Sitemap = ALL_ROLES.map(({ slug }) => ({
+  // Resume examples have their own curated dataset predating role-content, so a
+  // role qualifies via either source. Must match hasRealContent() on the page.
+  const resumeExamplesPages: MetadataRoute.Sitemap = ALL_ROLES.filter(
+    ({ slug }) => Boolean(getRoleExampleData(slug)) || hasRoleContent(slug)
+  ).map(({ slug }) => ({
     url: `https://www.thecvedge.com/resume-examples/${slug}`,
     lastModified: STABLE_LAST_MODIFIED,
     changeFrequency: "monthly" as const,
@@ -95,7 +102,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...templateCategoryPages,
     ...templateLeafPages,
     ...resumeExamplesPages,
-    ...rolePages,
     ...interviewPrepRolePages,
     ...blogPostPages,
     { url: "https://www.thecvedge.com/privacy", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.2 },

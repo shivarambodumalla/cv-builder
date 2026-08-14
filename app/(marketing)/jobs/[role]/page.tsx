@@ -4,6 +4,7 @@ import { JobSearchForm } from "../job-search-form";
 import { RoleJobResults } from "./role-job-results";
 import { BrowseRoles } from "@/components/jobs/browse-roles";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
+import { filterJobsByRole } from "@/lib/jobs/role-relevance";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,10 @@ export async function generateMetadata({ params }: { params: Promise<{ role: str
     description: role.description,
     openGraph: { title: `${role.title} Jobs | CVEdge`, description: role.description, url: `https://www.thecvedge.com/jobs/${role.slug}` },
     alternates: { canonical: `https://www.thecvedge.com/jobs/${role.slug}` },
+    // These pages are built from third-party listings that rotate constantly, so
+    // they carry little standalone value for search. Keep them out of the index
+    // (and out of the AdSense reviewer's sample) while the site is under review.
+    robots: { index: false, follow: true },
   };
 }
 
@@ -65,16 +70,20 @@ export default async function RoleJobsPage({ params }: { params: Promise<{ role:
   const role = ROLE_MAP.get(slug);
   if (!role) notFound();
 
-  // Fetch jobs from all enabled providers
-  let jobs: unknown[] = [];
+  // Fetch jobs from all enabled providers.
+  //
+  // Providers treat multi-word queries as loose OR matches, so "product manager"
+  // comes back padded with "Regional Sales Manager" and similar. Over-fetch, then
+  // filter down to titles that actually name this role.
+  let jobs: { title: string }[] = [];
   try {
     const { searchAllProviders } = await import("@/lib/jobs/search");
     const response = await searchAllProviders({
       what: role.keywords,
-      results_per_page: 20,
+      results_per_page: 40,
       sort_by: "relevance",
     });
-    jobs = response.results;
+    jobs = filterJobsByRole(response.results, role.slug, role.title).jobs.slice(0, 20);
   } catch { /* silent */ }
 
   // JSON-LD for top results — Google Jobs surface ranks better with broader coverage

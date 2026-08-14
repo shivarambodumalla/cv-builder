@@ -43,3 +43,6 @@ next-env.d.ts
 tests/e2e/.auth/
 /playwright/.cache/
 supabase/.temp/
+
+# Blog content snapshots written by scripts/expand-thin-blog-posts.ts
+blog-backup-*.json

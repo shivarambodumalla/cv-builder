@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Target, CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
+import { getRoleContent, rolesWithContent } from "@/lib/roles/role-content";
 
 export const revalidate = 3600;
 
@@ -22,8 +22,13 @@ export async function generateMetadata({
   const { role: slug } = await params;
   const role = ROLE_MAP.get(slug);
   if (!role) return {};
-  const title = `${role.label} Interview Questions & STAR Story Examples | CVEdge`;
-  const description = `Prepare for ${role.label} interviews with structured STAR stories, common behavioral and technical questions, and AI-powered job-matched prep — free.`;
+
+  const content = getRoleContent(slug);
+  const title = `${role.label} Interview Questions & How to Answer Them | CVEdge`;
+  const description = content
+    ? `${content.technicalQuestions.length + content.behaviouralQuestions.length} real ${role.label} interview questions, what each round is scored on, and how to structure your answers.`
+    : `Prepare for ${role.label} interviews with structured STAR stories and job-matched practice.`;
+
   return {
     title,
     description,
@@ -33,43 +38,11 @@ export async function generateMetadata({
       url: `https://www.thecvedge.com/interview-prep/${role.slug}`,
     },
     alternates: { canonical: `https://www.thecvedge.com/interview-prep/${role.slug}` },
+    // Roles without hand-written content would render a templated page. Those
+    // stay out of the index until real content exists for them.
+    ...(content ? {} : { robots: { index: false, follow: true } }),
   };
 }
-
-function buildFaq(label: string): { question: string; answer: string }[] {
-  return [
-    {
-      question: `What questions are asked in a ${label} interview?`,
-      answer: `${label} interviews typically mix behavioral questions ("Tell me about a time you…"), role-specific technical or domain questions, and situational scenarios. Expect 4–6 behavioral prompts (leadership, conflict, failure, impact) plus 3–5 questions specific to the ${label} craft. Hiring managers also probe for ownership, collaboration, and how you handle ambiguity.`,
-    },
-    {
-      question: `How should I structure a ${label} interview answer?`,
-      answer: `Use the STAR framework: Situation (the context), Task (your responsibility), Action (what you specifically did), Result (the measurable outcome). For ${label} answers, lean heavily on the Action and quantified Result — interviewers want to hear specific decisions you owned and the impact they had. Aim for 90–120 seconds per answer.`,
-    },
-    {
-      question: `What are the most common behavioral questions for ${label} roles?`,
-      answer: `Recurring prompts: "Tell me about your most impactful project as a ${label}.", "Describe a time you disagreed with a teammate or stakeholder.", "Walk me through a failure and what you learned.", "How do you prioritise when everything feels urgent?", "Give an example of leading without authority." Prepare one strong STAR story for each theme — the same story can often answer two prompts.`,
-    },
-    {
-      question: `How do I prepare for a ${label} interview in a week?`,
-      answer: `Day 1–2: List 8–10 of your strongest career moments and draft them in STAR format. Day 3–4: Pressure-test each story — does it have a clear result and decision you owned? Day 5: Match stories to the specific job description and company values. Day 6: Practise out loud (record yourself). Day 7: Light review — sleep, hydrate, walk in fresh. CVEdge's Interview Coach automates Days 1–5 from your CV.`,
-    },
-    {
-      question: `What's the difference between behavioral and technical ${label} questions?`,
-      answer: `Behavioral questions test how you've worked in the past — collaboration, ownership, judgement. Answer with STAR stories. Technical questions test what you know and can do — system design, problem-solving, domain knowledge specific to ${label}. Behavioral answers should be rehearsed; technical answers benefit from thinking out loud and asking clarifying questions.`,
-    },
-    {
-      question: `How does CVEdge help with ${label} interview prep?`,
-      answer: `CVEdge scans your CV, GitHub, and portfolio to extract your strongest experiences, then structures them into STAR stories with AI-powered quality scoring. Paste any ${label} job description and CVEdge surfaces the stories most relevant to that specific role with talking points. Free to start — no credit card.`,
-    },
-  ];
-}
-
-const SAMPLE_THEMES = [
-  { icon: CheckCircle, title: "Leadership & ownership", body: "Times you drove a project, made a call without permission, or rallied a team." },
-  { icon: Sparkles, title: "Impact with metrics", body: "Outcomes you delivered with numbers — revenue, latency, retention, NPS." },
-  { icon: Target, title: "Conflict & collaboration", body: "Tough conversations, cross-functional friction, how you resolved disagreement." },
-];
 
 export default async function RoleInterviewPrepPage({
   params,
@@ -80,7 +53,39 @@ export default async function RoleInterviewPrepPage({
   const role = ROLE_MAP.get(slug);
   if (!role) notFound();
 
-  const faqs = buildFaq(role.label);
+  const content = getRoleContent(slug);
+  const lower = role.label.toLowerCase();
+
+  // Roles awaiting real content get a deliberately short page that points at the
+  // product rather than padding out generic advice.
+  if (!content) {
+    return (
+      <div className="container mx-auto px-4 py-16 md:py-20">
+        <div className="mx-auto max-w-xl text-center">
+          <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Interview Coach</p>
+          <h1 className="text-3xl font-bold tracking-tight mt-2">{role.label} Interview Prep</h1>
+          <p className="text-muted-foreground mt-3">
+            We haven&apos;t published our {lower} interview guide yet. In the meantime, CVEdge&apos;s Interview Coach
+            builds a STAR story bank from your own CV and matches it to any {lower} job description.
+          </p>
+          <Button className="mt-6" asChild>
+            <Link href="/login?returnUrl=%2Finterview-coach">Start prepping free</Link>
+          </Button>
+          <p className="mt-8 text-sm text-muted-foreground">
+            <Link href="/interview-prep" className="underline underline-offset-4">
+              Browse published interview guides
+            </Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const otherGuides = rolesWithContent()
+    .filter((s) => s !== slug)
+    .map((s) => ROLE_MAP.get(s))
+    .filter((r): r is { label: string; slug: string } => Boolean(r))
+    .slice(0, 8);
 
   return (
     <>
@@ -91,46 +96,99 @@ export default async function RoleInterviewPrepPage({
           { name: role.label, url: `https://www.thecvedge.com/interview-prep/${role.slug}` },
         ]}
       />
-      <FaqJsonLd items={faqs} />
+      <FaqJsonLd items={content.faq} />
 
       <div className="container mx-auto px-4 py-16 md:py-20">
         {/* Hero */}
-        <div className="mx-auto max-w-2xl text-center mb-14">
+        <div className="mx-auto max-w-3xl mb-14">
           <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Interview Coach</p>
-          <h1 className="text-3xl font-bold tracking-tight mt-2">
-            {role.label} Interview Questions & STAR Stories
-          </h1>
-          <p className="text-muted-foreground mt-3">
-            Build a personal library of {role.label.toLowerCase()} interview answers. CVEdge structures your experience into STAR stories and matches them to any job description.
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight mt-2">{role.label} Interview Questions</h1>
+          <p className="text-muted-foreground mt-4 leading-relaxed">{content.intro}</p>
           <Button className="mt-6" asChild>
-            <Link href={`/login?returnUrl=%2Finterview-coach`}>Start prepping free</Link>
+            <Link href="/login?returnUrl=%2Finterview-coach">Build your story bank free</Link>
           </Button>
         </div>
 
-        {/* Themes */}
-        <div className="mx-auto max-w-3xl mb-14">
-          <p className="text-sm font-medium text-center text-muted-foreground mb-6">
-            What {role.label.toLowerCase()} interviews really test
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {SAMPLE_THEMES.map((t) => (
-              <div key={t.title} className="rounded-xl border bg-card p-5 text-center">
-                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <t.icon className="h-5 w-5" />
-                </div>
-                <p className="text-sm font-semibold">{t.title}</p>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{t.body}</p>
+        {/* What the loop tests */}
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-6">What {lower} interviews are scored on</h2>
+          <div className="space-y-4">
+            {content.interviewFocus.map((f) => (
+              <div key={f.area} className="rounded-xl border bg-card p-5">
+                <p className="text-sm font-semibold">{f.area}</p>
+                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{f.detail}</p>
               </div>
             ))}
           </div>
-        </div>
+        </section>
+
+        {/* Technical questions */}
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-2">
+            Technical {lower} interview questions
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Questions of this shape recur across {lower} loops. Practise them aloud — interviewers score how you
+            reason, not only where you land.
+          </p>
+          <ul className="space-y-3">
+            {content.technicalQuestions.map((q) => (
+              <li key={q} className="rounded-lg border bg-card px-4 py-3 text-sm leading-relaxed">
+                {q}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Behavioural questions */}
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-2">
+            Behavioural questions for {lower} roles
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Prepare one STAR story per theme. A single strong story usually answers two or three of these prompts.
+          </p>
+          <ul className="space-y-3">
+            {content.behaviouralQuestions.map((q) => (
+              <li key={q} className="rounded-lg border bg-card px-4 py-3 text-sm leading-relaxed">
+                {q}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Metrics that make answers land */}
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-2">Numbers that make {lower} answers credible</h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            A STAR answer without a result is a story. These are the measures that carry weight in this role.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {content.metrics.map((m) => (
+              <span key={m} className="rounded-full border bg-card px-3 py-1.5 text-xs">
+                {m}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        {/* Questions to ask */}
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-6">Questions worth asking your interviewer</h2>
+          <ul className="space-y-3">
+            {content.questionsToAsk.map((q) => (
+              <li key={q} className="rounded-lg border bg-card px-4 py-3 text-sm leading-relaxed">
+                {q}
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {/* FAQ — visible mirror of the JSON-LD */}
-        <div className="mx-auto max-w-3xl mb-14">
-          <h2 className="text-2xl font-bold tracking-tight mb-6">Common {role.label} interview questions</h2>
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-2xl font-bold tracking-tight mb-6">{role.label} interview FAQs</h2>
           <div className="space-y-4">
-            {faqs.map((f) => (
+            {content.faq.map((f) => (
               <details key={f.question} className="rounded-xl border bg-card p-5 group">
                 <summary className="cursor-pointer list-none font-semibold text-sm flex items-start justify-between gap-3">
                   <span>{f.question}</span>
@@ -140,27 +198,50 @@ export default async function RoleInterviewPrepPage({
               </details>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Cross-link to /jobs/[role] */}
-        <div className="mx-auto max-w-3xl mb-14">
+        {/* Cross-link to resume examples */}
+        <section className="mx-auto max-w-3xl mb-14">
           <div className="rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold">Looking for {role.label} jobs?</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Match your CV to live {role.label.toLowerCase()} listings and prep for the ones that fit.</p>
+              <p className="text-sm font-semibold">Need the CV before the interview?</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                See {lower} CV examples, before/after bullets, and the metrics reviewers look for.
+              </p>
             </div>
             <Button variant="outline" asChild>
-              <Link href={`/jobs/${role.slug}`}>Browse {role.label} jobs</Link>
+              <Link href={`/resume-examples/${role.slug}`}>{role.label} CV examples</Link>
             </Button>
           </div>
-        </div>
+        </section>
+
+        {/* Other published guides — internal linking between real pages only */}
+        {otherGuides.length > 0 && (
+          <section className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-sm font-semibold mb-3">Other interview guides</h2>
+            <div className="flex flex-wrap gap-2">
+              {otherGuides.map((r) => (
+                <Link
+                  key={r.slug}
+                  href={`/interview-prep/${r.slug}`}
+                  className="rounded-full border bg-card px-3 py-1.5 text-xs hover:bg-accent transition-colors"
+                >
+                  {r.label}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* CTA */}
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight">Stop winging your {role.label.toLowerCase()} interviews</h2>
-          <p className="mt-3 text-muted-foreground">Build your story bank in minutes. Free to start, no credit card needed.</p>
+          <h2 className="text-2xl font-bold tracking-tight">Turn your experience into answers</h2>
+          <p className="mt-3 text-muted-foreground">
+            CVEdge reads your CV, drafts STAR stories from what you actually did, and matches them to the {lower} job
+            you&apos;re interviewing for.
+          </p>
           <Button className="mt-6" asChild>
-            <Link href={`/login?returnUrl=%2Finterview-coach`}>Start building free</Link>
+            <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>
           </Button>
         </div>
       </div>

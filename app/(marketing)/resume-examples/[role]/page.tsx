@@ -7,6 +7,16 @@ import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getRoleExampleData, generateGenericExampleData } from "@/lib/resume-examples/data";
 import { getLeafData } from "@/lib/resume-templates/data";
+import { getRoleContent } from "@/lib/roles/role-content";
+
+/**
+ * A page is only worth indexing when there is hand-written material behind it —
+ * either a curated example set or full role content. Everything else falls back
+ * to generated copy and stays out of the index.
+ */
+function hasRealContent(slug: string): boolean {
+  return Boolean(getRoleExampleData(slug)) || Boolean(getRoleContent(slug));
+}
 
 export const revalidate = 86400;
 
@@ -35,6 +45,7 @@ export async function generateMetadata({
       description,
       url: `https://www.thecvedge.com/resume-examples/${role.slug}`,
     },
+    ...(hasRealContent(slug) ? {} : { robots: { index: false, follow: true } }),
   };
 }
 
@@ -73,7 +84,10 @@ export default async function RoleResumeExamplePage({
   if (!role) notFound();
 
   const data = getRoleExampleData(slug) ?? generateGenericExampleData(role.label);
-  const faqs = buildFaqs(role.label);
+  const content = getRoleContent(slug);
+  // Prefer the hand-written role FAQ; fall back to the generic set only for
+  // roles that do not have one yet.
+  const faqs = content ? content.faq : buildFaqs(role.label);
 
   return (
     <>
@@ -358,6 +372,153 @@ export default async function RoleResumeExamplePage({
           </Button>
         </div>
       </div>
+
+      {/* ── Role-specific material (only for roles with hand-written content) ── */}
+      {content && (
+        <>
+          {/* Summary example */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-xl font-bold tracking-tight mb-2">
+              {role.label} professional summary example
+            </h2>
+            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+              Three or four sentences that state your specialisation, your level, and the single result you most
+              want read first.
+            </p>
+            <blockquote className="rounded-xl border-l-4 border-primary bg-card p-5 text-sm leading-relaxed">
+              {content.summaryExample}
+            </blockquote>
+          </div>
+
+          {/* Before / after bullets */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-xl font-bold tracking-tight mb-2">
+              Before and after: {role.label.toLowerCase()} resume bullets
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              Each pair below rewrites a bullet we see constantly on {role.label.toLowerCase()} CVs, with the reason
+              the rewrite works for this role specifically.
+            </p>
+            <div className="space-y-5">
+              {content.bulletExamples.map((b) => (
+                <div key={b.weak} className="rounded-xl border bg-card overflow-hidden">
+                  <div className="flex items-start gap-3 border-b p-4">
+                    <XCircle className="h-4 w-4 text-error shrink-0 mt-0.5" />
+                    <p className="text-sm text-muted-foreground leading-relaxed line-through decoration-error/40">
+                      {b.weak}
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3 border-b p-4">
+                    <CheckCircle className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                    <p className="text-sm font-medium leading-relaxed">{b.strong}</p>
+                  </div>
+                  <div className="bg-muted/40 p-4">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      <span className="font-semibold text-foreground">Why it works: </span>
+                      {b.why}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Metrics that matter */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-xl font-bold tracking-tight mb-2">
+              Metrics that belong on a {role.label.toLowerCase()} resume
+            </h2>
+            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+              Reviewers rank candidates on comparable numbers. These are the ones that carry weight in this role.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {content.metrics.map((m) => (
+                <span key={m} className="rounded-full border bg-card px-3 py-1.5 text-xs">
+                  {m}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Seniority positioning */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-xl font-bold tracking-tight mb-2">
+              What changes by level
+            </h2>
+            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+              The same experience reads differently depending on the level you are targeting. Position your CV for
+              the band you are applying to.
+            </p>
+            <div className="space-y-3">
+              {content.seniority.map((s) => (
+                <div key={s.level} className="rounded-xl border bg-card p-4">
+                  <p className="text-sm font-semibold">{s.level}</p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{s.expectation}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Role-specific red flags */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-xl font-bold tracking-tight mb-5">
+              What gets {role.label.toLowerCase()} CVs screened out
+            </h2>
+            <div className="space-y-3">
+              {content.redFlags.map((f) => (
+                <div key={f} className="flex items-start gap-3 rounded-xl border bg-card p-4">
+                  <XCircle className="h-4 w-4 text-error shrink-0 mt-0.5" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">{f}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Skills + tools */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <h2 className="text-xl font-bold tracking-tight mb-5">
+              Skills and tools reviewers scan for
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="rounded-xl border bg-card p-5">
+                <p className="text-sm font-semibold mb-3">Core skills</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {content.coreSkills.map((s) => (
+                    <span key={s} className="rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-xl border bg-card p-5">
+                <p className="text-sm font-semibold mb-3">Tools &amp; platforms</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {content.tools.map((t) => (
+                    <span key={t} className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Cross-link to interview prep */}
+          <div className="mx-auto max-w-3xl mb-14">
+            <div className="rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold">CV sorted — now the interview</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Real {role.label.toLowerCase()} interview questions and what each round is scored on.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" asChild className="shrink-0">
+                <Link href={`/interview-prep/${role.slug}`}>{role.label} interview prep</Link>
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* FAQ */}
       <div className="mx-auto max-w-3xl mb-14">
