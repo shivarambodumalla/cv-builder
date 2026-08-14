@@ -51,6 +51,8 @@ const productLinks: { label: string; href: string; external?: boolean }[] = [
 ];
 
 const legalLinks = [
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
 ];

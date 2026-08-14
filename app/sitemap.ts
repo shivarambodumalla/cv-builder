@@ -104,6 +104,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...resumeExamplesPages,
     ...interviewPrepRolePages,
     ...blogPostPages,
+    { url: "https://www.thecvedge.com/about", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.5 },
+    { url: "https://www.thecvedge.com/contact", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.5 },
     { url: "https://www.thecvedge.com/privacy", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.2 },
     { url: "https://www.thecvedge.com/terms", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.2 },
   ];
