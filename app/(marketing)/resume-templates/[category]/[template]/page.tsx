@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
+import { getLeafGuidance } from "@/lib/resume-templates/guidance";
 
 export const revalidate = 86400;
 
@@ -48,6 +49,11 @@ export default async function TemplateLeafPage({
 
   const relatedTemplates = cat.templates.filter((t) => t.leafSlug !== leafSlug).slice(0, 3);
 
+  const guidance = getLeafGuidance(catSlug, leafSlug);
+  // Guidance FAQs are audience-specific, so they extend rather than replace the
+  // template's own — both are surfaced and both go into the FAQPage schema.
+  const allFaqs = [...leaf.faqs, ...(guidance?.faqs ?? [])];
+
   return (
     <>
       <BreadcrumbJsonLd
@@ -58,7 +64,7 @@ export default async function TemplateLeafPage({
           { name: leaf.displayName, url: `https://www.thecvedge.com/resume-templates/${cat.slug}/${leaf.leafSlug}` },
         ]}
       />
-      <FaqJsonLd items={leaf.faqs.map((f) => ({ question: f.q, answer: f.a }))} />
+      <FaqJsonLd items={allFaqs.map((f) => ({ question: f.q, answer: f.a }))} />
 
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
@@ -182,10 +188,67 @@ export default async function TemplateLeafPage({
                   </div>
                 </div>
 
+                {/* Audience-specific guidance. Keyed per leaf page, so a template
+                    appearing in several categories gets different advice in each. */}
+                {guidance && (
+                  <>
+                    <h2 className="text-xl font-bold tracking-tight mb-3">
+                      Why this template works for {cat.label.toLowerCase()}
+                    </h2>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-8">{guidance.bestFor}</p>
+
+                    <h2 className="text-xl font-bold tracking-tight mb-3">Recommended section order</h2>
+                    <ol className="mb-3 space-y-1.5">
+                      {guidance.sectionOrder.order.map((s, i) => (
+                        <li key={s} className="text-sm flex items-start gap-2.5">
+                          <span className="shrink-0 mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
+                            {i + 1}
+                          </span>
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-8">{guidance.sectionOrder.why}</p>
+
+                    <h2 className="text-xl font-bold tracking-tight mb-4">What to put where</h2>
+                    <div className="space-y-3 mb-8">
+                      {guidance.sectionAdvice.map((s) => (
+                        <div key={s.section} className="rounded-xl border bg-card p-4">
+                          <p className="text-sm font-semibold">{s.section}</p>
+                          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{s.advice}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <h2 className="text-xl font-bold tracking-tight mb-4">
+                      Common mistakes with this template
+                    </h2>
+                    <ul className="space-y-2.5 mb-8">
+                      {guidance.mistakes.map((m) => (
+                        <li key={m} className="text-sm text-muted-foreground leading-relaxed flex items-start gap-2.5">
+                          <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-error" />
+                          <span>{m}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="rounded-xl border bg-muted/40 p-5 mb-8">
+                      <p className="text-sm font-semibold mb-1">When to choose something else</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {guidance.notFor.who} will usually be better served by{" "}
+                        <Link href={guidance.notFor.insteadHref} className="text-primary underline underline-offset-4">
+                          {guidance.notFor.instead}
+                        </Link>
+                        .
+                      </p>
+                    </div>
+                  </>
+                )}
+
                 {/* FAQ */}
                 <h2 className="text-xl font-bold tracking-tight mb-4">Questions about this template</h2>
                 <div className="space-y-3">
-                  {leaf.faqs.map((f) => (
+                  {allFaqs.map((f) => (
                     <details key={f.q} className="rounded-xl border bg-card p-5 group">
                       <summary className="cursor-pointer list-none font-semibold text-sm flex items-start justify-between gap-3">
                         <span>{f.q}</span>
