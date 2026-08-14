@@ -1132,6 +1132,721 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
   },
 
+  // ─── Automation & RPA ──────────────────────────────────────────────────────
+
+  "rpa-developer": {
+    intro:
+      "RPA interviews test whether you can tell an automatable process from one that should be fixed instead. Expect a process-design round, hands-on questions about a specific platform (usually UiPath, Automation Anywhere or Power Automate), and detailed probing on exception handling — because unattended bots fail silently and the cost of a bad automation is worse than no automation. CVs are read for hours saved and for bots that survived in production.",
+    interviewFocus: [
+      { area: "Process assessment", detail: "Given a described process, judge whether it is a good automation candidate — rule-based, stable, high volume, structured input — or whether the real answer is fixing the underlying system. Interviewers are checking that you would not automate a broken process." },
+      { area: "Platform depth", detail: "Selectors and their fragility, orchestrator scheduling, queues and transactions, reusable components. Usually specific to one vendor, so read the posting." },
+      { area: "Exception handling and resilience", detail: "Business versus system exceptions, retry logic, and what happens when a screen changes. The senior differentiator — juniors build happy-path bots." },
+      { area: "Governance", detail: "Credential handling, audit logging, version control, and how a bot change gets tested and promoted. Increasingly weighted in regulated sectors." },
+    ],
+    technicalQuestions: [
+      "Walk me through how you decide whether a process is worth automating.",
+      "A selector breaks every time the vendor updates the application. How do you make it resilient?",
+      "Explain the difference between a business exception and a system exception, and how you handle each.",
+      "Design a bot that processes 5,000 invoices overnight. What happens when it fails at item 3,200?",
+      "How do you handle credentials in an unattended bot without hardcoding them?",
+      "When would you use a queue-based (transactional) architecture over a linear one?",
+      "The business says a process takes 4 hours; you observe it takes 40 minutes. How do you handle the ROI case?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about an automation that broke in production. How did you find out and what changed?",
+      "Describe a time you recommended against automating something.",
+      "Tell me about handing a bot over to a support team.",
+      "Describe working with a business owner who could not clearly articulate the process.",
+      "Tell me about an automation whose actual savings came in well below the business case.",
+    ],
+    questionsToAsk: [
+      "How many bots are in production, and who supports them when they break?",
+      "Is there a CoE, and does it own governance or just delivery?",
+      "How is ROI measured after a bot goes live, not just before?",
+      "How much of the pipeline is genuine RPA versus API integration work?",
+    ],
+    faq: [
+      {
+        question: "What does an RPA Developer interview focus on?",
+        answer:
+          "Process judgement first, platform skill second. The round that decides most loops describes a business process and asks whether you would automate it — interviewers want to hear you check for rule-based logic, stable inputs, sufficient volume, and whether an API exists that would make the bot unnecessary. After that come platform-specific questions on selectors, orchestrator queues and reusable components, and a deep dive on exception handling, which is where unattended automation actually lives or dies.",
+      },
+      {
+        question: "Which RPA platform should I learn?",
+        answer:
+          "UiPath has the largest share of job postings and the most transferable ecosystem, so it is the safest single choice. Automation Anywhere and Blue Prism remain common in large enterprises, particularly finance and insurance. Microsoft Power Automate is growing fastest because it arrives bundled with existing Microsoft licensing. The concepts transfer well between them, so depth in one plus familiarity with the vocabulary of the others is a stronger position than shallow exposure to three.",
+      },
+      {
+        question: "What metrics belong on an RPA Developer CV?",
+        answer:
+          "Hours returned to the business, transactions processed, and bot reliability. \"Automated invoice matching across 3 ERPs, processing 5,000 transactions/night at 99.4% straight-through rate and returning ~2,100 FTE-hours annually\" works because it names volume, quality and value together. Also state how many bots you have in production and whether they are attended or unattended — unattended bots imply a much higher bar for exception handling.",
+      },
+      {
+        question: "Is RPA a dead end now that AI can automate processes?",
+        answer:
+          "The field is changing rather than disappearing, but the change is real and worth positioning for. Straightforward screen-scraping work is being displaced by API integration and by AI-based document processing that handles unstructured input RPA never could. The developers doing well are the ones moving toward intelligent automation — combining bots with document understanding and decision models — and toward the process-analysis skills that hold value regardless of tooling. A CV that shows only screen automation on legacy applications is the exposed position.",
+      },
+    ],
+    summaryExample:
+      "RPA developer with 5 years delivering unattended automation in insurance operations. Built and support 34 production bots processing 5,000 transactions/night at 99.4% straight-through rate, returning ~2,100 FTE-hours annually. UiPath Advanced certified, strongest in queue-based architecture and exception design.",
+    bulletExamples: [
+      {
+        weak: "Developed RPA bots using UiPath to automate business processes.",
+        strong: "Built 12 unattended UiPath bots for claims intake, processing 5,000 transactions/night at 99.4% straight-through rate and returning ~2,100 FTE-hours annually.",
+        why: "\"Automated business processes\" is the role definition. Volume, straight-through rate and hours returned are the three numbers an RPA hiring manager compares candidates on, and the straight-through rate in particular signals that the bots actually work unsupervised.",
+      },
+      {
+        weak: "Handled exceptions and maintained existing automations.",
+        strong: "Re-architected 8 fragile linear bots into a queue-based framework with typed business/system exception handling, cutting failed transactions from 11% to 0.6% and eliminating overnight manual restarts.",
+        why: "Maintenance sounds like keeping the lights on. Naming the architectural change and the failure-rate movement shows you fixed the design rather than patching symptoms — and \"eliminating overnight manual restarts\" is the human cost a manager recognises immediately.",
+      },
+      {
+        weak: "Worked with business teams to identify automation opportunities.",
+        strong: "Assessed 40 candidate processes against volume, rule stability and input structure; automated 14 and recommended API integration or process redesign for 9, avoiding an estimated £180k of low-value bot build.",
+        why: "Identifying opportunities is easy; the senior skill is declining the bad ones. Quantifying what you recommended against — and the spend avoided — is unusual on RPA CVs and reads as genuine judgement.",
+      },
+    ],
+    coreSkills: ["Process assessment & ROI analysis", "Queue-based bot architecture", "Exception handling design", "Selector engineering", "Orchestrator administration", "Process documentation (PDD/SDD)", "Credential & secrets handling", "Reusable component design"],
+    tools: ["UiPath", "Automation Anywhere", "Blue Prism", "Power Automate", "UiPath Orchestrator", "Python", "VBA", "SQL", "Document Understanding", "Git", "Jira"],
+    metrics: ["Transactions processed per run/day", "FTE-hours returned annually", "Straight-through processing rate", "Failed-transaction rate", "Bots in production supported", "Cost saved or avoided", "Average handling time before/after"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Builds bots to an existing design. CV should show one platform in depth and bots that reached production." },
+      { level: "Mid (2–4 yrs)", expectation: "Owns automations end to end including support. CV should show volume and reliability numbers." },
+      { level: "Senior (4–7 yrs)", expectation: "Designs frameworks and assesses pipeline. CV should show reusable architecture and processes you declined." },
+      { level: "Lead / Architect (7+ yrs)", expectation: "Owns the automation estate and governance. CV should show CoE standards and portfolio-level value." },
+    ],
+    redFlags: [
+      "Bot counts with no transaction volume or reliability figures.",
+      "No mention of exception handling — the half of RPA that determines whether bots survive.",
+      "Only attended/desktop automation, which implies a much lower engineering bar.",
+      "Claimed savings with no basis stated, which invites scepticism in a field known for inflated business cases.",
+    ],
+  },
+
+  "automation-engineer": {
+    intro:
+      "Automation Engineer means different things at different companies — test automation, infrastructure automation, or business-process automation — so the first job of your CV is making clear which one you are. Interviews test whether you build automation that other people trust and maintain, rather than scripts that only work on your machine.",
+    interviewFocus: [
+      { area: "Scoping what to automate", detail: "Judging where automation pays back and where it creates a maintenance burden worse than the manual task. The question behind most scenario rounds." },
+      { area: "Hands-on scripting", detail: "Python, Bash or PowerShell against a realistic problem — parsing output, calling an API, handling partial failure. Usually a live exercise." },
+      { area: "Reliability and idempotency", detail: "What happens when your automation runs twice, or dies halfway. The most common gap between junior and senior candidates." },
+      { area: "Handover and maintainability", detail: "Logging, documentation, alerting, and whether someone else can debug your automation at 3am." },
+    ],
+    technicalQuestions: [
+      "You have a manual process that takes 30 minutes and runs twice a week. Is it worth automating? Walk me through the maths.",
+      "Write a script that reconciles two data sources and reports differences. How do you handle a partial failure?",
+      "How do you make an automation idempotent so a re-run does not duplicate work?",
+      "Your automation silently stopped running three weeks ago and nobody noticed. What was missing?",
+      "How do you handle credentials in scheduled automation?",
+      "How would you test automation that touches production systems?",
+      "When would you recommend against automating something?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about automation you built that nobody ended up using. Why?",
+      "Describe a script that broke in a way that caused real damage.",
+      "Tell me about handing automation over to a team that had to maintain it.",
+      "Describe convincing a team to stop doing something manually.",
+      "Tell me about a time the manual process turned out to be the right answer.",
+    ],
+    questionsToAsk: [
+      "What does 'automation engineer' cover on this team — testing, infrastructure, or business process?",
+      "Who maintains automation after the person who wrote it moves on?",
+      "How is automation success measured here?",
+      "What is the largest manual process still running today?",
+    ],
+    faq: [
+      {
+        question: "What does an Automation Engineer actually do?",
+        answer:
+          "It depends heavily on the company, and this ambiguity is the main thing to resolve before applying. In some organisations it is test automation and sits inside QA; in others it is infrastructure and CI/CD work overlapping with DevOps; in others it is business-process automation close to RPA. Read the tools in the posting — Selenium and Playwright mean testing, Terraform and Ansible mean infrastructure, UiPath or Power Automate mean process. Mirror the corresponding vocabulary on your CV.",
+      },
+      {
+        question: "What separates a senior automation engineer from a junior one?",
+        answer:
+          "Judgement about what not to automate, and building things that survive handover. Juniors write scripts that work; seniors write automation with logging, alerting on silent failure, idempotent behaviour on re-run, and documentation that lets someone else debug it. The interview question that exposes this is \"your automation stopped running three weeks ago and nobody noticed\" — a senior answer talks about heartbeat monitoring and alerting on absence, not just on errors.",
+      },
+      {
+        question: "What metrics belong on an Automation Engineer CV?",
+        answer:
+          "Manual hours removed, error rates before and after, and reliability of the automation itself. \"Automated the monthly reconciliation, removing 18 hours of manual work per cycle and eliminating the three recurring transposition errors that had triggered restatements\" carries both the time saved and the quality gain. Also state how much of what you built is still running — automation that outlives your tenure is the strongest possible signal.",
+      },
+      {
+        question: "Do I need to be a strong programmer?",
+        answer:
+          "You need to be a competent one, and increasingly the bar is rising toward software engineering practice rather than scripting. Version control, tests for your automation, code review, and structuring code so it can be maintained by others are now expected in most postings. You do not need algorithm depth, but automation written as a single 800-line script with no error handling is the pattern that gets flagged in interviews.",
+      },
+    ],
+    summaryExample:
+      "Automation engineer with 5 years removing manual operations work in financial services. Automated 30 recurring processes in Python and Ansible, removing ~1,400 hours of manual effort annually and eliminating a recurring reconciliation error that had caused two restatements. Builds with logging, heartbeat alerting and handover documentation as standard.",
+    bulletExamples: [
+      {
+        weak: "Automated manual processes using Python scripts.",
+        strong: "Automated 30 recurring operations processes in Python, removing ~1,400 manual hours annually — all with heartbeat alerting, so silent failures page within 15 minutes rather than being discovered weeks later.",
+        why: "Script-writing is the baseline. The hours returned quantify value, and the heartbeat detail demonstrates the maturity that distinguishes automation which is trusted from automation which is quietly abandoned.",
+      },
+      {
+        weak: "Maintained and improved existing automation scripts.",
+        strong: "Refactored 40 standalone scripts into a shared library with common error handling and structured logging, cutting mean time to debug a failure from ~2 hours to 15 minutes and enabling handover to a 4-person support team.",
+        why: "Maintenance work becomes compelling when framed as leverage. The debug-time reduction and the successful handover show you improved how the team operates, not just the code.",
+      },
+      {
+        weak: "Worked with stakeholders to identify processes to automate.",
+        strong: "Assessed 25 candidate processes on frequency, duration and error cost; automated 11 and redesigned 6 out of existence entirely, since the underlying reports were no longer used.",
+        why: "The strongest automation outcome is often deleting the process. Showing you eliminated work rather than automating it demonstrates exactly the judgement senior automation roles hire for.",
+      },
+    ],
+    coreSkills: ["Process analysis & ROI judgement", "Python / Bash / PowerShell", "Idempotent design", "Error handling & structured logging", "Scheduling & orchestration", "API integration", "Secrets management", "Documentation & handover"],
+    tools: ["Python", "Bash", "PowerShell", "Ansible", "Terraform", "Airflow", "Jenkins", "GitHub Actions", "Selenium", "Playwright", "Power Automate", "REST APIs", "Git"],
+    metrics: ["Manual hours removed per year", "Processes automated (and retired)", "Error rate before and after", "Automation uptime / silent-failure detection time", "Mean time to debug", "Cost saved"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Writes scripts to spec. CV should show working automation and one scripting language properly." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns automation end to end including its monitoring. CV should show hours saved and reliability." },
+      { level: "Senior (5–8 yrs)", expectation: "Builds frameworks others use. CV should show shared tooling and successful handover." },
+      { level: "Lead (8+ yrs)", expectation: "Sets automation strategy. CV should show portfolio-level value and governance." },
+    ],
+    redFlags: [
+      "No statement of which automation discipline you work in, forcing the reviewer to guess.",
+      "Hours saved claimed with no basis or baseline.",
+      "No mention of monitoring or failure handling, implying scripts nobody trusts.",
+      "Automation described with no indication anyone else could maintain it.",
+    ],
+  },
+
+  // ─── Security specialisations ──────────────────────────────────────────────
+
+  "network-security-engineer": {
+    intro:
+      "Network Security Engineer interviews go deeper on protocol fundamentals than most security roles, because the job is defending the layer where theory meets packet capture. Expect firewall and segmentation design, hands-on troubleshooting, and questions about the trade-off every control creates between security and the network actually working. CVs are read for the scale of the estate you defended and for changes that reduced attack surface measurably.",
+    interviewFocus: [
+      { area: "Protocol and packet-level fundamentals", detail: "TCP handshakes, TLS negotiation, DNS behaviour, routing and NAT. Interviewers ask you to read a capture or explain why a connection fails — this is where claimed depth is verified quickly." },
+      { area: "Firewall and segmentation design", detail: "Rule-base design, zero-trust segmentation, east-west traffic control, and how you avoid the any-any rule that accumulates in every mature estate." },
+      { area: "Detection and response at the network layer", detail: "IDS/IPS tuning, egress monitoring, identifying command-and-control traffic and data exfiltration patterns." },
+      { area: "Operational trade-offs", detail: "How you deploy a control without breaking production, and how you have handled the change that did break it." },
+    ],
+    technicalQuestions: [
+      "Walk me through what happens on the wire when a TLS connection is established, and where you could inspect it.",
+      "Design segmentation for a flat corporate network of 4,000 hosts. Where do you start and what do you break first?",
+      "A user reports an application is slow. The firewall shows accepted traffic. How do you diagnose?",
+      "How would you detect command-and-control traffic that uses DNS as its channel?",
+      "Your firewall rule base has 3,000 rules accumulated over a decade. How do you clean it up safely?",
+      "What is the difference between IDS and IPS in practice, and why do so many organisations run IPS in detect-only mode?",
+      "How do you secure east-west traffic in a virtualised data centre?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a change you made that took down production. What did you learn?",
+      "Describe an incident where the network told you something the endpoint tooling missed.",
+      "Tell me about pushing a segmentation project through an organisation that resisted it.",
+      "Describe a time you had to accept a risk rather than remediate it.",
+      "Tell me about tuning a noisy detection system.",
+    ],
+    questionsToAsk: [
+      "How segmented is the estate today, honestly?",
+      "Is IPS running in prevent mode, and if not, what is blocking that?",
+      "Who owns firewall rule hygiene, and when was the base last reviewed?",
+      "How much of the network is visible to monitoring — including egress?",
+    ],
+    faq: [
+      {
+        question: "How deep do network security interviews go on fundamentals?",
+        answer:
+          "Deeper than most other security specialisations. It is normal to be asked to walk through a TCP handshake, explain where TLS inspection is possible and what it breaks, or interpret a packet capture live. The reason is practical: this role's daily work involves distinguishing a security control blocking traffic from a routing problem, and that requires genuine protocol knowledge rather than tool familiarity. Candidates who know firewall GUIs but not what is happening on the wire are found out quickly.",
+      },
+      {
+        question: "What metrics belong on a Network Security Engineer CV?",
+        answer:
+          "Estate size, attack-surface reduction, and detection outcomes. Concretely: hosts and sites protected, firewall rules rationalised, segments created, exposed services removed, IPS signatures tuned and the resulting false-positive reduction, and mean time to detect network-layer incidents. \"Segmented a flat 4,000-host network into 12 zones, cutting reachable attack surface 80% with zero unplanned outages\" is strong because it names the scale, the outcome and the operational discipline together.",
+      },
+      {
+        question: "Is network security still relevant with everything moving to cloud and zero trust?",
+        answer:
+          "The layer has shifted rather than disappeared, and the shift is where the opportunity is. Perimeter firewalls matter less; identity-aware segmentation, cloud security groups, service mesh policy, and egress control matter more. The skills that transfer are the fundamentals — understanding traffic flow, trust boundaries and failure modes. The engineers at risk are those whose experience is entirely appliance administration on a single vendor; those who have moved into cloud network security and micro-segmentation are in strong demand.",
+      },
+      {
+        question: "Which certifications matter for this role?",
+        answer:
+          "Vendor certifications carry real weight here because estates are vendor-specific: Palo Alto PCNSE, Cisco CCNP Security, Fortinet NSE. Alongside those, CISSP is common for senior and architecture-track roles, and cloud certifications increasingly matter as segmentation moves into AWS and Azure. List the vendor certification that matches the posting's stack prominently — it is frequently used as a screening filter.",
+      },
+    ],
+    summaryExample:
+      "Network security engineer with 7 years defending a 4,000-host multi-site estate in manufacturing. Led the segmentation programme that cut reachable attack surface 80% across 12 zones with zero unplanned outages, and rationalised a decade-old 3,000-rule firewall base down to 640. PCNSE certified; strongest in segmentation design and egress monitoring.",
+    bulletExamples: [
+      {
+        weak: "Managed firewalls and network security infrastructure.",
+        strong: "Rationalised a 3,000-rule Palo Alto base to 640 by mapping every rule to an owning application, removing 41 any-any rules and 900 rules with no traffic hits in 12 months — with no service disruption.",
+        why: "\"Managed firewalls\" is administration. The rule-count reduction, the method (mapping to owning applications), and the any-any removal show a disciplined project, and \"no service disruption\" pre-empts the obvious risk question.",
+      },
+      {
+        weak: "Implemented network segmentation to improve security posture.",
+        strong: "Segmented a flat 4,000-host network into 12 zones over three phases, cutting laterally reachable hosts from ~4,000 to ~300 per zone, with a monitor-first rollout that caught 60 undocumented dependencies before enforcement.",
+        why: "\"Improved posture\" is unmeasurable. Lateral reachability is the number segmentation actually changes, and the monitor-first approach demonstrates the operational judgement that separates successful segmentation projects from outages.",
+      },
+      {
+        weak: "Monitored network traffic and responded to security alerts.",
+        strong: "Tuned 200+ IPS signatures and built egress baselining that surfaced DNS-tunnelled C2 traffic missed by endpoint tooling, cutting network-alert false positives 71% and enabling a move from detect-only to prevent mode.",
+        why: "Monitoring is the job description. The DNS-tunnelling detection is a concrete, memorable win, and moving IPS from detect-only to prevent is a milestone every network security manager understands as hard-won.",
+      },
+    ],
+    coreSkills: ["TCP/IP & protocol analysis", "Firewall rule design", "Network segmentation / zero trust", "IDS/IPS tuning", "VPN & remote access", "Egress monitoring", "Packet capture analysis", "Cloud network security", "Incident response"],
+    tools: ["Palo Alto", "Cisco ASA/Firepower", "Fortinet", "Wireshark", "Zeek", "Suricata", "Snort", "Splunk", "AWS Security Groups / NACLs", "Azure NSG", "Terraform", "Python"],
+    metrics: ["Hosts and sites protected", "Firewall rules rationalised", "Segments created / lateral reachability reduced", "Exposed services removed", "False-positive reduction after tuning", "Mean time to detect", "Unplanned outages caused (ideally zero)"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Executes firewall changes and triages alerts. CV should show protocol fundamentals and one vendor stack." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a site or domain. CV should show estate scale and a tuning or hygiene project." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs segmentation and standards. CV should show a programme with measured attack-surface reduction." },
+      { level: "Principal / Architect (8+ yrs)", expectation: "Sets network security architecture. CV should show multi-site or cloud transformation and its risk outcome." },
+    ],
+    redFlags: [
+      "Vendor GUI familiarity with no evidence of protocol-level understanding.",
+      "No estate scale stated, making the environment impossible to gauge.",
+      "Segmentation claimed with no mention of dependency discovery or rollout approach.",
+      "No operational outcomes — the discipline is judged on changes that did not break production.",
+    ],
+  },
+
+  "iam-engineer": {
+    intro:
+      "IAM Engineer interviews centre on protocol precision and on lifecycle design. Expect to be asked to explain OAuth and SAML flows accurately — this is a field where approximate understanding shows immediately — plus questions about joiner-mover-leaver processes, privileged access, and the access reviews that auditors will examine. CVs are read for identities managed, access removed, and audit outcomes.",
+    interviewFocus: [
+      { area: "Protocol depth", detail: "OAuth 2.0 grant types, OIDC versus SAML, token validation, and the difference between authentication and authorisation. Interviewers ask you to walk a full flow; vague answers end loops." },
+      { area: "Lifecycle and provisioning", detail: "Joiner-mover-leaver automation, SCIM provisioning, and the mover case specifically — accumulated entitlements from role changes are the most common real-world IAM failure." },
+      { area: "Privileged access", detail: "PAM design, just-in-time elevation, break-glass accounts, and how you have reduced standing privilege." },
+      { area: "Governance and audit", detail: "Access certification campaigns, segregation of duties, and evidence production for auditors." },
+    ],
+    technicalQuestions: [
+      "Walk me through the OAuth 2.0 authorization code flow with PKCE, and explain what PKCE prevents.",
+      "When would you use SAML over OIDC, and why is that decision usually made for you?",
+      "A user changed departments 18 months ago and still has their old access. How do you fix this systemically?",
+      "Design joiner-mover-leaver automation for a 5,000-employee organisation with 200 applications.",
+      "How do you eliminate standing privileged access without breaking emergency response?",
+      "What do you validate when your application receives a JWT?",
+      "How would you run an access certification campaign that reviewers do not rubber-stamp?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about an access-related incident and what changed afterwards.",
+      "Describe an audit finding you had to remediate.",
+      "Tell me about rolling out MFA or SSO against user resistance.",
+      "Describe a time you had to deny access to someone senior.",
+      "Tell me about untangling entitlements in an application nobody understood.",
+    ],
+    questionsToAsk: [
+      "How much of joiner-mover-leaver is automated today?",
+      "What proportion of privileged access is standing versus just-in-time?",
+      "How are access certifications run, and what is the actual revocation rate?",
+      "Which applications are still outside SSO, and why?",
+    ],
+    faq: [
+      {
+        question: "What is the most common IAM interview question?",
+        answer:
+          "Walking through an OAuth or SAML flow end to end. It comes up in nearly every loop because it separates genuine understanding from vocabulary. Be able to describe the authorization code flow with PKCE, name what each redirect carries, explain what PKCE prevents and why it now applies to confidential clients too, and articulate the difference between an access token and an ID token. Approximate answers here are conspicuous, because the details are exactly what the job requires you to get right.",
+      },
+      {
+        question: "What does an IAM Engineer CV need to show?",
+        answer:
+          "Scale of identity estate, automation coverage, and risk removed. Concretely: identities and applications managed, percentage of joiner-mover-leaver automated, standing privileged accounts eliminated, orphaned accounts removed, applications onboarded to SSO and MFA, and audit findings closed. \"Automated JML across 200 applications for 5,000 identities, cutting leaver access-removal time from 9 days to under 1 hour\" is the strongest bullet shape because leaver latency is a risk number every security leader tracks.",
+      },
+      {
+        question: "Which is the harder problem, joiners or leavers?",
+        answer:
+          "Movers, and it is worth saying so in an interview. Joiners are usually well handled because someone is waiting for access, and leavers get attention because the risk is obvious. Movers accumulate entitlements quietly — someone transfers department and keeps their old permissions alongside their new ones, until years later they hold access spanning three roles. This is the mechanism behind most segregation-of-duties findings, and demonstrating that you have designed for it signals real operational experience.",
+      },
+      {
+        question: "Is IAM a good specialisation to move into?",
+        answer:
+          "It is one of the more durable security specialisations, because identity has become the primary control plane as perimeters dissolved. Demand is steady, the skills transfer across cloud providers, and the work sits close to both engineering and governance, which opens routes in either direction. The common entry paths are from systems administration, service desk with an access-management focus, or general security operations. Protocol depth plus one major platform — Entra ID, Okta or SailPoint — is a strong starting position.",
+      },
+    ],
+    summaryExample:
+      "IAM engineer with 6 years running identity for a 5,000-employee regulated business across 200 applications. Automated joiner-mover-leaver end to end, cutting leaver access removal from 9 days to under 1 hour and eliminating 1,400 orphaned accounts. Removed 92% of standing privileged access through just-in-time elevation. Deep in OIDC, SAML and SailPoint governance.",
+    bulletExamples: [
+      {
+        weak: "Managed user accounts and access permissions across enterprise systems.",
+        strong: "Automated joiner-mover-leaver across 200 applications for 5,000 identities via SCIM and SailPoint workflows, cutting leaver access-removal time from 9 days to under 1 hour.",
+        why: "Account administration is the baseline. Leaver latency is the number auditors and security leaders actually track, and cutting it from days to an hour is an unambiguous risk reduction with the scale stated alongside.",
+      },
+      {
+        weak: "Implemented single sign-on and multi-factor authentication.",
+        strong: "Onboarded 140 applications to Entra ID SSO with phishing-resistant MFA, retiring 90 local credential stores and cutting password-reset tickets 64%.",
+        why: "SSO and MFA rollouts are common; what differentiates is scope and second-order effect. Retiring local credential stores is the actual security win, and the ticket reduction gives the business case a number.",
+      },
+      {
+        weak: "Performed periodic access reviews for compliance purposes.",
+        strong: "Redesigned quarterly access certification around risk-ranked entitlements with manager-level context, lifting revocation rate from 2% to 19% and closing 3 repeat SOX findings.",
+        why: "Access reviews are notoriously rubber-stamped, and a 2% revocation rate is the tell. Moving it to 19% proves the campaign became genuine rather than ceremonial, and the closed findings tie it to audit outcomes.",
+      },
+    ],
+    coreSkills: ["OAuth 2.0 / OIDC", "SAML", "Identity lifecycle (JML)", "SCIM provisioning", "Privileged access management", "Access certification & SoD", "Directory services", "Conditional access policy", "Audit evidence production"],
+    tools: ["Microsoft Entra ID", "Okta", "SailPoint", "CyberArk", "Active Directory", "Ping Identity", "AWS IAM", "Keycloak", "PowerShell", "Python", "Terraform"],
+    metrics: ["Identities and applications managed", "JML automation coverage", "Leaver access-removal time", "Standing privileged accounts eliminated", "Orphaned accounts removed", "Certification revocation rate", "Audit findings closed"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Handles access requests and basic administration. CV should show directory fundamentals and one IAM platform." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns lifecycle automation for an area. CV should show applications onboarded and automation coverage." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs identity architecture and governance. CV should show a JML or PAM programme with risk metrics." },
+      { level: "Principal / Architect (8+ yrs)", expectation: "Owns identity strategy. CV should show enterprise-wide transformation and audit outcomes." },
+    ],
+    redFlags: [
+      "Protocol names listed without evidence of flow-level understanding.",
+      "No identity or application counts, making the estate impossible to size.",
+      "Access reviews mentioned with no revocation or finding outcomes.",
+      "No mention of the mover case, which suggests joiner/leaver-only experience.",
+    ],
+  },
+
+  "security-architect": {
+    intro:
+      "Security Architect interviews test whether you can design controls that a business will actually accept. Expect an architecture review round where you critique a proposed design, threat modelling, and questions about risk acceptance — because the defining skill is choosing which risks to carry, not eliminating all of them. CVs are read for systems designed, risk reduced, and standards other teams adopted.",
+    interviewFocus: [
+      { area: "Architecture review", detail: "Given a proposed system, identify the trust boundaries, the failure modes, and the controls you would require versus recommend. The core round." },
+      { area: "Threat modelling", detail: "STRIDE or attack-tree reasoning over a described system, and prioritising findings by realistic exploitability rather than theoretical severity." },
+      { area: "Risk communication", detail: "Explaining a technical risk to an executive in business terms, and defending a decision to accept a risk rather than remediate it." },
+      { area: "Breadth across domains", detail: "Identity, network, application, cloud and data security — architects are expected to reason across all of them rather than deeply in one." },
+    ],
+    technicalQuestions: [
+      "Here is a proposed architecture for a customer portal. Walk me through your threat model.",
+      "How would you secure a multi-tenant SaaS platform so one tenant cannot reach another's data?",
+      "A team wants to ship without addressing a finding you raised. How do you handle it?",
+      "Design the security architecture for a migration from on-premise to AWS.",
+      "How do you decide which of 40 findings actually get remediated this quarter?",
+      "What controls would you require before allowing a third party direct database access?",
+      "How do you secure secrets and service-to-service authentication in a microservice estate?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a risk you accepted rather than remediated, and how you justified it.",
+      "Describe an architecture decision you got wrong.",
+      "Tell me about persuading engineering leadership to fund security work.",
+      "Describe balancing a security requirement against a delivery deadline.",
+      "Tell me about a standard you introduced that teams actually adopted.",
+    ],
+    questionsToAsk: [
+      "Is architecture review a gate or an advisory function here?",
+      "How is risk acceptance documented, and who signs it off?",
+      "How much of the estate has been threat modelled?",
+      "What is the relationship between architecture and the engineering teams building?",
+    ],
+    faq: [
+      {
+        question: "What separates a Security Architect from a senior Security Engineer?",
+        answer:
+          "Breadth and influence rather than depth. Engineers own and operate specific controls; architects design across domains — identity, network, application, cloud, data — and are measured on whether teams adopt what they specify. The interview reflects this: architect loops centre on reviewing a design and defending trade-offs, including which risks you would accept, while engineer loops go deeper hands-on in one area. If you cannot yet reason across all the domains, the engineer track is the stronger application.",
+      },
+      {
+        question: "How important is risk acceptance in these interviews?",
+        answer:
+          "More than candidates expect, and it is a common failure point. Architects who require every finding remediated get routed around by delivery teams, which makes them ineffective regardless of technical correctness. Strong answers show a framework — likelihood, impact, exploitability, compensating controls — and at least one concrete example of a risk you accepted, documented, and revisited. Being able to say \"we accepted it for two quarters with monitoring in place, and here is what would have changed my mind\" signals real seniority.",
+      },
+      {
+        question: "What metrics belong on a Security Architect CV?",
+        answer:
+          "Adoption and risk reduction, not activity. Systems reviewed or threat modelled, standards published and the number of teams that adopted them, critical findings remediated versus accepted, reduction in a measurable exposure (internet-facing services, standing privilege, unencrypted data stores), and audit or certification outcomes achieved. \"Published a secure-by-default cloud landing zone adopted by 14 teams, cutting misconfiguration findings per deployment by 78%\" is strong because adoption is the architect's real product.",
+      },
+      {
+        question: "Do I need CISSP to be a Security Architect?",
+        answer:
+          "It is not universally required but it appears in a large share of postings and is frequently used as a screening filter, particularly in regulated industries and for roles with management scope. CCSP or a cloud provider's security specialty certification is increasingly valuable as estates move to cloud, and SABSA or TOGAF appear in more formal architecture functions. Practically: if you are applying to enterprises, CISSP removes a filter; if you are applying to product companies, demonstrated design work matters more.",
+      },
+    ],
+    summaryExample:
+      "Security architect with 9 years across financial services and SaaS. Designed the cloud landing zone adopted by 14 engineering teams, cutting misconfiguration findings per deployment 78%, and led the threat-modelling programme covering 40 systems. Comfortable defending risk-acceptance decisions to an audit committee. CISSP, AWS Security Specialty.",
+    bulletExamples: [
+      {
+        weak: "Designed security architecture for enterprise applications.",
+        strong: "Designed a secure-by-default AWS landing zone — enforced encryption, private networking and guardrail SCPs — adopted by 14 teams and cutting misconfiguration findings per deployment 78%.",
+        why: "Design work only counts if it is used. Naming the controls and, critically, the adoption across 14 teams converts an architecture document into organisational change with a measured effect.",
+      },
+      {
+        weak: "Conducted threat modelling and security reviews.",
+        strong: "Ran threat modelling across 40 systems, prioritising by realistic exploitability rather than CVSS alone — 31 criticals remediated, 9 formally risk-accepted with compensating monitoring and quarterly review.",
+        why: "Review counts alone say nothing about outcomes. Splitting remediated from accepted shows the judgement the role exists for, and the compensating controls demonstrate that acceptance was deliberate rather than neglect.",
+      },
+      {
+        weak: "Advised engineering teams on security best practices.",
+        strong: "Replaced advisory review with a self-serve control library and automated policy checks in CI, cutting mean security-review turnaround from 11 days to same-day and removing architecture as a delivery bottleneck.",
+        why: "\"Advised teams\" is unmeasurable and often means being ignored. Turning advice into tooling is the senior move, and removing yourself as a bottleneck is the outcome engineering leadership cares about.",
+      },
+    ],
+    coreSkills: ["Threat modelling", "Security architecture design", "Risk assessment & acceptance", "Cloud security architecture", "Identity architecture", "Data protection & encryption", "Secure SDLC", "Compliance frameworks", "Executive communication"],
+    tools: ["AWS", "Azure", "GCP", "Terraform", "STRIDE", "OWASP ASVS", "NIST CSF", "ISO 27001", "CIS Benchmarks", "Wiz / Prisma Cloud", "HashiCorp Vault"],
+    metrics: ["Systems threat modelled", "Standards published and teams adopting", "Critical findings remediated vs accepted", "Exposure reduced (internet-facing services, standing privilege)", "Security review turnaround time", "Audit or certification outcomes"],
+    seniority: [
+      { level: "Associate (3–5 yrs)", expectation: "Reviews designs within a domain. CV should show hands-on depth plus one design you owned." },
+      { level: "Architect (5–9 yrs)", expectation: "Owns architecture for a business area. CV should show standards adopted and risk decisions made." },
+      { level: "Senior / Principal (9+ yrs)", expectation: "Sets enterprise security architecture. CV should show transformation programmes and board-level risk communication." },
+    ],
+    redFlags: [
+      "Frameworks listed with no design you personally owned.",
+      "No adoption evidence — standards written but not taken up.",
+      "Every finding presented as remediated, implying no real prioritisation.",
+      "No cloud architecture experience, which is now assumed in most postings.",
+    ],
+  },
+
+  // ─── Games ─────────────────────────────────────────────────────────────────
+
+  "game-designer": {
+    intro:
+      "Game Designer hiring is decided by a portfolio and a design test, not a CV alone. Studios want evidence you can specify a system precisely enough for engineers to build, iterate it based on playtest data, and cut your own ideas when they do not work. The most common weakness is presenting concepts rather than shipped, tuned systems.",
+    interviewFocus: [
+      { area: "Portfolio and shipped work", detail: "Systems you designed, your specific contribution, and how the design changed between first version and ship. Studios probe hard on what you personally owned." },
+      { area: "Design test", detail: "A take-home or on-site brief — design a mechanic, rebalance an economy, fix a described problem. Scored on constraint awareness and on whether you specify clearly enough to be built." },
+      { area: "Systems and balance reasoning", detail: "Economy tuning, progression curves, difficulty pacing, and how you would instrument a system to know whether it works." },
+      { area: "Playtesting and iteration", detail: "How you gather feedback, distinguish what players say from what they do, and decide what to change." },
+    ],
+    technicalQuestions: [
+      "Design a progression system for a session-based game. How do you avoid it becoming a grind?",
+      "Players report the mid-game is boring. How do you diagnose and fix that?",
+      "Your economy is inflating and late-game currency is worthless. Walk me through the fix.",
+      "How would you rebalance a character that is dominating competitive play without gutting its identity?",
+      "What metrics would you instrument to know whether a new mechanic is working?",
+      "Design a tutorial for a complex strategy game without using text walls.",
+      "How do you write a design spec an engineer can build from without constant clarification?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a mechanic you designed that failed playtesting. What did you do?",
+      "Describe cutting a feature you had personally championed.",
+      "Tell me about a disagreement with an engineer or artist about feasibility.",
+      "Describe responding to community backlash after a balance change.",
+      "Tell me about designing under a hard technical or platform constraint.",
+    ],
+    questionsToAsk: [
+      "How much of the design is data-driven versus designer intuition here?",
+      "What does the playtest cadence look like, and who observes?",
+      "How much autonomy do designers have over their systems post-launch?",
+      "What is the relationship between design and live-ops on this title?",
+    ],
+    faq: [
+      {
+        question: "What does a game design portfolio need to contain?",
+        answer:
+          "Two or three systems shown in depth, not a catalogue of concepts. For each: the design problem and its constraints, your specific contribution if it was a team project, the first version, what playtesting revealed, and what you changed as a result. Include the actual artefacts — a spec, a balance spreadsheet, a progression curve — because studios want to see whether you can specify precisely enough to be built. Shipped work beats unshipped, and a small shipped game beats an elaborate design document for a game that never existed.",
+      },
+      {
+        question: "Do I need to be able to code or use an engine?",
+        answer:
+          "You do not need to be an engineer, but designers who can prototype in Unity or Unreal — even roughly, with blueprints or simple scripts — iterate faster and are consistently more employable. Being able to build a grey-box version of your own idea removes a dependency and lets you test a mechanic before asking anyone to build it properly. Scripting and data-driven tuning (spreadsheets, config files) are effectively baseline expectations rather than differentiators.",
+      },
+      {
+        question: "What metrics belong on a game designer's CV?",
+        answer:
+          "Titles shipped and their scale first — platform, player numbers, review scores where flattering. Then design outcomes: retention or session-length change after a system you tuned, conversion or engagement effects of an economy change, difficulty completion rates you moved. \"Rebalanced the mid-game economy, lifting D30 retention from 8% to 12%\" is strong because retention is the number the whole studio is judged on. Be careful to claim only your contribution — studios verify.",
+      },
+      {
+        question: "How do I break into game design without shipped titles?",
+        answer:
+          "Ship something small yourself. A finished, tuned game jam entry or a released mod demonstrates more than an unbuilt design document, because it proves you can carry an idea through constraints to completion. Mod communities, jams and small collaborative projects are the conventional routes. Also consider adjacent entry points — QA and live-ops roles inside studios convert to design fairly often, and they give you the playtest and telemetry exposure the discipline runs on.",
+      },
+    ],
+    summaryExample:
+      "Game designer with 6 years across two shipped free-to-play titles (12M+ combined installs). Owned the mid-game economy and progression on a live title, lifting D30 retention from 8% to 12% through a reworked reward curve validated across four A/B cohorts. Prototypes in Unity; writes specs engineers can build from without follow-up.",
+    bulletExamples: [
+      {
+        weak: "Designed game mechanics and systems for mobile titles.",
+        strong: "Owned the mid-game progression and economy on a live title with 4M MAU, reworking the reward curve to lift D30 retention from 8% to 12% across four A/B-tested iterations.",
+        why: "\"Designed mechanics\" gives no scope or result. Naming the system owned, the player scale, the retention movement and the iteration count shows a designer who tunes with data rather than shipping a first draft.",
+      },
+      {
+        weak: "Created design documents and worked with the development team.",
+        strong: "Wrote the specs for 14 shipped systems including a crafting rework built by a 5-engineer team, cutting design-clarification requests to under 2 per feature through worked examples and edge-case tables.",
+        why: "Documentation is only valuable if it is buildable. Quantifying clarification requests is an unusual, credible way to show your specs are actually precise — which is the practical skill studios hire designers for.",
+      },
+      {
+        weak: "Conducted playtesting and gathered player feedback.",
+        strong: "Ran 30+ moderated playtests and paired them with funnel telemetry, identifying that players quit at a difficulty spike they described as 'boring' rather than hard — reframing the fix from tuning to pacing and cutting tutorial drop-off 24%.",
+        why: "The distinction between what players say and what the data shows is the core playtesting skill. This bullet demonstrates it concretely and ties it to a measurable outcome.",
+      },
+    ],
+    coreSkills: ["Systems design", "Economy & balance tuning", "Progression design", "Playtesting & iteration", "Spec writing", "Telemetry & metrics literacy", "Prototyping", "Level design fundamentals", "Live-ops design"],
+    tools: ["Unity", "Unreal Engine", "Excel / Google Sheets", "Miro", "Confluence", "Jira", "Machinations", "Perforce", "Amplitude", "Blueprint / C#"],
+    metrics: ["Titles shipped and player scale", "Retention (D1/D7/D30) moved", "Session length or frequency change", "Conversion or ARPDAU impact", "Completion rates by difficulty", "Playtests run and iterations shipped"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Designs within an established system. Portfolio should show one shipped or finished project with tuning evidence." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a system end to end. Portfolio should show a design changed by playtest and telemetry." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns major systems and mentors. Portfolio should show measurable player-behaviour outcomes." },
+      { level: "Lead / Principal (8+ yrs)", expectation: "Sets design direction for a title. Portfolio should show vision, team leadership and commercial results." },
+    ],
+    redFlags: [
+      "Concept documents for unbuilt games presented as primary work.",
+      "No shipped or finished project of any size.",
+      "Team credits with no statement of what you personally owned.",
+      "No engagement with data — design intuition alone is not sufficient in live-service hiring.",
+    ],
+  },
+
+  "game-developer": {
+    intro:
+      "Game programming interviews weight performance and mathematics more heavily than general software roles. Expect maths questions (vectors, matrices, interpolation), an engine-specific round, and detailed probing on frame budget — because the constraint that defines the discipline is doing everything within roughly 16 milliseconds. CVs are read for shipped titles, platforms, and evidence you have optimised something real.",
+    interviewFocus: [
+      { area: "Maths and geometry", detail: "Dot and cross products, quaternions versus Euler angles, interpolation, collision detection. Asked directly and expected to be fluent rather than derived from first principles." },
+      { area: "Performance and profiling", detail: "Frame budget, draw calls, cache behaviour, garbage collection spikes, and how you have diagnosed a real frame-rate problem with a profiler." },
+      { area: "Engine specifics", detail: "Unity or Unreal internals — the update loop, physics stepping, memory and asset management, and the platform quirks of your target hardware." },
+      { area: "Gameplay implementation", detail: "Translating a design spec into systems that are data-driven enough for designers to tune without engineering time." },
+    ],
+    technicalQuestions: [
+      "Explain the dot product geometrically and give two gameplay uses.",
+      "Why do we use quaternions for rotation instead of Euler angles?",
+      "You are at 22ms per frame and need 16. Walk me through profiling and what you check first.",
+      "How would you implement smooth character movement over an unreliable network?",
+      "Explain the difference between Update, FixedUpdate and LateUpdate, and what belongs in each.",
+      "How do you reduce draw calls in a scene with 2,000 objects?",
+      "How would you implement an object pool, and why does it matter on mobile?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about a performance problem you fixed. How did you find it?",
+      "Describe cutting scope to hit a certification or launch deadline.",
+      "Tell me about implementing a design that turned out to be technically infeasible as specified.",
+      "Describe a bug that only reproduced on one platform.",
+      "Tell me about a system you built that designers could tune without you.",
+    ],
+    questionsToAsk: [
+      "What is the frame budget and target hardware, and how close are you?",
+      "How much of the codebase is engine-standard versus custom systems?",
+      "How do designers tune systems — through data, or by asking engineers?",
+      "What does the build and certification pipeline look like?",
+    ],
+    faq: [
+      {
+        question: "How much maths do game programming interviews actually require?",
+        answer:
+          "Working fluency in linear algebra and trigonometry, applied rather than proved. The recurring questions are the geometric meaning of dot and cross products with gameplay uses, why quaternions avoid gimbal lock, how to interpolate smoothly, and basic collision and raycast reasoning. You are rarely asked to derive anything, but hesitation on the dot product is a common early elimination because it appears in so much day-to-day gameplay code.",
+      },
+      {
+        question: "What does a game developer CV need beyond shipped titles?",
+        answer:
+          "Platform and performance detail. State the platforms you shipped on, the target frame rate and hardware, and at least one concrete optimisation with before and after numbers — \"cut frame time from 22ms to 14ms on Switch by batching draw calls and pooling projectiles\" tells a studio more than a list of engines. Also name the systems you personally owned, since team credits are otherwise ambiguous, and include a playable link or repository where you can.",
+      },
+      {
+        question: "Unity or Unreal — which is more employable?",
+        answer:
+          "Both, in different segments. Unity dominates mobile, indie and much of the mid-size market and uses C#. Unreal dominates AAA, and its C++ requirement raises the technical bar in ways that transfer well to general engineering. Pick based on the studios you want: mobile and indie leans Unity, console and AAA leans Unreal. Deep knowledge of one plus the underlying fundamentals — memory, rendering, maths — matters far more than surface exposure to both.",
+      },
+      {
+        question: "Do I need shipped commercial titles to get hired?",
+        answer:
+          "It helps substantially but it is not the only route. A finished, polished small game demonstrates more than an unfinished ambitious one, because shipping is itself the skill studios are checking for. Game jams, mods, and a technical demo that solves a genuinely hard problem — a custom renderer feature, a networked prototype, a performance-constrained port — all work. What does not work is a portfolio of tutorial-following projects, which reads as coursework rather than capability.",
+      },
+    ],
+    summaryExample:
+      "Gameplay programmer with 6 years across three shipped titles on PC, Switch and mobile. Owned combat and AI systems in Unity/C#, and led the Switch performance pass that cut frame time from 22ms to 14ms through draw-call batching, object pooling and GC-allocation removal. Builds data-driven systems designers tune without engineering time.",
+    bulletExamples: [
+      {
+        weak: "Developed gameplay features using Unity and C#.",
+        strong: "Built the combat and enemy AI systems for a shipped Switch/PC title, exposing 40+ tuning parameters as designer-editable data so balance changes shipped without engineering time.",
+        why: "\"Developed gameplay features\" is every game programmer's CV. Naming the systems owned and the data-driven design shows you built for the studio's workflow, not just for the feature — which is what distinguishes a senior gameplay engineer.",
+      },
+      {
+        weak: "Optimised game performance for console platforms.",
+        strong: "Led the Switch performance pass that cut frame time from 22ms to 14ms — batching 1,800 draw calls into 300, pooling projectile allocations, and eliminating a GC spike that caused a visible hitch every 8 seconds.",
+        why: "Optimisation claims need the profiler detail. The before/after frame time, the three specific causes and the observable symptom removed prove genuine diagnosis rather than generic tweaking, and Switch is a recognisably hard target.",
+      },
+      {
+        weak: "Fixed bugs and worked on various systems throughout development.",
+        strong: "Owned certification readiness across 3 platforms, closing 140 submission-blocking issues and achieving first-time cert pass on Switch and PlayStation.",
+        why: "Bug fixing is undifferentiated. Certification is a concrete, high-stakes milestone studios care about intensely, and a first-time pass is an unambiguous signal of rigour.",
+      },
+    ],
+    coreSkills: ["Gameplay programming", "Linear algebra & geometry", "Performance profiling & optimisation", "Memory management", "Physics & collision", "Data-driven system design", "Multiplayer / netcode basics", "Platform certification", "Debugging"],
+    tools: ["Unity", "Unreal Engine", "C#", "C++", "Perforce", "Git", "RenderDoc", "Unity Profiler", "Unreal Insights", "Visual Studio", "Jira", "Blender"],
+    metrics: ["Titles shipped and platforms", "Frame time / FPS before and after", "Draw calls or memory reduced", "Build or load time improvements", "Certification pass rate", "Systems owned end to end"],
+    seniority: [
+      { level: "Junior (0–2 yrs)", expectation: "Implements features to spec. CV should show a finished project and solid engine plus maths fundamentals." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns systems end to end. CV should show a shipped title and one real optimisation with numbers." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns architecture for a discipline area. CV should show platform work, performance leadership and mentoring." },
+      { level: "Lead / Principal (8+ yrs)", expectation: "Sets technical direction for a title. CV should show engine-level decisions and team outcomes." },
+    ],
+    redFlags: [
+      "Engine names with no shipped or finished project behind them.",
+      "No performance numbers, in a discipline defined by a frame budget.",
+      "Tutorial-derived portfolio projects presented as primary experience.",
+      "Team credits with no statement of the systems you personally owned.",
+    ],
+  },
+
+  "ai-product-manager": {
+    intro:
+      "AI Product Manager interviews test whether you understand what makes AI products different from software products: non-deterministic output, evaluation instead of acceptance criteria, and a failure mode that is plausible-but-wrong rather than broken. Expect a product sense round framed around an AI feature, questions about evaluation and guardrails, and probing on when not to use a model at all.",
+    interviewFocus: [
+      { area: "AI product sense", detail: "Designing a feature where the model is a component, not the product. Interviewers check whether you design for the failure case — what the user sees when the model is confidently wrong." },
+      { area: "Evaluation and measurement", detail: "How you define quality for a non-deterministic system, build an eval set, and decide whether a model change is a regression. The round that most distinguishes AI PMs from general PMs." },
+      { area: "Technical fluency", detail: "Enough understanding of latency, cost per call, context limits, fine-tuning versus prompting versus retrieval to make credible scoping decisions." },
+      { area: "Risk and trust", detail: "Hallucination handling, human-in-the-loop design, disclosure, and the regulatory or reputational exposure of getting it wrong." },
+    ],
+    technicalQuestions: [
+      "Design an AI feature for a product you know well. What happens when the model is wrong?",
+      "How do you measure quality for a summarisation feature where there is no single correct answer?",
+      "Your model is right 85% of the time. Is that shippable? What determines the answer?",
+      "When would you choose retrieval over fine-tuning, and what does each cost you?",
+      "How do you decide between a faster cheap model and a slower accurate one?",
+      "Users trust the output more than they should. How do you design against that?",
+      "A prompt change improved your eval set but users complain quality dropped. What happened?",
+    ],
+    behaviouralQuestions: [
+      "Tell me about an AI feature you shipped and what surprised you post-launch.",
+      "Describe deciding not to use a model for something.",
+      "Tell me about managing expectations with leadership who wanted AI in everything.",
+      "Describe working with ML engineers or researchers on scoping.",
+      "Tell me about handling a harmful or embarrassing model output in production.",
+    ],
+    questionsToAsk: [
+      "How is model quality evaluated before a change ships?",
+      "Who owns the eval set, and how often is it refreshed?",
+      "What is the current cost per user for the AI features, and does it constrain the roadmap?",
+      "How much of the roadmap is genuine model capability versus AI framing on existing features?",
+    ],
+    faq: [
+      {
+        question: "How does AI product management differ from regular product management?",
+        answer:
+          "Three ways that show up directly in interviews. Output is non-deterministic, so acceptance criteria are replaced by evaluation against a curated set with a quality threshold. Failure is plausible rather than obvious — a wrong answer that looks right is more dangerous than a crash, which changes how you design the interface. And unit economics matter continuously, because every interaction has a marginal cost that scales with usage in a way conventional software does not. A PM who scopes an AI feature without mentioning evals, failure UX or cost per call is the common miss.",
+      },
+      {
+        question: "How technical do I need to be as an AI PM?",
+        answer:
+          "You do not need to train models, but you need enough fluency to scope credibly: the trade-offs between prompting, retrieval and fine-tuning; what context limits mean for your feature; roughly what latency and cost per call look like; and why a model that performs well on your eval set may still disappoint users. The practical test interviewers apply is whether an ML engineer would find your scoping decisions reasonable. That bar is lower than building, and considerably higher than reading about it.",
+      },
+      {
+        question: "What should an AI Product Manager CV show?",
+        answer:
+          "AI features actually shipped, with quality and adoption numbers alongside the business outcome. \"Shipped an AI summarisation feature to 200k users, reaching 78% task-success on a 500-case eval set with human review for low-confidence outputs, lifting weekly active use 14%\" demonstrates the whole discipline — evaluation rigour, failure-case design, and product impact. Roadmap ownership without a shipped model-backed feature reads as conventional PM experience with AI vocabulary attached.",
+      },
+      {
+        question: "Is AI PM a real specialisation or just a title trend?",
+        answer:
+          "It is real where the product's core value depends on model behaviour, because the skills genuinely differ — evaluation design, failure-mode UX, and cost modelling are not part of standard PM practice. It is a title trend where a company has added a chatbot to an existing product and renamed a PM role. Read the posting for whether they discuss evaluation and quality thresholds; the ones that do are hiring for the real specialisation, and their interviews will test it.",
+      },
+    ],
+    summaryExample:
+      "AI product manager with 5 years in B2B SaaS, 3 of them shipping model-backed features. Launched an AI summarisation and extraction suite to 200k users, reaching 78% task-success against a 500-case eval set with human review on low-confidence outputs, lifting weekly active use 14% while holding inference cost under $0.02 per active user.",
+    bulletExamples: [
+      {
+        weak: "Managed the roadmap for AI-powered features using LLMs.",
+        strong: "Owned an AI extraction feature from scoping to launch for 200k users, defining a 500-case eval set and an 85% precision gate that blocked two model upgrades which regressed on edge cases.",
+        why: "Roadmap ownership is generic PM language. The eval set, the explicit quality gate, and the fact that it caught real regressions demonstrate the evaluation discipline that defines the role.",
+      },
+      {
+        weak: "Worked with engineering to integrate AI capabilities into the product.",
+        strong: "Redesigned the summarisation UX around confidence — surfacing source citations and routing low-confidence outputs to human review — cutting user-reported inaccuracies 62% without changing the underlying model.",
+        why: "Integration is execution. Solving a quality problem through interface design rather than model change is exactly the AI PM's distinctive contribution, and the outcome is measured.",
+      },
+      {
+        weak: "Analysed usage data to improve AI feature adoption.",
+        strong: "Cut inference cost 41% ($180k/yr) by routing 70% of requests to a smaller model after eval testing showed no measurable quality difference on the dominant use case — funding two further AI features within the same budget.",
+        why: "Unit economics are a first-class AI PM concern that most CVs omit entirely. Grounding the routing decision in eval evidence, and connecting the saving to what it unlocked, shows commercial and technical judgement together.",
+      },
+    ],
+    coreSkills: ["AI product scoping", "Evaluation design & quality gates", "Failure-mode & trust UX", "Prompt / retrieval / fine-tune trade-offs", "Unit economics of inference", "Experimentation", "Stakeholder influence", "Responsible AI & disclosure"],
+    tools: ["Amplitude", "Mixpanel", "SQL", "LangSmith", "Weights & Biases", "Figma", "Linear", "Jira", "OpenAI / Anthropic APIs", "Looker"],
+    metrics: ["Task success rate against an eval set", "Precision / recall at the shipped threshold", "Adoption and retention of the AI feature", "Inference cost per user or per call", "Latency at p95", "User-reported error rate", "Business metric moved"],
+    seniority: [
+      { level: "PM (2–5 yrs)", expectation: "Owns an AI feature area. CV should show one shipped model-backed feature with quality numbers." },
+      { level: "Senior PM (5–8 yrs)", expectation: "Owns an AI product surface and its economics. CV should show evaluation practice and a cost or quality trade-off you made." },
+      { level: "Principal / Group (8+ yrs)", expectation: "Sets AI product strategy. CV should show portfolio decisions, build-versus-buy calls and org-level impact." },
+    ],
+    redFlags: [
+      "AI features listed with no quality or evaluation measure.",
+      "No mention of failure cases, which is the defining design problem.",
+      "Model and vendor names used as a substitute for product outcomes.",
+      "No cost awareness, despite inference economics constraining most AI roadmaps.",
+    ],
+  },
 };
 
 /** Roles with genuine hand-written content. Others render noindex. */

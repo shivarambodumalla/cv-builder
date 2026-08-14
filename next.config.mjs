@@ -14,6 +14,13 @@ const nextConfig = {
     return [
       { source: "/stories", destination: "/interview-coach", permanent: true },
       { source: "/stories/:path*", destination: "/interview-coach", permanent: true },
+      // Retired as a near-duplicate of the surviving PM guide. Redirect rather
+      // than 404 so the indexed URL passes its equity to the kept article.
+      {
+        source: "/blog/project-manager-resume-guide-2026-2",
+        destination: "/blog/project-manager-resume-guide-2026",
+        permanent: true,
+      },
     ];
   },
   experimental: {
