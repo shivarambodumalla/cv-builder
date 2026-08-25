@@ -44,5 +44,7 @@ tests/e2e/.auth/
 /playwright/.cache/
 supabase/.temp/
 
-# Blog content snapshots written by scripts/expand-thin-blog-posts.ts
+# Blog content snapshots written by the blog remediation scripts
 blog-backup-*.json
+blog-metadata-backup-*.json
+blog-extend-backup-*.json
