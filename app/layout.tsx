@@ -130,6 +130,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Impact.com site verification. Written here rather than via the
+            Metadata API because Impact issues the tag with a `value` attribute
+            instead of the standard `content`, and `metadata.other` always
+            renders `content`. */}
+        {/* React's meta typings have no `value`, so it is spread in as an
+            untyped attribute — React passes unknown attributes through to the
+            DOM unchanged, which is what Impact's crawler needs to see. */}
+        <meta
+          name="impact-site-verification"
+          {...({ value: "443b32c6-61c0-4202-a928-b54af4c07bdd" } as Record<string, string>)}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
