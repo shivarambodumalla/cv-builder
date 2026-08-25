@@ -13,7 +13,6 @@ import { PageTracker } from "@/components/shared/page-tracker";
 import { AuthEventTracker } from "@/components/shared/auth-event-tracker";
 import { GAScripts } from "@/components/shared/ga-scripts";
 import { HotjarScripts } from "@/components/shared/hotjar-scripts";
-import { ImpactScripts } from "@/components/shared/impact-scripts";
 import { CookieConsent } from "@/components/shared/cookie-consent";
 import { JobsDiscovery } from "@/components/popups/jobs-discovery";
 import { SignupModalProvider, SignupTimedTrigger, SignupExitIntent } from "@/components/popups/signup-modal";
@@ -150,6 +149,16 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSONLD) }}
         />
+        {/* Impact.com Universal Tracking Tag. Must sit in the raw <head>: Impact
+            verifies a site by fetching the HTML and string-matching this tag, so
+            a consent-gated client-side injection is invisible to them and the
+            check fails. Same posture as the AdSense tag below. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7679564-eef3-4273-a664-601115aed9ec1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');",
+          }}
+        />
         {/* Google AdSense — loaded unconditionally so Google can verify the site.
             GDPR handled via Consent Mode defaults (ad_storage denied until consent). */}
         <script
@@ -176,7 +185,6 @@ export default function RootLayout({
         </Script>
         <GAScripts />
         <HotjarScripts />
-        <ImpactScripts />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
