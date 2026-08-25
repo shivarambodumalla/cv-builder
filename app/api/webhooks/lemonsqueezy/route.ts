@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { REVIEW_TIERS, ReviewTier } from "@/lib/cv-review/config";
 import { sendGA4Event } from "@/lib/analytics/ga4-server";
+import { markIntentConverted } from "@/lib/billing/intents";
 
 export async function POST(request: NextRequest) {
   const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
@@ -59,6 +60,11 @@ export async function POST(request: NextRequest) {
         subscription_period: period,
         current_period_end: attrs?.renews_at || null,
       }).eq("id", userId);
+      await markIntentConverted({
+        userId,
+        orderId: attrs?.order_id ? String(attrs.order_id) : null,
+        subscriptionId: String(payload.data?.id),
+      });
       console.log(`[webhook] subscription_created for ${userId}, period=${period}`);
       break;
     }

@@ -54,6 +54,8 @@ export async function GET(request: NextRequest) {
     visitedPricing,
     upgraded,
     interviewPrep,
+    clickedPay,
+    paid,
   ] = await Promise.all([
     // Anonymous page views
     pvRpc("/"),
@@ -86,6 +88,9 @@ export async function GET(request: NextRequest) {
       .gte("started_at", from).lte("started_at", to),
     // Extras
     rpc("funnel_interview_prep"),
+    // Pay-button intent vs completed payment
+    rpc("funnel_clicked_pay"),
+    rpc("funnel_paid"),
   ]);
 
   // Pre-signup: anonymous visitors
@@ -116,8 +121,33 @@ export async function GET(request: NextRequest) {
   // Conversion
   const conversion = [
     { key: "visited_pricing_auth", label: "Pricing Page", count: visitedPricing.data?.count ?? 0, icon: "credit-card" },
+    { key: "clicked_pay", label: "Clicked Pay", count: clickedPay.data?.count ?? 0, icon: "mouse-pointer-click" },
+    { key: "paid", label: "Paid", count: paid.data?.count ?? 0, icon: "badge-check" },
     { key: "upgraded", label: "Upgraded", count: upgraded.count ?? 0, icon: "crown" },
   ];
+
+  // Who clicked pay, and whether it converted. The drop-off between these two
+  // is where a broken activation path shows up as lost revenue.
+  const { data: payClickerRows } = await admin
+    .rpc("funnel_pay_clickers", { from_ts: from, to_ts: to });
+
+  const payClickers = (payClickerRows ?? [])
+    .filter((r: { user_id: string }) => !EXCLUDED_USER_IDS.includes(r.user_id))
+    .map((r: {
+      user_id: string; email: string | null; period: string; attempts: number;
+      first_clicked_at: string; last_clicked_at: string; converted_at: string | null;
+    }) => ({
+      userId: r.user_id,
+      email: r.email,
+      period: r.period,
+      attempts: Number(r.attempts ?? 1),
+      firstClickedAt: r.first_clicked_at,
+      lastClickedAt: r.last_clicked_at,
+      convertedAt: r.converted_at,
+      converted: !!r.converted_at,
+    }))
+    .sort((a: { lastClickedAt: string }, b: { lastClickedAt: string }) =>
+      b.lastClickedAt.localeCompare(a.lastClickedAt));
 
   const extras = [
     { key: "visited_editor", label: "Opened Editor", count: visitedEditor.data?.count ?? 0 },
@@ -388,6 +418,7 @@ export async function GET(request: NextRequest) {
     bounceAnalysis,
     signupSources,
     popups,
+    payClickers,
     visitsOverTime,
     signupsOverTime,
   });

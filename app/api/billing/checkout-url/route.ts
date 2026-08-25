@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getCheckoutUrl } from "@/lib/billing/checkout";
+import { recordCheckoutIntent } from "@/lib/billing/intents";
+import { logServerActivity } from "@/lib/analytics/server-log";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -17,7 +20,20 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const url = await getCheckoutUrl(period, user.email || "", user.id);
+    const { url, variantId } = await getCheckoutUrl(period, user.email || "", user.id);
+
+    // This route is only ever reached by a click on the pay button, so it is
+    // the truthful place to count intent — before the user leaves for the
+    // payment page and possibly never comes back.
+    await recordCheckoutIntent({
+      userId: user.id,
+      email: user.email ?? null,
+      period,
+      variantId,
+      checkoutUrl: url,
+    });
+    logServerActivity(createAdminClient(), user.id, "Clicked pay button", { period });
+
     return NextResponse.json({ url });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

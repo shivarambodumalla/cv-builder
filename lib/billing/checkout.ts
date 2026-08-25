@@ -5,7 +5,7 @@ export async function getCheckoutUrl(
   period: "weekly" | "monthly" | "yearly",
   userEmail: string,
   userId: string
-): Promise<string> {
+): Promise<{ url: string; variantId: string | null }> {
   const supabase = createAdminClient();
 
   const { data } = await supabase
@@ -17,10 +17,11 @@ export async function getCheckoutUrl(
     .single();
 
   if (!data?.lemon_squeezy_variant_id) {
-    return "/pricing";
+    return { url: "/pricing", variantId: null };
   }
 
-  return createCheckout(userId, userEmail, data.lemon_squeezy_variant_id, period);
+  const url = await createCheckout(userId, userEmail, data.lemon_squeezy_variant_id, period);
+  return { url, variantId: data.lemon_squeezy_variant_id };
 }
 
 export async function getPricingConfig() {

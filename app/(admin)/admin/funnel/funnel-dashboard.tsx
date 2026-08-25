@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import {
   Loader2, UserPlus, Layout, Upload, FileText, Pencil, ScanLine, Sparkles, Wand2,
   Briefcase, Mail, Download, CreditCard, Crown, Home, LogIn, TrendingUp, TrendingDown, ArrowRight,
-  Lightbulb, Eye, MousePointerClick, Users, BarChart3,
+  Lightbulb, Eye, MousePointerClick, Users, BarChart3, BadgeCheck, CircleSlash,
 } from "lucide-react";
 
 interface Stage { key: string; label: string; count: number; icon?: string }
@@ -16,6 +16,10 @@ interface BounceItem { path: string; label: string; views: number; bouncePct: nu
 interface SignupSource { page: string; count: number; pct: number }
 interface FunnelStep { key: string; label: string; count: number }
 interface PopupMetric { id: string; label: string; shown: number; clicked: number; dismissed: number; conversionPct: number }
+interface PayClicker {
+  userId: string; email: string | null; period: string; attempts: number;
+  firstClickedAt: string; lastClickedAt: string; convertedAt: string | null; converted: boolean;
+}
 interface TimePoint { date: string; count: number }
 interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
@@ -24,6 +28,7 @@ interface FunnelData {
   pageVisits: PageVisit[]; totalAnonVisits: number; totalUniqueVisitors: number; totalPageViews: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
   popups: PopupMetric[];
+  payClickers: PayClicker[];
   visitsOverTime: TimePoint[]; signupsOverTime: TimePoint[];
 }
 
@@ -52,6 +57,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   home: Home, "log-in": LogIn, "user-plus": UserPlus, layout: Layout, upload: Upload, "file-text": FileText,
   edit: Pencil, scan: ScanLine, sparkles: Sparkles, wand: Wand2, briefcase: Briefcase, mail: Mail,
   download: Download, "credit-card": CreditCard, crown: Crown,
+  "mouse-pointer-click": MousePointerClick, "badge-check": BadgeCheck,
 };
 
 function p(count: number, base: number): number { return base === 0 ? 0 : Math.round((count / base) * 1000) / 10; }
@@ -472,6 +478,65 @@ export function FunnelDashboard() {
               </div>
             </div>
           )}
+
+          {/* ── PAY BUTTON: CLICKED vs PAID ── */}
+          {data.payClickers && data.payClickers.length > 0 && (() => {
+            const clicked = data.payClickers.length;
+            const paid = data.payClickers.filter(c => c.converted).length;
+            const rate = clicked === 0 ? 0 : Math.round((paid / clicked) * 1000) / 10;
+            const stalled = data.payClickers.filter(c => !c.converted);
+            return (
+              <div className="rounded-xl border p-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <MousePointerClick className="h-4 w-4 text-muted-foreground" />
+                  <h2 className="text-sm font-semibold">Pay Button</h2>
+                </div>
+                <p className="text-xs text-muted-foreground mb-4">
+                  {clicked} clicked · {paid} paid ·{" "}
+                  <span className={cn("font-semibold", rate >= 50 ? "text-success" : rate >= 20 ? "text-warning" : "text-error")}>
+                    {rate}% completed
+                  </span>
+                  {stalled.length > 0 && ` · ${stalled.length} did not complete`}
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b text-left text-muted-foreground">
+                        <th className="pb-2 font-medium">User</th>
+                        <th className="pb-2 font-medium">Plan</th>
+                        <th className="pb-2 text-right font-medium">Clicks</th>
+                        <th className="pb-2 font-medium">Last clicked</th>
+                        <th className="pb-2 font-medium">Outcome</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.payClickers.map((c) => (
+                        <tr key={c.userId} className="border-b last:border-0">
+                          <td className="py-2 font-medium">{c.email || c.userId.slice(0, 8)}</td>
+                          <td className="py-2 capitalize text-muted-foreground">{c.period}</td>
+                          <td className="py-2 text-right tabular-nums">{c.attempts}</td>
+                          <td className="py-2 text-muted-foreground whitespace-nowrap">
+                            {new Date(c.lastClickedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                          </td>
+                          <td className="py-2">
+                            {c.converted ? (
+                              <span className="inline-flex items-center gap-1 text-success font-semibold">
+                                <BadgeCheck className="h-3 w-3" /> Paid
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-muted-foreground">
+                                <CircleSlash className="h-3 w-3" /> Did not complete
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* ── 5. ENGAGEMENT HEALTH ── */}
           <EngagementHealth data={data} signups={signups} awarenessBase={awarenessBase} />

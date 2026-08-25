@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { markIntentConverted } from "@/lib/billing/intents";
 
 /**
  * Lemon Squeezy redirects here after successful checkout.
@@ -29,6 +30,7 @@ export async function GET(request: NextRequest) {
 
     if (profile?.subscription_status === "active") {
       // Already activated by webhook — just redirect
+      await markIntentConverted({ userId: user.id });
       return NextResponse.redirect(`${appUrl}/dashboard`);
     }
 
@@ -60,6 +62,8 @@ export async function GET(request: NextRequest) {
       started_at: new Date().toISOString(),
       ends_at: periodEnd.toISOString(),
     });
+
+    await markIntentConverted({ userId: user.id });
 
     return NextResponse.redirect(`${appUrl}/dashboard`);
   } catch {

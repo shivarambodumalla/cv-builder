@@ -99,11 +99,20 @@ export async function reconcileSubscriptions(): Promise<{
     if (!profile) {
       // No account to attach the payment to. Check whether they deleted it —
       // that turns an unexplained orphan into an explained one.
-      const { data: deleted } = await admin
+      let { data: deleted } = await admin
         .from("account_deletions")
         .select("user_id, deleted_at, subscription_cancelled")
-        .or(`subscription_id.eq.${sub.id}${email ? `,email.eq.${email}` : ""}`)
+        .eq("subscription_id", sub.id)
         .maybeSingle();
+
+      if (!deleted && email) {
+        const { data: byEmail } = await admin
+          .from("account_deletions")
+          .select("user_id, deleted_at, subscription_cancelled")
+          .ilike("email", email)
+          .limit(1);
+        deleted = byEmail?.[0] ?? null;
+      }
 
       discrepancies.push({
         kind: "orphaned_payment",
