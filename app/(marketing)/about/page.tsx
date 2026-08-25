@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
+import { AUTHOR, AUTHOR_JSON_LD } from "@/lib/blog/author";
 
 export const metadata: Metadata = {
   title: "About CVEdge — Who We Are and What We Build",
@@ -69,8 +70,23 @@ const PRINCIPLES = [
 ];
 
 export default function AboutPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    url: "https://www.thecvedge.com/about",
+    mainEntity: {
+      "@type": "Organization",
+      name: "CVEdge",
+      url: "https://www.thecvedge.com",
+      logo: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg",
+      email: "hello@thecvedge.com",
+      founder: { ...AUTHOR_JSON_LD, description: AUTHOR.bio },
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "https://www.thecvedge.com" },
@@ -130,6 +146,19 @@ export default function AboutPage() {
               <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{p.body}</p>
             </div>
           ))}
+        </div>
+
+        {/* Who writes this */}
+        <h2 className="text-2xl font-bold tracking-tight mt-14 mb-3">Who writes this</h2>
+        <div className="rounded-xl border bg-card p-5">
+          <p className="text-sm font-semibold">{AUTHOR.name}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{AUTHOR.role}</p>
+          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{AUTHOR.bio}</p>
+          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+            Everything published on this site carries that byline. Where an article states a figure from outside
+            research it says where the figure comes from, and where the honest answer is &ldquo;nobody actually knows,
+            and the widely quoted number is vendor marketing&rdquo; it says that instead of repeating it.
+          </p>
         </div>
 
         {/* Writing */}

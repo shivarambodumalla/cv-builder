@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { getPost, getAllSlugs, formatDate } from "@/lib/blog/posts";
+import { AUTHOR, AUTHOR_JSON_LD } from "@/lib/blog/author";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { CtaSection } from "@/components/shared/cta-section";
 import { LinkTracker } from "./link-tracker";
@@ -72,7 +73,7 @@ export default async function BlogPostPage({
     description: post.brief,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
-    author: { "@type": "Organization", name: "CVEdge", url: "https://www.thecvedge.com" },
+    author: AUTHOR_JSON_LD,
     publisher: {
       "@type": "Organization",
       name: "CVEdge",
@@ -80,7 +81,6 @@ export default async function BlogPostPage({
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.thecvedge.com/blog/${slug}` },
     ...(post.coverImage ? { image: { "@type": "ImageObject", url: post.coverImage.url } } : {}),
-    ...(post.tags.length > 0 ? { keywords: post.tags.map((t) => t.name).join(", ") } : {}),
   };
 
   return (
@@ -144,20 +144,12 @@ export default async function BlogPostPage({
           </h1>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground border-y py-3.5">
-            {post.author && (
-              <span className="flex items-center gap-2 font-medium text-foreground">
-                {post.author.profilePicture && (
-                  <Image
-                    src={post.author.profilePicture}
-                    alt={post.author.name}
-                    width={26}
-                    height={26}
-                    className="rounded-full"
-                  />
-                )}
-                {post.author.name}
-              </span>
-            )}
+            <span className="font-medium text-foreground">
+              By{" "}
+              <Link href="/about" className="hover:text-primary transition-colors">
+                {AUTHOR.name}
+              </Link>
+            </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5" />
               <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
@@ -166,6 +158,11 @@ export default async function BlogPostPage({
               <Clock className="h-3.5 w-3.5" />
               {post.readTimeInMinutes} min read
             </span>
+            {post.updatedAt && post.updatedAt.slice(0, 10) !== post.publishedAt.slice(0, 10) && (
+              <span className="flex items-center gap-1.5">
+                Updated <time dateTime={post.updatedAt}>{formatDate(post.updatedAt)}</time>
+              </span>
+            )}
           </div>
         </header>
 
@@ -187,6 +184,22 @@ export default async function BlogPostPage({
           "
           dangerouslySetInnerHTML={{ __html: post.content.html }}
         />
+
+        {/* Author — who wrote this and why they are worth reading */}
+        <aside className="mt-14 rounded-2xl border bg-card p-6">
+          <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-3">
+            About the author
+          </p>
+          <p className="font-semibold text-foreground">{AUTHOR.name}</p>
+          <p className="text-sm text-muted-foreground mb-3">{AUTHOR.role}</p>
+          <p className="text-sm text-foreground/80 leading-relaxed">{AUTHOR.bio}</p>
+          <Link
+            href="/about"
+            className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+          >
+            More about CVEdge
+          </Link>
+        </aside>
 
         {/* CTA */}
         <div className="mt-16">

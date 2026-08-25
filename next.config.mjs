@@ -21,6 +21,25 @@ const nextConfig = {
         destination: "/blog/project-manager-resume-guide-2026",
         permanent: true,
       },
+      // Three thin posts (316-335 words) that covered the same ground as a
+      // longer surviving article. Retired rather than rewritten so the topic
+      // has one canonical page instead of two competing ones. The first also
+      // carried a typo in both its title and its slug ("gude").
+      {
+        source: "/blog/ats-resume-gude-2026",
+        destination: "/blog/ats-resume-format-what-actually-works-in-2026",
+        permanent: true,
+      },
+      {
+        source: "/blog/how-to-get-past-the-ats-in-2026-complete-resume-optimization-guide",
+        destination: "/blog/how-to-get-past-the-ats",
+        permanent: true,
+      },
+      {
+        source: "/blog/how-to-tailor-your-resume-for-every-job-application-step-by-step-guide",
+        destination: "/blog/how-to-tailor-your-cv-for-a-job-description",
+        permanent: true,
+      },
     ];
   },
   experimental: {
