@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { resolveRole, getDomainForRole } from "@/lib/resume/roles";
 import type { ResumeContent } from "@/lib/resume/types";
+import { alertAdmin } from "@/lib/email/alert";
 
 export interface FieldRef {
   section: string;
@@ -35,7 +36,7 @@ export interface AtsReportData {
   enhancements: string[];
   summary: string;
   is_fallback?: boolean;
-  fallback_type?: "domain" | "ai_generated";
+  fallback_type?: "domain" | "ai_generated" | "generic";
 }
 
 function countWords(text: string): number {
@@ -201,7 +202,7 @@ interface KeywordListRow {
   nice_to_have: string[];
   synonym_map: Record<string, string[]>;
   is_fallback?: boolean;
-  fallback_type?: "domain" | "ai_generated";
+  fallback_type?: "domain" | "ai_generated" | "generic";
 }
 
 function inferDomainFromText(role: string): string | null {
@@ -220,6 +221,29 @@ function inferDomainFromText(role: string): string | null {
   if (lower.includes("legal") || lower.includes("compliance")) return "Legal & Compliance";
   if (lower.includes("research")) return "Research";
   return null;
+}
+
+/**
+ * Records that a role had no curated keyword list. The admin Missing Roles page
+ * groups these by name and counts them, so one row per occurrence is the signal.
+ *
+ * This used to be written only when analysis threw `keyword_list_required`, but
+ * the fallback chain resolves rather than throwing, so the tracker stayed empty
+ * and every uncurated role -- which is every role outside the seeded set --
+ * went unrecorded.
+ */
+async function recordMissingRole(
+  supabase: ReturnType<typeof createAdminClient>,
+  roleName: string,
+  domain: string | null,
+  userId?: string
+): Promise<void> {
+  const { error } = await supabase.from("missing_roles").insert({
+    role_name: roleName,
+    domain,
+    user_id: userId ?? null,
+  });
+  if (error) console.error("[ats] missing_roles insert failed:", error.message);
 }
 
 async function generateKeywordList(role: string, domain: string, caller?: { userId?: string; ip?: string }): Promise<KeywordListRow | null> {
@@ -281,15 +305,17 @@ async function fetchKeywordList(
       .eq("role", lookupKey)
       .single();
     if (domainFallback) {
+      await recordMissingRole(supabase, targetRole, inferredDomain.replace(/^domain:/, ""), caller?.userId);
       return { ...domainFallback, is_fallback: true, fallback_type: "domain" };
     }
   }
 
+  const genDomain = domain || inferredDomain || "General";
+
   try {
-    const genDomain = domain || inferredDomain || "General";
     const generated = await generateKeywordList(targetRole, genDomain, caller);
     if (generated) {
-      await supabase.from("keyword_lists").upsert({
+      const { error: upsertError } = await supabase.from("keyword_lists").upsert({
         role: targetRole,
         required: generated.required,
         important: generated.important,
@@ -298,12 +324,25 @@ async function fetchKeywordList(
         updated_at: new Date().toISOString(),
       }, { onConflict: "role" });
 
+      // A failed cache write is not fatal -- the list is still usable for this
+      // request -- but it silently doubles AI spend on every later analysis.
+      if (upsertError) {
+        console.error("[ats] keyword_lists upsert failed:", upsertError.message);
+        alertAdmin("Keyword list cache", upsertError.message, { role: targetRole });
+      }
+
+      await recordMissingRole(supabase, targetRole, genDomain, caller?.userId);
       return { ...generated, is_fallback: true, fallback_type: "ai_generated" };
     }
   } catch (err) {
-    console.error("[ats] AI keyword generation failed:", err);
+    // Reaching here means the caller falls back to generic filler keywords, so
+    // the CV is scored against the wrong vocabulary entirely. Never swallow it.
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[ats] AI keyword generation failed for "${targetRole}":`, message);
+    alertAdmin("Keyword generation", message, { role: targetRole, domain: genDomain });
   }
 
+  await recordMissingRole(supabase, targetRole, genDomain, caller?.userId);
   return null;
 }
 
@@ -403,7 +442,7 @@ export async function analyseCV(cvId: string, caller?: { userId?: string; ip?: s
       nice_to_have: ["Technical Skills", "Industry Knowledge"],
       synonym_map: {},
       is_fallback: true,
-      fallback_type: "domain",
+      fallback_type: "generic",
     };
   }
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { alertAdmin } from "@/lib/email/alert";
 
 export async function POST() {
   const supabase = await createClient();
@@ -40,15 +41,20 @@ export async function POST() {
   }).eq("id", user.id);
 
   // Record in subscription history
-  await admin.from("subscription_history").insert({
+  const { error: historyError } = await admin.from("subscription_history").insert({
     user_id: user.id,
     plan: "pro",
     period: "cancelled",
     status: "cancelled",
     amount: 0,
     started_at: new Date().toISOString(),
-    ends_at: profile.current_period_end,
+    ended_at: profile.current_period_end,
   });
+
+  if (historyError) {
+    console.error("[billing/cancel] subscription_history insert failed:", historyError);
+    alertAdmin("Subscription History", historyError.message, { userId: user.id, event: "cancel" });
+  }
 
   return NextResponse.json({ ok: true, access_until: profile.current_period_end });
 }

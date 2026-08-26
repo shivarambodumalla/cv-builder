@@ -592,7 +592,9 @@ const AI_SETTINGS = [
   { feature: "ats_analysis", max_tokens: 8192, temperature: 0, enabled: true },
   { feature: "job_match", max_tokens: 4096, temperature: 0, enabled: true },
   { feature: "cover_letter", max_tokens: 1024, temperature: 0.7, enabled: true },
-  { feature: "keyword_generate", max_tokens: 512, temperature: 0, enabled: true },
+  // 512 truncated the JSON mid-object on essentially every call, so the parse
+  // failed and the generated list was discarded and regenerated each analysis.
+  { feature: "keyword_generate", max_tokens: 2048, temperature: 0, enabled: true },
   { feature: "bullet_rewrite", max_tokens: 512, temperature: 0.5, enabled: true },
   { feature: "bullet_rewrite_debate", max_tokens: 512, temperature: 0.5, enabled: true },
   { feature: "jd_red_flag", max_tokens: 512, temperature: 0, enabled: true },
