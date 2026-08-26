@@ -28,9 +28,11 @@ function statusOf(post: PostRow): Exclude<StatusFilter, "all"> {
   return post.scheduled_at ? "scheduled" : "draft";
 }
 
+// Scheduling is date-only (the publisher cron runs once a day), so render the
+// stored UTC day rather than a local datetime that could show the day before.
 function formatSchedule(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit",
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
   });
 }
 

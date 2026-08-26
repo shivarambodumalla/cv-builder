@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Eye, Upload, ImageUp, Loader2, CalendarClock } from "lucide-react";
+import { ArrowLeft, Save, Eye, Upload, ImageUp, Loader2, CalendarClock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -100,7 +100,12 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [uploadingCover, setUploadingCover] = useState(false);
-  const isEdit = !!postId;
+  // Tracks the row id once a brand-new post has been saved, so that staying on
+  // the page after "Save draft" switches subsequent saves from POST to PUT
+  // instead of inserting a duplicate on every click.
+  const [savedId, setSavedId] = useState<string | undefined>(postId);
+  const [justSaved, setJustSaved] = useState(false);
+  const isEdit = !!savedId;
 
   function handleFileImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -181,9 +186,9 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
     setError("");
 
     if (schedule) {
-      if (!form.scheduled_at) { setError("Pick a publish date and time first."); return; }
-      if (new Date(form.scheduled_at).getTime() <= Date.now()) {
-        setError("Publish date must be in the future.");
+      if (!form.scheduled_at) { setError("Pick a publish date first."); return; }
+      if (form.scheduled_at < todayUtc()) {
+        setError("Publish date cannot be in the past.");
         return;
       }
     }
@@ -197,11 +202,9 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
       is_published: isPublished,
       scheduled_at:
-        !isPublished && form.scheduled_at
-          ? new Date(form.scheduled_at).toISOString()
-          : null,
+        !isPublished && form.scheduled_at ? dateInputToIso(form.scheduled_at) : null,
     };
-    const url = isEdit ? `/api/admin/blog/${postId}` : "/api/admin/blog";
+    const url = isEdit ? `/api/admin/blog/${savedId}` : "/api/admin/blog";
     const method = isEdit ? "PUT" : "POST";
     const res = await fetch(url, {
       method,
@@ -211,7 +214,22 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
     const data = await res.json();
     setSaving(false);
     if (!res.ok) { setError(data.error ?? "Save failed"); return; }
-    router.push("/admin/blog");
+
+    // Publishing is a "done" action, so it returns to the list. Saving a draft
+    // or scheduling is mid-work — stay put so editing can continue.
+    if (isPublished) {
+      router.push("/admin/blog");
+      return;
+    }
+
+    if (!savedId && data.id) {
+      setSavedId(data.id);
+      // Keep the URL honest without remounting the editor, so a refresh or a
+      // shared link lands on the real post rather than the "new" route.
+      window.history.replaceState(null, "", `/admin/blog/${data.id}`);
+    }
+    setJustSaved(true);
+    setTimeout(() => setJustSaved(false), 2500);
   }
 
   if (loading) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
@@ -236,8 +254,14 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
               </Button>
             </>
           )}
+          {justSaved && (
+            <span className="flex items-center gap-1 text-xs font-medium text-success">
+              <Check className="h-3.5 w-3.5" />
+              Saved
+            </span>
+          )}
           <Button variant="outline" size="sm" disabled={saving} onClick={() => handleSave(false)} className="gap-1.5">
-            <Save className="h-3.5 w-3.5" />
+            {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
             Save draft
           </Button>
           {form.scheduled_at && !form.is_published && (
@@ -317,7 +341,8 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
             Publish date
           </Label>
           <Input
-            type="datetime-local"
+            type="date"
+            min={todayUtc()}
             className="max-w-xs"
             value={form.scheduled_at}
             disabled={form.is_published}
@@ -327,7 +352,7 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
             {form.is_published
               ? "Already published — unpublish it first to schedule."
               : form.scheduled_at
-              ? "Saved as a draft. The publisher runs once a day at 06:00 UTC, so the post goes live on the next run after this date."
+              ? "Saved as a draft and published automatically on this date, at 06:00 UTC."
               : "Leave empty to publish manually. Set a date to have it go live on its own."}
           </p>
         </div>
