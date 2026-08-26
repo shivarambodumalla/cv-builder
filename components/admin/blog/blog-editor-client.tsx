@@ -126,6 +126,8 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
         seo_description: fm.seoDescription ?? fm.seo_description ?? fm.brief ?? "",
         read_time_minutes: estimateReadTime(content),
         is_published: false,
+        // An imported file carries no schedule; keep whatever the editor had.
+        scheduled_at: form.scheduled_at,
       });
     };
     reader.readAsText(file);
