@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { markIntentConverted } from "@/lib/billing/intents";
+import { alertAdmin } from "@/lib/email/alert";
 
 /**
  * Lemon Squeezy redirects here after successful checkout.
@@ -53,15 +54,20 @@ export async function GET(request: NextRequest) {
 
     // Record in subscription history
     const priceMap: Record<string, number> = { weekly: 5, monthly: 14, yearly: 120 };
-    await admin.from("subscription_history").insert({
+    const { error: historyError } = await admin.from("subscription_history").insert({
       user_id: user.id,
       plan: "pro",
       period,
       status: "active",
       amount: priceMap[period] || 14,
       started_at: new Date().toISOString(),
-      ends_at: periodEnd.toISOString(),
+      ended_at: periodEnd.toISOString(),
     });
+
+    if (historyError) {
+      console.error("[billing/success] subscription_history insert failed:", historyError);
+      alertAdmin("Subscription History", historyError.message, { userId: user.id, period });
+    }
 
     await markIntentConverted({ userId: user.id });
 
