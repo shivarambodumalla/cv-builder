@@ -13,7 +13,9 @@
  *
  * It never creates profiles: a paid order with no account needs a human to
  * contact the customer, because access is keyed to an auth user that only they
- * can create by signing in with that email.
+ * can create by signing in with that email. It also never touches a profile
+ * whose access was granted by an admin, since that is intentional goodwill
+ * Lemon Squeezy has no record of.
  */
 import { config } from "dotenv";
 config({ path: ".env.local" });
@@ -127,6 +129,14 @@ async function main() {
     if (!profile) {
       console.log("    ORPHAN: paid order with no profile row — needs manual outreach");
       orphans.push(`${a.user_email} (sub ${sub.id}, order ${a.order_id}, LS status ${a.status})`);
+      continue;
+    }
+
+    // Access granted by an admin is deliberate goodwill that Lemon Squeezy knows
+    // nothing about -- most often for someone who paid but could not be matched
+    // to an account. Reconciling it against LS would quietly revoke it.
+    if (String(profile.subscription_id ?? "").startsWith("admin_grant_")) {
+      console.log(`    skipped: admin-granted access (${profile.subscription_id}) — left untouched`);
       continue;
     }
 
