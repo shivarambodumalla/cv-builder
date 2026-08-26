@@ -6,8 +6,10 @@ import {
   GripVertical, ChevronLeft, ChevronRight,
   RotateCcw, ChevronDown, X as XIcon,
   UserCircle2, Palette, Type, Columns2, SlidersHorizontal, ListOrdered,
+  Lock,
   type LucideIcon,
 } from "lucide-react";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import {
   Dialog,
   DialogContent,
@@ -1092,6 +1094,36 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   const supportsHeaderAlignment = HEADER_ALIGNMENT_TEMPLATES.has(design.template);
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [avatarBusy, setAvatarBusy] = React.useState(false);
+
+  // Template tiers are admin-configurable (/admin/plans). The CV's current
+  // template is never locked, so a grandfathered design stays re-selectable.
+  const { openUpgradeModal } = useUpgradeModal();
+  const [lockedSlugs, setLockedSlugs] = React.useState<Set<string>>(new Set());
+
+  React.useEffect(() => {
+    let cancelled = false;
+    fetch("/api/templates/catalog")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setLockedSlugs(
+          new Set(
+            (data.templates as { slug: string; locked: boolean }[])
+              .filter((t) => t.locked)
+              .map((t) => t.slug)
+          )
+        );
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const isTemplateLocked = React.useCallback(
+    (slug: string) => slug !== design.template && lockedSlugs.has(slug),
+    [lockedSlugs, design.template]
+  );
   const avatarMode: AvatarMode = design.avatarMode ?? "initials";
   const avatarShape: AvatarShape = design.avatarShape ?? "circle";
   const avatarSize = design.avatarSize ?? 84;
@@ -1395,6 +1427,12 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                         <div style={{ aspectRatio: "210/240" }}>
                           {renderTemplateThumb(t.name)}
                         </div>
+                        {!applied && isTemplateLocked(t.name) && (
+                          <span className="absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-full bg-[#1E3A5F] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white">
+                            <Lock className="h-2 w-2" />
+                            Pro
+                          </span>
+                        )}
                         {applied && (
                           <span className="absolute right-1.5 top-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary-foreground">
                             Current
@@ -1460,11 +1498,23 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                 className="h-9 px-4"
                 disabled={stagedTemplate === null || stagedTemplate === design.template}
                 onClick={() => {
+                  if (stagedTemplate && isTemplateLocked(stagedTemplate)) {
+                    setTemplateDialogOpen(false);
+                    openUpgradeModal("template_locked");
+                    return;
+                  }
                   update("template", stagedTemplate!);
                   setTemplateDialogOpen(false);
                 }}
               >
-                Apply template
+                {stagedTemplate && isTemplateLocked(stagedTemplate) ? (
+                  <>
+                    <Lock className="mr-1.5 h-3.5 w-3.5" />
+                    Unlock with Pro
+                  </>
+                ) : (
+                  "Apply template"
+                )}
               </Button>
             </div>
           </DialogContent>

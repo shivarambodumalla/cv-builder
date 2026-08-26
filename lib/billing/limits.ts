@@ -94,6 +94,26 @@ export function getPlan(profile: any): "free" | "pro" {
   return "free";
 }
 
+// --- Limit resolution ---
+
+/**
+ * Quotas are editable from /admin/plans, so read the DB-backed config first and
+ * treat the PLAN_LIMITS constant above as the fallback. Imported lazily because
+ * plan-config imports PLAN_LIMITS from this module for its own fallback.
+ */
+async function resolveLimit(plan: "free" | "pro", limitKey: string): Promise<number> {
+  const staticLimits = PLAN_LIMITS[plan];
+  const fallback = staticLimits[limitKey as keyof typeof staticLimits] as number;
+  try {
+    const { getPlanLimits } = await import("./plan-config");
+    const limits = await getPlanLimits();
+    const value = limits[plan]?.[limitKey];
+    return typeof value === "number" ? value : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 // --- Column mapping ---
 
 const WEEKLY_COLUMNS = [
@@ -154,11 +174,10 @@ export async function checkLimit(
   if (!profile) return { allowed: false, used: 0, limit: 0, reason: "profile_not_found" };
 
   const plan = getPlan(profile);
-  const limits = PLAN_LIMITS[plan];
   const mapping = COLUMN_MAP[feature];
   if (!mapping) return { allowed: false, used: 0, limit: 0, reason: "unknown_feature" };
 
-  const limit = limits[mapping.limitKey as keyof typeof limits] as number;
+  const limit = await resolveLimit(plan, mapping.limitKey);
 
   // Unlimited for pro (or unlimited free features like pdf_downloads)
   if (limit === -1) return { allowed: true, used: 0, limit: -1 };
@@ -229,8 +248,7 @@ export async function consumeLimit(
   if (!profile) return false;
 
   const plan = getPlan(profile);
-  const limits = PLAN_LIMITS[plan];
-  const limit = limits[mapping.limitKey as keyof typeof limits] as number;
+  const limit = await resolveLimit(plan, mapping.limitKey);
   if (limit === -1) return true; // unlimited
 
   const { data: updated, error } = await supabase

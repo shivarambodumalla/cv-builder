@@ -27,7 +27,7 @@ const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon:
   portfolio_scan_limit: { title: "Portfolio scanning limited", subtitle: "Upgrade to scan unlimited portfolios and GitHub profiles.", icon: "sparkles" },
   story_summary_limit: { title: "Story summaries used", subtitle: "Resets Monday — or upgrade for unlimited AI summaries.", icon: "sparkles" },
   interview_prep_limit: { title: "Interview prep sessions used", subtitle: "Resets Monday — or upgrade for unlimited prep.", icon: "sparkles" },
-  template_locked: { title: "All templates included", subtitle: "Every template is free. Upgrade for unlimited ATS scans and matches.", icon: "crown" },
+  template_locked: { title: "This template is Pro", subtitle: "Unlock every premium template plus unlimited ATS scans, rewrites and downloads.", icon: "crown" },
   download: { title: "Download your CV", subtitle: "Your PDF is always clean. Upgrade for unlimited everything else.", icon: "zap" },
   generic: { title: "Upgrade to Pro", subtitle: "Unlimited everything for serious job seekers.", icon: "crown" },
 };

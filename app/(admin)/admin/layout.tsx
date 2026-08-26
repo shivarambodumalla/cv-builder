@@ -51,6 +51,7 @@ const NAV_GROUPS = [
     title: "Billing",
     links: [
       { href: "/admin/pricing", label: "Pricing" },
+      { href: "/admin/plans", label: "Plans & Packaging" },
     ],
   },
   {

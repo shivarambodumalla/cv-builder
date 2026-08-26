@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Lock } from "lucide-react";
 import { logActivity } from "@/lib/analytics/log";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 
 type TemplateCategory = "all" | "single" | "two-column" | "minimal" | "professional";
 
@@ -61,6 +62,33 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
   const [error, setError] = useState<string | null>(null);
   const [imgFailed, setImgFailed] = useState<Record<string, boolean>>({});
   const completedRef = useRef(false);
+  const { openUpgradeModal } = useUpgradeModal();
+
+  // Tiering is admin-configurable (/admin/plans), so the lock set is fetched
+  // rather than baked into the TEMPLATES list above.
+  const [lockedSlugs, setLockedSlugs] = useState<Set<string>>(new Set());
+  const [defaultSlug, setDefaultSlug] = useState("classic");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/templates/catalog")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setLockedSlugs(
+          new Set(
+            (data.templates as { slug: string; locked: boolean }[])
+              .filter((t) => t.locked)
+              .map((t) => t.slug)
+          )
+        );
+        if (data.defaultTemplate) setDefaultSlug(data.defaultTemplate);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filtered = TEMPLATES.filter((t) => t.category.includes(filter));
 
@@ -79,6 +107,13 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
 
   async function handleSelect(slug: string) {
     if (selecting) return;
+
+    if (lockedSlugs.has(slug)) {
+      logActivity("picker_locked_template", { metadata: { cv_id: cvId, template: slug } });
+      openUpgradeModal("template_locked");
+      return;
+    }
+
     setSelecting(slug);
     setError(null);
 
@@ -102,7 +137,8 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
 
   async function handleContinueWithClassic() {
     if (selecting) return;
-    await handleSelect("classic");
+    // "Skip" must always land on a template the user can actually keep.
+    await handleSelect(defaultSlug);
   }
 
   return (
@@ -140,7 +176,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
           <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-muted-foreground px-2">
             {title
               ? `We parsed "${title}" — now choose a look. You can change it any time.`
-              : "Every template is ATS-optimised and free. You can change it any time."}
+              : "Every template is ATS-optimised. You can change it any time."}
           </p>
         </div>
 
@@ -177,6 +213,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
             {filtered.map((t) => {
               const isSelecting = selecting === t.slug;
               const isDisabled = selecting !== null && !isSelecting;
+              const isLocked = lockedSlugs.has(t.slug);
               return (
                 <button
                   key={t.slug}
@@ -207,6 +244,12 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-xs text-muted-foreground px-3 text-center">
                         <div className="font-semibold text-foreground">{t.name}</div>
                         <div className="text-[10px]">Preview unavailable</div>
+                      </div>
+                    )}
+                    {isLocked && (
+                      <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-[#1E3A5F] px-2 py-1 text-[9px] font-bold text-white shadow-sm">
+                        <Lock className="h-2.5 w-2.5" />
+                        PRO
                       </div>
                     )}
                     {isSelecting && (
@@ -253,6 +296,12 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                           <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin mr-1.5 sm:mr-2" />
                           <span className="hidden sm:inline">Loading editor…</span>
                           <span className="sm:hidden">Loading…</span>
+                        </>
+                      ) : isLocked ? (
+                        <>
+                          <Lock className="h-3.5 w-3.5 mr-1.5" />
+                          <span className="hidden sm:inline">Unlock with Pro</span>
+                          <span className="sm:hidden">Unlock</span>
                         </>
                       ) : (
                         <>
