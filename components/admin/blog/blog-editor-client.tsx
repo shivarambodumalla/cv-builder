@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Eye, Upload, ImageUp, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Eye, Upload, ImageUp, Loader2, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,8 @@ interface PostForm {
   seo_description: string;
   read_time_minutes: number;
   is_published: boolean;
+  /** "YYYY-MM-DD" — the day the post should go live. Time is fixed by the cron. */
+  scheduled_at: string;
 }
 
 const EMPTY: PostForm = {
@@ -37,7 +39,30 @@ const EMPTY: PostForm = {
   seo_description: "",
   read_time_minutes: 5,
   is_published: false,
+  scheduled_at: "",
 };
+
+/**
+ * The publisher cron runs once a day, so scheduling is date-only: a post is
+ * stored at 00:00 UTC on the chosen day and goes live on that day's run.
+ * Dates are read and written in UTC so the stored day never shifts for an
+ * admin in a different timezone.
+ */
+function isoToDateInput(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toISOString().slice(0, 10);
+}
+
+function dateInputToIso(date: string): string {
+  return `${date}T00:00:00.000Z`;
+}
+
+/** Today in UTC, as the input's own format — used as the minimum selectable day. */
+function todayUtc(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function slugify(text: string) {
   return text
@@ -118,6 +143,7 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
           seo_description: data.seo_description ?? "",
           read_time_minutes: data.read_time_minutes ?? 5,
           is_published: data.is_published ?? false,
+          scheduled_at: isoToDateInput(data.scheduled_at ?? null),
         });
         setLoading(false);
       });
@@ -151,13 +177,29 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
     e.target.value = "";
   }
 
-  async function handleSave(publish?: boolean) {
+  async function handleSave(publish?: boolean, schedule?: boolean) {
     setError("");
+
+    if (schedule) {
+      if (!form.scheduled_at) { setError("Pick a publish date and time first."); return; }
+      if (new Date(form.scheduled_at).getTime() <= Date.now()) {
+        setError("Publish date must be in the future.");
+        return;
+      }
+    }
+
     setSaving(true);
+    // A scheduled post stays a draft until the cron flips it, so scheduling
+    // always forces is_published false regardless of which button was used.
+    const isPublished = schedule ? false : publish !== undefined ? publish : form.is_published;
     const payload = {
       ...form,
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
-      is_published: publish !== undefined ? publish : form.is_published,
+      is_published: isPublished,
+      scheduled_at:
+        !isPublished && form.scheduled_at
+          ? new Date(form.scheduled_at).toISOString()
+          : null,
     };
     const url = isEdit ? `/api/admin/blog/${postId}` : "/api/admin/blog";
     const method = isEdit ? "PUT" : "POST";
@@ -198,9 +240,15 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
             <Save className="h-3.5 w-3.5" />
             Save draft
           </Button>
+          {form.scheduled_at && !form.is_published && (
+            <Button variant="outline" size="sm" disabled={saving} onClick={() => handleSave(false, true)} className="gap-1.5">
+              <CalendarClock className="h-3.5 w-3.5" />
+              Schedule
+            </Button>
+          )}
           <Button size="sm" disabled={saving} onClick={() => handleSave(true)} className="gap-1.5">
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Eye className="h-3.5 w-3.5" />}
-            {saving ? "Saving…" : form.is_published ? "Update & publish" : "Publish"}
+            {saving ? "Saving…" : form.is_published ? "Update & publish" : "Publish now"}
           </Button>
         </div>
       </div>
@@ -260,6 +308,28 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
             <Label>Read time (minutes)</Label>
             <Input type="number" min={1} value={form.read_time_minutes} onChange={(e) => set("read_time_minutes", Number(e.target.value))} />
           </div>
+        </div>
+
+        {/* Scheduling */}
+        <div className="grid gap-1.5 rounded-lg border p-4 bg-muted/30">
+          <Label className="flex items-center gap-1.5">
+            <CalendarClock className="h-3.5 w-3.5" />
+            Publish date
+          </Label>
+          <Input
+            type="datetime-local"
+            className="max-w-xs"
+            value={form.scheduled_at}
+            disabled={form.is_published}
+            onChange={(e) => set("scheduled_at", e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            {form.is_published
+              ? "Already published — unpublish it first to schedule."
+              : form.scheduled_at
+              ? "Saved as a draft. The publisher runs once a day at 06:00 UTC, so the post goes live on the next run after this date."
+              : "Leave empty to publish manually. Set a date to have it go live on its own."}
+          </p>
         </div>
 
         {/* SEO */}

@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
   const { error: updateError } = await db
     .from("blog_posts")
-    .update({ is_published: true, published_at: new Date().toISOString() })
+    .update({ is_published: true, published_at: new Date().toISOString(), scheduled_at: null })
     .in("id", ids);
 
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
