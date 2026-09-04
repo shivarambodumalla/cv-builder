@@ -15,7 +15,7 @@ function linkifyEmails(text: string): ReactNode[] {
 }
 
 export const metadata: Metadata = {
-  title: "Terms of Service | CVEdge",
+  title: "Terms of Service",
   description: "Terms and conditions for using the CVEdge platform.",
   alternates: { canonical: "https://www.thecvedge.com/terms" },
 };

@@ -24,7 +24,9 @@ export async function generateMetadata({
   if (!role) return {};
 
   const content = getRoleContent(slug);
-  const title = `${role.label} Interview Questions & How to Answer Them | CVEdge`;
+  // The root layout applies `template: "%s | CVEdge"` — a hardcoded suffix here
+  // renders it twice. Only openGraph.title needs the brand spelled out.
+  const title = `${role.label} Interview Questions & How to Answer Them`;
   const description = content
     ? `${content.technicalQuestions.length + content.behaviouralQuestions.length} real ${role.label} interview questions, what each round is scored on, and how to structure your answers.`
     : `Prepare for ${role.label} interviews with structured STAR stories and job-matched practice.`;

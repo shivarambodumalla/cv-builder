@@ -9,7 +9,7 @@ import { hasRoleContent } from "@/lib/roles/role-content";
 const ROLE_GUIDES = ALL_ROLES.filter((r) => hasRoleContent(r.slug));
 
 export const metadata = {
-  title: "Interview Coach — Prepare STAR Stories from Your CV | CVEdge",
+  title: "Interview Coach — Prepare STAR Stories from Your CV",
   description: "Build a bank of interview stories from your CV, GitHub, and portfolio. Get AI-powered STAR frameworks, quality scoring, and job-specific prep — free.",
   openGraph: {
     title: "Interview Coach | CVEdge",

@@ -5,7 +5,7 @@ import { CvReviewFaqSection } from "../faq-section";
 import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for Dubai & UAE Jobs — Interview-Ready in 24h | CVEdge",
+  title: "Expert CV Review for Dubai & UAE Jobs — Interview-Ready in 24h",
   description: "Get your CV reviewed by a UAE hiring specialist. ATS-optimized for ADNOC, Emirates, Mubadala, Noon, and top Dubai employers. 80+ score guarantee. 24-hour turnaround.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review/uae",

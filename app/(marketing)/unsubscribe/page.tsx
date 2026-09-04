@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Unsubscribed | CVEdge",
+  title: "Unsubscribed",
   robots: { index: false, follow: false },
   alternates: { canonical: "https://www.thecvedge.com/unsubscribe" },
 };

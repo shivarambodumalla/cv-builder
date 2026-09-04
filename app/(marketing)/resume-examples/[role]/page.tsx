@@ -34,7 +34,7 @@ export async function generateMetadata({
   const { role: slug } = await params;
   const role = ROLE_MAP.get(slug);
   if (!role) return {};
-  const title = `${role.label} Resume Example 2026 — Templates & Tips | CVEdge`;
+  const title = `${role.label} Resume Example 2026 — Templates & Tips`;
   const description = `${role.label} resume example with ATS keywords, strong bullet point samples, common mistakes to avoid, and free templates. Build your ${role.label.toLowerCase()} resume in minutes.`;
   return {
     title,

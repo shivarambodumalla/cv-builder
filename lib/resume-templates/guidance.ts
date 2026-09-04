@@ -5,7 +5,7 @@
 // words of description and 2 FAQs. This adds the substance.
 //
 // Keyed by `${category}/${leafSlug}` rather than by template, deliberately:
-// 17 underlying templates render 32 leaf pages, so Classic appears under
+// 17 underlying templates render 31 leaf pages, so Classic appears under
 // software-engineer, freshers AND ats-friendly. Keying on the template would
 // serve identical copy on three URLs and rebuild the duplication problem the
 // role pages just had. Everything below is written for the audience, not the

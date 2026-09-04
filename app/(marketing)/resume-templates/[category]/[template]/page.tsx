@@ -32,7 +32,9 @@ export async function generateMetadata({
     description,
     alternates: { canonical: `https://www.thecvedge.com/resume-templates/${catSlug}/${leafSlug}` },
     openGraph: {
-      title,
+      // Next applies the layout's title template to `title` but not to this one,
+      // so the brand is added back explicitly rather than left off social cards.
+      title: `${title} | CVEdge`,
       description,
       url: `https://www.thecvedge.com/resume-templates/${catSlug}/${leafSlug}`,
       images: leaf.imgPath ? [leaf.imgPath] : [],

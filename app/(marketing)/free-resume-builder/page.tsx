@@ -5,7 +5,7 @@ import { CheckCircle, Sparkles, BarChart3, Target, Download, FileText } from "lu
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "Free Resume Builder — Build, Score, and Download in Minutes | CVEdge",
+  title: "Free Resume Builder — Build, Score, and Download in Minutes",
   description:
     "Free resume builder with ATS scoring, AI bullet rewriting, job match analysis, and PDF download. 20 free templates. No credit card required. Build your resume in under 10 minutes.",
   alternates: { canonical: "https://www.thecvedge.com/free-resume-builder" },

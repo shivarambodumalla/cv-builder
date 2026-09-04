@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ role: str
   const role = ROLE_MAP.get(slug);
   if (!role) return {};
   return {
-    title: `${role.title} Jobs — See Your Match Score | CVEdge`,
+    title: `${role.title} Jobs — See Your Match Score`,
     description: role.description,
     openGraph: { title: `${role.title} Jobs | CVEdge`, description: role.description, url: `https://www.thecvedge.com/jobs/${role.slug}` },
     alternates: { canonical: `https://www.thecvedge.com/jobs/${role.slug}` },

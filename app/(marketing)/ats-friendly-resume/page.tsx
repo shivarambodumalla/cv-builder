@@ -5,7 +5,7 @@ import { CheckCircle, XCircle, BarChart3, Zap, Target } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "ATS-Friendly Resume Builder — Score 80+ Before You Apply | CVEdge",
+  title: "ATS-Friendly Resume Builder — Score 80+ Before You Apply",
   description:
     "Build an ATS-friendly resume that passes Greenhouse, Workday, and Lever automatically. Get an instant ATS score across 6 categories, fix issues with AI, and download a polished PDF.",
   alternates: { canonical: "https://www.thecvedge.com/ats-friendly-resume" },

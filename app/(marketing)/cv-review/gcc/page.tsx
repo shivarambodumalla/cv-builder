@@ -5,7 +5,7 @@ import { CvReviewFaqSection } from "../faq-section";
 import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for GCC — UAE, Saudi Arabia, Qatar, Kuwait | CVEdge",
+  title: "Expert CV Review for GCC — UAE, Saudi Arabia, Qatar, Kuwait",
   description: "Get your CV reviewed by a GCC hiring specialist. ATS-optimized for UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman job markets. 80+ score guarantee. 24-hour turnaround.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review/gcc",

@@ -5,7 +5,7 @@ import { CvReviewFaqSection } from "../faq-section";
 import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for Saudi Arabia Jobs — Vision 2030 Ready | CVEdge",
+  title: "Expert CV Review for Saudi Arabia Jobs — Vision 2030 Ready",
   description: "Get your CV reviewed by a Saudi Arabia hiring specialist. ATS-optimized for ARAMCO, STC, NEOM, PIF, and top Riyadh and Jeddah employers. 80+ score guarantee. 24-hour turnaround.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review/saudi-arabia",
