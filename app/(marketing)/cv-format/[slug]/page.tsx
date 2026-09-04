@@ -53,7 +53,7 @@ export default async function CvFormatPage({
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "https://www.thecvedge.com" },
-          { name: "CV Formats", url: "https://www.thecvedge.com/resume-templates" },
+          { name: "CV Formats", url: "https://www.thecvedge.com/cv-format" },
           { name: format.name, url: `https://www.thecvedge.com/cv-format/${format.slug}` },
         ]}
       />

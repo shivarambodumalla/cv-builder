@@ -54,6 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // German is the site's best-converting high-income market (3.77% CTR at
   // position 14.3) and had no page in the language until now.
   const regionalPages: MetadataRoute.Sitemap = [
+    {
+      url: "https://www.thecvedge.com/cv-format",
+      lastModified: new Date("2026-09-04T00:00:00Z"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
     ...CV_FORMATS.map((f) => ({
       url: `https://www.thecvedge.com/cv-format/${f.slug}`,
       lastModified: new Date("2026-09-04T00:00:00Z"),
