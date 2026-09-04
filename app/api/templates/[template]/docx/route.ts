@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { findDocxLeaf } from "@/lib/resume-templates/data";
+import { buildExecutiveDocx } from "@/lib/resume-templates/docx/executive";
 import { buildHarvardDocx } from "@/lib/resume-templates/docx/harvard";
 
 // Blank template downloads, deliberately unauthenticated. The query data behind
@@ -11,6 +12,7 @@ export const revalidate = 86400;
 
 const BUILDERS: Record<string, () => Promise<Buffer>> = {
   harvard: buildHarvardDocx,
+  executive: buildExecutiveDocx,
 };
 
 export function generateStaticParams() {

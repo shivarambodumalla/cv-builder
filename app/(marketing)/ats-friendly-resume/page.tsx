@@ -278,7 +278,14 @@ export default function AtsFriendlyResumePage() {
                 </Link>{" "}
                 — a single column of plain text with no tables or graphics, so nothing can misparse.
                 It scores 92–94 here and downloads as a blank Word file if you would rather fill it
-                in offline.
+                in offline. For senior roles, the{" "}
+                <Link
+                  href="/resume-templates/experienced/executive-cv"
+                  className="text-primary underline underline-offset-4"
+                >
+                  Executive resume template
+                </Link>{" "}
+                scores 93–96 and is shaped for fitting twenty years onto two pages.
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button asChild size="sm"><Link href="/resume-templates/ats-friendly">ATS-friendly templates</Link></Button>

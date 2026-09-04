@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import { CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
+import { CATEGORY_MAP, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
 import { getLeafGuidance } from "@/lib/resume-templates/guidance";
 
 export const revalidate = 86400;
@@ -30,7 +30,9 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `https://www.thecvedge.com/resume-templates/${catSlug}/${leafSlug}` },
+    // A template rendered under several categories points every copy at one
+    // primary URL, so they stop competing with each other for the same query.
+    alternates: { canonical: `https://www.thecvedge.com${getCanonicalLeafPath(catSlug, leaf)}` },
     openGraph: {
       // Next applies the layout's title template to `title` but not to this one,
       // so the brand is added back explicitly rather than left off social cards.
@@ -57,7 +59,16 @@ export default async function TemplateLeafPage({
   const guidance = getLeafGuidance(catSlug, leafSlug);
   // Guidance FAQs are audience-specific, so they extend rather than replace the
   // template's own — both are surfaced and both go into the FAQPage schema.
-  const allFaqs = [...leaf.faqs, ...(guidance?.faqs ?? [])];
+  // Deduped because the two sets are authored separately and have twice drifted
+  // into asking the same question, which renders it twice on the page and makes
+  // the FAQPage markup invalid. Near-duplicates still need catching by eye.
+  const seenQuestions = new Set<string>();
+  const allFaqs = [...leaf.faqs, ...(guidance?.faqs ?? [])].filter((f) => {
+    const key = f.q.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (seenQuestions.has(key)) return false;
+    seenQuestions.add(key);
+    return true;
+  });
 
   return (
     <>
@@ -118,10 +129,24 @@ export default async function TemplateLeafPage({
                     </>
                   )}
                   {leaf.tier === "pro" && (
-                    <p className="text-center text-xs text-muted-foreground">
-                      Pro template —{" "}
-                      <Link href="/pricing" className="underline hover:text-foreground">unlock with CVEdge Pro</Link>
-                    </p>
+                    <div className="space-y-1.5">
+                      <p className="text-center text-xs text-muted-foreground">
+                        Pro template —{" "}
+                        <Link href="/pricing" className="underline hover:text-foreground">unlock with CVEdge Pro</Link>
+                      </p>
+                      {leaf.freeAlternative && (
+                        <p className="text-center text-xs text-muted-foreground">
+                          Want a free one? Try{" "}
+                          <Link
+                            href={leaf.freeAlternative.href}
+                            className="text-primary underline underline-offset-2 hover:opacity-80"
+                          >
+                            {leaf.freeAlternative.label}
+                          </Link>
+                          .
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>

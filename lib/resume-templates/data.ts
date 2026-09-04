@@ -22,6 +22,13 @@ export interface TemplateLeafData {
   /** Hand-tuned meta description. Falls back to the first 160 chars of `description`. */
   metaDescription?: string;
   /**
+   * Path to a free leaf offering a similar layout. Set on Pro leaves that rank
+   * for queries carrying free intent — executive-sidebar-cv sits at position 6.6
+   * on "executive resume template"-type searches while the free Executive page
+   * sat at 54, so the best-ranking result was a paywall.
+   */
+  freeAlternative?: { href: string; label: string };
+  /**
    * Offer a blank .docx of this template for download without an account.
    * Set only where the query data shows download intent — see
    * app/api/templates/[template]/docx.
@@ -592,32 +599,43 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-cv",
         templateSlug: "executive",
         displayName: "Executive Resume Template",
-        headline: "Premium feel for senior roles. Refined typography and spacing that commands attention.",
+        metaTitle: "Executive Resume Template — Free Word & PDF, ATS-Safe",
+        metaDescription:
+          "Free executive resume template for C-suite, VP and director roles. Premium spacing on an ATS-safe single column. Download as Word or PDF, or edit online with an instant ATS score.",
+        offerDocx: true,
+        headline:
+          "Built for twenty years of career on two pages — premium spacing and a summary that leads, on a single ATS-safe column. Free to edit online, or download as Word or PDF.",
         description:
-          "Executive is the flagship template for senior professionals. Premium line spacing, careful typographic hierarchy, and a layout that places your Professional Summary prominently — before experience detail — means your narrative leads rather than your job titles.\n\nFor professionals with 10–25 years of experience, the challenge isn't showing you have experience — it's framing the most relevant 10 years for this specific role. Executive's clean structure helps you curate without cluttering. Older roles compress naturally into brief bullets while recent roles expand into detailed impact statements.\n\nExecutive maintains full ATS compatibility — single column, standard heading names — while presenting at a visual quality level that matches the seniority it's designed for.\n\nUse CVEdge's Job Match tool with Executive to ensure your summary and bullets align precisely to the specific job description. At senior levels, generic resumes don't get interviews — targeted ones do.",
+          "The executive resume template solves a problem junior formats do not have: you have more career than the page has room for. Twenty-five years, eight roles and three industries have to resolve into something a reader can scan in seconds and still come away knowing your level. Executive does that with generous line spacing, a clear typographic hierarchy, and a Professional Summary placed above the experience detail so your narrative leads rather than your last job title.\n\nSenior candidates often assume a polished template means giving up ATS safety. It does not. Executive is a single column with standard heading names and no tables, sidebars or graphics — it scores 93–96 on CVEdge's ATS analyser, within a couple of points of the plainest format on the site. The premium feel comes from spacing and type, which are CSS properties, not images.\n\nThat matters more than most senior candidates expect. Below C-suite, director and VP applications still route through corporate portals and are parsed exactly like everyone else's. Executive search adds a human reader on top; it rarely replaces the machine underneath.\n\nThe layout is designed for curation. Recent roles expand into detailed impact statements, older roles compress into company, title and dates without the page looking uneven. For a C-suite resume the same structure carries board appointments, P&L scope and transformation mandates without crowding.\n\nDownload it as a blank Word document or PDF and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored version in a couple of minutes. Both free, neither needs a card.",
         whoFor: [
-          "Senior professionals with 10+ years of experience",
-          "C-suite and VP-level executives",
-          "Directors and general managers",
-          "Senior leaders changing industries",
+          "Senior professionals with 10+ years to fit on two pages",
+          "C-suite, VP and board-level candidates",
+          "Directors, general managers and functional heads",
+          "Senior leaders changing industry, where framing matters more than titles",
+          "Anyone whose application still goes through a corporate portal",
         ],
         features: [
-          "Premium spacing and typographic hierarchy",
-          "Summary section positioned prominently for narrative control",
-          "Clean ATS-safe single column structure",
-          "Handles 20+ years of experience without crowding",
-          "Certifications and publications displayed with appropriate weight",
+          "Free download as a blank Word (.docx) file or PDF — no account needed",
+          "Scores 93–96 on CVEdge's ATS analyser",
+          "Premium spacing and typographic hierarchy, single column throughout",
+          "Summary positioned above experience so your narrative leads",
+          "Handles 20+ years without crowding — recent roles expand, early roles compress",
+          "Certifications, board seats and publications carry appropriate weight",
         ],
         tier: "free",
         imgPath: "/img/templates/executive.jpg",
         faqs: [
           {
-            q: "How far back should experienced professionals go on their resume?",
-            a: "Standard guidance: last 10–15 years in detail, older roles in brief (company, title, dates only). Executive's layout handles this well — early roles in compressed format, recent roles with full detail.",
+            q: "Is the executive resume template ATS-friendly?",
+            a: "Yes. It is a single column with standard headings and no tables, text boxes or images — the things that actually break parsers. It scores 93–96 on CVEdge's analyser, a couple of points below the plainest formats purely because of spacing choices, which is irrelevant to real screening. This matters at senior level: below C-suite, most director and VP applications still go through Greenhouse, Workday or iCIMS and are parsed like any other.",
           },
           {
-            q: "Should senior executives include a photo on their resume?",
-            a: "In the US, no — even for senior roles. In the UK, EU, and ANZ, a professional photo is acceptable and sometimes expected. CVEdge's avatar feature is optional on Executive.",
+            q: "Can I download the executive resume template in Word?",
+            a: "Yes — a blank .docx with the spacing, heading styles and two-page structure already set, so you can fill it in offline in Word, Google Docs or Pages. No account and no card. If starting from an empty document is the hard part, upload your existing CV instead and it will be reflowed into this format with an ATS score attached.",
+          },
+          {
+            q: "How long should a C-suite or VP resume be?",
+            a: "Two pages is standard and expected at this level; one page reads as thin above director grade. Three is only defensible for academic, medical or board CVs where publications and appointments are themselves the credential. Executive's spacing is calibrated for two pages — if you are spilling onto a third, the fix is compressing early roles rather than tightening the leading.",
           },
         ],
       },
@@ -625,6 +643,11 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-pro-cv",
         templateSlug: "executive-pro",
         displayName: "Executive Pro Resume Template",
+        metaTitle: "Executive Pro Resume Template — Photo Header & Dark Bar",
+        freeAlternative: {
+          href: "/resume-templates/experienced/executive-cv",
+          label: "the free Executive template",
+        },
         headline: "Bold photo header with dark contact bar. Leadership presence from the first line.",
         description:
           "Executive Pro is the premium two-column template for senior executives who want immediate visual authority. The dark contact bar beneath a prominent header photo creates a powerful personal brand statement — before a recruiter reads your summary, you've established presence.\n\nFor C-suite roles, board appointments, and senior leadership searches — where the hiring committee reviews a shortlist rather than scanning hundreds of applications — visual distinction matters. Executive Pro delivers it.\n\nThe two-column body pairs a detailed experience column with a sidebar carrying key credentials, skills, and board memberships. Senior leaders often have diverse credentials — Executive Pro organises them into a hierarchy that reads logically.\n\nExecutive Pro is a Pro template. For senior leadership roles where you're often the deciding factor in a close-call hiring decision, the marginal investment in a polished format is worth it.",
@@ -658,6 +681,11 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-sidebar-cv",
         templateSlug: "executive-sidebar",
         displayName: "Executive Sidebar Resume Template",
+        metaTitle: "Executive Sidebar Resume Template — Two-Column, Dark Sidebar",
+        freeAlternative: {
+          href: "/resume-templates/experienced/executive-cv",
+          label: "the free Executive template",
+        },
         headline: "Dark sidebar with photo. Corporate and legal feel for senior roles.",
         description:
           "Executive Sidebar pairs a dark left sidebar — carrying your photo, contact details, and key skills — with a clean white main column for your career narrative. The result is a resume that communicates gravitas and organisation simultaneously.\n\nFor senior professionals in corporate law, finance, management consulting, and large enterprise leadership, Executive Sidebar matches the professional aesthetic those environments expect. The dark sidebar signals structure and precision; the white main column provides detailed, scannable experience.\n\nThe sidebar accommodates professional photo, contact details, core competencies, and professional memberships — keeping the main column clean for achievement-led experience bullets without credential clutter.\n\nExecutive Sidebar is a Pro template, appropriate for the seniority level it targets. The additional design quality signals that you take the application seriously — which is exactly the message senior roles require.",
@@ -1166,6 +1194,49 @@ export function getLeafData(
   const cat = CATEGORY_MAP.get(categorySlug);
   if (!cat) return undefined;
   return cat.templates.find((t) => t.leafSlug === leafSlug);
+}
+
+/**
+ * Where a template that renders several leaf pages should consolidate its search
+ * signal. 14 of the 31 leaf pages are a second-or-later copy of a template that
+ * already has a page elsewhere; the copies are deliberate (each carries
+ * audience-specific guidance — see guidance.ts) but they compete with each other
+ * for the same head term, so one of them has to be nominated as canonical.
+ *
+ * Listed only where GSC shows enough traffic to know which page Google already
+ * prefers — picked by clicks, then impressions. The six zero-click clusters
+ * (sharp, minimal, bold-accent, aurora, coastal, electric-lilac) are left alone
+ * on purpose: with no signal to consolidate, nominating a primary is a guess,
+ * and guessing wrong is worse than leaving them split.
+ *
+ *   executive      3 URLs, 11 clicks — head-term page sat at position 54 while
+ *                  its own siblings ranked 14 and 19
+ *   classic-serif  2 URLs,  6 clicks
+ *   classic        3 URLs,  1 click
+ */
+export const TEMPLATE_PRIMARY_CATEGORY: Record<string, string> = {
+  executive: "experienced",
+  "classic-serif": "freshers",
+  classic: "ats-friendly",
+};
+
+/**
+ * Canonical path for a leaf. Resolves the primary category's own leaf rather
+ * than swapping the category into the current path — a template can carry a
+ * different leafSlug per category (bold-accent is `bold-accent-cv` under
+ * marketing and `bold-accent-creative-cv` under creative), so a naive swap
+ * would point the canonical at a 404. Falls back to the page itself.
+ */
+export function getCanonicalLeafPath(categorySlug: string, leaf: TemplateLeafData): string {
+  const primarySlug = TEMPLATE_PRIMARY_CATEGORY[leaf.templateSlug];
+  if (!primarySlug || primarySlug === categorySlug) {
+    return `/resume-templates/${categorySlug}/${leaf.leafSlug}`;
+  }
+  const primaryLeaf = CATEGORY_MAP.get(primarySlug)?.templates.find(
+    (t) => t.templateSlug === leaf.templateSlug
+  );
+  if (!primaryLeaf) return `/resume-templates/${categorySlug}/${leaf.leafSlug}`;
+  return `/resume-templates/${primarySlug}/${primaryLeaf.leafSlug}`;
 }
 
 export function getAllLeafParams(): { category: string; template: string }[] {

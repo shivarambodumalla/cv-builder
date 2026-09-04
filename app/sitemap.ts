@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getAllPostsForSitemap } from "@/lib/blog/posts";
-import { TEMPLATE_CATEGORIES, getAllLeafParams } from "@/lib/resume-templates/data";
+import { TEMPLATE_CATEGORIES, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
 import { hasRoleContent } from "@/lib/roles/role-content";
 import { getRoleExampleData } from "@/lib/resume-examples/data";
 
@@ -66,8 +66,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // --- Template leaf pages ---
-  const templateLeafPages: MetadataRoute.Sitemap = getAllLeafParams().map(({ category, template }) => ({
-    url: `https://www.thecvedge.com/resume-templates/${category}/${template}`,
+  // Templates rendered under several categories canonicalise to one primary URL,
+  // so only that URL is listed. Submitting a page whose own canonical points
+  // elsewhere contradicts the tag and wastes crawl on a duplicate.
+  const canonicalLeafUrls = new Set<string>();
+  for (const { category, template } of getAllLeafParams()) {
+    const leaf = getLeafData(category, template);
+    if (leaf) canonicalLeafUrls.add(getCanonicalLeafPath(category, leaf));
+  }
+  const templateLeafPages: MetadataRoute.Sitemap = [...canonicalLeafUrls].map((path) => ({
+    url: `https://www.thecvedge.com${path}`,
     lastModified: STABLE_LAST_MODIFIED,
     changeFrequency: "monthly" as const,
     priority: 0.75,
