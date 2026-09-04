@@ -29,9 +29,9 @@ export async function buildLebenslaufDocx(): Promise<Buffer> {
   return packDocument(
     SPEC,
     {
-      title: "Lebenslauf Vorlage (tabellarisch)",
+      title: "Lebenslauf-Vorlage (tabellarisch)",
       description:
-        "Leere tabellarische Lebenslauf-Vorlage nach deutscher Konvention — einspaltig und ATS-sicher.",
+        "Leere tabellarische Lebenslauf-Vorlage nach deutscher Konvention — einspaltig und ATS-optimiert.",
     },
     [
       ...b.header(
@@ -48,7 +48,7 @@ export async function buildLebenslaufDocx(): Promise<Buffer> {
       ),
       b.labelled("Geburtsdatum", "TT.MM.JJJJ in Ort"),
       b.labelled("Staatsangehörigkeit", "optional"),
-      b.labelled("Kontakt", "Telefon und E-Mail, falls nicht bereits im Kopf"),
+      b.labelled("Kontakt", "Telefon und E-Mail, falls oben nicht bereits angegeben"),
 
       b.sectionHeading("Berufserfahrung"),
       b.hint(
