@@ -268,6 +268,18 @@ export default function AtsFriendlyResumePage() {
                 Every template on CVEdge is tested for ATS compatibility. Single-column formats score 90–97.
                 Two-column formats score 85–93.
               </p>
+              <p className="text-sm text-muted-foreground mb-4">
+                If you want the most conservative option available, start with the{" "}
+                <Link
+                  href="/resume-templates/ats-friendly/harvard-cv"
+                  className="text-primary underline underline-offset-4"
+                >
+                  Harvard resume template
+                </Link>{" "}
+                — a single column of plain text with no tables or graphics, so nothing can misparse.
+                It scores 92–94 here and downloads as a blank Word file if you would rather fill it
+                in offline.
+              </p>
               <div className="flex flex-wrap gap-2">
                 <Button asChild size="sm"><Link href="/resume-templates/ats-friendly">ATS-friendly templates</Link></Button>
                 <Button variant="outline" size="sm" asChild><Link href="/resume-templates">All templates</Link></Button>

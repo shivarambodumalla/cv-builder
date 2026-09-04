@@ -41,6 +41,7 @@
     "autoprefixer": "^10.4.27",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "docx": "^9.7.1",
     "geist": "^1.7.0",
     "google-auth-library": "^10.6.2",
     "gray-matter": "^4.0.3",

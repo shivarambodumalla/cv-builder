@@ -9,6 +9,24 @@ export interface TemplateLeafData {
   tier: "free" | "pro";
   imgPath: string | null;
   faqs: { q: string; a: string }[];
+  /**
+   * Hand-tuned meta title. Never include " | CVEdge" — the root layout applies
+   * `template: "%s | CVEdge"` and a hardcoded suffix renders it twice.
+   * Without the brand suffix — the root layout appends
+   * " | CVEdge". The generated `${displayName} — Free Download` is fine for
+   * most leaves, but the few pages carrying real search
+   * volume need the modifiers people actually type ("word", "free", "ats") in
+   * the 60 characters Google renders. Falls back to the generated title.
+   */
+  metaTitle?: string;
+  /** Hand-tuned meta description. Falls back to the first 160 chars of `description`. */
+  metaDescription?: string;
+  /**
+   * Offer a blank .docx of this template for download without an account.
+   * Set only where the query data shows download intent — see
+   * app/api/templates/[template]/docx.
+   */
+  offerDocx?: boolean;
 }
 
 export interface TemplateCategoryData {
@@ -25,7 +43,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "software-engineer",
     label: "Software Engineer",
-    metaTitle: "Software Engineer Resume Templates — ATS-Safe & Free | CVEdge",
+    metaTitle: "Software Engineer Resume Templates — ATS-Safe & Free",
     metaDescription:
       "Free resume templates for software engineers. Single-column and two-column layouts that score 90+ on ATS. Works for L1 to staff engineer, FAANG to startup.",
     h1: "Software Engineer Resume Templates",
@@ -207,7 +225,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "marketing",
     label: "Marketing",
-    metaTitle: "Marketing Resume Templates — Free & Professional | CVEdge",
+    metaTitle: "Marketing Resume Templates — Free & Professional",
     metaDescription:
       "Free resume templates for marketing professionals. Balanced visual presence with ATS safety. Ideal for digital marketing, growth, brand, and performance roles.",
     h1: "Marketing Resume Templates",
@@ -385,7 +403,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "freshers",
     label: "Freshers & Entry Level",
-    metaTitle: "Fresher Resume Templates — Entry Level & Graduate CVs | CVEdge",
+    metaTitle: "Fresher Resume Templates — Entry Level & Graduate CVs",
     metaDescription:
       "Free resume templates for freshers and recent graduates. Formats that fill well with limited experience. Works for internships, first jobs, and career starters.",
     h1: "Fresher & Entry Level Resume Templates",
@@ -563,7 +581,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "experienced",
     label: "Experienced Professionals",
-    metaTitle: "Resume Templates for Experienced Professionals — Senior & Executive | CVEdge",
+    metaTitle: "Resume Templates for Experienced Professionals — Senior & Executive",
     metaDescription:
       "Resume templates for senior professionals with 8+ years of experience. Premium layouts for executive, leadership, and management roles. ATS-safe, highly polished.",
     h1: "Resume Templates for Experienced Professionals",
@@ -702,46 +720,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           },
         ],
       },
-      {
-        leafSlug: "harvard-cv",
-        templateSlug: "harvard",
-        displayName: "Harvard Resume Template",
-        headline: "Academic and formal structure. MBA graduates, academics, and consulting professionals.",
-        description:
-          "Harvard's formal, academic-style formatting is well-suited for professionals where credential pedigree matters as much as professional achievement: MBAs, PhDs in industry roles, management consultants, policy professionals, and academics moving into senior roles.\n\nThe layout follows the conventions of academic CVs — sections ordered to lead with your strongest credential (education for MBAs, publications for academics) before professional experience. The formal typography and precise spacing communicate that you understand professional convention in high-credential environments.\n\nFor experienced professionals returning to consulting after industry roles, Harvard signals the academic rigour consulting firms value. For senior professionals with multiple degrees, Harvard handles multi-credential headers cleanly.\n\nHarvard is ATS-safe and particularly effective for roles that are applied to directly or through executive search, where the resume is reviewed by people who appreciate formal presentation.",
-        whoFor: [
-          "MBA graduates and business school alumni",
-          "Management consulting professionals",
-          "Academic professionals moving to industry senior roles",
-          "Policy professionals and think-tank researchers",
-        ],
-        features: [
-          "Academic-style formal structure",
-          "Education section can lead — correct for MBA and PhD applications",
-          "Handles publications, research, and academic credentials",
-          "Precise typographic hierarchy for credential-rich resumes",
-          "ATS-safe single column for portal submissions",
-        ],
-        tier: "free",
-        imgPath: "/img/templates/harward.jpg",
-        faqs: [
-          {
-            q: "Should experienced professionals use Harvard template?",
-            a: "Harvard suits experienced professionals in consulting, academia, policy, and finance where credential pedigree is explicit. For general management or tech leadership, Executive or Classic is more versatile.",
-          },
-          {
-            q: "How do I order sections on the Harvard template for an experienced professional?",
-            a: "Lead with Education if it's a target institution (HBS, INSEAD, Oxford). Lead with Experience if your career achievements are stronger than your institution. CVEdge's section reorder makes this a two-click change.",
-          },
-        ],
-      },
     ],
   },
 
   {
     slug: "ats-friendly",
     label: "ATS Friendly",
-    metaTitle: "ATS-Friendly Resume Templates — Score 90+ | CVEdge",
+    metaTitle: "ATS-Friendly Resume Templates — Score 90+",
     metaDescription:
       "Resume templates verified to score 90+ on ATS systems. Single-column layouts, standard headings, no graphics. Pass Greenhouse, Workday, Lever, and iCIMS automatically.",
     h1: "ATS-Friendly Resume Templates",
@@ -883,33 +868,44 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
       {
         leafSlug: "harvard-cv",
         templateSlug: "harvard",
-        displayName: "Harvard ATS Resume Template",
-        headline: "Academic structure that scores top marks on ATS. Formal, structured, safe.",
+        displayName: "Harvard Resume Template",
+        metaTitle: "Harvard Resume Template — Free Word & PDF, ATS-Friendly",
+        metaDescription:
+          "Free Harvard resume template — the single-column academic format from Harvard's career-services guidance. Download as Word or PDF, or edit online and get an instant ATS score.",
+        offerDocx: true,
+        headline:
+          "The single-column academic format Harvard's career-services guidance describes — rebuilt to parse cleanly through every major ATS. Free to edit online, or download as Word or PDF.",
         description:
-          "Harvard's academic structure — clean section demarcations, formal typography, logical credential ordering — makes it one of the highest-scoring templates on ATS systems that expect structured, text-heavy resumes.\n\nThe Harvard format is particularly well-matched to ATS systems used in academia, professional services, and finance — environments where credential parsing precision matters. Applications with multiple degrees, professional qualifications, and publications parse correctly in Harvard because every field has a dedicated, clearly structured section.\n\nFor consulting firm applications at MBB (McKinsey, BCG, Bain), Harvard matches the resume format their campus recruiting teams see from target schools — which can be an advantage beyond just ATS safety.\n\nHarvard scores 92–94 on CVEdge's ATS analyser. The structured academic layout gets high marks for section clarity and heading recognition.",
+          "The Harvard resume template is the plainest widely used resume format: one column, plain section headings, dates aligned right, no tables, no sidebars, no graphics. It takes its name from the conventions published in Harvard's career-services guidance, which generations of applicants have copied because the structure is unambiguous and travels everywhere.\n\nThat plainness is the reason it performs. An applicant tracking system reads a single column of text in exactly the order you wrote it, so nothing is dropped, reordered or garbled between your file and the recruiter's screen. Harvard scores 92–94 on CVEdge's ATS analyser, and the ceiling is your content rather than the format — which is how it should be.\n\nIt is worth being clear about a question people ask constantly: an ATS-friendly resume and a Harvard-style resume are not competing choices. Harvard is one of the formats that happens to be ATS-safe. The distinction that matters is single-column and text-only versus multi-column and graphical, and Harvard sits firmly on the safe side of it.\n\nThe format is strongest where credentials are read closely — MBA and PhD applications, management consulting at MBB and Tier 2, finance, law, policy and academia. Campus recruiting teams at those firms see this layout constantly from target schools, so it reads as convention rather than as a choice. It is equally reliable for any corporate portal application where you simply want formatting removed as a variable.\n\nDownload it as a blank Word document or PDF and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored, tailored version in a couple of minutes. Both are free and neither needs a card.",
         whoFor: [
-          "MBA and MBA-equivalent applicants",
-          "Consulting firm applicants at MBB and Tier 2",
-          "PhD and academic professionals in industry roles",
-          "Finance professionals with multiple qualifications",
+          "Anyone applying through a corporate portal who wants formatting off the table",
+          "Students and recent graduates, where education-first ordering is correct",
+          "MBA, MBA-equivalent and PhD applicants",
+          "Management consulting applicants at MBB and Tier 2 firms",
+          "Finance, law and policy professionals with multiple qualifications",
         ],
         features: [
-          "Academic structure scores 92–94 on CVEdge ATS analyser",
+          "Free download as a blank Word (.docx) file or PDF — no account needed",
+          "Scores 92–94 on CVEdge's ATS analyser",
+          "Single column, plain headings — no tables, sidebars or graphics to misparse",
           "Correct section ordering for credential-heavy applications",
-          "Publications, research, and board memberships handled",
-          "Single column — full ATS compliance",
+          "Publications, research and board memberships handled",
           "Matches resume conventions at top consulting firms",
         ],
         tier: "free",
         imgPath: "/img/templates/harward.jpg",
         faqs: [
           {
-            q: "Is Harvard template actually from Harvard?",
-            a: "Harvard is named for its academic formatting style — it follows conventions similar to what top business schools use for resume coaching. It is not affiliated with Harvard University.",
+            q: "Is the Harvard resume template ATS-friendly?",
+            a: "Yes, and it is one of the safest formats available. Applicant tracking systems fail on multi-column layouts, text boxes, tables, headers and footers, and images — Harvard uses none of them. It is a single column of plain text with standard headings, which is exactly what parsers are built to read. On CVEdge's own analyser the format scores 92–94, with the remaining points determined by your content rather than the layout.",
           },
           {
-            q: "Does Harvard template work for non-academic applications?",
-            a: "Yes — Harvard's structured layout works for any professional role. It's particularly strong for consulting, finance, and professional services where academic credential display matters.",
+            q: "Can I download the Harvard resume template in Word?",
+            a: "Yes. The download gives you a blank .docx with the Harvard structure, spacing and heading styles already set, so you can fill it in offline in Word, Google Docs or Pages. No account and no card. If you would rather not start from an empty document, upload your existing CV to CVEdge instead and it will be reflowed into this format with an ATS score attached.",
+          },
+          {
+            q: "What is the difference between a Harvard resume and a standard ATS resume?",
+            a: "They are not alternatives. \"ATS resume\" describes any format that machines parse reliably; Harvard is one specific convention that qualifies. What separates Harvard from other ATS-safe formats is stylistic — education-first ordering by default, right-aligned dates, and no visual emphasis at all. If you want the most conservative option in common use, choose Harvard. If you want the same safety with a slightly more corporate feel and experience placed first, Classic is the closer fit.",
           },
         ],
       },
@@ -952,7 +948,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "creative",
     label: "Creative Roles",
-    metaTitle: "Creative Resume Templates — Design, UX & Creative Professionals | CVEdge",
+    metaTitle: "Creative Resume Templates — Design, UX & Creative Professionals",
     metaDescription:
       "Resume templates for creative professionals. Bold, visual, and distinctive. For designers, UX professionals, creative directors, and content strategists.",
     h1: "Creative Resume Templates",
@@ -1176,4 +1172,17 @@ export function getAllLeafParams(): { category: string; template: string }[] {
   return TEMPLATE_CATEGORIES.flatMap((c) =>
     c.templates.map((t) => ({ category: c.slug, template: t.leafSlug }))
   );
+}
+
+/**
+ * First leaf offering a downloadable .docx for a given template slug.
+ * A template can appear under several categories; the blank file is identical
+ * for all of them, so any leaf that opts in is enough to authorise the download.
+ */
+export function findDocxLeaf(templateSlug: string): TemplateLeafData | undefined {
+  for (const cat of TEMPLATE_CATEGORIES) {
+    const leaf = cat.templates.find((t) => t.templateSlug === templateSlug && t.offerDocx);
+    if (leaf) return leaf;
+  }
+  return undefined;
 }

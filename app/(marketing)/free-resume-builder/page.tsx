@@ -226,6 +226,27 @@ export default function FreeResumeBuilderPage() {
         </div>
       </div>
 
+      {/* Not-ready-to-sign-up escape hatch. The templates cluster is where most
+          organic search lands, and the head-term visitor often wants a file
+          rather than an editor — sending them there beats losing the visit. */}
+      <div className="mx-auto max-w-3xl mb-20">
+        <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-6">
+          <h2 className="text-base font-bold mb-2">Just want a blank template?</h2>
+          <p className="text-sm text-muted-foreground">
+            The{" "}
+            <Link
+              href="/resume-templates/ats-friendly/harvard-cv"
+              className="text-primary underline underline-offset-4"
+            >
+              free Harvard resume template
+            </Link>{" "}
+            downloads as a blank Word document with the structure and spacing already set — no
+            account, no card. Fill it in offline, then upload it here for a free ATS score when
+            you are ready.
+          </p>
+        </div>
+      </div>
+
       {/* Free vs Pro comparison */}
       <div className="mx-auto max-w-2xl mb-20">
         <h2 className="text-xl font-bold tracking-tight text-center mb-6">

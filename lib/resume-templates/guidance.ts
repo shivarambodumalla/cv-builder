@@ -255,42 +255,6 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
   },
   // ─── Experienced Professionals ─────────────────────────────────────────────
 
-  "experienced/harvard-cv": {
-    bestFor:
-      "Experienced candidates choose Harvard for a different reason than students do: it signals that you are not trying. In consulting, finance, law and academia, a deliberately unadorned document reads as confidence — the work is expected to speak. It also happens to be the most parseable format available, which matters when senior applications still route through corporate portals.",
-    sectionOrder: {
-      order: ["Contact", "Experience", "Education", "Skills", "Publications & speaking"],
-      why: "Invert the academic default. Harvard is conventionally education-first, but with a decade or more of experience your current role must come first — a reader deciding in seconds needs your altitude before your alma mater.",
-    },
-    sectionAdvice: [
-      { section: "Experience", advice: "Lead each role with a one-line scope statement — team size, budget, remit — then bullets. Harvard gives you no visual hierarchy, so scope has to be stated in words or it is not communicated at all." },
-      { section: "Education", advice: "Two lines, below Experience. Include an MBA or professional qualification; drop degree classification once you are ten years out." },
-      { section: "Skills", advice: "Short and senior. At this level, listing tools reads as junior — name domains and methods rather than software." },
-      { section: "Publications & speaking", advice: "Worth a section if you have genuine external profile. It is the one place Harvard's academic heritage works entirely in your favour." },
-    ],
-    mistakes: [
-      "Leaving Education at the top because that is how the template is presented. At fifteen years' experience this reads as having nothing more recent worth leading with.",
-      "Carrying every role from a long career at equal weight — compress anything older than about fifteen years to single lines.",
-      "Mistaking plainness for permission to be vague. The format offers nowhere to hide, so unquantified bullets are more exposed here than anywhere else.",
-      "Running to three pages because the layout is text-only and expands easily.",
-    ],
-    notFor: {
-      who: "Senior candidates who need visual hierarchy to organise a complex career",
-      instead: "the Executive layout",
-      insteadHref: "/resume-templates/experienced/executive-cv",
-    },
-    faqs: [
-      {
-        q: "Is the Harvard format too plain for a senior role?",
-        a: "In consulting, finance, law and academia it reads as appropriate rather than plain — these fields treat visual restraint as a professional norm. Where it can undersell you is in creative, marketing and product roles, where some visual judgement is part of the assessment. The deciding question is whether your field reads design as signal or as noise.",
-      },
-      {
-        q: "How do I show seniority in a format with no visual hierarchy?",
-        a: "In words, because the layout will not do it for you. Add a scope line under each role — team size, budget, geographic or P&L remit — before the bullets. State the altitude of decisions rather than the tasks. And lead the document with a summary that names your level explicitly. Senior candidates who skip this often read a full level below where they actually operate.",
-      },
-    ],
-  },
-
   "experienced/executive-cv": {
     bestFor:
       "Executive is built for the specific problem of a long career: many roles, varying relevance, and a reader who will spend seconds deciding your level. Stronger heading weights and clearer separation between roles let you compress fifteen or more years into two pages while keeping the structure legible.",

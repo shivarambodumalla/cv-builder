@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Download } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
 import { getLeafGuidance } from "@/lib/resume-templates/guidance";
@@ -22,8 +22,11 @@ export async function generateMetadata({
   const leaf = getLeafData(catSlug, leafSlug);
   const cat = CATEGORY_MAP.get(catSlug);
   if (!leaf || !cat) return {};
-  const title = `${leaf.displayName} — Free Download | CVEdge`;
-  const description = leaf.description.replace(/\n/g, " ").slice(0, 160);
+  // The root layout applies `template: "%s | CVEdge"`, so titles here must not
+  // repeat the brand — it was rendering "… | CVEdge | CVEdge" and burning eight
+  // characters of the ~60 Google shows.
+  const title = leaf.metaTitle ?? `${leaf.displayName} — Free Download`;
+  const description = leaf.metaDescription ?? leaf.description.replace(/\n/g, " ").slice(0, 160);
   return {
     title,
     description,
@@ -99,6 +102,19 @@ export default async function TemplateLeafPage({
                   <Button className="w-full" asChild>
                     <Link href={`/login?template=${leaf.templateSlug}`}>Use this template free</Link>
                   </Button>
+                  {leaf.offerDocx && (
+                    <>
+                      <Button variant="outline" className="w-full" asChild>
+                        <a href={`/api/templates/${leaf.templateSlug}/docx`} download>
+                          <Download className="mr-2 h-4 w-4" />
+                          Download blank Word file
+                        </a>
+                      </Button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        .docx · no account needed
+                      </p>
+                    </>
+                  )}
                   {leaf.tier === "pro" && (
                     <p className="text-center text-xs text-muted-foreground">
                       Pro template —{" "}
