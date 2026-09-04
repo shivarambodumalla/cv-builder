@@ -348,7 +348,14 @@ Two reset mechanisms coexist:
   stays on saving, scoring and exporting a real CV.
 - Gated twice: a builder must exist in the route's BUILDERS map AND a leaf must
   set `offerDocx: true` in lib/resume-templates/data.ts. Unknown slugs 404.
-- Currently: harvard only. Verify any new one by parsing the output with
+- Named formats (IIM, Europass, Jake's Resume, GCC, Lebenslauf) live in
+  lib/cv-formats/data.ts and render through /cv-format/[slug]. They are
+  conventions with standing search demand, not renderer layouts — kept out of
+  lib/resume-templates/data.ts so TEMPLATE_PRIMARY_CATEGORY doesn't canonicalise
+  them away to whichever visual template they resemble. Adding one is a data
+  entry plus a docx builder.
+- Currently: harvard, executive (template leaves) and gcc, lebenslauf, iim,
+  europass, jakes (standalone formats). Verify any new one by parsing the output with
   `mammoth` (the same library the upload pipeline uses) — clean extraction in the
   right reading order with zero warnings is the ATS-safety claim these pages make.
 

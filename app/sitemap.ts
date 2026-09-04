@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getAllPostsForSitemap } from "@/lib/blog/posts";
 import { TEMPLATE_CATEGORIES, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
+import { CV_FORMATS } from "@/lib/cv-formats/data";
 import { hasRoleContent } from "@/lib/roles/role-content";
 import { getRoleExampleData } from "@/lib/resume-examples/data";
 
@@ -53,6 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // German is the site's best-converting high-income market (3.77% CTR at
   // position 14.3) and had no page in the language until now.
   const regionalPages: MetadataRoute.Sitemap = [
+    ...CV_FORMATS.map((f) => ({
+      url: `https://www.thecvedge.com/cv-format/${f.slug}`,
+      lastModified: new Date("2026-09-04T00:00:00Z"),
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
     {
       url: "https://www.thecvedge.com/de/lebenslauf-vorlage",
       lastModified: new Date("2026-09-04T00:00:00Z"),

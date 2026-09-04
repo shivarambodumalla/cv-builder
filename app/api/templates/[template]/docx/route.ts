@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { findDocxLeaf } from "@/lib/resume-templates/data";
+import { buildEuropassDocx } from "@/lib/resume-templates/docx/europass";
 import { buildExecutiveDocx } from "@/lib/resume-templates/docx/executive";
 import { buildGccDocx } from "@/lib/resume-templates/docx/gcc";
 import { buildHarvardDocx } from "@/lib/resume-templates/docx/harvard";
+import { buildIimDocx } from "@/lib/resume-templates/docx/iim";
+import { buildJakesDocx } from "@/lib/resume-templates/docx/jakes";
 import { buildLebenslaufDocx } from "@/lib/resume-templates/docx/lebenslauf";
 
 // Blank template downloads, deliberately unauthenticated. The query data behind
@@ -17,6 +20,9 @@ const BUILDERS: Record<string, () => Promise<Buffer>> = {
   executive: buildExecutiveDocx,
   gcc: buildGccDocx,
   lebenslauf: buildLebenslaufDocx,
+  iim: buildIimDocx,
+  europass: buildEuropassDocx,
+  jakes: buildJakesDocx,
 };
 
 // Regional formats are downloads without a matching template leaf — the Gulf
@@ -24,11 +30,14 @@ const BUILDERS: Record<string, () => Promise<Buffer>> = {
 // conventions rather than visual designs, so they live on their market pages
 // instead of in the templates tree. Named here so the leaf opt-in below still
 // gates everything else.
-const STANDALONE_FORMATS = new Set(["gcc", "lebenslauf"]);
+const STANDALONE_FORMATS = new Set(["gcc", "lebenslauf", "iim", "europass", "jakes"]);
 
 const DOWNLOAD_NAMES: Record<string, string> = {
   gcc: "gcc-cv-template-cvedge.docx",
   lebenslauf: "lebenslauf-vorlage-cvedge.docx",
+  iim: "iim-resume-format-cvedge.docx",
+  europass: "europass-cv-template-cvedge.docx",
+  jakes: "jakes-resume-template-cvedge.docx",
 };
 
 export function generateStaticParams() {

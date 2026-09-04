@@ -226,6 +226,16 @@ export default function ResumeTemplatesPage() {
                 What makes a resume ATS-friendly?
               </h2>
               <p className="text-sm text-muted-foreground mb-5">
+                Applying to a specific market or standard? There are dedicated guides and free
+                Word downloads for the{" "}
+                <Link href="/cv-format/europass-cv" className="text-primary underline underline-offset-4">Europass CV</Link>,{" "}
+                the{" "}
+                <Link href="/cv-format/iim-resume" className="text-primary underline underline-offset-4">IIM resume format</Link>,{" "}
+                <Link href="/cv-format/jakes-resume" className="text-primary underline underline-offset-4">Jake&apos;s Resume</Link>{" "}
+                and the German{" "}
+                <Link href="/de/lebenslauf-vorlage" className="text-primary underline underline-offset-4">Lebenslauf</Link>.
+              </p>
+              <p className="text-sm text-muted-foreground mb-5">
                 The safest structure in common use is the{" "}
                 <Link
                   href="/resume-templates/ats-friendly/harvard-cv"
