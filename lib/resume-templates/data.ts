@@ -9,6 +9,31 @@ export interface TemplateLeafData {
   tier: "free" | "pro";
   imgPath: string | null;
   faqs: { q: string; a: string }[];
+  /**
+   * Hand-tuned meta title. Never include " | CVEdge" — the root layout applies
+   * `template: "%s | CVEdge"` and a hardcoded suffix renders it twice.
+   * Without the brand suffix — the root layout appends
+   * " | CVEdge". The generated `${displayName} — Free Download` is fine for
+   * most leaves, but the few pages carrying real search
+   * volume need the modifiers people actually type ("word", "free", "ats") in
+   * the 60 characters Google renders. Falls back to the generated title.
+   */
+  metaTitle?: string;
+  /** Hand-tuned meta description. Falls back to the first 160 chars of `description`. */
+  metaDescription?: string;
+  /**
+   * Path to a free leaf offering a similar layout. Set on Pro leaves that rank
+   * for queries carrying free intent — executive-sidebar-cv sits at position 6.6
+   * on "executive resume template"-type searches while the free Executive page
+   * sat at 54, so the best-ranking result was a paywall.
+   */
+  freeAlternative?: { href: string; label: string };
+  /**
+   * Offer a blank .docx of this template for download without an account.
+   * Set only where the query data shows download intent — see
+   * app/api/templates/[template]/docx.
+   */
+  offerDocx?: boolean;
 }
 
 export interface TemplateCategoryData {
@@ -25,7 +50,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "software-engineer",
     label: "Software Engineer",
-    metaTitle: "Software Engineer Resume Templates — ATS-Safe & Free | CVEdge",
+    metaTitle: "Software Engineer Resume Templates — ATS-Safe & Free",
     metaDescription:
       "Free resume templates for software engineers. Single-column and two-column layouts that score 90+ on ATS. Works for L1 to staff engineer, FAANG to startup.",
     h1: "Software Engineer Resume Templates",
@@ -207,7 +232,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "marketing",
     label: "Marketing",
-    metaTitle: "Marketing Resume Templates — Free & Professional | CVEdge",
+    metaTitle: "Marketing Resume Templates — Free & Professional",
     metaDescription:
       "Free resume templates for marketing professionals. Balanced visual presence with ATS safety. Ideal for digital marketing, growth, brand, and performance roles.",
     h1: "Marketing Resume Templates",
@@ -385,7 +410,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "freshers",
     label: "Freshers & Entry Level",
-    metaTitle: "Fresher Resume Templates — Entry Level & Graduate CVs | CVEdge",
+    metaTitle: "Fresher Resume Templates — Entry Level & Graduate CVs",
     metaDescription:
       "Free resume templates for freshers and recent graduates. Formats that fill well with limited experience. Works for internships, first jobs, and career starters.",
     h1: "Fresher & Entry Level Resume Templates",
@@ -563,7 +588,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "experienced",
     label: "Experienced Professionals",
-    metaTitle: "Resume Templates for Experienced Professionals — Senior & Executive | CVEdge",
+    metaTitle: "Resume Templates for Experienced Professionals — Senior & Executive",
     metaDescription:
       "Resume templates for senior professionals with 8+ years of experience. Premium layouts for executive, leadership, and management roles. ATS-safe, highly polished.",
     h1: "Resume Templates for Experienced Professionals",
@@ -574,32 +599,43 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-cv",
         templateSlug: "executive",
         displayName: "Executive Resume Template",
-        headline: "Premium feel for senior roles. Refined typography and spacing that commands attention.",
+        metaTitle: "Executive Resume Template — Free Word & PDF, ATS-Safe",
+        metaDescription:
+          "Free executive resume template for C-suite, VP and director roles. Premium spacing on an ATS-safe single column. Download as Word or PDF, or edit online with an instant ATS score.",
+        offerDocx: true,
+        headline:
+          "Built for twenty years of career on two pages — premium spacing and a summary that leads, on a single ATS-safe column. Free to edit online, or download as Word or PDF.",
         description:
-          "Executive is the flagship template for senior professionals. Premium line spacing, careful typographic hierarchy, and a layout that places your Professional Summary prominently — before experience detail — means your narrative leads rather than your job titles.\n\nFor professionals with 10–25 years of experience, the challenge isn't showing you have experience — it's framing the most relevant 10 years for this specific role. Executive's clean structure helps you curate without cluttering. Older roles compress naturally into brief bullets while recent roles expand into detailed impact statements.\n\nExecutive maintains full ATS compatibility — single column, standard heading names — while presenting at a visual quality level that matches the seniority it's designed for.\n\nUse CVEdge's Job Match tool with Executive to ensure your summary and bullets align precisely to the specific job description. At senior levels, generic resumes don't get interviews — targeted ones do.",
+          "The executive resume template solves a problem junior formats do not have: you have more career than the page has room for. Twenty-five years, eight roles and three industries have to resolve into something a reader can scan in seconds and still come away knowing your level. Executive does that with generous line spacing, a clear typographic hierarchy, and a Professional Summary placed above the experience detail so your narrative leads rather than your last job title.\n\nSenior candidates often assume a polished template means giving up ATS safety. It does not. Executive is a single column with standard heading names and no tables, sidebars or graphics — it scores 93–96 on CVEdge's ATS analyser, within a couple of points of the plainest format on the site. The premium feel comes from spacing and type, which are CSS properties, not images.\n\nThat matters more than most senior candidates expect. Below C-suite, director and VP applications still route through corporate portals and are parsed exactly like everyone else's. Executive search adds a human reader on top; it rarely replaces the machine underneath.\n\nThe layout is designed for curation. Recent roles expand into detailed impact statements, older roles compress into company, title and dates without the page looking uneven. For a C-suite resume the same structure carries board appointments, P&L scope and transformation mandates without crowding.\n\nDownload it as a blank Word document or PDF and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored version in a couple of minutes. Both free, neither needs a card.",
         whoFor: [
-          "Senior professionals with 10+ years of experience",
-          "C-suite and VP-level executives",
-          "Directors and general managers",
-          "Senior leaders changing industries",
+          "Senior professionals with 10+ years to fit on two pages",
+          "C-suite, VP and board-level candidates",
+          "Directors, general managers and functional heads",
+          "Senior leaders changing industry, where framing matters more than titles",
+          "Anyone whose application still goes through a corporate portal",
         ],
         features: [
-          "Premium spacing and typographic hierarchy",
-          "Summary section positioned prominently for narrative control",
-          "Clean ATS-safe single column structure",
-          "Handles 20+ years of experience without crowding",
-          "Certifications and publications displayed with appropriate weight",
+          "Free download as a blank Word (.docx) file or PDF — no account needed",
+          "Scores 93–96 on CVEdge's ATS analyser",
+          "Premium spacing and typographic hierarchy, single column throughout",
+          "Summary positioned above experience so your narrative leads",
+          "Handles 20+ years without crowding — recent roles expand, early roles compress",
+          "Certifications, board seats and publications carry appropriate weight",
         ],
         tier: "free",
         imgPath: "/img/templates/executive.jpg",
         faqs: [
           {
-            q: "How far back should experienced professionals go on their resume?",
-            a: "Standard guidance: last 10–15 years in detail, older roles in brief (company, title, dates only). Executive's layout handles this well — early roles in compressed format, recent roles with full detail.",
+            q: "Is the executive resume template ATS-friendly?",
+            a: "Yes. It is a single column with standard headings and no tables, text boxes or images — the things that actually break parsers. It scores 93–96 on CVEdge's analyser, a couple of points below the plainest formats purely because of spacing choices, which is irrelevant to real screening. This matters at senior level: below C-suite, most director and VP applications still go through Greenhouse, Workday or iCIMS and are parsed like any other.",
           },
           {
-            q: "Should senior executives include a photo on their resume?",
-            a: "In the US, no — even for senior roles. In the UK, EU, and ANZ, a professional photo is acceptable and sometimes expected. CVEdge's avatar feature is optional on Executive.",
+            q: "Can I download the executive resume template in Word?",
+            a: "Yes — a blank .docx with the spacing, heading styles and two-page structure already set, so you can fill it in offline in Word, Google Docs or Pages. No account and no card. If starting from an empty document is the hard part, upload your existing CV instead and it will be reflowed into this format with an ATS score attached.",
+          },
+          {
+            q: "How long should a C-suite or VP resume be?",
+            a: "Two pages is standard and expected at this level; one page reads as thin above director grade. Three is only defensible for academic, medical or board CVs where publications and appointments are themselves the credential. Executive's spacing is calibrated for two pages — if you are spilling onto a third, the fix is compressing early roles rather than tightening the leading.",
           },
         ],
       },
@@ -607,6 +643,11 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-pro-cv",
         templateSlug: "executive-pro",
         displayName: "Executive Pro Resume Template",
+        metaTitle: "Executive Pro Resume Template — Photo Header & Dark Bar",
+        freeAlternative: {
+          href: "/resume-templates/experienced/executive-cv",
+          label: "the free Executive template",
+        },
         headline: "Bold photo header with dark contact bar. Leadership presence from the first line.",
         description:
           "Executive Pro is the premium two-column template for senior executives who want immediate visual authority. The dark contact bar beneath a prominent header photo creates a powerful personal brand statement — before a recruiter reads your summary, you've established presence.\n\nFor C-suite roles, board appointments, and senior leadership searches — where the hiring committee reviews a shortlist rather than scanning hundreds of applications — visual distinction matters. Executive Pro delivers it.\n\nThe two-column body pairs a detailed experience column with a sidebar carrying key credentials, skills, and board memberships. Senior leaders often have diverse credentials — Executive Pro organises them into a hierarchy that reads logically.\n\nExecutive Pro is a Pro template. For senior leadership roles where you're often the deciding factor in a close-call hiring decision, the marginal investment in a polished format is worth it.",
@@ -640,6 +681,11 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-sidebar-cv",
         templateSlug: "executive-sidebar",
         displayName: "Executive Sidebar Resume Template",
+        metaTitle: "Executive Sidebar Resume Template — Two-Column, Dark Sidebar",
+        freeAlternative: {
+          href: "/resume-templates/experienced/executive-cv",
+          label: "the free Executive template",
+        },
         headline: "Dark sidebar with photo. Corporate and legal feel for senior roles.",
         description:
           "Executive Sidebar pairs a dark left sidebar — carrying your photo, contact details, and key skills — with a clean white main column for your career narrative. The result is a resume that communicates gravitas and organisation simultaneously.\n\nFor senior professionals in corporate law, finance, management consulting, and large enterprise leadership, Executive Sidebar matches the professional aesthetic those environments expect. The dark sidebar signals structure and precision; the white main column provides detailed, scannable experience.\n\nThe sidebar accommodates professional photo, contact details, core competencies, and professional memberships — keeping the main column clean for achievement-led experience bullets without credential clutter.\n\nExecutive Sidebar is a Pro template, appropriate for the seniority level it targets. The additional design quality signals that you take the application seriously — which is exactly the message senior roles require.",
@@ -702,46 +748,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           },
         ],
       },
-      {
-        leafSlug: "harvard-cv",
-        templateSlug: "harvard",
-        displayName: "Harvard Resume Template",
-        headline: "Academic and formal structure. MBA graduates, academics, and consulting professionals.",
-        description:
-          "Harvard's formal, academic-style formatting is well-suited for professionals where credential pedigree matters as much as professional achievement: MBAs, PhDs in industry roles, management consultants, policy professionals, and academics moving into senior roles.\n\nThe layout follows the conventions of academic CVs — sections ordered to lead with your strongest credential (education for MBAs, publications for academics) before professional experience. The formal typography and precise spacing communicate that you understand professional convention in high-credential environments.\n\nFor experienced professionals returning to consulting after industry roles, Harvard signals the academic rigour consulting firms value. For senior professionals with multiple degrees, Harvard handles multi-credential headers cleanly.\n\nHarvard is ATS-safe and particularly effective for roles that are applied to directly or through executive search, where the resume is reviewed by people who appreciate formal presentation.",
-        whoFor: [
-          "MBA graduates and business school alumni",
-          "Management consulting professionals",
-          "Academic professionals moving to industry senior roles",
-          "Policy professionals and think-tank researchers",
-        ],
-        features: [
-          "Academic-style formal structure",
-          "Education section can lead — correct for MBA and PhD applications",
-          "Handles publications, research, and academic credentials",
-          "Precise typographic hierarchy for credential-rich resumes",
-          "ATS-safe single column for portal submissions",
-        ],
-        tier: "free",
-        imgPath: "/img/templates/harward.jpg",
-        faqs: [
-          {
-            q: "Should experienced professionals use Harvard template?",
-            a: "Harvard suits experienced professionals in consulting, academia, policy, and finance where credential pedigree is explicit. For general management or tech leadership, Executive or Classic is more versatile.",
-          },
-          {
-            q: "How do I order sections on the Harvard template for an experienced professional?",
-            a: "Lead with Education if it's a target institution (HBS, INSEAD, Oxford). Lead with Experience if your career achievements are stronger than your institution. CVEdge's section reorder makes this a two-click change.",
-          },
-        ],
-      },
     ],
   },
 
   {
     slug: "ats-friendly",
     label: "ATS Friendly",
-    metaTitle: "ATS-Friendly Resume Templates — Score 90+ | CVEdge",
+    metaTitle: "ATS-Friendly Resume Templates — Score 90+",
     metaDescription:
       "Resume templates verified to score 90+ on ATS systems. Single-column layouts, standard headings, no graphics. Pass Greenhouse, Workday, Lever, and iCIMS automatically.",
     h1: "ATS-Friendly Resume Templates",
@@ -883,33 +896,44 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
       {
         leafSlug: "harvard-cv",
         templateSlug: "harvard",
-        displayName: "Harvard ATS Resume Template",
-        headline: "Academic structure that scores top marks on ATS. Formal, structured, safe.",
+        displayName: "Harvard Resume Template",
+        metaTitle: "Harvard Resume Template — Free Word & PDF, ATS-Friendly",
+        metaDescription:
+          "Free Harvard resume template — the single-column academic format from Harvard's career-services guidance. Download as Word or PDF, or edit online and get an instant ATS score.",
+        offerDocx: true,
+        headline:
+          "The single-column academic format Harvard's career-services guidance describes — rebuilt to parse cleanly through every major ATS. Free to edit online, or download as Word or PDF.",
         description:
-          "Harvard's academic structure — clean section demarcations, formal typography, logical credential ordering — makes it one of the highest-scoring templates on ATS systems that expect structured, text-heavy resumes.\n\nThe Harvard format is particularly well-matched to ATS systems used in academia, professional services, and finance — environments where credential parsing precision matters. Applications with multiple degrees, professional qualifications, and publications parse correctly in Harvard because every field has a dedicated, clearly structured section.\n\nFor consulting firm applications at MBB (McKinsey, BCG, Bain), Harvard matches the resume format their campus recruiting teams see from target schools — which can be an advantage beyond just ATS safety.\n\nHarvard scores 92–94 on CVEdge's ATS analyser. The structured academic layout gets high marks for section clarity and heading recognition.",
+          "The Harvard resume template is the plainest widely used resume format: one column, plain section headings, dates aligned right, no tables, no sidebars, no graphics. It takes its name from the conventions published in Harvard's career-services guidance, which generations of applicants have copied because the structure is unambiguous and travels everywhere.\n\nThat plainness is the reason it performs. An applicant tracking system reads a single column of text in exactly the order you wrote it, so nothing is dropped, reordered or garbled between your file and the recruiter's screen. Harvard scores 92–94 on CVEdge's ATS analyser, and the ceiling is your content rather than the format — which is how it should be.\n\nIt is worth being clear about a question people ask constantly: an ATS-friendly resume and a Harvard-style resume are not competing choices. Harvard is one of the formats that happens to be ATS-safe. The distinction that matters is single-column and text-only versus multi-column and graphical, and Harvard sits firmly on the safe side of it.\n\nThe format is strongest where credentials are read closely — MBA and PhD applications, management consulting at MBB and Tier 2, finance, law, policy and academia. Campus recruiting teams at those firms see this layout constantly from target schools, so it reads as convention rather than as a choice. It is equally reliable for any corporate portal application where you simply want formatting removed as a variable.\n\nDownload it as a blank Word document or PDF and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored, tailored version in a couple of minutes. Both are free and neither needs a card.",
         whoFor: [
-          "MBA and MBA-equivalent applicants",
-          "Consulting firm applicants at MBB and Tier 2",
-          "PhD and academic professionals in industry roles",
-          "Finance professionals with multiple qualifications",
+          "Anyone applying through a corporate portal who wants formatting off the table",
+          "Students and recent graduates, where education-first ordering is correct",
+          "MBA, MBA-equivalent and PhD applicants",
+          "Management consulting applicants at MBB and Tier 2 firms",
+          "Finance, law and policy professionals with multiple qualifications",
         ],
         features: [
-          "Academic structure scores 92–94 on CVEdge ATS analyser",
+          "Free download as a blank Word (.docx) file or PDF — no account needed",
+          "Scores 92–94 on CVEdge's ATS analyser",
+          "Single column, plain headings — no tables, sidebars or graphics to misparse",
           "Correct section ordering for credential-heavy applications",
-          "Publications, research, and board memberships handled",
-          "Single column — full ATS compliance",
+          "Publications, research and board memberships handled",
           "Matches resume conventions at top consulting firms",
         ],
         tier: "free",
         imgPath: "/img/templates/harward.jpg",
         faqs: [
           {
-            q: "Is Harvard template actually from Harvard?",
-            a: "Harvard is named for its academic formatting style — it follows conventions similar to what top business schools use for resume coaching. It is not affiliated with Harvard University.",
+            q: "Is the Harvard resume template ATS-friendly?",
+            a: "Yes, and it is one of the safest formats available. Applicant tracking systems fail on multi-column layouts, text boxes, tables, headers and footers, and images — Harvard uses none of them. It is a single column of plain text with standard headings, which is exactly what parsers are built to read. On CVEdge's own analyser the format scores 92–94, with the remaining points determined by your content rather than the layout.",
           },
           {
-            q: "Does Harvard template work for non-academic applications?",
-            a: "Yes — Harvard's structured layout works for any professional role. It's particularly strong for consulting, finance, and professional services where academic credential display matters.",
+            q: "Can I download the Harvard resume template in Word?",
+            a: "Yes. The download gives you a blank .docx with the Harvard structure, spacing and heading styles already set, so you can fill it in offline in Word, Google Docs or Pages. No account and no card. If you would rather not start from an empty document, upload your existing CV to CVEdge instead and it will be reflowed into this format with an ATS score attached.",
+          },
+          {
+            q: "What is the difference between a Harvard resume and a standard ATS resume?",
+            a: "They are not alternatives. \"ATS resume\" describes any format that machines parse reliably; Harvard is one specific convention that qualifies. What separates Harvard from other ATS-safe formats is stylistic — education-first ordering by default, right-aligned dates, and no visual emphasis at all. If you want the most conservative option in common use, choose Harvard. If you want the same safety with a slightly more corporate feel and experience placed first, Classic is the closer fit.",
           },
         ],
       },
@@ -952,7 +976,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
   {
     slug: "creative",
     label: "Creative Roles",
-    metaTitle: "Creative Resume Templates — Design, UX & Creative Professionals | CVEdge",
+    metaTitle: "Creative Resume Templates — Design, UX & Creative Professionals",
     metaDescription:
       "Resume templates for creative professionals. Bold, visual, and distinctive. For designers, UX professionals, creative directors, and content strategists.",
     h1: "Creative Resume Templates",
@@ -1172,8 +1196,64 @@ export function getLeafData(
   return cat.templates.find((t) => t.leafSlug === leafSlug);
 }
 
+/**
+ * Where a template that renders several leaf pages should consolidate its search
+ * signal. 14 of the 31 leaf pages are a second-or-later copy of a template that
+ * already has a page elsewhere; the copies are deliberate (each carries
+ * audience-specific guidance — see guidance.ts) but they compete with each other
+ * for the same head term, so one of them has to be nominated as canonical.
+ *
+ * Listed only where GSC shows enough traffic to know which page Google already
+ * prefers — picked by clicks, then impressions. The six zero-click clusters
+ * (sharp, minimal, bold-accent, aurora, coastal, electric-lilac) are left alone
+ * on purpose: with no signal to consolidate, nominating a primary is a guess,
+ * and guessing wrong is worse than leaving them split.
+ *
+ *   executive      3 URLs, 11 clicks — head-term page sat at position 54 while
+ *                  its own siblings ranked 14 and 19
+ *   classic-serif  2 URLs,  6 clicks
+ *   classic        3 URLs,  1 click
+ */
+export const TEMPLATE_PRIMARY_CATEGORY: Record<string, string> = {
+  executive: "experienced",
+  "classic-serif": "freshers",
+  classic: "ats-friendly",
+};
+
+/**
+ * Canonical path for a leaf. Resolves the primary category's own leaf rather
+ * than swapping the category into the current path — a template can carry a
+ * different leafSlug per category (bold-accent is `bold-accent-cv` under
+ * marketing and `bold-accent-creative-cv` under creative), so a naive swap
+ * would point the canonical at a 404. Falls back to the page itself.
+ */
+export function getCanonicalLeafPath(categorySlug: string, leaf: TemplateLeafData): string {
+  const primarySlug = TEMPLATE_PRIMARY_CATEGORY[leaf.templateSlug];
+  if (!primarySlug || primarySlug === categorySlug) {
+    return `/resume-templates/${categorySlug}/${leaf.leafSlug}`;
+  }
+  const primaryLeaf = CATEGORY_MAP.get(primarySlug)?.templates.find(
+    (t) => t.templateSlug === leaf.templateSlug
+  );
+  if (!primaryLeaf) return `/resume-templates/${categorySlug}/${leaf.leafSlug}`;
+  return `/resume-templates/${primarySlug}/${primaryLeaf.leafSlug}`;
+}
+
 export function getAllLeafParams(): { category: string; template: string }[] {
   return TEMPLATE_CATEGORIES.flatMap((c) =>
     c.templates.map((t) => ({ category: c.slug, template: t.leafSlug }))
   );
+}
+
+/**
+ * First leaf offering a downloadable .docx for a given template slug.
+ * A template can appear under several categories; the blank file is identical
+ * for all of them, so any leaf that opts in is enough to authorise the download.
+ */
+export function findDocxLeaf(templateSlug: string): TemplateLeafData | undefined {
+  for (const cat of TEMPLATE_CATEGORIES) {
+    const leaf = cat.templates.find((t) => t.templateSlug === templateSlug && t.offerDocx);
+    if (leaf) return leaf;
+  }
+  return undefined;
 }

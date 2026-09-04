@@ -3,9 +3,10 @@ import Link from "next/link";
 import { CvReviewPageTracker, CvReviewCtaTracker } from "../tracker";
 import { CvReviewFaqSection } from "../faq-section";
 import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
+import { GccFormatSection } from "@/components/marketing/gcc-format-section";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for Saudi Arabia Jobs — Vision 2030 Ready | CVEdge",
+  title: "Expert CV Review for Saudi Arabia Jobs — Vision 2030 Ready",
   description: "Get your CV reviewed by a Saudi Arabia hiring specialist. ATS-optimized for ARAMCO, STC, NEOM, PIF, and top Riyadh and Jeddah employers. 80+ score guarantee. 24-hour turnaround.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review/saudi-arabia",
@@ -154,6 +155,9 @@ export default function CvReviewSaudiArabiaPage() {
           </div>
         </div>
       </section>
+
+
+      <GccFormatSection market="saudi-arabia" />
 
       {/* ── PRICING ── */}
       <section id="pricing" className="py-16 px-5 lg:px-6">

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Download } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import { CATEGORY_MAP, getAllLeafParams, getLeafData } from "@/lib/resume-templates/data";
+import { CATEGORY_MAP, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
 import { getLeafGuidance } from "@/lib/resume-templates/guidance";
 
 export const revalidate = 86400;
@@ -22,14 +22,21 @@ export async function generateMetadata({
   const leaf = getLeafData(catSlug, leafSlug);
   const cat = CATEGORY_MAP.get(catSlug);
   if (!leaf || !cat) return {};
-  const title = `${leaf.displayName} — Free Download | CVEdge`;
-  const description = leaf.description.replace(/\n/g, " ").slice(0, 160);
+  // The root layout applies `template: "%s | CVEdge"`, so titles here must not
+  // repeat the brand — it was rendering "… | CVEdge | CVEdge" and burning eight
+  // characters of the ~60 Google shows.
+  const title = leaf.metaTitle ?? `${leaf.displayName} — Free Download`;
+  const description = leaf.metaDescription ?? leaf.description.replace(/\n/g, " ").slice(0, 160);
   return {
     title,
     description,
-    alternates: { canonical: `https://www.thecvedge.com/resume-templates/${catSlug}/${leafSlug}` },
+    // A template rendered under several categories points every copy at one
+    // primary URL, so they stop competing with each other for the same query.
+    alternates: { canonical: `https://www.thecvedge.com${getCanonicalLeafPath(catSlug, leaf)}` },
     openGraph: {
-      title,
+      // Next applies the layout's title template to `title` but not to this one,
+      // so the brand is added back explicitly rather than left off social cards.
+      title: `${title} | CVEdge`,
       description,
       url: `https://www.thecvedge.com/resume-templates/${catSlug}/${leafSlug}`,
       images: leaf.imgPath ? [leaf.imgPath] : [],
@@ -52,7 +59,16 @@ export default async function TemplateLeafPage({
   const guidance = getLeafGuidance(catSlug, leafSlug);
   // Guidance FAQs are audience-specific, so they extend rather than replace the
   // template's own — both are surfaced and both go into the FAQPage schema.
-  const allFaqs = [...leaf.faqs, ...(guidance?.faqs ?? [])];
+  // Deduped because the two sets are authored separately and have twice drifted
+  // into asking the same question, which renders it twice on the page and makes
+  // the FAQPage markup invalid. Near-duplicates still need catching by eye.
+  const seenQuestions = new Set<string>();
+  const allFaqs = [...leaf.faqs, ...(guidance?.faqs ?? [])].filter((f) => {
+    const key = f.q.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (seenQuestions.has(key)) return false;
+    seenQuestions.add(key);
+    return true;
+  });
 
   return (
     <>
@@ -99,11 +115,38 @@ export default async function TemplateLeafPage({
                   <Button className="w-full" asChild>
                     <Link href={`/login?template=${leaf.templateSlug}`}>Use this template free</Link>
                   </Button>
+                  {leaf.offerDocx && (
+                    <>
+                      <Button variant="outline" className="w-full" asChild>
+                        <a href={`/api/templates/${leaf.templateSlug}/docx`} download>
+                          <Download className="mr-2 h-4 w-4" />
+                          Download blank Word file
+                        </a>
+                      </Button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        .docx · no account needed
+                      </p>
+                    </>
+                  )}
                   {leaf.tier === "pro" && (
-                    <p className="text-center text-xs text-muted-foreground">
-                      Pro template —{" "}
-                      <Link href="/pricing" className="underline hover:text-foreground">unlock with CVEdge Pro</Link>
-                    </p>
+                    <div className="space-y-1.5">
+                      <p className="text-center text-xs text-muted-foreground">
+                        Pro template —{" "}
+                        <Link href="/pricing" className="underline hover:text-foreground">unlock with CVEdge Pro</Link>
+                      </p>
+                      {leaf.freeAlternative && (
+                        <p className="text-center text-xs text-muted-foreground">
+                          Want a free one? Try{" "}
+                          <Link
+                            href={leaf.freeAlternative.href}
+                            className="text-primary underline underline-offset-2 hover:opacity-80"
+                          >
+                            {leaf.freeAlternative.label}
+                          </Link>
+                          .
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>

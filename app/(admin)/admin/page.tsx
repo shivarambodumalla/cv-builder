@@ -13,7 +13,7 @@ import { ActivityChart } from "./activity-chart";
 import { RegistrationsChart } from "./registrations-chart";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | CVEdge",
+  title: "Admin Dashboard",
 };
 
 export const dynamic = "force-dynamic";

@@ -7,7 +7,7 @@ import { TEMPLATE_CATEGORIES } from "@/lib/resume-templates/data";
 import { TemplateShowcase } from "../resumes/template-showcase";
 
 export const metadata: Metadata = {
-  title: "Free Resume Templates — ATS-Friendly & Professional | CVEdge",
+  title: "Free Resume Templates — ATS-Friendly & Professional",
   description:
     "24 free ATS-friendly resume templates for every role and industry. Single-column and two-column layouts tested on Greenhouse, Workday, and Lever. Upload your CV and score instantly.",
   alternates: { canonical: "https://www.thecvedge.com/resume-templates" },
@@ -225,6 +225,27 @@ export default function ResumeTemplatesPage() {
               <h2 className="text-xl font-bold tracking-tight mb-4">
                 What makes a resume ATS-friendly?
               </h2>
+              <p className="text-sm text-muted-foreground mb-5">
+                Applying to a specific market or standard? There are dedicated guides and free
+                Word downloads for the{" "}
+                <Link href="/cv-format/europass-cv" className="text-primary underline underline-offset-4">Europass CV</Link>,{" "}
+                the{" "}
+                <Link href="/cv-format/iim-resume" className="text-primary underline underline-offset-4">IIM resume format</Link>,{" "}
+                <Link href="/cv-format/jakes-resume" className="text-primary underline underline-offset-4">Jake&apos;s Resume</Link>{" "}
+                and the German{" "}
+                <Link href="/de/lebenslauf-vorlage" className="text-primary underline underline-offset-4">Lebenslauf</Link>.
+              </p>
+              <p className="text-sm text-muted-foreground mb-5">
+                The safest structure in common use is the{" "}
+                <Link
+                  href="/resume-templates/ats-friendly/harvard-cv"
+                  className="text-primary underline underline-offset-4"
+                >
+                  Harvard format
+                </Link>
+                : one column, plain headings, dates on the right, nothing else. Free to edit here
+                or to download as a blank Word document.
+              </p>
               <div className="grid sm:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="font-semibold text-success mb-2">✓ ATS-safe format</p>

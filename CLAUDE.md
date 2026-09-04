@@ -340,6 +340,25 @@ Two reset mechanisms coexist:
 - Free: 3 PDF downloads per 7-day rolling window, no watermark. Pro: unlimited, no watermark.
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
 
+## Blank Template Downloads (.docx)
+
+- GET /api/templates/[template]/docx -> lib/resume-templates/docx/<template>.ts
+- Unauthenticated by design: the search intent behind it ("harvard resume
+  template word", "…free download") wants a file, not a signup. The account gate
+  stays on saving, scoring and exporting a real CV.
+- Gated twice: a builder must exist in the route's BUILDERS map AND a leaf must
+  set `offerDocx: true` in lib/resume-templates/data.ts. Unknown slugs 404.
+- Named formats (IIM, Europass, Jake's Resume, GCC, Lebenslauf) live in
+  lib/cv-formats/data.ts and render through /cv-format/[slug]. They are
+  conventions with standing search demand, not renderer layouts — kept out of
+  lib/resume-templates/data.ts so TEMPLATE_PRIMARY_CATEGORY doesn't canonicalise
+  them away to whichever visual template they resemble. Adding one is a data
+  entry plus a docx builder.
+- Currently: harvard, executive (template leaves) and gcc, lebenslauf, iim,
+  europass, jakes (standalone formats). Verify any new one by parsing the output with
+  `mammoth` (the same library the upload pipeline uses) — clean extraction in the
+  right reading order with zero warnings is the ATS-safety claim these pages make.
+
 ## CV Tailor for JD
 
 - POST /api/cv/tailor-for-jd → callAI("cv_tailor_per_jd_v1")
@@ -498,6 +517,17 @@ Two reset mechanisms coexist:
 - No unused imports, variables, or dead code
 - Use semantic color tokens for status indicators (success/warning/error)
 - Do NOT add redundant dark: overrides when using CSS variable-based tokens
+
+### Metadata
+
+- Root layout sets `title: { template: "%s | CVEdge" }`. Page-level `title:`
+  must NOT repeat the brand — it renders "… | CVEdge | CVEdge" and wastes eight
+  of the ~60 characters Google shows.
+- `openGraph.title` and `twitter.title` do NOT get the template applied, so those
+  spell the brand out explicitly.
+- Template leaves take optional `metaTitle` / `metaDescription` overrides on the
+  leaf (lib/resume-templates/data.ts); everything else falls back to
+  `${displayName} — Free Download`.
 
 ### Error Handling
 

@@ -15,7 +15,7 @@ function linkifyEmails(text: string): ReactNode[] {
 }
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | CVEdge",
+  title: "Privacy Policy",
   description: "How CVEdge collects, uses, and protects your personal data.",
   alternates: { canonical: "https://www.thecvedge.com/privacy" },
 };

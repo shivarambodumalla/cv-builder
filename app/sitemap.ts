@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getAllPostsForSitemap } from "@/lib/blog/posts";
-import { TEMPLATE_CATEGORIES, getAllLeafParams } from "@/lib/resume-templates/data";
+import { TEMPLATE_CATEGORIES, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
+import { CV_FORMATS } from "@/lib/cv-formats/data";
 import { hasRoleContent } from "@/lib/roles/role-content";
 import { getRoleExampleData } from "@/lib/resume-examples/data";
 
@@ -49,6 +50,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "https://www.thecvedge.com/learn-product-design", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
   ];
 
+  // --- Regional format pages ---
+  // German is the site's best-converting high-income market (3.77% CTR at
+  // position 14.3) and had no page in the language until now.
+  const regionalPages: MetadataRoute.Sitemap = [
+    {
+      url: "https://www.thecvedge.com/cv-format",
+      lastModified: new Date("2026-09-04T00:00:00Z"),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    ...CV_FORMATS.map((f) => ({
+      url: `https://www.thecvedge.com/cv-format/${f.slug}`,
+      lastModified: new Date("2026-09-04T00:00:00Z"),
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
+    {
+      url: "https://www.thecvedge.com/de/lebenslauf-vorlage",
+      lastModified: new Date("2026-09-04T00:00:00Z"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+  ];
+
   // --- SEO money pages ---
   const seoMoneyPages: MetadataRoute.Sitemap = [
     { url: "https://www.thecvedge.com/resume-templates", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 1.0 },
@@ -66,8 +91,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // --- Template leaf pages ---
-  const templateLeafPages: MetadataRoute.Sitemap = getAllLeafParams().map(({ category, template }) => ({
-    url: `https://www.thecvedge.com/resume-templates/${category}/${template}`,
+  // Templates rendered under several categories canonicalise to one primary URL,
+  // so only that URL is listed. Submitting a page whose own canonical points
+  // elsewhere contradicts the tag and wastes crawl on a duplicate.
+  const canonicalLeafUrls = new Set<string>();
+  for (const { category, template } of getAllLeafParams()) {
+    const leaf = getLeafData(category, template);
+    if (leaf) canonicalLeafUrls.add(getCanonicalLeafPath(category, leaf));
+  }
+  const templateLeafPages: MetadataRoute.Sitemap = [...canonicalLeafUrls].map((path) => ({
+    url: `https://www.thecvedge.com${path}`,
     lastModified: STABLE_LAST_MODIFIED,
     changeFrequency: "monthly" as const,
     priority: 0.75,
@@ -101,6 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...seoMoneyPages,
     ...templateCategoryPages,
     ...templateLeafPages,
+    ...regionalPages,
     ...resumeExamplesPages,
     ...interviewPrepRolePages,
     ...blogPostPages,

@@ -3,8 +3,6 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
-      { protocol: "https", hostname: "cdn.hashnode.com" },
-      { protocol: "https", hostname: "**.hashnode.com" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
       { protocol: "https", hostname: "*.supabase.co" },
     ],
@@ -38,6 +36,15 @@ const nextConfig = {
       {
         source: "/blog/how-to-tailor-your-resume-for-every-job-application-step-by-step-guide",
         destination: "/blog/how-to-tailor-your-cv-for-a-job-description",
+        permanent: true,
+      },
+      // Harvard rendered as two leaf pages. The ats-friendly one earns ~40% of
+      // all site clicks at position 15; the experienced one sat at position 57
+      // with none. Two indexable URLs for the same template split the signals
+      // on the site's single best query, so the weaker one folds into it.
+      {
+        source: "/resume-templates/experienced/harvard-cv",
+        destination: "/resume-templates/ats-friendly/harvard-cv",
         permanent: true,
       },
     ];

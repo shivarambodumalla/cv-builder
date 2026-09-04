@@ -5,7 +5,7 @@ import { CheckCircle, XCircle, BarChart3, Zap, Target } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "ATS-Friendly Resume Builder — Score 80+ Before You Apply | CVEdge",
+  title: "ATS-Friendly Resume Builder — Score 80+ Before You Apply",
   description:
     "Build an ATS-friendly resume that passes Greenhouse, Workday, and Lever automatically. Get an instant ATS score across 6 categories, fix issues with AI, and download a polished PDF.",
   alternates: { canonical: "https://www.thecvedge.com/ats-friendly-resume" },
@@ -267,6 +267,25 @@ export default function AtsFriendlyResumePage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Every template on CVEdge is tested for ATS compatibility. Single-column formats score 90–97.
                 Two-column formats score 85–93.
+              </p>
+              <p className="text-sm text-muted-foreground mb-4">
+                If you want the most conservative option available, start with the{" "}
+                <Link
+                  href="/resume-templates/ats-friendly/harvard-cv"
+                  className="text-primary underline underline-offset-4"
+                >
+                  Harvard resume template
+                </Link>{" "}
+                — a single column of plain text with no tables or graphics, so nothing can misparse.
+                It scores 92–94 here and downloads as a blank Word file if you would rather fill it
+                in offline. For senior roles, the{" "}
+                <Link
+                  href="/resume-templates/experienced/executive-cv"
+                  className="text-primary underline underline-offset-4"
+                >
+                  Executive resume template
+                </Link>{" "}
+                scores 93–96 and is shaped for fitting twenty years onto two pages.
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button asChild size="sm"><Link href="/resume-templates/ats-friendly">ATS-friendly templates</Link></Button>

@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data
 import { TemplateShowcase } from "../resumes/template-showcase";
 
 export const metadata: Metadata = {
-  title: "Free CV Templates — ATS-Friendly for UK & Australia | CVEdge",
+  title: "Free CV Templates — ATS-Friendly for UK & Australia",
   description:
     "Free CV templates for UK, Australian, and international job applications. ATS-safe formats with instant score, AI rewriting, and clean PDF download. No sign-up required.",
   alternates: { canonical: "https://www.thecvedge.com/cv-templates" },

@@ -9,7 +9,7 @@ import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Find Jobs That Match Your CV | CVEdge",
+  title: "Find Jobs That Match Your CV",
   description: "Search thousands of jobs and see your ATS match score before you apply. Sign in free to unlock your scores.",
   openGraph: { title: "Find Jobs That Match Your CV | CVEdge", description: "Search thousands of jobs and see your ATS match score before you apply.", url: "https://www.thecvedge.com/jobs", images: ["/og-jobs.png"] },
   alternates: { canonical: "https://www.thecvedge.com/jobs" },

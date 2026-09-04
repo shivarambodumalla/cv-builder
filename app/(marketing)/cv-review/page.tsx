@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for UAE, Saudi Arabia & GCC — Interview-Ready in 24h | CVEdge",
+  title: "Expert CV Review for UAE, Saudi Arabia & GCC — Interview-Ready in 24h",
   description: "Get your CV reviewed by a hiring specialist with expertise in UAE, Saudi Arabia, Qatar, Kuwait and GCC markets. ATS-optimized, every section rewritten. 80+ score guarantee.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review",
