@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CvReviewPageTracker, CvReviewCtaTracker } from "../tracker";
 import { CvReviewFaqSection } from "../faq-section";
 import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
+import { GccFormatSection } from "@/components/marketing/gcc-format-section";
 
 export const metadata: Metadata = {
   title: "Expert CV Review for GCC — UAE, Saudi Arabia, Qatar, Kuwait",
@@ -170,6 +171,9 @@ export default function CvReviewGccPage() {
           </div>
         </div>
       </section>
+
+
+      <GccFormatSection market="gcc" />
 
       {/* ── PRICING ── */}
       <section id="pricing" className="py-16 px-5 lg:px-6">

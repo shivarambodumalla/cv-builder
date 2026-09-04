@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { findDocxLeaf } from "@/lib/resume-templates/data";
 import { buildExecutiveDocx } from "@/lib/resume-templates/docx/executive";
+import { buildGccDocx } from "@/lib/resume-templates/docx/gcc";
 import { buildHarvardDocx } from "@/lib/resume-templates/docx/harvard";
+import { buildLebenslaufDocx } from "@/lib/resume-templates/docx/lebenslauf";
 
 // Blank template downloads, deliberately unauthenticated. The query data behind
 // this ("harvard resume template word", "…free download", "…docx") is people
@@ -13,6 +15,20 @@ export const revalidate = 86400;
 const BUILDERS: Record<string, () => Promise<Buffer>> = {
   harvard: buildHarvardDocx,
   executive: buildExecutiveDocx,
+  gcc: buildGccDocx,
+  lebenslauf: buildLebenslaufDocx,
+};
+
+// Regional formats are downloads without a matching template leaf — the Gulf
+// personal-details block and the German tabellarischer Lebenslauf are
+// conventions rather than visual designs, so they live on their market pages
+// instead of in the templates tree. Named here so the leaf opt-in below still
+// gates everything else.
+const STANDALONE_FORMATS = new Set(["gcc", "lebenslauf"]);
+
+const DOWNLOAD_NAMES: Record<string, string> = {
+  gcc: "gcc-cv-template-cvedge.docx",
+  lebenslauf: "lebenslauf-vorlage-cvedge.docx",
 };
 
 export function generateStaticParams() {
@@ -27,15 +43,19 @@ export async function GET(
 
   const build = BUILDERS[template];
   const leaf = findDocxLeaf(template);
-  // Both must agree: a builder exists AND a leaf page has opted in. Stops a
-  // download going live for a template whose page never advertised it.
-  if (!build || !leaf) {
+  const isStandalone = STANDALONE_FORMATS.has(template);
+  // A builder must exist, and — unless it is a standalone regional format — a
+  // leaf page must have opted in. Stops a download going live for a template
+  // whose page never advertised it.
+  if (!build || (!leaf && !isStandalone)) {
     return NextResponse.json({ error: "No downloadable template for this slug." }, { status: 404 });
   }
 
   try {
     const buffer = await build();
-    const filename = `${leaf.displayName.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}-cvedge.docx`;
+    const filename =
+      DOWNLOAD_NAMES[template] ??
+      `${leaf!.displayName.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}-cvedge.docx`;
 
     return new NextResponse(new Uint8Array(buffer), {
       headers: {

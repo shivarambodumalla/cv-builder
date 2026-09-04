@@ -49,6 +49,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "https://www.thecvedge.com/learn-product-design", lastModified: MENTORSHIP_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
   ];
 
+  // --- Regional format pages ---
+  // German is the site's best-converting high-income market (3.77% CTR at
+  // position 14.3) and had no page in the language until now.
+  const regionalPages: MetadataRoute.Sitemap = [
+    {
+      url: "https://www.thecvedge.com/de/lebenslauf-vorlage",
+      lastModified: new Date("2026-09-04T00:00:00Z"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+  ];
+
   // --- SEO money pages ---
   const seoMoneyPages: MetadataRoute.Sitemap = [
     { url: "https://www.thecvedge.com/resume-templates", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 1.0 },
@@ -109,6 +121,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...seoMoneyPages,
     ...templateCategoryPages,
     ...templateLeafPages,
+    ...regionalPages,
     ...resumeExamplesPages,
     ...interviewPrepRolePages,
     ...blogPostPages,
