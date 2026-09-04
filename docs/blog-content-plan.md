@@ -1,6 +1,8 @@
 # CVEdge Blog — 30-Day Content Plan
 
-Target: blog.thecvedge.com (Hashnode)
+Target: www.thecvedge.com/blog (Supabase `blog_posts`). The Hashnode
+subdomain this plan originally targeted was retired in September 2026 and
+301s to the main site.
 
 ## Week 1 — Foundation
 | Day | Title | Keyword | CTA |
