@@ -80,16 +80,8 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
       {/* Rest of posts */}
       {rest.length > 0 && (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((post, index) => (
-            <>
-              {index > 0 && index % 6 === 0 && (
-                <div key={`ad-${index}`} className="col-span-full my-4 flex justify-center">
-                  <div className="w-full max-w-2xl bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center justify-center py-8 text-sm text-muted-foreground">
-                    Advertisement
-                  </div>
-                </div>
-              )}
-              <Link
+          {rest.map((post) => (
+            <Link
               key={post.id}
               href={`/blog/${post.slug}`}
               className="group rounded-xl border bg-card overflow-hidden flex flex-col hover:border-primary/40 transition-colors"
@@ -127,7 +119,6 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
                 </div>
               </div>
             </Link>
-          </>
           ))}
         </div>
       )}
