@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
+import { sanitizeDbJson, sanitizeDbString } from "@/lib/resume/sanitize";
 import { alertAdmin } from "@/lib/email/alert";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -137,10 +138,10 @@ export async function POST(request: NextRequest) {
       .from("cvs")
       .insert({
         user_id: null,
-        title,
-        raw_text: rawText,
-        parsed_json: parsedJson,
-        target_role: targetRole,
+        title: sanitizeDbString(title),
+        raw_text: sanitizeDbString(rawText),
+        parsed_json: sanitizeDbJson(parsedJson),
+        target_role: sanitizeDbString(targetRole),
         target_domain: domain?.trim() || null,
         redirect_token: redirectToken,
         status: "pending_auth",

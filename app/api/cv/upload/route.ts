@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
+import { sanitizeDbJson, sanitizeDbString } from "@/lib/resume/sanitize";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { syncProfileFromCv } from "@/lib/profile/sync";
 import type { ResumeContent } from "@/lib/resume/types";
@@ -133,9 +134,9 @@ export async function POST(request: NextRequest) {
     .from("cvs")
     .insert({
       user_id: user.id,
-      title,
-      raw_text: rawText,
-      ...(parsedJson ? { parsed_json: parsedJson } : {}),
+      title: sanitizeDbString(title),
+      raw_text: sanitizeDbString(rawText),
+      ...(parsedJson ? { parsed_json: sanitizeDbJson(parsedJson) } : {}),
     })
     .select("id")
     .single();

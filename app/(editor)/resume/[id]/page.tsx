@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ResumeEditor } from "@/components/shared/resume-editor";
 import { structureCvText } from "@/lib/ai/gemini";
+import { sanitizeDbJson } from "@/lib/resume/sanitize";
 import type { ResumeContent } from "@/lib/resume/types";
 
 export const dynamic = "force-dynamic";
@@ -42,8 +43,9 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
     try {
       const parsed = await structureCvText(cv.raw_text, { userId: user.id });
       const admin = createAdminClient();
-      await admin.from("cvs").update({ parsed_json: parsed }).eq("id", cv.id);
-      cv.parsed_json = parsed;
+      const clean = sanitizeDbJson(parsed);
+      await admin.from("cvs").update({ parsed_json: clean }).eq("id", cv.id);
+      cv.parsed_json = clean;
     } catch {
       // Still down — editor loads empty, user can try again later
     }
