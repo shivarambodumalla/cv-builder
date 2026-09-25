@@ -67,6 +67,7 @@ const NAV_GROUPS = [
     links: [
       { href: "/admin/marketing-analytics", label: "SEO & Channels" },
       { href: "/admin/testimonials", label: "Testimonials" },
+      { href: "/admin/feedback", label: "Feedback & Ratings" },
     ],
   },
   {

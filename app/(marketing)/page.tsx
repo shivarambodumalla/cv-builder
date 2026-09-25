@@ -23,6 +23,7 @@ import { HeroAnimation } from "@/components/marketing/hero-animation";
 import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
+import { getPublicRatingStats } from "@/lib/feedback/stats";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
@@ -59,6 +60,10 @@ const COMPARISON = [
 ];
 
 export default async function HomePage() {
+  // Real post-download ratings. Null until enough exist to display, and the
+  // schema below only carries a rating that is visible on this page.
+  const rating = await getPublicRatingStats();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -85,6 +90,9 @@ export default async function HomePage() {
       { "@type": "Country", "name": "Bahrain" },
       { "@type": "Country", "name": "Oman" },
     ],
+    ...(rating
+      ? { aggregateRating: { "@type": "AggregateRating", ratingValue: String(rating.average), ratingCount: String(rating.count), bestRating: "5", worstRating: "1" } }
+      : {}),
   };
 
   const faqJsonLd = {
@@ -179,7 +187,7 @@ export default async function HomePage() {
                     Professional<br />Templates
                   </h2>
                   <p className="max-w-[380px] text-base sm:text-lg text-white/70 leading-relaxed">
-                    12 ATS-optimised templates, all free. Every design passes automated filters and looks great on screen.
+                    32 ATS-optimised templates, 28 of them free. Every design passes automated filters and looks great on screen.
                   </p>
                   <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
                     <Link href="/resumes">Browse templates</Link>
@@ -192,7 +200,7 @@ export default async function HomePage() {
                         <Image src="/img/templates/orchid.jpg" alt="Orchid resume template" title="Orchid resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/electric-lilac.jpg" alt="Electric Lilac resume template" title="Electric Lilac resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/vantage.jpg" alt="Vantage resume template" title="Vantage resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-10">
@@ -200,7 +208,7 @@ export default async function HomePage() {
                         <Image src="/img/templates/portrait.jpg" alt="Portrait resume template" title="Portrait resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/clean-sidebar.jpg" alt="Clean Sidebar resume template" title="Clean Sidebar resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/meridian.jpg" alt="Meridian resume template" title="Meridian resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-4">
@@ -208,7 +216,7 @@ export default async function HomePage() {
                         <Image src="/img/templates/coastal.jpg" alt="Coastal resume template" title="Coastal resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/aurora.jpg" alt="Aurora resume template" title="Aurora resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <Image src="/img/templates/regent.jpg" alt="Regent resume template" title="Regent resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
                       </div>
                     </div>
                   </div>
@@ -499,7 +507,7 @@ export default async function HomePage() {
       </section>
 
       {/* ─── TESTIMONIALS ─── */}
-      <TestimonialsCarousel />
+      <TestimonialsCarousel rating={rating} />
 
       {/* ─── POPULAR ROLES (SEO internal linking) ─── */}
       <section className="py-16 md:py-20">

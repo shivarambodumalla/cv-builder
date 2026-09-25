@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
+import { templateDesignDefaults } from "@/lib/resume/defaults";
 import { getPlan } from "@/lib/billing/limits";
 import { canUseTemplate, getTemplateCatalog } from "@/lib/billing/plan-config";
 import type { ResumeDesignSettings } from "@/lib/resume/types";
@@ -68,9 +69,11 @@ export async function POST(
   // A different template has its own column split, so drop the stored one
   // and let normalizeDesignSettings apply the new template's default.
   const { sidebarSections: storedSidebar, ...rest } = existing;
+  // A new template also brings the settings its look depends on (font,
+  // alignment, weights); same as picking it in the designer panel.
   const nextDesignSettings = normalizeDesignSettings({
     ...rest,
-    ...(existing.template === template ? { sidebarSections: storedSidebar } : {}),
+    ...(existing.template === template ? { sidebarSections: storedSidebar } : templateDesignDefaults(template)),
     template: template as ResumeDesignSettings["template"],
     templatePicked: true,
   });

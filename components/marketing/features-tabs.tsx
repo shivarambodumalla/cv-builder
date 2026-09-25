@@ -92,7 +92,7 @@ const TABS = [
     icon: FileText,
     label: "Export & Design",
     heading: "Beautiful PDFs, total design control",
-    desc: "12 ATS-optimised templates with full design controls. Export clean PDFs ready to send — or customise every detail from fonts to section order.",
+    desc: "32 ATS-optimised templates with full design controls. Export clean PDFs ready to send — or customise every detail from fonts to section order.",
     points: [
       "12 professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
       "Customise font, accent colour, spacing, margins, bullet style, and section order",

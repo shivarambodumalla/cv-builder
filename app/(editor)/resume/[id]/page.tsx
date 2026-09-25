@@ -165,9 +165,19 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
     }
   }
 
+  // Latest post-download rating: a good one (4+) means the prompt stays quiet.
+  const { data: lastFeedback } = await supabase
+    .from("feedback")
+    .select("rating")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   return (
     <ResumeEditor
       cv={cv}
+      lastFeedbackRating={lastFeedback?.rating ?? null}
       latestReport={reports?.[0] ?? null}
       jobMatches={jobMatches ?? []}
       coverLetters={coverLetters ?? []}

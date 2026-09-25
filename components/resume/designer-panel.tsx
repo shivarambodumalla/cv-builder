@@ -1,6 +1,6 @@
 "use client";
 
-import { defaultSidebarSections } from "@/lib/resume/defaults";
+import { defaultSidebarSections, templateDesignDefaults } from "@/lib/resume/defaults";
 import React from "react";
 import {
   AlignLeft, AlignCenter, AlignRight,
@@ -78,6 +78,14 @@ const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Pro (not ATS-safe)." },
   { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
   { name: "portrait", label: "Portrait", desc: "Editorial split-weight name with headshot, plus-marker headings, and light grey canvas." },
+  { name: "regent", label: "Regent", desc: "Refined serif single-column with centred header and hairline rules." },
+  { name: "meridian", label: "Meridian", desc: "Mint two-column with icon headings for startup and momentum roles." },
+  { name: "vantage", label: "Vantage", desc: "Two columns with company and school logos beside every entry." },
+  { name: "linen", label: "Linen", desc: "Minimalist off-white two-column with grey header blocks and diamond rules." },
+  { name: "graphite", label: "Graphite", desc: "Grey canvas, white rounded card, pill section headings." },
+  { name: "sterling", label: "Sterling", desc: "Plain ATS-first specialist resume with a skills table." },
+  { name: "ember", label: "Ember", desc: "Plain-text two-column layout every ATS parser reads cleanly." },
+  { name: "canopy", label: "Canopy", desc: "Sage header band, oversized light headings, dedicated Achievements section." },
   { name: "coastal", label: "Coastal", desc: "Teal accent header with photo and objective band. Creative two-column." },
   { name: "minimal", label: "Minimal", desc: "Maximum whitespace, distraction-free." },
   { name: "electric-lilac", label: "Electric Lilac", desc: "Vibrant sidebar with accent colour and pill chips." },
@@ -831,6 +839,494 @@ function TemplatePreview({ template }: { template: TemplateName }) {
           <rect x="72" y="127" width="30" height="1.2" rx="0.3" fill="#5a5a5a"/>
         </svg>
       );
+    case "regent":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* warm cream page canvas */}
+          <rect width="120" height="170" fill="#F9F6F0"/>
+          {/* centred serif name + spaced uppercase title */}
+          <rect x="38" y="12" width="44" height="5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="30" y="21" width="60" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          {/* hairline · contact row · hairline */}
+          <line x1="8" y1="27" x2="112" y2="27" stroke="#D8D1C4" strokeWidth="0.5"/>
+          <rect x="24" y="30" width="16" height="1.5" rx="0.5" fill="#6B7280"/>
+          <rect x="44" y="30" width="18" height="1.5" rx="0.5" fill="#6B7280"/>
+          <rect x="66" y="30" width="12" height="1.5" rx="0.5" fill="#6B7280"/>
+          <rect x="82" y="30" width="14" height="1.5" rx="0.5" fill="#6B7280"/>
+          <line x1="8" y1="35" x2="112" y2="35" stroke="#D8D1C4" strokeWidth="0.5"/>
+          {/* centred italic summary */}
+          <rect x="18" y="40" width="84" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="22" y="44" width="76" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <line x1="8" y1="50" x2="112" y2="50" stroke="#D8D1C4" strokeWidth="0.5"/>
+          {/* SELECTED EXPERIENCE */}
+          <rect x="8" y="55" width="30" height="1.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="8" y="61" width="34" height="2.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="92" y="61" width="20" height="1.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="8" y="66" width="28" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="71" width="3" height="1" fill="#9CA3AF"/>
+          <rect x="14" y="71" width="90" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="75" width="3" height="1" fill="#9CA3AF"/>
+          <rect x="14" y="75" width="82" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="79" width="3" height="1" fill="#9CA3AF"/>
+          <rect x="14" y="79" width="86" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="87" width="30" height="2.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="92" y="87" width="20" height="1.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="8" y="92" width="24" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="97" width="3" height="1" fill="#9CA3AF"/>
+          <rect x="14" y="97" width="88" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="101" width="3" height="1" fill="#9CA3AF"/>
+          <rect x="14" y="101" width="78" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          {/* EDUCATION */}
+          <line x1="8" y1="110" x2="112" y2="110" stroke="#D8D1C4" strokeWidth="0.5"/>
+          <rect x="8" y="115" width="18" height="1.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="8" y="121" width="16" height="2.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="92" y="121" width="20" height="1.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="8" y="126" width="36" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          {/* SKILLS — inline, dot separated */}
+          <line x1="8" y1="134" x2="112" y2="134" stroke="#D8D1C4" strokeWidth="0.5"/>
+          <rect x="8" y="139" width="12" height="1.5" rx="0.5" fill="#1f1d1a"/>
+          <rect x="8" y="145" width="96" height="1.5" rx="0.5" fill="#6B7280"/>
+          <rect x="8" y="150" width="88" height="1.5" rx="0.5" fill="#6B7280"/>
+        </svg>
+      );
+    case "meridian":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* white page */}
+          <rect width="120" height="170" fill="#ffffff"/>
+          {/* mint blob + photo circle + accent dot (sidebar top) */}
+          <path d="M23 9c8-1 15 4 16 12s-2 15-9 19-16 2-19-4-2-14 2-19 6-7 10-8z" fill="#BFE6DE"/>
+          <circle cx="24" cy="24" r="9" fill="#0D9488" stroke="#ffffff" strokeWidth="1"/>
+          <circle cx="10" cy="37" r="2.2" fill="#0D9488"/>
+          {/* name — thin, wide uppercase */}
+          <rect x="46" y="12" width="60" height="6" rx="0.6" fill="#333333" opacity="0.7"/>
+          {/* title pill band */}
+          <rect x="46" y="23" width="66" height="8" rx="2.2" fill="#A8DDD3"/>
+          <rect x="50" y="26.2" width="28" height="1.6" rx="0.4" fill="#333333"/>
+          {/* sidebar: Contacts */}
+          <rect x="8" y="48" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="14" y="49" width="16" height="2" rx="0.4" fill="#0D9488"/>
+          <rect x="8" y="55" width="22" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="58.5" width="20" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="62" width="24" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="65.5" width="18" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* sidebar: Skills */}
+          <rect x="8" y="74" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="14" y="75" width="12" height="2" rx="0.4" fill="#0D9488"/>
+          <rect x="8" y="81" width="26" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="84.5" width="22" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="88" width="25" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* sidebar: Key Achievements */}
+          <rect x="8" y="97" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="14" y="98" width="20" height="2" rx="0.4" fill="#0D9488"/>
+          <circle cx="9.5" cy="105.5" r="1" fill="#0D9488"/>
+          <rect x="12" y="104.5" width="20" height="1.6" rx="0.4" fill="#333333"/>
+          <rect x="12" y="108" width="22" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <circle cx="9.5" cy="113.5" r="1" fill="#0D9488"/>
+          <rect x="12" y="112.5" width="18" height="1.6" rx="0.4" fill="#333333"/>
+          <rect x="12" y="116" width="20" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* sidebar: Training */}
+          <rect x="8" y="125" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="14" y="126" width="18" height="2" rx="0.4" fill="#0D9488"/>
+          <rect x="8" y="132" width="24" height="1.6" rx="0.4" fill="#333333"/>
+          <rect x="8" y="135.5" width="18" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* main: Summary */}
+          <rect x="46" y="38" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="52" y="39" width="16" height="2" rx="0.4" fill="#0D9488"/>
+          <rect x="46" y="45" width="64" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="48.5" width="60" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="52" width="50" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* main: Experience */}
+          <rect x="46" y="61" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="52" y="62" width="20" height="2" rx="0.4" fill="#0D9488"/>
+          <rect x="46" y="68" width="26" height="1.8" rx="0.4" fill="#333333"/>
+          <rect x="94" y="68" width="16" height="1.4" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="71.5" width="20" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="96" y="71.5" width="14" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="49" y="76" width="60" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="49" y="79.5" width="56" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="49" y="83" width="58" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="90" width="22" height="1.8" rx="0.4" fill="#333333"/>
+          <rect x="94" y="90" width="16" height="1.4" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="93.5" width="18" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="96" y="93.5" width="14" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="49" y="98" width="58" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="49" y="101.5" width="54" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="49" y="105" width="60" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          {/* main: Education */}
+          <rect x="46" y="115" width="4" height="4" rx="1" fill="#CFEDE7"/>
+          <rect x="52" y="116" width="18" height="2" rx="0.4" fill="#0D9488"/>
+          <rect x="46" y="122" width="28" height="1.8" rx="0.4" fill="#333333"/>
+          <rect x="94" y="122" width="16" height="1.4" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="125.5" width="34" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="96" y="125.5" width="14" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="132" width="24" height="1.8" rx="0.4" fill="#333333"/>
+          <rect x="94" y="132" width="16" height="1.4" rx="0.4" fill="#9CA3AF"/>
+          <rect x="46" y="135.5" width="30" height="1.2" rx="0.4" fill="#9CA3AF"/>
+        </svg>
+      );
+    case "vantage":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* white page */}
+          <rect width="120" height="170" fill="#ffffff"/>
+          {/* name (accent, uppercase bold) + title + icon contact row */}
+          <rect x="10" y="12" width="48" height="5" rx="0.6" fill="#1E3A5F"/>
+          <rect x="10" y="20" width="26" height="2" rx="0.4" fill="#1E3A5F"/>
+          <circle cx="11.5" cy="26.5" r="1.1" fill="#1E3A5F"/>
+          <rect x="14" y="25.8" width="14" height="1.3" rx="0.3" fill="#6b7280"/>
+          <circle cx="32.5" cy="26.5" r="1.1" fill="#1E3A5F"/>
+          <rect x="35" y="25.8" width="16" height="1.3" rx="0.3" fill="#6b7280"/>
+          <circle cx="55.5" cy="26.5" r="1.1" fill="#1E3A5F"/>
+          <rect x="58" y="25.8" width="14" height="1.3" rx="0.3" fill="#6b7280"/>
+          {/* left column: Summary */}
+          <rect x="10" y="36" width="18" height="2.4" rx="0.4" fill="#1f2a44"/>
+          <line x1="10" y1="40.5" x2="68" y2="40.5" stroke="#1E3A5F" strokeWidth="0.8"/>
+          <rect x="10" y="44" width="58" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <rect x="10" y="47" width="54" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <rect x="10" y="50" width="40" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          {/* left column: Experience with logo tiles */}
+          <rect x="10" y="59" width="22" height="2.4" rx="0.4" fill="#1f2a44"/>
+          <line x1="10" y1="63.5" x2="68" y2="63.5" stroke="#1E3A5F" strokeWidth="0.8"/>
+          <rect x="10" y="67" width="8" height="8" rx="1" fill="#E8EDF5"/>
+          <rect x="12.5" y="69.5" width="3" height="3" rx="0.4" fill="#1E3A5F"/>
+          <rect x="21" y="67" width="30" height="2" rx="0.4" fill="#1f2a44"/>
+          <rect x="21" y="70.5" width="22" height="1.5" rx="0.3" fill="#1E3A5F"/>
+          <rect x="21" y="73.5" width="26" height="1.1" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="77" width="46" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="80" width="44" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="83" width="40" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <line x1="10" y1="87.5" x2="68" y2="87.5" stroke="#d1d5db" strokeWidth="0.5" strokeDasharray="1 1"/>
+          <rect x="10" y="91" width="8" height="8" rx="1" fill="#E8EDF5"/>
+          <rect x="12.5" y="93.5" width="3" height="3" rx="0.4" fill="#1E3A5F"/>
+          <rect x="21" y="91" width="28" height="2" rx="0.4" fill="#1f2a44"/>
+          <rect x="21" y="94.5" width="20" height="1.5" rx="0.3" fill="#1E3A5F"/>
+          <rect x="21" y="97.5" width="24" height="1.1" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="101" width="46" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="104" width="42" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <line x1="10" y1="108.5" x2="68" y2="108.5" stroke="#d1d5db" strokeWidth="0.5" strokeDasharray="1 1"/>
+          <rect x="10" y="112" width="8" height="8" rx="1" fill="#E8EDF5"/>
+          <rect x="12.5" y="114.5" width="3" height="3" rx="0.4" fill="#1E3A5F"/>
+          <rect x="21" y="112" width="30" height="2" rx="0.4" fill="#1f2a44"/>
+          <rect x="21" y="115.5" width="18" height="1.5" rx="0.3" fill="#1E3A5F"/>
+          <rect x="21" y="118.5" width="26" height="1.1" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="122" width="44" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          <rect x="21" y="125" width="40" height="1.2" rx="0.3" fill="#9CA3AF"/>
+          {/* right column: Strengths */}
+          <rect x="76" y="36" width="20" height="2.4" rx="0.4" fill="#1f2a44"/>
+          <line x1="76" y1="40.5" x2="110" y2="40.5" stroke="#1E3A5F" strokeWidth="0.8"/>
+          <rect x="76" y="44" width="5" height="5" rx="0.8" fill="#E8EDF5"/>
+          <rect x="83" y="44.5" width="20" height="1.5" rx="0.3" fill="#1E3A5F"/>
+          <rect x="83" y="47.5" width="26" height="1.1" rx="0.3" fill="#9CA3AF"/>
+          <rect x="76" y="52" width="5" height="5" rx="0.8" fill="#E8EDF5"/>
+          <rect x="83" y="52.5" width="18" height="1.5" rx="0.3" fill="#1E3A5F"/>
+          <rect x="83" y="55.5" width="24" height="1.1" rx="0.3" fill="#9CA3AF"/>
+          {/* right column: Skills as underline chips */}
+          <rect x="76" y="65" width="14" height="2.4" rx="0.4" fill="#1f2a44"/>
+          <line x1="76" y1="69.5" x2="110" y2="69.5" stroke="#1E3A5F" strokeWidth="0.8"/>
+          <rect x="76" y="73" width="10" height="1.3" rx="0.3" fill="#6b7280"/><line x1="76" y1="75.5" x2="86" y2="75.5" stroke="#d1d5db" strokeWidth="0.6"/>
+          <rect x="89" y="73" width="12" height="1.3" rx="0.3" fill="#6b7280"/><line x1="89" y1="75.5" x2="101" y2="75.5" stroke="#d1d5db" strokeWidth="0.6"/>
+          <rect x="76" y="79" width="14" height="1.3" rx="0.3" fill="#6b7280"/><line x1="76" y1="81.5" x2="90" y2="81.5" stroke="#d1d5db" strokeWidth="0.6"/>
+          <rect x="93" y="79" width="9" height="1.3" rx="0.3" fill="#6b7280"/><line x1="93" y1="81.5" x2="102" y2="81.5" stroke="#d1d5db" strokeWidth="0.6"/>
+          <rect x="76" y="85" width="11" height="1.3" rx="0.3" fill="#6b7280"/><line x1="76" y1="87.5" x2="87" y2="87.5" stroke="#d1d5db" strokeWidth="0.6"/>
+          <rect x="90" y="85" width="13" height="1.3" rx="0.3" fill="#6b7280"/><line x1="90" y1="87.5" x2="103" y2="87.5" stroke="#d1d5db" strokeWidth="0.6"/>
+          {/* right column: Education with logo tile */}
+          <rect x="76" y="97" width="20" height="2.4" rx="0.4" fill="#1f2a44"/>
+          <line x1="76" y1="101.5" x2="110" y2="101.5" stroke="#1E3A5F" strokeWidth="0.8"/>
+          <rect x="76" y="105" width="8" height="8" rx="1" fill="#E8EDF5"/>
+          <rect x="78.5" y="107.5" width="3" height="3" rx="0.4" fill="#1E3A5F"/>
+          <rect x="87" y="105" width="22" height="2" rx="0.4" fill="#1f2a44"/>
+          <rect x="87" y="108.5" width="16" height="1.5" rx="0.3" fill="#1E3A5F"/>
+          <rect x="87" y="111.5" width="12" height="1.1" rx="0.3" fill="#9CA3AF"/>
+          {/* right column: Certifications */}
+          <rect x="76" y="121" width="26" height="2.4" rx="0.4" fill="#1f2a44"/>
+          <line x1="76" y1="125.5" x2="110" y2="125.5" stroke="#1E3A5F" strokeWidth="0.8"/>
+          <rect x="76" y="129" width="30" height="1.8" rx="0.3" fill="#1f2a44"/>
+          <rect x="76" y="132.5" width="18" height="1.3" rx="0.3" fill="#1E3A5F"/>
+          <rect x="76" y="135.5" width="10" height="1.1" rx="0.3" fill="#9CA3AF"/>
+        </svg>
+      );
+    case "linen":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* near-white warm canvas */}
+          <rect width="120" height="170" fill="#f7f5f2"/>
+          {/* two grey header blocks flanking the centred name, full-bleed */}
+          <rect x="0" y="12" width="29" height="14" fill="#d9d5d0"/>
+          <rect x="91" y="12" width="29" height="14" fill="#d9d5d0"/>
+          {/* name + title, centred */}
+          <rect x="40" y="16" width="40" height="4" rx="0.6" fill="#222222"/>
+          <rect x="47" y="30" width="26" height="1.8" rx="0.5" fill="#555555"/>
+          {/* vertical divider at ~42% */}
+          <line x1="50" y1="42" x2="50" y2="162" stroke="#1a1a1a" strokeWidth="0.9"/>
+          {/* left col: Contact */}
+          <rect x="8" y="44" width="16" height="2.6" rx="0.4" fill="#222222"/>
+          <rect x="8" y="50" width="8" height="1.2" rx="0.4" fill="#222222"/>
+          <rect x="8" y="53" width="22" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="57" width="8" height="1.2" rx="0.4" fill="#222222"/>
+          <rect x="8" y="60" width="26" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="64" width="8" height="1.2" rx="0.4" fill="#222222"/>
+          <rect x="8" y="67" width="20" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* rule + diamond on the divider */}
+          <line x1="8" y1="74" x2="50" y2="74" stroke="#1a1a1a" strokeWidth="0.9"/>
+          <rect x="47.5" y="71.5" width="5" height="5" fill="#1a1a1a" transform="rotate(45 50 74)"/>
+          {/* left col: Skills */}
+          <rect x="8" y="80" width="14" height="2.6" rx="0.4" fill="#222222"/>
+          <rect x="8" y="86" width="24" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="89.5" width="20" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="93" width="22" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="96.5" width="18" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* rule + diamond */}
+          <line x1="8" y1="104" x2="50" y2="104" stroke="#1a1a1a" strokeWidth="0.9"/>
+          <rect x="47.5" y="101.5" width="5" height="5" fill="#1a1a1a" transform="rotate(45 50 104)"/>
+          {/* left col: Education */}
+          <rect x="8" y="110" width="18" height="2.6" rx="0.4" fill="#222222"/>
+          <rect x="8" y="116" width="20" height="1.5" rx="0.4" fill="#222222"/>
+          <rect x="8" y="119.5" width="24" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="8" y="123" width="14" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* rule + diamond */}
+          <line x1="8" y1="131" x2="50" y2="131" stroke="#1a1a1a" strokeWidth="0.9"/>
+          <rect x="47.5" y="128.5" width="5" height="5" fill="#1a1a1a" transform="rotate(45 50 131)"/>
+          {/* left col: Certifications */}
+          <rect x="8" y="137" width="22" height="2.6" rx="0.4" fill="#222222"/>
+          <rect x="8" y="143" width="22" height="1.5" rx="0.4" fill="#222222"/>
+          <rect x="8" y="146.5" width="18" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* right col: Personal Statement */}
+          <rect x="56" y="44" width="34" height="2.6" rx="0.4" fill="#222222"/>
+          <rect x="56" y="50" width="56" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="56" y="53.5" width="52" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="56" y="57" width="54" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="56" y="60.5" width="40" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          {/* right col: Work Experience */}
+          <rect x="56" y="70" width="30" height="2.6" rx="0.4" fill="#222222"/>
+          <rect x="56" y="76" width="26" height="1.6" rx="0.4" fill="#222222"/>
+          <rect x="56" y="79.5" width="36" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="84" width="52" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="87.5" width="48" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="91" width="50" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="94.5" width="44" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="56" y="102" width="24" height="1.6" rx="0.4" fill="#222222"/>
+          <rect x="56" y="105.5" width="34" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="110" width="50" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="113.5" width="52" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="117" width="46" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="56" y="125" width="28" height="1.6" rx="0.4" fill="#222222"/>
+          <rect x="56" y="128.5" width="32" height="1.2" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="133" width="50" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="136.5" width="48" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="140" width="52" height="1.3" rx="0.4" fill="#9CA3AF"/>
+          <rect x="59" y="143.5" width="40" height="1.3" rx="0.4" fill="#9CA3AF"/>
+        </svg>
+      );
+    case "graphite":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* grey canvas */}
+          <rect width="120" height="170" fill="#ececec"/>
+          {/* white rounded card inset from every edge */}
+          <rect x="5" y="5" width="110" height="160" rx="9" fill="white"/>
+          {/* name (bold uppercase) + title + contact row */}
+          <rect x="14" y="16" width="46" height="5" rx="0.6" fill="#2d3440"/>
+          <rect x="14" y="24" width="30" height="2.4" rx="0.4" fill="#2d3440"/>
+          <rect x="14" y="30" width="56" height="1.3" rx="0.3" fill="#6b6b6b"/>
+          {/* Summary pill + justified text */}
+          <rect x="14" y="38" width="92" height="6" rx="3" fill="#d9d9d9"/>
+          <rect x="20" y="40" width="16" height="1.6" rx="0.3" fill="#444"/>
+          <rect x="14" y="48" width="92" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="14" y="51" width="92" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="14" y="54" width="70" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Experience pill + two entries */}
+          <rect x="14" y="62" width="92" height="6" rx="3" fill="#d9d9d9"/>
+          <rect x="20" y="64" width="20" height="1.6" rx="0.3" fill="#444"/>
+          <rect x="14" y="72" width="36" height="1.8" rx="0.3" fill="#1a1a1a"/>
+          <rect x="62" y="72" width="22" height="1.8" rx="0.3" fill="#1a1a1a"/>
+          <rect x="14" y="76" width="24" height="1.2" rx="0.3" fill="#8a8a8a"/>
+          <circle cx="16" cy="80.6" r="0.7" fill="#333"/>
+          <rect x="19" y="80" width="86" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="16" cy="83.6" r="0.7" fill="#333"/>
+          <rect x="19" y="83" width="80" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="16" cy="86.6" r="0.7" fill="#333"/>
+          <rect x="19" y="86" width="84" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="14" y="92" width="34" height="1.8" rx="0.3" fill="#1a1a1a"/>
+          <rect x="62" y="92" width="22" height="1.8" rx="0.3" fill="#1a1a1a"/>
+          <circle cx="16" cy="96.6" r="0.7" fill="#333"/>
+          <rect x="19" y="96" width="82" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="16" cy="99.6" r="0.7" fill="#333"/>
+          <rect x="19" y="99" width="76" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Education pill + entry */}
+          <rect x="14" y="107" width="92" height="6" rx="3" fill="#d9d9d9"/>
+          <rect x="20" y="109" width="18" height="1.6" rx="0.3" fill="#444"/>
+          <rect x="14" y="117" width="40" height="1.8" rx="0.3" fill="#1a1a1a"/>
+          <rect x="62" y="117" width="22" height="1.8" rx="0.3" fill="#1a1a1a"/>
+          <rect x="14" y="121" width="30" height="1.2" rx="0.3" fill="#8a8a8a"/>
+          {/* Skills pill + 3-column grid */}
+          <rect x="14" y="128" width="92" height="6" rx="3" fill="#d9d9d9"/>
+          <rect x="20" y="130" width="12" height="1.6" rx="0.3" fill="#444"/>
+          <rect x="14" y="138" width="22" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="46" y="138" width="22" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="78" y="138" width="22" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="14" y="141.5" width="20" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="46" y="141.5" width="24" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="78" y="141.5" width="18" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* Certifications pill */}
+          <rect x="14" y="149" width="92" height="6" rx="3" fill="#d9d9d9"/>
+          <rect x="20" y="151" width="24" height="1.6" rx="0.3" fill="#444"/>
+        </svg>
+      );
+    case "sterling":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          <rect width="120" height="170" fill="white"/>
+          {/* name (sans, left) + target title */}
+          <rect x="8" y="10" width="34" height="4" rx="0.5" fill="#111"/>
+          <rect x="8" y="17" width="24" height="2" rx="0.5" fill="#6B7280"/>
+          {/* two short contact lines, right-aligned */}
+          <rect x="80" y="10" width="32" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="76" y="14" width="36" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          {/* justified summary */}
+          <rect x="8" y="26" width="104" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="30" width="104" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="34" width="60" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          {/* heading + heavy rule */}
+          <rect x="8" y="43" width="34" height="3" rx="0.5" fill="#374151"/>
+          <rect x="8" y="49" width="104" height="1.2" fill="#1a202c"/>
+          {/* entry: company left / date right, role, diamond bullets */}
+          <rect x="8" y="55" width="30" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="88" y="55" width="24" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="60" width="22" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="10" y="65.5" width="1.5" height="1.5" transform="rotate(45 10.75 66.25)" fill="#374151"/>
+          <rect x="14" y="65" width="96" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="10" y="69.5" width="1.5" height="1.5" transform="rotate(45 10.75 70.25)" fill="#374151"/>
+          <rect x="14" y="69" width="88" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="10" y="73.5" width="1.5" height="1.5" transform="rotate(45 10.75 74.25)" fill="#374151"/>
+          <rect x="14" y="73" width="92" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="81" width="30" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="88" y="81" width="24" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="86" width="22" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="10" y="91.5" width="1.5" height="1.5" transform="rotate(45 10.75 92.25)" fill="#374151"/>
+          <rect x="14" y="91" width="90" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="10" y="95.5" width="1.5" height="1.5" transform="rotate(45 10.75 96.25)" fill="#374151"/>
+          <rect x="14" y="95" width="82" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          {/* heading + heavy rule */}
+          <rect x="8" y="106" width="40" height="3" rx="0.5" fill="#374151"/>
+          <rect x="8" y="112" width="104" height="1.2" fill="#1a202c"/>
+          {/* label : value skills table */}
+          <rect x="8" y="118" width="18" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="30" y="118" width="70" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="123" width="16" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="30" y="123" width="62" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="8" y="128" width="19" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="30" y="128" width="74" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          {/* heading + heavy rule, education entry */}
+          <rect x="8" y="139" width="24" height="3" rx="0.5" fill="#374151"/>
+          <rect x="8" y="145" width="104" height="1.2" fill="#1a202c"/>
+          <rect x="8" y="151" width="28" height="2" rx="0.5" fill="#1a202c"/>
+          <rect x="92" y="151" width="20" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="8" y="156" width="40" height="1.5" rx="0.5" fill="#9CA3AF"/>
+        </svg>
+      );
+    case "ember":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* white page, one warm accent, no rules or boxes */}
+          <rect width="120" height="170" fill="#ffffff"/>
+          {/* name (accent) + title */}
+          <rect x="10" y="12" width="44" height="6" rx="0.6" fill="#DD6B20"/>
+          <rect x="10" y="21" width="26" height="2" rx="0.3" fill="#222222"/>
+          {/* main column: Profile */}
+          <rect x="10" y="34" width="18" height="3" rx="0.4" fill="#DD6B20"/>
+          <rect x="10" y="40" width="64" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="10" y="43" width="60" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="10" y="46" width="62" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* main column: Employment History */}
+          <rect x="10" y="56" width="34" height="3" rx="0.4" fill="#DD6B20"/>
+          <rect x="10" y="62" width="40" height="2" rx="0.3" fill="#222222"/>
+          <rect x="10" y="66" width="18" height="1.2" rx="0.3" fill="#8a8a8a"/>
+          <circle cx="11" cy="70.6" r="0.6" fill="#222222"/><rect x="13" y="70" width="58" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="11" cy="73.6" r="0.6" fill="#222222"/><rect x="13" y="73" width="54" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="11" cy="76.6" r="0.6" fill="#222222"/><rect x="13" y="76" width="60" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="10" y="84" width="36" height="2" rx="0.3" fill="#222222"/>
+          <rect x="10" y="88" width="18" height="1.2" rx="0.3" fill="#8a8a8a"/>
+          <circle cx="11" cy="92.6" r="0.6" fill="#222222"/><rect x="13" y="92" width="56" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <circle cx="11" cy="95.6" r="0.6" fill="#222222"/><rect x="13" y="95" width="50" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* main column: Education */}
+          <rect x="10" y="106" width="22" height="3" rx="0.4" fill="#DD6B20"/>
+          <rect x="10" y="112" width="30" height="2" rx="0.3" fill="#222222"/>
+          <rect x="10" y="116" width="40" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="10" y="119" width="16" height="1.2" rx="0.3" fill="#8a8a8a"/>
+          {/* right rail: Contact heading + label/value blocks */}
+          <rect x="84" y="34" width="16" height="3" rx="0.4" fill="#DD6B20"/>
+          <rect x="84" y="40" width="10" height="1.4" rx="0.3" fill="#7a6a5a"/>
+          <rect x="84" y="43" width="22" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="48" width="8" height="1.4" rx="0.3" fill="#7a6a5a"/>
+          <rect x="84" y="51" width="24" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="56" width="9" height="1.4" rx="0.3" fill="#7a6a5a"/>
+          <rect x="84" y="59" width="20" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="64" width="11" height="1.4" rx="0.3" fill="#7a6a5a"/>
+          <rect x="84" y="67" width="24" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* right rail: Skills heading + one skill per line */}
+          <rect x="84" y="78" width="12" height="3" rx="0.4" fill="#DD6B20"/>
+          <rect x="84" y="84" width="18" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="87" width="22" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="90" width="16" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="93" width="20" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="96" width="14" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          {/* right rail: Certifications heading + label/value */}
+          <rect x="84" y="106" width="24" height="3" rx="0.4" fill="#DD6B20"/>
+          <rect x="84" y="112" width="22" height="1.4" rx="0.3" fill="#7a6a5a"/>
+          <rect x="84" y="115" width="16" height="1.2" rx="0.3" fill="#5a5a5a"/>
+          <rect x="84" y="118" width="10" height="1.2" rx="0.3" fill="#8a8a8a"/>
+        </svg>
+      );
+    case "canopy":
+      return (
+        <svg viewBox="0 0 120 170" className="h-full w-full">
+          {/* white page */}
+          <rect width="120" height="170" fill="white"/>
+          {/* rounded accent-tinted header band, bleeding almost to the edges */}
+          <rect x="3" y="3" width="114" height="26" rx="4" fill="#CFE3D8"/>
+          {/* name bar left */}
+          <rect x="11" y="12" width="34" height="5" rx="1" fill="#1f2937"/>
+          {/* two short contact bars right */}
+          <rect x="82" y="11" width="27" height="1.6" rx="0.5" fill="#374151"/>
+          <rect x="91" y="15.5" width="18" height="1.6" rx="0.5" fill="#374151"/>
+          {/* target title + summary */}
+          <rect x="11" y="36" width="28" height="2.4" rx="0.5" fill="#1f2937"/>
+          <rect x="11" y="42" width="98" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="11" y="46" width="90" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          {/* large accent heading: Career Experience */}
+          <rect x="11" y="55" width="48" height="6" rx="1" fill="#276749"/>
+          {/* entry line (accent) with date right */}
+          <rect x="11" y="66" width="44" height="2" rx="0.5" fill="#4C8A6C"/>
+          <rect x="90" y="66" width="19" height="2" rx="0.5" fill="#4C8A6C"/>
+          {/* bullets */}
+          <circle cx="12.5" cy="72.5" r="0.9" fill="#276749"/>
+          <rect x="16" y="71.5" width="93" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <circle cx="12.5" cy="76.5" r="0.9" fill="#276749"/>
+          <rect x="16" y="75.5" width="86" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <circle cx="12.5" cy="80.5" r="0.9" fill="#276749"/>
+          <rect x="16" y="79.5" width="90" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <rect x="11" y="87" width="38" height="2" rx="0.5" fill="#4C8A6C"/>
+          <rect x="90" y="87" width="19" height="2" rx="0.5" fill="#4C8A6C"/>
+          <circle cx="12.5" cy="93.5" r="0.9" fill="#276749"/>
+          <rect x="16" y="92.5" width="88" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <circle cx="12.5" cy="97.5" r="0.9" fill="#276749"/>
+          <rect x="16" y="96.5" width="80" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          {/* large accent heading: Education */}
+          <rect x="11" y="106" width="30" height="6" rx="1" fill="#276749"/>
+          <rect x="11" y="117" width="46" height="2" rx="0.5" fill="#4C8A6C"/>
+          <rect x="11" y="121.5" width="26" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          {/* large accent heading: Achievements */}
+          <rect x="11" y="130" width="38" height="6" rx="1" fill="#276749"/>
+          <circle cx="12.5" cy="142" r="0.9" fill="#276749"/>
+          <rect x="16" y="141" width="30" height="1.8" rx="0.5" fill="#1f2937"/>
+          <rect x="48" y="141.2" width="24" height="1.5" rx="0.5" fill="#9CA3AF"/>
+          <rect x="16" y="145" width="84" height="1.5" rx="0.5" fill="#D1D5DB"/>
+          <circle cx="12.5" cy="151" r="0.9" fill="#276749"/>
+          <rect x="16" y="150" width="34" height="1.8" rx="0.5" fill="#1f2937"/>
+          <rect x="52" y="150.2" width="20" height="1.5" rx="0.5" fill="#9CA3AF"/>
+        </svg>
+      );
   }
 }
 
@@ -1076,20 +1572,20 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   const currentHex = resolveAccentHex(design.accentColor);
 
   const isSidebar = design.template === "sidebar" || design.template === "sidebar-right";
-  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "coastal" || design.template === "orchid" || design.template === "portrait";
+  const isColumnBased = design.template === "two-column" || design.template === "divide" || design.template === "folio" || design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "coastal" || design.template === "orchid" || design.template === "portrait" || design.template === "meridian" || design.template === "vantage" || design.template === "linen" || design.template === "ember";
   const isTwoCol = isSidebar || isColumnBased;
-  const supportsAvatar = design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "bold-accent" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "wentworth" || design.template === "coastal" || design.template === "orchid" || design.template === "portrait";
+  const supportsAvatar = design.template === "aurora" || design.template === "executive-pro" || design.template === "electric-lilac" || design.template === "bold-accent" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "blueprint" || design.template === "wentworth" || design.template === "coastal" || design.template === "orchid" || design.template === "portrait" || design.template === "meridian";
 
   // Per-template capability gates — only show a control when the template
   // actually honors the setting. Keeps the UI "honest" so users don't tweak
   // options that have no visual effect.
   const CONTACT_SEPARATOR_TEMPLATES = new Set<string>([
     "classic", "classic-serif", "sharp", "minimal", "executive",
-    "sidebar", "sidebar-right", "blueprint", "wentworth", "orchid",
+    "sidebar", "sidebar-right", "blueprint", "wentworth", "orchid", "regent", "graphite", "sterling", "canopy",
   ]);
   const HEADER_ALIGNMENT_TEMPLATES = new Set<string>([
     "classic", "classic-serif", "sharp", "minimal", "executive",
-    "executive-pro", "blueprint", "wentworth", "orchid",
+    "executive-pro", "blueprint", "wentworth", "orchid", "regent", "graphite", "vantage", "linen", "sterling", "ember", "canopy",
   ]);
   // Templates that read design.avatarPosition. Sidebar layouts stack the
   // avatar above the name, so left/right has no meaning there.
@@ -1179,10 +1675,14 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     blueprint: ["contact", "targetTitle"],
     coastal: ["contact", "targetTitle", "summary"],
     portrait: ["contact", "targetTitle", "summary"],
+    meridian: ["contact", "targetTitle"],
+    vantage: ["contact", "targetTitle"],
+    linen: ["contact", "targetTitle"],
+    ember: ["contact", "targetTitle"],
   };
 
-  const PINNED_IDENTITY_TEMPLATES = new Set<string>(["electric-lilac", "executive-sidebar", "clean-sidebar", "orchid"]);
-  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal" || design.template === "portrait";
+  const PINNED_IDENTITY_TEMPLATES = new Set<string>(["electric-lilac", "executive-sidebar", "clean-sidebar", "orchid", "meridian", "linen"]);
+  const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal" || design.template === "portrait" || design.template === "vantage" || design.template === "ember";
   const headerKeysArr = HEADER_KEYS_BY_TEMPLATE[design.template] ?? ["contact", "targetTitle"];
   const headerSet = new Set(headerKeysArr);
   const secondarySections = design.sidebarSections ?? defaultSidebarSections(design.template);
@@ -1191,7 +1691,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   let displayLeft: string[] = [], displayRight: string[] = [];
   let labelLeft = "", labelRight = "";
 
-  if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid") {
+  if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid" || design.template === "meridian" || design.template === "linen") {
     // sidebarSections = left column sections. Templates that pin the identity
     // block (name, title, contact) to the sidebar never render those keys in
     // the other column, so they are not offered as movable.
@@ -1291,6 +1791,14 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     coastal: "coastal.jpg",
     orchid: "orchid.jpg",
     portrait: "portrait.jpg",
+    regent: "regent.jpg",
+    meridian: "meridian.jpg",
+    vantage: "vantage.jpg",
+    linen: "linen.jpg",
+    graphite: "graphite.jpg",
+    sterling: "sterling.jpg",
+    ember: "ember.jpg",
+    canopy: "canopy.jpg",
   };
 
   const currentTemplate = TEMPLATES.find((t) => t.name === design.template) ?? TEMPLATES[0];
@@ -1509,6 +2017,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     ...design,
                     template: stagedTemplate!,
                     sidebarSections: defaultSidebarSections(stagedTemplate!),
+                    ...templateDesignDefaults(stagedTemplate!),
                   });
                   setTemplateDialogOpen(false);
                 }}

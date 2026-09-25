@@ -28,7 +28,7 @@ const FAQS = [
   {
     question: "Are all CVEdge resume templates free?",
     answer:
-      "20 out of 24 templates are free. Four Pro-only templates — Executive Pro, Electric Lilac, Executive Sidebar, and Wentworth — require a Pro subscription. All free templates include ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse.",
+      "28 out of 32 templates are free. Four Pro-only templates — Executive Pro, Electric Lilac, Executive Sidebar, and Wentworth — require a Pro subscription. All free templates include ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse.",
   },
   {
     question: "What is the difference between a CV and a resume?",
@@ -98,7 +98,7 @@ export default function ResumeTemplatesPage() {
       />
       <ServiceJsonLd
         name="Free ATS-Friendly Resume Templates"
-        description="24 professional resume templates tested on Greenhouse, Workday, and Lever. Upload your CV, get an ATS score, fix with AI, download PDF."
+        description="32 professional resume templates tested on Greenhouse, Workday, and Lever. Upload your CV, get an ATS score, fix with AI, download PDF."
         url="https://www.thecvedge.com/resume-templates"
         serviceType="Resume Builder"
         price="0"
@@ -122,7 +122,7 @@ export default function ResumeTemplatesPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              24 professional templates. Upload your CV, get an instant ATS score, fix
+              32 professional templates. Upload your CV, get an instant ATS score, fix
               weak bullets with AI, and export a polished PDF. All free to start.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
@@ -173,7 +173,7 @@ export default function ResumeTemplatesPage() {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-10">
-              <h2 className="text-2xl font-bold tracking-tight">All 24 templates</h2>
+              <h2 className="text-2xl font-bold tracking-tight">All 32 templates</h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 Filter by layout type or browse everything. Switch any time without losing your content.
               </p>

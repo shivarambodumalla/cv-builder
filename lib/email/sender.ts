@@ -58,9 +58,11 @@ interface SendEmailParams {
   variables?: Record<string, string>;
   userId?: string | null;
   attachments?: EmailAttachment[];
+  /** Replies go here instead of the brand support inbox (e.g. the founder's address). */
+  replyTo?: string;
 }
 
-export async function sendEmail({ to, templateName, variables = {}, userId, attachments }: SendEmailParams): Promise<void> {
+export async function sendEmail({ to, templateName, variables = {}, userId, attachments, replyTo }: SendEmailParams): Promise<void> {
   const supabase = createAdminClient();
 
   try {
@@ -131,6 +133,7 @@ export async function sendEmail({ to, templateName, variables = {}, userId, atta
       to,
       subject,
       html,
+      ...(replyTo ? { replyTo } : {}),
       ...(attachments && attachments.length > 0 ? { attachments } : {}),
     });
 

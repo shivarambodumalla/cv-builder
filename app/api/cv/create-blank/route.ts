@@ -10,7 +10,7 @@ const VALID_TEMPLATES = [
   "sidebar-right", "two-column", "divide", "folio", "metro",
   "harvard", "ledger", "aurora",
   "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth",
-  "orchid", "coastal", "portrait",
+  "orchid", "coastal", "portrait", "regent", "meridian", "vantage", "linen", "graphite", "sterling", "ember", "canopy",
 ];
 
 export async function POST(request: NextRequest) {

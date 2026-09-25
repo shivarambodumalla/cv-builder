@@ -13,6 +13,10 @@ const TPL: Template[] = [
   { slug: "wentworth", name: "Wentworth", ac: "#555555", tier: "Pro" },
   { slug: "electric-lilac", name: "Electric Lilac", ac: "#7C3AED", tier: "Pro" },
   { slug: "bold-accent", name: "Bold Accent", ac: "#E53E3E", tier: "Free" },
+  { slug: "regent", name: "Regent", ac: "#334155", tier: "Free" },
+  { slug: "meridian", name: "Meridian", ac: "#0F766E", tier: "Free" },
+  { slug: "vantage", name: "Vantage", ac: "#1E3A8A", tier: "Free" },
+  { slug: "canopy", name: "Canopy", ac: "#276749", tier: "Free" },
 ];
 
 // Font option labels, in the order they're rendered in JSX:

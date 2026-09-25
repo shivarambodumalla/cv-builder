@@ -70,19 +70,6 @@ export const DEFAULT_CONTENT: ResumeContent = {
 };
 
 /**
- * Countries where Letter (8.5 × 11 in) is the working paper size. Everyone
- * else, including the UK, India and the Gulf, prints on A4. Used only to pick
- * the default for a *new* CV — the designer panel still lets anyone switch.
- */
-const LETTER_COUNTRIES = new Set(["US", "CA", "MX"]);
-
-export function paperSizeForCountry(
-  countryCode: string | null | undefined
-): ResumeDesignSettings["paperSize"] {
-  return countryCode && LETTER_COUNTRIES.has(countryCode.toUpperCase()) ? "letter" : "a4";
-}
-
-/**
  * Default secondary-column sections per two-column template. For sidebar
  * layouts (sidebar, sidebar-right, divide, folio, electric-lilac,
  * executive-sidebar, clean-sidebar, orchid) this is the LEFT column; for
@@ -105,8 +92,44 @@ export const COLUMN_DEFAULTS_BY_TEMPLATE: Record<string, string[]> = {
   blueprint: ["summary", "skills", "experience", "projects", "awards", "publications"],
   coastal: ["skills", "awards", "certifications"],
   portrait: ["skills", "certifications", "awards"],
+  meridian: ["contact", "skills", "awards", "certifications"],
+  vantage: ["awards", "skills", "education", "certifications"],
+  linen: ["contact", "education", "skills", "certifications", "awards"],
+  ember: ["contact", "skills", "certifications", "awards"],
 };
 
 export function defaultSidebarSections(template: string): string[] {
   return COLUMN_DEFAULTS_BY_TEMPLATE[template] ?? DEFAULT_DESIGN.sidebarSections!;
+}
+
+/**
+ * Design settings a template needs to look the way its thumbnail promises.
+ * Applied when a template is picked (designer panel) and when a new CV is
+ * created with a template, layered under any explicit user values. Only
+ * templates whose identity depends on a non-default setting are listed.
+ */
+export const DESIGN_DEFAULTS_BY_TEMPLATE: Record<string, Partial<ResumeDesignSettings>> = {
+  regent: { font: "elegant", headerAlignment: "center", contactSeparator: "dot", nameWeight: "regular" },
+  linen: { headerAlignment: "center", nameWeight: "regular" },
+  vantage: { skillsStyle: "chips" },
+  sterling: { font: "classic", nameWeight: "regular", sectionHeadingWeight: "regular", sectionHeadingCase: "as-written" },
+  ember: { nameWeight: "regular", sectionHeadingWeight: "regular", sectionHeadingCase: "as-written" },
+  canopy: { nameWeight: "light", sectionHeadingWeight: "light", sectionHeadingCase: "as-written", contactSeparator: "dot" },
+};
+
+export function templateDesignDefaults(template: string): Partial<ResumeDesignSettings> {
+  return DESIGN_DEFAULTS_BY_TEMPLATE[template] ?? {};
+}
+
+/**
+ * Countries where Letter (8.5 × 11 in) is the working paper size. Everyone
+ * else, including the UK, India and the Gulf, prints on A4. Used only to pick
+ * the default for a *new* CV — the designer panel still lets anyone switch.
+ */
+const LETTER_COUNTRIES = new Set(["US", "CA", "MX"]);
+
+export function paperSizeForCountry(
+  countryCode: string | null | undefined
+): ResumeDesignSettings["paperSize"] {
+  return countryCode && LETTER_COUNTRIES.has(countryCode.toUpperCase()) ? "letter" : "a4";
 }

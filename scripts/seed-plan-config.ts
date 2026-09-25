@@ -68,6 +68,14 @@ const TEMPLATES: { slug: string; label: string; tier: "free" | "pro" }[] = [
   { slug: "ledger",            label: "Ledger",            tier: "free" },
   { slug: "clean-sidebar",     label: "Clean Sidebar",     tier: "free" },
   { slug: "blueprint",         label: "Blueprint",         tier: "free" },
+  { slug: "regent",            label: "Regent",            tier: "free" },
+  { slug: "meridian",          label: "Meridian",          tier: "free" },
+  { slug: "vantage",           label: "Vantage",           tier: "free" },
+  { slug: "linen",             label: "Linen",             tier: "free" },
+  { slug: "graphite",          label: "Graphite",          tier: "free" },
+  { slug: "sterling",          label: "Sterling",          tier: "free" },
+  { slug: "ember",             label: "Ember",             tier: "free" },
+  { slug: "canopy",            label: "Canopy",            tier: "free" },
   { slug: "metro",             label: "Metro",             tier: "free" },
 ];
 

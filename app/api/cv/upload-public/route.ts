@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
 
     const admin = createAdminClient();
 
-    const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait"];
+    const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait", "regent", "meridian", "vantage", "linen", "graphite", "sterling", "ember", "canopy"];
     const templatePicked = !!(template && VALID_TEMPLATES.includes(template));
     // Letter for US/CA/MX visitors, A4 elsewhere (Vercel geo header; absent locally → A4).
     const paperSize = paperSizeForCountry(request.headers.get("x-vercel-ip-country"));

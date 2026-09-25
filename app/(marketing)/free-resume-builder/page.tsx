@@ -7,12 +7,12 @@ import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/
 export const metadata: Metadata = {
   title: "Free Resume Builder — Build, Score, and Download in Minutes",
   description:
-    "Free resume builder with ATS scoring, AI bullet rewriting, job match analysis, and PDF download. 20 free templates. No credit card required. Build your resume in under 10 minutes.",
+    "Free resume builder with ATS scoring, AI bullet rewriting, job match analysis, and PDF download. 28 free templates. No credit card required. Build your resume in under 10 minutes.",
   alternates: { canonical: "https://www.thecvedge.com/free-resume-builder" },
   openGraph: {
     title: "Free Resume Builder — Build, Score & Download | CVEdge",
     description:
-      "Free resume builder with ATS scoring, AI rewriting, and PDF download. 20 free templates. No credit card required.",
+      "Free resume builder with ATS scoring, AI rewriting, and PDF download. 28 free templates. No credit card required.",
     url: "https://www.thecvedge.com/free-resume-builder",
   },
 };
@@ -21,7 +21,7 @@ const FAQS = [
   {
     question: "Is CVEdge's resume builder really free?",
     answer:
-      "Yes. The free plan includes: 3 resumes, 10 ATS scans per week, 25 AI bullet rewrites per week, 5 job match analyses per week, 5 cover letters per week, 3 PDF downloads per week, and access to all 20 free templates. No credit card required. Pro (unlimited everything + 4 Pro templates) costs £5/week.",
+      "Yes. The free plan includes: 3 resumes, 10 ATS scans per week, 25 AI bullet rewrites per week, 5 job match analyses per week, 5 cover letters per week, 3 PDF downloads per week, and access to all 28 free templates. No credit card required. Pro (unlimited everything + 4 Pro templates) costs £5/week.",
   },
   {
     question: "How long does it take to build a resume on CVEdge?",
@@ -46,7 +46,7 @@ const FAQS = [
   {
     question: "What is the difference between free and Pro on CVEdge?",
     answer:
-      "Free plan: 3 CVs, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 20 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs £5/week (or £14/month, £120/year).",
+      "Free plan: 3 CVs, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 28 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs £5/week (or £14/month, £120/year).",
   },
 ];
 
@@ -78,7 +78,7 @@ const FREE_FEATURES = [
   },
   {
     icon: CheckCircle,
-    title: "20 free professional templates",
+    title: "28 free professional templates",
     desc: "Choose from Classic, Sharp, Minimal, Executive, Aurora, Coastal, and 14 more. Every free template is ATS-tested. Switch templates any time without losing content.",
   },
 ];
@@ -90,7 +90,7 @@ const PLAN_COMPARE = [
   { feature: "Job matches per week", free: "5", pro: "Unlimited" },
   { feature: "Cover letters per week", free: "5", pro: "Unlimited" },
   { feature: "PDF downloads per week", free: "3", pro: "Unlimited" },
-  { feature: "Templates", free: "20 free", pro: "24 (incl. 4 Pro)" },
+  { feature: "Templates", free: "28 free", pro: "32 (incl. 4 Pro)" },
   { feature: "PDF watermark", free: "None", pro: "None" },
   { feature: "80+ score guarantee", free: "—", pro: "✓" },
   { feature: "Fix All ATS", free: "3/week", pro: "Unlimited" },
@@ -146,7 +146,7 @@ export default function FreeResumeBuilderPage() {
       <div className="mx-auto max-w-3xl mb-16">
         <div className="rounded-xl border bg-card p-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           {[
-            { stat: "24", label: "Templates" },
+            { stat: "32", label: "Templates" },
             { stat: "6", label: "ATS categories scored" },
             { stat: "0", label: "Watermarks on PDF" },
             { stat: "10 min", label: "Average time to done" },

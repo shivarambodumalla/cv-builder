@@ -19,6 +19,7 @@ const POPOVERS = [
   { id: "jobs_discovery", label: "Jobs Discovery" },
   { id: "upload_cv", label: "Upload CV" },
   { id: "return_visit", label: "Return Visit" },
+  { id: "feedback_prompt", label: "Feedback Prompt" },
 ];
 
 const INLINE = [

@@ -39,6 +39,14 @@ import { Wentworth } from "./templates/wentworth";
 import { OrchidTemplate } from "./templates/orchid";
 import { Coastal } from "./templates/coastal";
 import { PortraitTemplate } from "./templates/portrait";
+import { Regent } from "./templates/regent";
+import { Meridian } from "./templates/meridian";
+import { Vantage } from "./templates/vantage";
+import { Linen } from "./templates/linen";
+import { Graphite } from "./templates/graphite";
+import { Sterling } from "./templates/sterling";
+import { Ember } from "./templates/ember";
+import { Canopy } from "./templates/canopy";
 
 const MONTH_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -175,6 +183,14 @@ const TEMPLATE_MAP = {
   orchid: OrchidTemplate,
   coastal: Coastal,
   portrait: PortraitTemplate,
+  regent: Regent,
+  meridian: Meridian,
+  vantage: Vantage,
+  linen: Linen,
+  graphite: Graphite,
+  sterling: Sterling,
+  ember: Ember,
+  canopy: Canopy,
 } as const;
 
 interface TemplateRendererProps {

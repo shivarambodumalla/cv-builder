@@ -101,7 +101,7 @@ export default function CvTemplatesPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              24 professional CV templates for UK, Australian, and international job
+              32 professional CV templates for UK, Australian, and international job
               applications. Upload your existing CV for a free ATS score, or start fresh.
               No credit card required.
             </p>
@@ -153,7 +153,7 @@ export default function CvTemplatesPage() {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold tracking-tight">All 24 CV templates</h2>
+              <h2 className="text-2xl font-bold tracking-tight">All 32 CV templates</h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 Switch templates any time — your content transfers in one click.
               </p>

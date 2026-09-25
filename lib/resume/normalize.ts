@@ -1,5 +1,5 @@
 import type { ResumeDesignSettings, SectionKey, TemplateName } from "./types";
-import { DEFAULT_DESIGN, defaultSidebarSections } from "./defaults";
+import { DEFAULT_DESIGN, defaultSidebarSections, templateDesignDefaults } from "./defaults";
 
 const VALID_TEMPLATES: ReadonlySet<TemplateName> = new Set<TemplateName>([
   "classic",
@@ -26,6 +26,14 @@ const VALID_TEMPLATES: ReadonlySet<TemplateName> = new Set<TemplateName>([
   "orchid",
   "coastal",
   "portrait",
+  "regent",
+  "meridian",
+  "vantage",
+  "linen",
+  "graphite",
+  "sterling",
+  "ember",
+  "canopy",
 ]);
 
 export const CANONICAL_SECTION_ORDER: SectionKey[] = [
@@ -70,7 +78,13 @@ function mergeOrder(existing: string[] | undefined): string[] {
 export function normalizeDesignSettings(
   raw: Partial<ResumeDesignSettings> | null | undefined
 ): ResumeDesignSettings {
-  const merged: ResumeDesignSettings = { ...DEFAULT_DESIGN, ...(raw ?? {}) };
+  // Template-specific defaults sit under the stored values so a CV created
+  // with a template gets that template's look without overriding user edits.
+  const merged: ResumeDesignSettings = {
+    ...DEFAULT_DESIGN,
+    ...templateDesignDefaults(raw?.template ?? ""),
+    ...(raw ?? {}),
+  };
   if (!VALID_TEMPLATES.has(merged.template)) {
     merged.template = DEFAULT_DESIGN.template;
   }

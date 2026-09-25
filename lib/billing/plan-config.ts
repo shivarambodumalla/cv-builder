@@ -1,5 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PLAN_LIMITS } from "./limits";
+import { TEMPLATE_LABELS } from "@/lib/resume/template-labels";
+import type { TemplateName } from "@/lib/resume/types";
 
 /**
  * Plan packaging (quotas, template tiers, toggles) lives in the database so it
@@ -114,6 +116,42 @@ export async function getLimit(plan: Plan, feature: string): Promise<number> {
   return typeof value === "number" ? value : -1;
 }
 
+/** Tier a slug gets before an admin has set one: free if the free plan lists it. */
+function codeTier(slug: string): Tier {
+  return PLAN_LIMITS.free.templates.includes(slug) ? "free" : "pro";
+}
+
+/**
+ * Templates shipped in code that the catalogue table has not seen yet are
+ * registered on first read (code tier, enabled, appended after the existing
+ * rows). A deploy that adds a template therefore needs no seed run before the
+ * template can be picked, and it appears in /admin/plans for tiering.
+ */
+async function registerMissingTemplates(
+  supabase: ReturnType<typeof createAdminClient>,
+  rows: TemplateRow[]
+): Promise<TemplateRow[]> {
+  const known = new Set(rows.map((r) => r.slug));
+  const missing = PLAN_LIMITS.pro.templates.filter((slug) => !known.has(slug));
+  if (missing.length === 0) return rows;
+
+  let sortOrder = Math.max(0, ...rows.map((r) => r.sort_order)) + 1;
+  const added: TemplateRow[] = missing.map((slug) => ({
+    slug,
+    label: TEMPLATE_LABELS[slug as TemplateName] ?? slug,
+    tier: codeTier(slug),
+    enabled: true,
+    sort_order: sortOrder++,
+  }));
+
+  const { error } = await supabase
+    .from("template_catalog")
+    .upsert(added, { onConflict: "slug", ignoreDuplicates: true });
+  if (error) console.error("[plan-config] could not register new templates:", error.message);
+
+  return [...rows, ...added];
+}
+
 /**
  * Full template catalogue. Falls back to deriving tiers from PLAN_LIMITS: a
  * template the free plan lists is free, anything else is Pro.
@@ -130,7 +168,7 @@ export async function getTemplateCatalog(): Promise<TemplateRow[]> {
       .order("sort_order");
 
     if (!error && data?.length) {
-      const rows = data as TemplateRow[];
+      const rows = await registerMissingTemplates(supabase, data as TemplateRow[]);
       templatesCache = { value: rows, at: Date.now() };
       return rows;
     }
@@ -138,11 +176,10 @@ export async function getTemplateCatalog(): Promise<TemplateRow[]> {
     // fall through
   }
 
-  const freeSet = new Set(PLAN_LIMITS.free.templates);
   const rows: TemplateRow[] = PLAN_LIMITS.pro.templates.map((slug, i) => ({
     slug,
-    label: slug,
-    tier: freeSet.has(slug) ? "free" : "pro",
+    label: TEMPLATE_LABELS[slug as TemplateName] ?? slug,
+    tier: codeTier(slug),
     enabled: true,
     sort_order: i,
   }));

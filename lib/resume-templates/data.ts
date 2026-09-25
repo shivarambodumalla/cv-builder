@@ -748,6 +748,76 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           },
         ],
       },
+      {
+        leafSlug: "regent-cv",
+        templateSlug: "regent",
+        displayName: "Regent Resume for Senior Professionals",
+        headline: "Cream canvas, centred serif header, hairline rules. The quiet authority of a partner-track resume.",
+        description:
+          "Regent is CVEdge's most traditional template: a warm cream page, a centred serif name, small-caps section headings and hairline rules between sections. Nothing competes with the content. It reads like the letterhead of an established firm, which is exactly the signal senior candidates in law, finance and consulting want to send.\n\nThe layout is single column, so it parses cleanly through Workday, Greenhouse and iCIMS while still looking considered when a partner prints it. Experience entries lead with the role, put dates on the right, and use an em-dash marker for bullets so quantified outcomes read as a list of decisions rather than tasks.\n\nRegent applies its own typography when picked: EB Garamond body, centred header, dot-separated contact line and a regular-weight name. You can override any of them in the Design tab, but the defaults are tuned so a director-level CV looks finished the moment it is uploaded.\n\nPair it with the AI summary rewrite: the italic summary block is the first thing a reader sees, and Regent gives it room to make a two-sentence case for the candidate.",
+        whoFor: [
+          "Partners, directors and VPs in law, finance and consulting",
+          "Senior professionals in established, conservative industries",
+          "Board and advisory candidates",
+          "Anyone who wants a classic printed feel without a photo",
+        ],
+        features: [
+          "Cream page canvas printed edge to edge",
+          "Centred serif name with small-caps title",
+          "Hairline rules and em-dash bullets keep a formal rhythm",
+          "Single column, fully ATS-parseable",
+          "Serif defaults applied automatically on pick",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/regent.jpg",
+        metaTitle: "Regent Resume Template — Classic Serif, Free",
+        metaDescription: "Free Regent resume template: cream canvas, centred serif header and hairline rules for senior roles in law, finance and consulting. ATS-safe single column.",
+        faqs: [
+          {
+            q: "Is Regent ATS-safe with the cream background?",
+            a: "Yes. The background is a page colour, not an image or a table. The text is standard single-column, so parsers read it exactly as they read Classic. The colour only affects how it looks on screen and in print.",
+          },
+          {
+            q: "Can I switch Regent to a sans-serif font?",
+            a: "Yes. Regent sets EB Garamond as its default body font, but the Design tab lets you pick any of the four font families. The name, italic summary and section headings keep their serif identity so the template still reads as Regent.",
+          },
+        ],
+      },
+      {
+        leafSlug: "vantage-cv",
+        templateSlug: "vantage",
+        displayName: "Vantage Resume with Company Logos",
+        headline: "Two columns with a logo beside every role. Career progression you can see at a glance.",
+        description:
+          "Vantage puts a small logo tile next to each experience and education entry, so a reader scanning the page sees the shape of a career before reading a word: the brands, the schools, the trajectory. Upload a logo per employer in the Content tab; entries without one fall back to a neutral icon tile, so the column always lines up.\n\nThe rest of the layout is built for dense, senior CVs. A wide left column carries the summary and experience with a dotted separator between roles; the right column holds Strengths (your awards section), a chip-style skills list, education and certifications. Headings sit on a 2px accent rule that follows your chosen colour.\n\nIt is a two-column layout, so it is best suited to direct applications, recruiter submissions and LinkedIn-first hiring where a human reads the PDF. Most modern ATS handle it, but for high-volume portal applications keep a single-column export such as Sterling alongside it.\n\nLogos are stored inside your CV, resized to 128px, and exported in the PDF, so the file you send is self-contained.",
+        whoFor: [
+          "Experienced professionals with recognisable employers",
+          "Investment banking, consulting and product leaders",
+          "Candidates whose progression across companies is the story",
+          "Anyone applying via recruiters or direct email",
+        ],
+        features: [
+          "Per-entry employer and school logo upload",
+          "Default icon tile keeps alignment when a logo is missing",
+          "Strengths block turns awards into a headline section",
+          "Underline-chip skills list",
+          "2px accent rules under every heading",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/vantage.jpg",
+        metaTitle: "Vantage Resume Template with Company Logos — Free",
+        metaDescription: "Free two-column resume template with a company or school logo beside every entry. Upload a logo per employer; Vantage shows your career progression at a glance.",
+        faqs: [
+          {
+            q: "Where do I add company logos?",
+            a: "Open the Content tab, expand an experience or education entry and use the Logo control. It accepts PNG, JPG or SVG up to 2 MB and resizes it to a 128px tile. The control only appears while Vantage is your active template.",
+          },
+          {
+            q: "Will the logos appear in the exported PDF?",
+            a: "Yes. Logos are saved with the CV as small embedded images and render in the PDF exactly as in the preview.",
+          },
+        ],
+      },
     ],
   },
 
@@ -970,6 +1040,111 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           },
         ],
       },
+      {
+        leafSlug: "sterling-cv",
+        templateSlug: "sterling",
+        displayName: "Sterling ATS Resume Template",
+        headline: "Serif body, sans headings, a skills table. The plainest layout that still looks deliberate.",
+        description:
+          "Sterling is the resume you send when the only reader for the first round is software. Single column, standard headings, black text, a 1.5px rule under each section: nothing for a parser to misread. It is the template CVEdge recommends for large-company portals and government applications.\n\nThe distinctive touch is the Technical Proficiencies table: each skills category becomes a bold label with its tools listed beside it, so \"Marketing Analysis\" and \"Tools\" read as rows rather than a wall of comma-separated keywords. Parsers still see plain text; humans see structure.\n\nExperience entries put company and location in bold on the first line, dates on the right and the role beneath, followed by diamond-marker bullets. The header pairs a sans-serif name with a serif body, and Sterling sets a Times-style body font, regular-weight headings and as-written heading case on pick so it matches the specialist resumes recruiters in finance and marketing expect.",
+        whoFor: [
+          "Applicants to large-company and government portals",
+          "Marketing, finance and operations specialists",
+          "Career changers who need every keyword to parse",
+          "Anyone who has been rejected by an ATS before",
+        ],
+        features: [
+          "Single column with no tables in the parse path",
+          "Skills rendered as label and value rows",
+          "Heavy rule under each heading for scanning",
+          "Diamond bullets by default",
+          "Serif body with sans headings applied on pick",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/sterling.jpg",
+        metaTitle: "Sterling ATS Resume Template — Free, Serif",
+        metaDescription: "Free ATS resume template with a serif body, sans headings and a skills table. Sterling is the plainest CVEdge layout: single column, black text, every keyword parseable.",
+        faqs: [
+          {
+            q: "Is the skills table safe for ATS?",
+            a: "Yes. It is laid out with CSS, not an HTML table, and the exported PDF contains each row as plain text: the label followed by the skills. Parsers read it in order.",
+          },
+          {
+            q: "Why does Sterling change my font?",
+            a: "Sterling's identity is a serif body with a sans name and headings. When you pick it, CVEdge sets that pairing as the default. You can change the body font in the Design tab at any time.",
+          },
+        ],
+      },
+      {
+        leafSlug: "ember-cv",
+        templateSlug: "ember",
+        displayName: "Ember Two-Column ATS Resume",
+        headline: "A wide main column and a plain-text rail for contact and skills. No icons, no boxes, nothing to trip a parser.",
+        description:
+          "Ember is a two-column resume built for ATS. There are no icons, rules, boxes or background fills; the only colour is the accent on the name and the section headings. The right rail carries contact details under plain labels (Address, Email, Phone) and a one-skill-per-line list, so both a person and a parser read it the same way.\n\nThe main column gives experience the space it needs: role, company and location on one line, dates beneath in muted grey, then bullets. Headings are large and regular weight, which makes the page easy to scan on a phone screen where most recruiters first open a PDF.\n\nEmber keeps your accent colour and reads well in warm orange, teal or navy. It sets regular-weight headings and as-written heading case on pick. Move sections between the rail and the main column from the Design tab: education fits the rail for experienced candidates and the main column for graduates.",
+        whoFor: [
+          "Teachers, nurses, administrators and public-sector applicants",
+          "Mid-career candidates with long skills lists",
+          "Anyone who wants two columns without ATS risk",
+          "Applicants who read their own CV mostly on mobile",
+        ],
+        features: [
+          "Plain-text right rail with labelled contact fields",
+          "One skill per line for keyword parsing",
+          "Large regular-weight accent headings",
+          "Sections movable between rail and main column",
+          "No icons, rules or fills anywhere",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/ember.jpg",
+        metaTitle: "Ember Two-Column ATS Resume Template — Free",
+        metaDescription: "Free two-column ATS resume template. Ember uses plain text only: a wide main column for experience and a right rail for contact details and skills. No icons, no boxes.",
+        faqs: [
+          {
+            q: "Two columns and ATS: is Ember really safe?",
+            a: "Ember is as safe as a two-column layout gets. It uses no tables, icons or graphics, and each column is plain text in reading order. For the strictest portals, Sterling remains the single-column choice.",
+          },
+          {
+            q: "Can I put education in the main column?",
+            a: "Yes. Open the Design tab and move Education from the rail to the main column. Graduates usually keep it in the main column above experience.",
+          },
+        ],
+      },
+      {
+        leafSlug: "canopy-cv",
+        templateSlug: "canopy",
+        displayName: "Canopy Resume with Achievements Section",
+        headline: "A soft header band, oversized headings and a dedicated Achievements section. Built to be scanned.",
+        description:
+          "Canopy opens with a rounded header band tinted from your accent colour: name on the left, contact on the right. Below it the target title and summary sit on plain white, and each section starts with a very large, light-weight heading in the accent colour. The effect is calm and easy to scan, and the body stays single column so parsers read it top to bottom.\n\nIts signature is the Achievements section. Awards render as their own block with the same large heading as Career Experience, so a promotion, a sales record or an industry award is not buried in a bullet. For candidates whose case is results rather than tenure, that section is the argument.\n\nCanopy sets a light name and heading weight, as-written heading case and a dot contact separator on pick; the band and headings follow whichever accent you choose. Bullets use an accent-coloured marker and generous spacing, so a five-bullet role stays readable.",
+        whoFor: [
+          "Bookkeepers, accountants, sales and customer-success professionals",
+          "Candidates with awards or measurable wins to highlight",
+          "Anyone who wants a friendly look that still parses cleanly",
+          "Mid-career applicants across industries",
+        ],
+        features: [
+          "Rounded accent header band with name and contact",
+          "Dedicated Achievements section from your awards",
+          "Oversized light-weight accent headings",
+          "Single column, ATS-safe body",
+          "Light weights and dot separator applied on pick",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/canopy.jpg",
+        metaTitle: "Canopy Resume Template with Achievements — Free",
+        metaDescription: "Free ATS-optimised resume template with a soft header band, oversized headings and a dedicated Achievements section. Canopy turns awards into a headline block.",
+        faqs: [
+          {
+            q: "Does the header band affect ATS parsing?",
+            a: "No. The band is a background colour behind normal text. The name and contact details are plain text in the document, and everything below the band is single column.",
+          },
+          {
+            q: "How do I fill the Achievements section?",
+            a: "Add entries in the Awards section of the Content tab: a title, the issuer, a date and a one-line description. Canopy renders them as the Achievements block.",
+          },
+        ],
+      },
     ],
   },
 
@@ -1178,6 +1353,111 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           {
             q: "When should I choose Bold Accent over Electric Lilac for creative roles?",
             a: "Choose Bold Accent when applying via online portals where ATS scoring matters. Choose Electric Lilac for direct recruiter outreach or portfolio-stage processes where visual impact is the priority.",
+          },
+        ],
+      },
+      {
+        leafSlug: "meridian-cv",
+        templateSlug: "meridian",
+        displayName: "Meridian Resume for Startups and Founders",
+        headline: "Mint sidebar with a blob-framed photo, pill title band and icon headings. Momentum on a page.",
+        description:
+          "Meridian is CVEdge's most contemporary layout. A left sidebar opens with your photo set inside a soft organic shape, followed by Contacts, Skills, Key Achievements and Training. The main column runs your name in thin uppercase, a rounded pill band with your title, then Summary, Experience and Education under headings that each carry a small icon tile.\n\nEvery green derives from the accent colour, so the same template reads mint, navy or plum with one click. It is designed for people who need to look like they move fast: founders, growth and product leads, startup operators and anyone applying to a company that values energy over formality.\n\nMeridian is a two-column layout with icons, so treat it as a direct-application template. Send it to founders, hiring managers and recruiters; keep a single-column export for large portals. Photo, initials or no avatar are all supported from the Design tab.",
+        whoFor: [
+          "Startup founders and operators",
+          "Growth, product and innovation leads",
+          "Candidates at venture-backed and design-forward companies",
+          "Anyone whose achievements deserve their own sidebar block",
+        ],
+        features: [
+          "Photo framed by an accent-tinted blob shape",
+          "Rounded pill band for the target title",
+          "Icon tiles beside every heading",
+          "Key Achievements block from your awards",
+          "Sidebar sections movable from the Design tab",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/meridian.jpg",
+        metaTitle: "Meridian Startup Resume Template — Free",
+        metaDescription: "Free modern resume template for startups and founders. Meridian pairs a mint sidebar and blob-framed photo with icon headings and a Key Achievements block.",
+        faqs: [
+          {
+            q: "Can I use Meridian without a photo?",
+            a: "Yes. Set the avatar to Initials or Off in the Design tab. With Off, the blob block is removed and the sidebar starts with Contacts.",
+          },
+          {
+            q: "Is Meridian suitable for ATS portals?",
+            a: "It is a two-column layout with icons, so it is best for direct applications and recruiter submissions. For portal applications, export the same content on Sterling or Classic.",
+          },
+        ],
+      },
+      {
+        leafSlug: "linen-cv",
+        templateSlug: "linen",
+        displayName: "Linen Minimalist Resume Template",
+        headline: "Off-white canvas, grey header flanks, a vertical divider with diamond markers. Minimal, not empty.",
+        description:
+          "Linen is a white minimalist resume with two quiet devices: a pair of grey blocks flanking the centred name, and a vertical divider that separates the columns with a small diamond at each section boundary on the left. Everything else is type. It suits people whose taste is the point: planners, coordinators, designers and anyone applying somewhere that notices restraint.\n\nThe left column holds Contact (labelled Phone, Email, Website), Education and a bulleted Skills list; the right column carries a Personal Statement and Work Experience where each role is followed by spaced paragraphs or bullets, your choice. Headings are bold uppercase and generously spaced.\n\nLinen sets a centred header and a regular-weight name on pick. The divider and diamonds take their colour from the accent, so the default reads near-black and a navy or teal accent tints them subtly. Move sections between columns from the Design tab.",
+        whoFor: [
+          "Planners, coordinators and operations professionals",
+          "Designers and creatives who want restraint over decoration",
+          "Applicants to boutique agencies and studios",
+          "Anyone who prefers a printed, editorial feel",
+        ],
+        features: [
+          "Off-white canvas printed edge to edge",
+          "Grey header blocks bleeding to the paper edge",
+          "Vertical divider with diamond section markers",
+          "Labelled contact block and bulleted skills",
+          "Centred header applied on pick",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/linen.jpg",
+        metaTitle: "Linen Minimalist Resume Template — Free",
+        metaDescription: "Free minimalist resume template. Linen pairs an off-white canvas and grey header blocks with a vertical divider and diamond markers. Two columns, no icons.",
+        faqs: [
+          {
+            q: "Is Linen ATS-friendly?",
+            a: "Linen is a two-column layout without icons or tables, so most modern ATS read it in column order. For high-volume portals, pair it with a single-column export such as Classic.",
+          },
+          {
+            q: "Can I change the grey blocks or the divider colour?",
+            a: "The grey blocks are fixed to keep the design neutral. The divider and diamonds follow your accent colour from the Design tab.",
+          },
+        ],
+      },
+      {
+        leafSlug: "graphite-cv",
+        templateSlug: "graphite",
+        displayName: "Graphite Black and White Resume Template",
+        headline: "A white rounded card on a grey canvas, grey pill headings, nothing else. Simple by design.",
+        description:
+          "Graphite is a black-and-white resume with one structural idea: the page is a white card with rounded corners on a light grey canvas, and each section starts with a full-width grey pill carrying an italic heading. The result looks composed on screen and in print without using a single colour.\n\nThe body is single column. Experience lines put the role and company in bold with the dates aligned in a second column, and skills lay out in a three-column grid so twelve tools fit in four lines. Summary text is justified, which suits the card's clean edges.\n\nGraphite is built for UX designers, engineers and analysts who want a resume that shows judgment without a portfolio moment. The pills take a faint tint from your accent colour if you set one, so a navy or green accent adds warmth without breaking the monochrome feel.",
+        whoFor: [
+          "UX and product designers",
+          "Engineers and analysts who want a clean monochrome resume",
+          "Candidates applying to design-aware tech companies",
+          "Anyone who prefers structure over colour",
+        ],
+        features: [
+          "White rounded card on a grey canvas",
+          "Full-width grey pill headings in italic",
+          "Three-column skills grid",
+          "Two-column entry lines with aligned dates",
+          "Single column, parses cleanly",
+        ],
+        tier: "free",
+        imgPath: "/img/templates/graphite.jpg",
+        metaTitle: "Graphite Black & White Resume Template — Free",
+        metaDescription: "Free black and white resume template. Graphite sets a white rounded card on a grey canvas with grey pill headings and a three-column skills grid. Single column, ATS-safe.",
+        faqs: [
+          {
+            q: "Does the card layout affect ATS parsing?",
+            a: "No. The card and pills are backgrounds behind normal single-column text. Parsers read Graphite exactly as they read Classic.",
+          },
+          {
+            q: "Can Graphite show colour?",
+            a: "The pills take a subtle tint from your accent colour. Names and text stay dark so the template keeps its black-and-white identity.",
           },
         ],
       },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Star } from "lucide-react";
 
 interface Testimonial {
   id: string;
@@ -142,7 +143,7 @@ function TestimonialCard({
             {testimonial.name}
           </p>
           <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-            {testimonial.role} @ {testimonial.company}
+            {testimonial.role}{testimonial.company ? ` @ ${testimonial.company}` : ""}
           </p>
         </div>
       </div>
@@ -152,8 +153,11 @@ function TestimonialCard({
 
 export function TestimonialsCarousel({
   title = "What customers say about us",
+  rating = null,
 }: {
   title?: string;
+  /** Average of real post-download ratings; null until there are enough to show. */
+  rating?: { average: number; count: number } | null;
 }) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(FALLBACK);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -205,6 +209,18 @@ export function TestimonialsCarousel({
         <h2 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
           {title}
         </h2>
+        {rating && (
+          <p className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span className="inline-flex gap-0.5" aria-hidden="true">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <Star key={n} className={`h-4 w-4 ${n <= Math.round(rating.average) ? "fill-warning text-warning" : "text-muted-foreground/30"}`} />
+              ))}
+            </span>
+            <span>
+              <span className="font-semibold text-foreground">{rating.average.toFixed(1)}</span> / 5 from {rating.count} users who downloaded their resume
+            </span>
+          </p>
+        )}
       </div>
 
       {/* Step-based carousel */}

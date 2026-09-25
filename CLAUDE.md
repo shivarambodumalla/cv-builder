@@ -161,7 +161,9 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ### Templates
 
-24 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint, coastal, orchid, portrait. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
+32 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint, coastal, orchid, portrait, regent, meridian, vantage, linen, graphite, sterling, ember, canopy. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
+
+Per-template design defaults (font, alignment, separator, name weight, skills style) live in `DESIGN_DEFAULTS_BY_TEMPLATE` (lib/resume/defaults.ts) and column splits in `COLUMN_DEFAULTS_BY_TEMPLATE`; both apply on template pick and on new-CV creation via normalizeDesignSettings.
 
 All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`). `avatarPosition` is only offered for the templates listed in `AVATAR_POSITION_TEMPLATES` (designer-panel.tsx); sidebar layouts stack the avatar above the name.
 
@@ -191,6 +193,14 @@ All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avata
 | coastal | 2-column (teal header + photo + objective band) | Free | Coastal |
 | orchid | 2-column (warm sidebar + accent headings + navy corner) | Free | Orchid |
 | portrait | 2-column (split-weight name + photo + plus-marker headings on grey canvas) | Free | Portrait |
+| regent | single-column (cream canvas, centred serif header, hairline rules) | Free | Regent |
+| meridian | 2-column (mint blob photo, pill title band, icon-tile headings) | Free | Meridian |
+| vantage | 2-column (header on top, logo tiles beside experience/education via `logoUrl`) | Free | Vantage |
+| linen | 2-column (off-white canvas, grey header flanks, divider with diamond markers) | Free | Linen |
+| graphite | single-column (grey canvas, white rounded card, pill headings) | Free | Graphite |
+| sterling | single-column (serif body, sans name, heavy-rule headings, label:value skills table) | Free | Sterling |
+| ember | 2-column (header on top, plain-text right rail for contact + skills) | Free | Ember |
+| canopy | single-column (rounded accent header band, oversized light headings, Achievements) | Free | Canopy |
 
 ### Two-Column Templates
 
@@ -403,6 +413,16 @@ Two reset mechanisms coexist:
   - Search, tag filter, sort, grid/list view toggle
 - Pro gates: story_summary_limit (10 free/week), interview_prep_limit (5 free/week)
 
+## Feedback & Ratings
+
+- Real 1-5 ratings collected after PDF download, two channels feeding one table:
+  - In-app: `components/popups/feedback-prompt.tsx` opens 1.5s after a successful download in the editor. Likert stars (Not useful … Excellent), always skippable. Rule: a good rating (4-5, `GOOD_RATING`) silences it for good; 3 or below re-asks on every download; Skip pauses it 24h. The editor page passes the user's latest rating (`lastFeedbackRating`) so the rule holds across devices.
+  - Email: `/api/cron/feedback-request` (daily 10:30 UTC) emails `feedback_request` the day after `profiles.last_pdf_download_at`, once (`feedback_email_sent_at`), skipping anyone who already gave a good rating. Reply-To is the first ADMIN_EMAIL. Star links land on `/feedback?u=&t=&r=` (signed, no login needed, noindex).
+- POST /api/feedback → `feedback` table + admin email (production only via sendAdminEmail).
+- Admin: /admin/feedback — average, distribution, rows; "Publish" copies a consented comment into `testimonials` (first name + profile target_role, no company).
+- Public rating: `lib/feedback/stats.ts` getPublicRatingStats() returns null below `MIN_PUBLIC_RATINGS` (10). Homepage shows the line under the testimonials heading AND emits AggregateRating only from that value. Never hardcode a rating in JSON-LD — Google treats self-declared ratings as spam.
+- Seed the email template: `npx tsx scripts/seed-email-templates.ts`.
+
 ## E2E Testing (Playwright)
 
 - Config: playwright.config.ts
@@ -447,6 +467,7 @@ Two reset mechanisms coexist:
 24. guarantee_claims — 80+ score guarantee claims
 25. email_suppressions — hard suppression list (bounces, complaints, unsubscribes) — checked before every non-transactional send
 26. email_sent_jobs — dedup log of (user_id, job_id, template_name) so Tue/Wed/Thu digests deliver fresh jobs only
+27. feedback — post-download ratings (user_id, cv_id, rating 1-5, comment, source popup|email, can_publish, status new|published|archived, testimonial_id)
 
 **Important column names — do NOT guess, use these exact names:**
 - CVs: `parsed_json` (not "content"), `design_settings` (not "design"), `target_role` (top-level)

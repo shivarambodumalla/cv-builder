@@ -31,7 +31,9 @@ import {
   AlignLeft,
   Sparkles,
   GripVertical,
+  Building2,
 } from "lucide-react";
+import { fileToLogoDataUrl } from "@/lib/resume/logo";
 import {
   DndContext,
   closestCenter,
@@ -54,6 +56,8 @@ interface ContentEditorProps {
   initialData: ResumeContent;
   onChange: (data: ResumeContent) => void;
   onSaveStatusChange?: (status: "idle" | "saving" | "saved") => void;
+  /** Show the per-entry logo upload (only templates that render logos, e.g. Vantage). */
+  showLogos?: boolean;
 }
 
 const SECTION_META: Record<string, { label: string; icon: React.ElementType; emptyMsg: string }> = {
@@ -75,7 +79,7 @@ const SECTION_ORDER: SectionKey[] = [
   "skills", "certifications", "awards", "projects", "volunteering", "publications",
 ];
 
-export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange }: ContentEditorProps) {
+export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange, showLogos = false }: ContentEditorProps) {
   const { register, control, getValues, setValue } = useForm<ResumeContent>({
     defaultValues: initialData,
   });
@@ -385,8 +389,8 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange 
                 {key === "contact" && <ContactFields register={register} />}
                 {key === "targetTitle" && <TargetTitleField register={register} />}
                 {key === "summary" && <SummaryField register={register} watched={watched} />}
-                {key === "experience" && <ExperienceFields control={control} register={register} watched={watched} />}
-                {key === "education" && <EducationFields control={control} register={register} watched={watched} />}
+                {key === "experience" && <ExperienceFields control={control} register={register} watched={watched} setValue={setValue} showLogos={showLogos} />}
+                {key === "education" && <EducationFields control={control} register={register} watched={watched} setValue={setValue} showLogos={showLogos} />}
                 {key === "skills" && <SkillsFields control={control} getValues={getValues} setValue={setValue} />}
                 {key === "certifications" && <CertificationFields control={control} register={register} watched={watched} />}
                 {key === "awards" && <AwardFields control={control} register={register} />}
@@ -632,7 +636,71 @@ function EmptyState({ message, onAdd, buttonText }: { message: string; onAdd: ()
   );
 }
 
-function ExperienceFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
+function LogoField({ name, value, setValue, icon: Icon }: { name: string; value?: string; setValue: any; icon: React.ElementType }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleFile(file: File) {
+    setError(null);
+    setBusy(true);
+    try {
+      const result = await fileToLogoDataUrl(file);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setValue(name, result.dataUrl, { shouldDirty: true });
+    } catch {
+      setError("Could not process image.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-1">
+      <Label className="text-xs text-muted-foreground">Logo</Label>
+      <div className="flex items-center gap-2">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted">
+          {value ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={value} alt="" className="h-full w-full object-contain" />
+          ) : (
+            <Icon className="h-4 w-4 text-muted-foreground" />
+          )}
+        </div>
+        <label className="inline-flex min-h-11 sm:min-h-0 sm:h-8 cursor-pointer items-center rounded-md px-3 text-xs font-medium hover:bg-muted">
+          {busy ? "Processing…" : value ? "Replace" : "Add logo"}
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={busy}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFile(file);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        {value && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="min-h-11 sm:min-h-0 sm:h-8 text-xs text-muted-foreground hover:text-destructive"
+            onClick={() => setValue(name, undefined, { shouldDirty: true })}
+          >
+            Remove
+          </Button>
+        )}
+      </div>
+      {error && <p className="text-xs text-error">{error}</p>}
+    </div>
+  );
+}
+
+function ExperienceFields({ control, register, watched, setValue, showLogos }: { control: any; register: any; watched?: any; setValue: any; showLogos?: boolean }) {
   const { fields, append, remove, move } = useFieldArray({ control, name: "experience.items" });
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
@@ -662,7 +730,7 @@ function ExperienceFields({ control, register, watched }: { control: any; regist
           {fields.map((field, i) => (
             <SortableItem key={field.id} id={field.id}>
               {(dragHandle) => (
-                <ExpItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} />
+                <ExpItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} setValue={setValue} showLogos={showLogos} />
               )}
             </SortableItem>
           ))}
@@ -678,7 +746,7 @@ function ExperienceFields({ control, register, watched }: { control: any; regist
   );
 }
 
-function ExpItem({ index, control, register, onRemove, watched, dragHandle }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode }) {
+function ExpItem({ index, control, register, onRemove, watched, dragHandle, setValue, showLogos }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode; setValue: any; showLogos?: boolean }) {
   const { fields: bulletFields, append, remove } = useFieldArray({ control, name: `experience.items.${index}.bullets` as any });
   const [open, setOpen] = useState(false);
 
@@ -721,6 +789,14 @@ function ExpItem({ index, control, register, onRemove, watched, dragHandle }: { 
               currentName={`experience.items.${index}.isCurrent`}
             />
           </div>
+          {showLogos && (
+            <LogoField
+              name={`experience.items.${index}.logoUrl`}
+              value={watched?.experience?.items?.[index]?.logoUrl}
+              setValue={setValue}
+              icon={Building2}
+            />
+          )}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">Bullet Points</Label>
             {bulletFields.map((bf, bi) => (
@@ -744,7 +820,7 @@ function ExpItem({ index, control, register, onRemove, watched, dragHandle }: { 
   );
 }
 
-function EducationFields({ control, register, watched }: { control: any; register: any; watched?: any }) {
+function EducationFields({ control, register, watched, setValue, showLogos }: { control: any; register: any; watched?: any; setValue: any; showLogos?: boolean }) {
   const { fields, append, remove, move } = useFieldArray({ control, name: "education.items" });
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
@@ -768,7 +844,7 @@ function EducationFields({ control, register, watched }: { control: any; registe
           {fields.map((field, i) => (
             <SortableItem key={field.id} id={field.id}>
               {(dragHandle) => (
-                <EduItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} />
+                <EduItem index={i} control={control} register={register} onRemove={() => remove(i)} watched={watched} dragHandle={dragHandle} setValue={setValue} showLogos={showLogos} />
               )}
             </SortableItem>
           ))}
@@ -781,7 +857,7 @@ function EducationFields({ control, register, watched }: { control: any; registe
   );
 }
 
-function EduItem({ index, control, register, onRemove, watched, dragHandle }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode }) {
+function EduItem({ index, control, register, onRemove, watched, dragHandle, setValue, showLogos }: { index: number; control: any; register: any; onRemove: () => void; watched?: any; dragHandle?: React.ReactNode; setValue: any; showLogos?: boolean }) {
   const [open, setOpen] = useState(false);
   const institution = watched?.education?.items?.[index]?.institution || "";
   const degree = watched?.education?.items?.[index]?.degree || "";
@@ -818,6 +894,14 @@ function EduItem({ index, control, register, onRemove, watched, dragHandle }: { 
             <DateField control={control} name={`education.items.${index}.startDate`} label="Start" />
             <DateField control={control} name={`education.items.${index}.endDate`} label="End" />
           </div>
+          {showLogos && (
+            <LogoField
+              name={`education.items.${index}.logoUrl`}
+              value={watched?.education?.items?.[index]?.logoUrl}
+              setValue={setValue}
+              icon={GraduationCap}
+            />
+          )}
         </div>
       )}
     </div>

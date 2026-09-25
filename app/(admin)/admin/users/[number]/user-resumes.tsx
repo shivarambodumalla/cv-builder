@@ -80,6 +80,14 @@ const TEMPLATE_LABEL: Record<string, string> = {
   orchid: "Orchid",
   coastal: "Coastal",
   portrait: "Portrait",
+  regent: "Regent",
+  meridian: "Meridian",
+  vantage: "Vantage",
+  linen: "Linen",
+  graphite: "Graphite",
+  sterling: "Sterling",
+  ember: "Ember",
+  canopy: "Canopy",
 };
 
 function scoreColor(score: number | null): string {

@@ -90,7 +90,11 @@ export async function POST(request: NextRequest) {
           .single();
         await adminClient
           .from("profiles")
-          .update({ total_pdf_downloads: (data?.total_pdf_downloads ?? 0) + 1 })
+          .update({
+            total_pdf_downloads: (data?.total_pdf_downloads ?? 0) + 1,
+            // Drives the next-day feedback email (cron/feedback-request)
+            last_pdf_download_at: new Date().toISOString(),
+          })
           .eq("id", user.id);
       })(),
       // Activity event

@@ -38,6 +38,7 @@ import { getPreviewContent } from "@/lib/resume/placeholder";
 import { StepLoader } from "@/components/shared/step-loader";
 import { DownloadNudge } from "@/components/popups/download-nudge";
 import { AtsScanNudge } from "@/components/popups/ats-scan-nudge";
+import { FeedbackPrompt, shouldAskForFeedback } from "@/components/popups/feedback-prompt";
 import {
   ArrowLeft,
   Download,
@@ -129,6 +130,8 @@ interface ResumeEditorProps {
   };
   plan: "free" | "starter" | "pro";
   reviewData?: ReviewData | null;
+  /** Latest post-download rating for this user; drives whether the feedback prompt shows again. */
+  lastFeedbackRating?: number | null;
   initialTab?: string;
   autoScan?: boolean;
   pdfDownloadsThisWindow?: number;
@@ -147,7 +150,7 @@ function formatSavedTime(date: Date): string {
   return `${date.toLocaleDateString([], { month: "short", day: "numeric" })}, ${time}`;
 }
 
-export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData, initialTab = "editor", autoScan = false, pdfDownloadsThisWindow = 0 }: ResumeEditorProps) {
+export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData, initialTab = "editor", autoScan = false, pdfDownloadsThisWindow = 0, lastFeedbackRating = null }: ResumeEditorProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { openUpgradeModal } = useUpgradeModal();
@@ -190,6 +193,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackRating, setFeedbackRating] = useState<number | null>(lastFeedbackRating);
   const [title, setTitle] = useState(cv.title || "Untitled CV");
   const [editingTitle, setEditingTitle] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40);
@@ -533,6 +538,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
       a.download = `${(title || "resume").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+      // Ask once, after the file is on its way so the prompt never competes with the save dialog.
+      if (shouldAskForFeedback(feedbackRating)) setTimeout(() => setFeedbackOpen(true), 1500);
     } catch { /* ignore */ } finally {
       setDownloading(false);
     }
@@ -714,14 +721,14 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
 
             {/* Content tab: show editor */}
             {activeTab === "editor" && (
-              <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+              <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} showLogos={design.template === "vantage"} />
             )}
 
             {/* Analyser tab: editor on desktop, ATS panel on mobile */}
             {activeTab === "analyser" && (
               <>
                 <div className="hidden lg:block">
-                  <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+                  <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} showLogos={design.template === "vantage"} />
                 </div>
                 <div className="lg:hidden">
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -755,7 +762,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 {/* Desktop: JD form or Content editor based on jobMatchEditing */}
                 <div className="hidden lg:block">
                   {jobMatchEditing ? (
-                    <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} />
+                    <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} showLogos={design.template === "vantage"} />
                   ) : (
                     <JobMatchPanel
                       cvId={cv.id}
@@ -1026,6 +1033,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
         downloadCount={0}
         onDownload={handlePdfDownload}
       />
+
+      {/* Post-download rating — feeds /admin/feedback and the public rating once real numbers exist */}
+      <FeedbackPrompt open={feedbackOpen} cvId={cv.id} onClose={() => setFeedbackOpen(false)} onSubmitted={setFeedbackRating} />
     </div>
   );
 }

@@ -64,6 +64,21 @@ const TEMPLATES = [
 <p style="margin:0;font-size:14px;color:#6B7280;line-height:1.6;">Most people spend hours perfecting their CV but never download it. Don&rsquo;t be that person.</p>`,
     after_cta_html: `<p style="margin:16px 0 0;font-size:12px;color:#9CA3AF;text-align:center;">Free plan: 3 downloads per week &nbsp;&bull;&nbsp; <a href="{{appUrl}}/pricing" style="color:#1a7a6d;text-decoration:none;">Upgrade to Pro</a> for unlimited</p>`,
   },
+
+  {
+    name: "feedback_request",
+    subject: "{{name}}, quick one \u2014 how did CVEdge do?",
+    heading: "How did your resume turn out?",
+    subheading: "You downloaded your resume from CVEdge yesterday. One tap tells me whether it was worth your time.",
+    cta_text: "Leave a comment instead \u2192",
+    cta_url: "{{feedbackUrl}}",
+    body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 20px;">
+  <tr><td style="padding:0 4px;"><a href="{{feedbackUrl}}&r=1" style="display:inline-block;width:44px;height:44px;line-height:44px;text-align:center;border:1px solid #E5E0D6;border-radius:10px;background:#FFFFFF;color:#D97706;font-size:24px;text-decoration:none;">&#9733;</a></td><td style="padding:0 4px;"><a href="{{feedbackUrl}}&r=2" style="display:inline-block;width:44px;height:44px;line-height:44px;text-align:center;border:1px solid #E5E0D6;border-radius:10px;background:#FFFFFF;color:#D97706;font-size:24px;text-decoration:none;">&#9733;</a></td><td style="padding:0 4px;"><a href="{{feedbackUrl}}&r=3" style="display:inline-block;width:44px;height:44px;line-height:44px;text-align:center;border:1px solid #E5E0D6;border-radius:10px;background:#FFFFFF;color:#D97706;font-size:24px;text-decoration:none;">&#9733;</a></td><td style="padding:0 4px;"><a href="{{feedbackUrl}}&r=4" style="display:inline-block;width:44px;height:44px;line-height:44px;text-align:center;border:1px solid #E5E0D6;border-radius:10px;background:#FFFFFF;color:#D97706;font-size:24px;text-decoration:none;">&#9733;</a></td><td style="padding:0 4px;"><a href="{{feedbackUrl}}&r=5" style="display:inline-block;width:44px;height:44px;line-height:44px;text-align:center;border:1px solid #E5E0D6;border-radius:10px;background:#FFFFFF;color:#D97706;font-size:24px;text-decoration:none;">&#9733;</a></td></tr>
+  <tr><td colspan="5" style="padding-top:8px;text-align:center;font-size:12px;color:#9CA3AF;">1 = not useful &nbsp;&middot;&nbsp; 5 = nailed it</td></tr>
+</table>
+<p style="margin:0 0 8px;font-size:14px;color:#3D3830;line-height:1.6;">I read every reply myself. If something got in your way, hit reply and tell me \u2014 that is the fastest way to get it fixed.</p>
+<p style="margin:0;font-size:14px;color:#3D3830;">\u2014 Siva, founder of CVEdge</p>`,
+  },
 ];
 
 async function seed() {
@@ -81,6 +96,7 @@ async function seed() {
           cta_text: t.cta_text,
           cta_url: t.cta_url,
           body_html: t.body_html,
+          after_cta_html: t.after_cta_html ?? null,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "name" }
