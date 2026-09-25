@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { structureCvText } from "@/lib/ai/gemini";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
+import { paperSizeForCountry } from "@/lib/resume/defaults";
 import { sanitizeDbJson, sanitizeDbString } from "@/lib/resume/sanitize";
 import { alertAdmin } from "@/lib/email/alert";
 
@@ -125,9 +126,11 @@ export async function POST(request: NextRequest) {
 
     const VALID_TEMPLATES = ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait"];
     const templatePicked = !!(template && VALID_TEMPLATES.includes(template));
+    // Letter for US/CA/MX visitors, A4 elsewhere (Vercel geo header; absent locally → A4).
+    const paperSize = paperSizeForCountry(request.headers.get("x-vercel-ip-country"));
     const designSettings = templatePicked
-      ? normalizeDesignSettings({ template: template as never, templatePicked: true })
-      : normalizeDesignSettings(null);
+      ? normalizeDesignSettings({ template: template as never, templatePicked: true, paperSize })
+      : normalizeDesignSettings({ paperSize });
 
     // Derive target role: explicit selection > parsed CV title > "General"
     /* eslint-disable @typescript-eslint/no-explicit-any */

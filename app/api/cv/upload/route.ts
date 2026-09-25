@@ -6,6 +6,8 @@ import { sanitizeDbJson, sanitizeDbString } from "@/lib/resume/sanitize";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { syncProfileFromCv } from "@/lib/profile/sync";
 import type { ResumeContent } from "@/lib/resume/types";
+import { normalizeDesignSettings } from "@/lib/resume/normalize";
+import { paperSizeForCountry } from "@/lib/resume/defaults";
 
 const ALLOWED_MIME_TYPES = [
   "application/pdf",
@@ -137,6 +139,10 @@ export async function POST(request: NextRequest) {
       title: sanitizeDbString(title),
       raw_text: sanitizeDbString(rawText),
       ...(parsedJson ? { parsed_json: sanitizeDbJson(parsedJson) } : {}),
+      // Letter for US/CA/MX visitors, A4 elsewhere (Vercel geo header; absent locally → A4).
+      design_settings: normalizeDesignSettings({
+        paperSize: paperSizeForCountry(request.headers.get("x-vercel-ip-country")),
+      }) as unknown as Record<string, unknown>,
     })
     .select("id")
     .single();

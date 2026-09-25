@@ -27,7 +27,7 @@ import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
   title: "Free ATS Resume Scanner — Check Your ATS Score",
-  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score, fixes issues with AI, and gets you more interviews. Free. 2,400+ users.",
+  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score, fixes issues with AI, and gets you more interviews. Free. 1,200+ resumes scanned.",
   alternates: {
     canonical: "https://www.thecvedge.com",
     languages: {
@@ -64,11 +64,10 @@ export default async function HomePage() {
     "@type": "SoftwareApplication",
     name: "CVEdge",
     url: "https://www.thecvedge.com",
-    description: "Free ATS resume scanner. Check your ATS score, fix critical issues with AI, and start getting interview calls. Used by 2,400+ job seekers.",
+    description: "Free ATS resume scanner. Check your ATS score, fix critical issues with AI, and start getting interview calls. 1,200+ resumes scanned.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
-    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "124" },
     featureList: ["ATS Score Analysis", "AI CV Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
     areaServed: [
       { "@type": "Country", "name": "United States" },
@@ -146,7 +145,7 @@ export default async function HomePage() {
 
               {/* Trust line */}
               <p className="text-sm text-muted-foreground mt-1 max-w-full">
-                Trusted by 2,400+ job seekers &middot; Avg score improvement +18 points
+                1,200+ resumes scanned &middot; Avg score improvement +18 points
               </p>
             </div>
 

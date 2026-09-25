@@ -26,6 +26,51 @@ export interface PostsResult {
 
 const PAGE_SIZE = 50;
 
+function stripBrandSuffix(title: string | null | undefined): string | null {
+  if (!title) return null;
+  return title.replace(/\s*[|\u2014\u2013-]\s*CVEdge\s*$/i, "").trim() || null;
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+function htmlToText(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&[a-z#0-9]+;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Pull question/answer pairs out of a post's FAQ block so the page can emit
+ * FAQPage structured data. Convention (see scripts/blog-us-aeo-refresh.ts): an
+ * `<h2>` whose text contains "FAQ" or "Frequently asked", followed by
+ * `<h3>question</h3>` + one or more `<p>` answer paragraphs, up to the next
+ * `<h2>`. Posts without such a block simply get no FAQ schema.
+ */
+export function extractFaq(html: string): FaqItem[] {
+  const block = html.match(
+    /<h2[^>]*>[^<]*(?:\bFAQs?\b|frequently asked)[^<]*<\/h2>([\s\S]*?)(?=<h2[\s>]|$)/i
+  );
+  if (!block) return [];
+  const items: FaqItem[] = [];
+  const pair = /<h3[^>]*>([\s\S]*?)<\/h3>\s*((?:<p[^>]*>[\s\S]*?<\/p>\s*)+)/gi;
+  let m: RegExpExecArray | null;
+  while ((m = pair.exec(block[1])) !== null) {
+    const question = htmlToText(m[1]);
+    const answer = htmlToText(m[2]);
+    if (question && answer) items.push({ question, answer });
+  }
+  return items;
+}
+
 function rowToPost(row: Record<string, unknown>): BlogPost {
   const tags = (row.tags as string[] | null) ?? [];
   return {
@@ -46,7 +91,9 @@ function rowToPostFull(row: Record<string, unknown>): BlogPostFull {
     content: { html: (row.content_html as string) ?? "" },
     updatedAt: (row.updated_at as string) ?? (row.published_at as string),
     seo: {
-      title: (row.seo_title as string) ?? null,
+      // The root layout's title template already appends " | CVEdge"; a stored
+      // title carrying its own suffix would render "… | CVEdge | CVEdge".
+      title: stripBrandSuffix(row.seo_title as string | null),
       description: (row.seo_description as string) ?? null,
     },
     author: {
@@ -103,16 +150,18 @@ export async function getAllSlugs(): Promise<string[]> {
   return (data ?? []).map((r) => r.slug as string);
 }
 
-export async function getAllPostsForSitemap(): Promise<{ slug: string; published_at: string }[]> {
+export async function getAllPostsForSitemap(): Promise<
+  { slug: string; published_at: string; updated_at: string | null }[]
+> {
   const db = createAdminClient();
   const { data, error } = await db
     .from("blog_posts")
-    .select("slug, published_at")
+    .select("slug, published_at, updated_at")
     .eq("is_published", true)
     .order("published_at", { ascending: false });
 
   if (error) throw new Error(error.message);
-  return (data ?? []) as { slug: string; published_at: string }[];
+  return (data ?? []) as { slug: string; published_at: string; updated_at: string | null }[];
 }
 
 export function formatDate(iso: string): string {

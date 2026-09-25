@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd, ProductJsonLd, FaqJsonLd } from "@/components/shared/
 export const metadata: Metadata = {
   title: "Pricing — Free forever, Pro from $2.30/week",
   description:
-    "CVEdge is free forever for job seekers in the US, UK, UAE, Saudi Arabia, and Europe. Upgrade to Pro from $2.30/week for unlimited ATS scans, AI rewrites, job matching, and cover letters. 80+ ATS score guaranteed or your money back.",
+    "CVEdge is free forever for job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. Upgrade to Pro from $2.30/week for unlimited ATS scans, AI rewrites, job matching, and cover letters. 80+ ATS score guaranteed or your money back.",
   alternates: {
     canonical: "https://www.thecvedge.com/pricing",
     languages: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "CVEdge Pricing — Free forever, Pro from $2.30/week",
-    description: "Unlimited ATS scans, AI rewrites, and job matching. Available for job seekers in the US, UK, UAE, and Europe. 80+ ATS score guaranteed or money back.",
+    description: "Unlimited ATS scans, AI rewrites, and job matching. Available for job seekers in the US, Canada, UK, UAE, and Europe. 80+ ATS score guaranteed or money back.",
     url: "https://www.thecvedge.com/pricing",
     images: ["/og-pricing.png"],
   },

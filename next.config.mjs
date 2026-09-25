@@ -38,6 +38,12 @@ const nextConfig = {
         destination: "/blog/how-to-tailor-your-cv-for-a-job-description",
         permanent: true,
       },
+      // 405-word retelling of the recruiter-filter article; consolidated.
+      {
+        source: "/blog/your-cv-is-failing-before-a-human-sees-it-here-s-why",
+        destination: "/blog/why-your-cv-never-reaches-a-human-recruiter",
+        permanent: true,
+      },
       // Harvard rendered as two leaf pages. The ats-friendly one earns ~40% of
       // all site clicks at position 15; the experienced one sat at position 57
       // with none. Two indexable URLs for the same template split the signals

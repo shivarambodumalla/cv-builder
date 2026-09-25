@@ -42,10 +42,10 @@ export const metadata: Metadata = {
     url: "https://www.thecvedge.com",
     siteName: "CVEdge",
     title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
-    description: "Free AI-powered CV optimisation. Find why your CV gets rejected and fix it instantly. 80+ ATS score guaranteed.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge — AI-powered CV optimisation" }],
+    description: "Free AI-powered resume and CV optimization. Find why your resume gets rejected and fix it instantly. 80+ ATS score guaranteed.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge — AI-powered resume and CV optimization" }],
   },
-  twitter: { card: "summary_large_image", title: "CVEdge — Get More Interviews", description: "Free AI-powered CV optimisation. 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
+  twitter: { card: "summary_large_image", title: "CVEdge — Get More Interviews", description: "Free AI-powered resume and CV optimization. 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }], apple: "/img/CV-Edge-Logo-square.svg" },
 };
 

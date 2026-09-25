@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
-import { getPost, getAllSlugs, formatDate } from "@/lib/blog/posts";
+import { getPost, getAllSlugs, formatDate, extractFaq } from "@/lib/blog/posts";
 import { AUTHOR, AUTHOR_JSON_LD } from "@/lib/blog/author";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { CtaSection } from "@/components/shared/cta-section";
@@ -66,6 +66,19 @@ export default async function BlogPostPage({
   try { post = await getPost(slug); } catch { notFound(); return null; }
   if (!post) notFound();
 
+  const faq = extractFaq(post.content.html);
+  const faqJsonLd = faq.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faq.map((f) => ({
+          "@type": "Question",
+          name: f.question,
+          acceptedAnswer: { "@type": "Answer", text: f.answer },
+        })),
+      }
+    : null;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -86,6 +99,9 @@ export default async function BlogPostPage({
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {faqJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      )}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "https://www.thecvedge.com" },

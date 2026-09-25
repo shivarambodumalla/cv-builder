@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { DEFAULT_CONTENT } from "@/lib/resume/defaults";
+import { DEFAULT_CONTENT, paperSizeForCountry } from "@/lib/resume/defaults";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { uniqueCvTitle } from "@/lib/resume/unique-title";
 
@@ -26,9 +26,11 @@ export async function POST(request: NextRequest) {
     const template = body.template as string | undefined;
 
     const templatePicked = !!(template && VALID_TEMPLATES.includes(template));
+    // Letter for US/CA/MX visitors, A4 elsewhere (Vercel geo header; absent locally → A4).
+    const paperSize = paperSizeForCountry(request.headers.get("x-vercel-ip-country"));
     const designSettings = templatePicked
-      ? normalizeDesignSettings({ template: template as never, templatePicked: true })
-      : normalizeDesignSettings(null);
+      ? normalizeDesignSettings({ template: template as never, templatePicked: true, paperSize })
+      : normalizeDesignSettings({ paperSize });
 
     const admin = createAdminClient();
     const title = await uniqueCvTitle(admin, user.id, "Untitled CV");

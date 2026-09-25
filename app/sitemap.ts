@@ -30,9 +30,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogPostPages: MetadataRoute.Sitemap = [];
   try {
     const posts = await getAllPostsForSitemap();
-    blogPostPages = posts.map(({ slug, published_at }) => ({
+    // updated_at moves on every content edit, so a refreshed post gets recrawled.
+    blogPostPages = posts.map(({ slug, published_at, updated_at }) => ({
       url: `https://www.thecvedge.com/blog/${slug}`,
-      lastModified: published_at ? new Date(published_at) : STABLE_LAST_MODIFIED,
+      lastModified: updated_at || published_at ? new Date(updated_at || published_at) : STABLE_LAST_MODIFIED,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));

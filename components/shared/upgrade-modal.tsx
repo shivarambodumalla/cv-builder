@@ -156,7 +156,7 @@ export function UpgradeModal() {
 
             {/* Tax note */}
             <p className="text-[10px] text-muted-foreground/60 text-center">
-              Prices exclude applicable taxes (GST/VAT). Tax will be calculated at checkout.
+              Prices exclude sales tax, GST or VAT, which is calculated at checkout.
             </p>
 
             {/* Features */}

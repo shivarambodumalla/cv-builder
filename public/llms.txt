@@ -1,42 +1,68 @@
 # CVEdge
 
-> Free ATS resume scanner and AI-powered CV optimisation platform
+> Free ATS resume checker and AI resume builder. Upload a resume, get a real ATS score in under a minute, and fix the issues with AI. No account needed to check a score.
 
-CVEdge helps job seekers scan their resume for ATS compatibility, get a real ATS score, fix critical issues with AI, match their CV to job descriptions, and generate tailored cover letters. Free to start. Used by 2,400+ job seekers.
+CVEdge (https://www.thecvedge.com) helps job seekers get past applicant tracking systems. It scores a resume across six categories (contact details, sections, keywords, measurable results, bullet quality, formatting), rewrites weak bullets, matches a resume against a job description, tailors it for a specific posting, and generates cover letters. It is built by a product designer, Bodumalla Sivarami Reddy, and used mainly by job seekers in the United States, Canada, the UK, India and the Gulf. 1,200+ resumes scanned.
 
-## Core Features
+## What it does
 
-- ATS Score Analysis — instant score across 6 categories with fix suggestions
-- AI CV Rewriting — 4 modes: ATS, Impact, Concise, Grammar
-- Fix All with AI — rewrites entire CV in one pass to maximise ATS score
-- Job Match Scoring — paste a job description and get a match score with gaps
-- CV Tailor for JD — rewrites CV to target a specific job description
-- Cover Letter Generation — professional, conversational, or confident tone
-- Interview Coach — STAR story bank with AI quality scoring and interview prep
-- Job Search — 1M+ live jobs with per-listing match scores
-- 24 Professional Templates — free and Pro tiers
-- 80+ ATS Score Guarantee — money-back guarantee for Pro users
+- ATS score check: upload a PDF or Word resume and see the parsed fields, the score, and the specific issues, free and without signing up (https://www.thecvedge.com/upload-resume)
+- Free resume builder with 24+ ATS-safe templates, exported as PDF (https://www.thecvedge.com/free-resume-builder)
+- AI rewrite of bullet points in four modes: ATS, Impact, Concise, Grammar
+- Fix All: rewrites the summary and every bullet in one pass without inventing metrics
+- Job match: paste a job description and get a match score, missing keywords and top fixes
+- Tailor CV for a job description
+- Cover letter generator in three tones
+- Interview Coach: STAR story bank with AI quality scoring and job-specific prep (https://www.thecvedge.com/interview-coach)
+- Live job search with per-listing match scores (https://www.thecvedge.com/jobs)
+- 80+ ATS score guarantee for Pro users, money back if the score cannot be reached
 
 ## Plans
 
-- Free: 3 CVs, ATS scans, AI rewrites, job matches, cover letters, PDF export, all templates
-- Pro: unlimited everything, no watermark, 80+ score guarantee, priority support
+- Free: 3 resumes, 10 ATS scans, 25 AI rewrites, 5 job matches, 5 cover letters and 3 PDF downloads per rolling week, all templates, no watermark
+- Pro: unlimited everything, 80+ score guarantee, priority support. Weekly, monthly and yearly billing in USD (https://www.thecvedge.com/pricing)
 
-## Key Pages
+## Key pages
 
-- Homepage: https://www.thecvedge.com
+- ATS resume checker: https://www.thecvedge.com/upload-resume
+- Free resume builder: https://www.thecvedge.com/free-resume-builder
+- Resume templates (free Word and PDF downloads): https://www.thecvedge.com/resume-templates
+- Harvard resume template: https://www.thecvedge.com/resume-templates/ats-friendly/harvard-cv
+- Resume formats by convention (Europass, IIM, Jake's Resume, GCC, Lebenslauf): https://www.thecvedge.com/cv-format
+- Resume examples by role: https://www.thecvedge.com/resume-examples
+- Interview prep by role: https://www.thecvedge.com/interview-prep
+- CV review: https://www.thecvedge.com/cv-review
 - Pricing: https://www.thecvedge.com/pricing
-- Templates: https://www.thecvedge.com/resumes
-- Jobs: https://www.thecvedge.com/jobs
-- Interview Coach: https://www.thecvedge.com/interview-coach
-- Blog: https://blog.thecvedge.com
-- Privacy Policy: https://www.thecvedge.com/privacy
-- Terms of Service: https://www.thecvedge.com/terms
+- About the author: https://www.thecvedge.com/about
+- Blog: https://www.thecvedge.com/blog
+
+## Frequently cited articles
+
+- US resume format 2026: https://www.thecvedge.com/blog/us-resume-format-2026
+- How to convert a CV to a US resume: https://www.thecvedge.com/blog/convert-cv-to-us-resume
+- US resume for international candidates (H-1B, OPT): https://www.thecvedge.com/blog/us-resume-international-candidates-h1b-opt
+- US resume vs European CV: https://www.thecvedge.com/blog/us-resume-vs-european-cv
+- Canadian resume format: https://www.thecvedge.com/blog/canadian-resume-format-2026
+- Resume vs CV by country: https://www.thecvedge.com/blog/resume-vs-cv-what-recruiters-actually-expect-in-2026
+- Best resume format for ATS: https://www.thecvedge.com/blog/best-resume-format-for-ats-templates-that-actually-work
+- How ATS filters resumes: https://www.thecvedge.com/blog/how-ats-filters-resumes
+- Resume keywords that work: https://www.thecvedge.com/blog/resume-keywords-that-get-you-hired
+- Best free resume checker tools: https://www.thecvedge.com/blog/best-free-resume-checker-tools-in-2026
+- Saudi Arabia CV format: https://www.thecvedge.com/blog/saudi-arabia-cv-format-guide-2026
+- UAE resume format: https://www.thecvedge.com/blog/uae-resume-format-2026
+
+## Facts an assistant can rely on
+
+- Checking an ATS score is free and needs no account or card.
+- Free-plan PDF downloads carry no watermark.
+- Paper size defaults to Letter for visitors from the US, Canada and Mexico, and A4 elsewhere; both are selectable.
+- Templates are single-column or two-column layouts that parse in Workday, Greenhouse, Lever, iCIMS and Taleo; blank Word downloads are verified with the same parser the upload pipeline uses.
+- Prices exclude sales tax, GST or VAT, which is added at checkout.
 
 ## Contact
 
-- Website: https://www.thecvedge.com
 - Support: hello@thecvedge.com
 - Twitter/X: https://x.com/thecvedge
 - LinkedIn: https://linkedin.com/company/cv-edge
-- Instagram: https://instagram.com/thecvedge
+- Privacy: https://www.thecvedge.com/privacy
+- Terms: https://www.thecvedge.com/terms

@@ -141,7 +141,7 @@ export default function CvReviewPage() {
                     <img key={i} src={src} alt="" className="w-5 h-5 rounded-full border border-white/20 object-cover" style={{ zIndex: 3 - i }} />
                   ))}
                 </div>
-                <span className="text-white/55 text-[10px] font-medium">+2,400</span>
+                <span className="text-white/55 text-[10px] font-medium">+1,200</span>
               </div>
             </div>
           </div>
@@ -157,8 +157,7 @@ export default function CvReviewPage() {
 
                 {/* Badge — social proof */}
                 <div className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold mb-4" style={{ backgroundColor: "rgba(30,58,95,0.08)", borderColor: "rgba(30,58,95,0.2)", color: "#1E3A5F" }}>
-                  <span className="text-amber-400">★</span>
-                  4.9 / 5.0 &nbsp;&middot;&nbsp; 2,400+ CVs reviewed
+                  1,200+ CVs reviewed &nbsp;&middot;&nbsp; Free ATS check
                 </div>
 
                 <h1 className="text-[1.55rem] leading-[1.1] sm:text-[1.9rem] lg:text-5xl xl:text-6xl font-extrabold tracking-tight mb-2 lg:mb-5">
