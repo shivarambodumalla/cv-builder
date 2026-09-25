@@ -138,7 +138,7 @@ export function OrchidTemplate({
   // Honor user margins with a sensible floor; inner edges near the divider stay tight.
   const padOuterX = `${Math.max(marginX, 0.3)}in`;
   const padInnerX = "0.22in";
-  const padY = `${Math.max(marginY, 0.35)}in`;
+  const padY = `${Math.max(marginY, 0.3)}in`;
   const padBottomRight = `calc(${padY} + 28px)`;
 
   const avatarMode = design.avatarMode ?? "photo";

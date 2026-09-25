@@ -209,8 +209,8 @@ export function Coastal({
   const avatarPosition = design.avatarPosition ?? "right";
   const showAvatar = avatarMode !== "off";
 
-  const horizontalPad = `${Math.max(marginX, 0.5)}in`;
-  const verticalPadBody = `${Math.max(marginY, 0.4)}in`;
+  const horizontalPad = `${Math.max(marginX, 0.3)}in`;
+  const verticalPadBody = `${Math.max(marginY, 0.3)}in`;
   // The header text is inset on the avatar's side so it never runs under the photo.
   const avatarInset = `calc(${horizontalPad} + ${avatarSize + 12}px)`;
   const headerPadLeft = showAvatar && avatarPosition === "left" ? avatarInset : horizontalPad;

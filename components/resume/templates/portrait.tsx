@@ -111,8 +111,8 @@ export function PortraitTemplate({
   const avatarInitialsBg = (design.avatarInitialsBg ?? "accent") as AvatarInitialsBg;
   const showAvatar = avatarMode !== "off";
 
-  const horizontalPadX = `${Math.max(marginX, 0.5)}in`;
-  const verticalPadY = `${Math.max(marginY, 0.5)}in`;
+  const horizontalPadX = `${Math.max(marginX, 0.3)}in`;
+  const verticalPadY = `${Math.max(marginY, 0.3)}in`;
   // Pin the page bg to paper size so export/print never shows white in empty regions.
   const paperHeight = design.paperSize === "letter" ? "11in" : "297mm";
 

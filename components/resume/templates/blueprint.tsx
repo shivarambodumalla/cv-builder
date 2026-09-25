@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./classic";
+import { FONT_WEIGHT_MAP } from "@/lib/resume/types";
 import { SkillsItems } from "./skills-renderer";
 
 function getInitials(name: string): string {
@@ -663,8 +664,8 @@ export function Blueprint({
         <div
           style={{
             background: headerBg,
-            paddingLeft: `${Math.max(marginX, 0.5)}in`,
-            paddingRight: `${Math.max(marginX, 0.5)}in`,
+            paddingLeft: `${Math.max(marginX, 0.3)}in`,
+            paddingRight: `${Math.max(marginX, 0.3)}in`,
             paddingTop: 18,
             paddingBottom: 18,
             display: "flex",
@@ -714,7 +715,7 @@ export function Blueprint({
               }}
             >
               {first && (
-                <span style={{ fontWeight: 400 }}>{first}</span>
+                <span style={{ fontWeight: Math.min(400, FONT_WEIGHT_MAP[design.nameWeight ?? "bold"]) }}>{first}</span>
               )}
               {last && <span style={{ fontWeight: "var(--resume-name-weight)" as unknown as number }}>{last}</span>}
             </div>
@@ -754,7 +755,7 @@ export function Blueprint({
         style={{
           display: "flex",
           gap: 20,
-          padding: `${Math.max(marginY, 0.4)}in ${Math.max(marginX, 0.5)}in`,
+          padding: `${Math.max(marginY, 0.3)}in ${Math.max(marginX, 0.3)}in`,
           alignItems: "flex-start",
         }}
       >
@@ -820,7 +821,7 @@ export function Blueprint({
           style={{
             display: "flex",
             gap: 12,
-            padding: `0 ${Math.max(marginX, 0.5)}in ${Math.max(marginY, 0.4)}in`,
+            padding: `0 ${Math.max(marginX, 0.3)}in ${Math.max(marginY, 0.3)}in`,
           }}
         >
           {footerBoxes.map((box, i) => (
