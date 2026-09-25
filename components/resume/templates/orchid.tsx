@@ -741,9 +741,15 @@ export function OrchidTemplate({
           );
         })}
 
-        {/* Decorative navy wedge anchored to bottom-right */}
+      </main>
+
+        {/* Decorative navy wedge anchored to bottom-right. On screen the
+            preview is one continuous strip, so it sits at the end of the
+            page strip; in print a fixed box repeats at the foot of every page. */}
+        <style>{`@media print { [data-orchid-wedge] { position: fixed; } }`}</style>
         <div
           aria-hidden="true"
+          data-orchid-wedge=""
           style={{
             position: "absolute",
             right: 0,
@@ -755,7 +761,6 @@ export function OrchidTemplate({
             pointerEvents: "none",
           }}
         />
-      </main>
     </div>
   );
 }

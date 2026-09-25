@@ -352,6 +352,8 @@ Two reset mechanisms coexist:
 - POST /api/cv/export/pdf -> lib/pdf/html-to-pdf.ts (inline rendering, no child process)
 - Free: 3 PDF downloads per 7-day rolling window, no watermark. Pro: unlimited, no watermark.
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
+- Multi-page painting (lib/pdf/html-to-pdf.ts): Chromium clips column backgrounds to content height and never paints the canvas into `@page` margins. The pipeline folds page-spanning flex/grid columns (fills + divider borders) into one gradient, promotes it to the `<html>` canvas, and paints the pages-2+ top margin via a Puppeteer header template (laid out 20px below the page edge, hence the nested offset box). Per-page decorations (Orchid wedge) use `@media print { position: fixed }` and are hoisted to `<body>` so Chromium repeats them on every page.
+- Print keep-together rules live in template-renderer.tsx: the `<style>` must use dangerouslySetInnerHTML — React escapes `>` in a text child, which a `<style>` element does not decode, silently killing child-combinator selectors.
 
 ## Blank Template Downloads (.docx)
 

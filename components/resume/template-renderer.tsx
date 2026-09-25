@@ -241,7 +241,9 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
 
   return (
     <div style={cssVars as React.CSSProperties}>
-      <style>{`
+      {/* dangerouslySetInnerHTML: React would escape the child combinator
+          (">") as &gt;, which a <style> element does not decode. */}
+      <style dangerouslySetInnerHTML={{ __html: `
         [data-resume-section-title] {
           page-break-after: avoid;
           break-after: avoid;
@@ -264,6 +266,15 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
           page-break-before: avoid;
           break-before: avoid;
         }
+        /* Everything above the bullet list (role, company, dates, location)
+           is the entry header: never split it and never leave it behind at
+           the foot of a page. */
+        [data-resume-entry] > :not(ul):not(ol):not(:has(li)) {
+          page-break-inside: avoid;
+          break-inside: avoid;
+          page-break-after: avoid;
+          break-after: avoid;
+        }
         [data-page-break-before] {
           page-break-before: always;
           break-before: page;
@@ -272,7 +283,7 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
           orphans: 2;
           widows: 2;
         }
-      `}</style>
+      ` }} />
       <Template
         content={content}
         design={design}

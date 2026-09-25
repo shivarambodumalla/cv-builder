@@ -158,63 +158,95 @@ ${templateHtml}
       // Font loading failure must not abort PDF export — system fallbacks apply.
     }
 
-    // Generic fix: Chromium's print/PDF renderer can clip flex-item backgrounds to the item's
-    // intrinsic (content) height rather than its flex-stretched height, causing sidebar/column
-    // backgrounds to vanish wherever the shorter column's content ends — on any page.
-    // Solution: detect all wide horizontal flex containers, build a linear-gradient from the
-    // children's resolved background-colors, apply it to the container, and clear the children.
-    // This runs after font loading so computed widths are stable.
+    // Generic fix: Chromium's print/PDF renderer clips column backgrounds to
+    // the column's own content height rather than its stretched height, so a
+    // sidebar background (or a column divider drawn as a border) vanishes
+    // wherever the shorter column's content ends — on any page.
+    // Solution: find page-spanning column containers (a single-row flex or
+    // grid), build a linear-gradient from the children's resolved background
+    // colours and column borders, paint it on the container and clear the
+    // children. Runs after font loading so computed widths are stable.
     await page.evaluate(() => {
       const root = document.querySelector("body > div");
       if (!root) return;
 
-      function fixFlexColumnBg(el: Element) {
-        const cs = getComputedStyle(el as HTMLElement);
-        if (cs.display !== "flex" || cs.flexDirection === "column") return;
+      const TRANSPARENT = "rgba(0, 0, 0, 0)";
+      const isColored = (c: string) => c !== TRANSPARENT && c !== "rgb(255, 255, 255)";
 
-        const containerW = (el as HTMLElement).getBoundingClientRect().width;
-        // Only target page-spanning columns (≥ 50 % viewport width). Chip rows, buttons,
-        // nav items etc. are left untouched.
-        if (containerW < window.innerWidth * 0.5) return;
+      function fixColumnBg(el: Element) {
+        const cs = getComputedStyle(el as HTMLElement);
+        const isRow =
+          (cs.display === "flex" && cs.flexDirection !== "column") ||
+          (cs.display === "grid" && cs.gridTemplateColumns !== "none");
+        if (!isRow) return;
+
+        const box = (el as HTMLElement).getBoundingClientRect();
+        // Only target page-spanning columns (≥ 50 % viewport width). Chip rows,
+        // buttons, nav items etc. are left untouched.
+        if (box.width < window.innerWidth * 0.5) return;
 
         const kids = Array.from(el.children).filter(
           (k) => getComputedStyle(k as HTMLElement).display !== "none"
         ) as HTMLElement[];
         if (kids.length < 2) return;
+        // A grid laid out as several rows (e.g. quadrants) is not a column split.
+        const tops = kids.map((k) => k.getBoundingClientRect().top);
+        if (Math.max(...tops) - Math.min(...tops) > 1) return;
 
-        const stops: string[] = [];
-        let pos = 0;
+        type Seg = { from: number; to: number; color: string };
+        const segs: Seg[] = [];
         let hasColor = false;
 
         kids.forEach((kid) => {
-          const bg = getComputedStyle(kid).backgroundColor;
-          const pct = (kid.getBoundingClientRect().width / containerW) * 100;
-
-          // Transparent = rgba(0,0,0,0); white = rgb(255,255,255) — no gradient needed.
-          const isColored =
-            bg !== "rgba(0, 0, 0, 0)" && bg !== "rgb(255, 255, 255)";
-          if (isColored) hasColor = true;
-
-          stops.push(`${bg} ${pos.toFixed(3)}%`);
-          pos += pct;
-          stops.push(`${bg} ${pos.toFixed(3)}%`);
-
-          // Clear the child background so the parent gradient shows through.
-          kid.style.background = "transparent";
+          const kcs = getComputedStyle(kid);
+          const r = kid.getBoundingClientRect();
+          const from = r.left - box.left;
+          const to = r.right - box.left;
+          const bg = kcs.backgroundColor;
+          if (kcs.backgroundImage !== "none") return; // keep patterned children as they are
+          if (isColored(bg)) hasColor = true;
+          segs.push({ from, to, color: bg });
           kid.style.backgroundColor = "transparent";
+
+          // Column dividers drawn as borders stop with the column's content
+          // too; fold them into the gradient and hide the original.
+          const bl = parseFloat(kcs.borderLeftWidth);
+          if (bl > 0 && kcs.borderLeftStyle !== "none" && kcs.borderLeftColor !== TRANSPARENT) {
+            segs.push({ from, to: from + bl, color: kcs.borderLeftColor });
+            kid.style.borderLeftColor = "transparent";
+            hasColor = true;
+          }
+          const br = parseFloat(kcs.borderRightWidth);
+          if (br > 0 && kcs.borderRightStyle !== "none" && kcs.borderRightColor !== TRANSPARENT) {
+            segs.push({ from: to - br, to, color: kcs.borderRightColor });
+            kid.style.borderRightColor = "transparent";
+            hasColor = true;
+          }
         });
 
-        if (hasColor) {
-          (el as HTMLElement).style.background =
-            `linear-gradient(to right, ${stops.join(", ")})`;
+        if (!hasColor) return;
+        // Segments overlap (a border sits on its column's fill) and a gradient
+        // needs monotonic stops, so rebuild as non-overlapping spans where the
+        // last segment covering a span wins.
+        const edges = Array.from(new Set(segs.flatMap((sg) => [sg.from, sg.to]))).sort((a, b) => a - b);
+        const spans: string[] = [];
+        for (let i = 0; i < edges.length - 1; i++) {
+          const a = edges[i];
+          const b = edges[i + 1];
+          if (b - a < 0.01) continue;
+          const mid = (a + b) / 2;
+          let color = "transparent";
+          for (const sg of segs) if (sg.from <= mid && mid <= sg.to) color = sg.color;
+          spans.push(`${color} ${a.toFixed(2)}px`, `${color} ${b.toFixed(2)}px`);
         }
+        (el as HTMLElement).style.backgroundImage = `linear-gradient(to right, ${spans.join(", ")})`;
       }
 
       // Walk up to 4 levels from the template root.
       function walk(node: Element, depth: number) {
         if (depth === 0) return;
         Array.from(node.children).forEach((child) => {
-          fixFlexColumnBg(child);
+          fixColumnBg(child);
           walk(child, depth - 1);
         });
       }
@@ -226,11 +258,13 @@ ${templateHtml}
     // only carries a one-page min-height, so when content spills onto a further
     // page and stops part-way, Chromium paints the remainder of that page white.
     // The root element's background propagates to the canvas, which covers every
-    // printed page in full. Runs after the flex fix so a column gradient is
-    // picked up when that is what paints the page.
-    await page.evaluate(() => {
+    // printed page in full. Runs after the column fix so a column gradient is
+    // picked up when that is what paints the page. Returns the resolved canvas
+    // so the header template can paint the page-2+ top margin, which the
+    // canvas background does not reach.
+    const canvasBg = await page.evaluate(() => {
       const root = document.querySelector("body > div");
-      if (!root) return;
+      if (!root) return null;
 
       const isPainted = (cs: CSSStyleDeclaration) =>
         (cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "rgb(255, 255, 255)") ||
@@ -255,10 +289,22 @@ ${templateHtml}
       }
 
       const canvas = findCanvas(root, 4);
-      if (!canvas) return;
+      if (!canvas) return null;
       const html = document.documentElement;
       html.style.backgroundColor = canvas.backgroundColor;
       if (canvas.backgroundImage !== "none") html.style.backgroundImage = canvas.backgroundImage;
+      return { color: canvas.backgroundColor, image: canvas.backgroundImage };
+    });
+
+    // Templates mark per-page furniture (e.g. a corner decoration) with
+    // `@media print { position: fixed }`. Chromium repeats a fixed box on
+    // every printed page only when it hangs directly off the body; nested
+    // inside a fragmented column it prints on the last page alone.
+    await page.evaluate(() => {
+      const fixed = Array.from(document.body.querySelectorAll<HTMLElement>("*")).filter(
+        (el) => getComputedStyle(el).position === "fixed"
+      );
+      for (const el of fixed) document.body.appendChild(el);
     });
 
     // Linkify emails and URLs so they are clickable in the exported PDF.
@@ -295,6 +341,22 @@ ${templateHtml}
       }
     });
 
+    // Chromium clips page content and the canvas background to the page area,
+    // so the marginY band at the top of pages 2+ stays white. The header box
+    // is that band: fill it with the resolved canvas. On page 1 the box is
+    // 0 high (@page :first), so nothing shows there. Chromium lays the header
+    // template out 20px below the page edge (measured, constant across margin
+    // sizes), so the paint layer is pulled up by that much inside a box that
+    // still takes the header's height.
+    const HEADER_TEMPLATE_OFFSET_PX = 20;
+    const headerTemplate = canvasBg
+      ? `<div style="position:relative;width:100%;height:100%;margin:0;padding:0">` +
+        `<div style="position:absolute;left:0;top:-${HEADER_TEMPLATE_OFFSET_PX}px;width:100%;height:100%;` +
+        `background-color:${canvasBg.color};` +
+        (canvasBg.image !== "none" ? `background-image:${canvasBg.image};` : "") +
+        `-webkit-print-color-adjust:exact;print-color-adjust:exact"></div></div>`
+      : "<span></span>";
+
     const pdfBuffer = await page.pdf({
       width: paper.width,
       height: paper.height,
@@ -302,8 +364,8 @@ ${templateHtml}
         ? { top: "0", right: "0", bottom: "20px", left: "0" }
         : { top: "0", right: "0", bottom: "0", left: "0" },
       printBackground: true,
-      displayHeaderFooter: watermark,
-      headerTemplate: "<span></span>",
+      displayHeaderFooter: watermark || Boolean(canvasBg),
+      headerTemplate,
       footerTemplate: watermark
         ? '<div style="width:100%;text-align:center;font-size:7px;color:#bbb;font-family:system-ui;">Optimised with CVEdge · thecvedge.com</div>'
         : "<span></span>",

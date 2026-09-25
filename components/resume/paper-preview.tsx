@@ -247,7 +247,7 @@ export function PaperPreview({
           return (
             <div
               key={i}
-              className="absolute pointer-events-auto"
+              className="absolute pointer-events-auto -translate-y-1/2"
               style={{ top: b.offsetY, left: b.left, width: b.width, zIndex: 10 }}
             >
               <div className="relative flex items-center py-2">
