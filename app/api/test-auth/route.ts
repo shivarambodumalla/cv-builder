@@ -23,32 +23,45 @@ export async function GET() {
   const testEmail = "test@cvedge.test";
   const testPassword = "TestPassword123!";
 
-  // Step 1: Ensure test user exists with password (via admin client)
-  const admin = createClient(supabaseUrl, serviceRoleKey);
-  const { data: users } = await admin.auth.admin.listUsers();
-  const testUser = users?.users?.find((u) => u.email === testEmail);
+  // Step 1: Sign in directly. Only fall back to creating or resetting the
+  // account when that fails — listUsers() is paged (50 per page), so scanning
+  // it first misses the test user on any database with more than 50 accounts
+  // and the subsequent createUser() fails with "already registered".
+  const anonClient = createClient(supabaseUrl, supabaseAnonKey);
+  const signIn = () =>
+    anonClient.auth.signInWithPassword({ email: testEmail, password: testPassword });
 
-  if (!testUser) {
-    const { error } = await admin.auth.admin.createUser({
+  let { data: signInData, error: signInError } = await signIn();
+
+  if (signInError || !signInData.session) {
+    const admin = createClient(supabaseUrl, serviceRoleKey);
+    const { error: createError } = await admin.auth.admin.createUser({
       email: testEmail,
       password: testPassword,
       email_confirm: true,
       user_metadata: { full_name: "Arjun Mehta" },
     });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  } else {
-    await admin.auth.admin.updateUserById(testUser.id, {
-      password: testPassword,
-      email_confirm: true,
-    });
-  }
 
-  // Step 2: Sign in with password to get tokens
-  const anonClient = createClient(supabaseUrl, supabaseAnonKey);
-  const { data: signInData, error: signInError } = await anonClient.auth.signInWithPassword({
-    email: testEmail,
-    password: testPassword,
-  });
+    if (createError) {
+      // Account exists with a different password: find it across pages and reset.
+      let userId: string | undefined;
+      for (let page = 1; page <= 50 && !userId; page++) {
+        const { data } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+        if (!data?.users?.length) break;
+        userId = data.users.find((u) => u.email === testEmail)?.id;
+      }
+      if (!userId) {
+        return NextResponse.json({ error: createError.message }, { status: 500 });
+      }
+      const { error: resetError } = await admin.auth.admin.updateUserById(userId, {
+        password: testPassword,
+        email_confirm: true,
+      });
+      if (resetError) return NextResponse.json({ error: resetError.message }, { status: 500 });
+    }
+
+    ({ data: signInData, error: signInError } = await signIn());
+  }
 
   if (signInError || !signInData.session) {
     return NextResponse.json({ error: `Sign in failed: ${signInError?.message}` }, { status: 500 });

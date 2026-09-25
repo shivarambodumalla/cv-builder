@@ -223,6 +223,45 @@ ${templateHtml}
       walk(root, 4);
     });
 
+    // Promote the page canvas background to the root element. The template root
+    // only carries a one-page min-height, so when content spills onto a further
+    // page and stops part-way, Chromium paints the remainder of that page white.
+    // The root element's background propagates to the canvas, which covers every
+    // printed page in full. Runs after the flex fix so a column gradient is
+    // picked up when that is what paints the page.
+    await page.evaluate(() => {
+      const root = document.querySelector("body > div");
+      if (!root) return;
+
+      const isPainted = (cs: CSSStyleDeclaration) =>
+        (cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "rgb(255, 255, 255)") ||
+        cs.backgroundImage !== "none";
+
+      // Shallowest element that spans the whole first page and paints a background.
+      function findCanvas(node: Element, depth: number): CSSStyleDeclaration | null {
+        if (depth === 0) return null;
+        for (const child of Array.from(node.children)) {
+          const r = child.getBoundingClientRect();
+          const spansPage =
+            r.top <= 1 && r.left <= 1 &&
+            r.width >= window.innerWidth * 0.98 &&
+            r.bottom >= window.innerHeight - 1;
+          if (!spansPage) continue;
+          const cs = getComputedStyle(child);
+          if (isPainted(cs)) return cs;
+          const deeper = findCanvas(child, depth - 1);
+          if (deeper) return deeper;
+        }
+        return null;
+      }
+
+      const canvas = findCanvas(root, 4);
+      if (!canvas) return;
+      const html = document.documentElement;
+      html.style.backgroundColor = canvas.backgroundColor;
+      if (canvas.backgroundImage !== "none") html.style.backgroundImage = canvas.backgroundImage;
+    });
+
     // Linkify emails and URLs so they are clickable in the exported PDF.
     await page.evaluate(() => {
       const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
