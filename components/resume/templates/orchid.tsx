@@ -52,7 +52,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
           height: size,
           borderRadius: radius,
           objectFit: "cover",
-          border: `2px solid ${accent}33`,
+          border: `2px solid color-mix(in srgb, ${accent} 20%, transparent)`,
           flexShrink: 0,
         }}
       />
@@ -62,7 +62,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
   const onAccent = initialsBg === "accent";
   const bg = onAccent ? accent : "#ffffff";
   const fg = onAccent ? "#ffffff" : accent;
-  const borderColor = onAccent ? accent : `${accent}55`;
+  const borderColor = onAccent ? accent : `color-mix(in srgb, ${accent} 33%, transparent)`;
 
   return (
     <div
@@ -705,7 +705,7 @@ export function OrchidTemplate({
           return (
             <div
               key={key}
-              data-resume-section=""
+              data-resume-section={key}
               {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
               style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
             >
@@ -732,7 +732,7 @@ export function OrchidTemplate({
           return (
             <div
               key={key}
-              data-resume-section=""
+              data-resume-section={key}
               {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
               style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
             >

@@ -131,7 +131,7 @@ export function ClassicSerifTemplate({
         >
           {contact.name}
         </div>
-        {targetTitle.title && (
+        {visibleSections.includes("targetTitle") && targetTitle.title && (
           <div
             style={{
               fontSize: "calc(var(--resume-body-size) + 1pt)",
@@ -473,7 +473,7 @@ export function ClassicSerifTemplate({
         return (
           <div
             key={key}
-            data-resume-section=""
+            data-resume-section={key}
             {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
             style={{
               marginTop: i > 0 && key !== "targetTitle" ? `${sectionSpacing + 4}px` : undefined,

@@ -43,6 +43,22 @@ export function ColumnBase({
     (k) => visibleSections.includes(k as typeof visibleSections[number]) && !leftSet.has(k)
   );
 
+  /* ── Section wrapper: page-break markers + print break rules ── */
+  const wrapSection = (key: string, node: React.ReactNode) => {
+    if (!node) return null;
+    const hasPageBreak = pageBreaks.includes(key);
+    return (
+      <div
+        key={key}
+        data-resume-section={key}
+        {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
+        style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
+      >
+        {node}
+      </div>
+    );
+  };
+
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
     const e = isCurrent ? "Present" : formatDate(end);
@@ -57,8 +73,6 @@ export function ColumnBase({
     { label: "LinkedIn", value: contact.linkedin },
     { label: "Website", value: contact.website },
   ].filter((f) => f.value);
-
-  const allSkills = skills.categories.flatMap((cat) => cat.skills);
 
   const nameParts = contact.name.trim().split(/\s+/);
   const firstName = nameParts.slice(0, -1).join(" ") || nameParts[0];
@@ -239,7 +253,7 @@ export function ColumnBase({
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Awards")}
             {awards.items.map((item, i) => (
-              <div key={i} style={{ marginBottom: i < awards.items.length - 1 ? 8 : 0 }}>
+              <div key={i} data-resume-entry="" style={{ marginBottom: i < awards.items.length - 1 ? 8 : 0 }}>
                 <div style={{ fontSize: "calc(var(--resume-body-size) + 0.5pt)", fontWeight: 700, color: "#0F172A", fontFamily: "var(--resume-font)" }}>{item.title}</div>
                 {item.issuer && <div style={{ fontSize: "var(--resume-body-size)", color: "#64748B", fontFamily: "var(--resume-font)" }}>{item.issuer}</div>}
               </div>
@@ -252,7 +266,7 @@ export function ColumnBase({
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Publications")}
             {publications.items.map((item, i) => (
-              <div key={i} style={{ marginBottom: i < publications.items.length - 1 ? 8 : 0 }}>
+              <div key={i} data-resume-entry="" style={{ marginBottom: i < publications.items.length - 1 ? 8 : 0 }}>
                 <div style={{ fontSize: "calc(var(--resume-body-size) + 0.5pt)", fontWeight: 700, color: "#0F172A", fontFamily: "var(--resume-font)" }}>{item.title}</div>
                 {item.publisher && <div style={{ fontSize: "var(--resume-body-size)", color: "#64748B", fontFamily: "var(--resume-font)" }}>{item.publisher}</div>}
               </div>
@@ -335,9 +349,7 @@ export function ColumnBase({
       case "experience":
         if (experience.items.length === 0) return null;
         return (
-          <div key={key} data-resume-section="" style={{ marginBottom: `${sectionSpacing}px` }}
-            {...(pageBreaks.includes("experience") ? { "data-page-break-before": "" } : {})}
-          >
+          <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Experience")}
             {experience.items.map((item, i) => (
               <div key={i} data-resume-entry="" style={{ marginBottom: i < experience.items.length - 1 ? `${sectionSpacing * 0.75}px` : 0 }}>
@@ -353,8 +365,8 @@ export function ColumnBase({
                 {item.bullets.filter(Boolean).length > 0 && (
                   <div>
                     {item.bullets.filter(Boolean).map((bullet, j) => (
-                      <div key={j} data-resume-bullet="" style={{ display: "flex", gap: 6, marginBottom: 3 }}>
-                        <span style={{ color: "var(--resume-accent)", flexShrink: 0 }}>{bulletChar || "•"}</span>
+                      <div key={j} data-resume-bullet="" style={{ display: "flex", gap: bulletChar ? 6 : 0, marginBottom: 3 }}>
+                        {bulletChar && <span style={{ color: "var(--resume-accent)", flexShrink: 0 }}>{bulletChar}</span>}
                         <span style={{ fontSize: "var(--resume-body-size)", color: "#374151", lineHeight: "var(--resume-line-spacing)", flex: 1, fontFamily: "var(--resume-font)" }}>{bullet}</span>
                       </div>
                     ))}
@@ -425,9 +437,7 @@ export function ColumnBase({
       case "awards":
         if (awards.items.length === 0) return null;
         return (
-          <div key={key} data-resume-section="" style={{ marginBottom: `${sectionSpacing}px` }}
-            {...(pageBreaks.includes("awards") ? { "data-page-break-before": "" } : {})}
-          >
+          <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Awards")}
             {awards.items.map((item, i) => (
               <div key={i} data-resume-entry="" style={{ marginBottom: i < awards.items.length - 1 ? 8 : 0 }}>
@@ -444,9 +454,7 @@ export function ColumnBase({
       case "publications":
         if (publications.items.length === 0) return null;
         return (
-          <div key={key} data-resume-section="" style={{ marginBottom: `${sectionSpacing}px` }}
-            {...(pageBreaks.includes("publications") ? { "data-page-break-before": "" } : {})}
-          >
+          <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sectionLabel("Publications")}
             {publications.items.map((item, i) => (
               <div key={i} data-resume-entry="" style={{ marginBottom: i < publications.items.length - 1 ? 8 : 0 }}>
@@ -467,9 +475,7 @@ export function ColumnBase({
 
   function renderRightBulletSection(key: string, label: string, items: any[]) {
     return (
-      <div key={key} data-resume-section="" style={{ marginBottom: `${sectionSpacing}px` }}
-        {...(pageBreaks.includes(key) ? { "data-page-break-before": "" } : {})}
-      >
+      <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
         {sectionLabel(label)}
         {items.map((item: any, i: number) => (
           <div key={i} data-resume-entry="" style={{ marginBottom: i < items.length - 1 ? `${sectionSpacing * 0.75}px` : 0 }}>
@@ -487,8 +493,8 @@ export function ColumnBase({
             {item.bullets && item.bullets.filter(Boolean).length > 0 && (
               <div>
                 {item.bullets.filter(Boolean).map((bullet: string, j: number) => (
-                  <div key={j} data-resume-bullet="" style={{ display: "flex", gap: 6, marginBottom: 3 }}>
-                    <span style={{ color: "var(--resume-accent)", flexShrink: 0 }}>{bulletChar || "•"}</span>
+                  <div key={j} data-resume-bullet="" style={{ display: "flex", gap: bulletChar ? 6 : 0, marginBottom: 3 }}>
+                    {bulletChar && <span style={{ color: "var(--resume-accent)", flexShrink: 0 }}>{bulletChar}</span>}
                     <span style={{ fontSize: "var(--resume-body-size)", color: "#374141", lineHeight: "var(--resume-line-spacing)", flex: 1, fontFamily: "var(--resume-font)" }}>{bullet}</span>
                   </div>
                 ))}
@@ -523,7 +529,7 @@ export function ColumnBase({
         fontFamily: "var(--resume-font)",
         overflow: "hidden", overflowWrap: "break-word" as const, wordBreak: "break-word" as const,
       }}>
-        {leftOrdered.map((key) => renderLeftSection(key))}
+        {leftOrdered.map((key) => wrapSection(key, renderLeftSection(key)))}
       </div>
 
       {/* RIGHT COLUMN */}
@@ -532,7 +538,7 @@ export function ColumnBase({
         padding: `${marginY}in ${marginX * 0.7}in`,
         fontFamily: "var(--resume-font)",
       }}>
-        {rightOrdered.map((key) => renderRightSection(key))}
+        {rightOrdered.map((key) => wrapSection(key, renderRightSection(key)))}
       </div>
     </div>
   );

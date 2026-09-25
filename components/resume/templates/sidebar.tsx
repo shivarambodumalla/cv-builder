@@ -24,6 +24,8 @@ function SidebarLayout({
   bulletChar,
   visibleSections,
   sectionSpacing = 16,
+  pageBreaks = [],
+  contactSeparator = " | ",
   side = "left",
 }: TemplateProps & { side?: "left" | "right" }) {
   const {
@@ -43,6 +45,22 @@ function SidebarLayout({
 
   const hasSidebar = sidebarOrdered.length > 0;
 
+  /* ── Section wrapper: page-break markers + print break rules ── */
+  const wrapSection = (key: string, node: React.ReactNode) => {
+    if (!node) return null;
+    const hasPageBreak = pageBreaks.includes(key);
+    return (
+      <div
+        key={key}
+        data-resume-section={key}
+        {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
+        style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
+      >
+        {node}
+      </div>
+    );
+  };
+
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
     const e = isCurrent ? "Present" : formatDate(end);
@@ -56,7 +74,7 @@ function SidebarLayout({
 
   /* ── Sidebar heading (white on accent) ── */
   const sLabel = (text: string) => (
-    <div style={{
+    <div data-resume-section-title="" style={{
       fontSize: "var(--resume-heading-size)",
       fontWeight: "var(--resume-heading-weight)" as unknown as number,
       color: "rgba(255,255,255,0.5)",
@@ -88,7 +106,7 @@ function SidebarLayout({
       <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
         {sLabel(label)}
         {items.map((item: any, i: number) => (
-          <div key={i} style={{ marginBottom: i < items.length - 1 ? "8px" : 0 }}>
+          <div key={i} data-resume-entry="" style={{ marginBottom: i < items.length - 1 ? "8px" : 0 }}>
             <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 700, color: "white", fontFamily: "var(--resume-font)" }}>
               {item.name || item.role || item.title || ""}
             </div>
@@ -124,7 +142,7 @@ function SidebarLayout({
       <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
         {sLabel(label)}
         {items.map((item, i) => (
-          <div key={i} style={{ marginBottom: "6px" }}>
+          <div key={i} data-resume-entry="" style={{ marginBottom: "6px" }}>
             <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 700, color: "white", fontFamily: "var(--resume-font)" }}>{item.primary}</div>
             {item.secondary && (
               <div style={{ fontSize: "var(--resume-body-size)", color: "rgba(255,255,255,0.5)", fontFamily: "var(--resume-font)" }}>{item.secondary}</div>
@@ -248,7 +266,7 @@ function SidebarLayout({
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sLabel("Education")}
             {education.items.map((item, i) => (
-              <div key={i} style={{ marginBottom: "8px" }}>
+              <div key={i} data-resume-entry="" style={{ marginBottom: "8px" }}>
                 <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 600, color: "rgba(255,255,255,0.85)", lineHeight: 1.5, fontFamily: "var(--resume-font)" }}>{item.institution}</div>
                 <div style={{ fontSize: "var(--resume-body-size)", color: "rgba(255,255,255,0.6)", lineHeight: 1.5, fontFamily: "var(--resume-font)" }}>
                   {item.degree}{item.field ? ` in ${item.field}` : ""}
@@ -267,7 +285,7 @@ function SidebarLayout({
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sLabel("Certifications")}
             {certifications.items.map((item, i) => (
-              <div key={i} style={{ marginBottom: "6px" }}>
+              <div key={i} data-resume-entry="" style={{ marginBottom: "6px" }}>
                 <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 700, color: "white", fontFamily: "var(--resume-font)" }}>{item.name}</div>
                 {item.issuer && (
                   <div style={{ fontSize: "var(--resume-body-size)", color: "rgba(255,255,255,0.5)", fontFamily: "var(--resume-font)" }}>
@@ -285,7 +303,7 @@ function SidebarLayout({
           <div key={key} style={{ marginBottom: `${sectionSpacing}px` }}>
             {sLabel("Experience")}
             {experience.items.map((item, i) => (
-              <div key={i} style={{ marginBottom: i < experience.items.length - 1 ? "10px" : 0 }}>
+              <div key={i} data-resume-entry="" style={{ marginBottom: i < experience.items.length - 1 ? "10px" : 0 }}>
                 <div style={{ fontSize: "var(--resume-body-size)", fontWeight: 700, color: "white", fontFamily: "var(--resume-font)" }}>{item.company}</div>
                 <div style={{ fontSize: "var(--resume-body-size)", color: "rgba(255,255,255,0.7)", fontWeight: 500, fontFamily: "var(--resume-font)" }}>{item.role}</div>
                 <div style={{ fontSize: "calc(var(--resume-body-size) - 1pt)", color: "rgba(255,255,255,0.4)" }}>
@@ -341,7 +359,7 @@ function SidebarLayout({
             )}
             {contactItems.length > 0 && (
               <div style={{ fontSize: "var(--resume-body-size)", color: "#666", lineHeight: 1.8, fontFamily: "var(--resume-font)" }}>
-                {contactItems.join(" | ")}
+                {contactItems.join(contactSeparator)}
               </div>
             )}
           </div>
@@ -477,13 +495,13 @@ function SidebarLayout({
 
   const sidebarContent = (
     <div style={{ width: "35%", padding: "24px 18px", flexShrink: 0 }}>
-      {sidebarOrdered.map((key) => renderSidebarSection(key))}
+      {sidebarOrdered.map((key) => wrapSection(key, renderSidebarSection(key)))}
     </div>
   );
 
   const mainContent = (
     <div style={{ flex: 1, padding: "24px 22px", fontFamily: "var(--resume-font)" }}>
-      {mainOrdered.map((key) => renderMainSection(key))}
+      {mainOrdered.map((key) => wrapSection(key, renderMainSection(key)))}
     </div>
   );
 

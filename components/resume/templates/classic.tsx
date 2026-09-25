@@ -89,7 +89,7 @@ export function ClassicTemplate({
         {contactItems.length > 0 && (
           <div
             style={{
-              fontSize: "9pt",
+              fontSize: "calc(var(--resume-body-size) - 1pt)",
               color: "#555",
               marginTop: "6px",
               lineHeight: "var(--resume-line-spacing)",
@@ -159,7 +159,7 @@ export function ClassicTemplate({
                     </div>
                   )}
                 </div>
-                <div style={{ color: "#777", whiteSpace: "nowrap", fontSize: "8.5pt", textAlign: "right", minWidth: "90px" }}>
+                <div style={{ color: "#777", whiteSpace: "nowrap", fontSize: "calc(var(--resume-body-size) - 1.5pt)", textAlign: "right", minWidth: "90px" }}>
                   {renderDateRange(item.startDate, item.endDate, item.isCurrent)}
                 </div>
               </div>
@@ -212,7 +212,7 @@ export function ClassicTemplate({
                     <div style={{ color: "#555" }}>{item.institution}</div>
                   )}
                 </div>
-                <div style={{ color: "#777", whiteSpace: "nowrap", fontSize: "8.5pt", textAlign: "right", minWidth: "90px" }}>
+                <div style={{ color: "#777", whiteSpace: "nowrap", fontSize: "calc(var(--resume-body-size) - 1.5pt)", textAlign: "right", minWidth: "90px" }}>
                   {renderDateRange(item.startDate, item.endDate)}
                 </div>
               </div>
@@ -457,7 +457,7 @@ export function ClassicTemplate({
         return (
           <div
             key={key}
-            data-resume-section=""
+            data-resume-section={key}
             {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
             style={{
               marginTop: i > 0 && key !== "targetTitle" ? `${sectionSpacing}px` : undefined,

@@ -179,7 +179,7 @@ export function PortraitTemplate({
       <ul
         style={{
           margin: "6px 0 0 0",
-          paddingLeft: 14,
+          paddingLeft: bulletChar ? 14 : 0,
           listStyle: "none",
           fontFamily: "var(--resume-font)",
           fontSize: "var(--resume-body-size)",
@@ -208,7 +208,7 @@ export function PortraitTemplate({
   // ── LEFT COLUMN SECTIONS ──
   const experienceBlock =
     experience.items.length > 0 ? (
-      <div key="experience" data-resume-section="">
+      <div key="experience" data-resume-section="experience">
         {sectionHeading("Experience")}
         {experience.items.map((item, i) => (
           <div
@@ -248,7 +248,7 @@ export function PortraitTemplate({
 
   const educationBlock =
     education.items.length > 0 ? (
-      <div key="education" data-resume-section="">
+      <div key="education" data-resume-section="education">
         {sectionHeading("Education")}
         {education.items.map((item, i) => (
           <div
@@ -275,7 +275,7 @@ export function PortraitTemplate({
 
   const certificationsBlock =
     certifications.items.length > 0 ? (
-      <div key="certifications" data-resume-section="">
+      <div key="certifications" data-resume-section="certifications">
         {sectionHeading("Certifications")}
         {certifications.items.map((item, i) => (
           <div
@@ -304,7 +304,7 @@ export function PortraitTemplate({
 
   const awardsBlock =
     awards.items.length > 0 ? (
-      <div key="awards" data-resume-section="">
+      <div key="awards" data-resume-section="awards">
         {sectionHeading("Awards")}
         {awards.items.map((item, i) => (
           <div
@@ -346,7 +346,7 @@ export function PortraitTemplate({
 
   const projectsBlock =
     projects.items.length > 0 ? (
-      <div key="projects" data-resume-section="">
+      <div key="projects" data-resume-section="projects">
         {sectionHeading("Projects")}
         {projects.items.map((item, i) => (
           <div
@@ -384,7 +384,7 @@ export function PortraitTemplate({
 
   const volunteeringBlock =
     volunteering.items.length > 0 ? (
-      <div key="volunteering" data-resume-section="">
+      <div key="volunteering" data-resume-section="volunteering">
         {sectionHeading("Volunteering")}
         {volunteering.items.map((item, i) => (
           <div
@@ -422,7 +422,7 @@ export function PortraitTemplate({
 
   const publicationsBlock =
     publications.items.length > 0 ? (
-      <div key="publications" data-resume-section="">
+      <div key="publications" data-resume-section="publications">
         {sectionHeading("Publications")}
         {publications.items.map((item, i) => (
           <div
@@ -465,7 +465,7 @@ export function PortraitTemplate({
   // Skills rendered via shared SkillsItems component
   const skillsBlock =
     skills.categories.length > 0 ? (
-      <div key="skills" data-resume-section="">
+      <div key="skills" data-resume-section="skills">
         {sectionHeading("Skills")}
         <SkillsItems
           categories={skills.categories}

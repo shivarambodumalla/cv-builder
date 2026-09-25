@@ -40,7 +40,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
           height: size,
           borderRadius: radius,
           objectFit: "cover",
-          border: `2px solid ${accent}22`,
+          border: `2px solid color-mix(in srgb, ${accent} 13%, transparent)`,
           flexShrink: 0,
         }}
       />
@@ -50,7 +50,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
   const onAccent = initialsBg === "accent";
   const bg = onAccent ? accent : "#ffffff";
   const fg = onAccent ? "#ffffff" : accent;
-  const borderColor = onAccent ? `${accent}` : `${accent}66`;
+  const borderColor = onAccent ? accent : `color-mix(in srgb, ${accent} 40%, transparent)`;
 
   return (
     <div
@@ -205,7 +205,11 @@ export function AuroraTemplate({
     );
   };
 
-  const leftRenderers: Record<string, () => React.ReactNode> = {
+  // One map for every body section: the designer panel can move any section
+  // between columns via design.sidebarSections, so each key must render in
+  // whichever column it lands. Entry styles are column-agnostic (stacked
+  // title/meta/bullets), so they sit fine in both the 62% and 38% columns.
+  const sectionRenderers: Record<string, () => React.ReactNode> = {
     summary: () =>
       summary.content ? (
         <div key="summary">
@@ -328,9 +332,6 @@ export function AuroraTemplate({
           ))}
         </div>
       ) : null,
-  };
-
-  const rightRenderers: Record<string, () => React.ReactNode> = {
     skills: () =>
       skills.categories.length > 0 ? (
         <div key="skills">
@@ -397,10 +398,10 @@ export function AuroraTemplate({
   // index trick from giving the first VISIBLE section an unwanted top margin when
   // an earlier section rendered empty.
   const leftNodes = leftOrder
-    .map((key) => ({ key, node: leftRenderers[key]?.() }))
+    .map((key) => ({ key, node: sectionRenderers[key]?.() }))
     .filter((x): x is { key: string; node: React.ReactNode } => !!x.node);
   const rightNodes = rightOrder
-    .map((key) => ({ key, node: rightRenderers[key]?.() }))
+    .map((key) => ({ key, node: sectionRenderers[key]?.() }))
     .filter((x): x is { key: string; node: React.ReactNode } => !!x.node);
 
   const showHeader = visibleSections.includes("contact");
@@ -511,11 +512,19 @@ export function AuroraTemplate({
             gap: `${sectionSpacing}px`,
           }}
         >
-          {rightNodes.map(({ key, node }) => (
-            <div key={key} data-resume-section="">
-              {node}
-            </div>
-          ))}
+          {rightNodes.map(({ key, node }) => {
+            const hasPageBreak = pageBreaks.includes(key);
+            return (
+              <div
+                key={key}
+                data-resume-section=""
+                {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
+                style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
+              >
+                {node}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

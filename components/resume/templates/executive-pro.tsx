@@ -302,7 +302,7 @@ export function ExecutiveProTemplate({
         display: "flex",
         alignItems: "center",
         gap: 9,
-        marginTop: isFirst ? 0 : 22,
+        marginTop: isFirst ? 0 : "var(--resume-section-spacing)",
         marginBottom: 12,
       }}
     >
@@ -375,7 +375,7 @@ export function ExecutiveProTemplate({
   const sectionRenderers: Record<string, (isFirst: boolean) => React.ReactNode> = {
     experience: (isFirst) =>
       experience.items.length > 0 ? (
-        <div key="experience" data-resume-section="">
+        <div key="experience" data-resume-section="experience">
           {sectionHeader("experience", SECTION_TITLES.experience, isFirst)}
           {experience.items.map((item, i) => (
             <div
@@ -428,7 +428,7 @@ export function ExecutiveProTemplate({
 
     education: (isFirst) =>
       education.items.length > 0 ? (
-        <div key="education" data-resume-section="">
+        <div key="education" data-resume-section="education">
           {sectionHeader("education", SECTION_TITLES.education, isFirst)}
           {education.items.map((item, i) => (
             <div
@@ -478,7 +478,7 @@ export function ExecutiveProTemplate({
 
     skills: (isFirst) =>
       skills.categories.length > 0 ? (
-        <div key="skills" data-resume-section="">
+        <div key="skills" data-resume-section="skills">
           {sectionHeader("skills", SECTION_TITLES.skills, isFirst)}
           <SkillsItems
             categories={skills.categories}
@@ -493,7 +493,7 @@ export function ExecutiveProTemplate({
 
     awards: (isFirst) =>
       awards.items.length > 0 ? (
-        <div key="awards" data-resume-section="">
+        <div key="awards" data-resume-section="awards">
           {sectionHeader("awards", SECTION_TITLES.awards, isFirst)}
           {awards.items.map((item, i) => (
             <div
@@ -511,7 +511,7 @@ export function ExecutiveProTemplate({
                 }}
               >
                 {item.title}
-                {item.date && <span> ({item.date})</span>}
+                {item.date && <span> ({formatDate(item.date)})</span>}
               </div>
               {(item.description || item.issuer) && (
                 <div
@@ -532,7 +532,7 @@ export function ExecutiveProTemplate({
 
     certifications: (isFirst) =>
       certifications.items.length > 0 ? (
-        <div key="certifications" data-resume-section="">
+        <div key="certifications" data-resume-section="certifications">
           {sectionHeader("certifications", SECTION_TITLES.certifications, isFirst)}
           {certifications.items.map((item, i) => (
             <div
@@ -573,7 +573,7 @@ export function ExecutiveProTemplate({
 
     projects: (isFirst) =>
       projects.items.length > 0 ? (
-        <div key="projects" data-resume-section="">
+        <div key="projects" data-resume-section="projects">
           {sectionHeader("projects", SECTION_TITLES.projects, isFirst)}
           {projects.items.map((item, i) => (
             <div
@@ -624,7 +624,7 @@ export function ExecutiveProTemplate({
 
     volunteering: (isFirst) =>
       volunteering.items.length > 0 ? (
-        <div key="volunteering" data-resume-section="">
+        <div key="volunteering" data-resume-section="volunteering">
           {sectionHeader("volunteering", SECTION_TITLES.volunteering, isFirst)}
           {volunteering.items.map((item, i) => (
             <div
@@ -675,7 +675,7 @@ export function ExecutiveProTemplate({
 
     publications: (isFirst) =>
       publications.items.length > 0 ? (
-        <div key="publications" data-resume-section="">
+        <div key="publications" data-resume-section="publications">
           {sectionHeader("publications", SECTION_TITLES.publications, isFirst)}
           {publications.items.map((item, i) => (
             <div
@@ -693,7 +693,7 @@ export function ExecutiveProTemplate({
                 }}
               >
                 {item.title}
-                {item.date && <span> ({item.date})</span>}
+                {item.date && <span> ({formatDate(item.date)})</span>}
               </div>
               {item.publisher && (
                 <div
@@ -856,7 +856,7 @@ export function ExecutiveProTemplate({
                   fontFamily: "var(--resume-font)",
                   fontSize: "calc(var(--resume-body-size) + 0.5pt)",
                   color: bodyText,
-                  lineHeight: 1.7,
+                  lineHeight: "calc(var(--resume-line-spacing) + 0.3)",
                   margin: 0,
                 }}
               >

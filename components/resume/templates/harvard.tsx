@@ -69,7 +69,7 @@ export function HarvardTemplate({
       <ul
         style={{
           margin: "4px 0 0 0",
-          paddingLeft: 18,
+          paddingLeft: bulletChar ? 18 : 0,
           listStyle: "none",
           fontFamily: "var(--resume-font)",
           fontSize: "var(--resume-body-size)",
@@ -335,13 +335,8 @@ export function HarvardTemplate({
         </div>
       ) : null,
 
-    skills: () => {
-      const hasSkills = skills.categories.length > 0;
-      const hasCerts = certifications.items.length > 0;
-      const hasProjects = projects.items.length > 0;
-      if (!hasSkills && !hasCerts && !hasProjects) return null;
-
-      return (
+    skills: () =>
+      skills.categories.length > 0 ? (
         <div key="skills">
           {renderSectionTitle("Skills & Interests")}
           <SkillsItems
@@ -352,48 +347,8 @@ export function HarvardTemplate({
             labelColor="#111"
             textColor="#111"
           />
-          {hasCerts &&
-            certifications.items.map((item, i) => (
-              <div
-                key={`cert-${i}`}
-                style={{
-                  fontFamily: "var(--resume-font)",
-                  fontSize: "var(--resume-body-size)",
-                  lineHeight: 1.7,
-                  color: "#111",
-                }}
-              >
-                <span style={{ fontWeight: 700 }}>Certifications: </span>
-                <span>
-                  {item.name}
-                  {item.issuer ? ` (${item.issuer})` : ""}
-                  {item.startDate
-                    ? `, ${renderDateRange(item.startDate, item.endDate, item.isCurrent)}`
-                    : ""}
-                </span>
-              </div>
-            ))}
-          {hasProjects &&
-            projects.items.map((item, i) => (
-              <div
-                key={`proj-${i}`}
-                style={{
-                  fontFamily: "var(--resume-font)",
-                  fontSize: "var(--resume-body-size)",
-                  lineHeight: 1.7,
-                  color: "#111",
-                }}
-              >
-                <span style={{ fontWeight: 700 }}>Projects: </span>
-                <span>
-                  {item.name}
-                  {item.url ? ` (${item.url})` : ""}
-                </span>
-              </div>
-            ))}
         </div>
-      );
-    },
+      ) : null,
 
     certifications: () =>
       certifications.items.length > 0 ? (
@@ -707,7 +662,7 @@ export function HarvardTemplate({
         return (
           <div
             key={key}
-            data-resume-section=""
+            data-resume-section={key}
             {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
             style={{
               marginTop:

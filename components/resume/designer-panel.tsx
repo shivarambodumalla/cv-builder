@@ -1,5 +1,6 @@
 "use client";
 
+import { defaultSidebarSections } from "@/lib/resume/defaults";
 import React from "react";
 import {
   AlignLeft, AlignCenter, AlignRight,
@@ -1084,7 +1085,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   // options that have no visual effect.
   const CONTACT_SEPARATOR_TEMPLATES = new Set<string>([
     "classic", "classic-serif", "sharp", "minimal", "executive",
-    "sidebar", "sidebar-right", "two-column", "blueprint", "wentworth", "orchid",
+    "sidebar", "sidebar-right", "blueprint", "wentworth", "orchid",
   ]);
   const HEADER_ALIGNMENT_TEMPLATES = new Set<string>([
     "classic", "classic-serif", "sharp", "minimal", "executive",
@@ -1166,7 +1167,6 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     update("avatarMode", newMode);
   }
 
-  const COLUMN_LEFT_DEFAULT = ["contact", "targetTitle", "skills", "education", "certifications"];
 
   // Per-template fixed-header keys + right-column defaults. Must mirror the
   // corresponding template component so the designer panel never hides a
@@ -1174,27 +1174,18 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   const HEADER_KEYS_BY_TEMPLATE: Record<string, string[]> = {
     "two-column": ["contact", "targetTitle", "summary"],
     aurora: ["contact", "targetTitle"],
+    "electric-lilac": ["contact", "targetTitle", "summary"],
     "executive-pro": ["contact", "targetTitle", "summary"],
     blueprint: ["contact", "targetTitle"],
     coastal: ["contact", "targetTitle", "summary"],
     portrait: ["contact", "targetTitle", "summary"],
-  };
-  const RIGHT_DEFAULT_BY_TEMPLATE: Record<string, string[]> = {
-    "two-column": ["education", "certifications", "skills"],
-    aurora: ["skills", "education", "certifications"],
-    "executive-pro": ["skills", "education", "certifications"],
-    blueprint: ["summary", "skills", "experience", "projects", "awards", "publications"],
-    coastal: ["skills", "awards", "certifications"],
-    portrait: ["skills", "certifications", "awards"],
   };
 
   const PINNED_IDENTITY_TEMPLATES = new Set<string>(["electric-lilac", "executive-sidebar", "clean-sidebar", "orchid"]);
   const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal" || design.template === "portrait";
   const headerKeysArr = HEADER_KEYS_BY_TEMPLATE[design.template] ?? ["contact", "targetTitle"];
   const headerSet = new Set(headerKeysArr);
-  const secondarySections = design.sidebarSections ?? (
-    headerOnTopLayout ? (RIGHT_DEFAULT_BY_TEMPLATE[design.template] ?? ["education", "certifications", "skills"]) : COLUMN_LEFT_DEFAULT
-  );
+  const secondarySections = design.sidebarSections ?? defaultSidebarSections(design.template);
   const secondarySet = new Set(secondarySections);
 
   let displayLeft: string[] = [], displayRight: string[] = [];
@@ -1513,7 +1504,12 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     openUpgradeModal("template_locked");
                     return;
                   }
-                  update("template", stagedTemplate!);
+                  // A new template brings its own column split.
+                  onChange({
+                    ...design,
+                    template: stagedTemplate!,
+                    sidebarSections: defaultSidebarSections(stagedTemplate!),
+                  });
                   setTemplateDialogOpen(false);
                 }}
               >
@@ -1904,7 +1900,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
             />
           </StackedRow>
 
-          {!isSidebar && design.template !== "clean-sidebar" && (
+          {!isSidebar && design.template !== "clean-sidebar" && design.template !== "electric-lilac" && (
             <>
               <StackedRow label="Horizontal margin">
                 <SliderRow

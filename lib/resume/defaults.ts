@@ -81,3 +81,32 @@ export function paperSizeForCountry(
 ): ResumeDesignSettings["paperSize"] {
   return countryCode && LETTER_COUNTRIES.has(countryCode.toUpperCase()) ? "letter" : "a4";
 }
+
+/**
+ * Default secondary-column sections per two-column template. For sidebar
+ * layouts (sidebar, sidebar-right, divide, folio, electric-lilac,
+ * executive-sidebar, clean-sidebar, orchid) this is the LEFT column; for
+ * header-on-top layouts (two-column, aurora, executive-pro, blueprint,
+ * coastal, portrait) it is the RIGHT column. The other column follows
+ * sectionOrder. Must mirror each template's own fallback constant.
+ */
+export const COLUMN_DEFAULTS_BY_TEMPLATE: Record<string, string[]> = {
+  sidebar: ["contact", "targetTitle", "skills", "education", "certifications"],
+  "sidebar-right": ["contact", "targetTitle", "skills", "education", "certifications"],
+  divide: ["contact", "targetTitle", "skills", "education", "certifications"],
+  folio: ["contact", "targetTitle", "skills", "education", "certifications"],
+  "executive-sidebar": ["contact", "targetTitle", "skills", "education", "certifications"],
+  "clean-sidebar": ["contact", "targetTitle", "skills", "education", "certifications"],
+  "electric-lilac": ["education", "skills"],
+  orchid: ["contact", "targetTitle", "skills", "summary"],
+  "two-column": ["education", "certifications", "skills"],
+  aurora: ["skills", "education", "certifications"],
+  "executive-pro": ["skills", "awards", "certifications", "publications"],
+  blueprint: ["summary", "skills", "experience", "projects", "awards", "publications"],
+  coastal: ["skills", "awards", "certifications"],
+  portrait: ["skills", "certifications", "awards"],
+};
+
+export function defaultSidebarSections(template: string): string[] {
+  return COLUMN_DEFAULTS_BY_TEMPLATE[template] ?? DEFAULT_DESIGN.sidebarSections!;
+}

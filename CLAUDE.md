@@ -155,6 +155,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 - Auto-save: 2s debounce, save on blur, sendBeacon on beforeunload
 - Resume fonts: `lib/resume/fonts.ts` (RESUME_FONTS_URL) is loaded by both the editor layout (`<ResumeFonts />`) and the PDF export so on-screen wrapping matches the PDF. Page markers (`paper-preview.tsx`) model print rules per column: entry header + first bullet stay together, breaks allowed between bullets, pages 2+ lose `marginY` of height.
 - Two-column ordering contract: for `leftIsSecondary` templates `sidebarSections` IS the left column order; for `headerOnTopLayout` templates it IS the right column order. The other column follows `sectionOrder`. Templates must render the secondary column in `sidebarSections` order, never re-sorted.
+- Per-template column defaults live in `COLUMN_DEFAULTS_BY_TEMPLATE` (lib/resume/defaults.ts). `normalizeDesignSettings` applies them when a CV has no stored `sidebarSections`, and switching template (panel or /api/cv/[id]/set-template) resets the list to the new template's default. A template's private fallback constant must match the map.
 - Active tab indicator: 2px teal accent line at top (via `data-[state=active]:before:bg-primary`)
 - Score badges on ATS/Match tabs use `bg-success`/`bg-warning`/`bg-error`
 

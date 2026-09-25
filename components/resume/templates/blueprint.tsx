@@ -275,7 +275,7 @@ export function Blueprint({
   // LEFT COLUMN RENDERERS
   const profileBlock = (
     <div key="profile" style={{ marginBottom: 0 }}>
-      <div style={labelStyle}>Profile:</div>
+      <div data-resume-section-title="" style={labelStyle}>Profile:</div>
       <div
         style={{
           fontFamily: "var(--resume-font)",
@@ -296,7 +296,7 @@ export function Blueprint({
 
   const contactInfoBlock = (
     <div key="contact-info">
-      <div style={labelStyle}>Contact Information:</div>
+      <div data-resume-section-title="" style={labelStyle}>Contact Information:</div>
       <div
         style={{
           fontFamily: "var(--resume-font)",
@@ -315,7 +315,7 @@ export function Blueprint({
   const educationBlock =
     education.items.length > 0 ? (
       <div key="education">
-        <div style={labelStyle}>Education:</div>
+        <div data-resume-section-title="" style={labelStyle}>Education:</div>
         {education.items.map((item, i) => (
           <div
             key={i}
@@ -344,7 +344,7 @@ export function Blueprint({
   const certificationsBlock =
     certifications.items.length > 0 ? (
       <div key="certifications">
-        <div style={labelStyle}>Certifications:</div>
+        <div data-resume-section-title="" style={labelStyle}>Certifications:</div>
         {certifications.items.map((item, i) => (
           <div
             key={i}
@@ -372,7 +372,7 @@ export function Blueprint({
   const volunteerBlock =
     volunteering.items.length > 0 ? (
       <div key="volunteering">
-        <div style={labelStyle}>Volunteer:</div>
+        <div data-resume-section-title="" style={labelStyle}>Volunteer:</div>
         {volunteering.items.map((item, i) => (
           <div
             key={i}
@@ -399,7 +399,7 @@ export function Blueprint({
 
   const socialRow = (
     <div key="social">
-      <div style={labelStyle}>Social:</div>
+      <div data-resume-section-title="" style={labelStyle}>Social:</div>
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         {contact.linkedin && <SocialIcon kind="linkedin" bg={resolvedAccent} fg="#ffffff" />}
         {contact.website && <SocialIcon kind="globe" bg={resolvedAccent} fg="#ffffff" />}
@@ -412,7 +412,7 @@ export function Blueprint({
   // RIGHT COLUMN RENDERERS
   const summaryBlock = summary.content ? (
     <div key="summary">
-      <div style={labelStyle}>Professional Summary:</div>
+      <div data-resume-section-title="" style={labelStyle}>Professional Summary:</div>
       <p
         style={{
           fontFamily: "var(--resume-font)",
@@ -431,7 +431,7 @@ export function Blueprint({
   const skillsBlock =
     skills.categories.length > 0 ? (
       <div key="skills">
-        <div style={labelStyle}>Professional Skills:</div>
+        <div data-resume-section-title="" style={labelStyle}>Professional Skills:</div>
         <SkillsItems
           categories={skills.categories}
           skillsStyle={design.skillsStyle ?? "inline"}
@@ -446,7 +446,7 @@ export function Blueprint({
   const experienceBlock =
     experience.items.length > 0 ? (
       <div key="experience">
-        <div style={labelStyle}>Work Experience:</div>
+        <div data-resume-section-title="" style={labelStyle}>Work Experience:</div>
         {experience.items.map((item, i) => (
           <div
             key={i}
@@ -497,7 +497,7 @@ export function Blueprint({
   const projectsBlock =
     projects.items.length > 0 ? (
       <div key="projects">
-        <div style={labelStyle}>Projects:</div>
+        <div data-resume-section-title="" style={labelStyle}>Projects:</div>
         {projects.items.map((item, i) => (
           <div
             key={i}
@@ -546,7 +546,7 @@ export function Blueprint({
   const awardsBlock =
     awards.items.length > 0 ? (
       <div key="awards">
-        <div style={labelStyle}>Awards:</div>
+        <div data-resume-section-title="" style={labelStyle}>Awards:</div>
         {awards.items.map((item, i) => (
           <div
             key={i}
@@ -576,7 +576,7 @@ export function Blueprint({
   const publicationsBlock =
     publications.items.length > 0 ? (
       <div key="publications">
-        <div style={labelStyle}>Publications:</div>
+        <div data-resume-section-title="" style={labelStyle}>Publications:</div>
         {publications.items.map((item, i) => (
           <div
             key={i}
@@ -775,7 +775,7 @@ export function Blueprint({
             return (
               <div
                 key={key}
-                data-resume-section=""
+                data-resume-section={key}
                 {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
                 style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
               >
@@ -802,7 +802,7 @@ export function Blueprint({
               return (
                 <div
                   key={key}
-                  data-resume-section=""
+                  data-resume-section={key}
                   {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
                   style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
                 >

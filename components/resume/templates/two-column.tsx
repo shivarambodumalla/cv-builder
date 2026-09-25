@@ -47,9 +47,6 @@ export function TwoColumnTemplate({
     </div>
   );
 
-  const allSkills = skills.categories.flatMap((cat) => cat.skills);
-
-
   const renderExperience = () =>
     visibleSections.includes("experience") && experience.items.length > 0 ? (
       <div style={{ marginBottom: `${sectionSpacing}px` }}>
@@ -423,7 +420,7 @@ export function TwoColumnTemplate({
             return (
               <div
                 key={key}
-                data-resume-section=""
+                data-resume-section={key}
                 {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
                 style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
               >
@@ -441,7 +438,17 @@ export function TwoColumnTemplate({
             const node = renderer();
             const SECTION_LABELS: Record<string, string> = { summary: "Summary", experience: "Experience", education: "Education", skills: "Skills", certifications: "Certifications", awards: "Awards", projects: "Projects", volunteering: "Volunteering", publications: "Publications" };
             if (!node && !SECTION_LABELS[key]) return null;
-            return <div key={key} data-resume-section="">{node || sectionHeading(SECTION_LABELS[key])}</div>;
+            const hasPageBreak = pageBreaks.includes(key);
+            return (
+              <div
+                key={key}
+                data-resume-section={key}
+                {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
+                style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
+              >
+                {node || sectionHeading(SECTION_LABELS[key])}
+              </div>
+            );
           })}
         </div>
       </div>

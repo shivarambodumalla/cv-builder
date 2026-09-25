@@ -68,12 +68,6 @@ export function MetroTemplate({
     return s && e ? `${s} - ${e}` : s || e;
   };
 
-  const extractYear = (dateStr: string) => {
-    if (!dateStr) return "";
-    const m = dateStr.match(/(\d{4})/);
-    return m ? m[1] : formatDate(dateStr);
-  };
-
   const renderRule = () => (
     <div
       style={{
@@ -125,12 +119,10 @@ export function MetroTemplate({
 
   const sectionRenderers: Record<string, () => React.ReactNode> = {
     contact: () => {
-      const hasSkills = skills.categories.length > 0 && visibleSections.includes("skills");
-
       return (
         <div key="contact" style={{ fontFamily: "var(--resume-font)" }}>
           <div style={{ display: "flex", gap: "24px" }}>
-            {/* Left: Profile info */}
+            {/* Profile info */}
             <div style={{ flex: 1, minWidth: 0 }}>
               {/* Name */}
               <div
@@ -184,21 +176,6 @@ export function MetroTemplate({
                 </div>
               )}
             </div>
-
-            {/* Right: Skills */}
-            {hasSkills && (
-              <div style={{ width: "40%", flexShrink: 0 }}>
-                {renderSectionHeading("Skills")}
-                <SkillsItems
-                  categories={skills.categories}
-                  skillsStyle={design.skillsStyle ?? "inline"}
-                  bulletChar={bulletChar}
-                  accentColor={design.accentColor as string}
-                  labelColor="#111"
-                  textColor="#374151"
-                />
-              </div>
-            )}
           </div>
         </div>
       );
@@ -230,8 +207,23 @@ export function MetroTemplate({
       );
     },
 
-    /* Skills always rendered in the contact header */
-    skills: () => null,
+    skills: () => {
+      if (skills.categories.length === 0) return null;
+      return (
+        <div key="skills">
+          {renderRule()}
+          {renderSectionHeading("Skills")}
+          <SkillsItems
+            categories={skills.categories}
+            skillsStyle={design.skillsStyle ?? "inline"}
+            bulletChar={bulletChar}
+            accentColor={design.accentColor as string}
+            labelColor="#111"
+            textColor="#374151"
+          />
+        </div>
+      );
+    },
 
     education: () => {
       if (education.items.length === 0) return null;
@@ -240,15 +232,10 @@ export function MetroTemplate({
           {renderRule()}
           {renderSectionHeading("Education")}
           {education.items.map((item, i) => {
-            const startYear = extractYear(item.startDate);
-            const endYear = extractYear(item.endDate);
-            const dateLabel =
-              startYear && endYear
-                ? `${startYear} \u2014 ${endYear}`
-                : startYear || endYear || "";
+            const dateStr = renderDateRange(item.startDate, item.endDate);
 
             return renderDateRow(
-              dateLabel,
+              dateStr || "",
               <div
                 style={{
                   fontSize: "calc(var(--resume-body-size) + 1pt)",
@@ -699,7 +686,7 @@ export function MetroTemplate({
         return (
           <div
             key={key}
-            data-resume-section=""
+            data-resume-section={key}
             {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
             style={{
               marginTop:

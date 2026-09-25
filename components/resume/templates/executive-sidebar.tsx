@@ -376,7 +376,7 @@ export function ExecutiveSidebar({
       <div>
         {leftHeading("Education")}
         {education.items.map((item, i) => (
-          <div key={i} style={{ marginBottom: i < education.items.length - 1 ? 9 : 0 }}>
+          <div key={i} data-resume-entry="" style={{ marginBottom: i < education.items.length - 1 ? 9 : 0 }}>
             <div
               style={{
                 fontFamily: "var(--resume-font)",
@@ -929,7 +929,7 @@ export function ExecutiveSidebar({
           return (
             <div
               key={key}
-              data-resume-section=""
+              data-resume-section={key}
               {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
               style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
             >
@@ -955,7 +955,7 @@ export function ExecutiveSidebar({
           return (
             <div
               key={key}
-              data-resume-section=""
+              data-resume-section={key}
               {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
               style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
             >

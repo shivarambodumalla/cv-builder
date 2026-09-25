@@ -195,6 +195,7 @@ export function CleanSidebar({
   // Left column section labels
   const leftLabel = (text: string) => (
     <div
+      data-resume-section-title=""
       style={{
         fontFamily: "var(--resume-font)",
         fontSize: "var(--resume-heading-size)",
@@ -215,9 +216,9 @@ export function CleanSidebar({
       data-resume-section-title=""
       style={{
         fontFamily: "var(--resume-font)",
-        fontSize: 11,
-        fontWeight: 700,
-        textTransform: "uppercase" as const,
+        fontSize: "calc(var(--resume-heading-size) - 0.75pt)",
+        fontWeight: "var(--resume-heading-weight)" as unknown as number,
+        textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
         letterSpacing: "0.2em",
         color: DARK_TEXT,
         marginBottom: 10,
@@ -461,12 +462,6 @@ export function CleanSidebar({
   }
 
   // ───── RIGHT COLUMN renderers ─────
-  const skillName = (s: any): string => {
-    if (typeof s === "string") return s;
-    if (s && typeof s === "object") return String(s.name || "");
-    return "";
-  };
-
   const rightRenderers: Record<string, () => React.ReactNode> = {
     summary: () =>
       summary.content ? (
@@ -837,7 +832,7 @@ export function CleanSidebar({
               <div key={key}>
                 <Divider />
                 <div
-                  data-resume-section=""
+                  data-resume-section={key}
                   {...(pageBreaks.includes(key) ? { "data-page-break-before": "" } : {})}
                   style={{
                     ...(idx > 0 ? { marginTop: sectionSpacing } : null),
@@ -950,7 +945,7 @@ export function CleanSidebar({
             return (
               <div
                 key={key}
-                data-resume-section=""
+                data-resume-section={key}
                 {...(hasPageBreak ? { "data-page-break-before": "" } : {})}
                 style={hasPageBreak ? { pageBreakBefore: "always" as const } : undefined}
               >

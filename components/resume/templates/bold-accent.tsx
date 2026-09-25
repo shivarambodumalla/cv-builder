@@ -40,7 +40,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
           height: size,
           borderRadius: radius,
           objectFit: "cover",
-          border: `2px solid ${accent}22`,
+          border: `2px solid color-mix(in srgb, ${accent} 13%, transparent)`,
           flexShrink: 0,
         }}
       />
@@ -50,7 +50,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
   const onAccent = initialsBg === "accent";
   const bg = onAccent ? accent : "#ffffff";
   const fg = onAccent ? "#ffffff" : accent;
-  const borderColor = onAccent ? `${accent}` : `${accent}66`;
+  const borderColor = onAccent ? accent : `color-mix(in srgb, ${accent} 40%, transparent)`;
 
   return (
     <div

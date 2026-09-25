@@ -1,5 +1,5 @@
 import type { ResumeDesignSettings, SectionKey, TemplateName } from "./types";
-import { DEFAULT_DESIGN } from "./defaults";
+import { DEFAULT_DESIGN, defaultSidebarSections } from "./defaults";
 
 const VALID_TEMPLATES: ReadonlySet<TemplateName> = new Set<TemplateName>([
   "classic",
@@ -75,8 +75,10 @@ export function normalizeDesignSettings(
     merged.template = DEFAULT_DESIGN.template;
   }
   merged.sectionOrder = mergeOrder(merged.sectionOrder);
-  merged.sidebarSections = Array.isArray(merged.sidebarSections)
-    ? merged.sidebarSections.filter((k) => CANONICAL_SET.has(k))
-    : DEFAULT_DESIGN.sidebarSections;
+  // The column split is per template: only fall back to DEFAULT_DESIGN's
+  // list when the stored settings carry one, otherwise use the template's.
+  merged.sidebarSections = Array.isArray(raw?.sidebarSections)
+    ? raw.sidebarSections.filter((k) => CANONICAL_SET.has(k))
+    : defaultSidebarSections(merged.template);
   return merged;
 }

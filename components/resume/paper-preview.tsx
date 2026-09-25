@@ -140,7 +140,9 @@ export function PaperPreview({
       for (const section of col.sections) {
         const sectionKey = section.dataset.resumeSection || "";
 
-        if (manualBreaks.includes(sectionKey)) {
+        // Templates mark a forced break on the wrapper itself; the key match
+        // covers templates that expose it, the attribute covers the rest.
+        if (manualBreaks.includes(sectionKey) || section.hasAttribute("data-page-break-before")) {
           const sectionTop = rel(section).top;
           pageNum++;
           push(sectionTop, true, sectionKey);

@@ -65,8 +65,12 @@ export async function POST(
     );
   }
 
+  // A different template has its own column split, so drop the stored one
+  // and let normalizeDesignSettings apply the new template's default.
+  const { sidebarSections: storedSidebar, ...rest } = existing;
   const nextDesignSettings = normalizeDesignSettings({
-    ...existing,
+    ...rest,
+    ...(existing.template === template ? { sidebarSections: storedSidebar } : {}),
     template: template as ResumeDesignSettings["template"],
     templatePicked: true,
   });

@@ -96,7 +96,7 @@ export function SkillsItems({
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
                   marginBottom: 3,
-                  borderBottom: `1px solid ${accentColor}33`,
+                  borderBottom: `1px solid color-mix(in srgb, ${accentColor} 20%, transparent)`,
                   paddingBottom: 2,
                 }}
               >
