@@ -668,16 +668,9 @@ export function ElectricLilac({
   const order = (design.sectionOrder || []).filter((k) => BODY_KEYS.has(k));
   const visibleSet = new Set(visibleSections as readonly string[]);
 
-  const leftOrder = leftKeys
-    .filter((k) => visibleSet.has(k))
-    .sort((a, b) => {
-      const ia = order.indexOf(a);
-      const ib = order.indexOf(b);
-      if (ia === -1 && ib === -1) return 0;
-      if (ia === -1) return 1;
-      if (ib === -1) return -1;
-      return ia - ib;
-    });
+  // Left column renders in sidebarSections order — the designer panel reorders
+  // that array directly for this template (see column-base.tsx / sidebar.tsx).
+  const leftOrder = leftKeys.filter((k) => visibleSet.has(k));
 
   const rightOrder = order.filter(
     (k) => !HEADER_KEYS.has(k) && !leftSet.has(k) && visibleSet.has(k),
@@ -834,7 +827,7 @@ export function ElectricLilac({
                 margin: 0,
                 fontFamily: "var(--resume-font)",
                 fontSize: "calc(var(--resume-body-size) + 1.5pt)",
-                lineHeight: 1.55,
+                lineHeight: "calc(var(--resume-line-spacing) + 0.15)",
                 color: darkText,
               }}
             >

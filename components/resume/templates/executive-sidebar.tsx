@@ -41,7 +41,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
           height: size,
           borderRadius: radius,
           objectFit: "cover",
-          border: `2px solid ${accent}22`,
+          border: `2px solid color-mix(in srgb, ${accent} 13%, transparent)`,
           flexShrink: 0,
         }}
       />
@@ -51,7 +51,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
   const onAccent = initialsBg === "accent";
   const bg = onAccent ? accent : "#ffffff";
   const fg = onAccent ? "#ffffff" : accent;
-  const borderColor = onAccent ? `${accent}` : `${accent}66`;
+  const borderColor = onAccent ? accent : `color-mix(in srgb, ${accent} 40%, transparent)`;
 
   return (
     <div
@@ -174,6 +174,15 @@ export function ExecutiveSidebar({
   const sidebarIconColor = `color-mix(in srgb, ${accent} 75%, black)`;
   const divider = `color-mix(in srgb, ${accent} 35%, white)`;
 
+  // The sidebar was designed at fixed px sizes. These offsets keep that default
+  // look (name M = 24pt, body M = 10pt, line spacing 1.4) while letting the
+  // Name size, Body size and Line spacing settings scale it.
+  const nameSize = "calc(var(--resume-name-size) - 9pt)"; // 20px at default
+  const sidebarEntrySize = "calc(var(--resume-body-size) - 2.125pt)"; // 10.5px at default
+  const sidebarTextSize = "calc(var(--resume-body-size) - 2.5pt)"; // 10px at default
+  const sidebarMetaSize = "calc(var(--resume-body-size) - 2.875pt)"; // 9.5px at default
+  const sidebarListLeading = "calc(var(--resume-line-spacing) + 0.1)"; // 1.5 at default
+
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
     const e = isCurrent ? "Present" : formatDate(end);
@@ -184,6 +193,7 @@ export function ExecutiveSidebar({
   /* ── Left (tint) heading ── */
   const leftHeading = (text: string) => (
     <div
+      data-resume-section-title=""
       style={{
         fontFamily: "var(--resume-font)",
         fontSize: "calc(var(--resume-heading-size) - 0.5pt)",
@@ -283,8 +293,8 @@ export function ExecutiveSidebar({
         <div
           style={{
             fontFamily: "var(--resume-font)",
-            fontSize: 20,
-            fontWeight: 700,
+            fontSize: nameSize,
+            fontWeight: "var(--resume-name-weight)" as unknown as number,
             color: sidebarHeading,
             lineHeight: 1.2,
             marginBottom: 2,
@@ -296,7 +306,7 @@ export function ExecutiveSidebar({
           <div
             style={{
               fontFamily: "var(--resume-font)",
-              fontSize: 10,
+              fontSize: sidebarTextSize,
               color: sidebarMuted,
               textTransform: "uppercase",
               letterSpacing: "0.1em",
@@ -324,9 +334,9 @@ export function ExecutiveSidebar({
                     alignItems: "center",
                     gap: 8,
                     fontFamily: "var(--resume-font)",
-                    fontSize: 10,
+                    fontSize: sidebarTextSize,
                     color: sidebarText,
-                    lineHeight: 1.4,
+                    lineHeight: "var(--resume-line-spacing)",
                     wordBreak: "break-word",
                   }}
                 >
@@ -370,7 +380,7 @@ export function ExecutiveSidebar({
             <div
               style={{
                 fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
+                fontSize: sidebarEntrySize,
                 fontWeight: 700,
                 color: sidebarHeading,
                 lineHeight: 1.3,
@@ -382,7 +392,7 @@ export function ExecutiveSidebar({
               <div
                 style={{
                   fontFamily: "var(--resume-font)",
-                  fontSize: 10,
+                  fontSize: sidebarTextSize,
                   color: sidebarText,
                   marginTop: 1,
                 }}
@@ -394,7 +404,7 @@ export function ExecutiveSidebar({
               <div
                 style={{
                   fontFamily: "var(--resume-font)",
-                  fontSize: 9.5,
+                  fontSize: sidebarMetaSize,
                   color: sidebarMuted,
                   marginTop: 1,
                 }}
@@ -419,9 +429,9 @@ export function ExecutiveSidebar({
             padding: 0,
             listStyle: "none",
             fontFamily: "var(--resume-font)",
-            fontSize: 10,
+            fontSize: sidebarTextSize,
             color: sidebarText,
-            lineHeight: 1.5,
+            lineHeight: sidebarListLeading,
           }}
         >
           {certifications.items.map((item, i) => (
@@ -454,9 +464,9 @@ export function ExecutiveSidebar({
             padding: 0,
             listStyle: "none",
             fontFamily: "var(--resume-font)",
-            fontSize: 10,
+            fontSize: sidebarTextSize,
             color: sidebarText,
-            lineHeight: 1.5,
+            lineHeight: sidebarListLeading,
           }}
         >
           {awards.items.map((item, i) => (
@@ -635,6 +645,23 @@ export function ExecutiveSidebar({
             </li>
           ))}
         </ul>
+      </div>
+    );
+  };
+
+  const rightSkillsBlock = () => {
+    if (skills.categories.length === 0) return null;
+    return (
+      <div>
+        {rightHeading("Skills")}
+        <SkillsItems
+          categories={skills.categories}
+          skillsStyle={design.skillsStyle ?? "inline"}
+          bulletChar={bulletChar}
+          accentColor={design.accentColor as string}
+          labelColor={darkText}
+          textColor={bodyText}
+        />
       </div>
     );
   };
@@ -832,7 +859,7 @@ export function ExecutiveSidebar({
     summary: () => rightSummaryBlock(),
     experience: () => rightExperienceBlock(),
     education: () => rightEducationBlock(),
-    skills: () => null, // skills stay on left in this template
+    skills: () => rightSkillsBlock(),
     certifications: () => rightCertificationsBlock(),
     awards: () => rightAwardsBlock(),
     projects: () => rightProjectsBlock(),
@@ -855,7 +882,9 @@ export function ExecutiveSidebar({
 
   const leftNodes = leftVisible
     .map((key) => {
-      const r = leftRenderers[key];
+      // Sections moved into the sidebar without a sidebar-specific block fall
+      // back to the main-column block so design.sidebarSections is always honoured.
+      const r = leftRenderers[key] ?? rightRenderers[key];
       return { key, node: r ? r() : null };
     })
     .filter((x): x is { key: string; node: React.ReactNode } => !!x.node);

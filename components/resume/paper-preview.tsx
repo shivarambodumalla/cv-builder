@@ -5,6 +5,7 @@ import type { PaperSize } from "@/lib/resume/types";
 import { PAPER_DIMENSIONS } from "@/lib/resume/types";
 
 const MM_TO_PX = 3.7795275591;
+const IN_TO_PX = 96;
 
 const PAGE_HEIGHTS: Record<PaperSize, number> = {
   a4: 297 * MM_TO_PX,
@@ -16,10 +17,36 @@ interface PageBreak {
   pageNum: number;
   isManual: boolean;
   sectionKey?: string;
+  /** Horizontal extent of the column the break belongs to (unscaled px). */
+  left: number;
+  width: number;
+  /** Only the first break for a page number carries the "Page N" label. */
+  labelled: boolean;
+}
+
+/**
+ * A unit Chromium will not split when printing. Mirrors the rules in
+ * template-renderer.tsx: a section title (kept with what follows), an entry
+ * header (kept with its first bullet), a single bullet, a bullet-less entry,
+ * or a whole section without entries.
+ */
+interface Block {
+  top: number;
+  bottom: number;
+  keepWithNext: boolean;
+}
+
+interface Column {
+  centerX: number;
+  left: number;
+  width: number;
+  sections: HTMLElement[];
 }
 
 interface PaperPreviewProps {
   paperSize: PaperSize;
+  /** Top margin in inches the PDF adds on pages 2+. Page 1 relies on template padding. */
+  topMarginIn?: number;
   manualBreaks?: string[];
   onRemoveManualBreak?: (key: string) => void;
   children: React.ReactNode;
@@ -27,6 +54,7 @@ interface PaperPreviewProps {
 
 export function PaperPreview({
   paperSize,
+  topMarginIn = 0.5,
   manualBreaks = [],
   onRemoveManualBreak,
   children,
@@ -52,56 +80,112 @@ export function PaperPreview({
       return;
     }
 
-    const sections = el.querySelectorAll<HTMLElement>("[data-resume-section]");
-    const result: PageBreak[] = [];
-    let currentPageBottom = pageHeight;
-    let pageNum = 1;
+    const topMarginPx = topMarginIn * IN_TO_PX;
+    // The PDF gives page 1 no top margin (the template pads it) and pages 2+
+    // a marginY top margin, so later pages hold less content.
+    const usable = (page: number) => (page === 1 ? pageHeight : pageHeight - topMarginPx);
 
-    function getTop(node: HTMLElement): number {
-      return node.getBoundingClientRect().top - containerRect.top;
-    }
-    function getBottom(node: HTMLElement): number {
-      return node.getBoundingClientRect().bottom - containerRect.top;
-    }
+    const rel = (node: Element) => {
+      const r = node.getBoundingClientRect();
+      return { top: r.top - containerRect.top, bottom: r.bottom - containerRect.top };
+    };
 
-    sections.forEach((section) => {
-      const sectionKey = section.dataset.resumeSection || "";
-      const sectionTop = getTop(section);
-
-      if (manualBreaks.includes(sectionKey) && pageNum >= 1) {
-        pageNum++;
-        result.push({ offsetY: sectionTop, pageNum, isManual: true, sectionKey });
-        currentPageBottom = sectionTop + pageHeight;
-        return;
+    // Group sections into columns by horizontal centre. Each column fragments
+    // independently in print: a block pushed to the next page shifts only the
+    // content below it in its own column.
+    const columns: Column[] = [];
+    el.querySelectorAll<HTMLElement>("[data-resume-section]").forEach((section) => {
+      const r = section.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) return;
+      const centerX = r.left + r.width / 2 - containerRect.left;
+      let col = columns.find((c) => Math.abs(c.centerX - centerX) < widthPx * 0.15);
+      if (!col) {
+        col = { centerX, left: r.left - containerRect.left, width: r.width, sections: [] };
+        columns.push(col);
       }
-
-      const entries = section.querySelectorAll<HTMLElement>("[data-resume-entry]");
-      const hasEntries = entries.length > 0;
-      const elements = hasEntries ? Array.from(entries) : [section];
-
-      elements.forEach((item) => {
-        const itemTop = getTop(item);
-        const itemBottom = getBottom(item);
-
-        if (itemBottom > currentPageBottom) {
-          pageNum++;
-          const breakY = hasEntries ? Math.min(itemTop, currentPageBottom) : currentPageBottom;
-          result.push({ offsetY: breakY, pageNum, isManual: false });
-          currentPageBottom = breakY + pageHeight;
-
-          if (!hasEntries) {
-            while (itemBottom > currentPageBottom) {
-              pageNum++;
-              result.push({ offsetY: currentPageBottom, pageNum, isManual: false });
-              currentPageBottom += pageHeight;
-            }
-          }
-        }
-      });
+      col.sections.push(section);
     });
 
+    function blocksFor(section: HTMLElement): Block[] {
+      const entries = Array.from(section.querySelectorAll<HTMLElement>("[data-resume-entry]"));
+      if (entries.length === 0) return [{ ...rel(section), keepWithNext: false }];
+
+      const blocks: Block[] = [];
+      const title = section.querySelector<HTMLElement>("[data-resume-section-title]");
+      if (title) blocks.push({ ...rel(title), keepWithNext: true });
+
+      for (const entry of entries) {
+        const bullets = Array.from(entry.querySelectorAll<HTMLElement>("li"));
+        const er = rel(entry);
+        if (bullets.length === 0) {
+          blocks.push({ ...er, keepWithNext: false });
+          continue;
+        }
+        // Header (role, company, dates) stays with the first bullet.
+        blocks.push({ top: er.top, bottom: rel(bullets[0]).top, keepWithNext: true });
+        bullets.forEach((li) => blocks.push({ ...rel(li), keepWithNext: false }));
+      }
+      return blocks;
+    }
+
+    const result: PageBreak[] = [];
+
+    for (const col of columns) {
+      let pageBottom = usable(1);
+      let pageNum = 1;
+      const push = (offsetY: number, isManual: boolean, sectionKey?: string) => {
+        result.push({ offsetY, pageNum, isManual, sectionKey, left: col.left, width: col.width, labelled: false });
+      };
+
+      for (const section of col.sections) {
+        const sectionKey = section.dataset.resumeSection || "";
+
+        if (manualBreaks.includes(sectionKey)) {
+          const sectionTop = rel(section).top;
+          pageNum++;
+          push(sectionTop, true, sectionKey);
+          pageBottom = sectionTop + usable(pageNum);
+        }
+
+        const blocks = blocksFor(section);
+        for (let i = 0; i < blocks.length; i++) {
+          const block = blocks[i];
+          if (block.bottom <= pageBottom) continue;
+
+          // The block does not fit. Break before it, dragging along any
+          // keep-with-next blocks immediately above it, unless the block is
+          // taller than a fresh page, in which case print slices it anyway.
+          let breakTop = block.top;
+          for (let j = i - 1; j >= 0 && blocks[j].keepWithNext; j--) breakTop = blocks[j].top;
+          if (block.bottom - block.top > usable(pageNum + 1)) breakTop = pageBottom;
+
+          const breakY = Math.min(breakTop, pageBottom);
+          pageNum++;
+          push(breakY, false);
+          pageBottom = breakY + usable(pageNum);
+
+          while (block.bottom > pageBottom) {
+            pageNum++;
+            push(pageBottom, false);
+            pageBottom += usable(pageNum);
+          }
+        }
+      }
+    }
+
+    // Label the first (topmost) break per page number; other columns' breaks
+    // for the same page draw only the dashed line.
+    result.sort((a, b) => a.pageNum - b.pageNum || a.offsetY - b.offsetY);
+    const seen = new Set<number>();
+    for (const b of result) {
+      if (!seen.has(b.pageNum)) {
+        b.labelled = true;
+        seen.add(b.pageNum);
+      }
+    }
+
     setBreaks(result);
-  }, [pageHeight, manualBreaks]);
+  }, [pageHeight, widthPx, topMarginIn, manualBreaks]);
 
   useEffect(() => {
     function updateScale() {
@@ -125,7 +209,7 @@ export function PaperPreview({
     return () => clearTimeout(timer);
   }, [children, computeBreaks]);
 
-  const totalPages = breaks.length > 0 ? breaks[breaks.length - 1].pageNum : 1;
+  const totalPages = breaks.reduce((max, b) => Math.max(max, b.pageNum), 1);
   const contentHeight = contentRef.current?.scrollHeight ?? pageHeight;
   const displayHeight = Math.max(contentHeight, pageHeight * totalPages);
 
@@ -153,43 +237,43 @@ export function PaperPreview({
           {children}
         </div>
 
-        {breaks.map((b, i) => (
-          <div
-            key={i}
-            className="absolute left-0 right-0 pointer-events-auto"
-            style={{ top: b.offsetY, zIndex: 10 }}
-          >
-            <div className="relative flex items-center py-2">
-              <div
-                className={`flex-1 border-t-2 border-dashed ${
-                  b.isManual ? "border-blue-400" : "border-muted-foreground/20"
-                }`}
-              />
-              <span
-                className={`mx-3 shrink-0 rounded-full px-3 py-0.5 text-[10px] font-medium ${
-                  b.isManual
-                    ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {b.isManual ? "Manual break" : `Page ${b.pageNum}`}
-                {b.isManual && b.sectionKey && onRemoveManualBreak && (
-                  <button
-                    className="ml-1.5 inline-flex items-center text-blue-400 hover:text-blue-600"
-                    onClick={() => onRemoveManualBreak(b.sectionKey!)}
+        {breaks.map((b, i) => {
+          const showLabel = b.labelled || b.isManual;
+          const lineClass = `flex-1 border-t-2 border-dashed ${
+            b.isManual ? "border-blue-400" : "border-muted-foreground/20"
+          }`;
+          return (
+            <div
+              key={i}
+              className="absolute pointer-events-auto"
+              style={{ top: b.offsetY, left: b.left, width: b.width, zIndex: 10 }}
+            >
+              <div className="relative flex items-center py-2">
+                <div className={lineClass} />
+                {showLabel && (
+                  <span
+                    className={`mx-3 shrink-0 rounded-full px-3 py-0.5 text-[10px] font-medium ${
+                      b.isManual
+                        ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400"
+                        : "bg-muted text-muted-foreground"
+                    }`}
                   >
-                    ×
-                  </button>
+                    {b.isManual ? "Manual break" : `Page ${b.pageNum}`}
+                    {b.isManual && b.sectionKey && onRemoveManualBreak && (
+                      <button
+                        className="ml-1.5 inline-flex items-center text-blue-400 hover:text-blue-600"
+                        onClick={() => onRemoveManualBreak(b.sectionKey!)}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </span>
                 )}
-              </span>
-              <div
-                className={`flex-1 border-t-2 border-dashed ${
-                  b.isManual ? "border-blue-400" : "border-muted-foreground/20"
-                }`}
-              />
+                {showLabel && <div className={lineClass} />}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         </div>
       </div>
     </div>

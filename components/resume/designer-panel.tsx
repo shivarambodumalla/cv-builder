@@ -1090,7 +1090,13 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     "classic", "classic-serif", "sharp", "minimal", "executive",
     "executive-pro", "blueprint", "wentworth", "orchid",
   ]);
+  // Templates that read design.avatarPosition. Sidebar layouts stack the
+  // avatar above the name, so left/right has no meaning there.
+  const AVATAR_POSITION_TEMPLATES = new Set<string>([
+    "aurora", "blueprint", "bold-accent", "coastal", "executive-pro", "wentworth",
+  ]);
   const supportsContactSeparator = CONTACT_SEPARATOR_TEMPLATES.has(design.template);
+  const supportsAvatarPosition = AVATAR_POSITION_TEMPLATES.has(design.template);
   const supportsHeaderAlignment = HEADER_ALIGNMENT_TEMPLATES.has(design.template);
   const [avatarError, setAvatarError] = React.useState<string | null>(null);
   const [avatarBusy, setAvatarBusy] = React.useState(false);
@@ -1182,6 +1188,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     portrait: ["skills", "certifications", "awards"],
   };
 
+  const PINNED_IDENTITY_TEMPLATES = new Set<string>(["electric-lilac", "executive-sidebar", "clean-sidebar", "orchid"]);
   const headerOnTopLayout = design.template === "two-column" || design.template === "aurora" || design.template === "executive-pro" || design.template === "blueprint" || design.template === "coastal" || design.template === "portrait";
   const headerKeysArr = HEADER_KEYS_BY_TEMPLATE[design.template] ?? ["contact", "targetTitle"];
   const headerSet = new Set(headerKeysArr);
@@ -1194,9 +1201,12 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   let labelLeft = "", labelRight = "";
 
   if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid") {
-    // sidebarSections = left column sections
-    displayLeft = secondarySections.filter((k) => isEnabled(k));
-    displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k) && isEnabled(k));
+    // sidebarSections = left column sections. Templates that pin the identity
+    // block (name, title, contact) to the sidebar never render those keys in
+    // the other column, so they are not offered as movable.
+    const pinnedIdentity = PINNED_IDENTITY_TEMPLATES.has(design.template);
+    displayLeft = secondarySections.filter((k) => isEnabled(k) && !(pinnedIdentity && headerSet.has(k)));
+    displayRight = design.sectionOrder.filter((k) => !secondarySet.has(k) && isEnabled(k) && !(pinnedIdentity && headerSet.has(k)));
     labelLeft = isSidebar ? "Sidebar" : "Left";
     labelRight = isSidebar ? "Main" : "Right";
   } else if (headerOnTopLayout) {
@@ -1644,7 +1654,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                   />
                 </StackedRow>
 
-                {design.template !== "portrait" && (
+                {supportsAvatarPosition && (
                   <FieldRow label="Position">
                     <div className="flex gap-1">
                       {([

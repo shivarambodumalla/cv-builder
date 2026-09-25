@@ -40,7 +40,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
           height: size,
           borderRadius: radius,
           objectFit: "cover",
-          border: `2px solid ${accent}22`,
+          border: `2px solid color-mix(in srgb, ${accent} 13%, transparent)`,
           flexShrink: 0,
         }}
       />
@@ -50,7 +50,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
   const onAccent = initialsBg === "accent";
   const bg = onAccent ? accent : "#ffffff";
   const fg = onAccent ? "#ffffff" : accent;
-  const borderColor = onAccent ? `${accent}` : `${accent}66`;
+  const borderColor = onAccent ? accent : `color-mix(in srgb, ${accent} 40%, transparent)`;
 
   return (
     <div
@@ -172,6 +172,16 @@ export function Wentworth({
   const headingBorder = `color-mix(in srgb, ${accent} 20%, #e8e8e8)`;
   const headerAlign = design.headerAlignment || "left";
 
+  // Wentworth was designed at fixed px sizes. These offsets keep that default
+  // look (name M = 24pt, body M = 10pt, line spacing 1.4) while letting the
+  // Name size, Body size and Line spacing settings scale it.
+  const nameSize = "calc(var(--resume-name-size) + 7.5pt)"; // 42px at default
+  const entrySize = "calc(var(--resume-body-size) - 1pt)"; // 12px at default
+  const smallSize = "calc(var(--resume-body-size) - 2.125pt)"; // 10.5px at default
+  const metaSize = "calc(var(--resume-body-size) - 2.5pt)"; // 10px at default
+  const bulletLeading = "calc(var(--resume-line-spacing) + 0.25)"; // 1.65 at default
+  const listLeading = "calc(var(--resume-line-spacing) + 0.1)"; // 1.5 at default
+
   // Name parsing — first word vs remaining words
   const nameParts = (contact.name || "").trim().split(/\s+/).filter(Boolean);
   const firstName = nameParts.length > 1 ? nameParts[0]! : "";
@@ -220,8 +230,8 @@ export function Wentworth({
           paddingLeft: bulletChar ? 14 : 0,
           listStyle: "none",
           fontFamily: "var(--resume-font)",
-          fontSize: 10.5,
-          lineHeight: 1.65,
+          fontSize: smallSize,
+          lineHeight: bulletLeading,
           color: bodyText,
         }}
       >
@@ -291,7 +301,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 12,
+                      fontSize: entrySize,
                       fontWeight: 700,
                       color: entryTitle,
                     }}
@@ -301,7 +311,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 10,
+                      fontSize: metaSize,
                       color: titleMuted,
                       whiteSpace: "nowrap",
                       textAlign: "right",
@@ -314,7 +324,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 10.5,
+                      fontSize: smallSize,
                       color: titleMuted,
                       marginTop: 2,
                     }}
@@ -356,7 +366,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 12,
+                      fontSize: entrySize,
                       fontWeight: 700,
                       color: entryTitle,
                     }}
@@ -367,7 +377,7 @@ export function Wentworth({
                     <div
                       style={{
                         fontFamily: "var(--resume-font)",
-                        fontSize: 10,
+                        fontSize: metaSize,
                         color: titleMuted,
                         whiteSpace: "nowrap",
                         textAlign: "right",
@@ -381,7 +391,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 10.5,
+                      fontSize: smallSize,
                       color: titleMuted,
                       marginTop: 2,
                     }}
@@ -423,7 +433,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 12,
+                      fontSize: entrySize,
                       fontWeight: 700,
                       color: entryTitle,
                     }}
@@ -434,7 +444,7 @@ export function Wentworth({
                     <div
                       style={{
                         fontFamily: "var(--resume-font)",
-                        fontSize: 10,
+                        fontSize: metaSize,
                         color: titleMuted,
                         whiteSpace: "nowrap",
                         textAlign: "right",
@@ -448,7 +458,7 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 10.5,
+                      fontSize: smallSize,
                       color: titleMuted,
                       marginTop: 2,
                     }}
@@ -474,8 +484,8 @@ export function Wentworth({
               style={{
                 marginBottom: i < awards.items.length - 1 ? 8 : 0,
                 fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
-                lineHeight: 1.5,
+                fontSize: smallSize,
+                lineHeight: listLeading,
               }}
             >
               <div
@@ -493,7 +503,7 @@ export function Wentworth({
                   )}
                 </div>
                 {item.date && (
-                  <div style={{ color: titleMuted, whiteSpace: "nowrap", fontSize: 10 }}>
+                  <div style={{ color: titleMuted, whiteSpace: "nowrap", fontSize: metaSize }}>
                     {formatDate(item.date)}
                   </div>
                 )}
@@ -517,8 +527,8 @@ export function Wentworth({
               style={{
                 marginBottom: i < publications.items.length - 1 ? 8 : 0,
                 fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
-                lineHeight: 1.5,
+                fontSize: smallSize,
+                lineHeight: listLeading,
               }}
             >
               <div
@@ -536,13 +546,13 @@ export function Wentworth({
                   )}
                 </div>
                 {item.date && (
-                  <div style={{ color: titleMuted, whiteSpace: "nowrap", fontSize: 10 }}>
+                  <div style={{ color: titleMuted, whiteSpace: "nowrap", fontSize: metaSize }}>
                     {formatDate(item.date)}
                   </div>
                 )}
               </div>
               {item.url && (
-                <div style={{ color: titleMuted, fontSize: 10, marginTop: 2 }}>{item.url}</div>
+                <div style={{ color: titleMuted, fontSize: metaSize, marginTop: 2 }}>{item.url}</div>
               )}
             </div>
           ))}
@@ -561,8 +571,8 @@ export function Wentworth({
               style={{
                 marginBottom: i < education.items.length - 1 ? 8 : 0,
                 fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
-                lineHeight: 1.5,
+                fontSize: smallSize,
+                lineHeight: listLeading,
               }}
             >
               <div
@@ -581,7 +591,7 @@ export function Wentworth({
                     style={{
                       color: titleMuted,
                       whiteSpace: "nowrap",
-                      fontSize: 10,
+                      fontSize: metaSize,
                       textAlign: "right",
                     }}
                   >
@@ -608,8 +618,8 @@ export function Wentworth({
               style={{
                 marginBottom: i < certifications.items.length - 1 ? 8 : 0,
                 fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
-                lineHeight: 1.5,
+                fontSize: smallSize,
+                lineHeight: listLeading,
               }}
             >
               <div
@@ -626,7 +636,7 @@ export function Wentworth({
                     style={{
                       color: titleMuted,
                       whiteSpace: "nowrap",
-                      fontSize: 10,
+                      fontSize: metaSize,
                       textAlign: "right",
                     }}
                   >
@@ -679,12 +689,11 @@ export function Wentworth({
   const avatarSize = design.avatarSize ?? 92;
   const avatarInitialsBg = design.avatarInitialsBg ?? "white";
   const avatarPosition = design.avatarPosition ?? "right";
-  const resolvedAccent = typeof accent === "string" ? accent : "#1a1a1a";
   const avatarNode = (
     <Avatar
       name={contact.name}
       photoUrl={contact.photoUrl}
-      accent={resolvedAccent}
+      accent={accent}
       mode={avatarMode}
       shape={avatarShape}
       size={avatarSize}
@@ -709,7 +718,7 @@ export function Wentworth({
     .map((key) => ({ key, node: sectionRenderers[key]?.() }))
     .filter((x): x is { key: string; node: React.ReactNode } => !!x.node);
 
-  const sep = contactSeparator && contactSeparator.trim() ? contactSeparator : " // ";
+  const sep = (contactSeparator ?? "//").trim();
 
   return (
     <div
@@ -751,7 +760,7 @@ export function Wentworth({
                     <div
                       style={{
                         fontFamily: "var(--resume-font)",
-                        fontSize: 42,
+                        fontSize: nameSize,
                         fontWeight: 300,
                         color: nameLight,
                         textTransform: "uppercase",
@@ -764,8 +773,8 @@ export function Wentworth({
                     <div
                       style={{
                         fontFamily: "var(--resume-font)",
-                        fontSize: 42,
-                        fontWeight: 700,
+                        fontSize: nameSize,
+                        fontWeight: "var(--resume-name-weight)" as unknown as number,
                         color: nameDark,
                         textTransform: "uppercase",
                         letterSpacing: "0.02em",
@@ -780,8 +789,8 @@ export function Wentworth({
                   <div
                     style={{
                       fontFamily: "var(--resume-font)",
-                      fontSize: 42,
-                      fontWeight: 700,
+                      fontSize: nameSize,
+                      fontWeight: "var(--resume-name-weight)" as unknown as number,
                       color: nameDark,
                       textTransform: "uppercase",
                       letterSpacing: "0.02em",
@@ -798,7 +807,7 @@ export function Wentworth({
                 <div
                   style={{
                     fontFamily: "var(--resume-font)",
-                    fontSize: 10.5,
+                    fontSize: smallSize,
                     textTransform: "uppercase",
                     letterSpacing: "0.2em",
                     color: titleMuted,
@@ -836,7 +845,7 @@ export function Wentworth({
                 alignItems: "center",
                 justifyContent: justifyForAlign,
                 fontFamily: "var(--resume-font)",
-                fontSize: 10,
+                fontSize: metaSize,
                 color: titleMuted,
               }}
             >
@@ -855,7 +864,7 @@ export function Wentworth({
                     <InlineIcon kind={f.kind} color={titleMuted} />
                     <span>{f.value}</span>
                   </span>
-                  {i < contactRow.length - 1 && (
+                  {i < contactRow.length - 1 && sep && (
                     <span
                       style={{
                         color: "#bbb",
@@ -863,7 +872,7 @@ export function Wentworth({
                         fontWeight: 400,
                       }}
                     >
-                      {sep.trim() || "//"}
+                      {sep}
                     </span>
                   )}
                 </span>

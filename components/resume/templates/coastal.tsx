@@ -206,10 +206,15 @@ export function Coastal({
   const avatarShape = design.avatarShape ?? "rounded";
   const avatarSize = design.avatarSize ?? 140;
   const avatarInitialsBg = design.avatarInitialsBg ?? "white";
+  const avatarPosition = design.avatarPosition ?? "right";
   const showAvatar = avatarMode !== "off";
 
   const horizontalPad = `${Math.max(marginX, 0.5)}in`;
   const verticalPadBody = `${Math.max(marginY, 0.4)}in`;
+  // The header text is inset on the avatar's side so it never runs under the photo.
+  const avatarInset = `calc(${horizontalPad} + ${avatarSize + 12}px)`;
+  const headerPadLeft = showAvatar && avatarPosition === "left" ? avatarInset : horizontalPad;
+  const headerPadRight = showAvatar && avatarPosition === "right" ? avatarInset : horizontalPad;
 
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
@@ -536,22 +541,25 @@ export function Coastal({
     targetTitle: null,
   };
 
-  // Default right-column sections (skills-heavy: skills, awards, certifications)
+  // Header keys are rendered in the header block; the right column follows
+  // `sidebarSections` order (the designer reorders that array), the left
+  // column follows `sectionOrder` minus whatever sits on the right.
   const COASTAL_RIGHT_DEFAULT = ["skills", "awards", "certifications"];
-  const rightKeys = new Set(design.sidebarSections ?? COASTAL_RIGHT_DEFAULT);
-  const order = design.sectionOrder || [];
+  const headerKeys = new Set(["contact", "targetTitle", "summary"]);
+  const rightKeys: string[] = design.sidebarSections ?? COASTAL_RIGHT_DEFAULT;
+  const rightSet = new Set(rightKeys);
+  const isVisible = (key: string) => visibleSections.includes(key as typeof visibleSections[number]);
+  const toEntry = (key: string) => ({ key, node: sectionMap[key] });
+  const hasNode = (x: { key: string; node: React.ReactNode }): x is { key: string; node: React.ReactNode } => !!x.node;
 
-  const leftContent: { key: string; node: React.ReactNode }[] = [];
-  const rightContent: { key: string; node: React.ReactNode }[] = [];
-
-  for (const key of order) {
-    if (key === "contact" || key === "targetTitle" || key === "summary") continue;
-    if (!visibleSections.includes(key as typeof visibleSections[number])) continue;
-    const node = sectionMap[key];
-    if (!node) continue;
-    if (rightKeys.has(key)) rightContent.push({ key, node });
-    else leftContent.push({ key, node });
-  }
+  const leftContent = (design.sectionOrder || [])
+    .filter((key) => !headerKeys.has(key) && !rightSet.has(key) && isVisible(key))
+    .map(toEntry)
+    .filter(hasNode);
+  const rightContent = rightKeys
+    .filter((key) => !headerKeys.has(key) && isVisible(key))
+    .map(toEntry)
+    .filter(hasNode);
 
   const showHeader = visibleSections.includes("contact");
   const showTargetTitle = visibleSections.includes("targetTitle") && targetTitle.title;
@@ -582,9 +590,8 @@ export function Coastal({
             style={{
               background: "#f5f5f3",
               padding: `24px ${horizontalPad} 18px`,
-              paddingRight: showAvatar
-                ? `calc(${horizontalPad} + ${avatarSize + 12}px)`
-                : horizontalPad,
+              paddingLeft: headerPadLeft,
+              paddingRight: headerPadRight,
               position: "relative",
               minHeight: showAvatar ? Math.round(avatarSize * 0.6) : 0,
             }}
@@ -595,7 +602,7 @@ export function Coastal({
                 style={{
                   position: "absolute",
                   top: 0,
-                  right: `calc(${horizontalPad} + ${Math.round(avatarSize * 0.45)}px)`,
+                  [avatarPosition === "left" ? "left" : "right"]: `calc(${horizontalPad} + ${Math.round(avatarSize * 0.45)}px)`,
                   width: Math.round(avatarSize * 0.45),
                   height: Math.round(avatarSize * 0.45),
                   background: resolvedAccent,
@@ -642,9 +649,8 @@ export function Coastal({
             style={{
               background: resolvedAccent,
               padding: `18px ${horizontalPad} 20px`,
-              paddingRight: showAvatar
-                ? `calc(${horizontalPad} + ${avatarSize + 12}px)`
-                : horizontalPad,
+              paddingLeft: headerPadLeft,
+              paddingRight: headerPadRight,
               color: "#ffffff",
               position: "relative",
               minHeight: showAvatar ? Math.round(avatarSize * 0.55) : 0,
@@ -656,8 +662,8 @@ export function Coastal({
                   style={{
                     fontFamily: "var(--resume-font)",
                     fontSize: "calc(var(--resume-heading-size) + 2pt)",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
+                    fontWeight: "var(--resume-heading-weight)" as unknown as number,
+                    textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
                     letterSpacing: 1.5,
                     marginBottom: 6,
                   }}
@@ -724,7 +730,7 @@ export function Coastal({
               style={{
                 position: "absolute",
                 top: 24,
-                right: horizontalPad,
+                [avatarPosition === "left" ? "left" : "right"]: horizontalPad,
                 zIndex: 2,
               }}
             >

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
+import { ResumeFonts } from "@/components/resume/resume-fonts";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { Badge } from "@/components/ui/badge";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
@@ -86,6 +87,7 @@ export default async function AdminResumePreviewPage({
 
   return (
     <div className="min-h-screen bg-muted/20">
+      <ResumeFonts />
       <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
           <div className="min-w-0 flex-1">

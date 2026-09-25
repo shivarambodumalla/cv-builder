@@ -19,78 +19,6 @@ function shapeRadius(shape: AvatarShape, size: number): string | number {
   return 0;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function Avatar({
-  name,
-  photoUrl,
-  mode,
-  shape,
-  width,
-  height,
-  initialsBg,
-  accent,
-}: {
-  name: string;
-  photoUrl?: string;
-  mode: AvatarMode;
-  shape: AvatarShape;
-  width: number;
-  height: number;
-  initialsBg: AvatarInitialsBg;
-  accent: string;
-}) {
-  if (mode === "off") return null;
-  const radius = shapeRadius(shape, Math.min(width, height));
-
-  if (mode === "photo" && photoUrl) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={photoUrl}
-        alt={name}
-        style={{
-          width,
-          height,
-          objectFit: "cover",
-          borderRadius: radius,
-          filter: "grayscale(100%)",
-          display: "block",
-        }}
-      />
-    );
-  }
-
-  const onAccent = initialsBg === "accent";
-  const bg = onAccent ? accent : "#d4d4d4";
-  const fg = onAccent ? "#ffffff" : "#1a1a1a";
-
-  return (
-    <div
-      style={{
-        width,
-        height,
-        borderRadius: radius,
-        background: bg,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: fg,
-        fontFamily: "var(--resume-font)",
-        fontWeight: 700,
-        fontSize: Math.round(Math.min(width, height) * 0.28),
-        letterSpacing: 1,
-      }}
-    >
-      {getInitials(name) || (
-        <svg width={Math.round(Math.min(width, height) * 0.45)} height={Math.round(Math.min(width, height) * 0.45)} viewBox="0 0 24 24" fill="none" stroke={fg} strokeWidth="1.5">
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-        </svg>
-      )}
-    </div>
-  );
-}
-
 type ContactIconKind = "phone" | "mail" | "home" | "globe" | "linkedin";
 
 function ContactIcon({ kind, size = 14, color }: { kind: ContactIconKind; size?: number; color: string }) {
@@ -564,21 +492,25 @@ export function PortraitTemplate({
     publications: publicationsBlock,
   };
 
-  // Default: skills + certifications + awards on right; experience, education, projects left.
+  // Header keys are rendered in the header block; the right column follows
+  // `sidebarSections` order (the designer reorders that array), the left
+  // column follows `sectionOrder` minus whatever sits on the right.
   const DEFAULT_RIGHT = ["skills", "certifications", "awards"];
-  const rightKeys = new Set(design.sidebarSections ?? DEFAULT_RIGHT);
-  const order = design.sectionOrder || [];
+  const headerKeys = new Set(["contact", "targetTitle", "summary"]);
+  const rightKeys: string[] = design.sidebarSections ?? DEFAULT_RIGHT;
+  const rightSet = new Set(rightKeys);
+  const isVisible = (key: string) => visibleSections.includes(key as typeof visibleSections[number]);
+  const toEntry = (key: string) => ({ key, node: sectionMap[key] });
+  const hasNode = (x: { key: string; node: React.ReactNode }): x is { key: string; node: React.ReactNode } => !!x.node;
 
-  const leftContent: { key: string; node: React.ReactNode }[] = [];
-  const rightContent: { key: string; node: React.ReactNode }[] = [];
-  for (const key of order) {
-    if (key === "contact" || key === "targetTitle" || key === "summary") continue;
-    if (!visibleSections.includes(key as typeof visibleSections[number])) continue;
-    const node = sectionMap[key];
-    if (!node) continue;
-    if (rightKeys.has(key)) rightContent.push({ key, node });
-    else leftContent.push({ key, node });
-  }
+  const leftContent = (design.sectionOrder || [])
+    .filter((key) => !headerKeys.has(key) && !rightSet.has(key) && isVisible(key))
+    .map(toEntry)
+    .filter(hasNode);
+  const rightContent = rightKeys
+    .filter((key) => !headerKeys.has(key) && isVisible(key))
+    .map(toEntry)
+    .filter(hasNode);
 
   const showHeader = visibleSections.includes("contact");
   const showTitle = visibleSections.includes("targetTitle") && !!targetTitle.title;

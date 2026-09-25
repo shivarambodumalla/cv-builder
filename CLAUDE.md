@@ -153,6 +153,8 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 - Content editor: react-hook-form with useFieldArray
 - Sections: contact, targetTitle, summary, experience, education, skills, certifications, awards, projects, volunteering, publications
 - Auto-save: 2s debounce, save on blur, sendBeacon on beforeunload
+- Resume fonts: `lib/resume/fonts.ts` (RESUME_FONTS_URL) is loaded by both the editor layout (`<ResumeFonts />`) and the PDF export so on-screen wrapping matches the PDF. Page markers (`paper-preview.tsx`) model print rules per column: entry header + first bullet stay together, breaks allowed between bullets, pages 2+ lose `marginY` of height.
+- Two-column ordering contract: for `leftIsSecondary` templates `sidebarSections` IS the left column order; for `headerOnTopLayout` templates it IS the right column order. The other column follows `sectionOrder`. Templates must render the secondary column in `sidebarSections` order, never re-sorted.
 - Active tab indicator: 2px teal accent line at top (via `data-[state=active]:before:bg-primary`)
 - Score badges on ATS/Match tabs use `bg-success`/`bg-warning`/`bg-error`
 
@@ -160,7 +162,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 24 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint, coastal, orchid, portrait. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
 
-All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`; some also `avatarPosition`).
+All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`). `avatarPosition` is only offered for the templates listed in `AVATAR_POSITION_TEMPLATES` (designer-panel.tsx); sidebar layouts stack the avatar above the name.
 
 | Template | Type | Tier | Display Name |
 |----------|------|------|-------------|
@@ -186,7 +188,7 @@ All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avata
 | blueprint | 2-column (editorial header block) | Free | Blueprint *(placeholder thumbnail)* |
 | wentworth | single-column (editorial minimal) | Pro | Wentworth *(placeholder thumbnail)* |
 | coastal | 2-column (teal header + photo + objective band) | Free | Coastal |
-| orchid | 2-column (warm sidebar + serif accent headings + navy corner) | Free | Orchid |
+| orchid | 2-column (warm sidebar + accent headings + navy corner) | Free | Orchid |
 | portrait | 2-column (split-weight name + photo + plus-marker headings on grey canvas) | Free | Portrait |
 
 ### Two-Column Templates

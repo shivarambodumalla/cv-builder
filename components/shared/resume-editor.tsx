@@ -840,6 +840,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             <div className="mx-auto w-full lg:hidden">
               <PaperPreview
                 paperSize={design.paperSize}
+                topMarginIn={design.marginY ?? 0.5}
                 manualBreaks={design.pageBreaks ?? []}
                 onRemoveManualBreak={(key) => {
                   handleDesignChange({
@@ -895,6 +896,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <>
                   <PaperPreview
                     paperSize={design.paperSize}
+                    topMarginIn={design.marginY ?? 0.5}
                     manualBreaks={design.pageBreaks ?? []}
                     onRemoveManualBreak={(key) => {
                       handleDesignChange({
@@ -963,6 +965,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <div className="mx-auto w-full">
                   <PaperPreview
                     paperSize={design.paperSize}
+                    topMarginIn={design.marginY ?? 0.5}
                     manualBreaks={design.pageBreaks ?? []}
                     onRemoveManualBreak={(key) => {
                       handleDesignChange({

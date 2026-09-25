@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TemplateProps } from "./classic";
 import { SkillsItems } from "./skills-renderer";
 
@@ -6,9 +5,6 @@ const DARK_TEXT = "#1f2937";
 const BODY_TEXT = "#374151";
 const MUTED_TEXT = "#6b7280";
 const DECOR_NAVY = "#1E3A5F";
-
-const SERIF_STACK =
-  "'Playfair Display', 'Libre Caslon Text', Georgia, 'Times New Roman', serif";
 
 const DEFAULT_LEFT_SECTIONS = [
   "contact",
@@ -84,7 +80,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
         fontWeight: 600,
         fontSize: Math.round(size * 0.32),
         letterSpacing: 0.5,
-        fontFamily: SERIF_STACK,
+        fontFamily: "var(--resume-font)",
       }}
     >
       {getInitials(name) || (
@@ -155,9 +151,7 @@ export function OrchidTemplate({
     headerAlign === "left" ? "flex-start" : headerAlign === "right" ? "flex-end" : "center";
   const textAlign = headerAlign as "left" | "center" | "right";
 
-  // "pipe" was the global default before orchid had separator support — treat it as dot.
-  const rawSep = design.contactSeparator;
-  const sepChar = rawSep === "none" ? null : rawSep === "pipe" || !rawSep ? " · " : contactSeparator;
+  const sepChar = design.contactSeparator === "none" ? null : contactSeparator;
 
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);
@@ -166,7 +160,7 @@ export function OrchidTemplate({
     return s && e ? `${s}–${e}` : s || e;
   };
 
-  // Serif accent section heading with a thin full-width accent underline.
+  // Accent section heading with a thin full-width accent underline.
   const sectionHeading = (text: string, marginTop: number = 0) => (
     <div
       data-resume-section-title=""
@@ -174,9 +168,10 @@ export function OrchidTemplate({
     >
       <div
         style={{
-          fontFamily: SERIF_STACK,
+          fontFamily: "var(--resume-font)",
           fontSize: "calc(var(--resume-heading-size) + 6pt)",
-          fontWeight: 400,
+          fontWeight: "var(--resume-heading-weight)" as unknown as number,
+          textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
           color: accent,
           letterSpacing: "0.01em",
           lineHeight: 1.1,
@@ -266,7 +261,7 @@ export function OrchidTemplate({
       {contact.name && (
         <div
           style={{
-            fontFamily: SERIF_STACK,
+            fontFamily: "var(--resume-font)",
             fontSize: "calc(var(--resume-name-size) - 2pt)",
             fontWeight: "var(--resume-name-weight)" as unknown as number,
             color: DARK_TEXT,
@@ -280,7 +275,7 @@ export function OrchidTemplate({
       {visibleSections.includes("targetTitle") && targetTitle.title && (
         <div
           style={{
-            fontFamily: SERIF_STACK,
+            fontFamily: "var(--resume-font)",
             fontSize: "calc(var(--resume-body-size) + 3pt)",
             color: accent,
             marginTop: 6,
@@ -320,12 +315,6 @@ export function OrchidTemplate({
   );
 
   // ─── Section renderers (shared between left and right columns) ───
-  const skillName = (s: any): string => {
-    if (typeof s === "string") return s;
-    if (s && typeof s === "object") return String(s.name || "");
-    return "";
-  };
-
   const sectionRenderers: Record<string, (isFirst: boolean) => React.ReactNode> = {
     summary: (isFirst) =>
       summary.content ? (
@@ -665,16 +654,9 @@ export function OrchidTemplate({
   const order = (design.sectionOrder || []).filter((k) => BODY_KEYS.has(k));
   const visibleSet = new Set(visibleSections as readonly string[]);
 
-  const leftOrder = leftKeys
-    .filter((k) => visibleSet.has(k))
-    .sort((a, b) => {
-      const ia = order.indexOf(a);
-      const ib = order.indexOf(b);
-      if (ia === -1 && ib === -1) return 0;
-      if (ia === -1) return 1;
-      if (ib === -1) return -1;
-      return ia - ib;
-    });
+  // Left column renders in sidebarSections order (the designer reorders that
+  // array directly); the right column follows sectionOrder.
+  const leftOrder = leftKeys.filter((k) => visibleSet.has(k));
 
   const rightOrder = order.filter(
     (k) =>

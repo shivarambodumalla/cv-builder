@@ -230,13 +230,23 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
           page-break-after: avoid;
           break-after: avoid;
         }
-        [data-resume-entry] {
+        /* An entry with bullets may break between bullets, never inside one,
+           and its header stays with the first bullet. Keeping whole entries
+           unbreakable pushed a tall first entry (and, in two-column layouts,
+           the entire column row) onto the next page, leaving page 1 blank. */
+        [data-resume-entry]:not(:has(li)) {
           page-break-inside: avoid;
           break-inside: avoid;
         }
+        [data-resume-entry] li,
         [data-resume-bullet] {
           page-break-inside: avoid;
           break-inside: avoid;
+        }
+        [data-resume-entry] ul,
+        [data-resume-entry] ol {
+          page-break-before: avoid;
+          break-before: avoid;
         }
         [data-page-break-before] {
           page-break-before: always;

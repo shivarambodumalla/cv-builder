@@ -9,6 +9,7 @@ import { Chip } from "@/components/ui/chip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
+import { ResumeFonts } from "@/components/resume/resume-fonts";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { DEFAULT_DESIGN } from "@/lib/resume/defaults";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
@@ -214,12 +215,15 @@ export function UserResumes({ resumes }: { resumes: UserResume[] }) {
 
               <TabsContent value="resume" className="mt-4">
                 {selected.parsed_json ? (
+                  <>
+                  <ResumeFonts />
                   <PaperPreview paperSize={(selected.design_settings?.paperSize as ResumeDesignSettings["paperSize"]) ?? DEFAULT_DESIGN.paperSize}>
                     <TemplateRenderer
                       content={selected.parsed_json}
                       design={normalizeDesignSettings(selected.design_settings)}
                     />
                   </PaperPreview>
+                  </>
                 ) : (
                   <EmptyState>No parsed resume content available.</EmptyState>
                 )}

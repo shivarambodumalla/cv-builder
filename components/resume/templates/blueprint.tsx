@@ -275,7 +275,7 @@ export function Blueprint({
   // LEFT COLUMN RENDERERS
   const profileBlock = (
     <div key="profile" style={{ marginBottom: 0 }}>
-      <div style={labelStyle}>PROFILE:</div>
+      <div style={labelStyle}>Profile:</div>
       <div
         style={{
           fontFamily: "var(--resume-font)",
@@ -296,7 +296,7 @@ export function Blueprint({
 
   const contactInfoBlock = (
     <div key="contact-info">
-      <div style={labelStyle}>CONTACT INFORMATION:</div>
+      <div style={labelStyle}>Contact Information:</div>
       <div
         style={{
           fontFamily: "var(--resume-font)",
@@ -315,7 +315,7 @@ export function Blueprint({
   const educationBlock =
     education.items.length > 0 ? (
       <div key="education">
-        <div style={labelStyle}>EDUCATION:</div>
+        <div style={labelStyle}>Education:</div>
         {education.items.map((item, i) => (
           <div
             key={i}
@@ -344,7 +344,7 @@ export function Blueprint({
   const certificationsBlock =
     certifications.items.length > 0 ? (
       <div key="certifications">
-        <div style={labelStyle}>CERTIFICATIONS:</div>
+        <div style={labelStyle}>Certifications:</div>
         {certifications.items.map((item, i) => (
           <div
             key={i}
@@ -372,7 +372,7 @@ export function Blueprint({
   const volunteerBlock =
     volunteering.items.length > 0 ? (
       <div key="volunteering">
-        <div style={labelStyle}>VOLUNTEER:</div>
+        <div style={labelStyle}>Volunteer:</div>
         {volunteering.items.map((item, i) => (
           <div
             key={i}
@@ -399,7 +399,7 @@ export function Blueprint({
 
   const socialRow = (
     <div key="social">
-      <div style={labelStyle}>SOCIAL:</div>
+      <div style={labelStyle}>Social:</div>
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         {contact.linkedin && <SocialIcon kind="linkedin" bg={resolvedAccent} fg="#ffffff" />}
         {contact.website && <SocialIcon kind="globe" bg={resolvedAccent} fg="#ffffff" />}
@@ -412,7 +412,7 @@ export function Blueprint({
   // RIGHT COLUMN RENDERERS
   const summaryBlock = summary.content ? (
     <div key="summary">
-      <div style={labelStyle}>PROFESSIONAL SUMMARY:</div>
+      <div style={labelStyle}>Professional Summary:</div>
       <p
         style={{
           fontFamily: "var(--resume-font)",
@@ -431,7 +431,7 @@ export function Blueprint({
   const skillsBlock =
     skills.categories.length > 0 ? (
       <div key="skills">
-        <div style={labelStyle}>PROFESSIONAL SKILLS:</div>
+        <div style={labelStyle}>Professional Skills:</div>
         <SkillsItems
           categories={skills.categories}
           skillsStyle={design.skillsStyle ?? "inline"}
@@ -446,7 +446,7 @@ export function Blueprint({
   const experienceBlock =
     experience.items.length > 0 ? (
       <div key="experience">
-        <div style={labelStyle}>WORK EXPERIENCE:</div>
+        <div style={labelStyle}>Work Experience:</div>
         {experience.items.map((item, i) => (
           <div
             key={i}
@@ -456,7 +456,7 @@ export function Blueprint({
             <div
               style={{
                 fontFamily: "var(--resume-font)",
-                fontSize: "13px",
+                fontSize: "calc(var(--resume-body-size) - 0.25pt)",
                 fontWeight: 700,
                 color: darkText,
               }}
@@ -497,7 +497,7 @@ export function Blueprint({
   const projectsBlock =
     projects.items.length > 0 ? (
       <div key="projects">
-        <div style={labelStyle}>PROJECTS:</div>
+        <div style={labelStyle}>Projects:</div>
         {projects.items.map((item, i) => (
           <div
             key={i}
@@ -512,7 +512,7 @@ export function Blueprint({
                 fontFamily: "var(--resume-font)",
               }}
             >
-              <div style={{ fontWeight: 700, color: darkText, fontSize: "13px" }}>{item.name}</div>
+              <div style={{ fontWeight: 700, color: darkText, fontSize: "calc(var(--resume-body-size) - 0.25pt)" }}>{item.name}</div>
               {(item.startDate || item.endDate) && (
                 <div
                   style={{
@@ -546,7 +546,7 @@ export function Blueprint({
   const awardsBlock =
     awards.items.length > 0 ? (
       <div key="awards">
-        <div style={labelStyle}>AWARDS:</div>
+        <div style={labelStyle}>Awards:</div>
         {awards.items.map((item, i) => (
           <div
             key={i}
@@ -576,7 +576,7 @@ export function Blueprint({
   const publicationsBlock =
     publications.items.length > 0 ? (
       <div key="publications">
-        <div style={labelStyle}>PUBLICATIONS:</div>
+        <div style={labelStyle}>Publications:</div>
         {publications.items.map((item, i) => (
           <div
             key={i}
@@ -621,20 +621,25 @@ export function Blueprint({
     targetTitle: null,
   };
 
+  // Header keys are rendered in the fixed header block; the right column
+  // follows `sidebarSections` order (the designer reorders that array), the
+  // left column follows `sectionOrder` minus whatever sits on the right.
   const BLUEPRINT_RIGHT_DEFAULT = ["summary", "skills", "experience", "projects", "awards", "publications"];
-  const rightKeys = new Set(design.sidebarSections ?? BLUEPRINT_RIGHT_DEFAULT);
-  const order = design.sectionOrder || [];
+  const headerKeys = new Set(["contact", "targetTitle"]);
+  const rightKeys: string[] = design.sidebarSections ?? BLUEPRINT_RIGHT_DEFAULT;
+  const rightSet = new Set(rightKeys);
+  const isVisible = (key: string) => visibleSections.includes(key as typeof visibleSections[number]);
+  const toEntry = (key: string) => ({ key, node: sectionMap[key] });
+  const hasNode = (x: { key: string; node: React.ReactNode }): x is { key: string; node: React.ReactNode } => !!x.node;
 
-  const leftContent: { key: string; node: React.ReactNode }[] = [];
-  const rightContent: { key: string; node: React.ReactNode }[] = [];
-
-  for (const key of order) {
-    if (!visibleSections.includes(key as typeof visibleSections[number])) continue;
-    const node = sectionMap[key];
-    if (!node) continue;
-    if (rightKeys.has(key)) rightContent.push({ key, node });
-    else leftContent.push({ key, node });
-  }
+  const leftContent = (design.sectionOrder || [])
+    .filter((key) => !headerKeys.has(key) && !rightSet.has(key) && isVisible(key))
+    .map(toEntry)
+    .filter(hasNode);
+  const rightContent = rightKeys
+    .filter((key) => !headerKeys.has(key) && isVisible(key))
+    .map(toEntry)
+    .filter(hasNode);
 
   const showHeader = visibleSections.includes("contact");
 
@@ -697,7 +702,7 @@ export function Blueprint({
             <div
               style={{
                 fontFamily: "var(--resume-font)",
-                fontSize: 32,
+                fontSize: "var(--resume-name-size)",
                 textTransform: "uppercase",
                 letterSpacing: 1,
                 color: darkText,
@@ -711,7 +716,7 @@ export function Blueprint({
               {first && (
                 <span style={{ fontWeight: 400 }}>{first}</span>
               )}
-              {last && <span style={{ fontWeight: 700 }}>{last}</span>}
+              {last && <span style={{ fontWeight: "var(--resume-name-weight)" as unknown as number }}>{last}</span>}
             </div>
             {targetTitle.title && visibleSections.includes("targetTitle") && (
               <div

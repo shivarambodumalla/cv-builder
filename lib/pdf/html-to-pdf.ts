@@ -1,5 +1,6 @@
 import React from "react";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
+import { RESUME_FONTS_URL } from "@/lib/resume/fonts";
 
 const PAPER_SIZES: Record<string, { width: string; height: string }> = {
   a4: { width: "210mm", height: "297mm" },
@@ -98,8 +99,6 @@ export async function renderHtmlToPdf(
   // Watermark footer needs bottom space on every page.
   const pageBottomMargin = watermark ? "20px" : "0";
 
-  const GOOGLE_FONTS_URL =
-    "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700;900&family=Lora:wght@400;500;600;700&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700;800;900&display=swap";
 
   const fullHtml = `<!DOCTYPE html>
 <html>
@@ -153,7 +152,7 @@ ${templateHtml}
     // Load fonts separately so Puppeteer tracks the stylesheet request, then
     // wait for document.fonts.ready to confirm metrics are applied to the DOM.
     try {
-      await page.addStyleTag({ url: GOOGLE_FONTS_URL });
+      await page.addStyleTag({ url: RESUME_FONTS_URL });
       await page.evaluate(() => document.fonts.ready);
     } catch {
       // Font loading failure must not abort PDF export — system fallbacks apply.
