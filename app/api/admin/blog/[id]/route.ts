@@ -25,7 +25,9 @@ export async function PUT(
   const body = await request.json();
   const db = createAdminClient();
 
-  const contentHtml = body.content_md ? (marked(body.content_md) as string) : "";
+  // Posts authored directly in HTML (no markdown source) must survive an
+  // admin save that only changes metadata such as the cover image.
+  const contentHtml = body.content_md ? (marked(body.content_md) as string) : undefined;
 
   const { data, error } = await db
     .from("blog_posts")
@@ -34,7 +36,7 @@ export async function PUT(
       title: body.title,
       brief: body.brief ?? "",
       content_md: body.content_md ?? "",
-      content_html: contentHtml,
+      ...(contentHtml !== undefined ? { content_html: contentHtml } : {}),
       cover_image_url: body.cover_image_url ?? null,
       tags: body.tags ?? [],
       seo_title: body.seo_title ?? body.title,
