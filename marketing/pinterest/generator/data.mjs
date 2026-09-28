@@ -1,0 +1,26 @@
+// One entry per free template: the phrase people search on Pinterest, a short
+// angle line, the board it belongs to, and whether we can honestly say ATS-friendly.
+export const PINS = {
+  harvard:        { kw: "Harvard Resume Template", em: "Harvard", sub: "Free Word & PDF download", board: "ATS-Friendly Resume Templates", ats: true, docx: true, who: "students, new grads, finance & consulting" },
+  classic:        { kw: "Simple Professional Resume Template", em: "Simple", sub: "Clean, one-column, recruiter-approved", board: "ATS-Friendly Resume Templates", ats: true, who: "any role, any career stage" },
+  sharp:          { kw: "Software Engineer Resume Template", em: "Software Engineer", sub: "Modern layout that still parses cleanly", board: "Tech Resume Templates", ats: true, who: "software engineers & developers" },
+  minimal:        { kw: "Minimalist Resume Template", em: "Minimalist", sub: "Quiet, clean and easy to scan", board: "Minimalist Resume Templates", ats: true, who: "engineers, analysts & career changers" },
+  "two-column":   { kw: "Two-Column Resume Template", em: "Two-Column", sub: "Fit more on one page", board: "Tech Resume Templates", ats: false, who: "developers with lots of skills to show" },
+  executive:      { kw: "Executive Resume Template", em: "Executive", sub: "For directors, VPs and senior leaders", board: "Executive Resume Templates", ats: true, who: "senior managers, directors & VPs" },
+  regent:         { kw: "Elegant Resume Template", em: "Elegant", sub: "Centered serif header, hairline rules", board: "Executive Resume Templates", ats: true, who: "senior professionals" },
+  ledger:         { kw: "Professional Resume Template", em: "Professional", sub: "Structured layout for experienced hires", board: "Executive Resume Templates", ats: true, who: "experienced professionals" },
+  vantage:        { kw: "Resume Template with Company Logos", em: "Company Logos", sub: "Put the employers you worked for up front", board: "Modern Resume Templates", ats: false, who: "experienced hires with known employers" },
+  aurora:         { kw: "Marketing Resume Template", em: "Marketing", sub: "Modern two-column layout", board: "Marketing Resume Templates", ats: false, who: "marketing managers & specialists" },
+  "bold-accent":  { kw: "Modern Resume Template", em: "Modern", sub: "Bold accents that still read cleanly", board: "Modern Resume Templates", ats: false, who: "marketers & early-career professionals" },
+  coastal:        { kw: "Colorful Resume Template", em: "Colorful", sub: "A teal header band that gets noticed", board: "Marketing Resume Templates", ats: false, who: "marketing, brand & creative roles" },
+  "clean-sidebar":{ kw: "Sidebar Resume Template", em: "Sidebar", sub: "Skills and contact in a warm side panel", board: "Modern Resume Templates", ats: false, who: "marketing analysts & coordinators" },
+  "classic-serif":{ kw: "College Student Resume Template", em: "College Student", sub: "Built for internships & first jobs", board: "Resume Templates for Students", ats: true, who: "college students & new grads" },
+  sterling:       { kw: "Accountant Resume Template", em: "Accountant", sub: "Serif body, skills table, no clutter", board: "ATS-Friendly Resume Templates", ats: true, who: "accountants, CPAs & finance pros" },
+  ember:          { kw: "Data Analyst Resume Template", em: "Data Analyst", sub: "Contact and skills in a clean right rail", board: "Tech Resume Templates", ats: true, who: "data analysts & BI roles" },
+  canopy:         { kw: "Sales Resume Template", em: "Sales", sub: "With an Achievements section for your wins", board: "ATS-Friendly Resume Templates", ats: true, who: "account executives & sales leaders" },
+  portrait:       { kw: "Creative Resume Template", em: "Creative", sub: "Split-weight name, confident layout", board: "Creative Resume Templates", ats: false, who: "designers & creative professionals" },
+  orchid:         { kw: "Graphic Designer Resume Template", em: "Designer", sub: "Warm sidebar with accent headings", board: "Creative Resume Templates", ats: false, who: "graphic, UX & product designers" },
+  meridian:       { kw: "Startup Resume Template", em: "Startup", sub: "For founders and product people", board: "Creative Resume Templates", ats: false, who: "founders, PMs & startup hires" },
+  linen:          { kw: "Minimalist Two-Column Resume", em: "Minimalist", sub: "Off-white canvas, diamond-marked divider", board: "Minimalist Resume Templates", ats: false, who: "designers & creative professionals" },
+  graphite:       { kw: "Black and White Resume Template", em: "Black and White", sub: "Printer-friendly and easy on the eye", board: "Minimalist Resume Templates", ats: false, who: "any role that values a clean look" },
+};
