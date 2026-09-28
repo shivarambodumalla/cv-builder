@@ -587,7 +587,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             size="icon"
             className="h-11 w-11 lg:hidden"
             onClick={() => setMobilePreview(!mobilePreview)}
-            title={mobilePreview ? "Back" : "Preview CV"}
+            title={mobilePreview ? "Back" : "Preview resume"}
           >
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
@@ -616,12 +616,12 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           <button
             type="button"
             onClick={() => router.push(`/my-jobs?cvId=${cv.id}`)}
-            title="Find live jobs matched to this CV"
+            title="Find live jobs matched to this resume"
             className="group relative inline-flex h-8 items-center gap-1.5 overflow-hidden rounded-md bg-gradient-to-r from-[#1E3A5F] to-[#2A4F7A] px-3 text-xs font-medium text-white shadow-sm ring-1 ring-white/10 transition-all hover:shadow-md hover:from-[#1A3354] hover:to-[#244670] focus:outline-none focus:ring-2 focus:ring-[#2A4F7A]/60"
           >
             <span aria-hidden className="pointer-events-none absolute inset-y-0 -inset-x-1/2 motion-safe:animate-shimmer-sweep bg-gradient-to-r from-transparent via-white/40 to-transparent" />
             <Sparkles className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Find Jobs for this CV</span>
+            <span className="hidden sm:inline">Find Jobs for this resume</span>
             <span className="sm:hidden">Find Jobs</span>
           </button>
 
@@ -942,7 +942,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <StepLoader
                   steps={[
                     { label: "Reading job description", sub: "Extracting requirements and keywords", icon: FileText },
-                    { label: "Comparing with your CV", sub: "Matching skills and experience", icon: Search },
+                    { label: "Comparing with your resume", sub: "Matching skills and experience", icon: Search },
                     { label: "Calculating match score", sub: "Scoring across all dimensions", icon: Brain },
                   ]}
                   currentStep={1}
@@ -953,7 +953,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <div className="space-y-6">
                   <div className="rounded-lg border bg-background p-6">
                     <p className="text-sm text-muted-foreground text-center">
-                      Paste a job description and click Analyse Match.
+                      Paste a job description and click Analyze Match.
                     </p>
                   </div>
                 </div>

@@ -16,7 +16,7 @@ const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: n
 ];
 
 const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
-  cv_limit: { title: "You have 3 CVs", subtitle: "Upgrade to create unlimited CVs tailored for different roles.", icon: "crown" },
+  cv_limit: { title: "You have 3 resumes", subtitle: "Upgrade to create unlimited resumes tailored for different roles.", icon: "crown" },
   ats_limit: { title: "ATS scans used up", subtitle: "Resets in 7 days, or upgrade for unlimited ATS analysis.", icon: "zap" },
   rewrite_limit: { title: "AI rewrites used up", subtitle: "Resets in 7 days, or upgrade for unlimited rewrites.", icon: "sparkles" },
   job_match_limit: { title: "Job matches used up", subtitle: "Resets in 7 days, or upgrade for unlimited matching.", icon: "sparkles" },
@@ -28,7 +28,7 @@ const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon:
   story_summary_limit: { title: "Story summaries used", subtitle: "Resets Monday, or upgrade for unlimited AI summaries.", icon: "sparkles" },
   interview_prep_limit: { title: "Interview prep sessions used", subtitle: "Resets Monday, or upgrade for unlimited prep.", icon: "sparkles" },
   template_locked: { title: "This template is Pro", subtitle: "Unlock every premium template plus unlimited ATS scans, rewrites and downloads.", icon: "crown" },
-  download: { title: "Download your CV", subtitle: "Your PDF is always clean. Upgrade for unlimited everything else.", icon: "zap" },
+  download: { title: "Download your resume", subtitle: "Your PDF is always clean. Upgrade for unlimited everything else.", icon: "zap" },
   generic: { title: "Upgrade to Pro", subtitle: "Unlimited everything for serious job seekers.", icon: "crown" },
 };
 

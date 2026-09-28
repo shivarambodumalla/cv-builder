@@ -26,7 +26,7 @@ const FAQS = [
   {
     question: "How long does it take to build a resume on CVEdge?",
     answer:
-      "If you upload an existing CV, CVEdge parses it in under 60 seconds and pre-fills your content automatically. From there, ATS analysis takes 10 seconds, Fix All ATS rewrites every bullet in under 30 seconds, and PDF download is instant. Total time from upload to finished resume: 8–12 minutes for most users.",
+      "If you upload an existing resume, CVEdge parses it in under 60 seconds and pre-fills your content automatically. From there, ATS analysis takes 10 seconds, Fix All ATS rewrites every bullet in under 30 seconds, and PDF download is instant. Total time from upload to finished resume: 8–12 minutes for most users.",
   },
   {
     question: "Does the free resume builder add watermarks to the PDF?",
@@ -36,7 +36,7 @@ const FAQS = [
   {
     question: "Can I use CVEdge to update an existing resume?",
     answer:
-      "Yes. Upload your existing CV (PDF or Word) and CVEdge parses it into the editor. Your content is preserved in the correct sections. You can then choose a new template, improve your ATS score, update your experience, and download a new version. You're not starting from scratch.",
+      "Yes. Upload your existing resume (PDF or Word) and CVEdge parses it into the editor. Your content is preserved in the correct sections. You can then choose a new template, improve your ATS score, update your experience, and download a new version. You're not starting from scratch.",
   },
   {
     question: "What file formats does CVEdge accept for upload?",
@@ -46,14 +46,14 @@ const FAQS = [
   {
     question: "What is the difference between free and Pro on CVEdge?",
     answer:
-      "Free plan: 3 CVs, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 28 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs £5/week (or £14/month, £120/year).",
+      "Free plan: 3 resumes, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 28 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs £5/week (or £14/month, £120/year).",
   },
 ];
 
 const FREE_FEATURES = [
   {
     icon: FileText,
-    title: "Upload your existing CV or start from scratch",
+    title: "Upload your existing resume or start from scratch",
     desc: "Paste a job description. CVEdge extracts your content automatically or walks you through a structured form. You're editing within 60 seconds.",
   },
   {
@@ -64,7 +64,7 @@ const FREE_FEATURES = [
   {
     icon: Sparkles,
     title: "AI rewrites every weak bullet in one pass",
-    desc: "Fix All ATS rewrites your entire resume's bullets and summary to ATS-optimised standards. Review each change, accept what fits, download when done.",
+    desc: "Fix All ATS rewrites your entire resume's bullets and summary to ATS-optimized standards. Review each change, accept what fits, download when done.",
   },
   {
     icon: Target,
@@ -125,13 +125,13 @@ export default function FreeResumeBuilderPage() {
           Build, Score, and Download Your Resume Free
         </h1>
         <p className="text-muted-foreground mt-3 text-base leading-relaxed">
-          Upload your existing CV or start from scratch. Get an ATS score in seconds,
+          Upload your existing resume or start from scratch. Get an ATS score in seconds,
           fix every issue with AI, match against any job description, and download a
           polished PDF. No credit card. No watermarks.
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Upload my CV: free</Link>
+            <Link href="/upload-resume">Get my free ATS score</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch free</Link>
@@ -189,7 +189,7 @@ export default function FreeResumeBuilderPage() {
           {[
             {
               step: "1",
-              title: "Upload your CV or start fresh",
+              title: "Upload your resume or start fresh",
               desc: "Upload a PDF or Word file. CVEdge parses it into a structured editor in under 60 seconds. Or use the form to enter your experience section by section.",
             },
             {
@@ -200,7 +200,7 @@ export default function FreeResumeBuilderPage() {
             {
               step: "3",
               title: "Fix everything with Fix All ATS",
-              desc: "One click rewrites your entire resume's bullets and summary to ATS-optimised standards. Review each change, accept what fits your voice, and move on.",
+              desc: "One click rewrites your entire resume's bullets and summary to ATS-optimized standards. Review each change, accept what fits your voice, and move on.",
             },
             {
               step: "4",
@@ -297,12 +297,12 @@ export default function FreeResumeBuilderPage() {
           Build your resume for free, right now
         </h2>
         <p className="mt-3 text-muted-foreground">
-          No sign-up friction, no watermarks, no credit card. Upload your CV or start
+          No sign-up friction, no watermarks, no credit card. Upload your resume or start
           fresh and be done in under 10 minutes.
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Upload my CV: free</Link>
+            <Link href="/upload-resume">Get my free ATS score</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch free</Link>

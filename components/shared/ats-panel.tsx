@@ -58,7 +58,7 @@ interface AtsPanelProps {
 type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
 
 const ANALYSIS_STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.ElementType }[] = [
-  { key: "reading", label: "Reading your CV", sub: "Parsing sections and content", icon: FileText },
+  { key: "reading", label: "Reading your resume", sub: "Parsing sections and content", icon: FileText },
   { key: "keywords", label: "Checking keywords", sub: "Matching against role-specific lists", icon: Search },
   { key: "scoring", label: "AI is scoring", sub: "Evaluating bullets, formatting, impact", icon: Brain },
   { key: "done", label: "Analysis complete!", sub: "Your ATS report is ready", icon: CheckCircle2 },
@@ -185,7 +185,7 @@ function CategoryRow({
                   ) : (
                     <span
                       className="text-xs font-medium text-success"
-                      title="Estimated score lift after re-analysis. Click Re-analyse to verify."
+                      title="Estimated score lift after re-analysis. Click Re-analyze to verify."
                     >
                       ~+{issue.impact} pts
                     </span>
@@ -444,7 +444,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
       if (!content.skills?.categories?.length) missing.push("skills");
 
       if (missing.length > 0) {
-        setError(`Your CV needs more content before analysis. Please add: ${missing.join(", ")}.`);
+        setError(`Your resume needs more content before analysis. Please add: ${missing.join(", ")}.`);
         setErrorCode("incomplete_cv");
         return;
       }
@@ -502,7 +502,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
         steps={ANALYSIS_STEPS as LoaderStep[]}
         currentStep={stepIndex}
         centerIcon={Brain}
-        footerText="Please don't close this tab while we analyse your CV."
+        footerText="Please don't close this tab while we analyze your resume."
       />
     );
   }
@@ -517,7 +517,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           <AlertCircle className="h-6 w-6 text-destructive" />
         </div>
         <div>
-          <p className="font-medium">{isIncomplete ? "Your CV needs a few more details" : isTooLarge ? "CV too long to analyse" : "Analysis failed"}</p>
+          <p className="font-medium">{isIncomplete ? "Your resume needs a few more details" : isTooLarge ? "Resume too long to analyze" : "Analysis failed"}</p>
           <p className="mt-1 text-sm text-muted-foreground">{error}</p>
         </div>
         <div className="flex flex-col items-center gap-2">
@@ -526,7 +526,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               size="sm"
               onClick={() => window.dispatchEvent(new CustomEvent("switch-tab", { detail: "editor" }))}
             >
-              Edit CV →
+              Edit resume →
             </Button>
           )}
           {isIncomplete && (
@@ -534,7 +534,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               size="sm"
               onClick={() => window.dispatchEvent(new CustomEvent("switch-tab", { detail: "editor" }))}
             >
-              Complete your CV →
+              Complete your resume →
             </Button>
           )}
           <Button variant="outline" size="sm" onClick={handleAnalyse}>
@@ -590,7 +590,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               }}
             >
               <RefreshCw size={11} color="#3D3830" />
-              Re-analyse
+              Re-analyze
             </button>
           </div>
         )}
@@ -642,7 +642,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           <div className="flex flex-col items-center gap-5 py-6">
             <p className="text-sm text-muted-foreground text-center">
               {allDone
-                ? "Your CV is ready for analysis."
+                ? "Your resume is ready for analysis."
                 : "Complete these sections before running ATS analysis."}
             </p>
 
@@ -662,7 +662,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
             </div>
 
             <Button onClick={handleAnalyse} disabled={loading || !allDone}>
-              Analyse CV
+              Analyze resume
             </Button>
           </div>
         );
@@ -709,7 +709,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
             <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 mb-3 flex items-center justify-between gap-3">
               <p className="text-sm text-foreground">
                 <span className="font-semibold">Ready to apply?</span>{" "}
-                <span className="text-muted-foreground">Download your CV and start sending it out.</span>
+                <span className="text-muted-foreground">Download your resume and start sending it out.</span>
               </p>
               <Button size="sm" className="shrink-0" onClick={onDownload}>
                 <Download className="mr-1.5 h-3.5 w-3.5" />Download PDF
@@ -825,7 +825,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
               <div style={{ fontSize: "9.5px", color: "#9CA3AF", textAlign: "center" }}>
                 {isEstimated ? "Estimated score \u00b7 " : ""}
                 <span onClick={handleAnalyse} style={{ color: "#15803d", fontWeight: 500, cursor: "pointer" }}>
-                  Re-analyse for verified score
+                  Re-analyze for verified score
                 </span>
               </div>
             </>
@@ -855,7 +855,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setGuaranteeOpen(false)}>
           <div className="bg-background rounded-xl border p-6 max-w-sm mx-4 text-center" onClick={(e) => e.stopPropagation()}>
             <Shield className="h-8 w-8 text-success mx-auto mb-3" />
-            <p className="text-base font-semibold">We&apos;ll review your CV personally</p>
+            <p className="text-base font-semibold">We&apos;ll review your resume personally</p>
             <p className="text-sm text-muted-foreground mt-2">Current score: {displayScore}</p>
             {guaranteeResult ? (
               <p className="text-sm text-success mt-4">{guaranteeResult}</p>
@@ -918,13 +918,13 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
         <StepLoader
           fullScreen
           steps={[
-            { label: "Reading your CV", sub: "Parsing sections and bullets", icon: FileText },
-            { label: "Analysing ATS issues", sub: "Checking keywords and formatting", icon: Search },
+            { label: "Reading your resume", sub: "Parsing sections and bullets", icon: FileText },
+            { label: "Analyzing ATS issues", sub: "Checking keywords and formatting", icon: Search },
             { label: "Generating fixes", sub: "Rewriting bullets for maximum impact", icon: Wand2 },
           ]}
           currentStep={fixAllStep}
           centerIcon={Wand2}
-          footerText="Please don't close this tab while we fix your CV."
+          footerText="Please don't close this tab while we fix your resume."
         />
       )}
     </div>

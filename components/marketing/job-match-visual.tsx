@@ -35,7 +35,7 @@ export default function JobMatchVisual() {
       <text x="24" y="322" fontFamily="Geist, system-ui" fontSize="11" fontWeight="700" fill="#0C1A0E" letterSpacing="0.5">TOP FIXES</text>
 
       <rect x="24" y="332" width="472" height="52" rx="8" fill="#FAFAF9" stroke="#E0D8CC" strokeWidth="1"/>
-      <text x="36" y="351" fontFamily="Geist, system-ui" fontSize="10.5" fontWeight="500" fill="#0C1A0E">Add CUDA and GPU kernel optimisation to skills</text>
+      <text x="36" y="351" fontFamily="Geist, system-ui" fontSize="10.5" fontWeight="500" fill="#0C1A0E">Add CUDA and GPU kernel optimization to skills</text>
       <text x="36" y="368" fontFamily="Geist, system-ui" fontSize="9.5" fill="#9CA3AF">Explicitly mention if applicable. Specific requirement</text>
       <rect x="378" y="339" width="40" height="20" rx="10" fill="#DCFCE7"/>
       <text x="398" y="353" fontFamily="Geist, system-ui" fontSize="9" fontWeight="600" fill="#065F46" textAnchor="middle">+3pts</text>

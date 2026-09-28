@@ -26,17 +26,17 @@ export function SignInCTA() {
       <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full border-4 border-[#34D399]/15 pointer-events-none" />
       <div className="relative z-10">
         <h2 className="text-xl md:text-2xl font-bold mb-2">
-          Sign in free to find jobs matching your CV
+          Sign in free to find jobs matching your resume
         </h2>
         <p className="text-white/70 text-sm max-w-md mx-auto mb-6">
-          CVEdge analyses your skills and experience to surface the best-fit
+          CVEdge analyzes your skills and experience to surface the best-fit
           roles, so you apply smarter, not harder.
         </p>
         <Button
           onClick={() => showSignupModal({ trigger: "jobs_cta" })}
           className="bg-white text-[#065F46] hover:bg-white/90 font-semibold gap-2"
         >
-          Find jobs matching your CV <ArrowRight className="h-4 w-4" />
+          Find jobs matching your resume <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

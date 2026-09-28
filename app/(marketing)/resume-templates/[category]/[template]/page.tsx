@@ -188,7 +188,7 @@ export default async function TemplateLeafPage({
                 <p className="text-base text-muted-foreground mb-6 leading-relaxed">{leaf.headline}</p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button size="lg" className="h-12 px-8 shadow-md shadow-primary/20" asChild>
-                    <Link href="/upload-resume">Upload my CV and use this template</Link>
+                    <Link href="/upload-resume">Upload my resume and use this template</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                     <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>
@@ -233,12 +233,12 @@ export default async function TemplateLeafPage({
                 <div className="rounded-xl bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] p-6 mb-8">
                   <p className="font-semibold text-sm mb-1">Start with this template for free</p>
                   <p className="text-xs text-muted-foreground mb-4">
-                    Upload your existing CV or start from scratch. CVEdge pre-fills your content
+                    Upload your existing resume or start from scratch. CVEdge pre-fills your content
                     into the template and gives you an instant ATS score.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button asChild>
-                      <Link href="/upload-resume">Upload my CV</Link>
+                      <Link href="/upload-resume">Upload my resume</Link>
                     </Button>
                     <Button variant="outline" asChild>
                       <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>
@@ -387,11 +387,11 @@ export default async function TemplateLeafPage({
               Build your resume with {leaf.displayName.split(" ")[0]} for free
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Upload your existing CV or start fresh. ATS score included. No credit card required.
+              Upload your existing resume or start fresh. ATS score included. No credit card required.
             </p>
             <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" asChild>
-                <Link href="/upload-resume">Upload my CV free</Link>
+                <Link href="/upload-resume">Upload my resume free</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>

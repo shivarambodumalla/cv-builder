@@ -80,10 +80,10 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       "Classic is the general-purpose ATS-safe layout: single column, standard headings, generous spacing, and Experience placed immediately after the header. Where Harvard follows an academic convention, Classic follows a corporate one. It puts your current role first and gives bullets room to breathe. If you want one template that works for almost any professional application, this is it.",
     sectionOrder: {
       order: ["Contact", "Summary", "Experience", "Skills", "Education", "Certifications"],
-      why: "Experience-first is correct for anyone with professional history. The summary earns its place only if it states your specialisation, level and strongest result in three or four sentences. A generic ambition statement here wastes the most valuable space on the page.",
+      why: "Experience-first is correct for anyone with professional history. The summary earns its place only if it states your specialization, level and strongest result in three or four sentences. A generic ambition statement here wastes the most valuable space on the page.",
     },
     sectionAdvice: [
-      { section: "Summary", advice: "Three or four sentences naming what you specialise in, at what level, and the single result you most want read. This block is scanned before anything else, so it should contain your strongest keywords naturally." },
+      { section: "Summary", advice: "Three or four sentences naming what you specialize in, at what level, and the single result you most want read. This block is scanned before anything else, so it should contain your strongest keywords naturally." },
       { section: "Experience", advice: "Three to five bullets for the current role, fewer as you go back. Classic's spacing rewards concise bullets. Anything running past two lines loses the scanning advantage the layout gives you." },
       { section: "Skills", advice: "Group by category rather than listing thirty items in a row. Grouped lists are easier for a human to scan and parse identically for the ATS." },
       { section: "Education", advice: "Below Experience once you are a few years in. Degree, institution, year. No coursework, no modules." },
@@ -102,7 +102,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "What makes a template 'ATS-friendly' in practice?",
-        a: "Four things: a single-column flow so reading order cannot be scrambled, standard section headings the parser recognises, contact details in the body rather than a document header, and real selectable text rather than images or icons. Classic satisfies all four by construction. Most templates that fail do so on the second or third point. A sidebar built with a table, or a name rendered as a graphic.",
+        a: "Four things: a single-column flow so reading order cannot be scrambled, standard section headings the parser recognizes, contact details in the body rather than a document header, and real selectable text rather than images or icons. Classic satisfies all four by construction. Most templates that fail do so on the second or third point. A sidebar built with a table, or a name rendered as a graphic.",
       },
       {
         q: "Should I use the same Classic resume for every application?",
@@ -113,7 +113,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "ats-friendly/minimal-cv": {
     bestFor:
-      "Minimal strips the page to type and spacing alone: no rules, no shading, no accent colour. It parses as reliably as Classic while reading as more contemporary, which suits product, design-adjacent and startup applications where an overtly corporate document can feel dated. The trade-off is that it offers no visual scaffolding, so the writing has to carry the structure.",
+      "Minimal strips the page to type and spacing alone: no rules, no shading, no accent color. It parses as reliably as Classic while reading as more contemporary, which suits product, design-adjacent and startup applications where an overtly corporate document can feel dated. The trade-off is that it offers no visual scaffolding, so the writing has to carry the structure.",
     sectionOrder: {
       order: ["Contact", "Summary", "Experience", "Skills", "Education"],
       why: "Minimal's restraint means section headings do all the wayfinding. Keep the order conventional so a reader never has to hunt. The layout is already asking them to do more work than a ruled template would.",
@@ -125,7 +125,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       { section: "Education", advice: "Two lines. The aesthetic depends on nothing being longer than it needs to be." },
     ],
     mistakes: [
-      "Filling the whitespace. The empty space is the design; adding a skills bar chart or a coloured header defeats it and adds parsing risk.",
+      "Filling the whitespace. The empty space is the design; adding a skills bar chart or a colored header defeats it and adds parsing risk.",
       "Long paragraph-style bullets, which lose all structure without dividers to separate them.",
       "Choosing Minimal for a 15-year career. At that length it becomes an undifferentiated wall of text.",
       "Reducing the font below 10pt to fit more in, which makes an already-airy layout look cramped and inconsistent.",
@@ -161,7 +161,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       { section: "Certifications", advice: "Sharp has room to list these properly with issuing body and year, which matters in fields where they are used as hard filters." },
     ],
     mistakes: [
-      "Treating the extra capacity as licence to include everything. The density should buy you more detail on recent work, not the return of roles from fifteen years ago.",
+      "Treating the extra capacity as license to include everything. The density should buy you more detail on recent work, not the return of roles from fifteen years ago.",
       "Pushing line spacing tighter still to squeeze more in, at which point legibility collapses.",
       "Mixing bullet lengths inconsistently, which reads as untidy at this density in a way it would not in an airier layout.",
     ],
@@ -213,7 +213,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       },
       {
         q: "Which industries prefer a serif resume?",
-        a: "Law, academia, government and public sector, publishing, and long-established professional-services and financial firms. The distinction is convention rather than rule (nobody rejects a sans-serif CV in these fields), but a serif document reads as fluent in the field's register, and small signals of fit accumulate.",
+        a: "Law, academia, government and public sector, publishing, and long-established professional-services and financial firms. The distinction is convention rather than rule (nobody rejects a sans-serif resume in these fields), but a serif document reads as fluent in the field's register, and small signals of fit accumulate.",
       },
     ],
   },
@@ -226,16 +226,16 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       why: "At senior level the summary carries more load. It frames scope (budget, headcount, remit) before the reader reaches any individual role. Board and advisory positions deserve their own section rather than being mixed into Experience, where they read as jobs.",
     },
     sectionAdvice: [
-      { section: "Executive summary", advice: "Four or five sentences establishing scope: the size of the organisation, the size of your remit, and the outcome you are known for. This is the only place a reader learns your altitude before the detail." },
+      { section: "Executive summary", advice: "Four or five sentences establishing scope: the size of the organization, the size of your remit, and the outcome you are known for. This is the only place a reader learns your altitude before the detail." },
       { section: "Experience", advice: "For each senior role, add a one-line scope statement (team size, budget, P&L) before the bullets. Without it, a director's bullets can read like a manager's." },
-      { section: "Board & advisory", advice: "Separate section, listed with organisation and dates. Mixing these into employment history confuses the timeline." },
+      { section: "Board & advisory", advice: "Separate section, listed with organization and dates. Mixing these into employment history confuses the timeline." },
       { section: "Education", advice: "Brief, at the end. At this level nobody is reading your degree classification. The exception is an MBA or a qualification that is genuinely a credential in your field." },
     ],
     mistakes: [
       "Listing every role from a thirty-year career at equal detail. Give the last ten to fifteen years the space; compress earlier roles to a line each under an 'Earlier career' heading.",
-      "Omitting scope, which is the single most common weakness in senior CVs. Bullets without team size, budget or remit cannot be levelled.",
+      "Omitting scope, which is the single most common weakness in senior resumes. Bullets without team size, budget or remit cannot be leveled.",
       "Writing in the abstract language of strategy with no concrete outcome attached.",
-      "Going to three pages when two would do. Length at senior level reads as an inability to prioritise.",
+      "Going to three pages when two would do. Length at senior level reads as an inability to prioritize.",
     ],
     notFor: {
       who: "Candidates with under about eight years of experience",
@@ -245,7 +245,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "How long should an executive resume be?",
-        a: "Two pages for most senior roles, occasionally three where an extensive board, publication or patent record genuinely warrants it. The constraint is not a rule about length but about editorial judgement: a reader assesses whether you can distinguish what matters. Give the last ten to fifteen years real detail and compress everything earlier into a short 'Earlier career' block.",
+        a: "Two pages for most senior roles, occasionally three where an extensive board, publication or patent record genuinely warrants it. The constraint is not a rule about length but about editorial judgment: a reader assesses whether you can distinguish what matters. Give the last ten to fifteen years real detail and compress everything earlier into a short 'Earlier career' block.",
       },
       {
         q: "Do executives still get screened by ATS?",
@@ -263,16 +263,16 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       why: "The 'Earlier career' block is the mechanism that makes a long history fit. Give the last ten to fifteen years full treatment, then compress everything before it to one line per role (title, company, years) under a single heading.",
     },
     sectionAdvice: [
-      { section: "Executive summary", advice: "Four or five sentences that establish scope before any individual role: organisation size, remit, and the outcome you are known for. Without this, a reader constructs your level from your most recent bullets, which usually undersells you." },
+      { section: "Executive summary", advice: "Four or five sentences that establish scope before any individual role: organization size, remit, and the outcome you are known for. Without this, a reader constructs your level from your most recent bullets, which usually undersells you." },
       { section: "Experience", advice: "Scope line then bullets, for each senior role. Three to five bullets on the current role, tapering to two on older ones." },
       { section: "Earlier career", advice: "One line per role. This preserves the timeline without spending page space on work from twenty years ago." },
       { section: "Board & advisory", advice: "Separate from employment. Mixing non-executive positions into Experience makes the chronology confusing and can read as job-hopping." },
     ],
     mistakes: [
-      "No scope anywhere: the defining failure of senior CVs. Bullets without team size, budget or remit cannot be levelled by a reader.",
+      "No scope anywhere: the defining failure of senior resumes. Bullets without team size, budget or remit cannot be leveled by a reader.",
       "Equal detail across a thirty-year career, which buries the relevant decade.",
       "Strategy language with no outcome: 'drove transformation' means nothing without what changed and by how much.",
-      "Three or more pages, which at this level reads as an inability to prioritise rather than as substance.",
+      "Three or more pages, which at this level reads as an inability to prioritize rather than as substance.",
     ],
     notFor: {
       who: "Candidates under about eight years' experience, where the weight reads as overreach",
@@ -365,7 +365,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "experienced/ledger-cv": {
     bestFor:
-      "Ledger uses ruled separators and a structured, almost tabular rhythm to organise a dense career. It suits finance, accounting, operations and project delivery, fields where a CV carries many discrete engagements, clients or certifications and the reader needs clear visual boundaries between them.",
+      "Ledger uses ruled separators and a structured, almost tabular rhythm to organize a dense career. It suits finance, accounting, operations and project delivery, fields where a resume carries many discrete engagements, clients or certifications and the reader needs clear visual boundaries between them.",
     sectionOrder: {
       order: ["Contact", "Summary", "Experience", "Key projects", "Certifications", "Education"],
       why: "The separate 'Key projects' section is what makes Ledger useful for consultants and delivery professionals. Engagements can be listed with client, scale and outcome without cluttering the employment chronology.",
@@ -373,7 +373,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     sectionAdvice: [
       { section: "Summary", advice: "Three or four sentences naming your domain, the scale you operate at, and your strongest quantified result. Finance and operations readers expect numbers early." },
       { section: "Experience", advice: "The rules between roles do the separation, so bullets can be tightly packed without losing legibility. Lead with figures: budget managed, cost saved, cycle time reduced." },
-      { section: "Key projects", advice: "Client or programme, scale, your role, outcome. One block each. This is where delivery professionals demonstrate range that the employment list alone would hide." },
+      { section: "Key projects", advice: "Client or program, scale, your role, outcome. One block each. This is where delivery professionals demonstrate range that the employment list alone would hide." },
       { section: "Certifications", advice: "Ledger's structure suits a proper list with issuing body and year, valuable in fields where these are screened literally." },
     ],
     mistakes: [
@@ -409,13 +409,13 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       why: "Skills sits high for engineering specifically. It is where keyword matching does most of its work, and recruiters searching for a language or framework need to find it fast. Projects go above Education once you have professional experience.",
     },
     sectionAdvice: [
-      { section: "Summary", advice: "Name your specialisation and stack in the first line: 'backend engineer, 6 years, payments and identity on AWS' does more than three sentences of adjectives." },
+      { section: "Summary", advice: "Name your specialization and stack in the first line: 'backend engineer, 6 years, payments and identity on AWS' does more than three sentences of adjectives." },
       { section: "Experience", advice: "Every bullet should carry scale or a measured result: requests per second, latency percentiles, data volume, deploy frequency. Engineering readers rank on these and their absence is conspicuous." },
       { section: "Skills", advice: "Group as languages, frameworks, infrastructure, tools. Resist listing thirty items. A focused list of twelve substantiated by your bullets reads as depth." },
       { section: "Projects", advice: "Only if they add something your employment does not. Two with links beat six without." },
     ],
     mistakes: [
-      "Listing technologies with no evidence of what you built with them. The most common engineering CV weakness.",
+      "Listing technologies with no evidence of what you built with them. The most common engineering resume weakness.",
       "No scale anywhere, which makes every achievement unrankable and suggests low-traffic systems.",
       "Listing 'Agile', 'Scrum' and 'SDLC' as skills, which are assumed and consume scanning attention.",
       "Describing team work without indicating which parts were yours.",
@@ -428,7 +428,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Should a software engineer resume be one page or two?",
-        a: "One page under about five years, two beyond that. The one-page rule is genuinely enforced at some large tech companies for early-career hiring, and it is good discipline regardless. Most junior CVs reach two pages through padding rather than substance. Senior engineers with real architecture and migration work to describe should use two rather than compress it out.",
+        a: "One page under about five years, two beyond that. The one-page rule is genuinely enforced at some large tech companies for early-career hiring, and it is good discipline regardless. Most junior resumes reach two pages through padding rather than substance. Senior engineers with real architecture and migration work to describe should use two rather than compress it out.",
       },
       {
         q: "Do I need a GitHub link on my engineering resume?",
@@ -463,7 +463,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Is it better to use a dense template or go to two pages?",
-        a: "If the content genuinely warrants two pages, use two. Compressing five years of substantive work into an unreadable single page helps nobody. Density is the right answer when you are marginally over one page, which is the common case at three to seven years. The failure mode to avoid is a two-page CV whose second page is a third full; that reads as poor editing.",
+        a: "If the content genuinely warrants two pages, use two. Compressing five years of substantive work into an unreadable single page helps nobody. Density is the right answer when you are marginally over one page, which is the common case at three to seven years. The failure mode to avoid is a two-page resume whose second page is a third full; that reads as poor editing.",
       },
       {
         q: "How many bullets per role for an engineering resume?",
@@ -486,19 +486,19 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       { section: "Projects", advice: "Two at most, each with a link. The aesthetic depends on restraint." },
     ],
     mistakes: [
-      "Filling the whitespace with skill bars or a coloured header, which defeats the design and adds parsing risk.",
+      "Filling the whitespace with skill bars or a colored header, which defeats the design and adds parsing risk.",
       "Paragraph-length bullets, which lose all structure here.",
       "Using it at twelve years' experience, where it becomes an undifferentiated block of text.",
     ],
     notFor: {
-      who: "Senior engineers with long histories and many roles to organise",
+      who: "Senior engineers with long histories and many roles to organize",
       instead: "the Sharp layout",
       insteadHref: "/resume-templates/software-engineer/sharp-cv",
     },
     faqs: [
       {
         q: "Do startups actually care about resume design?",
-        a: "Not as an aesthetic judgement, but format does carry a signal about fit. A heavily formal document with an objective statement and a photo can read as out of step at an early-stage company, in the same way an overtly casual one would in a bank. Minimal is safe in both directions. It reads as considered without reading as corporate.",
+        a: "Not as an aesthetic judgment, but format does carry a signal about fit. A heavily formal document with an objective statement and a photo can read as out of step at an early-stage company, in the same way an overtly casual one would in a bank. Minimal is safe in both directions. It reads as considered without reading as corporate.",
       },
       {
         q: "Should I include side projects as a software engineer?",
@@ -512,17 +512,17 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       "For staff, principal and engineering-leadership candidates, the challenge changes from proving you can build to proving you set direction. Executive's stronger hierarchy gives room for a scope line under each role and for architecture and org-level outcomes that a denser layout would flatten.",
     sectionOrder: {
       order: ["Contact", "Summary", "Experience", "Technical leadership", "Skills", "Education"],
-      why: "A separate technical-leadership section is where staff-plus candidates show what distinguishes them: standards adopted, platforms others build on, architecture decisions with organisational consequences.",
+      why: "A separate technical-leadership section is where staff-plus candidates show what distinguishes them: standards adopted, platforms others build on, architecture decisions with organizational consequences.",
     },
     sectionAdvice: [
       { section: "Summary", advice: "State altitude explicitly: team size, systems owned, the scope of decisions you make. Staff engineers frequently read as senior engineers because they never say otherwise." },
       { section: "Experience", advice: "Scope line then bullets. For each role: team size, systems owned, traffic or data scale, then outcomes." },
       { section: "Technical leadership", advice: "Standards you set, platforms adopted beyond your team, mentoring, and architecture decisions with measured consequences." },
-      { section: "Skills", advice: "Shorter than a mid-level CV. At this level, listing many tools reads as junior. Name architectural domains instead." },
+      { section: "Skills", advice: "Shorter than a mid-level resume. At this level, listing many tools reads as junior. Name architectural domains instead." },
     ],
     mistakes: [
       "Bullets that describe implementation rather than direction, which levels you below where you operate.",
-      "No organisational impact. Staff-plus roles are judged on influence beyond your own output.",
+      "No organizational impact. Staff-plus roles are judged on influence beyond your own output.",
       "Omitting team size and system scale, leaving the reader to guess your altitude.",
       "A long tools list, which at this level actively signals a more junior candidate.",
     ],
@@ -534,11 +534,11 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "How does a staff engineer resume differ from a senior one?",
-        a: "By altitude of impact. A senior engineer's CV shows systems owned and delivered well. A staff engineer's shows influence beyond their own team: a standard adopted across the organisation, a platform other teams build on, a multi-quarter technical strategy, or a migration coordinated across several teams. If your bullets could belong to a strong senior engineer, you will be levelled as one.",
+        a: "By altitude of impact. A senior engineer's resume shows systems owned and delivered well. A staff engineer's shows influence beyond their own team: a standard adopted across the organization, a platform other teams build on, a multi-quarter technical strategy, or a migration coordinated across several teams. If your bullets could belong to a strong senior engineer, you will be leveled as one.",
       },
       {
         q: "Should engineering managers use this template?",
-        a: "Yes, with the content reweighted. Keep a technical section so you do not read as having left the craft, but lead with team outcomes: headcount grown, attrition, delivery predictability, and the systems your organisation owns. Hiring managers for engineering leadership are reading for whether you can build teams and set direction, with technical credibility as the qualifier rather than the case.",
+        a: "Yes, with the content reweighted. Keep a technical section so you do not read as having left the craft, but lead with team outcomes: headcount grown, attrition, delivery predictability, and the systems your organization owns. Hiring managers for engineering leadership are reading for whether you can build teams and set direction, with technical credibility as the qualifier rather than the case.",
       },
     ],
   },
@@ -583,14 +583,14 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "freshers/classic-cv": {
     bestFor:
-      "Graduates have the opposite problem to experienced candidates: not too much to say, but too little, and a temptation to compensate with design. Classic removes that temptation. Its generous spacing means a genuinely light CV still fills a page honestly, and its single-column structure clears every campus-recruitment portal without incident.",
+      "Graduates have the opposite problem to experienced candidates: not too much to say, but too little, and a temptation to compensate with design. Classic removes that temptation. Its generous spacing means a genuinely light resume still fills a page honestly, and its single-column structure clears every campus-recruitment portal without incident.",
     sectionOrder: {
       order: ["Contact", "Education", "Projects", "Internships & experience", "Skills", "Activities"],
       why: "Education leads while it is your strongest credential. For the first year or two after graduating. Projects sit high because for a graduate they are the closest thing to evidence of applied work, and often more persuasive than a short internship.",
     },
     sectionAdvice: [
       { section: "Education", advice: "Institution, degree, classification and graduation year. Include relevant coursework only if it maps directly to the role, and drop it entirely within a year of graduating." },
-      { section: "Projects", advice: "The most important section on a graduate CV. Two or three, each with what you built, the technology, and (critically) an outcome or scale. 'Built a booking app' is weak; 'built a booking app used by 200 students across three societies' is not." },
+      { section: "Projects", advice: "The most important section on a graduate resume. Two or three, each with what you built, the technology, and (critically) an outcome or scale. 'Built a booking app' is weak; 'built a booking app used by 200 students across three societies' is not." },
       { section: "Internships & experience", advice: "Include non-graduate work. Retail and hospitality demonstrate reliability and customer handling, and an empty experience section is worse than an honest one." },
       { section: "Skills", advice: "Only what you can be questioned on. Listing a language you used once in a tutorial is a trap you set for yourself." },
     ],
@@ -602,7 +602,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       "Rating skills out of five or with progress bars. These carry no text for a parser and no meaning for a reader.",
     ],
     notFor: {
-      who: "Graduates applying to design or creative roles where visual judgement is assessed",
+      who: "Graduates applying to design or creative roles where visual judgment is assessed",
       instead: "a creative layout",
       insteadHref: "/resume-templates/creative/portrait-cv",
     },
@@ -613,18 +613,18 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       },
       {
         q: "Should a fresher resume be one page?",
-        a: "Yes, essentially always. With under two years of experience there is rarely enough substantive material for two pages, and padding is obvious to anyone who reads CVs regularly. A full, well-organised single page reads as focused; a two-page CV with a half-empty second page reads as inexperienced in a way the content itself might not have.",
+        a: "Yes, essentially always. With under two years of experience there is rarely enough substantive material for two pages, and padding is obvious to anyone who reads resumes regularly. A full, well-organized single page reads as focused; a two-page resume with a half-empty second page reads as inexperienced in a way the content itself might not have.",
       },
       {
         q: "Do I include my GPA or classification?",
-        a: "Include it when it is strong (a first, a 2:1, or roughly 3.5+ on a 4.0 scale) and omit it otherwise. Some graduate schemes and campus programmes require it, in which case include it regardless. Once you have two or three years of professional experience, drop it entirely; nobody is assessing you on it by then.",
+        a: "Include it when it is strong (a first, a 2:1, or roughly 3.5+ on a 4.0 scale) and omit it otherwise. Some graduate schemes and campus programs require it, in which case include it regardless. Once you have two or three years of professional experience, drop it entirely; nobody is assessing you on it by then.",
       },
     ],
   },
 
   "freshers/minimal-cv": {
     bestFor:
-      "Minimal suits graduates applying to startups, product companies and modern tech employers, where a formal corporate document can read as a poor fit. Its restraint also flatters a light CV. There is no dense structure sitting half-empty, which is the trap graduates fall into with heavier layouts.",
+      "Minimal suits graduates applying to startups, product companies and modern tech employers, where a formal corporate document can read as a poor fit. Its restraint also flatters a light resume. There is no dense structure sitting half-empty, which is the trap graduates fall into with heavier layouts.",
     sectionOrder: {
       order: ["Contact", "Education", "Projects", "Experience", "Skills"],
       why: "Same graduate logic as Classic, but keep it tighter still. Minimal depends on nothing being longer than it needs to be, so drop the activities section unless a role there genuinely demonstrates something.",
@@ -684,7 +684,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "How many projects should a technical fresher include?",
-        a: "Two or three, described properly, with links. More than that and each gets too little detail to be convincing; fewer and you may not have shown enough range. Prioritise projects where you can state usage, scale or a genuine technical challenge you solved. A project nobody used but that solved a hard problem is still worth more than three tutorial builds.",
+        a: "Two or three, described properly, with links. More than that and each gets too little detail to be convincing; fewer and you may not have shown enough range. Prioritize projects where you can state usage, scale or a genuine technical challenge you solved. A project nobody used but that solved a hard problem is still worth more than three tutorial builds.",
       },
       {
         q: "Do hackathons and competitive programming count as experience?",
@@ -709,7 +709,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     mistakes: [
       "Using startup vocabulary, which reads as unfamiliar with the sector's register.",
       "Omitting positions of responsibility, which traditional recruiters explicitly look for.",
-      "Generic interests ('reading, travelling, socialising'), which occupy space and say nothing.",
+      "Generic interests ('reading, traveling, socialising'), which occupy space and say nothing.",
       "Setting the serif body below 10.5pt, where it becomes uncomfortable to read.",
     ],
     notFor: {
@@ -724,28 +724,28 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       },
       {
         q: "Should I include an interests section?",
-        a: "In traditional graduate recruitment, yes. It is conventional and interviewers frequently open with it. Make it specific and true, because you will be asked. Two lines naming genuine pursuits with some substance behind them works; a generic list of 'reading, travelling, music' occupies space without contributing anything and can read as filler.",
+        a: "In traditional graduate recruitment, yes. It is conventional and interviewers frequently open with it. Make it specific and true, because you will be asked. Two lines naming genuine pursuits with some substance behind them works; a generic list of 'reading, traveling, music' occupies space without contributing anything and can read as filler.",
       },
     ],
   },
 
   "freshers/bold-accent-cv": {
     bestFor:
-      "Bold Accent adds a single accent colour to headings and chips over an otherwise conventional single-column structure. For graduates it gives a document some personality without the parsing risk of a genuinely designed layout, useful in marketing, media, communications and startup applications.",
+      "Bold Accent adds a single accent color to headings and chips over an otherwise conventional single-column structure. For graduates it gives a document some personality without the parsing risk of a genuinely designed layout, useful in marketing, media, communications and startup applications.",
     sectionOrder: {
       order: ["Contact", "Education", "Experience & internships", "Projects", "Skills"],
       why: "Standard graduate ordering. The accent handles differentiation, so the structure should stay conventional. A reader should never have to work out where anything is.",
     },
     sectionAdvice: [
-      { section: "Education", advice: "Conventional and brief. The accent colour on the heading gives it presence without needing extra content." },
+      { section: "Education", advice: "Conventional and brief. The accent color on the heading gives it presence without needing extra content." },
       { section: "Experience & internships", advice: "Include part-time and campus work. Bullets with outcomes, however modest: 'handled 60 covers a shift' is a real number." },
       { section: "Projects", advice: "Campaigns, portfolios, society work, coursework with a real audience. For marketing-adjacent applications these matter more than technical detail." },
       { section: "Skills", advice: "The chip styling suits short grouped terms. Keep them to things you could discuss for two minutes." },
     ],
     mistakes: [
-      "Adding a second and third accent colour, which turns a considered document into a busy one.",
+      "Adding a second and third accent color, which turns a considered document into a busy one.",
       "Choosing an accent with poor contrast against white. It must remain legible printed in greyscale.",
-      "Assuming the colour compensates for thin content; it does not.",
+      "Assuming the color compensates for thin content; it does not.",
       "Using it for conservative graduate schemes where it reads as trying too hard.",
     ],
     notFor: {
@@ -756,11 +756,11 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Is colour on a resume unprofessional?",
-        a: "A single restrained accent on headings is fine in most sectors and unremarkable in marketing, media, design and startups. What reads as unprofessional is several colours, large blocks of saturated background, or colour used to convey meaning that disappears in greyscale printing. One accent, used consistently, is a design decision rather than a risk.",
+        a: "A single restrained accent on headings is fine in most sectors and unremarkable in marketing, media, design and startups. What reads as unprofessional is several colors, large blocks of saturated background, or color used to convey meaning that disappears in greyscale printing. One accent, used consistently, is a design decision rather than a risk.",
       },
       {
         q: "Does colour affect ATS parsing?",
-        a: "No. Parsers read the text layer and ignore styling entirely, so coloured headings extract exactly as plain ones do. The parsing risks are structural: tables, text boxes, multi-column layouts, and text rendered as images. This template keeps a single-column text flow, so the accent is purely visual and carries no cost.",
+        a: "No. Parsers read the text layer and ignore styling entirely, so colored headings extract exactly as plain ones do. The parsing risks are structural: tables, text boxes, multi-column layouts, and text rendered as images. This template keeps a single-column text flow, so the accent is purely visual and carries no cost.",
       },
     ],
   },
@@ -769,13 +769,13 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "marketing/aurora-cv": {
     bestFor:
-      "Aurora uses a two-column structure with chip-styled skill groupings, which suits marketing CVs specifically: marketers accumulate long lists of channels, platforms and tools that read badly as prose but scan well as chips. It keeps those visible without spending main-column space on them.",
+      "Aurora uses a two-column structure with chip-styled skill groupings, which suits marketing resumes specifically: marketers accumulate long lists of channels, platforms and tools that read badly as prose but scan well as chips. It keeps those visible without spending main-column space on them.",
     sectionOrder: {
       order: ["Header: contact, title, summary", "Main: experience, campaigns", "Side: channels, tools, certifications"],
       why: "Campaign work deserves separation from employment history. A marketer's case is usually made by specific campaigns and their numbers rather than by the sequence of job titles.",
     },
     sectionAdvice: [
-      { section: "Summary", advice: "Name your channel specialism and the metric you own. 'Performance marketer, paid social and search, £2M annual budget, 3.1x blended ROAS' establishes everything in one line." },
+      { section: "Summary", advice: "Name your channel specialty and the metric you own. 'Performance marketer, paid social and search, £2M annual budget, 3.1x blended ROAS' establishes everything in one line." },
       { section: "Experience", advice: "Every bullet needs a number: spend managed, CAC, ROAS, conversion rate, pipeline generated. Marketing is one of the most quantifiable disciplines and unmeasured bullets are conspicuous." },
       { section: "Campaigns", advice: "Two or three with objective, budget, channel mix and result. This is where range shows in a way employment history alone cannot." },
       { section: "Channels & tools (side)", advice: "Chips work well here: Meta, Google Ads, HubSpot, GA4, Klaviyo. Group by function rather than listing alphabetically." },
@@ -794,7 +794,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "What metrics should a marketing resume show?",
-        a: "Efficiency and revenue rather than volume. Budget managed, customer acquisition cost, return on ad spend, conversion rate, pipeline or revenue attributed, retention and lifecycle metrics. Impressions, reach and follower counts are weak on their own because they do not demonstrate commercial judgement. The strongest marketing bullets pair a result with the spend behind it. A 40% lift on a £2M budget is a different achievement to the same lift on £20k.",
+        a: "Efficiency and revenue rather than volume. Budget managed, customer acquisition cost, return on ad spend, conversion rate, pipeline or revenue attributed, retention and lifecycle metrics. Impressions, reach and follower counts are weak on their own because they do not demonstrate commercial judgment. The strongest marketing bullets pair a result with the spend behind it. A 40% lift on a £2M budget is a different achievement to the same lift on £20k.",
       },
       {
         q: "How do I show campaign results I did not solely own?",
@@ -805,19 +805,19 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "marketing/bold-accent-cv": {
     bestFor:
-      "Bold Accent keeps a single-column structure with accent-coloured headings and chips, which makes it the safest choice when a marketing application goes through a corporate portal. You get some visual personality (relevant when applying for a role that involves brand judgement) without the parsing risk of a genuine two-column design.",
+      "Bold Accent keeps a single-column structure with accent-colored headings and chips, which makes it the safest choice when a marketing application goes through a corporate portal. You get some visual personality (relevant when applying for a role that involves brand judgment) without the parsing risk of a genuine two-column design.",
     sectionOrder: {
       order: ["Contact", "Summary", "Experience", "Campaign highlights", "Channels & tools", "Education"],
       why: "Campaign highlights sit directly after experience so the reader encounters your strongest specific results immediately after the chronology that contextualises them.",
     },
     sectionAdvice: [
-      { section: "Summary", advice: "Channel specialism, budget scale, headline metric. Three sentences maximum." },
+      { section: "Summary", advice: "Channel specialty, budget scale, headline metric. Three sentences maximum." },
       { section: "Experience", advice: "Numbers on every bullet. State the budget you controlled. It is the clearest signal of the level you operate at." },
       { section: "Campaign highlights", advice: "Objective, budget, channels, result. Two or three, chosen to show range rather than repetition." },
       { section: "Channels & tools", advice: "The chip styling suits this. Group by function: paid, lifecycle, analytics, content." },
     ],
     mistakes: [
-      "More than one accent colour, which undermines the restraint that makes it work.",
+      "More than one accent color, which undermines the restraint that makes it work.",
       "An accent that fails contrast or disappears when printed in greyscale.",
       "Listing platforms without the outcomes achieved on them.",
       "Reach and impressions where efficiency metrics belong.",
@@ -830,11 +830,11 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Should a marketing resume look designed?",
-        a: "It should look considered, which is not the same thing. For performance, growth and lifecycle roles, a clean document with strong numbers outperforms a designed one. The assessment is analytical. For brand, creative and content-led roles, some visual judgement is genuinely part of the signal. Bold Accent sits deliberately in the middle: enough personality to avoid looking indifferent, conventional enough to parse anywhere.",
+        a: "It should look considered, which is not the same thing. For performance, growth and lifecycle roles, a clean document with strong numbers outperforms a designed one. The assessment is analytical. For brand, creative and content-led roles, some visual judgment is genuinely part of the signal. Bold Accent sits deliberately in the middle: enough personality to avoid looking indifferent, conventional enough to parse anywhere.",
       },
       {
         q: "How much does budget size matter on a marketing CV?",
-        a: "A great deal, because it is the clearest proxy for level. Managing £50k a year and managing £5M are different jobs requiring different judgement, and a reader cannot infer which you did from percentage improvements alone. State the budget you personally controlled, and if it grew during your tenure, say so. That trajectory is itself evidence.",
+        a: "A great deal, because it is the clearest proxy for level. Managing £50k a year and managing £5M are different jobs requiring different judgment, and a reader cannot infer which you did from percentage improvements alone. State the budget you personally controlled, and if it grew during your tenure, say so. That trajectory is itself evidence.",
       },
     ],
   },
@@ -848,8 +848,8 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     },
     sectionAdvice: [
       { section: "Header", advice: "If including a photo, use a professional one. If applying to the US, UK, Canada or Ireland, omit it. The template works without." },
-      { section: "Objective band", advice: "Rewrite this as a positioning line: specialism, scale, strongest result. A traditional objective ('seeking a role where I can grow') wastes the most prominent block on the page." },
-      { section: "Experience", advice: "Quantified as with any marketing CV. The warmer design does not change what makes the content persuasive." },
+      { section: "Objective band", advice: "Rewrite this as a positioning line: specialty, scale, strongest result. A traditional objective ('seeking a role where I can grow') wastes the most prominent block on the page." },
+      { section: "Experience", advice: "Quantified as with any marketing resume. The warmer design does not change what makes the content persuasive." },
       { section: "Campaigns", advice: "Particularly valuable for agency candidates, where client range matters as much as tenure." },
     ],
     mistakes: [
@@ -866,7 +866,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Should I use an objective statement on my resume?",
-        a: "Not in its traditional form. An objective describing what you want ('seeking a challenging role that utilises my skills') tells the reader nothing they can act on and occupies the most valuable space on the page. Replace it with a positioning statement: what you specialise in, at what scale, and your strongest result. Same location, entirely different value.",
+        a: "Not in its traditional form. An objective describing what you want ('seeking a challenging role that utilizes my skills') tells the reader nothing they can act on and occupies the most valuable space on the page. Replace it with a positioning statement: what you specialize in, at what scale, and your strongest result. Same location, entirely different value.",
       },
       {
         q: "Is a photo appropriate on a marketing resume?",
@@ -885,7 +885,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     sectionAdvice: [
       { section: "Sidebar", advice: "Group tools by function: analytics, paid, lifecycle, BI. Keep each entry to a line; the column is narrow and wraps poorly." },
       { section: "Summary", advice: "Lead with the analytical angle: the metrics you own and the scale of spend or audience behind them." },
-      { section: "Experience", advice: "The full main column is for results. Attribution methodology, testing programmes and efficiency gains belong here, not in the sidebar." },
+      { section: "Experience", advice: "The full main column is for results. Attribution methodology, testing programs and efficiency gains belong here, not in the sidebar." },
       { section: "Campaigns", advice: "Structure each as objective, budget, method, result. Analytical readers want the method." },
     ],
     mistakes: [
@@ -913,13 +913,13 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "marketing/electric-lilac-cv": {
     bestFor:
-      "Electric Lilac uses a saturated sidebar and confident colour throughout. It is deliberately the most visually assertive template in the marketing set, and suits creative marketing, brand and agency applications where visual judgement is part of what is being assessed and the CV itself functions as a small work sample.",
+      "Electric Lilac uses a saturated sidebar and confident color throughout. It is deliberately the most visually assertive template in the marketing set, and suits creative marketing, brand and agency applications where visual judgment is part of what is being assessed and the resume itself functions as a small work sample.",
     sectionOrder: {
       order: ["Sidebar: contact, skills, tools", "Main: summary, experience, campaigns, education"],
-      why: "The colour draws the eye to the sidebar first, so contact and specialism should sit at the top of it. A reader's first fixation should land on who you are and what you do.",
+      why: "The color draws the eye to the sidebar first, so contact and specialty should sit at the top of it. A reader's first fixation should land on who you are and what you do.",
     },
     sectionAdvice: [
-      { section: "Sidebar", advice: "Contact, then a short specialism line, then grouped tools. Keep it disciplined; a saturated column filled with text becomes hard to read." },
+      { section: "Sidebar", advice: "Contact, then a short specialty line, then grouped tools. Keep it disciplined; a saturated column filled with text becomes hard to read." },
       { section: "Summary", advice: "Brand and creative roles want voice as well as substance. This is the one place a distinctive register is an asset rather than a risk, while still naming a concrete result." },
       { section: "Experience", advice: "Numbers still required. Creative roles are not exempt from proving commercial effect, and candidates who assume otherwise are the ones who get filtered." },
       { section: "Campaigns", advice: "Include a link to portfolio work. For creative marketing applications, reviewers genuinely click." },
@@ -938,11 +938,11 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Can a bold resume design hurt my application?",
-        a: "It can, when the audience is wrong. In brand, creative and agency contexts a confident document signals visual judgement and is read as relevant. In performance marketing, corporate in-house teams and anything routing through a strict portal, it reads as misjudging the room, and carries parsing risk on top. The design is a message about fit; send it deliberately.",
+        a: "It can, when the audience is wrong. In brand, creative and agency contexts a confident document signals visual judgment and is read as relevant. In performance marketing, corporate in-house teams and anything routing through a strict portal, it reads as misjudging the room, and carries parsing risk on top. The design is a message about fit; send it deliberately.",
       },
       {
         q: "Do creative marketing roles still need metrics on the CV?",
-        a: "Yes, and this is where creative candidates most often lose ground. Brand and creative work has measurable effects: awareness lift, engagement rate, campaign reach against budget, sales impact, pitch win rate. A CV that presents beautiful work with no commercial outcome invites the concern that you do not think about effect, which is the main reservation hiring managers hold about creative candidates.",
+        a: "Yes, and this is where creative candidates most often lose ground. Brand and creative work has measurable effects: awareness lift, engagement rate, campaign reach against budget, sales impact, pitch win rate. A resume that presents beautiful work with no commercial outcome invites the concern that you do not think about effect, which is the main reservation hiring managers hold about creative candidates.",
       },
     ],
   },
@@ -951,22 +951,22 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "creative/portrait-cv": {
     bestFor:
-      "Portrait uses a split-weight name treatment, a photo and plus-marker headings on a grey canvas. It is designed for candidates whose CV is read partly as a work sample (product designers, art directors, illustrators) where a purely functional document can read as indifference to craft.",
+      "Portrait uses a split-weight name treatment, a photo and plus-marker headings on a grey canvas. It is designed for candidates whose resume is read partly as a work sample (product designers, art directors, illustrators) where a purely functional document can read as indifference to craft.",
     sectionOrder: {
       order: ["Header: name, photo, title", "Selected work", "Experience", "Skills & tools", "Education"],
       why: "'Selected work' above employment history is the key inversion for creative roles. Reviewers want to see what you have made before they read where you worked, and a portfolio link belongs above the fold rather than buried in contact details.",
     },
     sectionAdvice: [
-      { section: "Header", advice: "Portfolio URL in the header, not the footer. It is the most important link on a creative CV and reviewers look for it immediately." },
+      { section: "Header", advice: "Portfolio URL in the header, not the footer. It is the most important link on a creative resume and reviewers look for it immediately." },
       { section: "Selected work", advice: "Three projects with the problem, your specific contribution, and the outcome. On a team project, state precisely what was yours. Reviewers assume the least when contribution is unclear." },
-      { section: "Experience", advice: "Shorter than on a conventional CV, because the work section carries the case. Two or three bullets per role with outcomes." },
+      { section: "Experience", advice: "Shorter than on a conventional resume, because the work section carries the case. Two or three bullets per role with outcomes." },
       { section: "Skills & tools", advice: "Tools grouped, plus craft skills. Do not use star ratings. They carry no information." },
     ],
     mistakes: [
       "No portfolio link, which for a creative application is close to disqualifying.",
       "Final visuals with no reasoning. Reviewers assess decisions, not decoration.",
       "Ambiguous credit on team projects, which reads as overclaiming.",
-      "A CV whose own typography is inconsistent, since the document is itself a work sample.",
+      "A resume whose own typography is inconsistent, since the document is itself a work sample.",
     ],
     notFor: {
       who: "Applications through corporate portals, or markets where photos are a liability",
@@ -976,24 +976,24 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Does a creative resume still need to pass an ATS?",
-        a: "It depends on the route. Studio and agency applications frequently go direct to a hiring manager or through a portfolio platform, where a designed CV is read by a person. In-house creative roles at larger companies usually route through the same portal as every other application, and there a designed layout carries genuine risk. The practical answer is to keep two versions: a designed one for direct applications, a plain one for portals.",
+        a: "It depends on the route. Studio and agency applications frequently go direct to a hiring manager or through a portfolio platform, where a designed resume is read by a person. In-house creative roles at larger companies usually route through the same portal as every other application, and there a designed layout carries genuine risk. The practical answer is to keep two versions: a designed one for direct applications, a plain one for portals.",
       },
       {
         q: "What matters more, the CV or the portfolio?",
-        a: "The portfolio, decisively. It is what gets you the conversation. The CV's job is to establish level, scope and context quickly, and to get the reviewer to the portfolio. That is why the link belongs in the header rather than the footer, and why 'selected work' sits above employment history. A strong CV rarely rescues a weak portfolio; a strong portfolio frequently survives an ordinary CV.",
+        a: "The portfolio, decisively. It is what gets you the conversation. The resume's job is to establish level, scope and context quickly, and to get the reviewer to the portfolio. That is why the link belongs in the header rather than the footer, and why 'selected work' sits above employment history. A strong resume rarely rescues a weak portfolio; a strong portfolio frequently survives an ordinary resume.",
       },
     ],
   },
 
   "creative/orchid-cv": {
     bestFor:
-      "Orchid pairs a warm sidebar with serif accent headings and a navy corner detail, more editorial than most creative templates, and less assertive than the colour-led options. It suits content design, editorial, brand strategy and creative roles where restraint reads as sophistication rather than caution.",
+      "Orchid pairs a warm sidebar with serif accent headings and a navy corner detail, more editorial than most creative templates, and less assertive than the color-led options. It suits content design, editorial, brand strategy and creative roles where restraint reads as sophistication rather than caution.",
     sectionOrder: {
       order: ["Sidebar: contact, skills, tools", "Main: profile, selected work, experience, education"],
       why: "The editorial register suits a written profile rather than a bulleted summary. Two or three sentences with actual voice work better here than a clipped list.",
     },
     sectionAdvice: [
-      { section: "Profile", advice: "Written rather than bulleted. Orchid's serif headings set an editorial tone, and a profile with genuine voice matches it, while still naming specialism and a concrete result." },
+      { section: "Profile", advice: "Written rather than bulleted. Orchid's serif headings set an editorial tone, and a profile with genuine voice matches it, while still naming specialty and a concrete result." },
       { section: "Selected work", advice: "Three pieces with context and outcome. For editorial and content roles, include publication, audience size or engagement where you have it." },
       { section: "Experience", advice: "Concise. The main column is narrower than a single-column layout, so long bullets wrap more. Keep them to two lines." },
       { section: "Sidebar", advice: "Contact, tools, and any languages. Short entries only; the warm background makes dense text harder to read." },
@@ -1001,7 +1001,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     mistakes: [
       "Mixing additional decorative fonts with the existing serif, which undoes the considered typography.",
       "Long bullets that wrap badly in the narrower main column.",
-      "Treating an editorial register as licence to omit results.",
+      "Treating an editorial register as license to omit results.",
       "Overfilling the sidebar until the warm panel becomes visually heavy.",
     ],
     notFor: {
@@ -1012,11 +1012,11 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "Should a creative CV have personality in the writing as well as the design?",
-        a: "In content, editorial, brand and copy roles, yes. The writing is a work sample and a flat corporate register undersells you. In most other creative disciplines, clarity beats voice: a product designer is assessed on reasoning, not prose style. Either way, personality supplements evidence rather than replacing it. A CV with voice and no outcomes reads as style over substance, which is the specific reservation creative hiring managers carry.",
+        a: "In content, editorial, brand and copy roles, yes. The writing is a work sample and a flat corporate register undersells you. In most other creative disciplines, clarity beats voice: a product designer is assessed on reasoning, not prose style. Either way, personality supplements evidence rather than replacing it. A resume with voice and no outcomes reads as style over substance, which is the specific reservation creative hiring managers carry.",
       },
       {
         q: "Do serif fonts work for creative roles?",
-        a: "Yes, and they differentiate. Most creative CVs default to a sans-serif. A well-set serif reads as editorial and considered, which suits content, brand and publishing contexts particularly. What matters is consistency: one serif family used properly is a design decision, while a serif mixed with two other faces is a signal that you do not have typographic control.",
+        a: "Yes, and they differentiate. Most creative resumes default to a sans-serif. A well-set serif reads as editorial and considered, which suits content, brand and publishing contexts particularly. What matters is consistency: one serif family used properly is a design decision, while a serif mixed with two other faces is a signal that you do not have typographic control.",
       },
     ],
   },
@@ -1074,7 +1074,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       "Leaving the band as a traditional objective statement, wasting the most prominent space available.",
       "Including a photo for US or UK applications.",
       "Naming clients you cannot discuss, or breaching an NDA to do it.",
-      "No outcomes on creative work, which is the most common weakness in agency CVs.",
+      "No outcomes on creative work, which is the most common weakness in agency resumes.",
     ],
     notFor: {
       who: "In-house corporate creative roles applying through portals",
@@ -1095,7 +1095,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
 
   "creative/electric-lilac-cv": {
     bestFor:
-      "Electric Lilac is the most visually assertive template available, with a saturated sidebar and confident colour throughout. For creative roles it functions as a deliberate statement, appropriate when the application itself is partly a demonstration of visual confidence, as in art direction, brand design and creative-lead positions.",
+      "Electric Lilac is the most visually assertive template available, with a saturated sidebar and confident color throughout. For creative roles it functions as a deliberate statement, appropriate when the application itself is partly a demonstration of visual confidence, as in art direction, brand design and creative-lead positions.",
     sectionOrder: {
       order: ["Sidebar: contact, disciplines, tools", "Main: profile, selected work, experience"],
       why: "The saturated column takes the first fixation, so contact and discipline belong at its top. The main column then has the reader's attention for the work itself.",
@@ -1124,14 +1124,14 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       },
       {
         q: "Should my CV match my portfolio's visual identity?",
-        a: "Consistency helps and reads as intentional, particularly for brand and art-direction roles where a coherent personal identity is itself evidence. The constraint is legibility: a portfolio can be experimental because the viewer arrives willing to explore, while a CV is scanned in seconds by someone deciding quickly. Shared palette and typography, conventional structure. That is the combination that works.",
+        a: "Consistency helps and reads as intentional, particularly for brand and art-direction roles where a coherent personal identity is itself evidence. The constraint is legibility: a portfolio can be experimental because the viewer arrives willing to explore, while a resume is scanned in seconds by someone deciding quickly. Shared palette and typography, conventional structure. That is the combination that works.",
       },
     ],
   },
 
   "creative/bold-accent-creative-cv": {
     bestFor:
-      "Bold Accent in a creative context is the pragmatic choice: single-column and fully parseable, with an accent colour and chips supplying enough personality to avoid looking indifferent. It is the template for creative candidates applying through corporate portals, where a designed layout would be a genuine risk.",
+      "Bold Accent in a creative context is the pragmatic choice: single-column and fully parseable, with an accent color and chips supplying enough personality to avoid looking indifferent. It is the template for creative candidates applying through corporate portals, where a designed layout would be a genuine risk.",
     sectionOrder: {
       order: ["Contact", "Profile", "Selected work", "Experience", "Skills & tools", "Education"],
       why: "Selected work stays above experience because creative assessment starts with what you have made, but the single-column flow keeps the whole document safe for portal submission.",
@@ -1143,7 +1143,7 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
       { section: "Skills & tools", advice: "The chip styling handles a moderate list well. Group by discipline." },
     ],
     mistakes: [
-      "Adding further colours or decorative elements, which reintroduces the risk the template exists to avoid.",
+      "Adding further colors or decorative elements, which reintroduces the risk the template exists to avoid.",
       "Assuming a safe template means the content can be conventional. Creative reviewers still want reasoning and outcomes.",
       "Omitting the portfolio link because the layout feels corporate.",
       "An accent that fails greyscale printing.",
@@ -1156,11 +1156,11 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     faqs: [
       {
         q: "How do creative candidates handle corporate application portals?",
-        a: "Keep two versions of the same content. A designed CV for direct applications, referrals and studio submissions where a person reads it; a clean single-column version for portals, where parsing is the first hurdle and a sidebar can scramble your history. The content should be identical; only the layout changes. Leading with the portfolio link matters in both, since that is what actually gets assessed.",
+        a: "Keep two versions of the same content. A designed resume for direct applications, referrals and studio submissions where a person reads it; a clean single-column version for portals, where parsing is the first hurdle and a sidebar can scramble your history. The content should be identical; only the layout changes. Leading with the portfolio link matters in both, since that is what actually gets assessed.",
       },
       {
         q: "Will a plain resume make me look less creative?",
-        a: "Not if the portfolio link is prominent and the work behind it is strong. Reviewers for creative roles judge the portfolio; the CV establishes level, scope and context. Where a plain CV genuinely costs you is when it is the only artefact: no link, no work section, nothing to look at. Solve that by leading with the work, not by adding decoration that may prevent the document from parsing at all.",
+        a: "Not if the portfolio link is prominent and the work behind it is strong. Reviewers for creative roles judge the portfolio; the resume establishes level, scope and context. Where a plain resume genuinely costs you is when it is the only artifact: no link, no work section, nothing to look at. Solve that by leading with the work, not by adding decoration that may prevent the document from parsing at all.",
       },
     ],
   },

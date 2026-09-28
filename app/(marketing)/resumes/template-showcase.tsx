@@ -30,7 +30,7 @@ const TEMPLATES: Template[] = [
   { name: "Electric Lilac", slug: "electric-lilac", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold two-column with vibrant accent sidebar. Photo-friendly for creative roles.", tags: ["Pro", "New"] },
   { name: "Classic Serif", slug: "classic-serif", category: ["all", "single", "professional"], type: "Single column", desc: "Elegant serif typography with grey section bands. ATS-safe. Traditional and timeless.", tags: ["Free"] },
   { name: "Portrait", slug: "portrait", category: ["all", "two-column", "professional"], type: "Two column", desc: "Editorial split-weight name with headshot, plus-marker headings, and light grey canvas.", tags: ["Free", "New"] },
-  { name: "Regent", slug: "regent", category: ["all", "single", "professional"], type: "Single column", desc: "Refined serif single-column with centred header and hairline rules. Law, finance, consulting.", tags: ["Free", "New"] },
+  { name: "Regent", slug: "regent", category: ["all", "single", "professional"], type: "Single column", desc: "Refined serif single-column with centered header and hairline rules. Law, finance, consulting.", tags: ["Free", "New"] },
   { name: "Meridian", slug: "meridian", category: ["all", "two-column"], type: "Sidebar left", desc: "Mint two-column with icon headings and photo. Startups and momentum roles.", tags: ["Free", "New"] },
   { name: "Vantage", slug: "vantage", category: ["all", "two-column", "professional"], type: "Two column", desc: "Two columns with company and school logos beside every entry. Shows career progression.", tags: ["Free", "New"] },
   { name: "Linen", slug: "linen", category: ["all", "two-column", "minimal"], type: "Two column", desc: "Minimalist off-white two-column with grey header blocks and diamond rules.", tags: ["Free", "New"] },
@@ -48,7 +48,7 @@ const TEMPLATES: Template[] = [
   { name: "Onyx", slug: "sidebar-right", category: ["all", "two-column"], type: "Sidebar right", desc: "Right sidebar for skills and education. Clean content hierarchy.", tags: ["Free"] },
   { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo for corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
   { name: "Divide", slug: "divide", category: ["all", "two-column"], type: "Two column", desc: "Vertical divider splits content. Balanced left-right layout.", tags: ["Free"] },
-  { name: "Folio", slug: "folio", category: ["all", "two-column"], type: "Two column", desc: "Coloured sidebar with clean white main area. Portfolio-style.", tags: ["Free"] },
+  { name: "Folio", slug: "folio", category: ["all", "two-column"], type: "Two column", desc: "Colored sidebar with clean white main area. Portfolio-style.", tags: ["Free"] },
   { name: "Harvard", slug: "harvard", category: ["all", "single", "professional"], type: "Single column", desc: "Academic-style formatting. Formal and structured.", tags: ["Free"] },
   { name: "Ledger", slug: "ledger", category: ["all", "single", "professional"], type: "Single column", desc: "Finance-inspired clean lines. Numbers and metrics stand out.", tags: ["Free"] },
 ];

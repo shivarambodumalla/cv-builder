@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 const WHAT_WE_BUILD = [
   {
     title: "ATS analysis",
-    body: "We parse your CV the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. The output is not a number on its own; it is the specific list of what is costing you points and why.",
+    body: "We parse your resume the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. The output is not a number on its own; it is the specific list of what is costing you points and why.",
     href: "/upload-resume",
-    linkLabel: "Check your CV free",
+    linkLabel: "Check your resume free",
   },
   {
     title: "AI rewriting that will not invent",
@@ -44,7 +44,7 @@ const WHAT_WE_BUILD = [
   },
   {
     title: "Templates that actually parse",
-    body: "Every template is built to survive parsing: single-column flows, standard headings, contact details in the body rather than a document header, and real text rather than images. A beautiful CV that a parser cannot read has failed at the only job that matters first.",
+    body: "Every template is built to survive parsing: single-column flows, standard headings, contact details in the body rather than a document header, and real text rather than images. A beautiful resume that a parser cannot read has failed at the only job that matters first.",
     href: "/resume-templates",
     linkLabel: "See templates",
   },
@@ -57,15 +57,15 @@ const PRINCIPLES = [
   },
   {
     title: "A score is a floor, not a target",
-    body: "An ATS score measures whether your CV is machine-readable and relevant to a role. It cannot measure whether your experience is compelling. A 95% score on vague, unmeasured bullets still loses to a 78% CV that clearly shows someone shipped valuable work. We say so in the product, even though a higher number would be easier to sell.",
+    body: "An ATS score measures whether your resume is machine-readable and relevant to a role. It cannot measure whether your experience is compelling. A 95% score on vague, unmeasured bullets still loses to a 78% resume that clearly shows someone shipped valuable work. We say so in the product, even though a higher number would be easier to sell.",
   },
   {
     title: "Free should be genuinely useful",
     body: "You can check your ATS score, see the full category breakdown and the specific issues found without an account or a card. The free plan includes real usage of the AI features every week. We would rather you find the tool useful and upgrade than hit a wall on the first click.",
   },
   {
-    title: "Your CV is yours",
-    body: "We process your CV to produce the analysis, and store it only so you can come back and edit it. You can delete it at any time. We do not sell your data. The full detail is in our privacy policy.",
+    title: "Your resume is yours",
+    body: "We process your resume to produce the analysis, and store it only so you can come back and edit it. You can delete it at any time. We do not sell your data. The full detail is in our privacy policy.",
   },
 ];
 
@@ -101,12 +101,12 @@ export default function AboutPage() {
         <div className="space-y-4 text-muted-foreground leading-relaxed">
           <p>
             CVEdge is a resume and interview toolkit for people applying for jobs. We build the things that sit
-            between writing a CV and getting an interview: applicant tracking system analysis, AI rewriting that works
+            between writing a resume and getting an interview: applicant tracking system analysis, AI rewriting that works
             from what you actually did, job-description matching, and structured interview preparation.
           </p>
           <p>
             The problem we started from is a specific one. Most applications are rejected before a person reads them,
-            and candidates almost never find out why. A CV can be well written and still fail because its contact
+            and candidates almost never find out why. A resume can be well written and still fail because its contact
             details sit in a document header the parser never reads, or because it describes the same experience in
             different vocabulary than the posting uses. Those failures are invisible from the applicant&apos;s side and
             entirely fixable once you can see them.
@@ -165,7 +165,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold tracking-tight mt-14 mb-3">What we publish</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
           Alongside the product we write guides on how applicant tracking systems actually work, what recruiters do
-          in the first pass over a CV, and what a strong resume looks like for specific roles. It is written to be
+          in the first pass over a resume, and what a strong resume looks like for specific roles. It is written to be
           useful whether or not you use the tool, including the parts where the honest answer is that a tool will
           not help you.
         </p>
@@ -174,7 +174,7 @@ export default function AboutPage() {
             Blog
           </Link>
           <Link href="/resume-examples/software-engineer" className="rounded-full border bg-card px-3 py-1.5 text-xs hover:bg-accent transition-colors">
-            CV examples by role
+            Resume examples by role
           </Link>
           <Link href="/interview-prep" className="rounded-full border bg-card px-3 py-1.5 text-xs hover:bg-accent transition-colors">
             Interview guides
@@ -200,13 +200,13 @@ export default function AboutPage() {
 
         <div className="mt-12 rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold">See where your CV stands</p>
+            <p className="text-sm font-semibold">See where your resume stands</p>
             <p className="text-xs text-muted-foreground mt-0.5">
               Free ATS score and the specific issues found. No account needed.
             </p>
           </div>
           <Button asChild className="shrink-0">
-            <Link href="/upload-resume">Check my CV free</Link>
+            <Link href="/upload-resume">Check my resume free</Link>
           </Button>
         </div>
       </div>

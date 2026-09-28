@@ -74,7 +74,7 @@ export default async function HomePage() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
-    featureList: ["ATS Score Analysis", "AI CV Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
+    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
     areaServed: [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
@@ -100,17 +100,17 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
-      { "@type": "Question", name: "What is CVEdge?", acceptedAnswer: { "@type": "Answer", text: "CVEdge is a free AI-powered resume builder and ATS checker. It analyses your CV against applicant tracking system criteria, gives you a real ATS score, rewrites bullet points with AI, matches your resume to job descriptions, and generates cover letters, all in one tool." } },
+      { "@type": "Question", name: "What is CVEdge?", acceptedAnswer: { "@type": "Answer", text: "CVEdge is a free AI-powered resume builder and ATS checker. It analyzes your resume against applicant tracking system criteria, gives you a real ATS score, rewrites bullet points with AI, matches your resume to job descriptions, and generates cover letters, all in one tool." } },
       { "@type": "Question", name: "What is an ATS score?", acceptedAnswer: { "@type": "Answer", text: "An ATS score measures how well your resume passes through applicant tracking system software used by employers to filter applications. Scores are rated across categories like keyword match, formatting, measurable results, and section completeness. A score of 80+ is considered interview-ready. CVEdge scores your resume instantly across 6 categories." } },
       { "@type": "Question", name: "What causes CVs to fail ATS screening?", acceptedAnswer: { "@type": "Answer", text: "The most common ATS failures are: missing role-specific keywords, non-standard section headings, complex formatting (tables, columns, graphics) that parsers cannot read, lack of measurable results in bullet points, and missing contact information. CVEdge identifies all of these and provides specific fixes." } },
       { "@type": "Question", name: "How do I improve my ATS score?", acceptedAnswer: { "@type": "Answer", text: "To improve your ATS score: add role-specific keywords from the job description, use standard section headings (Experience, Education, Skills), remove tables and graphics, quantify your achievements with numbers, and ensure your contact details are complete. CVEdge's Fix All feature rewrites your summary and bullet points automatically to address all of these." } },
-      { "@type": "Question", name: "How do I tailor my CV to a job description?", acceptedAnswer: { "@type": "Answer", text: "Paste the job description into CVEdge's Job Match tab. CVEdge analyses keyword overlap, experience fit, and missing skills, then shows you exactly what to add or change. The Tailor CV feature rewrites your resume automatically to maximise your match score for that specific role." } },
-      { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software is used by employers to automatically screen and filter job applications before a recruiter reads them. It parses resumes, scores them against job requirements, and ranks candidates. An estimated 75% of CVs are filtered out by ATS before a human sees them." } },
+      { "@type": "Question", name: "How do I tailor my CV to a job description?", acceptedAnswer: { "@type": "Answer", text: "Paste the job description into CVEdge's Job Match tab. CVEdge analyzes keyword overlap, experience fit, and missing skills, then shows you exactly what to add or change. The Tailor CV feature rewrites your resume automatically to maximize your match score for that specific role." } },
+      { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software is used by employers to automatically screen and filter job applications before a recruiter reads them. It parses resumes, scores them against job requirements, and ranks candidates. An estimated 75% of resumes are filtered out by ATS before a human sees them." } },
       { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for core features including ATS score checking, AI bullet rewrites, job matching, and resume templates. No credit card is required to start." } },
-      { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge Pro users are guaranteed an 80+ ATS score after using Fix All. If your score does not reach 80+, contact us within 14 days of signing up and we will personally review your CV. If we still cannot reach 80+, we refund you in full." } },
-      { "@type": "Question", name: "Does CVEdge have a job search?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge includes a free AI job search across 1 million+ live listings. Every job shows a match score against your CV so you can prioritise the roles you are most qualified for." } },
+      { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge Pro users are guaranteed an 80+ ATS score after using Fix All. If your score does not reach 80+, contact us within 14 days of signing up and we will personally review your resume. If we still cannot reach 80+, we refund you in full." } },
+      { "@type": "Question", name: "Does CVEdge have a job search?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge includes a free AI job search across 1 million+ live listings. Every job shows a match score against your resume so you can prioritize the roles you are most qualified for." } },
       { "@type": "Question", name: "Does CVEdge work for jobs in the UAE, Saudi Arabia, and the Middle East?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is used by job seekers across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. ATS screening is standard among large GCC employers and multinationals in the region. CVEdge scores your CV against the same criteria, helps you match keywords from local job descriptions, and generates cover letters for GCC-specific applications. The cv-review service also includes a Middle East specialist." } },
-      { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimisation in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology throughout (not just 'resume'), supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
+      { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimization in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology throughout (not just 'resume'), supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
     ],
   };
 
@@ -187,7 +187,7 @@ export default async function HomePage() {
                     Professional<br />Templates
                   </h2>
                   <p className="max-w-[380px] text-base sm:text-lg text-white/70 leading-relaxed">
-                    32 ATS-optimised templates, 28 of them free. Every design passes automated filters and looks great on screen.
+                    32 ATS-optimized templates, 28 of them free. Every design passes automated filters and looks great on screen.
                   </p>
                   <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
                     <Link href="/resumes">Browse templates</Link>
@@ -238,7 +238,7 @@ export default async function HomePage() {
                   Find jobs that match your CV
                 </h3>
                 <p className="text-sm text-white/70 leading-relaxed">
-                  Stop scrolling irrelevant listings. CVEdge matches jobs to your CV and shows a match score for every role.
+                  Stop scrolling irrelevant listings. CVEdge matches jobs to your resume and shows a match score for every role.
                 </p>
                 <ul className="space-y-2 mt-1">
                   {[
@@ -276,7 +276,7 @@ export default async function HomePage() {
                 </p>
                 <ul className="space-y-2 mt-1">
                   {[
-                    "AI extracts stories from CV, portfolio, GitHub",
+                    "AI extracts stories from resume, portfolio, GitHub",
                     "STAR framework pre-filled by AI",
                     "Quality scoring (0–10) per story",
                     "Job-matched prep with talking points",
@@ -370,7 +370,7 @@ export default async function HomePage() {
                 {
                   step: "03",
                   icon: Target,
-                  title: "Fix and optimise",
+                  title: "Fix and optimize",
                   body: "Apply AI suggestions with one click. Rewrite bullets, add keywords, and watch your score climb.",
                   proofLabel: "Top match for this role",
                   proof: <p className="text-xs text-[#065F46] font-semibold truncate">#1 Improving Engagement Metrics: 94%</p>,
@@ -517,7 +517,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-5xl text-center">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Browse jobs by role</h2>
             <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
-              Explore open roles with match scores tailored to your CV. New listings daily.
+              Explore open roles with match scores tailored to your resume. New listings daily.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-2">
               {TRENDING_ROLES.map((r) => (

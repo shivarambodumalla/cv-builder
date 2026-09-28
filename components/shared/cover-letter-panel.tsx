@@ -190,7 +190,7 @@ export function CoverLetterPanel({
       <div className="flex flex-col items-center gap-4 py-8 text-center">
         <p className="font-medium">Add a job description first</p>
         <p className="text-sm text-muted-foreground max-w-xs">
-          Add a job description in the Job Match tab for a personalised cover letter
+          Add a job description in the Job Match tab for a personalized cover letter
         </p>
         <Button
           variant="outline"

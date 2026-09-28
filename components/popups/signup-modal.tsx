@@ -37,19 +37,19 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
     case "template_click":
       return { title: `Use ${ctx.templateName || "this template"} free. Sign in to start`, subtitle: "All templates are free. No credit card." };
     case "job_search":
-      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}". Sign in to unlock scores.` : "Every listing shows how well your CV matches." };
+      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}". Sign in to unlock scores.` : "Every listing shows how well your resume matches." };
     case "role_page":
-      return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to unlock personalised match scores." };
+      return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to unlock personalized match scores." };
     case "resumes_cta":
-      return { title: "Pick your template and build your CV free", subtitle: "All templates. ATS-optimised. No credit card." };
+      return { title: "Pick your template and build your resume free", subtitle: "All templates. ATS-optimized. No credit card." };
     case "jobs_cta":
-      return { title: "Find jobs matching your CV. Sign in free", subtitle: "Every listing shows your ATS match score." };
+      return { title: "Find jobs matching your resume. Sign in free", subtitle: "Every listing shows your ATS match score." };
     case "exit_intent":
-      return { title: "Before you go, check your ATS score free", subtitle: "75% of CVs are rejected before anyone reads them." };
+      return { title: "Before you go, check your ATS score free", subtitle: "75% of resumes are rejected before anyone reads them." };
     case "ats_score":
-      return { title: "Your CV could score 90+", subtitle: "See your real ATS score in 30 seconds." };
+      return { title: "Your resume could score 90+", subtitle: "See your real ATS score in 30 seconds." };
     case "template_hover":
-      return { title: `Try ${ctx.templateName || "this template"} with your CV`, subtitle: "Upload your CV and see it in this design instantly." };
+      return { title: `Try ${ctx.templateName || "this template"} with your resume`, subtitle: "Upload your resume and see it in this design instantly." };
     default:
       return { title: "Get your ATS score free", subtitle: "30 seconds. No credit card." };
   }
@@ -58,7 +58,7 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
 const BENEFITS = [
   "ATS score in under 30 seconds",
   "AI fixes your weak bullets",
-  "Match CV to any job",
+  "Match resume to any job",
   "All templates free",
 ];
 

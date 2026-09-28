@@ -17,7 +17,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "system design",
       "Agile",
       "cloud infrastructure",
-      "performance optimisation",
+      "performance optimization",
       "distributed systems",
     ],
     sampleBullets: [
@@ -53,11 +53,11 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     sampleBullets: [
       "Architected and shipped full-stack SaaS product from zero to 15,000 monthly active users in 8 months using Next.js, Node.js, and PostgreSQL on AWS",
-      "Reduced page load time by 60% by implementing server-side rendering, image optimisation, and React lazy-loading across e-commerce platform serving 2M monthly visitors",
+      "Reduced page load time by 60% by implementing server-side rendering, image optimization, and React lazy-loading across e-commerce platform serving 2M monthly visitors",
       "Built real-time collaboration feature using WebSockets and Redis Pub/Sub, enabling 500 concurrent users to edit documents simultaneously with sub-100ms sync latency",
     ],
     commonMistakes: [
-      "Listing every framework you've touched: prioritise the 6–8 most relevant to the specific role's stack",
+      "Listing every framework you've touched: prioritize the 6–8 most relevant to the specific role's stack",
       "Omitting frontend–backend split: show what percentage of your work is each and which you prefer",
       "No deployment story: include cloud platforms and infrastructure experience explicitly",
     ],
@@ -73,7 +73,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     keywords: [
       "Python",
       "machine learning",
-      "statistical modelling",
+      "statistical modeling",
       "A/B testing",
       "SQL",
       "scikit-learn",
@@ -116,7 +116,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     sampleBullets: [
       "Led 0→1 launch of enterprise analytics dashboard, coordinating 3 engineering squads and 2 design teams across 18 months; product reached $4.2M ARR within 6 months of GA",
       "Owned mobile app checkout redesign through discovery, definition, delivery, and measurement; drove conversion rate from 2.1% to 3.8% ($6.7M annualised revenue increase)",
-      "Introduced continuous discovery programme with weekly user research cadence; insight-driven prioritisation increased sprint delivery confidence from 62% to 89% across 4 teams",
+      "Introduced continuous discovery program with weekly user research cadence; insight-driven prioritization increased sprint delivery confidence from 62% to 89% across 4 teams",
     ],
     commonMistakes: [
       "Writing feature lists instead of outcomes. Nobody cares what you shipped; they care about the impact",
@@ -124,7 +124,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "No quantification of scale: always include number of users, team size, revenue, or metric improvement",
     ],
     advice:
-      "Product management resumes are about decision ownership and measurable outcomes. Every bullet needs a clear decision you made and a result you drove. \"Worked with engineering to ship feature X\" is weak. \"Prioritised X over Y based on user research; feature drove 18% increase in day-7 retention\" is strong.",
+      "Product management resumes are about decision ownership and measurable outcomes. Every bullet needs a clear decision you made and a result you drove. \"Worked with engineering to ship feature X\" is weak. \"Prioritized X over Y based on user research; feature drove 18% increase in day-7 retention\" is strong.",
     bestTemplates: [
       { name: "Aurora", categorySlug: "marketing", leafSlug: "aurora-cv" },
       { name: "Classic", categorySlug: "software-engineer", leafSlug: "classic-cv" },
@@ -168,7 +168,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Python",
       "Tableau",
       "Power BI",
-      "data visualisation",
+      "data visualization",
       "A/B testing",
       "Excel",
       "statistical analysis",
@@ -177,7 +177,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     sampleBullets: [
       "Built executive revenue dashboard in Tableau consolidating 8 data sources; reduced weekly reporting cycle from 3 days to 4 hours and became primary board reporting tool within 2 months",
-      "Analysed user funnel data across 2.3M sessions to identify checkout abandonment patterns; recommendations implemented by product team drove 12% conversion improvement ($1.8M annual revenue)",
+      "Analyzed user funnel data across 2.3M sessions to identify checkout abandonment patterns; recommendations implemented by product team drove 12% conversion improvement ($1.8M annual revenue)",
       "Automated monthly reconciliation process using Python, replacing 40-hour manual process with 2-hour automated pipeline while reducing error rate from 4% to 0.1%",
     ],
     commonMistakes: [
@@ -217,7 +217,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Missing security/compliance: regulated industry DevOps roles require explicit security posture evidence",
     ],
     advice:
-      "DevOps resumes are about reliability and speed. Show how you improved deployment frequency, reduced downtime, or automated toil. Include cost savings where you have them. Cloud cost optimisation is a universal win that hiring managers remember.",
+      "DevOps resumes are about reliability and speed. Show how you improved deployment frequency, reduced downtime, or automated toil. Include cost savings where you have them. Cloud cost optimization is a universal win that hiring managers remember.",
     bestTemplates: [
       { name: "Classic", categorySlug: "software-engineer", leafSlug: "classic-cv" },
       { name: "Horizon", categorySlug: "software-engineer", leafSlug: "two-column-cv" },
@@ -235,11 +235,11 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "distributed training",
       "CUDA",
       "LLMs",
-      "inference optimisation",
+      "inference optimization",
     ],
     sampleBullets: [
       "Built and deployed recommendation system using collaborative filtering and transformer-based embeddings, improving click-through rate by 31% and increasing session depth by 2.4 pages on average",
-      "Reduced LLM inference latency by 4× through quantisation (FP16), dynamic batching, and ONNX runtime optimisation, enabling real-time use case at $0.003/request cost",
+      "Reduced LLM inference latency by 4× through quantisation (FP16), dynamic batching, and ONNX runtime optimization, enabling real-time use case at $0.003/request cost",
       "Designed feature store architecture for 200+ real-time features serving 15 ML models in production; reduced feature engineering duplication by 70% across 8 teams",
     ],
     commonMistakes: [
@@ -269,7 +269,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Core Web Vitals",
     ],
     sampleBullets: [
-      "Led performance overhaul of React e-commerce platform: improved LCP from 4.2s to 1.1s and CLS from 0.31 to 0.02 through code splitting, image optimisation, and skeleton screens; conversion rate increased 18%",
+      "Led performance overhaul of React e-commerce platform: improved LCP from 4.2s to 1.1s and CLS from 0.31 to 0.02 through code splitting, image optimization, and skeleton screens; conversion rate increased 18%",
       "Built accessible component library (WCAG 2.1 AA) covering 80 components used by 5 product teams, reducing UI inconsistency bugs by 55% and cutting design-to-production time by 30%",
       "Implemented micro-frontend architecture enabling 4 independent teams to deploy independently; reduced inter-team blocking from 8 hours/sprint to under 30 minutes",
     ],
@@ -301,7 +301,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     sampleBullets: [
       "Designed payment processing API handling $40M daily transaction volume with 99.99% uptime over 18 months, including idempotency, retry logic, and PCI-DSS compliant architecture",
-      "Optimised critical query paths in PostgreSQL serving 5M requests/day: added composite indexes and query result caching, reducing average response time from 820ms to 65ms",
+      "Optimized critical query paths in PostgreSQL serving 5M requests/day: added composite indexes and query result caching, reducing average response time from 820ms to 65ms",
       "Built async job processing system using Redis queues handling 2M background jobs daily with zero data loss and automatic retry on transient failures",
     ],
     commonMistakes: [
@@ -310,7 +310,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Avoiding security/compliance, especially for fintech, healthcare, or regulated industry roles",
     ],
     advice:
-      "Backend roles care about correctness, reliability, and scale above all else. Every major achievement should include request volume or data size, uptime/SLA context if relevant, and the business impact. Use action verbs that imply technical depth: Designed, Architected, Optimised, Hardened.",
+      "Backend roles care about correctness, reliability, and scale above all else. Every major achievement should include request volume or data size, uptime/SLA context if relevant, and the business impact. Use action verbs that imply technical depth: Designed, Architected, Optimized, Hardened.",
     bestTemplates: [
       { name: "Classic", categorySlug: "software-engineer", leafSlug: "classic-cv" },
       { name: "Executive", categorySlug: "software-engineer", leafSlug: "executive-cv" },
@@ -325,14 +325,14 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Terraform",
       "infrastructure as code",
       "Kubernetes",
-      "cost optimisation",
+      "cost optimization",
       "security",
       "networking",
       "FinOps",
     ],
     sampleBullets: [
       "Architected multi-region AWS infrastructure for fintech platform serving 3M users: 99.995% uptime over 24 months with automated failover under 45 seconds RTO",
-      "Implemented FinOps programme using AWS Cost Explorer and custom Terraform tagging; identified and eliminated $580K/year in unused resources across 3 business units",
+      "Implemented FinOps program using AWS Cost Explorer and custom Terraform tagging; identified and eliminated $580K/year in unused resources across 3 business units",
       "Built zero-trust network architecture with VPC segmentation, IAM policies, and WAF rules across 8 AWS accounts; achieved SOC 2 Type II certification within 9 months",
     ],
     commonMistakes: [
@@ -362,7 +362,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "cloud security",
     ],
     sampleBullets: [
-      "Led ISO 27001 certification programme across 400-person company: identified and remediated 47 critical controls over 6 months, achieving first-time audit pass with zero major findings",
+      "Led ISO 27001 certification program across 400-person company: identified and remediated 47 critical controls over 6 months, achieving first-time audit pass with zero major findings",
       "Built SIEM detection rules in Splunk covering MITRE ATT&CK T1055–T1190 attack vectors; reduced mean time to detect from 6.2 hours to 22 minutes across 1,200 monitored endpoints",
       "Conducted red team exercise against critical financial infrastructure: discovered 3 critical RCE vulnerabilities in external-facing services; all remediated before external report delivery",
     ],
@@ -385,7 +385,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "design systems",
       "visual design",
       "typography",
-      "colour theory",
+      "color theory",
       "component libraries",
       "responsive design",
       "brand guidelines",
@@ -394,7 +394,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     sampleBullets: [
       "Redesigned mobile app UI from scratch using atomic design principles; new design reduced visual inconsistency bugs by 70% and cut designer-to-engineer handoff time from 3 days to 4 hours",
-      "Built and maintained design system covering 120 components, 8 colour palettes, and 4 typography scales; adopted by 3 product teams within 2 months of launch",
+      "Built and maintained design system covering 120 components, 8 color palettes, and 4 typography scales; adopted by 3 product teams within 2 months of launch",
       "Led rebrand of SaaS product covering 200+ screens: designed component-first in Figma, documented brand system, and delivered to engineering team with zero design debt",
     ],
     commonMistakes: [
@@ -425,8 +425,8 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     sampleBullets: [
       "Led requirements definition for £2.4M ERP migration: facilitated 30+ stakeholder workshops, documented 180 user stories, and reduced scope creep by 45% versus comparable previous project",
-      "Analysed customer journey data across 4 touchpoints to identify £600K annual cost in manual rework; recommended and shepherded 3 process automations that eliminated the rework within 6 months",
-      "Developed business case for real-time inventory system: modelled 3 scenarios, stress-tested assumptions with finance team, secured board approval for £800K investment",
+      "Analyzed customer journey data across 4 touchpoints to identify £600K annual cost in manual rework; recommended and shepherded 3 process automations that eliminated the rework within 6 months",
+      "Developed business case for real-time inventory system: modeled 3 scenarios, stress-tested assumptions with finance team, secured board approval for £800K investment",
     ],
     commonMistakes: [
       "Process-only bullets: \"Ran workshops\" or \"Wrote requirements\" without the business impact",
@@ -483,12 +483,12 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "App Store",
       "push notifications",
       "offline-first",
-      "performance optimisation",
+      "performance optimization",
     ],
     sampleBullets: [
       "Shipped iOS app from 0 to 200,000 downloads in 4 months: built in Swift with offline-first architecture, achieving 4.7 App Store rating and featured in App Store editorial selection",
-      "Optimised React Native app cold start time from 4.2s to 0.9s through lazy loading, Hermes engine migration, and JavaScript bundle splitting; DAU increased 23% following update",
-      "Built cross-platform notification system serving 3.5M users across iOS and Android: personalised, timezone-aware delivery logic with 94% delivery rate and 31% open rate",
+      "Optimized React Native app cold start time from 4.2s to 0.9s through lazy loading, Hermes engine migration, and JavaScript bundle splitting; DAU increased 23% following update",
+      "Built cross-platform notification system serving 3.5M users across iOS and Android: personalized, timezone-aware delivery logic with 94% delivery rate and 31% open rate",
     ],
     commonMistakes: [
       "No download/user counts: app metrics (downloads, DAU, ratings) are the clearest way to show mobile impact",
@@ -519,7 +519,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     sampleBullets: [
       "Built Playwright E2E test suite covering 340 user flows across 6 product areas: reduced release cycle from bi-weekly to daily and cut production bug escape rate from 12% to 2%",
       "Designed API contract testing framework using Pact; caught 23 integration breaking changes in staging before they reached production over 12 months, saving estimated 160 engineering hours in hotfixes",
-      "Led performance testing programme for Black Friday traffic simulation: tested against 5× normal load, identified 3 bottlenecks in payment service, all resolved before 48M-user peak event",
+      "Led performance testing program for Black Friday traffic simulation: tested against 5× normal load, identified 3 bottlenecks in payment service, all resolved before 48M-user peak event",
     ],
     commonMistakes: [
       "Manual-only testing experience at a company that needs automation: be explicit about your automation capability",
@@ -550,7 +550,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     sampleBullets: [
       "Triaged and responded to 1,200+ security incidents over 18 months as L2 SOC analyst: reduced average investigation time from 45 minutes to 11 minutes through automation and custom SIEM playbooks",
       "Identified and reported critical supply chain vulnerability in third-party auth library affecting 200,000 users; coordinated emergency patch deployment within 6 hours of discovery",
-      "Ran phishing simulation programme across 3,000 employees quarterly: improved click-through rate from 24% to 6% over 12 months, reducing successful phishing incidents by 70%",
+      "Ran phishing simulation program across 3,000 employees quarterly: improved click-through rate from 24% to 6% over 12 months, reducing successful phishing incidents by 70%",
     ],
     commonMistakes: [
       "Tool lists without threat context: \"used Splunk\" vs \"wrote Splunk queries detecting lateral movement in 1,200 endpoints\"",

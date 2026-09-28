@@ -54,7 +54,7 @@ function buildFaqs(label: string) {
   return [
     {
       question: `What should a ${label} resume include?`,
-      answer: `A strong ${label} resume needs: a sharp professional summary (3–4 sentences positioning your specialisation and level), detailed experience bullets with measurable results, a skills section with role-relevant tools and technologies, and education credentials. For ${label} roles specifically, always include relevant certifications, portfolio links if applicable, and keywords from the job description in natural language throughout.`,
+      answer: `A strong ${label} resume needs: a sharp professional summary (3–4 sentences positioning your specialization and level), detailed experience bullets with measurable results, a skills section with role-relevant tools and technologies, and education credentials. For ${label} roles specifically, always include relevant certifications, portfolio links if applicable, and keywords from the job description in natural language throughout.`,
     },
     {
       question: `How long should a ${label} resume be?`,
@@ -66,7 +66,7 @@ function buildFaqs(label: string) {
     },
     {
       question: `How do I make my ${label} resume ATS-friendly?`,
-      answer: `Use a single-column template (Classic, Sharp, or Minimal score 90+ on CVEdge's ATS analyser), standard section headings (Experience, Education, Skills), bullet points starting with strong action verbs, and role-specific keywords in natural language. Upload your resume to CVEdge for a free ATS score. You'll see exactly which category is dragging your score and how to fix it.`,
+      answer: `Use a single-column template (Classic, Sharp, or Minimal score 90+ on CVEdge's ATS analyzer), standard section headings (Experience, Education, Skills), bullet points starting with strong action verbs, and role-specific keywords in natural language. Upload your resume to CVEdge for a free ATS score. You'll see exactly which category is dragging your score and how to fix it.`,
     },
     {
       question: `How do I write strong bullet points for a ${label} resume?`,
@@ -125,7 +125,7 @@ export default async function RoleResumeExamplePage({
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
+                <Link href="/upload-resume">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Build {role.label} resume free</Link>
@@ -264,7 +264,7 @@ export default async function RoleResumeExamplePage({
             </p>
             <p className="text-xs font-semibold text-success mb-1">After (strong)</p>
             <p className="text-sm">
-              &ldquo;Reduced platform response time by 65% through caching and query optimisation,
+              &ldquo;Reduced platform response time by 65% through caching and query optimization,
               improving reliability for 500K monthly active users.&rdquo;
             </p>
           </div>
@@ -280,11 +280,11 @@ export default async function RoleResumeExamplePage({
           {[
             {
               section: "Professional Summary",
-              guidance: `3–4 sentences: your job title + years of experience + 2 core specialisms + what you're looking for. For ${role.label.toLowerCase()} roles, lead with your most relevant strength. Keep it under 80 words. Avoid clichés like 'results-driven'. Be specific about what you actually do.`,
+              guidance: `3–4 sentences: your job title + years of experience + 2 core specialties + what you're looking for. For ${role.label.toLowerCase()} roles, lead with your most relevant strength. Keep it under 80 words. Avoid clichés like 'results-driven'. Be specific about what you actually do.`,
             },
             {
               section: "Experience",
-              guidance: `Reverse chronological order. 3–5 bullet points per role for the last 3 positions; 1–3 for older roles. Every bullet should have an action verb, what you did, and a measurable result. For ${role.label.toLowerCase()} roles, prioritise bullets that show scale, impact, and technical/functional depth.`,
+              guidance: `Reverse chronological order. 3–5 bullet points per role for the last 3 positions; 1–3 for older roles. Every bullet should have an action verb, what you did, and a measurable result. For ${role.label.toLowerCase()} roles, prioritize bullets that show scale, impact, and technical/functional depth.`,
             },
             {
               section: "Skills",
@@ -379,7 +379,7 @@ export default async function RoleResumeExamplePage({
               {role.label} professional summary example
             </h2>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-              Three or four sentences that state your specialisation, your level, and the single result you most
+              Three or four sentences that state your specialization, your level, and the single result you most
               want read first.
             </p>
             <blockquote className="rounded-xl border-l-4 border-primary bg-card p-5 text-sm leading-relaxed">
@@ -393,7 +393,7 @@ export default async function RoleResumeExamplePage({
               Before and after: {role.label.toLowerCase()} resume bullets
             </h2>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Each pair below rewrites a bullet we see constantly on {role.label.toLowerCase()} CVs, with the reason
+              Each pair below rewrites a bullet we see constantly on {role.label.toLowerCase()} Resumes, with the reason
               the rewrite works for this role specifically.
             </p>
             <div className="space-y-5">
@@ -443,7 +443,7 @@ export default async function RoleResumeExamplePage({
               What changes by level
             </h2>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-              The same experience reads differently depending on the level you are targeting. Position your CV for
+              The same experience reads differently depending on the level you are targeting. Position your resume for
               the band you are applying to.
             </p>
             <div className="space-y-3">
@@ -459,7 +459,7 @@ export default async function RoleResumeExamplePage({
           {/* Role-specific red flags */}
           <div className="mx-auto max-w-3xl mb-14">
             <h2 className="text-xl font-bold tracking-tight mb-5">
-              What gets {role.label.toLowerCase()} CVs screened out
+              What gets {role.label.toLowerCase()} Resumes screened out
             </h2>
             <div className="space-y-3">
               {content.redFlags.map((f) => (
@@ -504,7 +504,7 @@ export default async function RoleResumeExamplePage({
           <div className="mx-auto max-w-3xl mb-14">
             <div className="rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold">CV sorted. Now the interview</p>
+                <p className="text-sm font-semibold">Resume sorted. Now the interview</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Real {role.label.toLowerCase()} interview questions and what each round is scored on.
                 </p>
@@ -543,12 +543,12 @@ export default async function RoleResumeExamplePage({
           Build your {role.label.toLowerCase()} resume for free
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Upload your existing CV or start fresh. Get an ATS score in seconds and fix
+          Upload your existing resume or start fresh. Get an ATS score in seconds and fix
           every issue before you apply.
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Upload my CV free</Link>
+            <Link href="/upload-resume">Upload my resume free</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch</Link>

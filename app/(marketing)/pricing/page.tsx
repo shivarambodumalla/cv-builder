@@ -37,7 +37,7 @@ export default function PricingPage() {
       />
       <ProductJsonLd
         name="CVEdge Pro"
-        description="AI-powered CV optimisation with unlimited ATS scans, AI rewrites, job matching, cover letters, and interview coaching. 80+ ATS score guaranteed or money back."
+        description="AI-powered resume optimization with unlimited ATS scans, AI rewrites, job matching, cover letters, and interview coaching. 80+ ATS score guaranteed or money back."
         image="https://www.thecvedge.com/og-pricing.png"
         offers={[
           { name: "Free", price: "0", priceCurrency: "USD" },

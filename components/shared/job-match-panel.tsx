@@ -203,14 +203,14 @@ export function JobMatchPanel({
         <Button
           onClick={handleAnalyse}
           disabled={loading || jobDescription.length < 50}
-          data-testid="btn-analyse-match"
+          data-testid="btn-analyze-match"
         >
           {loading ? (
             <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Analysing...</>
           ) : result ? (
-            "Re-analyse"
+            "Re-analyze"
           ) : (
-            "Analyse Match"
+            "Analyze Match"
           )}
         </Button>
       </div>
@@ -459,7 +459,7 @@ export function JobMatchRightPanel({
         <StepLoader
           steps={[
             { label: "Reading job description", sub: "Extracting requirements and keywords", icon: FileText },
-            { label: "Comparing with your CV", sub: "Matching skills and experience", icon: Search },
+            { label: "Comparing with your resume", sub: "Matching skills and experience", icon: Search },
             { label: "Calculating match score", sub: "Scoring across all dimensions", icon: Brain },
           ]}
           currentStep={1}
@@ -705,11 +705,11 @@ export function JobMatchRightPanel({
                   Live
                 </span>
               </div>
-              <p className="mt-1 text-sm text-white/80">See live roles your CV fits, ranked by match score</p>
+              <p className="mt-1 text-sm text-white/80">See live roles your resume fits, ranked by match score</p>
               <div className="mt-2 flex items-center gap-3 text-[11px] text-white/60">
                 <span className="inline-flex items-center gap-1">
                   <Sparkles size={11} className="text-[#34D399]" />
-                  Personalised
+                  Personalized
                 </span>
                 <span className="h-3 w-px bg-white/20" aria-hidden />
                 <span>Updated hourly</span>
@@ -769,12 +769,12 @@ export function JobMatchRightPanel({
           fullScreen
           steps={[
             { label: "Reading job description", sub: "Extracting requirements and keywords", icon: FileText },
-            { label: "Comparing with your CV", sub: "Finding alignment gaps", icon: Search },
-            { label: "Tailoring your CV", sub: "Rewriting bullets for this role", icon: Wand2 },
+            { label: "Comparing with your resume", sub: "Finding alignment gaps", icon: Search },
+            { label: "Tailoring your resume", sub: "Rewriting bullets for this role", icon: Wand2 },
           ]}
           currentStep={tailorStep}
           centerIcon={Wand2}
-          footerText="Please don't close this tab while we tailor your CV."
+          footerText="Please don't close this tab while we tailor your resume."
         />
       )}
 
@@ -827,7 +827,7 @@ function getMatchLabel(score: number): string {
 }
 
 function getMatchDescription(score: number): string {
-  if (score >= 85) return "Your CV aligns well with this role";
+  if (score >= 85) return "Your resume aligns well with this role";
   if (score >= 70) return "Good fit with some gaps to address";
   if (score >= 55) return "Several skill gaps need attention";
   return "Significant gaps detected for this role";

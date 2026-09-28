@@ -31,7 +31,7 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
                 Interview-ready
               </p>
               <h3 className="text-base sm:text-lg font-semibold leading-tight text-white">
-                Your CV could win these jobs
+                Your resume could win these jobs
               </h3>
               <p className="text-xs sm:text-sm text-white/75 mt-1">
                 Live roles matching your profile right now
@@ -49,7 +49,7 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
             href={`/my-jobs?cvId=${encodeURIComponent(cvId)}`}
             className="inline-flex items-center justify-center rounded-md bg-white text-[#1E3A5F] hover:bg-white/95 px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
           >
-            Find jobs for this CV
+            Find jobs for this resume
           </Link>
           <button
             type="button"
@@ -75,7 +75,7 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
     <div className="rounded-xl bg-secondary text-secondary-foreground p-4 my-3 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-medium leading-snug">
-          Tighten your CV against a real role
+          Tighten your resume against a real role
         </p>
         <button
           onClick={() => {

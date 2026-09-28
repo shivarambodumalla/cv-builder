@@ -18,8 +18,8 @@ export function StoryNudge({ storyCount, hasCvs }: StoryNudgeProps) {
           <Sparkles className="h-4 w-4 text-primary" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">Your CV has achievements worth turning into stories</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Extract STAR stories from your CV in seconds.</p>
+          <p className="text-sm font-semibold text-foreground">Your resume has achievements worth turning into stories</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Extract STAR stories from your resume in seconds.</p>
           <Link
             href="/interview-coach/extract"
             className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-primary hover:underline"

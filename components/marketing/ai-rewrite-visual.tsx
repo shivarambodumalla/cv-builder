@@ -19,7 +19,7 @@ export default function AiRewriteVisual() {
       <rect x="16" y="108" width="488" height="112" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
       <text x="28" y="126" fontFamily="Geist, system-ui" fontSize="10.5" fill="#9CA3AF">Senior AI/ML Engineer with 7 years of experience building</text>
       <text x="28" y="142" fontFamily="Geist, system-ui" fontSize="10.5" fill="#9CA3AF">and deploying large-scale machine learning systems at</text>
-      <text x="28" y="158" fontFamily="Geist, system-ui" fontSize="10.5" fill="#9CA3AF">Tallgrass Labs and Ridgeline. Specialised in NLP, LLM fine-tuning,</text>
+      <text x="28" y="158" fontFamily="Geist, system-ui" fontSize="10.5" fill="#9CA3AF">Tallgrass Labs and Ridgeline. Specialized in NLP, LLM fine-tuning,</text>
       <text x="28" y="174" fontFamily="Geist, system-ui" fontSize="10.5" fill="#9CA3AF">and MLOps infrastructure. Led teams that shipped</text>
       <text x="28" y="190" fontFamily="Geist, system-ui" fontSize="10.5" fill="#9CA3AF">recommendation models serving 120M+ users.</text>
 

@@ -68,7 +68,7 @@ export default async function RoleInterviewPrepPage({
           <h1 className="text-3xl font-bold tracking-tight mt-2">{role.label} Interview Prep</h1>
           <p className="text-muted-foreground mt-3">
             We haven&apos;t published our {lower} interview guide yet. In the meantime, CVEdge&apos;s Interview Coach
-            builds a STAR story bank from your own CV and matches it to any {lower} job description.
+            builds a STAR story bank from your own resume and matches it to any {lower} job description.
           </p>
           <Button className="mt-6" asChild>
             <Link href="/login?returnUrl=%2Finterview-coach">Start prepping free</Link>
@@ -130,7 +130,7 @@ export default async function RoleInterviewPrepPage({
             Technical {lower} interview questions
           </h2>
           <p className="text-sm text-muted-foreground mb-6">
-            Questions of this shape recur across {lower} loops. Practise them aloud. Interviewers score how you
+            Questions of this shape recur across {lower} loops. Practice them aloud. Interviewers score how you
             reason, not only where you land.
           </p>
           <ul className="space-y-3">
@@ -145,7 +145,7 @@ export default async function RoleInterviewPrepPage({
         {/* Behavioural questions */}
         <section className="mx-auto max-w-3xl mb-14">
           <h2 className="text-2xl font-bold tracking-tight mb-2">
-            Behavioural questions for {lower} roles
+            Behavioral questions for {lower} roles
           </h2>
           <p className="text-sm text-muted-foreground mb-6">
             Prepare one STAR story per theme. A single strong story usually answers two or three of these prompts.
@@ -206,13 +206,13 @@ export default async function RoleInterviewPrepPage({
         <section className="mx-auto max-w-3xl mb-14">
           <div className="rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold">Need the CV before the interview?</p>
+              <p className="text-sm font-semibold">Need the resume before the interview?</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                See {lower} CV examples, before/after bullets, and the metrics reviewers look for.
+                See {lower} Resume examples, before/after bullets, and the metrics reviewers look for.
               </p>
             </div>
             <Button variant="outline" asChild>
-              <Link href={`/resume-examples/${role.slug}`}>{role.label} CV examples</Link>
+              <Link href={`/resume-examples/${role.slug}`}>{role.label} Resume examples</Link>
             </Button>
           </div>
         </section>
@@ -239,7 +239,7 @@ export default async function RoleInterviewPrepPage({
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-2xl font-bold tracking-tight">Turn your experience into answers</h2>
           <p className="mt-3 text-muted-foreground">
-            CVEdge reads your CV, drafts STAR stories from what you actually did, and matches them to the {lower} job
+            CVEdge reads your resume, drafts STAR stories from what you actually did, and matches them to the {lower} job
             you&apos;re interviewing for.
           </p>
           <Button className="mt-6" asChild>

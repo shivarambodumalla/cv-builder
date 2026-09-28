@@ -45,7 +45,7 @@ export default async function TemplateCategoryPage({
   const faqs = [
     {
       question: `What is the best resume template for ${cat.label.toLowerCase()} roles?`,
-      answer: `The best template depends on company type and role level. For most ${cat.label.toLowerCase()} positions, single-column formats (Classic, Sharp, Minimal) maximise ATS safety. For roles at creative or design-forward companies, two-column formats like Aurora or Coastal are appropriate. Use CVEdge's ATS analyser to verify your specific score.`,
+      answer: `The best template depends on company type and role level. For most ${cat.label.toLowerCase()} positions, single-column formats (Classic, Sharp, Minimal) maximize ATS safety. For roles at creative or design-forward companies, two-column formats like Aurora or Coastal are appropriate. Use CVEdge's ATS analyzer to verify your specific score.`,
     },
     {
       question: `How do I tailor my resume for ${cat.label.toLowerCase()} jobs?`,
@@ -53,7 +53,7 @@ export default async function TemplateCategoryPage({
     },
     {
       question: `Do these templates work for ${cat.label.toLowerCase()} jobs at large companies?`,
-      answer: `Yes. Every template on this page is tested against major ATS systems used by large employers: Greenhouse, Workday, Lever, and iCIMS. Single-column templates score 90–97 on CVEdge's ATS analyser. Two-column templates score 85–93. Run your resume through the analyser before applying via any portal.`,
+      answer: `Yes. Every template on this page is tested against major ATS systems used by large employers: Greenhouse, Workday, Lever, and iCIMS. Single-column templates score 90–97 on CVEdge's ATS analyzer. Two-column templates score 85–93. Run your resume through the analyzer before applying via any portal.`,
     },
     {
       question: "Can I switch templates after building my resume?",
@@ -106,7 +106,7 @@ export default async function TemplateCategoryPage({
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
+                <Link href="/upload-resume">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Start from scratch free</Link>
@@ -251,11 +251,11 @@ export default async function TemplateCategoryPage({
               Start with any template and switch any time
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Upload your CV for a free ATS score or start from scratch. All templates free to try.
+              Upload your resume for a free ATS score or start from scratch. All templates free to try.
             </p>
             <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" asChild>
-                <Link href="/upload-resume">Upload my CV free</Link>
+                <Link href="/upload-resume">Upload my resume free</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="/login">Start from scratch</Link>

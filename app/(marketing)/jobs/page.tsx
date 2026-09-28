@@ -48,7 +48,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
           <h2 className="text-xl font-bold text-center mb-8">How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: Upload, step: "1", title: "Upload your CV", body: "Paste or upload your CV once. CVEdge parses and optimises it automatically." },
+              { icon: Upload, step: "1", title: "Upload your resume", body: "Paste or upload your resume once. CVEdge parses and optimizes it automatically." },
               { icon: BarChart2, step: "2", title: "See your match %", body: "Every job shows an ATS match score so you know your chances before you apply." },
               { icon: Target, step: "3", title: "Apply to the best", body: "Focus your effort on the roles you are most likely to get, and tailor in one click." },
             ].map((item) => (

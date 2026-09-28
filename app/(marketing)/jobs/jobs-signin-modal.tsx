@@ -40,7 +40,7 @@ export function JobsSignInModal({ query, location }: { query: string; location: 
           {location ? ` in ${location}` : ""}
         </h3>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
-          Upload your CV once and get a personalised match score for every job. Free, and it takes 30 seconds.
+          Upload your resume once and get a personalized match score for every job. Free, and it takes 30 seconds.
         </p>
 
         {/* Sign-in buttons */}

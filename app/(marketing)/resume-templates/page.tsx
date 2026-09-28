@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Free Resume Templates: ATS-Friendly & Professional | CVEdge",
     description:
-      "24 free ATS-friendly resume templates. Upload your CV, get an instant ATS score, fix with AI, and download a polished PDF.",
+      "24 free ATS-friendly resume templates. Upload your resume, get an instant ATS score, fix with AI, and download a polished PDF.",
     url: "https://www.thecvedge.com/resume-templates",
   },
 };
@@ -23,7 +23,7 @@ const FAQS = [
   {
     question: "Which resume template is best for passing ATS?",
     answer:
-      "Single-column templates score highest on ATS systems. CVEdge's Classic, Minimal, Sharp, Classic Serif, and Harvard templates all score 92–97 on our ATS analyser. The key factors are: single column, standard heading names (Experience, Education, Skills), no images or tables in the body, and a parseable font. Two-column templates can also pass ATS with modern systems. Run CVEdge's ATS analyser on any template to check your specific score.",
+      "Single-column templates score highest on ATS systems. CVEdge's Classic, Minimal, Sharp, Classic Serif, and Harvard templates all score 92–97 on our ATS analyzer. The key factors are: single column, standard heading names (Experience, Education, Skills), no images or tables in the body, and a parseable font. Two-column templates can also pass ATS with modern systems. Run CVEdge's ATS analyzer on any template to check your specific score.",
   },
   {
     question: "Are all CVEdge resume templates free?",
@@ -48,7 +48,7 @@ const FAQS = [
   {
     question: "Do CVEdge templates work with ATS systems like Greenhouse and Workday?",
     answer:
-      "Yes. CVEdge templates are tested against Greenhouse, Workday, Lever, iCIMS, Taleo, and SmartRecruiters. Single-column templates pass all major systems. Two-column templates score 88–94 on CVEdge's ATS analyser. The analyser gives you a real-time score as you edit.",
+      "Yes. CVEdge templates are tested against Greenhouse, Workday, Lever, iCIMS, Taleo, and SmartRecruiters. Single-column templates pass all major systems. Two-column templates score 88–94 on CVEdge's ATS analyzer. The analyzer gives you a real-time score as you edit.",
   },
 ];
 
@@ -73,7 +73,7 @@ const WHY_MATTERS = [
   {
     icon: Zap,
     title: "AI rewrites every weak bullet in one pass",
-    desc: "Fix All ATS rewrites your entire resume summary and all experience bullets to ATS-optimised standards in a single click.",
+    desc: "Fix All ATS rewrites your entire resume summary and all experience bullets to ATS-optimized standards in a single click.",
   },
   {
     icon: Target,
@@ -98,7 +98,7 @@ export default function ResumeTemplatesPage() {
       />
       <ServiceJsonLd
         name="Free ATS-Friendly Resume Templates"
-        description="32 professional resume templates tested on Greenhouse, Workday, and Lever. Upload your CV, get an ATS score, fix with AI, download PDF."
+        description="32 professional resume templates tested on Greenhouse, Workday, and Lever. Upload your resume, get an ATS score, fix with AI, download PDF."
         url="https://www.thecvedge.com/resume-templates"
         serviceType="Resume Builder"
         price="0"
@@ -122,12 +122,12 @@ export default function ResumeTemplatesPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              32 professional templates. Upload your CV, get an instant ATS score, fix
+              32 professional templates. Upload your resume, get an instant ATS score, fix
               weak bullets with AI, and export a polished PDF. All free to start.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
+                <Link href="/upload-resume">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Start from scratch free</Link>
@@ -254,7 +254,7 @@ export default function ResumeTemplatesPage() {
                     <li>Standard heading names (Experience, Education, Skills)</li>
                     <li>No images or tables in body text</li>
                     <li>Standard font at 10–12pt</li>
-                    <li>Dates in recognisable formats (Jan 2023 – Mar 2024)</li>
+                    <li>Dates in recognizable formats (Jan 2023 – Mar 2024)</li>
                   </ul>
                 </div>
                 <div>
@@ -308,11 +308,11 @@ export default function ResumeTemplatesPage() {
               Ready to build a resume that gets interviews?
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Upload your current CV for a free ATS score, or start from scratch. No credit card required.
+              Upload your current resume for a free ATS score, or start from scratch. No credit card required.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" asChild>
-                <Link href="/upload-resume">Upload & score my CV free</Link>
+                <Link href="/upload-resume">Upload & score my resume free</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="/login">Start from scratch</Link>

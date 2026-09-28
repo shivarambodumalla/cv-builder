@@ -18,7 +18,7 @@ export function GuaranteeBadgeFull() {
       </div>
       <p className="text-base font-semibold text-foreground">80+ ATS Score Guarantee</p>
       <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-        If your score doesn&apos;t reach 80+ after using Fix All, we&apos;ll review your CV personally. Still not 80+? Full refund. No questions asked.
+        If your score doesn&apos;t reach 80+ after using Fix All, we&apos;ll review your resume personally. Still not 80+? Full refund. No questions asked.
       </p>
     </div>
   );

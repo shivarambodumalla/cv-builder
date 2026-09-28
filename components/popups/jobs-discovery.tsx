@@ -30,8 +30,8 @@ export function JobsDiscovery() {
   return (
     <AppPopover
       id="jobs_discovery"
-      title="Your CV can match live jobs"
-      subtitle="See which open roles you're most likely to land based on your CV."
+      title="Your resume can match live jobs"
+      subtitle="See which open roles you're most likely to land based on your resume."
       ctaText="See matching jobs"
       onAction={() => router.push("/my-jobs")}
       cooldownDays={7}

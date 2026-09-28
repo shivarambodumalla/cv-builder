@@ -24,7 +24,7 @@ const OPTIONS: PlanOption[] = [
 ];
 
 const FREE_FEATURES = [
-  "3 CVs",
+  "3 resumes",
   "10 ATS scans / 7 days",
   "25 AI rewrites / 7 days",
   "5 job matches / 7 days",
@@ -34,7 +34,7 @@ const FREE_FEATURES = [
 ];
 
 const PRO_FEATURES = [
-  "Unlimited CVs + ATS scans",
+  "Unlimited resumes + ATS scans",
   "Unlimited AI rewrites",
   "Unlimited job matches",
   "Unlimited cover letters",
@@ -174,10 +174,10 @@ export function PricingContent() {
       <section className="mx-auto max-w-3xl mb-16 prose prose-sm dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight">
         <h2 className="text-2xl font-bold tracking-tight mb-4 text-center">What you get with CVEdge Pro</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          CVEdge Pro gives job seekers unlimited access to our AI-powered CV optimisation suite. Run as many ATS compatibility scans as you need, generate tailored cover letters for every application, match your CV against live job descriptions, and rewrite weak bullets into measurable impact statements, all without the per-feature limits of the free tier.
+          CVEdge Pro gives job seekers unlimited access to our AI-powered resume optimization suite. Run as many ATS compatibility scans as you need, generate tailored cover letters for every application, match your resume against live job descriptions, and rewrite weak bullets into measurable impact statements, all without the per-feature limits of the free tier.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          Every Pro feature works across 130+ job roles and 12 industry domains, from software engineering and product management to finance, marketing, and design. Our ATS scoring engine checks your CV across 6 categories (contact accuracy, section coverage, keyword density, measurable results, bullet quality, and formatting) against 2,400+ role-specific keywords, so recruiters&apos; screening software actually sees your experience.
+          Every Pro feature works across 130+ job roles and 12 industry domains, from software engineering and product management to finance, marketing, and design. Our ATS scoring engine checks your resume across 6 categories (contact accuracy, section coverage, keyword density, measurable results, bullet quality, and formatting) against 2,400+ role-specific keywords, so recruiters&apos; screening software actually sees your experience.
         </p>
         <p className="text-muted-foreground leading-relaxed">
           If CVEdge doesn&apos;t get your ATS score to 80 or above within 14 days, we refund you in full. No forms, no questions.
@@ -217,7 +217,7 @@ export function PricingContent() {
           <Shield className="h-6 w-6 text-[#065F46]" />
         </div>
         <p className="text-base font-semibold">14-day money-back guarantee</p>
-        <p className="text-sm text-muted-foreground mt-2">If CVEdge doesn&apos;t get your CV to an 80+ ATS score, we refund you in full.</p>
+        <p className="text-sm text-muted-foreground mt-2">If CVEdge doesn&apos;t get your resume to an 80+ ATS score, we refund you in full.</p>
       </div>
 
       {/* Bottom CTA */}
@@ -228,7 +228,7 @@ export function PricingContent() {
           href="/upload-resume"
           className="mt-6 inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-base font-semibold text-[#065F46] hover:bg-white/90 transition-colors"
         >
-          Analyse my CV free
+          Analyze my resume free
         </Link>
         <p className="mt-4 text-[11px] text-green-300">
           ✓ Free forever &middot; ✓ Upgrade anytime &middot; ✓ Cancel anytime

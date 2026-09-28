@@ -15,16 +15,16 @@ type AnalysisStep = "uploading" | "parsing" | "analysing" | "done";
 type UploadMode = "upload" | "paste" | "scratch";
 
 const STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.ElementType }[] = [
-  { key: "uploading", label: "Uploading your CV", sub: "Securely transferring your file", icon: Upload },
-  { key: "parsing", label: "Extracting content", sub: "Reading every section of your CV", icon: FileText },
-  { key: "analysing", label: "AI is scoring your CV", sub: "Checking keywords, formatting, impact", icon: Brain },
+  { key: "uploading", label: "Uploading your resume", sub: "Securely transferring your file", icon: Upload },
+  { key: "parsing", label: "Extracting content", sub: "Reading every section of your resume", icon: FileText },
+  { key: "analysing", label: "AI is scoring your resume", sub: "Checking keywords, formatting, impact", icon: Brain },
   { key: "done", label: "Analysis complete!", sub: "Your ATS report is ready", icon: CheckCircle2 },
 ];
 
 const OPTIONS: { key: UploadMode; icon: React.ElementType; title: string; desc: string }[] = [
-  { key: "upload", icon: Upload, title: "Upload PDF", desc: "Drop your CV or click to browse" },
-  { key: "paste", icon: ClipboardPaste, title: "Paste text", desc: "Copy and paste your CV content" },
-  { key: "scratch", icon: PenLine, title: "Start from scratch", desc: "Build your CV from a blank template" },
+  { key: "upload", icon: Upload, title: "Upload PDF", desc: "Drop your resume or click to browse" },
+  { key: "paste", icon: ClipboardPaste, title: "Paste text", desc: "Copy and paste your resume content" },
+  { key: "scratch", icon: PenLine, title: "Start from scratch", desc: "Build your resume from a blank template" },
 ];
 
 export function UploadResumeContent() {
@@ -167,7 +167,7 @@ export function UploadResumeContent() {
           router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`);
           return;
         }
-        throw new Error(data.error || "Could not create CV.");
+        throw new Error(data.error || "Could not create resume.");
       }
 
       const { cv_id } = await res.json();
@@ -194,7 +194,7 @@ export function UploadResumeContent() {
           steps={STEPS}
           currentStep={stepIndex}
           centerIcon={Brain}
-          footerText="Please don't close this tab while we analyse your CV."
+          footerText="Please don't close this tab while we analyze your resume."
         />
       </div>
     );
@@ -235,7 +235,7 @@ export function UploadResumeContent() {
             Get your ATS score
           </h1>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            Upload your CV and see exactly what&apos;s holding you back. Takes under 60 seconds.
+            Upload your resume and see exactly what&apos;s holding you back. Takes under 60 seconds.
           </p>
         </div>
 
@@ -307,7 +307,7 @@ export function UploadResumeContent() {
               disabled={!file}
               onClick={handleSubmit}
             >
-              Analyse my CV
+              Analyze my resume
             </Button>
           </div>
         )}
@@ -316,7 +316,7 @@ export function UploadResumeContent() {
         {mode === "paste" && (
           <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
             <Textarea
-              placeholder="Paste your CV text here..."
+              placeholder="Paste your resume text here..."
               rows={8}
               value={pastedText}
               onChange={(e) => setPastedText(e.target.value)}
@@ -330,7 +330,7 @@ export function UploadResumeContent() {
               disabled={!pastedText.trim()}
               onClick={handleSubmit}
             >
-              Analyse my CV
+              Analyze my resume
             </Button>
           </div>
         )}

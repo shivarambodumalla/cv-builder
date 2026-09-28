@@ -63,7 +63,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "software-engineer": {
     intro:
-      "Software Engineer loops are weighted toward problem-solving under observation. Most companies run two coding rounds, one system design round, and one behavioural round; the coding rounds screen for correctness and communication in roughly equal measure, and the design round is where mid-level and senior candidates are separated. Your CV is read for evidence that you have owned something in production, not just shipped features.",
+      "Software Engineer loops are weighted toward problem-solving under observation. Most companies run two coding rounds, one system design round, and one behavioral round; the coding rounds screen for correctness and communication in roughly equal measure, and the design round is where mid-level and senior candidates are separated. Your resume is read for evidence that you have owned something in production, not just shipped features.",
     interviewFocus: [
       { area: "Coding under observation", detail: "Data structures and algorithms applied to a problem you have not seen, narrated aloud. Interviewers score how you clarify ambiguity and test your own solution as much as whether you reach the optimal complexity." },
       { area: "System design", detail: "Designing a service end to end: API surface, data model, caching, failure modes. Expected from mid-level upward; at junior level it is replaced with a code-extension exercise." },
@@ -96,12 +96,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How many rounds does a Software Engineer interview usually have?",
         answer:
-          "Four to six. A recruiter screen, one or two technical phone screens, then an onsite loop of two coding rounds, one system design round (mid-level and above), and a behavioural or hiring-manager round. Larger companies add a values or bar-raiser round. The whole process typically runs two to five weeks, and the system design round carries the most weight in levelling decisions.",
+          "Four to six. A recruiter screen, one or two technical phone screens, then an onsite loop of two coding rounds, one system design round (mid-level and above), and a behavioral or hiring-manager round. Larger companies add a values or bar-raiser round. The whole process typically runs two to five weeks, and the system design round carries the most weight in leveling decisions.",
       },
       {
         question: "Do I still need to grind LeetCode for Software Engineer interviews?",
         answer:
-          "You need fluency in the common patterns rather than volume. Roughly 150 well-understood problems covering arrays and hashing, two pointers, sliding window, binary search, trees and graphs, and dynamic programming will cover the large majority of what gets asked. Practising aloud matters more than practising more. Interviewers score communication, and candidates who solve silently frequently fail rounds they technically passed.",
+          "You need fluency in the common patterns rather than volume. Roughly 150 well-understood problems covering arrays and hashing, two pointers, sliding window, binary search, trees and graphs, and dynamic programming will cover the large majority of what gets asked. Practicing aloud matters more than practicing more. Interviewers score communication, and candidates who solve silently frequently fail rounds they technically passed.",
       },
       {
         question: "What should a Software Engineer CV lead with?",
@@ -120,7 +120,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Responsible for developing new features for the company's main web application.",
         strong: "Shipped 14 features to a React/Node application serving 2M monthly users, including a self-serve refund flow that removed ~600 support tickets per month.",
-        why: "\"Responsible for\" describes a job description, not a person. Engineering CVs are scanned for scale (2M users), volume (14 features), and second-order effect (600 tickets). The refund flow is memorable because it connects code to a business cost.",
+        why: "\"Responsible for\" describes a job description, not a person. Engineering resumes are scanned for scale (2M users), volume (14 features), and second-order effect (600 tickets). The refund flow is memorable because it connects code to a business cost.",
       },
       {
         weak: "Improved application performance and fixed various bugs.",
@@ -133,14 +133,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Agile ceremony participation is assumed and wastes a line. Replacing it with a specific technically hard thing you coordinated shows both scope (400M rows, 4 engineers) and the outcome that mattered (no downtime).",
       },
     ],
-    coreSkills: ["Data structures & algorithms", "System design", "API design", "Relational data modelling", "Concurrency", "Testing & CI", "Debugging in production", "Code review"],
+    coreSkills: ["Data structures & algorithms", "System design", "API design", "Relational data modeling", "Concurrency", "Testing & CI", "Debugging in production", "Code review"],
     tools: ["Python", "Java", "Go", "TypeScript", "PostgreSQL", "Redis", "Kafka", "Docker", "Kubernetes", "AWS", "Terraform", "Git", "Datadog"],
     metrics: ["Requests per second served", "p95/p99 latency before and after", "Deploy frequency and lead time", "Change-failure rate", "Incident count or MTTR", "Cost per request or monthly infra spend", "Test coverage on critical paths"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Ships well-scoped tickets with review. CV should show working software, tests, and a language you can defend in depth." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns features end to end including rollout and monitoring. CV should show at least one system you were the primary owner of." },
-      { level: "Senior (5–8 yrs)", expectation: "Owns design across services and mentors. CV should show a migration or architecture change with measured before/after." },
-      { level: "Staff (8+ yrs)", expectation: "Sets direction beyond one team. CV should show org-level impact: a standard adopted, a platform others build on, or a multi-quarter technical strategy." },
+      { level: "Junior (0–2 yrs)", expectation: "Ships well-scoped tickets with review. Resume should show working software, tests, and a language you can defend in depth." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns features end to end including rollout and monitoring. Resume should show at least one system you were the primary owner of." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns design across services and mentors. Resume should show a migration or architecture change with measured before/after." },
+      { level: "Staff (8+ yrs)", expectation: "Sets direction beyond one team. Resume should show org-level impact: a standard adopted, a platform others build on, or a multi-quarter technical strategy." },
     ],
     redFlags: [
       "A skills section listing 30+ technologies. Reviewers read it as unfamiliarity with all of them.",
@@ -152,7 +152,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "frontend-developer": {
     intro:
-      "Frontend interviews have moved away from algorithm puzzles toward building something real in the browser. Expect a live component build, questions about rendering and state, and increasingly a round on accessibility and performance budgets. Hiring managers read frontend CVs for evidence you understand what happens after the component renders: bundle size, Core Web Vitals, and how the UI behaves on a slow device.",
+      "Frontend interviews have moved away from algorithm puzzles toward building something real in the browser. Expect a live component build, questions about rendering and state, and increasingly a round on accessibility and performance budgets. Hiring managers read frontend resumes for evidence you understand what happens after the component renders: bundle size, Core Web Vitals, and how the UI behaves on a slow device.",
     interviewFocus: [
       { area: "Live component build", detail: "Implementing something like a typeahead, modal, or data table in a sandbox, usually without a component library. Scored on state handling, edge cases (empty, loading, error), and whether you reach for a keyboard-accessible pattern unprompted." },
       { area: "Browser and rendering fundamentals", detail: "The event loop, reflow versus repaint, how the browser paints, and why a given interaction drops frames. This is what separates candidates who use a framework from candidates who understand one." },
@@ -185,7 +185,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does a Frontend Developer interview actually involve in 2026?",
         answer:
-          "Most loops now centre on a live build rather than algorithms: you implement a component such as a typeahead, star rating, or nested comment thread in a browser sandbox in 45–60 minutes. Around that you get a fundamentals round (event loop, rendering, CSS layout), often an accessibility or performance round, and a behavioural round. Some companies still include one algorithm screen, but it is increasingly rare for senior frontend roles.",
+          "Most loops now center on a live build rather than algorithms: you implement a component such as a typeahead, star rating, or nested comment thread in a browser sandbox in 45–60 minutes. Around that you get a fundamentals round (event loop, rendering, CSS layout), often an accessibility or performance round, and a behavioral round. Some companies still include one algorithm screen, but it is increasingly rare for senior frontend roles.",
       },
       {
         question: "How much JavaScript do I need to know beyond React?",
@@ -195,7 +195,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What belongs on a Frontend Developer CV?",
         answer:
-          "Measurable interface outcomes. Bundle size reduced, Lighthouse or Core Web Vitals scores moved, conversion or task-completion rates improved, accessibility violations closed. \"Cut LCP from 4.1s to 1.6s on the product page, lifting mobile conversion 8%\" is worth more than any list of frameworks, because it proves you connect frontend work to user behaviour. Include a link to deployed work. Frontend is one of the few roles where reviewers actually click.",
+          "Measurable interface outcomes. Bundle size reduced, Lighthouse or Core Web Vitals scores moved, conversion or task-completion rates improved, accessibility violations closed. \"Cut LCP from 4.1s to 1.6s on the product page, lifting mobile conversion 8%\" is worth more than any list of frameworks, because it proves you connect frontend work to user behavior. Include a link to deployed work. Frontend is one of the few roles where reviewers actually click.",
       },
       {
         question: "Do I need a portfolio site as a Frontend Developer?",
@@ -226,10 +226,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vite", "Webpack", "Jest", "Playwright", "Storybook", "Figma", "Lighthouse", "axe DevTools"],
     metrics: ["LCP, INP, CLS before and after", "Bundle size in KB", "Time to interactive", "Lighthouse score", "Accessibility violations closed", "Conversion or task-completion rate", "Components shipped and reused"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Builds components to spec. CV should show deployed work and comfort with a framework plus real CSS." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns features and their performance. CV should show at least one measured Core Web Vitals or bundle improvement." },
-      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and standards. CV should show a design system, a migration, or accessibility work adopted beyond one team." },
-      { level: "Lead (8+ yrs)", expectation: "Sets frontend direction. CV should show framework or tooling decisions and their organisational effect." },
+      { level: "Junior (0–2 yrs)", expectation: "Builds components to spec. Resume should show deployed work and comfort with a framework plus real CSS." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns features and their performance. Resume should show at least one measured Core Web Vitals or bundle improvement." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and standards. Resume should show a design system, a migration, or accessibility work adopted beyond one team." },
+      { level: "Lead (8+ yrs)", expectation: "Sets frontend direction. Resume should show framework or tooling decisions and their organizational effect." },
     ],
     redFlags: [
       "No link to anything deployed, which is unusual and conspicuous for this role.",
@@ -241,10 +241,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "backend-developer": {
     intro:
-      "Backend interviews concentrate on data correctness and behaviour under failure. The coding round is usually less about clever algorithms than about modelling a domain cleanly; the design round probes whether you understand consistency, idempotency, and what happens when a downstream dependency stops responding. Backend CVs are read for scale and for evidence you have operated what you built.",
+      "Backend interviews concentrate on data correctness and behavior under failure. The coding round is usually less about clever algorithms than about modeling a domain cleanly; the design round probes whether you understand consistency, idempotency, and what happens when a downstream dependency stops responding. Backend resumes are read for scale and for evidence you have operated what you built.",
     interviewFocus: [
-      { area: "API and data modelling", detail: "Designing endpoints and schemas for a described domain. Interviewers watch for normalisation judgement, index awareness, and whether your API is idempotent where it needs to be." },
-      { area: "Distributed systems behaviour", detail: "Retries, timeouts, exactly-once versus at-least-once delivery, and the failure modes each choice creates. The most common senior-level differentiator." },
+      { area: "API and data modeling", detail: "Designing endpoints and schemas for a described domain. Interviewers watch for normalization judgment, index awareness, and whether your API is idempotent where it needs to be." },
+      { area: "Distributed systems behavior", detail: "Retries, timeouts, exactly-once versus at-least-once delivery, and the failure modes each choice creates. The most common senior-level differentiator." },
       { area: "Database depth", detail: "Transactions and isolation levels, query plans, index selection, and how you would migrate a large table safely." },
       { area: "Operational maturity", detail: "How you monitor, what you alert on, and how you have handled an incident in a service you owned." },
     ],
@@ -274,7 +274,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between a Backend Developer and a Full Stack Developer interview?",
         answer:
-          "Depth versus breadth. Backend loops go deep on one axis. You may spend a full round on database isolation levels or queue semantics, and you are expected to reason precisely about failure. Full stack loops sample more widely and accept less depth in each area, but add a UI build round. If you are targeting backend roles, your CV should show a system you operated at scale rather than a broad list of layers you have touched.",
+          "Depth versus breadth. Backend loops go deep on one axis. You may spend a full round on database isolation levels or queue semantics, and you are expected to reason precisely about failure. Full stack loops sample more widely and accept less depth in each area, but add a UI build round. If you are targeting backend roles, your resume should show a system you operated at scale rather than a broad list of layers you have touched.",
       },
       {
         question: "How much do backend interviews test SQL?",
@@ -284,7 +284,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What metrics belong on a Backend Developer CV?",
         answer:
-          "Throughput, latency percentiles, data volume, and reliability. Concretely: requests per second, p95 and p99 latency before and after your change, rows or events processed, uptime or error-budget performance, and infrastructure cost. \"Processed 4B events/day\" and \"cut p99 from 800ms to 120ms\" are the two shapes of bullet that make a backend CV rank, because both imply the engineering underneath them.",
+          "Throughput, latency percentiles, data volume, and reliability. Concretely: requests per second, p95 and p99 latency before and after your change, rows or events processed, uptime or error-budget performance, and infrastructure cost. \"Processed 4B events/day\" and \"cut p99 from 800ms to 120ms\" are the two shapes of bullet that make a backend resume rank, because both imply the engineering underneath them.",
       },
       {
         question: "Do I need Kubernetes and cloud experience for backend roles?",
@@ -293,15 +293,15 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
     ],
     summaryExample:
-      "Backend engineer with 7 years building high-throughput services in Go and Python. Designed the event pipeline processing 4B events/day at 99.98% availability, and led the sharding of a 12TB Postgres cluster with no customer-visible downtime. Deep in distributed transactions, idempotency, and query optimisation.",
+      "Backend engineer with 7 years building high-throughput services in Go and Python. Designed the event pipeline processing 4B events/day at 99.98% availability, and led the sharding of a 12TB Postgres cluster with no customer-visible downtime. Deep in distributed transactions, idempotency, and query optimization.",
     bulletExamples: [
       {
         weak: "Developed REST APIs and microservices using Node.js and Express.",
         strong: "Designed and operated 6 Go microservices handling 30k RPS at p99 < 150ms, including the idempotency layer that eliminated duplicate charges during client retries.",
-        why: "Every backend CV claims REST APIs. Throughput, latency, and a named hard problem (idempotent retries preventing double charges) give the reviewer something to rank you by and an obvious thing to ask about.",
+        why: "Every backend resume claims REST APIs. Throughput, latency, and a named hard problem (idempotent retries preventing double charges) give the reviewer something to rank you by and an obvious thing to ask about.",
       },
       {
-        weak: "Optimised database queries to improve system performance.",
+        weak: "Optimized database queries to improve system performance.",
         strong: "Cut the reporting query from 42s to 900ms by replacing a correlated subquery with a lateral join and adding a covering index, unblocking same-day reporting for 300 finance users.",
         why: "Backend interviewers want the mechanism. Naming the actual technique proves you diagnosed a query plan rather than adding indexes at random, and the user count establishes why it mattered.",
       },
@@ -311,14 +311,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Migrated to the cloud\" could mean anything from a lift-and-shift to a rewrite. The data volume, the specific strategy (dual-write and backfill), and the zero-downtime constraint are what make this a senior-level bullet.",
       },
     ],
-    coreSkills: ["API design", "Relational data modelling", "SQL and query optimisation", "Distributed systems", "Caching strategies", "Message queues", "Concurrency", "Observability", "Security fundamentals"],
+    coreSkills: ["API design", "Relational data modeling", "SQL and query optimization", "Distributed systems", "Caching strategies", "Message queues", "Concurrency", "Observability", "Security fundamentals"],
     tools: ["Go", "Python", "Java", "Node.js", "PostgreSQL", "MySQL", "Redis", "Kafka", "RabbitMQ", "gRPC", "Docker", "Kubernetes", "AWS", "Terraform", "Prometheus", "Grafana"],
     metrics: ["Requests per second", "p95/p99 latency before and after", "Events or rows processed per day", "Uptime / error budget", "Database size and shard count", "Infra cost per request", "Incident count and MTTR"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Implements endpoints against an existing design. CV should show solid SQL and one language in depth." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns a service including its on-call. CV should show throughput or latency numbers you are accountable for." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs across service boundaries. CV should show a migration, sharding, or consistency problem you led." },
-      { level: "Staff (8+ yrs)", expectation: "Owns platform-level architecture. CV should show standards or infrastructure other teams build on." },
+      { level: "Junior (0–2 yrs)", expectation: "Implements endpoints against an existing design. Resume should show solid SQL and one language in depth." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a service including its on-call. Resume should show throughput or latency numbers you are accountable for." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs across service boundaries. Resume should show a migration, sharding, or consistency problem you led." },
+      { level: "Staff (8+ yrs)", expectation: "Owns platform-level architecture. Resume should show standards or infrastructure other teams build on." },
     ],
     redFlags: [
       "No numbers for scale. Backend work is judged on load, and its absence suggests low-traffic systems.",
@@ -329,12 +329,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
   },
   "full-stack-developer": {
     intro:
-      "Full stack loops sample breadth deliberately: a UI build, an API and schema design, and a round on how the two meet: auth, caching, and where validation lives. The trap is presenting as a generalist with no depth anywhere. Strong full stack CVs name one end as the deeper one and show a feature owned from schema through interface.",
+      "Full stack loops sample breadth deliberately: a UI build, an API and schema design, and a round on how the two meet: auth, caching, and where validation lives. The trap is presenting as a generalist with no depth anywhere. Strong full stack resumes name one end as the deeper one and show a feature owned from schema through interface.",
     interviewFocus: [
       { area: "End-to-end feature design", detail: "Given a feature, design the schema, the API, and the interface, and justify where each piece of logic lives. The signature full stack round." },
-      { area: "Auth and session handling", detail: "Sessions versus tokens, refresh strategies, CSRF and XSS defences, and where authorisation is enforced. Asked because it is exactly the seam full stack engineers own." },
+      { area: "Auth and session handling", detail: "Sessions versus tokens, refresh strategies, CSRF and XSS defences, and where authorization is enforced. Asked because it is exactly the seam full stack engineers own." },
       { area: "Frontend competence", detail: "A component build with real state, usually lighter than a dedicated frontend loop but still hands-on." },
-      { area: "Backend competence", detail: "Data modelling and a query or caching problem, again lighter than a specialist round but expecting correct instincts." },
+      { area: "Backend competence", detail: "Data modeling and a query or caching problem, again lighter than a specialist round but expecting correct instincts." },
     ],
     technicalQuestions: [
       "Design a commenting system with nested replies: schema, API, and rendering strategy.",
@@ -362,17 +362,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is 'full stack' still a credible title in 2026?",
         answer:
-          "Yes, and it is strongest at startups and scale-ups where owning a feature end to end is the job. It is weakest when it reads as an absence of specialisation. The way to keep it credible on a CV is to declare a centre of gravity (\"full stack, backend-leaning\") and then prove that depth with one system you owned properly, while showing the breadth through features delivered across the stack.",
+          "Yes, and it is strongest at startups and scale-ups where owning a feature end to end is the job. It is weakest when it reads as an absence of specialization. The way to keep it credible on a resume is to declare a center of gravity (\"full stack, backend-leaning\") and then prove that depth with one system you owned properly, while showing the breadth through features delivered across the stack.",
       },
       {
         question: "How do full stack interviews differ from specialist ones?",
         answer:
-          "You get sampled on more axes with less depth on each. A typical loop is one component build, one API and schema design, one round on the seam between them (auth, caching, data fetching), and a behavioural round. Specialists get one deep round instead. This means full stack candidates fail most often on the seam questions (where validation belongs, how sessions are refreshed) rather than on either end individually.",
+          "You get sampled on more axes with less depth on each. A typical loop is one component build, one API and schema design, one round on the seam between them (auth, caching, data fetching), and a behavioral round. Specialists get one deep round instead. This means full stack candidates fail most often on the seam questions (where validation belongs, how sessions are refreshed) rather than on either end individually.",
       },
       {
         question: "What should a Full Stack Developer CV emphasise?",
         answer:
-          "Features owned from database to interface, with impact stated at the product level. \"Built subscription billing end to end (Stripe integration, Postgres schema, and self-serve upgrade UI), lifting paid conversion 14%\" demonstrates the whole span in one line. Add a note about which end you are deeper in, because hiring managers are staffing a specific gap and a CV that answers that question is easier to route.",
+          "Features owned from database to interface, with impact stated at the product level. \"Built subscription billing end to end (Stripe integration, Postgres schema, and self-serve upgrade UI), lifting paid conversion 14%\" demonstrates the whole span in one line. Add a note about which end you are deeper in, because hiring managers are staffing a specific gap and a resume that answers that question is easier to route.",
       },
       {
         question: "Do full stack roles pay less than specialist roles?",
@@ -386,7 +386,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Worked on both frontend and backend development using the MERN stack.",
         strong: "Owned the subscription billing feature end to end: Postgres schema, Stripe webhook handling with idempotency, and the self-serve upgrade UI, lifting paid conversion from 3.1% to 3.5%.",
-        why: "\"Both frontend and backend\" is the claim every full stack CV makes. Walking one feature through all three layers proves the span concretely, and the idempotency detail signals real depth rather than tutorial familiarity.",
+        why: "\"Both frontend and backend\" is the claim every full stack resume makes. Walking one feature through all three layers proves the span concretely, and the idempotency detail signals real depth rather than tutorial familiarity.",
       },
       {
         weak: "Built and maintained web applications for various clients.",
@@ -396,29 +396,29 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Used AWS for deployment and hosting of applications.",
         strong: "Moved deploys from manual EC2 uploads to a Terraform-defined ECS pipeline with GitHub Actions, cutting release time from 2 hours to 9 minutes and enabling daily releases.",
-        why: "Naming a cloud provider is not an achievement. The before/after on release time, and the behaviour it unlocked (daily releases), turn infrastructure familiarity into a measurable outcome.",
+        why: "Naming a cloud provider is not an achievement. The before/after on release time, and the behavior it unlocked (daily releases), turn infrastructure familiarity into a measurable outcome.",
       },
     ],
-    coreSkills: ["API design", "Relational data modelling", "React / component architecture", "Authentication & authorisation", "Caching", "Testing across layers", "Deployment pipelines", "Debugging across the stack"],
+    coreSkills: ["API design", "Relational data modeling", "React / component architecture", "Authentication & authorization", "Caching", "Testing across layers", "Deployment pipelines", "Debugging across the stack"],
     tools: ["TypeScript", "React", "Next.js", "Node.js", "Python", "PostgreSQL", "Redis", "Prisma", "Docker", "AWS", "Vercel", "GitHub Actions", "Stripe"],
     metrics: ["Features shipped end to end", "Conversion or activation lift", "p95 latency", "Users or tenants served", "Release frequency and lead time", "Cost saved or manual hours removed"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Builds within an existing app across layers. CV should show one deployed full-stack project you can explain completely." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns features end to end. CV should show a feature from schema to UI with a product metric attached." },
-      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and makes build/buy calls. CV should show a system design decision and its consequences." },
-      { level: "Lead (8+ yrs)", expectation: "Sets technical direction and often hires. CV should show team-level and product-level outcomes together." },
+      { level: "Junior (0–2 yrs)", expectation: "Builds within an existing app across layers. Resume should show one deployed full-stack project you can explain completely." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns features end to end. Resume should show a feature from schema to UI with a product metric attached." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and makes build/buy calls. Resume should show a system design decision and its consequences." },
+      { level: "Lead (8+ yrs)", expectation: "Sets technical direction and often hires. Resume should show team-level and product-level outcomes together." },
     ],
     redFlags: [
-      "Equal-weight claims across ten technologies with no stated centre of gravity.",
+      "Equal-weight claims across ten technologies with no stated center of gravity.",
       "No end-to-end feature described, only layer-specific tasks.",
       "'MERN stack' or similar acronym used as the main qualification.",
-      "No product metric anywhere, which is the main advantage full stack CVs have available.",
+      "No product metric anywhere, which is the main advantage full stack resumes have available.",
     ],
   },
 
   "devops-engineer": {
     intro:
-      "DevOps interviews test whether you can make delivery fast and failure survivable. Expect a scenario-based round on debugging a broken pipeline or a degraded cluster, an infrastructure-as-code exercise, and detailed questions about your incident history. Hiring managers read these CVs for DORA-style metrics: how often you deploy, how long changes take, how often they fail, and how fast you recover.",
+      "DevOps interviews test whether you can make delivery fast and failure survivable. Expect a scenario-based round on debugging a broken pipeline or a degraded cluster, an infrastructure-as-code exercise, and detailed questions about your incident history. Hiring managers read these resumes for DORA-style metrics: how often you deploy, how long changes take, how often they fail, and how fast you recover.",
     interviewFocus: [
       { area: "Live troubleshooting", detail: "A described outage (pods crash-looping, a pipeline failing intermittently, disk filling) where you narrate your diagnostic path. The highest-signal round." },
       { area: "Infrastructure as code", detail: "Writing or reviewing Terraform, covering state management, module structure, and how you avoid drift and destructive plans." },
@@ -466,7 +466,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is DevOps Engineer the same as SRE?",
         answer:
-          "They overlap heavily but weight differently. DevOps roles centre on delivery (pipelines, infrastructure as code, developer experience) and are measured on how fast and safely teams ship. SRE roles centre on reliability of running systems, formalised through SLOs and error budgets, and typically involve more software engineering and more on-call. Interview loops reflect this: SRE loops include more coding, DevOps loops more tooling and pipeline design.",
+          "They overlap heavily but weight differently. DevOps roles center on delivery (pipelines, infrastructure as code, developer experience) and are measured on how fast and safely teams ship. SRE roles center on reliability of running systems, formalised through SLOs and error budgets, and typically involve more software engineering and more on-call. Interview loops reflect this: SRE loops include more coding, DevOps loops more tooling and pipeline design.",
       },
     ],
     summaryExample:
@@ -478,24 +478,24 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Managed pipelines\" is the role's baseline. The migration scope (30 pipelines), the time saved, and the deployment-frequency change tie the work to the metric the discipline is actually judged on.",
       },
       {
-        weak: "Responsible for cloud infrastructure and cost optimisation on AWS.",
+        weak: "Responsible for cloud infrastructure and cost optimization on AWS.",
         strong: "Cut AWS spend 34% ($780k/yr) by rightsizing 200 over-provisioned instances, moving batch workloads to spot, and adding per-team cost alerting, with no SLO regression.",
         why: "Cost bullets are only credible with the reliability caveat attached. Naming the three mechanisms and the absolute saving shows the analysis, and \"no SLO regression\" pre-empts the obvious interview challenge.",
       },
       {
         weak: "Monitored systems and responded to incidents as part of the on-call rotation.",
         strong: "Cut MTTR from 47 to 12 minutes by replacing 140 threshold alerts with 18 SLO-based ones and adding runbook links to every page, reducing after-hours pages ~70%.",
-        why: "Being on-call is participation, not achievement. The alert reduction shows judgement about signal versus noise, and MTTR plus after-hours page volume are the two numbers a hiring manager can immediately compare across candidates.",
+        why: "Being on-call is participation, not achievement. The alert reduction shows judgment about signal versus noise, and MTTR plus after-hours page volume are the two numbers a hiring manager can immediately compare across candidates.",
       },
     ],
     coreSkills: ["Infrastructure as code", "Kubernetes operations", "CI/CD design", "Observability & alerting", "Incident response", "Cloud cost management", "Linux & networking", "Scripting & automation", "Secrets management"],
     tools: ["Terraform", "Kubernetes", "Docker", "AWS", "Azure", "GCP", "GitHub Actions", "Jenkins", "ArgoCD", "Helm", "Prometheus", "Grafana", "Datadog", "Ansible", "Vault", "Bash", "Python"],
     metrics: ["Deployment frequency", "Lead time for change", "Change-failure rate", "MTTR", "Uptime against SLO", "Cloud spend reduced", "Pipeline duration", "Alert volume and page frequency"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Maintains pipelines and runs scripted changes. CV should show Linux fluency and one cloud platform." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns infrastructure for a product area. CV should show IaC ownership and DORA movement." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs platform-wide systems. CV should show a migration, an SLO practice, or major cost work." },
-      { level: "Lead / Principal (8+ yrs)", expectation: "Sets reliability and delivery strategy. CV should show org-wide standards and their measured effect." },
+      { level: "Junior (0–2 yrs)", expectation: "Maintains pipelines and runs scripted changes. Resume should show Linux fluency and one cloud platform." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns infrastructure for a product area. Resume should show IaC ownership and DORA movement." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs platform-wide systems. Resume should show a migration, an SLO practice, or major cost work." },
+      { level: "Lead / Principal (8+ yrs)", expectation: "Sets reliability and delivery strategy. Resume should show org-wide standards and their measured effect." },
     ],
     redFlags: [
       "Tool lists with no metrics. DevOps is one of the most quantifiable disciplines, so their absence stands out.",
@@ -507,7 +507,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "qa-engineer": {
     intro:
-      "QA interviews have shifted decisively toward automation and toward judgement about what not to test. Expect to design a test strategy for a described feature, write automation against a real page or API, and answer questions about flakiness, the single most discussed problem in the discipline. QA CVs are read for escaped-defect rates and pipeline reliability, not for counts of test cases written.",
+      "QA interviews have shifted decisively toward automation and toward judgment about what not to test. Expect to design a test strategy for a described feature, write automation against a real page or API, and answer questions about flakiness, the single most discussed problem in the discipline. QA resumes are read for escaped-defect rates and pipeline reliability, not for counts of test cases written.",
     interviewFocus: [
       { area: "Test strategy design", detail: "Given a feature, decide what to test at unit, integration, and end-to-end level and justify the split. Interviewers look for a pyramid instinct and for explicit decisions about what you would not automate." },
       { area: "Automation implementation", detail: "Writing a Playwright, Cypress, or Selenium test, usually including a selector strategy and a wait strategy. Flaky-by-construction solutions are the common failure." },
@@ -540,7 +540,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is manual QA still hireable, or is everything automation now?",
         answer:
-          "Manual-only roles have contracted sharply, but exploratory testing skill remains valued. It is the part automation cannot replicate. The realistic position is hybrid: you are expected to write and maintain automation while bringing the judgement that finds bugs no scripted test would. If your experience is manual-only, the highest-leverage move is shipping a small Playwright or Cypress suite you can discuss in detail, since interviews now almost always include a hands-on round.",
+          "Manual-only roles have contracted sharply, but exploratory testing skill remains valued. It is the part automation cannot replicate. The realistic position is hybrid: you are expected to write and maintain automation while bringing the judgment that finds bugs no scripted test would. If your experience is manual-only, the highest-leverage move is shipping a small Playwright or Cypress suite you can discuss in detail, since interviews now almost always include a hands-on round.",
       },
       {
         question: "What metrics should a QA Engineer CV show?",
@@ -550,7 +550,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How do I answer the flaky test question well?",
         answer:
-          "Show a systematic process rather than a fix. Strong answers quarantine the flaky test immediately so the suite stays trustworthy, then categorise the cause: timing and implicit waits, test interdependence, shared mutable state, environment differences, genuine race conditions in the product. The point worth making explicitly is that some flakes are real bugs surfacing under timing pressure, and that treating every flake as a test problem is how genuine race conditions reach production.",
+          "Show a systematic process rather than a fix. Strong answers quarantine the flaky test immediately so the suite stays trustworthy, then categorize the cause: timing and implicit waits, test interdependence, shared mutable state, environment differences, genuine race conditions in the product. The point worth making explicitly is that some flakes are real bugs surfacing under timing pressure, and that treating every flake as a test problem is how genuine race conditions reach production.",
       },
       {
         question: "What is the career path from QA Engineer?",
@@ -574,17 +574,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Improved test automation coverage and maintained the test suite.",
         strong: "Cut suite flake rate from 12% to 0.8% by replacing implicit waits with deterministic network interception and isolating shared fixtures, ending the team's practice of re-running failed builds.",
-        why: "\"Improved coverage\" invites the question of whether coverage was the right target. Naming flake rate, the two specific causes fixed, and the team behaviour that stopped shows you understood the real problem: trust in the suite.",
+        why: "\"Improved coverage\" invites the question of whether coverage was the right target. Naming flake rate, the two specific causes fixed, and the team behavior that stopped shows you understood the real problem: trust in the suite.",
       },
     ],
     coreSkills: ["Test strategy & risk analysis", "Test automation", "Exploratory testing", "API testing", "Defect isolation & reporting", "CI integration", "Performance testing basics", "Accessibility testing"],
     tools: ["Playwright", "Cypress", "Selenium", "Jest", "Pytest", "Postman", "REST Assured", "k6", "JMeter", "Jira", "TestRail", "GitHub Actions", "BrowserStack"],
     metrics: ["Escaped defects per release", "Defect detection percentage", "Regression cycle time", "Suite runtime", "Flake rate", "Automation coverage of critical paths", "Release frequency enabled"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Executes and extends existing tests. CV should show one automation framework used properly." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns automation for a product area. CV should show cycle-time or defect-rate movement." },
-      { level: "Senior / SDET (5–8 yrs)", expectation: "Designs frameworks and quality strategy. CV should show a framework migration or a shift-left initiative." },
-      { level: "Lead (8+ yrs)", expectation: "Owns quality across teams. CV should show organisational quality metrics and the practices behind them." },
+      { level: "Junior (0–2 yrs)", expectation: "Executes and extends existing tests. Resume should show one automation framework used properly." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns automation for a product area. Resume should show cycle-time or defect-rate movement." },
+      { level: "Senior / SDET (5–8 yrs)", expectation: "Designs frameworks and quality strategy. Resume should show a framework migration or a shift-left initiative." },
+      { level: "Lead (8+ yrs)", expectation: "Owns quality across teams. Resume should show organizational quality metrics and the practices behind them." },
     ],
     redFlags: [
       "Counts of test cases written or bugs logged as headline achievements. These measure activity, not quality.",
@@ -598,12 +598,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "data-scientist": {
     intro:
-      "Data Scientist loops test statistical judgement more than modelling technique. The rounds that fail candidates are the case study (where you must translate a vague business question into a measurable one) and the experimentation round, where interviewers probe whether you understand what an A/B test can and cannot tell you. Modelling questions are usually shallower than candidates expect and focus on evaluation choices rather than architectures.",
+      "Data Scientist loops test statistical judgment more than modeling technique. The rounds that fail candidates are the case study (where you must translate a vague business question into a measurable one) and the experimentation round, where interviewers probe whether you understand what an A/B test can and cannot tell you. Modeling questions are usually shallower than candidates expect and focus on evaluation choices rather than architectures.",
     interviewFocus: [
       { area: "Business case framing", detail: "Given a vague prompt (\"engagement is down\"), define the metric, form hypotheses, and state what data would distinguish them. The highest-weighted round at most companies." },
       { area: "Statistics and experimentation", detail: "A/B test design, power and sample size, p-values and their misinterpretation, multiple comparisons, and novelty effects. Interviewers commonly ask you to critique a flawed experiment." },
       { area: "SQL and data manipulation", detail: "Window functions, cohort queries, and joins against a realistic schema. Almost always a standalone round." },
-      { area: "Modelling judgement", detail: "Choosing and defending an evaluation metric, handling class imbalance, explaining why a model is failing in production." },
+      { area: "Modeling judgment", detail: "Choosing and defending an evaluation metric, handling class imbalance, explaining why a model is failing in production." },
     ],
     technicalQuestions: [
       "Daily active users dropped 8% week over week. How do you find out why?",
@@ -623,7 +623,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     questionsToAsk: [
       "How are experiments run here? Is there a platform, and who decides what ships?",
-      "How often do models make it to production versus staying as analyses?",
+      "How often do models make it to production versus staying as analyzes?",
       "Who owns the data pipelines the science team depends on?",
       "How is data science success measured on this team?",
     ],
@@ -631,7 +631,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the hardest round in a Data Scientist interview?",
         answer:
-          "The business case. You are given something deliberately vague (\"retention dropped, find out why\") and scored on how you decompose it: segmenting to localise the change, separating seasonality from a real shift, distinguishing a data-collection bug from a product regression, and stating what evidence would confirm each hypothesis. Candidates who jump straight to modelling fail this round. Interviewers are testing whether you would spend three weeks on the right question or the wrong one.",
+          "The business case. You are given something deliberately vague (\"retention dropped, find out why\") and scored on how you decompose it: segmenting to localize the change, separating seasonality from a real shift, distinguishing a data-collection bug from a product regression, and stating what evidence would confirm each hypothesis. Candidates who jump straight to modeling fail this round. Interviewers are testing whether you would spend three weeks on the right question or the wrong one.",
       },
       {
         question: "How much SQL do Data Scientists need?",
@@ -641,7 +641,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Data Scientist versus Machine Learning Engineer: which should I apply for?",
         answer:
-          "Data Scientists answer questions; ML Engineers ship systems. If your strength is experimentation, causal reasoning, and communicating findings that change decisions, target Data Scientist. If it is training pipelines, serving infrastructure, latency, and model monitoring in production, target ML Engineer. The interviews differ accordingly. DS loops weight statistics and case studies, MLE loops weight system design and coding. Applying to both with one CV usually reads as unfocused to each.",
+          "Data Scientists answer questions; ML Engineers ship systems. If your strength is experimentation, causal reasoning, and communicating findings that change decisions, target Data Scientist. If it is training pipelines, serving infrastructure, latency, and model monitoring in production, target ML Engineer. The interviews differ accordingly. DS loops weight statistics and case studies, MLE loops weight system design and coding. Applying to both with one resume usually reads as unfocused to each.",
       },
       {
         question: "What should a Data Scientist CV show?",
@@ -665,29 +665,29 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Used A/B testing to evaluate new product features.",
         strong: "Rebuilt the A/B framework with sequential testing and pre-registered hypotheses, cutting average test duration 40% and reducing false-positive launches: 3 of 11 prior 'wins' failed to replicate.",
-        why: "Running A/B tests is table stakes. Improving how an organisation experiments is a senior contribution, and the replication failure is a concrete, memorable detail that proves methodological depth.",
+        why: "Running A/B tests is table stakes. Improving how an organization experiments is a senior contribution, and the replication failure is a concrete, memorable detail that proves methodological depth.",
       },
     ],
-    coreSkills: ["Experiment design & causal inference", "Statistical modelling", "SQL", "Python (pandas, scikit-learn)", "Feature engineering", "Model evaluation", "Data storytelling", "Stakeholder communication"],
+    coreSkills: ["Experiment design & causal inference", "Statistical modeling", "SQL", "Python (pandas, scikit-learn)", "Feature engineering", "Model evaluation", "Data storytelling", "Stakeholder communication"],
     tools: ["Python", "SQL", "pandas", "scikit-learn", "PyTorch", "dbt", "Snowflake", "BigQuery", "Airflow", "Tableau", "Looker", "Jupyter", "Git"],
     metrics: ["Business metric moved (revenue, churn, conversion)", "Model performance (AUC, precision/recall at k)", "Experiment velocity / time-to-decision", "Population size affected", "Dollar value of the decision", "Forecast error reduction"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Runs defined analyses. CV should show strong SQL and one project with a clear conclusion." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns a product area's measurement. CV should show a decision your analysis changed." },
-      { level: "Senior (5–8 yrs)", expectation: "Sets measurement strategy. CV should show experimentation practice improvements, not just experiments run." },
-      { level: "Staff / Principal (8+ yrs)", expectation: "Influences company-level strategy. CV should show cross-org methodology and its measured effect." },
+      { level: "Junior (0–2 yrs)", expectation: "Runs defined analyses. Resume should show strong SQL and one project with a clear conclusion." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a product area's measurement. Resume should show a decision your analysis changed." },
+      { level: "Senior (5–8 yrs)", expectation: "Sets measurement strategy. Resume should show experimentation practice improvements, not just experiments run." },
+      { level: "Staff / Principal (8+ yrs)", expectation: "Influences company-level strategy. Resume should show cross-org methodology and its measured effect." },
     ],
     redFlags: [
-      "Kaggle rankings or coursework leading the CV ahead of applied work.",
+      "Kaggle rankings or coursework leading the resume ahead of applied work.",
       "Model accuracy quoted with no business metric attached.",
-      "Long algorithm lists: assumed knowledge that displaces evidence of judgement.",
+      "Long algorithm lists: assumed knowledge that displaces evidence of judgment.",
       "No mention of experimentation or causal reasoning anywhere.",
     ],
   },
 
   "data-analyst": {
     intro:
-      "Data Analyst interviews are dominated by SQL and by the ability to turn a number into a recommendation. Nearly every loop includes a live SQL round, a case study where you interpret a metric movement, and a communication round where you present findings to a non-technical stakeholder. The CVs that succeed show decisions influenced, not dashboards delivered.",
+      "Data Analyst interviews are dominated by SQL and by the ability to turn a number into a recommendation. Nearly every loop includes a live SQL round, a case study where you interpret a metric movement, and a communication round where you present findings to a non-technical stakeholder. The resumes that succeed show decisions influenced, not dashboards delivered.",
     interviewFocus: [
       { area: "Live SQL", detail: "Writing queries against an unfamiliar schema: joins, aggregations, window functions, cohort and funnel logic. The most common elimination round in the discipline." },
       { area: "Metric interpretation", detail: "Given a chart or a metric change, explain plausible causes and what you would check. Interviewers test whether you consider seasonality, mix shift, and instrumentation before product causes." },
@@ -701,7 +701,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "How would you define 'active user' for a product used weekly rather than daily?",
       "Write a query to find the top 3 products per category by revenue.",
       "A dashboard number disagrees with finance's number. How do you reconcile them?",
-      "How do you detect whether a metric change is real or an instrumentation artefact?",
+      "How do you detect whether a metric change is real or an instrumentation artifact?",
     ],
     behaviouralQuestions: [
       "Tell me about a finding that changed what your team decided to do.",
@@ -712,7 +712,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     questionsToAsk: [
       "Who defines metrics here, and is there a single source of truth?",
-      "How much of the role is ad-hoc requests versus longer analyses?",
+      "How much of the role is ad-hoc requests versus longer analyzes?",
       "What is the state of data quality and documentation?",
       "How do analysts' findings actually reach decisions?",
     ],
@@ -720,17 +720,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How hard is the SQL round in a Data Analyst interview?",
         answer:
-          "Harder than most candidates prepare for, because it is timed and against an unfamiliar schema. The recurring asks are cohort retention, funnel conversion by step, top-N per group using a window function, and running totals or period-over-period comparisons. Interviewers watch whether you clarify the schema before writing and whether you sanity-check your own output. Practising these five query shapes until they are automatic covers the large majority of what is asked.",
+          "Harder than most candidates prepare for, because it is timed and against an unfamiliar schema. The recurring asks are cohort retention, funnel conversion by step, top-N per group using a window function, and running totals or period-over-period comparisons. Interviewers watch whether you clarify the schema before writing and whether you sanity-check your own output. Practicing these five query shapes until they are automatic covers the large majority of what is asked.",
       },
       {
         question: "What separates a Data Analyst from a Data Scientist?",
         answer:
-          "Analysts describe and diagnose what happened; scientists predict and establish causality. Analyst work centres on SQL, BI tooling, metric definition, and stakeholder communication, with statistics used mostly for significance and sizing. Scientist work adds experimental design, causal inference, and modelling. In practice the boundary varies by company (at smaller organisations one analyst does both), but the interviews differ sharply, so target the loop you can pass.",
+          "Analysts describe and diagnose what happened; scientists predict and establish causality. Analyst work centers on SQL, BI tooling, metric definition, and stakeholder communication, with statistics used mostly for significance and sizing. Scientist work adds experimental design, causal inference, and modeling. In practice the boundary varies by company (at smaller organizations one analyst does both), but the interviews differ sharply, so target the loop you can pass.",
       },
       {
         question: "What belongs on a Data Analyst CV?",
         answer:
-          "The decision each analysis produced. \"Identified that 31% of signup drop-off came from one verification step; removing it lifted completed signups 22%\" is the shape that works, because it names the finding, the action, and the result. Also state the scale you worked at (rows, users, revenue covered) and the tools, but keep tooling brief. Listing dashboards built without saying what changed is the most common weakness in this discipline's CVs.",
+          "The decision each analysis produced. \"Identified that 31% of signup drop-off came from one verification step; removing it lifted completed signups 22%\" is the shape that works, because it names the finding, the action, and the result. Also state the scale you worked at (rows, users, revenue covered) and the tools, but keep tooling brief. Listing dashboards built without saying what changed is the most common weakness in this discipline's resumes.",
       },
       {
         question: "Do I need Python for Data Analyst roles?",
@@ -744,12 +744,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Created dashboards in Tableau to track key business metrics.",
         strong: "Replaced 23 overlapping Tableau dashboards with 4 role-based views built on a governed dbt metric layer, ending recurring disputes between marketing and finance over revenue figures.",
-        why: "Dashboard counts measure output, not value. Consolidation plus a governed metric layer solves the actual organisational problem (disagreement about the numbers), which is the outcome a hiring manager recognises.",
+        why: "Dashboard counts measure output, not value. Consolidation plus a governed metric layer solves the actual organizational problem (disagreement about the numbers), which is the outcome a hiring manager recognizes.",
       },
       {
-        weak: "Analysed customer data to identify trends and provide insights.",
-        strong: "Segmented 2.4M customers by purchase recency and category mix, identifying a 6% cohort generating 38% of margin; the resulting retention programme lifted repeat rate 11 points.",
-        why: "\"Insights\" is the least informative word available in this field. The population size, the specific finding, and the programme it justified turn the same work into something rankable.",
+        weak: "Analyzed customer data to identify trends and provide insights.",
+        strong: "Segmented 2.4M customers by purchase recency and category mix, identifying a 6% cohort generating 38% of margin; the resulting retention program lifted repeat rate 11 points.",
+        why: "\"Insights\" is the least informative word available in this field. The population size, the specific finding, and the program it justified turn the same work into something rankable.",
       },
       {
         weak: "Wrote SQL queries to extract data for various business teams.",
@@ -757,14 +757,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Ad-hoc query work is the role's default. Converting recurring demand into self-serve capacity is the leverage move, and the hours saved make it measurable.",
       },
     ],
-    coreSkills: ["SQL", "Metric definition", "Cohort & funnel analysis", "Data visualisation", "Statistical significance testing", "Stakeholder communication", "Data quality investigation", "Spreadsheet modelling"],
+    coreSkills: ["SQL", "Metric definition", "Cohort & funnel analysis", "Data visualization", "Statistical significance testing", "Stakeholder communication", "Data quality investigation", "Spreadsheet modeling"],
     tools: ["SQL", "Tableau", "Looker", "Power BI", "dbt", "BigQuery", "Snowflake", "Excel", "Python (pandas)", "Google Analytics", "Amplitude"],
-    metrics: ["Business metric influenced", "Rows / users analysed", "Analyst hours saved through automation", "Reporting turnaround time", "Adoption of dashboards built", "Revenue or cost impact of findings"],
+    metrics: ["Business metric influenced", "Rows / users analyzed", "Analyst hours saved through automation", "Reporting turnaround time", "Adoption of dashboards built", "Revenue or cost impact of findings"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Fulfils defined requests. CV should show solid SQL and one analysis with a conclusion." },
-      { level: "Mid (2–4 yrs)", expectation: "Owns a business area's reporting. CV should show a decision your work changed." },
-      { level: "Senior (4–7 yrs)", expectation: "Defines metrics and mentors. CV should show metric governance or self-serve enablement." },
-      { level: "Lead (7+ yrs)", expectation: "Owns analytics strategy. CV should show org-level measurement changes." },
+      { level: "Junior (0–2 yrs)", expectation: "Fulfils defined requests. Resume should show solid SQL and one analysis with a conclusion." },
+      { level: "Mid (2–4 yrs)", expectation: "Owns a business area's reporting. Resume should show a decision your work changed." },
+      { level: "Senior (4–7 yrs)", expectation: "Defines metrics and mentors. Resume should show metric governance or self-serve enablement." },
+      { level: "Lead (7+ yrs)", expectation: "Owns analytics strategy. Resume should show org-level measurement changes." },
     ],
     redFlags: [
       "Dashboards built quoted as the headline achievement with no adoption or decision attached.",
@@ -776,10 +776,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "data-engineer": {
     intro:
-      "Data Engineering interviews centre on pipeline design and on what happens when a pipeline fails halfway. Expect a data modelling round, a pipeline architecture round covering batch versus streaming, and detailed SQL. The distinguishing senior signal is how you handle idempotency, backfills, and late-arriving data, the problems that separate people who have operated pipelines from people who have written them.",
+      "Data Engineering interviews center on pipeline design and on what happens when a pipeline fails halfway. Expect a data modeling round, a pipeline architecture round covering batch versus streaming, and detailed SQL. The distinguishing senior signal is how you handle idempotency, backfills, and late-arriving data, the problems that separate people who have operated pipelines from people who have written them.",
     interviewFocus: [
       { area: "Pipeline architecture", detail: "Designing ingestion through to serving for a described source, choosing batch or streaming, and justifying the orchestration and storage layers." },
-      { area: "Data modelling", detail: "Star schemas, slowly changing dimensions, normalisation trade-offs, and partitioning strategy for query performance and cost." },
+      { area: "Data modeling", detail: "Star schemas, slowly changing dimensions, normalization trade-offs, and partitioning strategy for query performance and cost." },
       { area: "Failure semantics", detail: "Idempotent writes, exactly-once processing, backfill strategy, and handling late or out-of-order events. The senior differentiator." },
       { area: "SQL and performance", detail: "Complex transformations plus cost and performance tuning on a warehouse: partition pruning, clustering, and why a query scanned 4TB." },
     ],
@@ -824,7 +824,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is Data Engineer a good move from Data Analyst?",
         answer:
-          "It is one of the most common and successful transitions, because the SQL foundation transfers directly and analysts already understand what consumers need. The gap to close is software engineering practice: version control, testing, orchestration, and infrastructure. Analytics engineering (dbt-centred modelling work) is the natural intermediate step, and many people find it is the destination rather than a waypoint.",
+          "It is one of the most common and successful transitions, because the SQL foundation transfers directly and analysts already understand what consumers need. The gap to close is software engineering practice: version control, testing, orchestration, and infrastructure. Analytics engineering (dbt-centered modeling work) is the natural intermediate step, and many people find it is the destination rather than a waypoint.",
       },
     ],
     summaryExample:
@@ -838,7 +838,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Worked with big data technologies to process large datasets.",
         strong: "Migrated 40TB of nightly Spark batch processing to incremental dbt models on BigQuery, cutting pipeline runtime from 6 hours to 35 minutes and warehouse spend 45% ($310k/yr).",
-        why: "\"Big data\" and \"large datasets\" are unmeasured. The volume, the architectural change, and the runtime and cost figures make the same project concrete and show judgement about when Spark is unnecessary.",
+        why: "\"Big data\" and \"large datasets\" are unmeasured. The volume, the architectural change, and the runtime and cost figures make the same project concrete and show judgment about when Spark is unnecessary.",
       },
       {
         weak: "Ensured data quality and reliability across the data platform.",
@@ -846,14 +846,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Ensured quality\" is an intention. The test count, the coverage, and above all the shift from stakeholders finding problems to systems finding them is the concrete change in how the platform operates.",
       },
     ],
-    coreSkills: ["Pipeline architecture", "Dimensional data modelling", "SQL & query optimisation", "Batch and stream processing", "Orchestration", "Data quality testing", "Warehouse cost management", "Schema evolution"],
+    coreSkills: ["Pipeline architecture", "Dimensional data modeling", "SQL & query optimization", "Batch and stream processing", "Orchestration", "Data quality testing", "Warehouse cost management", "Schema evolution"],
     tools: ["Python", "SQL", "Airflow", "dbt", "Spark", "Kafka", "Snowflake", "BigQuery", "Redshift", "Databricks", "Terraform", "AWS", "GCP"],
     metrics: ["Events / rows processed per day", "Data volume under management", "Freshness lag and SLA attainment", "Pipeline runtime", "Warehouse cost reduced", "Downstream consumers served", "Data incidents and time to detection"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Maintains existing pipelines. CV should show SQL plus Python and one orchestrator." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns pipelines end to end including on-call. CV should show volume and freshness numbers." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs platform architecture. CV should show a migration or a major cost/reliability change." },
-      { level: "Staff (8+ yrs)", expectation: "Sets data platform strategy. CV should show contracts, governance, or standards adopted org-wide." },
+      { level: "Junior (0–2 yrs)", expectation: "Maintains existing pipelines. Resume should show SQL plus Python and one orchestrator." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns pipelines end to end including on-call. Resume should show volume and freshness numbers." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs platform architecture. Resume should show a migration or a major cost/reliability change." },
+      { level: "Staff (8+ yrs)", expectation: "Sets data platform strategy. Resume should show contracts, governance, or standards adopted org-wide." },
     ],
     redFlags: [
       "'Big data' claimed with no volumes attached.",
@@ -865,12 +865,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "machine-learning-engineer": {
     intro:
-      "ML Engineer loops are closer to software engineering interviews than to data science ones. Expect a coding round, an ML system design round covering training and serving infrastructure, and questions about what happens to a model after deployment: drift, retraining, rollback. Candidates who prepare only modelling theory and not systems consistently underperform here.",
+      "ML Engineer loops are closer to software engineering interviews than to data science ones. Expect a coding round, an ML system design round covering training and serving infrastructure, and questions about what happens to a model after deployment: drift, retraining, rollback. Candidates who prepare only modeling theory and not systems consistently underperform here.",
     interviewFocus: [
       { area: "ML system design", detail: "Designing an end-to-end system (feature pipeline, training, evaluation, serving, monitoring) for a described product need. The defining round." },
       { area: "Production ML operations", detail: "Detecting drift, deciding retraining cadence, shadow deployment and rollback, and reproducing a training run months later." },
       { area: "Coding", detail: "Standard software engineering problems plus occasionally implementing a component (a metric, a sampler, an attention step) from scratch." },
-      { area: "Modelling depth", detail: "Evaluation metric selection, overfitting diagnosis, and trade-offs between model complexity and serving latency." },
+      { area: "Modeling depth", detail: "Evaluation metric selection, overfitting diagnosis, and trade-offs between model complexity and serving latency." },
     ],
     technicalQuestions: [
       "Design a real-time recommendation system serving 10k requests/second at p99 under 100ms.",
@@ -898,7 +898,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How is an ML Engineer interview different from a Data Scientist interview?",
         answer:
-          "It is a software engineering loop with ML content. You get a standard coding round, an ML system design round about feature pipelines and serving infrastructure, and questions about production concerns: drift, retraining, rollback, reproducibility. Data Science loops instead weight statistics, experimentation, and business case framing. Candidates who prepare modelling theory alone typically fail ML Engineer loops on the systems rounds, which carry the most weight.",
+          "It is a software engineering loop with ML content. You get a standard coding round, an ML system design round about feature pipelines and serving infrastructure, and questions about production concerns: drift, retraining, rollback, reproducibility. Data Science loops instead weight statistics, experimentation, and business case framing. Candidates who prepare modeling theory alone typically fail ML Engineer loops on the systems rounds, which carry the most weight.",
       },
       {
         question: "What is the most common ML system design mistake in interviews?",
@@ -913,14 +913,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What should an ML Engineer CV show?",
         answer:
-          "Models in production and the systems around them. State the serving scale (requests per second, latency percentile), the business metric moved, and the operational maturity: retraining cadence, monitoring, rollback. \"Deployed a ranking model serving 10k RPS at p99 62ms, lifting click-through 14%, with automated weekly retraining and drift alerting\" covers modelling, systems, and impact together, which is exactly the combination the role is hired for.",
+          "Models in production and the systems around them. State the serving scale (requests per second, latency percentile), the business metric moved, and the operational maturity: retraining cadence, monitoring, rollback. \"Deployed a ranking model serving 10k RPS at p99 62ms, lifting click-through 14%, with automated weekly retraining and drift alerting\" covers modeling, systems, and impact together, which is exactly the combination the role is hired for.",
       },
     ],
     summaryExample:
       "ML engineer with 5 years shipping ranking and fraud models to production. Built the feature store and serving stack behind a recommendation model handling 10k RPS at p99 62ms, lifting click-through 14%. Owns retraining automation, drift monitoring, and rollback for 12 production models.",
     bulletExamples: [
       {
-        weak: "Developed machine learning models for recommendation and personalisation.",
+        weak: "Developed machine learning models for recommendation and personalization.",
         strong: "Shipped a two-tower retrieval model serving 10k RPS at p99 62ms, lifting click-through 14% and session length 8% against a collaborative-filtering baseline.",
         why: "Model development without serving numbers reads as prototype work. The architecture, the throughput and latency, the lift, and the named baseline together prove the model reached and survived production.",
       },
@@ -935,14 +935,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Productionise\" hides the actual engineering. Naming training-serving skew and quantifying the degradation it caused demonstrates you understand the field's most common production failure and fixed it structurally.",
       },
     ],
-    coreSkills: ["ML system design", "Feature engineering & feature stores", "Model serving & optimisation", "Drift detection & monitoring", "Distributed training", "Software engineering practice", "Experiment design", "MLOps tooling"],
+    coreSkills: ["ML system design", "Feature engineering & feature stores", "Model serving & optimization", "Drift detection & monitoring", "Distributed training", "Software engineering practice", "Experiment design", "MLOps tooling"],
     tools: ["Python", "PyTorch", "TensorFlow", "scikit-learn", "MLflow", "Kubeflow", "Ray", "Feast", "Docker", "Kubernetes", "Airflow", "AWS SageMaker", "Triton", "ONNX"],
     metrics: ["Serving throughput and p99 latency", "Business metric lift from the model", "Model quality vs named baseline", "Retraining cadence and automation", "Models in production owned", "Inference cost per 1k predictions", "Time from prototype to production"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Trains models against existing pipelines. CV should show one model that reached production." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns a model end to end including serving. CV should show latency and business lift." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs ML platform components. CV should show a feature store, serving stack, or retraining system." },
-      { level: "Staff (8+ yrs)", expectation: "Sets ML infrastructure strategy. CV should show platform work multiple teams depend on." },
+      { level: "Junior (0–2 yrs)", expectation: "Trains models against existing pipelines. Resume should show one model that reached production." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a model end to end including serving. Resume should show latency and business lift." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs ML platform components. Resume should show a feature store, serving stack, or retraining system." },
+      { level: "Staff (8+ yrs)", expectation: "Sets ML infrastructure strategy. Resume should show platform work multiple teams depend on." },
     ],
     redFlags: [
       "Only notebook and prototype work, with nothing shown reaching production.",
@@ -956,11 +956,11 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "product-manager": {
     intro:
-      "Product Manager loops test judgement under incomplete information across four repeatable formats: product sense, analytical, execution, and behavioural. The most common failure is jumping to solutions before establishing the user and the goal. PM CVs are read for outcomes owned rather than features shipped. A list of launches without metrics reads as project management.",
+      "Product Manager loops test judgment under incomplete information across four repeatable formats: product sense, analytical, execution, and behavioral. The most common failure is jumping to solutions before establishing the user and the goal. PM resumes are read for outcomes owned rather than features shipped. A list of launches without metrics reads as project management.",
     interviewFocus: [
       { area: "Product sense", detail: "\"Design X for Y\" or \"improve product Z\". Scored on whether you segment users, pick a target segment with a reason, generate a range of solutions, and choose using stated criteria." },
       { area: "Analytical / metrics", detail: "Defining success metrics, diagnosing a metric drop, and estimating market size. Interviewers check whether you name a counter-metric unprompted." },
-      { area: "Execution", detail: "Prioritisation under constraint, trade-off decisions, launch planning, and what you would cut to hit a date." },
+      { area: "Execution", detail: "Prioritization under constraint, trade-off decisions, launch planning, and what you would cut to hit a date." },
       { area: "Influence without authority", detail: "How you align engineering, design, and leadership when you cannot direct any of them." },
     ],
     technicalQuestions: [
@@ -989,7 +989,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What are the four types of Product Manager interview round?",
         answer:
-          "Product sense (design or improve a product), analytical (metrics definition, diagnosing a drop, market sizing), execution (prioritisation, trade-offs, launch planning), and behavioural (influence, conflict, failure). Most loops include all four across four to six rounds. Product sense and analytical are where candidates most often fail: the former because they solution before establishing the user and goal, the latter because they define success metrics without a counter-metric.",
+          "Product sense (design or improve a product), analytical (metrics definition, diagnosing a drop, market sizing), execution (prioritization, trade-offs, launch planning), and behavioral (influence, conflict, failure). Most loops include all four across four to six rounds. Product sense and analytical are where candidates most often fail: the former because they solution before establishing the user and goal, the latter because they define success metrics without a counter-metric.",
       },
       {
         question: "How do I structure a product sense answer?",
@@ -999,12 +999,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What makes a Product Manager CV stand out?",
         answer:
-          "Outcomes with the constraints visible. \"Grew activation 34% by rebuilding onboarding around a single aha-moment, prioritised over 6 competing requests with a data-backed case to leadership\" shows the metric, the insight, and the influence, which is the whole job. Feature launch lists without metrics read as project management. Also include scale (users affected, revenue owned, team size you worked with) so reviewers can level you.",
+          "Outcomes with the constraints visible. \"Grew activation 34% by rebuilding onboarding around a single aha-moment, prioritized over 6 competing requests with a data-backed case to leadership\" shows the metric, the insight, and the influence, which is the whole job. Feature launch lists without metrics read as project management. Also include scale (users affected, revenue owned, team size you worked with) so reviewers can level you.",
       },
       {
         question: "How do I move into product management without PM experience?",
         answer:
-          "The reliable routes are internal and adjacent. Move into an APM or associate PM programme, or transition inside your current company from engineering, design, analytics, or support. Internal moves dominate because the hardest thing to demonstrate externally is judgement in a specific domain. Whatever your current role, start producing PM artefacts: write the spec, run the user interviews, define the metrics. Those become the evidence your CV needs, since the bar is proof you can own outcomes rather than a certificate.",
+          "The reliable routes are internal and adjacent. Move into an APM or associate PM program, or transition inside your current company from engineering, design, analytics, or support. Internal moves dominate because the hardest thing to demonstrate externally is judgment in a specific domain. Whatever your current role, start producing PM artifacts: write the spec, run the user interviews, define the metrics. Those become the evidence your resume needs, since the bar is proof you can own outcomes rather than a certificate.",
       },
     ],
     summaryExample:
@@ -1026,17 +1026,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Several features\" and \"improved UX\" are unmeasurable. A pricing migration is a high-stakes, cross-functional decision, and stating both the upside and the controlled downside demonstrates the trade-off thinking senior PM roles hire for.",
       },
     ],
-    coreSkills: ["Product discovery & user research", "Metric definition", "Prioritisation frameworks", "Roadmap planning", "Stakeholder influence", "Experimentation", "Competitive analysis", "Technical fluency", "Written communication"],
+    coreSkills: ["Product discovery & user research", "Metric definition", "Prioritization frameworks", "Roadmap planning", "Stakeholder influence", "Experimentation", "Competitive analysis", "Technical fluency", "Written communication"],
     tools: ["Jira", "Linear", "Figma", "Amplitude", "Mixpanel", "Looker", "SQL", "Productboard", "Notion", "Miro", "Optimizely"],
     metrics: ["Activation, retention, or conversion moved", "Revenue or ARPU impact", "Users or accounts affected", "Adoption rate of features shipped", "Experiment win rate", "Time to market", "NPS or CSAT change"],
     seniority: [
-      { level: "APM / Associate (0–2 yrs)", expectation: "Owns a feature area with guidance. CV should show one metric you influenced and research you ran." },
-      { level: "PM (2–5 yrs)", expectation: "Owns a product area and its metrics. CV should show an outcome you were accountable for." },
-      { level: "Senior PM (5–8 yrs)", expectation: "Owns strategy for a significant surface. CV should show a bet you made and its result, including trade-offs." },
-      { level: "Group PM / Director (8+ yrs)", expectation: "Owns a portfolio and often PMs. CV should show org-level strategy, team growth, and revenue scale." },
+      { level: "APM / Associate (0–2 yrs)", expectation: "Owns a feature area with guidance. Resume should show one metric you influenced and research you ran." },
+      { level: "PM (2–5 yrs)", expectation: "Owns a product area and its metrics. Resume should show an outcome you were accountable for." },
+      { level: "Senior PM (5–8 yrs)", expectation: "Owns strategy for a significant surface. Resume should show a bet you made and its result, including trade-offs." },
+      { level: "Group PM / Director (8+ yrs)", expectation: "Owns a portfolio and often PMs. Resume should show org-level strategy, team growth, and revenue scale." },
     ],
     redFlags: [
-      "Feature launch lists with no metrics, the most common reason PM CVs are rejected.",
+      "Feature launch lists with no metrics, the most common reason PM resumes are rejected.",
       "No evidence of user research, which suggests a backlog-administrator role.",
       "Ownership stated without scale (users, revenue, team size).",
       "Framework name-dropping (RICE, JTBD) without a decision it produced.",
@@ -1045,10 +1045,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "ux-designer": {
     intro:
-      "UX Designer hiring is decided by the portfolio more than the CV, and portfolio reviews are scored on reasoning rather than visual polish. Expect a portfolio presentation, a whiteboard or take-home design exercise, and a critique round. The recurring weakness is case studies that show the final screens but not the decisions, the constraints, or what the design achieved once shipped.",
+      "UX Designer hiring is decided by the portfolio more than the resume, and portfolio reviews are scored on reasoning rather than visual polish. Expect a portfolio presentation, a whiteboard or take-home design exercise, and a critique round. The recurring weakness is case studies that show the final screens but not the decisions, the constraints, or what the design achieved once shipped.",
     interviewFocus: [
       { area: "Portfolio deep dive", detail: "Presenting two or three case studies with your specific contribution, the constraints you worked under, and the outcome. Interviewers probe what you would do differently and what the design got wrong." },
-      { area: "Design exercise", detail: "A whiteboard or take-home prompt where you scope the problem, sketch alternatives, and justify a direction. Scored on process visibility more than on the artefact." },
+      { area: "Design exercise", detail: "A whiteboard or take-home prompt where you scope the problem, sketch alternatives, and justify a direction. Scored on process visibility more than on the artifact." },
       { area: "Critique", detail: "Evaluating an existing interface. Interviewers test whether you critique against user goals and heuristics rather than personal taste." },
       { area: "Research and measurement", detail: "What research you ran, how you recruited, how you avoided leading questions, and how you measured whether the design worked." },
     ],
@@ -1088,7 +1088,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is UX Designer the same as Product Designer?",
         answer:
-          "They increasingly overlap, with Product Designer implying a broader remit: more involvement in product strategy, metrics, and often visual and interaction design end to end. UX Designer can mean a research-heavier role in some organisations and a generalist one in others. Read the responsibilities rather than the title, and mirror the posting's own language on your CV. The same portfolio usually serves both, with the framing adjusted.",
+          "They increasingly overlap, with Product Designer implying a broader remit: more involvement in product strategy, metrics, and often visual and interaction design end to end. UX Designer can mean a research-heavier role in some organizations and a generalist one in others. Read the responsibilities rather than the title, and mirror the posting's own language on your resume. The same portfolio usually serves both, with the framing adjusted.",
       },
       {
         question: "Do UX Designers need to know how to code?",
@@ -1107,12 +1107,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Conducted user research to understand customer needs.",
         strong: "Ran 24 contextual interviews with warehouse staff that reframed a requested 'faster search' as a scanning-hardware problem, redirecting a quarter of roadmap effort toward a fix that cut pick errors 27%.",
-        why: "\"Conducted research\" gives no evidence the research changed anything. Showing research overturning the stated problem, and the downstream effect, is the strongest form of design impact a CV can claim.",
+        why: "\"Conducted research\" gives no evidence the research changed anything. Showing research overturning the stated problem, and the downstream effect, is the strongest form of design impact a resume can claim.",
       },
       {
         weak: "Created and maintained the company design system.",
         strong: "Built a 60-component accessible design system with usage documentation, adopted by 4 product teams and cutting new-screen design time roughly 35% while closing 90+ WCAG contrast violations.",
-        why: "Design system work is only impressive with adoption attached. The team count, the time saved, and the accessibility violations closed convert an internal project into measurable organisational leverage.",
+        why: "Design system work is only impressive with adoption attached. The team count, the time saved, and the accessibility violations closed convert an internal project into measurable organizational leverage.",
       },
     ],
     coreSkills: ["User research (generative & evaluative)", "Information architecture", "Interaction design", "Usability testing", "Accessibility (WCAG)", "Prototyping", "Design systems", "Data-informed design", "Facilitation"],
@@ -1136,7 +1136,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "rpa-developer": {
     intro:
-      "RPA interviews test whether you can tell an automatable process from one that should be fixed instead. Expect a process-design round, hands-on questions about a specific platform (usually UiPath, Automation Anywhere or Power Automate), and detailed probing on exception handling, because unattended bots fail silently and the cost of a bad automation is worse than no automation. CVs are read for hours saved and for bots that survived in production.",
+      "RPA interviews test whether you can tell an automatable process from one that should be fixed instead. Expect a process-design round, hands-on questions about a specific platform (usually UiPath, Automation Anywhere or Power Automate), and detailed probing on exception handling, because unattended bots fail silently and the cost of a bad automation is worse than no automation. Resumes are read for hours saved and for bots that survived in production.",
     interviewFocus: [
       { area: "Process assessment", detail: "Given a described process, judge whether it is a good automation candidate (rule-based, stable, high volume, structured input) or whether the real answer is fixing the underlying system. Interviewers are checking that you would not automate a broken process." },
       { area: "Platform depth", detail: "Selectors and their fragility, orchestrator scheduling, queues and transactions, reusable components. Usually specific to one vendor, so read the posting." },
@@ -1169,7 +1169,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does an RPA Developer interview focus on?",
         answer:
-          "Process judgement first, platform skill second. The round that decides most loops describes a business process and asks whether you would automate it. Interviewers want to hear you check for rule-based logic, stable inputs, sufficient volume, and whether an API exists that would make the bot unnecessary. After that come platform-specific questions on selectors, orchestrator queues and reusable components, and a deep dive on exception handling, which is where unattended automation actually lives or dies.",
+          "Process judgment first, platform skill second. The round that decides most loops describes a business process and asks whether you would automate it. Interviewers want to hear you check for rule-based logic, stable inputs, sufficient volume, and whether an API exists that would make the bot unnecessary. After that come platform-specific questions on selectors, orchestrator queues and reusable components, and a deep dive on exception handling, which is where unattended automation actually lives or dies.",
       },
       {
         question: "Which RPA platform should I learn?",
@@ -1184,7 +1184,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is RPA a dead end now that AI can automate processes?",
         answer:
-          "The field is changing rather than disappearing, but the change is real and worth positioning for. Straightforward screen-scraping work is being displaced by API integration and by AI-based document processing that handles unstructured input RPA never could. The developers doing well are the ones moving toward intelligent automation (combining bots with document understanding and decision models) and toward the process-analysis skills that hold value regardless of tooling. A CV that shows only screen automation on legacy applications is the exposed position.",
+          "The field is changing rather than disappearing, but the change is real and worth positioning for. Straightforward screen-scraping work is being displaced by API integration and by AI-based document processing that handles unstructured input RPA never could. The developers doing well are the ones moving toward intelligent automation (combining bots with document understanding and decision models) and toward the process-analysis skills that hold value regardless of tooling. A resume that shows only screen automation on legacy applications is the exposed position.",
       },
     ],
     summaryExample:
@@ -1198,22 +1198,22 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Handled exceptions and maintained existing automations.",
         strong: "Re-architected 8 fragile linear bots into a queue-based framework with typed business/system exception handling, cutting failed transactions from 11% to 0.6% and eliminating overnight manual restarts.",
-        why: "Maintenance sounds like keeping the lights on. Naming the architectural change and the failure-rate movement shows you fixed the design rather than patching symptoms, and \"eliminating overnight manual restarts\" is the human cost a manager recognises immediately.",
+        why: "Maintenance sounds like keeping the lights on. Naming the architectural change and the failure-rate movement shows you fixed the design rather than patching symptoms, and \"eliminating overnight manual restarts\" is the human cost a manager recognizes immediately.",
       },
       {
         weak: "Worked with business teams to identify automation opportunities.",
         strong: "Assessed 40 candidate processes against volume, rule stability and input structure; automated 14 and recommended API integration or process redesign for 9, avoiding an estimated £180k of low-value bot build.",
-        why: "Identifying opportunities is easy; the senior skill is declining the bad ones. Quantifying what you recommended against, and the spend avoided, is unusual on RPA CVs and reads as genuine judgement.",
+        why: "Identifying opportunities is easy; the senior skill is declining the bad ones. Quantifying what you recommended against, and the spend avoided, is unusual on RPA resumes and reads as genuine judgment.",
       },
     ],
     coreSkills: ["Process assessment & ROI analysis", "Queue-based bot architecture", "Exception handling design", "Selector engineering", "Orchestrator administration", "Process documentation (PDD/SDD)", "Credential & secrets handling", "Reusable component design"],
     tools: ["UiPath", "Automation Anywhere", "Blue Prism", "Power Automate", "UiPath Orchestrator", "Python", "VBA", "SQL", "Document Understanding", "Git", "Jira"],
     metrics: ["Transactions processed per run/day", "FTE-hours returned annually", "Straight-through processing rate", "Failed-transaction rate", "Bots in production supported", "Cost saved or avoided", "Average handling time before/after"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Builds bots to an existing design. CV should show one platform in depth and bots that reached production." },
-      { level: "Mid (2–4 yrs)", expectation: "Owns automations end to end including support. CV should show volume and reliability numbers." },
-      { level: "Senior (4–7 yrs)", expectation: "Designs frameworks and assesses pipeline. CV should show reusable architecture and processes you declined." },
-      { level: "Lead / Architect (7+ yrs)", expectation: "Owns the automation estate and governance. CV should show CoE standards and portfolio-level value." },
+      { level: "Junior (0–2 yrs)", expectation: "Builds bots to an existing design. Resume should show one platform in depth and bots that reached production." },
+      { level: "Mid (2–4 yrs)", expectation: "Owns automations end to end including support. Resume should show volume and reliability numbers." },
+      { level: "Senior (4–7 yrs)", expectation: "Designs frameworks and assesses pipeline. Resume should show reusable architecture and processes you declined." },
+      { level: "Lead / Architect (7+ yrs)", expectation: "Owns the automation estate and governance. Resume should show CoE standards and portfolio-level value." },
     ],
     redFlags: [
       "Bot counts with no transaction volume or reliability figures.",
@@ -1225,7 +1225,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "automation-engineer": {
     intro:
-      "Automation Engineer means different things at different companies (test automation, infrastructure automation, or business-process automation), so the first job of your CV is making clear which one you are. Interviews test whether you build automation that other people trust and maintain, rather than scripts that only work on your machine.",
+      "Automation Engineer means different things at different companies (test automation, infrastructure automation, or business-process automation), so the first job of your resume is making clear which one you are. Interviews test whether you build automation that other people trust and maintain, rather than scripts that only work on your machine.",
     interviewFocus: [
       { area: "Scoping what to automate", detail: "Judging where automation pays back and where it creates a maintenance burden worse than the manual task. The question behind most scenario rounds." },
       { area: "Hands-on scripting", detail: "Python, Bash or PowerShell against a realistic problem: parsing output, calling an API, handling partial failure. Usually a live exercise." },
@@ -1233,7 +1233,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { area: "Handover and maintainability", detail: "Logging, documentation, alerting, and whether someone else can debug your automation at 3am." },
     ],
     technicalQuestions: [
-      "You have a manual process that takes 30 minutes and runs twice a week. Is it worth automating? Walk me through the maths.",
+      "You have a manual process that takes 30 minutes and runs twice a week. Is it worth automating? Walk me through the math.",
       "Write a script that reconciles two data sources and reports differences. How do you handle a partial failure?",
       "How do you make an automation idempotent so a re-run does not duplicate work?",
       "Your automation silently stopped running three weeks ago and nobody noticed. What was missing?",
@@ -1258,12 +1258,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does an Automation Engineer actually do?",
         answer:
-          "It depends heavily on the company, and this ambiguity is the main thing to resolve before applying. In some organisations it is test automation and sits inside QA; in others it is infrastructure and CI/CD work overlapping with DevOps; in others it is business-process automation close to RPA. Read the tools in the posting. Selenium and Playwright mean testing, Terraform and Ansible mean infrastructure, UiPath or Power Automate mean process. Mirror the corresponding vocabulary on your CV.",
+          "It depends heavily on the company, and this ambiguity is the main thing to resolve before applying. In some organizations it is test automation and sits inside QA; in others it is infrastructure and CI/CD work overlapping with DevOps; in others it is business-process automation close to RPA. Read the tools in the posting. Selenium and Playwright mean testing, Terraform and Ansible mean infrastructure, UiPath or Power Automate mean process. Mirror the corresponding vocabulary on your resume.",
       },
       {
         question: "What separates a senior automation engineer from a junior one?",
         answer:
-          "Judgement about what not to automate, and building things that survive handover. Juniors write scripts that work; seniors write automation with logging, alerting on silent failure, idempotent behaviour on re-run, and documentation that lets someone else debug it. The interview question that exposes this is \"your automation stopped running three weeks ago and nobody noticed\". A senior answer talks about heartbeat monitoring and alerting on absence, not just on errors.",
+          "Judgment about what not to automate, and building things that survive handover. Juniors write scripts that work; seniors write automation with logging, alerting on silent failure, idempotent behavior on re-run, and documentation that lets someone else debug it. The interview question that exposes this is \"your automation stopped running three weeks ago and nobody noticed\". A senior answer talks about heartbeat monitoring and alerting on absence, not just on errors.",
       },
       {
         question: "What metrics belong on an Automation Engineer CV?",
@@ -1292,17 +1292,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Worked with stakeholders to identify processes to automate.",
         strong: "Assessed 25 candidate processes on frequency, duration and error cost; automated 11 and redesigned 6 out of existence entirely, since the underlying reports were no longer used.",
-        why: "The strongest automation outcome is often deleting the process. Showing you eliminated work rather than automating it demonstrates exactly the judgement senior automation roles hire for.",
+        why: "The strongest automation outcome is often deleting the process. Showing you eliminated work rather than automating it demonstrates exactly the judgment senior automation roles hire for.",
       },
     ],
-    coreSkills: ["Process analysis & ROI judgement", "Python / Bash / PowerShell", "Idempotent design", "Error handling & structured logging", "Scheduling & orchestration", "API integration", "Secrets management", "Documentation & handover"],
+    coreSkills: ["Process analysis & ROI judgment", "Python / Bash / PowerShell", "Idempotent design", "Error handling & structured logging", "Scheduling & orchestration", "API integration", "Secrets management", "Documentation & handover"],
     tools: ["Python", "Bash", "PowerShell", "Ansible", "Terraform", "Airflow", "Jenkins", "GitHub Actions", "Selenium", "Playwright", "Power Automate", "REST APIs", "Git"],
     metrics: ["Manual hours removed per year", "Processes automated (and retired)", "Error rate before and after", "Automation uptime / silent-failure detection time", "Mean time to debug", "Cost saved"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Writes scripts to spec. CV should show working automation and one scripting language properly." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns automation end to end including its monitoring. CV should show hours saved and reliability." },
-      { level: "Senior (5–8 yrs)", expectation: "Builds frameworks others use. CV should show shared tooling and successful handover." },
-      { level: "Lead (8+ yrs)", expectation: "Sets automation strategy. CV should show portfolio-level value and governance." },
+      { level: "Junior (0–2 yrs)", expectation: "Writes scripts to spec. Resume should show working automation and one scripting language properly." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns automation end to end including its monitoring. Resume should show hours saved and reliability." },
+      { level: "Senior (5–8 yrs)", expectation: "Builds frameworks others use. Resume should show shared tooling and successful handover." },
+      { level: "Lead (8+ yrs)", expectation: "Sets automation strategy. Resume should show portfolio-level value and governance." },
     ],
     redFlags: [
       "No statement of which automation discipline you work in, forcing the reviewer to guess.",
@@ -1316,9 +1316,9 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "network-security-engineer": {
     intro:
-      "Network Security Engineer interviews go deeper on protocol fundamentals than most security roles, because the job is defending the layer where theory meets packet capture. Expect firewall and segmentation design, hands-on troubleshooting, and questions about the trade-off every control creates between security and the network actually working. CVs are read for the scale of the estate you defended and for changes that reduced attack surface measurably.",
+      "Network Security Engineer interviews go deeper on protocol fundamentals than most security roles, because the job is defending the layer where theory meets packet capture. Expect firewall and segmentation design, hands-on troubleshooting, and questions about the trade-off every control creates between security and the network actually working. Resumes are read for the scale of the estate you defended and for changes that reduced attack surface measurably.",
     interviewFocus: [
-      { area: "Protocol and packet-level fundamentals", detail: "TCP handshakes, TLS negotiation, DNS behaviour, routing and NAT. Interviewers ask you to read a capture or explain why a connection fails. This is where claimed depth is verified quickly." },
+      { area: "Protocol and packet-level fundamentals", detail: "TCP handshakes, TLS negotiation, DNS behavior, routing and NAT. Interviewers ask you to read a capture or explain why a connection fails. This is where claimed depth is verified quickly." },
       { area: "Firewall and segmentation design", detail: "Rule-base design, zero-trust segmentation, east-west traffic control, and how you avoid the any-any rule that accumulates in every mature estate." },
       { area: "Detection and response at the network layer", detail: "IDS/IPS tuning, egress monitoring, identifying command-and-control traffic and data exfiltration patterns." },
       { area: "Operational trade-offs", detail: "How you deploy a control without breaking production, and how you have handled the change that did break it." },
@@ -1329,13 +1329,13 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "A user reports an application is slow. The firewall shows accepted traffic. How do you diagnose?",
       "How would you detect command-and-control traffic that uses DNS as its channel?",
       "Your firewall rule base has 3,000 rules accumulated over a decade. How do you clean it up safely?",
-      "What is the difference between IDS and IPS in practice, and why do so many organisations run IPS in detect-only mode?",
-      "How do you secure east-west traffic in a virtualised data centre?",
+      "What is the difference between IDS and IPS in practice, and why do so many organizations run IPS in detect-only mode?",
+      "How do you secure east-west traffic in a virtualised data center?",
     ],
     behaviouralQuestions: [
       "Tell me about a change you made that took down production. What did you learn?",
       "Describe an incident where the network told you something the endpoint tooling missed.",
-      "Tell me about pushing a segmentation project through an organisation that resisted it.",
+      "Tell me about pushing a segmentation project through an organization that resisted it.",
       "Describe a time you had to accept a risk rather than remediate it.",
       "Tell me about tuning a noisy detection system.",
     ],
@@ -1349,7 +1349,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How deep do network security interviews go on fundamentals?",
         answer:
-          "Deeper than most other security specialisations. It is normal to be asked to walk through a TCP handshake, explain where TLS inspection is possible and what it breaks, or interpret a packet capture live. The reason is practical: this role's daily work involves distinguishing a security control blocking traffic from a routing problem, and that requires genuine protocol knowledge rather than tool familiarity. Candidates who know firewall GUIs but not what is happening on the wire are found out quickly.",
+          "Deeper than most other security specializations. It is normal to be asked to walk through a TCP handshake, explain where TLS inspection is possible and what it breaks, or interpret a packet capture live. The reason is practical: this role's daily work involves distinguishing a security control blocking traffic from a routing problem, and that requires genuine protocol knowledge rather than tool familiarity. Candidates who know firewall GUIs but not what is happening on the wire are found out quickly.",
       },
       {
         question: "What metrics belong on a Network Security Engineer CV?",
@@ -1368,7 +1368,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
     ],
     summaryExample:
-      "Network security engineer with 7 years defending a 4,000-host multi-site estate in manufacturing. Led the segmentation programme that cut reachable attack surface 80% across 12 zones with zero unplanned outages, and rationalised a decade-old 3,000-rule firewall base down to 640. PCNSE certified; strongest in segmentation design and egress monitoring.",
+      "Network security engineer with 7 years defending a 4,000-host multi-site estate in manufacturing. Led the segmentation program that cut reachable attack surface 80% across 12 zones with zero unplanned outages, and rationalised a decade-old 3,000-rule firewall base down to 640. PCNSE certified; strongest in segmentation design and egress monitoring.",
     bulletExamples: [
       {
         weak: "Managed firewalls and network security infrastructure.",
@@ -1378,7 +1378,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Implemented network segmentation to improve security posture.",
         strong: "Segmented a flat 4,000-host network into 12 zones over three phases, cutting laterally reachable hosts from ~4,000 to ~300 per zone, with a monitor-first rollout that caught 60 undocumented dependencies before enforcement.",
-        why: "\"Improved posture\" is unmeasurable. Lateral reachability is the number segmentation actually changes, and the monitor-first approach demonstrates the operational judgement that separates successful segmentation projects from outages.",
+        why: "\"Improved posture\" is unmeasurable. Lateral reachability is the number segmentation actually changes, and the monitor-first approach demonstrates the operational judgment that separates successful segmentation projects from outages.",
       },
       {
         weak: "Monitored network traffic and responded to security alerts.",
@@ -1390,10 +1390,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["Palo Alto", "Cisco ASA/Firepower", "Fortinet", "Wireshark", "Zeek", "Suricata", "Snort", "Splunk", "AWS Security Groups / NACLs", "Azure NSG", "Terraform", "Python"],
     metrics: ["Hosts and sites protected", "Firewall rules rationalised", "Segments created / lateral reachability reduced", "Exposed services removed", "False-positive reduction after tuning", "Mean time to detect", "Unplanned outages caused (ideally zero)"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Executes firewall changes and triages alerts. CV should show protocol fundamentals and one vendor stack." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns a site or domain. CV should show estate scale and a tuning or hygiene project." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs segmentation and standards. CV should show a programme with measured attack-surface reduction." },
-      { level: "Principal / Architect (8+ yrs)", expectation: "Sets network security architecture. CV should show multi-site or cloud transformation and its risk outcome." },
+      { level: "Junior (0–2 yrs)", expectation: "Executes firewall changes and triages alerts. Resume should show protocol fundamentals and one vendor stack." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a site or domain. Resume should show estate scale and a tuning or hygiene project." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs segmentation and standards. Resume should show a program with measured attack-surface reduction." },
+      { level: "Principal / Architect (8+ yrs)", expectation: "Sets network security architecture. Resume should show multi-site or cloud transformation and its risk outcome." },
     ],
     redFlags: [
       "Vendor GUI familiarity with no evidence of protocol-level understanding.",
@@ -1405,9 +1405,9 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "iam-engineer": {
     intro:
-      "IAM Engineer interviews centre on protocol precision and on lifecycle design. Expect to be asked to explain OAuth and SAML flows accurately (this is a field where approximate understanding shows immediately), plus questions about joiner-mover-leaver processes, privileged access, and the access reviews that auditors will examine. CVs are read for identities managed, access removed, and audit outcomes.",
+      "IAM Engineer interviews center on protocol precision and on lifecycle design. Expect to be asked to explain OAuth and SAML flows accurately (this is a field where approximate understanding shows immediately), plus questions about joiner-mover-leaver processes, privileged access, and the access reviews that auditors will examine. Resumes are read for identities managed, access removed, and audit outcomes.",
     interviewFocus: [
-      { area: "Protocol depth", detail: "OAuth 2.0 grant types, OIDC versus SAML, token validation, and the difference between authentication and authorisation. Interviewers ask you to walk a full flow; vague answers end loops." },
+      { area: "Protocol depth", detail: "OAuth 2.0 grant types, OIDC versus SAML, token validation, and the difference between authentication and authorization. Interviewers ask you to walk a full flow; vague answers end loops." },
       { area: "Lifecycle and provisioning", detail: "Joiner-mover-leaver automation, SCIM provisioning, and the mover case specifically: accumulated entitlements from role changes are the most common real-world IAM failure." },
       { area: "Privileged access", detail: "PAM design, just-in-time elevation, break-glass accounts, and how you have reduced standing privilege." },
       { area: "Governance and audit", detail: "Access certification campaigns, segregation of duties, and evidence production for auditors." },
@@ -1416,7 +1416,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Walk me through the OAuth 2.0 authorization code flow with PKCE, and explain what PKCE prevents.",
       "When would you use SAML over OIDC, and why is that decision usually made for you?",
       "A user changed departments 18 months ago and still has their old access. How do you fix this systemically?",
-      "Design joiner-mover-leaver automation for a 5,000-employee organisation with 200 applications.",
+      "Design joiner-mover-leaver automation for a 5,000-employee organization with 200 applications.",
       "How do you eliminate standing privileged access without breaking emergency response?",
       "What do you validate when your application receives a JWT?",
       "How would you run an access certification campaign that reviewers do not rubber-stamp?",
@@ -1453,7 +1453,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is IAM a good specialisation to move into?",
         answer:
-          "It is one of the more durable security specialisations, because identity has become the primary control plane as perimeters dissolved. Demand is steady, the skills transfer across cloud providers, and the work sits close to both engineering and governance, which opens routes in either direction. The common entry paths are from systems administration, service desk with an access-management focus, or general security operations. Protocol depth plus one major platform (Entra ID, Okta or SailPoint) is a strong starting position.",
+          "It is one of the more durable security specializations, because identity has become the primary control plane as perimeters dissolved. Demand is steady, the skills transfer across cloud providers, and the work sits close to both engineering and governance, which opens routes in either direction. The common entry paths are from systems administration, service desk with an access-management focus, or general security operations. Protocol depth plus one major platform (Entra ID, Okta or SailPoint) is a strong starting position.",
       },
     ],
     summaryExample:
@@ -1479,10 +1479,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["Microsoft Entra ID", "Okta", "SailPoint", "CyberArk", "Active Directory", "Ping Identity", "AWS IAM", "Keycloak", "PowerShell", "Python", "Terraform"],
     metrics: ["Identities and applications managed", "JML automation coverage", "Leaver access-removal time", "Standing privileged accounts eliminated", "Orphaned accounts removed", "Certification revocation rate", "Audit findings closed"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Handles access requests and basic administration. CV should show directory fundamentals and one IAM platform." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns lifecycle automation for an area. CV should show applications onboarded and automation coverage." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs identity architecture and governance. CV should show a JML or PAM programme with risk metrics." },
-      { level: "Principal / Architect (8+ yrs)", expectation: "Owns identity strategy. CV should show enterprise-wide transformation and audit outcomes." },
+      { level: "Junior (0–2 yrs)", expectation: "Handles access requests and basic administration. Resume should show directory fundamentals and one IAM platform." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns lifecycle automation for an area. Resume should show applications onboarded and automation coverage." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs identity architecture and governance. Resume should show a JML or PAM program with risk metrics." },
+      { level: "Principal / Architect (8+ yrs)", expectation: "Owns identity strategy. Resume should show enterprise-wide transformation and audit outcomes." },
     ],
     redFlags: [
       "Protocol names listed without evidence of flow-level understanding.",
@@ -1494,10 +1494,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "security-architect": {
     intro:
-      "Security Architect interviews test whether you can design controls that a business will actually accept. Expect an architecture review round where you critique a proposed design, threat modelling, and questions about risk acceptance, because the defining skill is choosing which risks to carry, not eliminating all of them. CVs are read for systems designed, risk reduced, and standards other teams adopted.",
+      "Security Architect interviews test whether you can design controls that a business will actually accept. Expect an architecture review round where you critique a proposed design, threat modeling, and questions about risk acceptance, because the defining skill is choosing which risks to carry, not eliminating all of them. Resumes are read for systems designed, risk reduced, and standards other teams adopted.",
     interviewFocus: [
       { area: "Architecture review", detail: "Given a proposed system, identify the trust boundaries, the failure modes, and the controls you would require versus recommend. The core round." },
-      { area: "Threat modelling", detail: "STRIDE or attack-tree reasoning over a described system, and prioritising findings by realistic exploitability rather than theoretical severity." },
+      { area: "Threat modeling", detail: "STRIDE or attack-tree reasoning over a described system, and prioritizing findings by realistic exploitability rather than theoretical severity." },
       { area: "Risk communication", detail: "Explaining a technical risk to an executive in business terms, and defending a decision to accept a risk rather than remediate it." },
       { area: "Breadth across domains", detail: "Identity, network, application, cloud and data security. Architects are expected to reason across all of them rather than deeply in one." },
     ],
@@ -1520,14 +1520,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     questionsToAsk: [
       "Is architecture review a gate or an advisory function here?",
       "How is risk acceptance documented, and who signs it off?",
-      "How much of the estate has been threat modelled?",
+      "How much of the estate has been threat modeled?",
       "What is the relationship between architecture and the engineering teams building?",
     ],
     faq: [
       {
         question: "What separates a Security Architect from a senior Security Engineer?",
         answer:
-          "Breadth and influence rather than depth. Engineers own and operate specific controls; architects design across domains (identity, network, application, cloud, data) and are measured on whether teams adopt what they specify. The interview reflects this: architect loops centre on reviewing a design and defending trade-offs, including which risks you would accept, while engineer loops go deeper hands-on in one area. If you cannot yet reason across all the domains, the engineer track is the stronger application.",
+          "Breadth and influence rather than depth. Engineers own and operate specific controls; architects design across domains (identity, network, application, cloud, data) and are measured on whether teams adopt what they specify. The interview reflects this: architect loops center on reviewing a design and defending trade-offs, including which risks you would accept, while engineer loops go deeper hands-on in one area. If you cannot yet reason across all the domains, the engineer track is the stronger application.",
       },
       {
         question: "How important is risk acceptance in these interviews?",
@@ -1537,7 +1537,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What metrics belong on a Security Architect CV?",
         answer:
-          "Adoption and risk reduction, not activity. Systems reviewed or threat modelled, standards published and the number of teams that adopted them, critical findings remediated versus accepted, reduction in a measurable exposure (internet-facing services, standing privilege, unencrypted data stores), and audit or certification outcomes achieved. \"Published a secure-by-default cloud landing zone adopted by 14 teams, cutting misconfiguration findings per deployment by 78%\" is strong because adoption is the architect's real product.",
+          "Adoption and risk reduction, not activity. Systems reviewed or threat modeled, standards published and the number of teams that adopted them, critical findings remediated versus accepted, reduction in a measurable exposure (internet-facing services, standing privilege, unencrypted data stores), and audit or certification outcomes achieved. \"Published a secure-by-default cloud landing zone adopted by 14 teams, cutting misconfiguration findings per deployment by 78%\" is strong because adoption is the architect's real product.",
       },
       {
         question: "Do I need CISSP to be a Security Architect?",
@@ -1546,17 +1546,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
     ],
     summaryExample:
-      "Security architect with 9 years across financial services and SaaS. Designed the cloud landing zone adopted by 14 engineering teams, cutting misconfiguration findings per deployment 78%, and led the threat-modelling programme covering 40 systems. Comfortable defending risk-acceptance decisions to an audit committee. CISSP, AWS Security Specialty.",
+      "Security architect with 9 years across financial services and SaaS. Designed the cloud landing zone adopted by 14 engineering teams, cutting misconfiguration findings per deployment 78%, and led the threat-modeling program covering 40 systems. Comfortable defending risk-acceptance decisions to an audit committee. CISSP, AWS Security Specialty.",
     bulletExamples: [
       {
         weak: "Designed security architecture for enterprise applications.",
         strong: "Designed a secure-by-default AWS landing zone (enforced encryption, private networking and guardrail SCPs) adopted by 14 teams and cutting misconfiguration findings per deployment 78%.",
-        why: "Design work only counts if it is used. Naming the controls and, critically, the adoption across 14 teams converts an architecture document into organisational change with a measured effect.",
+        why: "Design work only counts if it is used. Naming the controls and, critically, the adoption across 14 teams converts an architecture document into organizational change with a measured effect.",
       },
       {
-        weak: "Conducted threat modelling and security reviews.",
-        strong: "Ran threat modelling across 40 systems, prioritising by realistic exploitability rather than CVSS alone: 31 criticals remediated, 9 formally risk-accepted with compensating monitoring and quarterly review.",
-        why: "Review counts alone say nothing about outcomes. Splitting remediated from accepted shows the judgement the role exists for, and the compensating controls demonstrate that acceptance was deliberate rather than neglect.",
+        weak: "Conducted threat modeling and security reviews.",
+        strong: "Ran threat modeling across 40 systems, prioritizing by realistic exploitability rather than CVSS alone: 31 criticals remediated, 9 formally risk-accepted with compensating monitoring and quarterly review.",
+        why: "Review counts alone say nothing about outcomes. Splitting remediated from accepted shows the judgment the role exists for, and the compensating controls demonstrate that acceptance was deliberate rather than neglect.",
       },
       {
         weak: "Advised engineering teams on security best practices.",
@@ -1564,18 +1564,18 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Advised teams\" is unmeasurable and often means being ignored. Turning advice into tooling is the senior move, and removing yourself as a bottleneck is the outcome engineering leadership cares about.",
       },
     ],
-    coreSkills: ["Threat modelling", "Security architecture design", "Risk assessment & acceptance", "Cloud security architecture", "Identity architecture", "Data protection & encryption", "Secure SDLC", "Compliance frameworks", "Executive communication"],
+    coreSkills: ["Threat modeling", "Security architecture design", "Risk assessment & acceptance", "Cloud security architecture", "Identity architecture", "Data protection & encryption", "Secure SDLC", "Compliance frameworks", "Executive communication"],
     tools: ["AWS", "Azure", "GCP", "Terraform", "STRIDE", "OWASP ASVS", "NIST CSF", "ISO 27001", "CIS Benchmarks", "Wiz / Prisma Cloud", "HashiCorp Vault"],
-    metrics: ["Systems threat modelled", "Standards published and teams adopting", "Critical findings remediated vs accepted", "Exposure reduced (internet-facing services, standing privilege)", "Security review turnaround time", "Audit or certification outcomes"],
+    metrics: ["Systems threat modeled", "Standards published and teams adopting", "Critical findings remediated vs accepted", "Exposure reduced (internet-facing services, standing privilege)", "Security review turnaround time", "Audit or certification outcomes"],
     seniority: [
-      { level: "Associate (3–5 yrs)", expectation: "Reviews designs within a domain. CV should show hands-on depth plus one design you owned." },
-      { level: "Architect (5–9 yrs)", expectation: "Owns architecture for a business area. CV should show standards adopted and risk decisions made." },
-      { level: "Senior / Principal (9+ yrs)", expectation: "Sets enterprise security architecture. CV should show transformation programmes and board-level risk communication." },
+      { level: "Associate (3–5 yrs)", expectation: "Reviews designs within a domain. Resume should show hands-on depth plus one design you owned." },
+      { level: "Architect (5–9 yrs)", expectation: "Owns architecture for a business area. Resume should show standards adopted and risk decisions made." },
+      { level: "Senior / Principal (9+ yrs)", expectation: "Sets enterprise security architecture. Resume should show transformation programs and board-level risk communication." },
     ],
     redFlags: [
       "Frameworks listed with no design you personally owned.",
       "No adoption evidence: standards written but not taken up.",
-      "Every finding presented as remediated, implying no real prioritisation.",
+      "Every finding presented as remediated, implying no real prioritization.",
       "No cloud architecture experience, which is now assumed in most postings.",
     ],
   },
@@ -1584,7 +1584,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "game-designer": {
     intro:
-      "Game Designer hiring is decided by a portfolio and a design test, not a CV alone. Studios want evidence you can specify a system precisely enough for engineers to build, iterate it based on playtest data, and cut your own ideas when they do not work. The most common weakness is presenting concepts rather than shipped, tuned systems.",
+      "Game Designer hiring is decided by a portfolio and a design test, not a resume alone. Studios want evidence you can specify a system precisely enough for engineers to build, iterate it based on playtest data, and cut your own ideas when they do not work. The most common weakness is presenting concepts rather than shipped, tuned systems.",
     interviewFocus: [
       { area: "Portfolio and shipped work", detail: "Systems you designed, your specific contribution, and how the design changed between first version and ship. Studios probe hard on what you personally owned." },
       { area: "Design test", detail: "A take-home or on-site brief: design a mechanic, rebalance an economy, fix a described problem. Scored on constraint awareness and on whether you specify clearly enough to be built." },
@@ -1617,7 +1617,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does a game design portfolio need to contain?",
         answer:
-          "Two or three systems shown in depth, not a catalogue of concepts. For each: the design problem and its constraints, your specific contribution if it was a team project, the first version, what playtesting revealed, and what you changed as a result. Include the actual artefacts (a spec, a balance spreadsheet, a progression curve) because studios want to see whether you can specify precisely enough to be built. Shipped work beats unshipped, and a small shipped game beats an elaborate design document for a game that never existed.",
+          "Two or three systems shown in depth, not a catalog of concepts. For each: the design problem and its constraints, your specific contribution if it was a team project, the first version, what playtesting revealed, and what you changed as a result. Include the actual artifacts (a spec, a balance spreadsheet, a progression curve) because studios want to see whether you can specify precisely enough to be built. Shipped work beats unshipped, and a small shipped game beats an elaborate design document for a game that never existed.",
       },
       {
         question: "Do I need to be able to code or use an engine?",
@@ -1660,7 +1660,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     seniority: [
       { level: "Junior (0–2 yrs)", expectation: "Designs within an established system. Portfolio should show one shipped or finished project with tuning evidence." },
       { level: "Mid (2–5 yrs)", expectation: "Owns a system end to end. Portfolio should show a design changed by playtest and telemetry." },
-      { level: "Senior (5–8 yrs)", expectation: "Owns major systems and mentors. Portfolio should show measurable player-behaviour outcomes." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns major systems and mentors. Portfolio should show measurable player-behavior outcomes." },
       { level: "Lead / Principal (8+ yrs)", expectation: "Sets design direction for a title. Portfolio should show vision, team leadership and commercial results." },
     ],
     redFlags: [
@@ -1673,10 +1673,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "game-developer": {
     intro:
-      "Game programming interviews weight performance and mathematics more heavily than general software roles. Expect maths questions (vectors, matrices, interpolation), an engine-specific round, and detailed probing on frame budget, because the constraint that defines the discipline is doing everything within roughly 16 milliseconds. CVs are read for shipped titles, platforms, and evidence you have optimised something real.",
+      "Game programming interviews weight performance and mathematics more heavily than general software roles. Expect math questions (vectors, matrices, interpolation), an engine-specific round, and detailed probing on frame budget, because the constraint that defines the discipline is doing everything within roughly 16 milliseconds. Resumes are read for shipped titles, platforms, and evidence you have optimized something real.",
     interviewFocus: [
-      { area: "Maths and geometry", detail: "Dot and cross products, quaternions versus Euler angles, interpolation, collision detection. Asked directly and expected to be fluent rather than derived from first principles." },
-      { area: "Performance and profiling", detail: "Frame budget, draw calls, cache behaviour, garbage collection spikes, and how you have diagnosed a real frame-rate problem with a profiler." },
+      { area: "Math and geometry", detail: "Dot and cross products, quaternions versus Euler angles, interpolation, collision detection. Asked directly and expected to be fluent rather than derived from first principles." },
+      { area: "Performance and profiling", detail: "Frame budget, draw calls, cache behavior, garbage collection spikes, and how you have diagnosed a real frame-rate problem with a profiler." },
       { area: "Engine specifics", detail: "Unity or Unreal internals: the update loop, physics stepping, memory and asset management, and the platform quirks of your target hardware." },
       { area: "Gameplay implementation", detail: "Translating a design spec into systems that are data-driven enough for designers to tune without engineering time." },
     ],
@@ -1711,12 +1711,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does a game developer CV need beyond shipped titles?",
         answer:
-          "Platform and performance detail. State the platforms you shipped on, the target frame rate and hardware, and at least one concrete optimisation with before and after numbers, such as \"cut frame time from 22ms to 14ms on Switch by batching draw calls and pooling projectiles\" tells a studio more than a list of engines. Also name the systems you personally owned, since team credits are otherwise ambiguous, and include a playable link or repository where you can.",
+          "Platform and performance detail. State the platforms you shipped on, the target frame rate and hardware, and at least one concrete optimization with before and after numbers, such as \"cut frame time from 22ms to 14ms on Switch by batching draw calls and pooling projectiles\" tells a studio more than a list of engines. Also name the systems you personally owned, since team credits are otherwise ambiguous, and include a playable link or repository where you can.",
       },
       {
         question: "Unity or Unreal: which is more employable?",
         answer:
-          "Both, in different segments. Unity dominates mobile, indie and much of the mid-size market and uses C#. Unreal dominates AAA, and its C++ requirement raises the technical bar in ways that transfer well to general engineering. Pick based on the studios you want: mobile and indie leans Unity, console and AAA leans Unreal. Deep knowledge of one plus the underlying fundamentals (memory, rendering, maths) matters far more than surface exposure to both.",
+          "Both, in different segments. Unity dominates mobile, indie and much of the mid-size market and uses C#. Unreal dominates AAA, and its C++ requirement raises the technical bar in ways that transfer well to general engineering. Pick based on the studios you want: mobile and indie leans Unity, console and AAA leans Unreal. Deep knowledge of one plus the underlying fundamentals (memory, rendering, math) matters far more than surface exposure to both.",
       },
       {
         question: "Do I need shipped commercial titles to get hired?",
@@ -1730,12 +1730,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Developed gameplay features using Unity and C#.",
         strong: "Built the combat and enemy AI systems for a shipped Switch/PC title, exposing 40+ tuning parameters as designer-editable data so balance changes shipped without engineering time.",
-        why: "\"Developed gameplay features\" is every game programmer's CV. Naming the systems owned and the data-driven design shows you built for the studio's workflow, not just for the feature, which is what distinguishes a senior gameplay engineer.",
+        why: "\"Developed gameplay features\" is every game programmer's resume. Naming the systems owned and the data-driven design shows you built for the studio's workflow, not just for the feature, which is what distinguishes a senior gameplay engineer.",
       },
       {
-        weak: "Optimised game performance for console platforms.",
+        weak: "Optimized game performance for console platforms.",
         strong: "Led the Switch performance pass that cut frame time from 22ms to 14ms by batching 1,800 draw calls into 300, pooling projectile allocations, and eliminating a GC spike that caused a visible hitch every 8 seconds.",
-        why: "Optimisation claims need the profiler detail. The before/after frame time, the three specific causes and the observable symptom removed prove genuine diagnosis rather than generic tweaking, and Switch is a recognisably hard target.",
+        why: "Optimization claims need the profiler detail. The before/after frame time, the three specific causes and the observable symptom removed prove genuine diagnosis rather than generic tweaking, and Switch is a recognisably hard target.",
       },
       {
         weak: "Fixed bugs and worked on various systems throughout development.",
@@ -1743,14 +1743,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Bug fixing is undifferentiated. Certification is a concrete, high-stakes milestone studios care about intensely, and a first-time pass is an unambiguous signal of rigour.",
       },
     ],
-    coreSkills: ["Gameplay programming", "Linear algebra & geometry", "Performance profiling & optimisation", "Memory management", "Physics & collision", "Data-driven system design", "Multiplayer / netcode basics", "Platform certification", "Debugging"],
+    coreSkills: ["Gameplay programming", "Linear algebra & geometry", "Performance profiling & optimization", "Memory management", "Physics & collision", "Data-driven system design", "Multiplayer / netcode basics", "Platform certification", "Debugging"],
     tools: ["Unity", "Unreal Engine", "C#", "C++", "Perforce", "Git", "RenderDoc", "Unity Profiler", "Unreal Insights", "Visual Studio", "Jira", "Blender"],
     metrics: ["Titles shipped and platforms", "Frame time / FPS before and after", "Draw calls or memory reduced", "Build or load time improvements", "Certification pass rate", "Systems owned end to end"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Implements features to spec. CV should show a finished project and solid engine plus maths fundamentals." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns systems end to end. CV should show a shipped title and one real optimisation with numbers." },
-      { level: "Senior (5–8 yrs)", expectation: "Owns architecture for a discipline area. CV should show platform work, performance leadership and mentoring." },
-      { level: "Lead / Principal (8+ yrs)", expectation: "Sets technical direction for a title. CV should show engine-level decisions and team outcomes." },
+      { level: "Junior (0–2 yrs)", expectation: "Implements features to spec. Resume should show a finished project and solid engine plus math fundamentals." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns systems end to end. Resume should show a shipped title and one real optimization with numbers." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns architecture for a discipline area. Resume should show platform work, performance leadership and mentoring." },
+      { level: "Lead / Principal (8+ yrs)", expectation: "Sets technical direction for a title. Resume should show engine-level decisions and team outcomes." },
     ],
     redFlags: [
       "Engine names with no shipped or finished project behind them.",
@@ -1771,7 +1771,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     technicalQuestions: [
       "Design an AI feature for a product you know well. What happens when the model is wrong?",
-      "How do you measure quality for a summarisation feature where there is no single correct answer?",
+      "How do you measure quality for a summarization feature where there is no single correct answer?",
       "Your model is right 85% of the time. Is that shippable? What determines the answer?",
       "When would you choose retrieval over fine-tuning, and what does each cost you?",
       "How do you decide between a faster cheap model and a slower accurate one?",
@@ -1805,16 +1805,16 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What should an AI Product Manager CV show?",
         answer:
-          "AI features actually shipped, with quality and adoption numbers alongside the business outcome. \"Shipped an AI summarisation feature to 200k users, reaching 78% task-success on a 500-case eval set with human review for low-confidence outputs, lifting weekly active use 14%\" demonstrates the whole discipline: evaluation rigour, failure-case design, and product impact. Roadmap ownership without a shipped model-backed feature reads as conventional PM experience with AI vocabulary attached.",
+          "AI features actually shipped, with quality and adoption numbers alongside the business outcome. \"Shipped an AI summarization feature to 200k users, reaching 78% task-success on a 500-case eval set with human review for low-confidence outputs, lifting weekly active use 14%\" demonstrates the whole discipline: evaluation rigour, failure-case design, and product impact. Roadmap ownership without a shipped model-backed feature reads as conventional PM experience with AI vocabulary attached.",
       },
       {
         question: "Is AI PM a real specialisation or just a title trend?",
         answer:
-          "It is real where the product's core value depends on model behaviour, because the skills genuinely differ: evaluation design, failure-mode UX, and cost modelling are not part of standard PM practice. It is a title trend where a company has added a chatbot to an existing product and renamed a PM role. Read the posting for whether they discuss evaluation and quality thresholds; the ones that do are hiring for the real specialisation, and their interviews will test it.",
+          "It is real where the product's core value depends on model behavior, because the skills genuinely differ: evaluation design, failure-mode UX, and cost modeling are not part of standard PM practice. It is a title trend where a company has added a chatbot to an existing product and renamed a PM role. Read the posting for whether they discuss evaluation and quality thresholds; the ones that do are hiring for the real specialization, and their interviews will test it.",
       },
     ],
     summaryExample:
-      "AI product manager with 5 years in B2B SaaS, 3 of them shipping model-backed features. Launched an AI summarisation and extraction suite to 200k users, reaching 78% task-success against a 500-case eval set with human review on low-confidence outputs, lifting weekly active use 14% while holding inference cost under $0.02 per active user.",
+      "AI product manager with 5 years in B2B SaaS, 3 of them shipping model-backed features. Launched an AI summarization and extraction suite to 200k users, reaching 78% task-success against a 500-case eval set with human review on low-confidence outputs, lifting weekly active use 14% while holding inference cost under $0.02 per active user.",
     bulletExamples: [
       {
         weak: "Managed the roadmap for AI-powered features using LLMs.",
@@ -1823,22 +1823,22 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Worked with engineering to integrate AI capabilities into the product.",
-        strong: "Redesigned the summarisation UX around confidence, surfacing source citations and routing low-confidence outputs to human review, cutting user-reported inaccuracies 62% without changing the underlying model.",
+        strong: "Redesigned the summarization UX around confidence, surfacing source citations and routing low-confidence outputs to human review, cutting user-reported inaccuracies 62% without changing the underlying model.",
         why: "Integration is execution. Solving a quality problem through interface design rather than model change is exactly the AI PM's distinctive contribution, and the outcome is measured.",
       },
       {
-        weak: "Analysed usage data to improve AI feature adoption.",
+        weak: "Analyzed usage data to improve AI feature adoption.",
         strong: "Cut inference cost 41% ($180k/yr) by routing 70% of requests to a smaller model after eval testing showed no measurable quality difference on the dominant use case, funding two further AI features within the same budget.",
-        why: "Unit economics are a first-class AI PM concern that most CVs omit entirely. Grounding the routing decision in eval evidence, and connecting the saving to what it unlocked, shows commercial and technical judgement together.",
+        why: "Unit economics are a first-class AI PM concern that most resumes omit entirely. Grounding the routing decision in eval evidence, and connecting the saving to what it unlocked, shows commercial and technical judgment together.",
       },
     ],
     coreSkills: ["AI product scoping", "Evaluation design & quality gates", "Failure-mode & trust UX", "Prompt / retrieval / fine-tune trade-offs", "Unit economics of inference", "Experimentation", "Stakeholder influence", "Responsible AI & disclosure"],
     tools: ["Amplitude", "Mixpanel", "SQL", "LangSmith", "Weights & Biases", "Figma", "Linear", "Jira", "OpenAI / Anthropic APIs", "Looker"],
     metrics: ["Task success rate against an eval set", "Precision / recall at the shipped threshold", "Adoption and retention of the AI feature", "Inference cost per user or per call", "Latency at p95", "User-reported error rate", "Business metric moved"],
     seniority: [
-      { level: "PM (2–5 yrs)", expectation: "Owns an AI feature area. CV should show one shipped model-backed feature with quality numbers." },
-      { level: "Senior PM (5–8 yrs)", expectation: "Owns an AI product surface and its economics. CV should show evaluation practice and a cost or quality trade-off you made." },
-      { level: "Principal / Group (8+ yrs)", expectation: "Sets AI product strategy. CV should show portfolio decisions, build-versus-buy calls and org-level impact." },
+      { level: "PM (2–5 yrs)", expectation: "Owns an AI feature area. Resume should show one shipped model-backed feature with quality numbers." },
+      { level: "Senior PM (5–8 yrs)", expectation: "Owns an AI product surface and its economics. Resume should show evaluation practice and a cost or quality trade-off you made." },
+      { level: "Principal / Group (8+ yrs)", expectation: "Sets AI product strategy. Resume should show portfolio decisions, build-versus-buy calls and org-level impact." },
     ],
     redFlags: [
       "AI features listed with no quality or evaluation measure.",
@@ -1849,7 +1849,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
   },
   "mobile-app-developer": {
     intro:
-      "Mobile interviews test constraints general software interviews ignore: battery, memory pressure, intermittent connectivity, and an app-store release cycle you cannot hotfix your way out of. Expect a platform-specific round, questions about lifecycle and state restoration, and probing on app size and startup time. CVs are read for shipped apps, install scale and store ratings.",
+      "Mobile interviews test constraints general software interviews ignore: battery, memory pressure, intermittent connectivity, and an app-store release cycle you cannot hotfix your way out of. Expect a platform-specific round, questions about lifecycle and state restoration, and probing on app size and startup time. Resumes are read for shipped apps, install scale and store ratings.",
     interviewFocus: [
       { area: "Platform lifecycle", detail: "Activity/fragment or view-controller lifecycle, process death and state restoration, background execution limits. The area where mobile differs most from web and where candidates most often reveal shallow experience." },
       { area: "Offline and sync", detail: "Local persistence, conflict resolution, and what the UI does on a flaky connection. Almost always asked because it is the defining mobile constraint." },
@@ -1869,7 +1869,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Tell me about a bad release. How did you detect it and what did you change?",
       "Describe a bug that only appeared on specific devices or OS versions.",
       "Tell me about a time you argued against a design that would not work on mobile.",
-      "Describe optimising an app that users complained was slow or heavy.",
+      "Describe optimizing an app that users complained was slow or heavy.",
       "Tell me about shipping under an app-store review constraint.",
     ],
     questionsToAsk: [
@@ -1897,7 +1897,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What do mobile interviews test that web interviews do not?",
         answer:
-          "Lifecycle and constraint reasoning. Web developers rarely think about the OS terminating their process, about restoring state after that happens, about background execution budgets, or about a release they cannot roll back for a day or two. Expect specific questions on process death and state restoration, offline behaviour, memory pressure on low-tier devices, and how you would handle a crash in production given store review latency.",
+          "Lifecycle and constraint reasoning. Web developers rarely think about the OS terminating their process, about restoring state after that happens, about background execution budgets, or about a release they cannot roll back for a day or two. Expect specific questions on process death and state restoration, offline behavior, memory pressure on low-tier devices, and how you would handle a crash in production given store review latency.",
       },
     ],
     summaryExample:
@@ -1906,7 +1906,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Developed mobile applications for Android and iOS using React Native.",
         strong: "Shipped 14 releases of a React Native app with 2.4M MAU across both stores, holding a 4.6 rating and 99.7% crash-free sessions through staged rollout and per-release crash gating.",
-        why: "Every mobile CV lists the platform and framework. Install scale, rating, crash-free rate and the release discipline behind them are what a hiring manager can actually compare between candidates.",
+        why: "Every mobile resume lists the platform and framework. Install scale, rating, crash-free rate and the release discipline behind them are what a hiring manager can actually compare between candidates.",
       },
       {
         weak: "Improved app performance and reduced loading times.",
@@ -1923,10 +1923,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["Kotlin", "Swift", "React Native", "Flutter", "Jetpack Compose", "SwiftUI", "Firebase", "Crashlytics", "Fastlane", "Xcode Instruments", "Android Studio Profiler", "Git"],
     metrics: ["Downloads / MAU", "Store rating and review volume", "Crash-free session rate", "Cold start time", "App binary size", "ANR rate (Android)", "Install conversion", "Release frequency"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Builds screens to spec. CV should show a published app and one platform properly." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns features including release. CV should show install scale and a performance or stability number." },
-      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and release process. CV should show a migration, offline architecture, or major performance work." },
-      { level: "Lead (8+ yrs)", expectation: "Sets mobile direction. CV should show platform decisions and team-level outcomes." },
+      { level: "Junior (0–2 yrs)", expectation: "Builds screens to spec. Resume should show a published app and one platform properly." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns features including release. Resume should show install scale and a performance or stability number." },
+      { level: "Senior (5–8 yrs)", expectation: "Owns architecture and release process. Resume should show a migration, offline architecture, or major performance work." },
+      { level: "Lead (8+ yrs)", expectation: "Sets mobile direction. Resume should show platform decisions and team-level outcomes." },
     ],
     redFlags: [
       "No published app or store link, which is conspicuous in this discipline.",
@@ -1938,7 +1938,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "cloud-engineer": {
     intro:
-      "Cloud Engineer interviews test whether you can design for failure and for the bill in equal measure. Expect an architecture round on a described workload, hands-on infrastructure-as-code, and detailed cost questions, because cloud spend is where most organisations feel the consequences of engineering decisions most directly. CVs are read for the scale of the estate and for cost and reliability numbers.",
+      "Cloud Engineer interviews test whether you can design for failure and for the bill in equal measure. Expect an architecture round on a described workload, hands-on infrastructure-as-code, and detailed cost questions, because cloud spend is where most organizations feel the consequences of engineering decisions most directly. Resumes are read for the scale of the estate and for cost and reliability numbers.",
     interviewFocus: [
       { area: "Architecture design", detail: "Designing a workload end to end: compute choice, networking, storage, availability zones, failover. Interviewers check whether you design to a stated availability target rather than over-engineering by default." },
       { area: "Infrastructure as code", detail: "Terraform or CloudFormation: module structure, state management, drift, and how you avoid a destructive plan reaching production." },
@@ -1971,7 +1971,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Which cloud should I specialise in?",
         answer:
-          "AWS still has the largest share of postings and the deepest job market, so it is the safest default. Azure is strong in enterprises with existing Microsoft agreements, particularly finance, healthcare and government. GCP is smaller but concentrated in data and ML-heavy organisations. The concepts transfer well (compute, networking, IAM and storage tiers map across providers), so go deep in one and be conversant in a second rather than shallow in three.",
+          "AWS still has the largest share of postings and the deepest job market, so it is the safest default. Azure is strong in enterprises with existing Microsoft agreements, particularly finance, healthcare and government. GCP is smaller but concentrated in data and ML-heavy organizations. The concepts transfer well (compute, networking, IAM and storage tiers map across providers), so go deep in one and be conversant in a second rather than shallow in three.",
       },
       {
         question: "What metrics belong on a Cloud Engineer CV?",
@@ -1981,24 +1981,24 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How much cost knowledge do interviews really expect?",
         answer:
-          "More than most candidates prepare for. It is common to be asked to estimate roughly what a design will cost, to explain why egress charges surprise people, or to walk through investigating an unexplained bill increase. This is because cloud cost is a direct output of architecture decisions, and engineers who cannot reason about it design expensive systems. You do not need pricing memorised. You need the mental model of which choices are expensive and why.",
+          "More than most candidates prepare for. It is common to be asked to estimate roughly what a design will cost, to explain why egress charges surprise people, or to walk through investigating an unexplained bill increase. This is because cloud cost is a direct output of architecture decisions, and engineers who cannot reason about it design expensive systems. You do not need pricing memorized. You need the mental model of which choices are expensive and why.",
       },
       {
         question: "Cloud Engineer or DevOps Engineer: what is the difference?",
         answer:
-          "They overlap heavily and titles are used loosely. Cloud Engineer skews toward infrastructure design, provisioning and cost: what the platform is. DevOps skews toward delivery pipelines, automation and developer experience: how software reaches it. In smaller organisations one person does both. Read the posting's tools: heavy Terraform, networking and cost language means cloud; heavy CI/CD, release and pipeline language means DevOps.",
+          "They overlap heavily and titles are used loosely. Cloud Engineer skews toward infrastructure design, provisioning and cost: what the platform is. DevOps skews toward delivery pipelines, automation and developer experience: how software reaches it. In smaller organizations one person does both. Read the posting's tools: heavy Terraform, networking and cost language means cloud; heavy CI/CD, release and pipeline language means DevOps.",
       },
     ],
     summaryExample:
       "Cloud engineer with 6 years running multi-account AWS estates in regulated healthcare. Manage 40 accounts and ~$3M annual spend, cut 38% ($1.1M/yr) through rightsizing, savings plans and S3 tiering with no SLO regression. Took infrastructure-as-code coverage from 45% to 98% and ran the first tested DR failover in the company's history.",
     bulletExamples: [
       {
-        weak: "Managed AWS cloud infrastructure and services for the organisation.",
+        weak: "Managed AWS cloud infrastructure and services for the organization.",
         strong: "Own 40 AWS accounts and ~$3M annual spend across 3 regions, taking Terraform coverage from 45% to 98% and eliminating manual console changes as a source of production drift.",
         why: "\"Managed infrastructure\" gives no scale. Account count, spend and IaC coverage let a reviewer size the estate immediately, and eliminating drift names the actual problem the coverage solved.",
       },
       {
-        weak: "Worked on cost optimisation initiatives for cloud spending.",
+        weak: "Worked on cost optimization initiatives for cloud spending.",
         strong: "Cut AWS spend 38% ($1.1M/yr) by rightsizing 300 instances, moving to compute savings plans, and tiering 400TB of S3 to intelligent-tiering, with no SLO regression across the period.",
         why: "Cost bullets need mechanism and a reliability caveat. Three named levers plus the absolute saving show real analysis rather than a one-off instance purge, and the SLO note pre-empts the obvious challenge.",
       },
@@ -2012,10 +2012,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["AWS", "Azure", "GCP", "Terraform", "CloudFormation", "Kubernetes", "Docker", "Ansible", "CloudWatch", "Datadog", "Python", "Bash", "Git"],
     metrics: ["Monthly / annual cloud spend managed and reduced", "Accounts, regions or workloads managed", "Uptime against SLO", "RTO / RPO achieved and tested", "Infrastructure-as-code coverage", "Migration scale (workloads, data volume)"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Provisions resources to a design. CV should show one cloud platform and basic IaC." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns infrastructure for a product area. CV should show spend managed and IaC ownership." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs multi-account architecture. CV should show a migration or major cost/reliability programme." },
-      { level: "Principal / Architect (8+ yrs)", expectation: "Sets cloud strategy. CV should show estate-wide standards, governance and financial outcomes." },
+      { level: "Junior (0–2 yrs)", expectation: "Provisions resources to a design. Resume should show one cloud platform and basic IaC." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns infrastructure for a product area. Resume should show spend managed and IaC ownership." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs multi-account architecture. Resume should show a migration or major cost/reliability program." },
+      { level: "Principal / Architect (8+ yrs)", expectation: "Sets cloud strategy. Resume should show estate-wide standards, governance and financial outcomes." },
     ],
     redFlags: [
       "Service names listed with no architecture you can describe end to end.",
@@ -2027,7 +2027,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "ai-engineer": {
     intro:
-      "AI Engineer has become distinct from ML Engineer: the work centres on building products on top of foundation models rather than training them. Interviews test retrieval design, evaluation, latency and cost control, and, most of all, how you handle a model that is confidently wrong. CVs are read for systems shipped to real users with quality measured rather than asserted.",
+      "AI Engineer has become distinct from ML Engineer: the work centers on building products on top of foundation models rather than training them. Interviews test retrieval design, evaluation, latency and cost control, and, most of all, how you handle a model that is confidently wrong. Resumes are read for systems shipped to real users with quality measured rather than asserted.",
     interviewFocus: [
       { area: "RAG and retrieval design", detail: "Chunking, embedding choice, hybrid search, reranking, and diagnosing whether a bad answer came from retrieval or generation. The most common technical round." },
       { area: "Evaluation", detail: "Building an eval set, choosing metrics for open-ended output, LLM-as-judge and its failure modes, and detecting regression when you change a prompt or model." },
@@ -2037,7 +2037,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     technicalQuestions: [
       "Design a RAG system over 500k internal documents. Where does it fail first?",
       "Your RAG answers are wrong. How do you determine whether it is retrieval or generation?",
-      "How do you evaluate a summarisation feature with no single correct answer?",
+      "How do you evaluate a summarization feature with no single correct answer?",
       "Explain prompt injection and how you would defend a system that reads untrusted content.",
       "How do you get reliable structured output from a model, and what do you do when it fails schema validation?",
       "Your p95 latency is 8 seconds. Walk me through reducing it.",
@@ -2060,7 +2060,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between an AI Engineer and an ML Engineer?",
         answer:
-          "AI Engineers build products on top of existing foundation models; ML Engineers build and serve models themselves. The AI Engineer skill set centres on retrieval, prompting, evaluation, latency and cost, closer to backend and product engineering than to research. ML Engineering involves training pipelines, feature stores and model serving infrastructure. Interviews differ accordingly: AI Engineer loops rarely ask you to derive backpropagation, and frequently ask you to design a RAG system and defend how you would know it works.",
+          "AI Engineers build products on top of existing foundation models; ML Engineers build and serve models themselves. The AI Engineer skill set centers on retrieval, prompting, evaluation, latency and cost, closer to backend and product engineering than to research. ML Engineering involves training pipelines, feature stores and model serving infrastructure. Interviews differ accordingly: AI Engineer loops rarely ask you to derive backpropagation, and frequently ask you to design a RAG system and defend how you would know it works.",
       },
       {
         question: "What is the most common RAG interview question?",
@@ -2087,7 +2087,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Prompt engineering without measurement is unfalsifiable. The corpus size, user scale, eval-backed accuracy and the specific retrieval architecture show engineering rather than experimentation.",
       },
       {
-        weak: "Optimised AI system performance and reduced API costs.",
+        weak: "Optimized AI system performance and reduced API costs.",
         strong: "Cut inference cost 60% ($240k/yr) and p95 latency from 8.1s to 2.1s via semantic caching, streaming responses, and routing 70% of traffic to a smaller model after eval showed no quality difference.",
         why: "Latency and cost are the two production constraints in this field. Naming three mechanisms and grounding the model routing in eval evidence shows the decisions were measured rather than guessed.",
       },
@@ -2097,14 +2097,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "\"Improving accuracy\" says nothing about method. Splitting retrieval from generation failure is the core RAG debugging skill, and the before/after proves the diagnosis was correct.",
       },
     ],
-    coreSkills: ["RAG & retrieval design", "Evaluation design", "Prompt engineering", "Vector search & embeddings", "Latency & cost optimisation", "Structured output enforcement", "Guardrails & prompt-injection defence", "API integration", "Observability for LLM systems"],
+    coreSkills: ["RAG & retrieval design", "Evaluation design", "Prompt engineering", "Vector search & embeddings", "Latency & cost optimization", "Structured output enforcement", "Guardrails & prompt-injection defense", "API integration", "Observability for LLM systems"],
     tools: ["Python", "OpenAI / Anthropic APIs", "LangChain", "LlamaIndex", "Pinecone", "pgvector", "Weaviate", "LangSmith", "Ragas", "FastAPI", "Redis", "Docker"],
     metrics: ["Answer accuracy against an eval set", "Eval set size and coverage", "p95 latency", "Cost per request", "Users / queries served", "Retrieval precision & recall", "Hallucination or error rate reported by users"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Implements against an existing AI system. CV should show one shipped feature with some measurement." },
-      { level: "Mid (2–4 yrs)", expectation: "Owns an AI feature end to end. CV should show an eval set and latency/cost numbers." },
-      { level: "Senior (4–7 yrs)", expectation: "Designs AI system architecture. CV should show retrieval design decisions and quality programmes." },
-      { level: "Staff (7+ yrs)", expectation: "Sets AI engineering direction. CV should show platform work and organisation-wide evaluation standards." },
+      { level: "Junior (0–2 yrs)", expectation: "Implements against an existing AI system. Resume should show one shipped feature with some measurement." },
+      { level: "Mid (2–4 yrs)", expectation: "Owns an AI feature end to end. Resume should show an eval set and latency/cost numbers." },
+      { level: "Senior (4–7 yrs)", expectation: "Designs AI system architecture. Resume should show retrieval design decisions and quality programs." },
+      { level: "Staff (7+ yrs)", expectation: "Sets AI engineering direction. Resume should show platform work and organization-wide evaluation standards." },
     ],
     redFlags: [
       "Prompt engineering claimed with no evaluation methodology.",
@@ -2116,7 +2116,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "cybersecurity-engineer": {
     intro:
-      "Cybersecurity Engineer sits between analyst and architect: you are expected to build and operate controls, not just monitor or design them. Interviews test hands-on depth across at least two domains, incident experience, and whether you can automate security work rather than performing it manually. CVs are read for controls implemented and risk measurably reduced.",
+      "Cybersecurity Engineer sits between analyst and architect: you are expected to build and operate controls, not just monitor or design them. Interviews test hands-on depth across at least two domains, incident experience, and whether you can automate security work rather than performing it manually. Resumes are read for controls implemented and risk measurably reduced.",
     interviewFocus: [
       { area: "Hands-on control implementation", detail: "Deploying and tuning a control end to end: EDR, WAF, SIEM detections, vulnerability management. Interviewers probe what broke and how you handled it." },
       { area: "Incident response", detail: "A described scenario walked through from detection to containment to eradication and lessons learned. Expected to be a real story, not a framework recital." },
@@ -2141,7 +2141,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     questionsToAsk: [
       "How is the security team structured, and where does this role sit?",
-      "What is the current vulnerability backlog and how is it prioritised?",
+      "What is the current vulnerability backlog and how is it prioritized?",
       "How much of the team's work is automated versus manual?",
       "How do engineering teams perceive security here, honestly?",
     ],
@@ -2171,7 +2171,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Security engineer with 6 years building and operating controls for a 5,000-endpoint estate in fintech. Deployed EDR to 98% coverage and automated tier-1 triage, cutting analyst manual handling 60%. Drove critical vulnerability time-to-patch from 40 days to 7 by integrating scanning into CI and agreeing SLAs with engineering. Python-first; GCIH certified.",
     bulletExamples: [
       {
-        weak: "Implemented and managed security tools across the organisation.",
+        weak: "Implemented and managed security tools across the organization.",
         strong: "Deployed CrowdStrike EDR to 5,000 endpoints reaching 98% coverage in 9 weeks, running a phased detect-only rollout that caught 40 legitimate applications before prevention was enabled.",
         why: "Tool deployment is the role's baseline. Coverage, timeline and the phased approach show a rollout that did not break production, which is the part that actually distinguishes competent security engineering.",
       },
@@ -2186,26 +2186,26 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Incident response participation is expected. Automating it is the engineering contribution, and containment time across a stated incident volume is the number a security leader compares directly.",
       },
     ],
-    coreSkills: ["Security automation & scripting", "EDR deployment & tuning", "Detection engineering", "Vulnerability management", "Incident response", "Cloud security", "Secure CI/CD", "Identity & access controls", "Threat modelling"],
+    coreSkills: ["Security automation & scripting", "EDR deployment & tuning", "Detection engineering", "Vulnerability management", "Incident response", "Cloud security", "Secure CI/CD", "Identity & access controls", "Threat modeling"],
     tools: ["Python", "CrowdStrike", "Splunk", "Microsoft Sentinel", "Tenable", "Qualys", "Burp Suite", "Snyk", "Terraform", "AWS Security Hub", "PowerShell", "MITRE ATT&CK"],
     metrics: ["Endpoints / systems protected and coverage %", "Critical vulnerability time-to-patch", "Mean time to detect and contain", "Alerts auto-triaged", "Manual toil removed", "Audit findings closed", "Controls deployed"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Operates existing tooling. CV should show hands-on work with one security platform and scripting basics." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns a control domain. CV should show a deployment with coverage numbers and incident experience." },
-      { level: "Senior (5–8 yrs)", expectation: "Designs and automates controls across domains. CV should show automation and risk-reduction metrics." },
-      { level: "Principal (8+ yrs)", expectation: "Sets security engineering direction. CV should show programme-level outcomes and engineering partnership." },
+      { level: "Junior (0–2 yrs)", expectation: "Operates existing tooling. Resume should show hands-on work with one security platform and scripting basics." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns a control domain. Resume should show a deployment with coverage numbers and incident experience." },
+      { level: "Senior (5–8 yrs)", expectation: "Designs and automates controls across domains. Resume should show automation and risk-reduction metrics." },
+      { level: "Principal (8+ yrs)", expectation: "Sets security engineering direction. Resume should show program-level outcomes and engineering partnership." },
     ],
     redFlags: [
       "Tool lists with no coverage or outcome numbers.",
       "No coding or automation evidence, limiting the role to console operation.",
       "Incident response described in framework language with no specific incident.",
-      "Certifications leading the CV ahead of applied work.",
+      "Certifications leading the resume ahead of applied work.",
     ],
   },
 
   "security-analyst": {
     intro:
-      "Security Analyst interviews centre on triage judgement under time pressure. Expect a live investigation scenario, questions about how you distinguish a true positive from noise, and probing on what you escalated and why. The discipline is entered more often than any other in security, so interviewers screen hard for people who have actually worked a queue rather than studied one.",
+      "Security Analyst interviews center on triage judgment under time pressure. Expect a live investigation scenario, questions about how you distinguish a true positive from noise, and probing on what you escalated and why. The discipline is entered more often than any other in security, so interviewers screen hard for people who have actually worked a queue rather than studied one.",
     interviewFocus: [
       { area: "Alert triage and investigation", detail: "Given an alert, describe what you check, in what order, and what would make you escalate. The defining round: interviewers watch whether you gather evidence before forming a conclusion." },
       { area: "Log and telemetry analysis", detail: "Reading authentication logs, process trees and network telemetry to reconstruct what happened. Often a hands-on exercise against sample data." },
@@ -2262,7 +2262,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Monitored security alerts and escalated incidents as needed.",
         strong: "Triaged ~350 alerts/week across 8,000 endpoints in Splunk, escalating 40 confirmed incidents with a 91% true-positive rate on escalations.",
-        why: "Monitoring is the role definition. Volume, estate size and, critically, the true-positive rate on your escalations show you exercise judgement rather than forwarding everything upward.",
+        why: "Monitoring is the role definition. Volume, estate size and, critically, the true-positive rate on your escalations show you exercise judgment rather than forwarding everything upward.",
       },
       {
         weak: "Investigated potential security threats and documented findings.",
@@ -2275,14 +2275,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Tuning is common; the mechanism and the hours returned are what make it credible. Naming why the old rules were noisy shows genuine detection understanding rather than threshold-raising.",
       },
     ],
-    coreSkills: ["Alert triage & investigation", "Log analysis", "SIEM querying", "MITRE ATT&CK", "Incident documentation", "Endpoint & network forensics basics", "Detection tuning", "Threat intelligence usage", "Escalation judgement"],
+    coreSkills: ["Alert triage & investigation", "Log analysis", "SIEM querying", "MITRE ATT&CK", "Incident documentation", "Endpoint & network forensics basics", "Detection tuning", "Threat intelligence usage", "Escalation judgment"],
     tools: ["Splunk", "Microsoft Sentinel", "CrowdStrike", "Wireshark", "KQL", "Elastic", "VirusTotal", "MITRE ATT&CK", "Python", "PowerShell", "TheHive"],
     metrics: ["Alerts triaged per week", "True-positive rate on escalations", "Mean time to triage", "Incidents confirmed", "False positives reduced through tuning", "Endpoints / estate covered", "Detections written or improved"],
     seniority: [
-      { level: "Tier 1 (0–2 yrs)", expectation: "Triages alerts against runbooks. CV should show volume handled and log-analysis fundamentals." },
-      { level: "Tier 2 (2–4 yrs)", expectation: "Investigates independently and tunes detections. CV should show a catch others missed and tuning outcomes." },
-      { level: "Tier 3 / Senior (4–7 yrs)", expectation: "Leads investigations and hunts proactively. CV should show detection engineering and automation." },
-      { level: "Lead (7+ yrs)", expectation: "Owns SOC process and mentoring. CV should show operational metrics moved across the team." },
+      { level: "Tier 1 (0–2 yrs)", expectation: "Triages alerts against runbooks. Resume should show volume handled and log-analysis fundamentals." },
+      { level: "Tier 2 (2–4 yrs)", expectation: "Investigates independently and tunes detections. Resume should show a catch others missed and tuning outcomes." },
+      { level: "Tier 3 / Senior (4–7 yrs)", expectation: "Leads investigations and hunts proactively. Resume should show detection engineering and automation." },
+      { level: "Lead (7+ yrs)", expectation: "Owns SOC process and mentoring. Resume should show operational metrics moved across the team." },
     ],
     redFlags: [
       "No alert volume or estate size, making the environment impossible to gauge.",
@@ -2332,12 +2332,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between a Business Analyst and a Product Owner?",
         answer:
-          "BAs analyse problems and specify solutions; Product Owners prioritise and own outcomes. In practice the roles overlap heavily and many organisations use the titles interchangeably. The clearest distinction is decision authority. A Product Owner decides what gets built and in what order, while a BA informs that decision with analysis and then specifies it properly. If you want the decision rights, target PO or PM roles; the analysis skills transfer directly.",
+          "BAs analyze problems and specify solutions; Product Owners prioritize and own outcomes. In practice the roles overlap heavily and many organizations use the titles interchangeably. The clearest distinction is decision authority. A Product Owner decides what gets built and in what order, while a BA informs that decision with analysis and then specifies it properly. If you want the decision rights, target PO or PM roles; the analysis skills transfer directly.",
       },
       {
         question: "What metrics belong on a Business Analyst CV?",
         answer:
-          "Process outcomes and delivery impact. Cycle time reduced, manual hours removed, error rates cut, cost saved, systems or users affected, and requirements delivered without rework. \"Mapped and redesigned the claims intake process across 4 teams, cutting handling time from 6 days to 2 and removing 3 duplicate approval steps\" works because it names the scope, the mechanism and the measurable result, which is unusual on BA CVs and therefore stands out.",
+          "Process outcomes and delivery impact. Cycle time reduced, manual hours removed, error rates cut, cost saved, systems or users affected, and requirements delivered without rework. \"Mapped and redesigned the claims intake process across 4 teams, cutting handling time from 6 days to 2 and removing 3 duplicate approval steps\" works because it names the scope, the mechanism and the measurable result, which is unusual on BA resumes and therefore stands out.",
       },
       {
         question: "Do Business Analysts need technical skills?",
@@ -2354,7 +2354,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
         why: "Requirements gathering is the role definition. Scope, user scale, and the post-release change rate prove the specifications were actually right, which is the only real measure of BA quality.",
       },
       {
-        weak: "Analysed business processes and recommended improvements.",
+        weak: "Analyzed business processes and recommended improvements.",
         strong: "Mapped the claims intake process end to end, finding 3 duplicate approval steps and a handoff causing 2-day queues; the redesign cut handling time from 6 days to 2 with no headcount change.",
         why: "\"Recommended improvements\" often means recommendations that went nowhere. Naming the specific waste found, the redesign and the outcome (with the constraint that headcount stayed flat) makes it concrete and credible.",
       },
@@ -2368,14 +2368,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["Jira", "Confluence", "Visio", "Lucidchart", "BPMN", "SQL", "Excel", "Power BI", "Miro", "Figma"],
     metrics: ["Cycle time reduced", "Manual hours removed", "Error or rework rate cut", "Cost saved", "Users or teams affected", "Post-release change request rate", "Adoption of delivered solutions"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Documents requirements within a defined scope. CV should show a delivered project and process-mapping ability." },
-      { level: "Mid (2–5 yrs)", expectation: "Owns analysis for a workstream. CV should show a process outcome you measured." },
-      { level: "Senior (5–8 yrs)", expectation: "Leads analysis across teams and shapes solutions. CV should show a reframed problem and cross-functional agreement." },
-      { level: "Lead / Principal (8+ yrs)", expectation: "Sets analysis practice and owns programme-level change. CV should show organisational outcomes." },
+      { level: "Junior (0–2 yrs)", expectation: "Documents requirements within a defined scope. Resume should show a delivered project and process-mapping ability." },
+      { level: "Mid (2–5 yrs)", expectation: "Owns analysis for a workstream. Resume should show a process outcome you measured." },
+      { level: "Senior (5–8 yrs)", expectation: "Leads analysis across teams and shapes solutions. Resume should show a reframed problem and cross-functional agreement." },
+      { level: "Lead / Principal (8+ yrs)", expectation: "Sets analysis practice and owns program-level change. Resume should show organizational outcomes." },
     ],
     redFlags: [
       "Documentation output described with no outcome attached.",
-      "No metrics anywhere, which is common on BA CVs and therefore an easy differentiator.",
+      "No metrics anywhere, which is common on BA resumes and therefore an easy differentiator.",
       "Methodology names (Agile, BPMN, MoSCoW) without a decision they produced.",
       "No evidence of ever challenging a stated requirement.",
     ],
@@ -2383,18 +2383,18 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "ui-designer": {
     intro:
-      "UI Designer interviews weight craft more heavily than UX roles (typography, spacing, hierarchy and colour are assessed directly), but modern hiring also expects systems thinking and enough accessibility knowledge to avoid shipping something unusable. Portfolios are judged on visual quality and on whether your decisions are defensible rather than decorative.",
+      "UI Designer interviews weight craft more heavily than UX roles (typography, spacing, hierarchy and color are assessed directly), but modern hiring also expects systems thinking and enough accessibility knowledge to avoid shipping something unusable. Portfolios are judged on visual quality and on whether your decisions are defensible rather than decorative.",
     interviewFocus: [
-      { area: "Visual craft", detail: "Typography, spacing rhythm, hierarchy, colour and contrast, assessed directly through your portfolio and any exercise. The area where UI roles differ most from UX." },
+      { area: "Visual craft", detail: "Typography, spacing rhythm, hierarchy, color and contrast, assessed directly through your portfolio and any exercise. The area where UI roles differ most from UX." },
       { area: "Design systems", detail: "Component structure, tokens, variants, and documentation. Increasingly the core of the job rather than an adjunct." },
       { area: "Design exercise", detail: "Redesigning a screen or building a component set to a brief, judged on decision-making as much as on the result." },
-      { area: "Handoff and feasibility", detail: "How you specify for engineers, what you know about responsive behaviour and states, and whether your designs survive implementation." },
+      { area: "Handoff and feasibility", detail: "How you specify for engineers, what you know about responsive behavior and states, and whether your designs survive implementation." },
     ],
     technicalQuestions: [
       "Walk me through your typographic scale and why you chose those steps.",
       "Redesign this settings screen. What is the hierarchy problem you are solving?",
       "How do you build a component with 6 variants without creating an unmaintainable mess?",
-      "How do you check colour contrast, and what do you do when the brand palette fails AA?",
+      "How do you check color contrast, and what do you do when the brand palette fails AA?",
       "What states does a button need, and which do designers most often forget?",
       "How do you design a data table that works on mobile?",
       "How do you decide spacing values, and why not just eyeball it?",
@@ -2416,7 +2416,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between a UI Designer and a UX Designer?",
         answer:
-          "UI focuses on the visual and interactive surface: typography, layout, colour, components, states. UX focuses on the problem and flow: research, information architecture, usability. In practice many roles combine both under the Product Designer title, and pure UI roles are most common at larger organisations with dedicated researchers, or in agency work. Read the responsibilities rather than the title: if the posting emphasises research and discovery it is a UX role regardless of what it is called.",
+          "UI focuses on the visual and interactive surface: typography, layout, color, components, states. UX focuses on the problem and flow: research, information architecture, usability. In practice many roles combine both under the Product Designer title, and pure UI roles are most common at larger organizations with dedicated researchers, or in agency work. Read the responsibilities rather than the title: if the posting emphasizes research and discovery it is a UX role regardless of what it is called.",
       },
       {
         question: "What should a UI portfolio show?",
@@ -2426,7 +2426,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How much do UI designers need to know about accessibility?",
         answer:
-          "Enough to not ship something excluding people, and it is increasingly asked about directly. The practical minimum is colour contrast ratios and how to check them, focus states and visible focus indicators, touch target sizing, and not using colour alone to convey meaning. A common interview question is what you do when the brand palette fails AA contrast. A strong answer involves adjusting values for interface use while preserving brand identity, rather than either ignoring it or refusing to work.",
+          "Enough to not ship something excluding people, and it is increasingly asked about directly. The practical minimum is color contrast ratios and how to check them, focus states and visible focus indicators, touch target sizing, and not using color alone to convey meaning. A common interview question is what you do when the brand palette fails AA contrast. A strong answer involves adjusting values for interface use while preserving brand identity, rather than either ignoring it or refusing to work.",
       },
       {
         question: "Do UI designers still need to know how to code?",
@@ -2445,15 +2445,15 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Created and maintained the company's design system in Figma.",
         strong: "Built a 70-component library with tokens, documented states and variant logic, adopted by 4 product teams and cutting new-screen design time ~35% while eliminating 12 near-duplicate button styles.",
-        why: "Design system work needs adoption attached to matter. The team count, time saved and the duplicate elimination convert an internal project into measurable organisational value.",
+        why: "Design system work needs adoption attached to matter. The team count, time saved and the duplicate elimination convert an internal project into measurable organizational value.",
       },
       {
         weak: "Ensured designs met accessibility standards.",
-        strong: "Brought 60 screens to WCAG 2.2 AA by rebuilding the palette's interface tokens for contrast while preserving brand colours for marketing, closing 90+ contrast violations without a rebrand.",
-        why: "\"Met standards\" is unverifiable. The specific tension (accessibility versus an existing brand) and how it was resolved shows judgement, and the violation count makes it concrete.",
+        strong: "Brought 60 screens to WCAG 2.2 AA by rebuilding the palette's interface tokens for contrast while preserving brand colors for marketing, closing 90+ contrast violations without a rebrand.",
+        why: "\"Met standards\" is unverifiable. The specific tension (accessibility versus an existing brand) and how it was resolved shows judgment, and the violation count makes it concrete.",
       },
     ],
-    coreSkills: ["Typography & type systems", "Layout & spacing systems", "Colour theory & contrast", "Design systems & tokens", "Component & variant architecture", "Interaction states", "Responsive design", "Accessibility (WCAG)", "Design handoff"],
+    coreSkills: ["Typography & type systems", "Layout & spacing systems", "Color theory & contrast", "Design systems & tokens", "Component & variant architecture", "Interaction states", "Responsive design", "Accessibility (WCAG)", "Design handoff"],
     tools: ["Figma", "Figma Variables", "Storybook", "Adobe Creative Suite", "Framer", "Principle", "Zeplin", "Stark", "Miro"],
     metrics: ["Components shipped and reused", "Design system adoption across teams", "Design-to-build time reduced", "Contrast / accessibility violations closed", "Style or component duplication removed", "Task completion or conversion where measured"],
     seniority: [
@@ -2480,7 +2480,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { area: "Communication", detail: "Explaining the same decision to an engineer and to a CFO. Central in customer-facing and pre-sales architecture roles." },
     ],
     technicalQuestions: [
-      "A retailer wants to modernise a legacy monolith. Where do you start?",
+      "A retailer wants to modernize a legacy monolith. Where do you start?",
       "Design an integration between 3 systems that were never meant to talk to each other.",
       "When would you recommend against microservices?",
       "How do you design for a stated 99.9% availability target, and what does 99.99% add in cost?",
@@ -2510,7 +2510,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How is a Solutions Architect different from a Software Architect?",
         answer:
-          "Solutions Architects design across systems and often across organisational boundaries, frequently customer-facing and with heavy commercial input. Software Architects go deeper within one system or product, closer to the code and the engineering team. Solutions roles weight communication, trade-off negotiation and cost; software architecture roles weight technical depth. Enterprise Architect sits above both, concerned with portfolio-level standards rather than individual solutions.",
+          "Solutions Architects design across systems and often across organizational boundaries, frequently customer-facing and with heavy commercial input. Software Architects go deeper within one system or product, closer to the code and the engineering team. Solutions roles weight communication, trade-off negotiation and cost; software architecture roles weight technical depth. Enterprise Architect sits above both, concerned with portfolio-level standards rather than individual solutions.",
       },
       {
         question: "What metrics belong on a Solutions Architect CV?",
@@ -2520,7 +2520,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Do I need certifications for architecture roles?",
         answer:
-          "Cloud provider architect certifications (AWS Solutions Architect Professional, Azure Solutions Architect Expert) carry genuine weight, particularly in consultancies and for partner-status reasons, and are often used as screening filters. TOGAF appears in enterprise architecture functions. That said, they establish credibility rather than capability: interviews test whether you can hold an ambiguous design conversation, and no certification prepares you for that. Get the one matching your target cloud, then practise designing aloud.",
+          "Cloud provider architect certifications (AWS Solutions Architect Professional, Azure Solutions Architect Expert) carry genuine weight, particularly in consultancies and for partner-status reasons, and are often used as screening filters. TOGAF appears in enterprise architecture functions. That said, they establish credibility rather than capability: interviews test whether you can hold an ambiguous design conversation, and no certification prepares you for that. Get the one matching your target cloud, then practice designing aloud.",
       },
     ],
     summaryExample:
@@ -2533,22 +2533,22 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Provided technical guidance and recommendations to stakeholders.",
-        strong: "Recommended against a proposed microservices rewrite after modelling the operational cost against a 6-engineer team, proposing a modular monolith instead, delivered 5 months earlier with no reliability regression.",
+        strong: "Recommended against a proposed microservices rewrite after modeling the operational cost against a 6-engineer team, proposing a modular monolith instead, delivered 5 months earlier with no reliability regression.",
         why: "\"Provided guidance\" is unmeasurable and often ignored. Talking a stakeholder out of a fashionable decision, with the reasoning and the outcome stated, is the strongest possible architecture bullet.",
       },
       {
         weak: "Worked with clients to understand their technical requirements.",
         strong: "Ran discovery across 4 business units to establish real availability needs, finding the stated 99.99% requirement applied to one workflow rather than the platform, cutting projected infrastructure cost 45%.",
-        why: "Requirements gathering becomes compelling when it changes the answer. Challenging an assumed non-functional requirement and quantifying the saving demonstrates exactly the commercial judgement the role exists for.",
+        why: "Requirements gathering becomes compelling when it changes the answer. Challenging an assumed non-functional requirement and quantifying the saving demonstrates exactly the commercial judgment the role exists for.",
       },
     ],
-    coreSkills: ["Architecture design & documentation", "Requirements & constraint elicitation", "Trade-off analysis", "Integration patterns", "Cloud architecture", "Cost modelling", "Stakeholder communication", "Migration strategy", "Non-functional requirements"],
+    coreSkills: ["Architecture design & documentation", "Requirements & constraint elicitation", "Trade-off analysis", "Integration patterns", "Cloud architecture", "Cost modeling", "Stakeholder communication", "Migration strategy", "Non-functional requirements"],
     tools: ["AWS", "Azure", "GCP", "Terraform", "Kubernetes", "Kafka", "MuleSoft", "Lucidchart", "C4 model", "ArchiMate", "Confluence"],
     metrics: ["Systems integrated / users served", "Solution cost and savings against alternatives", "Delivery timeline against estimate", "Availability target achieved", "Architectures adopted and built", "Migration scale"],
     seniority: [
-      { level: "Associate (3–5 yrs)", expectation: "Designs within a defined domain. CV should show hands-on engineering depth plus one solution you owned." },
-      { level: "Solutions Architect (5–9 yrs)", expectation: "Owns designs end to end including delivery. CV should show a built system with commercial outcomes." },
-      { level: "Senior / Principal (9+ yrs)", expectation: "Owns architecture across programmes. CV should show portfolio decisions and executive-level influence." },
+      { level: "Associate (3–5 yrs)", expectation: "Designs within a defined domain. Resume should show hands-on engineering depth plus one solution you owned." },
+      { level: "Solutions Architect (5–9 yrs)", expectation: "Owns designs end to end including delivery. Resume should show a built system with commercial outcomes." },
+      { level: "Senior / Principal (9+ yrs)", expectation: "Owns architecture across programs. Resume should show portfolio decisions and executive-level influence." },
     ],
     redFlags: [
       "Diagrams and designs with no evidence anything was built.",

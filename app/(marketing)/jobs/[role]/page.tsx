@@ -18,11 +18,11 @@ interface RoleDef {
 // Custom keywords/descriptions for roles that need them. Roles not listed auto-generate from label.
 const CUSTOM_ROLES: Record<string, Omit<RoleDef, "slug">> = {
   "frontend-developer": { title: "Frontend Developer", keywords: "frontend developer react typescript", description: "Find Frontend Developer jobs with your ATS match score per listing." },
-  "backend-developer": { title: "Backend Developer", keywords: "backend developer node python api", description: "Find Backend Developer jobs matched to your CV and skills." },
+  "backend-developer": { title: "Backend Developer", keywords: "backend developer node python api", description: "Find Backend Developer jobs matched to your resume and skills." },
   "mobile-app-developer": { title: "Mobile App Developer", keywords: "mobile developer ios android react native", description: "Find Mobile App Developer jobs for iOS, Android, and cross-platform." },
   "devops-engineer": { title: "DevOps Engineer", keywords: "devops engineer kubernetes aws", description: "Find DevOps Engineer jobs matched to your CI/CD and cloud skills." },
   "cloud-engineer": { title: "Cloud Engineer", keywords: "cloud engineer aws azure gcp", description: "Find Cloud Engineer jobs across AWS, Azure, and GCP." },
-  "machine-learning-engineer": { title: "Machine Learning Engineer", keywords: "machine learning engineer pytorch tensorflow", description: "Find ML Engineer jobs with CV match scoring." },
+  "machine-learning-engineer": { title: "Machine Learning Engineer", keywords: "machine learning engineer pytorch tensorflow", description: "Find ML Engineer jobs with resume match scoring." },
   "data-scientist": { title: "Data Scientist", keywords: "data scientist machine learning python", description: "Find Data Scientist positions matched to your analytical skills." },
   "data-analyst": { title: "Data Analyst", keywords: "data analyst sql tableau", description: "Find Data Analyst jobs matched to your analytical skills." },
   "data-engineer": { title: "Data Engineer", keywords: "data engineer pipeline spark", description: "Find Data Engineer jobs building data pipelines and infrastructure." },
@@ -31,7 +31,7 @@ const CUSTOM_ROLES: Record<string, Omit<RoleDef, "slug">> = {
   "penetration-tester": { title: "Penetration Tester", keywords: "penetration tester ethical hacker", description: "Find Penetration Tester and Ethical Hacker jobs." },
   "blockchain-developer": { title: "Blockchain Developer", keywords: "blockchain developer web3 solidity", description: "Find Blockchain Developer jobs in Web3 and decentralised systems." },
   "qa-engineer": { title: "QA Engineer", keywords: "QA engineer quality assurance testing", description: "Find QA Engineer jobs ensuring software quality." },
-  "database-administrator": { title: "Database Administrator", keywords: "DBA database administrator SQL", description: "Find DBA jobs managing and optimising database systems." },
+  "database-administrator": { title: "Database Administrator", keywords: "DBA database administrator SQL", description: "Find DBA jobs managing and optimizing database systems." },
 };
 
 // Auto-generate ROLES from ALL_ROLES, using custom overrides where available

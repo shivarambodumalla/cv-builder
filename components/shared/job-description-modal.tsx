@@ -61,7 +61,7 @@ export function JobDescriptionModal({ open, onOpenChange }: JobDescriptionModalP
     setSubmitting(true);
 
     const formData = new FormData();
-    formData.set("title", jobTitle || "Job Match CV");
+    formData.set("title", jobTitle || "Job Match resume");
 
     if (file) {
       formData.set("file", file);
@@ -173,7 +173,7 @@ export function JobDescriptionModal({ open, onOpenChange }: JobDescriptionModalP
             onClick={handleSubmit}
             disabled={submitting}
           >
-            {submitting ? "Creating..." : "Create & Analyse"}
+            {submitting ? "Creating..." : "Create & Analyze"}
           </Button>
         </div>
       </DialogContent>

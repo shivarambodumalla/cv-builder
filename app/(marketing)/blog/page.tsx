@@ -59,7 +59,7 @@ export default async function BlogPage() {
             </span>
           </h1>
           <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
-            Practical guides on CV writing, ATS optimisation, and job searching, written for real job seekers.
+            Practical guides on resume writing, ATS optimization, and job searching, written for real job seekers.
           </p>
         </div>
       </section>

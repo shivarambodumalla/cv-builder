@@ -91,7 +91,7 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
       formData.set("file", file);
     } else {
       if (!pastedText.trim()) {
-        setError("Paste your CV text");
+        setError("Paste your resume text");
         setSubmitting(false);
         return;
       }
@@ -128,8 +128,8 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>New CV</DialogTitle>
-          <DialogDescription>Upload a file or paste your CV text.</DialogDescription>
+          <DialogTitle>New resume</DialogTitle>
+          <DialogDescription>Upload a file or paste your resume text.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -137,7 +137,7 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
             <Label htmlFor="cv-title">Title</Label>
             <Input
               id="cv-title"
-              placeholder="e.g. Software Engineer CV"
+              placeholder="e.g. Software Engineer resume"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               disabled={submitting}
@@ -218,7 +218,7 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
 
             <TabsContent value="paste">
               <Textarea
-                placeholder="Paste your CV text here..."
+                placeholder="Paste your resume text here..."
                 rows={8}
                 value={pastedText}
                 onChange={(e) => setPastedText(e.target.value)}
@@ -245,7 +245,7 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
             onClick={handleSubmit}
             disabled={submitting}
           >
-            {submitting ? "Analysing..." : "Analyse CV"}
+            {submitting ? "Analysing..." : "Analyze resume"}
           </Button>
         </div>
       </DialogContent>

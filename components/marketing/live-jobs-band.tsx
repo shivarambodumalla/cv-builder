@@ -46,7 +46,7 @@ export function LiveJobsBand() {
                 <h2 className="text-[1.625rem] sm:text-3xl md:text-[2rem] font-bold tracking-[-0.025em] leading-[1.1] text-foreground">
                   1 million+ jobs,<br />matched to{" "}
                   <span className="relative inline-block">
-                    <span className="relative z-10">your CV</span>
+                    <span className="relative z-10">your resume</span>
                     <span className="absolute inset-x-0 bottom-1 h-3 sm:h-3.5 bg-[#A7E8D5]/70 dark:bg-success/25 -z-0 rounded-sm" />
                   </span>
                 </h2>

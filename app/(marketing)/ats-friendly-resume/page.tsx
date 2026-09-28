@@ -26,17 +26,17 @@ const FAQS = [
   {
     question: "Which ATS systems does CVEdge test against?",
     answer:
-      "CVEdge's ATS analyser models the parsing behaviour of Greenhouse, Workday, Lever, iCIMS, Taleo, and SmartRecruiters, the six systems that collectively handle over 80% of corporate job applications. Single-column CVEdge templates score 90–97 on the analyser for well-formatted content.",
+      "CVEdge's ATS analyzer models the parsing behavior of Greenhouse, Workday, Lever, iCIMS, Taleo, and SmartRecruiters, the six systems that collectively handle over 80% of corporate job applications. Single-column CVEdge templates score 90–97 on the analyzer for well-formatted content.",
   },
   {
     question: "What is a good ATS score?",
     answer:
-      "CVEdge scores resumes 0–100 across 6 categories. A score of 75+ is 'Strong Profile'. 90+ is 'Interview Ready'. Below 60 is 'At Risk', as format or content issues are likely causing ATS rejection. The average unoptimised resume scores 52 on CVEdge's analyser. After using Fix All ATS, average improvement is 24 points.",
+      "CVEdge scores resumes 0–100 across 6 categories. A score of 75+ is 'Strong Profile'. 90+ is 'Interview Ready'. Below 60 is 'At Risk', as format or content issues are likely causing ATS rejection. The average unoptimised resume scores 52 on CVEdge's analyzer. After using Fix All ATS, average improvement is 24 points.",
   },
   {
     question: "Do two-column resume templates pass ATS?",
     answer:
-      "Some do, some don't. Modern ATS systems (Greenhouse, Lever) handle well-structured two-column layouts. Older systems (Taleo, some Workday versions) can misparse two-column layouts, scrambling your experience into the wrong fields. CVEdge's ATS analyser scores each template and content combination individually. Always check before submitting.",
+      "Some do, some don't. Modern ATS systems (Greenhouse, Lever) handle well-structured two-column layouts. Older systems (Taleo, some Workday versions) can misparse two-column layouts, scrambling your experience into the wrong fields. CVEdge's ATS analyzer scores each template and content combination individually. Always check before submitting.",
   },
   {
     question: "What are the most common reasons resumes fail ATS?",
@@ -46,7 +46,7 @@ const FAQS = [
   {
     question: "How does CVEdge's Fix All ATS feature work?",
     answer:
-      "Fix All ATS sends your entire resume to CVEdge's AI, which rewrites your professional summary and all experience bullets to ATS-optimised standards in a single pass. It uses strong action verbs, adds measurable results with placeholders where data is missing, removes passive language, and ensures keywords are naturally integrated. Average ATS score improvement after Fix All: 24 points. You review every change before applying.",
+      "Fix All ATS sends your entire resume to CVEdge's AI, which rewrites your professional summary and all experience bullets to ATS-optimized standards in a single pass. It uses strong action verbs, adds measurable results with placeholders where data is missing, removes passive language, and ensures keywords are naturally integrated. Average ATS score improvement after Fix All: 24 points. You review every change before applying.",
   },
 ];
 
@@ -84,7 +84,7 @@ const ATS_CATEGORIES = [
 ];
 
 const SCORE_THRESHOLDS = [
-  { range: "90–100", label: "Interview Ready", colour: "text-success", desc: "Format and content optimised. Passes all major ATS systems." },
+  { range: "90–100", label: "Interview Ready", colour: "text-success", desc: "Format and content optimized. Passes all major ATS systems." },
   { range: "75–89", label: "Strong Profile", colour: "text-success", desc: "Minor improvements available. Will pass most ATS systems." },
   { range: "60–74", label: "Needs Improvement", colour: "text-warning", desc: "Format or content issues likely causing lower match rates." },
   { range: "Below 60", label: "At Risk", colour: "text-error", desc: "Significant issues. ATS rejection risk is high without fixes." },
@@ -103,7 +103,7 @@ export default function AtsFriendlyResumePage() {
         name="ATS Resume Score & Fixer"
         description="Instant ATS score across 6 categories. AI-powered rewriting to fix every issue before you apply."
         url="https://www.thecvedge.com/ats-friendly-resume"
-        serviceType="ATS Resume Optimiser"
+        serviceType="ATS Resume Optimizer"
         price="0"
         priceCurrency="USD"
       />
@@ -131,7 +131,7 @@ export default function AtsFriendlyResumePage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
+                <Link href="/upload-resume">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Build ATS resume from scratch</Link>
@@ -241,8 +241,8 @@ export default function AtsFriendlyResumePage() {
             <h2 className="text-xl font-bold tracking-tight text-center mb-8">How CVEdge gets you to 80+</h2>
             <div className="space-y-4">
               {[
-                { icon: BarChart3, step: "1", title: "Upload your CV and get an instant score", desc: "CVEdge analyses your resume across all 6 ATS categories in seconds. You see exactly which category is dragging your score, plus specific issues within each one." },
-                { icon: Zap, step: "2", title: "Fix everything with AI in one pass", desc: "Fix All ATS rewrites your summary and all experience bullets to ATS-optimised standards simultaneously. Review every change, accept what you like, and adjust what doesn't fit your voice." },
+                { icon: BarChart3, step: "1", title: "Upload your resume and get an instant score", desc: "CVEdge analyzes your resume across all 6 ATS categories in seconds. You see exactly which category is dragging your score, plus specific issues within each one." },
+                { icon: Zap, step: "2", title: "Fix everything with AI in one pass", desc: "Fix All ATS rewrites your summary and all experience bullets to ATS-optimized standards simultaneously. Review every change, accept what you like, and adjust what doesn't fit your voice." },
                 { icon: Target, step: "3", title: "Match your score to the specific job", desc: "Paste the job description to see your keyword match score. CVEdge shows which missing terms would increase your match the most. Add them in two clicks." },
               ].map((step) => (
                 <div key={step.title} className="flex gap-4 rounded-xl border bg-card p-5">
@@ -322,7 +322,7 @@ export default function AtsFriendlyResumePage() {
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-2xl font-bold tracking-tight">Stop getting filtered before a human sees you</h2>
             <p className="mt-3 text-muted-foreground">
-              Upload your CV now for a free ATS score. Understand exactly what to fix, then fix it with AI.
+              Upload your resume now for a free ATS score. Understand exactly what to fix, then fix it with AI.
             </p>
             <Button size="lg" className="mt-6" asChild>
               <Link href="/upload-resume">Get my free ATS score</Link>

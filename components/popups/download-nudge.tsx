@@ -17,8 +17,8 @@ export function DownloadNudge({ score, downloadCount, onDownload }: DownloadNudg
     <AppPopover
       id="download_nudge"
       title={`You scored ${score} but haven't downloaded`}
-      subtitle="Take your improved CV with you before you go."
-      ctaText="Download my CV"
+      subtitle="Take your improved resume with you before you go."
+      ctaText="Download my resume"
       onAction={onDownload}
       cooldownDays={3}
       enabled={hasScore && neverDownloaded}

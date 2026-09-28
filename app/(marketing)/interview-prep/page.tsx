@@ -13,7 +13,7 @@ export const metadata = {
   description: "Build a bank of interview stories from your CV, GitHub, and portfolio. Get AI-powered STAR frameworks, quality scoring, and job-specific prep, free.",
   openGraph: {
     title: "Interview Coach | CVEdge",
-    description: "Build interview stories from your CV. Get AI-powered STAR frameworks and job-specific prep.",
+    description: "Build interview stories from your resume. Get AI-powered STAR frameworks and job-specific prep.",
     url: "https://www.thecvedge.com/interview-prep",
     images: ["/og-interview-coach.png"],
   },
@@ -24,7 +24,7 @@ const STEPS = [
   {
     icon: Search,
     title: "Scan your sources",
-    body: "Add your CV, portfolio link, or GitHub. CVEdge finds your best experiences and structures them automatically.",
+    body: "Add your resume, portfolio link, or GitHub. CVEdge finds your best experiences and structures them automatically.",
     proofLabel: "Parsed in seconds",
     proofText: "14 experiences found",
   },
@@ -52,7 +52,7 @@ const FEATURES = [
   },
   {
     icon: Brain,
-    title: "AI extraction from your CV",
+    title: "AI extraction from your resume",
     desc: "CVEdge reads your experience and suggests stories you might have forgotten. You just confirm and refine.",
   },
   {
@@ -93,7 +93,7 @@ export default function InterviewStoriesPage() {
       />
       <HowToJsonLd
         name="How to prepare for interviews with CVEdge"
-        description="Build a library of STAR-format stories from your CV, then get job-matched prep before every interview."
+        description="Build a library of STAR-format stories from your resume, then get job-matched prep before every interview."
         image="https://www.thecvedge.com/og-interview-coach.png"
         totalTime="PT15M"
         steps={STEPS.map((s) => ({ name: s.title, text: s.body }))}
@@ -178,7 +178,7 @@ export default function InterviewStoriesPage() {
               >
                 <p className="text-sm font-semibold">{r.label} interview questions</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Technical and behavioural questions, plus what each round tests.
+                  Technical and behavioral questions, plus what each round tests.
                 </p>
               </Link>
             ))}
