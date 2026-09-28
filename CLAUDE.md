@@ -519,6 +519,7 @@ Two reset mechanisms coexist:
 - Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
 - Webhook: HMAC SHA256 signature verification
 - RLS: all tables have row-level security policies
+- Never write a "service role" policy as `FOR ALL USING (true)` without `TO service_role`: a policy with no role applies to `anon` too, whose key ships in the browser. The service role bypasses RLS, so admin-client code needs no policy at all (migration 00078 removed 14 of these). Public reads must be deliberate (`FOR SELECT`, published rows only); user policies should be `FOR SELECT TO authenticated` unless the browser genuinely writes
 - Never expose secrets in client code
 - Validate all inputs at system boundaries
 - Sanitize data where required
