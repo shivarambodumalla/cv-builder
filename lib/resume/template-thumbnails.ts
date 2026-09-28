@@ -97,3 +97,17 @@ export function templateThumbnail(template: TemplateName): TemplateThumbnail {
 export function thumbnailFileName(template: TemplateName): string {
   return fileName(template);
 }
+
+/**
+ * The homepage hero demos accent colors on the Orchid thumbnail. Each color
+ * has a real pre-rendered variant (the generator writes them), because a CSS
+ * hue-rotate over the baked JPG tinted the whole page and the headshot too.
+ * Order is the order the hero cycles through them.
+ */
+export const HERO_ACCENT_TEMPLATE: TemplateName = "orchid";
+export const HERO_ACCENTS = ["#7E22CE", "#DC2626", "#C2410C", "#0F766E", "#9F1239", "#B45309", "#065F46"] as const;
+export const HERO_ACCENT_WIDTH = 640;
+
+export function heroAccentSrc(hex: string): string {
+  return `/img/templates/hero/${HERO_ACCENT_TEMPLATE}-${hex.replace("#", "").toLowerCase()}.jpg`;
+}

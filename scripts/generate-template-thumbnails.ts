@@ -3,6 +3,10 @@
  *
  *   npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts
  *   npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts harvard classic
+ *   npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts hero
+ *
+ * `hero` (also run as part of a full run) renders the homepage hero's accent
+ * variants of the Orchid thumbnail into public/img/templates/hero/.
  *
  * Each template renders its assigned persona (lib/resume/sample-personas.ts)
  * through the same print document the PDF export uses, on Letter paper, and
@@ -21,7 +25,15 @@ import { RESUME_FONTS_URL } from "@/lib/resume/fonts";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { PERSONAS, TEMPLATE_PERSONA } from "@/lib/resume/sample-personas";
 import { TEMPLATE_LABELS } from "@/lib/resume/template-labels";
-import { PHOTO_TEMPLATES, THUMBNAIL_WIDTH, thumbnailFileName } from "@/lib/resume/template-thumbnails";
+import {
+  HERO_ACCENT_TEMPLATE,
+  HERO_ACCENT_WIDTH,
+  HERO_ACCENTS,
+  PHOTO_TEMPLATES,
+  THUMBNAIL_WIDTH,
+  heroAccentSrc,
+  thumbnailFileName,
+} from "@/lib/resume/template-thumbnails";
 import type { ResumeContent, TemplateName } from "@/lib/resume/types";
 
 const OUT_DIR = path.join(process.cwd(), "public/img/templates");
@@ -96,11 +108,12 @@ const MEASURE_CONTENT_BOTTOM = `(() => {
   return bottom;
 })()`;
 
-async function render(page: Page, cv: ResumeContent, template: TemplateName): Promise<number> {
+async function render(page: Page, cv: ResumeContent, template: TemplateName, accentColor?: string): Promise<number> {
   const design = normalizeDesignSettings({
     template,
     paperSize: "letter",
     avatarMode: PHOTO_TEMPLATES.has(template) ? "photo" : "initials",
+    ...(accentColor ? { accentColor } : {}),
   });
   const { html } = buildResumeDocument(cv, design);
   await page.setContent(html, { waitUntil: "load" });
@@ -112,9 +125,48 @@ async function render(page: Page, cv: ResumeContent, template: TemplateName): Pr
   return (await page.evaluate(MEASURE_CONTENT_BOTTOM)) as number;
 }
 
+/** Persona CV for a template, with its headshot (photo templates) and logo tiles. */
+async function sampleFor(template: TemplateName): Promise<ResumeContent> {
+  const slug = TEMPLATE_PERSONA[template];
+  const cv: ResumeContent = structuredClone(PERSONAS[slug]);
+  if (PHOTO_TEMPLATES.has(template)) cv.contact.photoUrl = await photoDataUrl(slug);
+  for (const item of cv.experience.items) item.logoUrl = monogramLogo(item.company);
+  for (const item of cv.education.items) item.logoUrl = monogramLogo(item.institution);
+  return cv;
+}
+
+/** Render until page 1 fits (trimming oldest bullets), then capture it as PNG. */
+async function capture(page: Page, cv: ResumeContent, template: TemplateName, accentColor?: string) {
+  let bottom = await render(page, cv, template, accentColor);
+  let trims = 0;
+  while (bottom > PAGE.height - BOTTOM_CLEARANCE_PX && trimOnce(cv)) {
+    trims++;
+    bottom = await render(page, cv, template, accentColor);
+  }
+  await applyPrintLayoutFixes(page);
+  const png = await page.screenshot({ clip: { x: 0, y: 0, ...PAGE }, type: "png" });
+  return { png, bottom, trims, fits: bottom <= PAGE.height - BOTTOM_CLEARANCE_PX };
+}
+
+async function renderHeroAccents(page: Page) {
+  const dir = path.join(process.cwd(), "public", path.dirname(heroAccentSrc(HERO_ACCENTS[0])));
+  fs.mkdirSync(dir, { recursive: true });
+  for (const hex of HERO_ACCENTS) {
+    const { png } = await capture(page, await sampleFor(HERO_ACCENT_TEMPLATE), HERO_ACCENT_TEMPLATE, hex);
+    const file = path.join(process.cwd(), "public", heroAccentSrc(hex));
+    await sharp(png).resize(HERO_ACCENT_WIDTH).jpeg({ quality: 80, mozjpeg: true, chromaSubsampling: "4:4:4" }).toFile(file);
+    console.log(`Hero accent        ${hex}          ${Math.round(fs.statSync(file).size / 1024)} KB`);
+  }
+}
+
 async function main() {
-  const only = process.argv.slice(2) as TemplateName[];
-  const templates = (Object.keys(TEMPLATE_PERSONA) as TemplateName[]).filter((t) => only.length === 0 || only.includes(t));
+  const args = process.argv.slice(2);
+  const hero = args.length === 0 || args.includes("hero");
+  const only = args.filter((a) => a !== "hero") as TemplateName[];
+  const templates =
+    args.length > 0 && only.length === 0
+      ? []
+      : (Object.keys(TEMPLATE_PERSONA) as TemplateName[]).filter((t) => only.length === 0 || only.includes(t));
   const unknown = only.filter((t) => !(t in TEMPLATE_PERSONA));
   if (unknown.length) throw new Error(`Unknown template(s): ${unknown.join(", ")}`);
 
@@ -127,21 +179,7 @@ async function main() {
 
     for (const template of templates) {
       const slug = TEMPLATE_PERSONA[template];
-      const cv: ResumeContent = structuredClone(PERSONAS[slug]);
-      if (PHOTO_TEMPLATES.has(template)) cv.contact.photoUrl = await photoDataUrl(slug);
-      for (const item of cv.experience.items) item.logoUrl = monogramLogo(item.company);
-      for (const item of cv.education.items) item.logoUrl = monogramLogo(item.institution);
-
-      let bottom = await render(page, cv, template);
-      let trims = 0;
-      while (bottom > PAGE.height - BOTTOM_CLEARANCE_PX && trimOnce(cv)) {
-        trims++;
-        bottom = await render(page, cv, template);
-      }
-      const fits = bottom <= PAGE.height - BOTTOM_CLEARANCE_PX;
-
-      await applyPrintLayoutFixes(page);
-      const png = await page.screenshot({ clip: { x: 0, y: 0, ...PAGE }, type: "png" });
+      const { png, bottom, trims, fits } = await capture(page, await sampleFor(template), template);
       const file = path.join(OUT_DIR, thumbnailFileName(template));
       await sharp(png).jpeg({ quality: 80, mozjpeg: true, chromaSubsampling: "4:4:4" }).toFile(file);
 
@@ -151,6 +189,7 @@ async function main() {
         `${TEMPLATE_LABELS[template].padEnd(18)} ${slug.padEnd(16)} fill ${String(fill).padStart(3)}%  trims ${String(trims).padStart(2)}  ${kb} KB${fits ? "" : "  ⚠ still overflows"}`
       );
     }
+    if (hero) await renderHeroAccents(page);
   } finally {
     await browser.close();
   }

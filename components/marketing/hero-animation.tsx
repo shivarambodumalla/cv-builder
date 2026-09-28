@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { templateThumbnail } from "@/lib/resume/template-thumbnails";
+import { HERO_ACCENTS, heroAccentSrc, templateThumbnail } from "@/lib/resume/template-thumbnails";
 import type { TemplateName } from "@/lib/resume/types";
 
 type Template = { slug: TemplateName; name: string; ac: string; tier: "Free" | "Pro" };
@@ -36,22 +36,22 @@ const ROTATION = TPL.slice(1)
   .concat(DEFAULT_SLUG);
 
 const COL = [
-  { c: "#065F46", n: "Emerald", hr: 0, sat: 1.0, br: 1.0 },
-  { c: "#1E3A8A", n: "Navy", hr: -50, sat: 0.85, br: 0.9 },
-  { c: "#7E22CE", n: "Violet", hr: 115, sat: 1.4, br: 0.95 },
-  { c: "#DC2626", n: "Crimson", hr: 148, sat: 1.6, br: 1.0 },
-  { c: "#C2410C", n: "Rust", hr: 40, sat: 1.5, br: 1.0 },
-  { c: "#0F766E", n: "Teal", hr: -18, sat: 1.2, br: 1.0 },
-  { c: "#9F1239", n: "Burgundy", hr: 160, sat: 1.5, br: 0.88 },
-  { c: "#1D4ED8", n: "Royal", hr: -55, sat: 1.0, br: 0.95 },
-  { c: "#B45309", n: "Cognac", hr: 32, sat: 1.3, br: 1.0 },
-  { c: "#831843", n: "Wine", hr: 165, sat: 1.4, br: 0.85 },
-  { c: "#374151", n: "Slate", hr: 0, sat: 0.0, br: 0.82 },
-  { c: "#14532D", n: "Forest", hr: -8, sat: 1.2, br: 0.85 },
+  { c: "#065F46", n: "Emerald" },
+  { c: "#1E3A8A", n: "Navy" },
+  { c: "#7E22CE", n: "Violet" },
+  { c: "#DC2626", n: "Crimson" },
+  { c: "#C2410C", n: "Rust" },
+  { c: "#0F766E", n: "Teal" },
+  { c: "#9F1239", n: "Burgundy" },
+  { c: "#1D4ED8", n: "Royal" },
+  { c: "#B45309", n: "Cognac" },
+  { c: "#831843", n: "Wine" },
+  { c: "#374151", n: "Slate" },
+  { c: "#14532D", n: "Forest" },
 ];
 
-const imgSrc = (slug: TemplateName) =>
-  `/_next/image?url=${encodeURIComponent(templateThumbnail(slug).src)}&w=640&q=80`;
+const optimised = (src: string) => `/_next/image?url=${encodeURIComponent(src)}&w=640&q=80`;
+const imgSrc = (slug: TemplateName) => optimised(templateThumbnail(slug).src);
 
 // The live-edit step shows TPL[0] (Orchid), whose thumbnail is the Rachel
 // Brooks sample persona (lib/resume/sample-personas.ts); keep these in step.
@@ -134,8 +134,6 @@ export function HeroAnimation() {
       root.style.setProperty("--a", color);
     };
 
-    let curF = "";
-
     const swap = (slug: TemplateName) => {
       const t = TPL.find((x) => x.slug === slug);
       if (!t) return;
@@ -145,10 +143,9 @@ export function HeroAnimation() {
         timers.delete(after);
         if (cancelled) return;
         i0.src = imgSrc(slug);
-        i0.style.filter = curF;
         const onLoad = () => {
           i0.style.opacity = "1";
-          i0.style.transition = "opacity 0.3s, filter 0.45s";
+          i0.style.transition = "opacity 0.3s";
         };
         i0.onload = onLoad;
         if (i0.complete) onLoad();
@@ -198,7 +195,8 @@ export function HeroAnimation() {
       epSaved.classList.remove("on");
     }
 
-    // Init stack images
+    // Init stack images; warm the accent variants so the color step never flashes.
+    for (const hex of HERO_ACCENTS) new Image().src = optimised(heroAccentSrc(hex));
     i0.src = imgSrc(TPL[0].slug);
     i1.src = imgSrc(TPL[1].slug);
     i2.src = imgSrc(TPL[2].slug);
@@ -241,38 +239,28 @@ export function HeroAnimation() {
         await doEdit();
         await wait(180);
 
-        // 2 — Accent color
+        // 2 — Accent color: swap to real renders of the default template in
+        // each accent (a CSS filter over the JPG tinted the photo and page too).
         hidePanels();
         swap(DEFAULT_SLUG);
-        curF = "";
-        i0.style.filter = "";
         showPanel("rp");
         rpFocus("color");
         mv(470, 310);
         await wait(700);
-        for (const ci of [2, 3, 4, 5, 6, 8, 0]) {
+        for (const hex of HERO_ACCENTS) {
           await wait(680 + EXTRA_DELAY);
           if (cancelled) return;
-          const cd = COL[ci];
+          const cd = COL.find((c) => c.c === hex);
+          if (!cd) continue;
           setAccent(cd.c);
-          // Saturation is intentionally omitted — the saturate() component
-          // drives otherwise-natural hue shifts into neon territory. Keeping
-          // only hue-rotate + brightness gives a realistic recolor.
-          const f =
-            cd.hr === 0 && cd.br === 1.0
-              ? ""
-              : `hue-rotate(${cd.hr}deg) brightness(${cd.br})`;
-          curF = f;
-          i0.style.filter = f;
-          i0.style.transition = "filter 0.45s ease";
+          i0.src = optimised(heroAccentSrc(hex));
           qa<HTMLElement>(".sw").forEach((s) =>
             s.classList.toggle("on", s.dataset.c === cd.c)
           );
           showToast(cd.n);
         }
         await wait(280);
-        curF = "";
-        i0.style.filter = "";
+        i0.src = imgSrc(DEFAULT_SLUG);
 
         // 3 — Font (we can't re-typeset a baked JPG, so feedback is limited
         // to the panel option highlight + a toast)
@@ -525,7 +513,7 @@ export function HeroAnimation() {
         .rcard :global(img) {
           width: 340px;
           display: block;
-          transition: opacity 0.22s ease, filter 0.45s ease;
+          transition: opacity 0.22s ease;
         }
         .panel {
           position: absolute;
