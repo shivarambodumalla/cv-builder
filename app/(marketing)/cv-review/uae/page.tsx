@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CvReviewPageTracker, CvReviewCtaTracker } from "../tracker";
 import { CvReviewFaqSection } from "../faq-section";
-import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
+import { Check, ShieldCheck, Zap, Award, Upload, FileEdit, Download } from "lucide-react";
 import { GccFormatSection } from "@/components/marketing/gcc-format-section";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for Dubai & UAE Jobs — Interview-Ready in 24h",
+  title: "Expert CV Review for Dubai & UAE Jobs: Interview-Ready in 24h",
   description: "Get your CV reviewed by a UAE hiring specialist. ATS-optimized for ADNOC, Emirates, Mubadala, Noon, and top Dubai employers. 80+ score guarantee. 24-hour turnaround.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review/uae",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": "CVEdge Expert CV Review — UAE & Dubai",
+  "name": "CVEdge Expert CV Review: UAE & Dubai",
   "url": "https://www.thecvedge.com/cv-review/uae",
   "description": "Professional CV review and rewrite by a UAE hiring specialist. ATS-optimized for Dubai, Abu Dhabi, and all UAE employers including ADNOC, Emirates Group, Mubadala, and Noon.",
   "provider": { "@type": "Organization", "name": "CVEdge", "url": "https://www.thecvedge.com" },
@@ -75,7 +75,7 @@ export default function CvReviewUaePage() {
           </h1>
 
           <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed mb-4 max-w-2xl mx-auto">
-            A dedicated UAE hiring specialist reviews, rewrites, and ATS-optimizes your CV for ADNOC, Emirates Group, Mubadala, Noon, Careem, and top Dubai &amp; Abu Dhabi employers — in 24 hours.
+            A dedicated UAE hiring specialist reviews, rewrites, and ATS-optimizes your CV for ADNOC, Emirates Group, Mubadala, Noon, Careem, and top Dubai &amp; Abu Dhabi employers in 24 hours.
           </p>
 
           <CvReviewCtaTracker ctaName="uae_hero_primary">
@@ -113,12 +113,12 @@ export default function CvReviewUaePage() {
             <div className="bg-primary rounded-2xl p-7 relative overflow-hidden">
               <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-white/5" />
               <h3 className="text-lg font-extrabold text-white mb-3">UAE ATS Filtering</h3>
-              <p className="text-sm leading-relaxed text-white/75">Major UAE employers — ADNOC, Emirates, DEWA, Etisalat/e&amp; — screen thousands of CVs through ATS before a human sees any. Wrong keyword format = instant rejection.</p>
+              <p className="text-sm leading-relaxed text-white/75">Major UAE employers (ADNOC, Emirates, DEWA, Etisalat/e&amp;) screen thousands of CVs through ATS before a human sees any. Wrong keyword format = instant rejection.</p>
             </div>
             <div className="rounded-2xl p-7 relative overflow-hidden" style={{ backgroundColor: "#1E3A5F" }}>
               <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.04)" }} />
               <h3 className="text-lg font-extrabold text-white mb-3">Free Zone vs. Mainland</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>DIFC, DMCC, ADGM, and mainland UAE employers have different expectations. Your CV needs to signal familiarity with the UAE market — not just translate a Western CV.</p>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>DIFC, DMCC, ADGM, and mainland UAE employers have different expectations. Your CV needs to signal familiarity with the UAE market, not just translate a Western CV.</p>
             </div>
             <div className="rounded-2xl p-7 relative overflow-hidden" style={{ backgroundColor: "#065F46" }}>
               <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} />
@@ -234,35 +234,6 @@ export default function CvReviewUaePage() {
               <ShieldCheck className="w-6 h-6 text-primary shrink-0" />
               <p className="font-bold text-sm"><span className="text-primary">80+ ATS score guarantee</span> on Professional Rewrite and Executive Package. Full refund within 7 days.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="py-16 px-5 lg:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-extrabold tracking-tight mb-3">What UAE candidates say</h2>
-            <p className="text-muted-foreground">Real results from professionals applying in the GCC.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              { initials: "SM", color: "#1a7a6d", quote: "My ATS score went from 61 to 94. Landed three interviews in the first week of sending it out.", name: "Sarah M.", role: "Senior PM · Dubai, UAE" },
-              { initials: "RK", color: "#1E3A5F", quote: "I had no idea my CV was being filtered out. The keyword audit and full rewrite made a massive difference for UAE roles.", name: "Rahul K.", role: "Software Engineer · Abu Dhabi, UAE" },
-              { initials: "PN", color: "#065F46", quote: "The reviewer understood exactly what UAE finance employers look for. My summary now reads like a regional expert wrote it.", name: "Priya N.", role: "Finance Analyst · DIFC, Dubai" },
-            ].map((t, i) => (
-              <div key={i} className="bg-card border border-border/80 rounded-2xl p-7 flex flex-col">
-                <Quote className="w-7 h-7 text-primary/30 mb-5 shrink-0" />
-                <p className="text-foreground font-medium leading-relaxed mb-7 flex-1">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-extrabold shrink-0" style={{ backgroundColor: t.color }}>{t.initials}</div>
-                  <div>
-                    <div className="font-extrabold text-sm">{t.name}</div>
-                    <div className="text-muted-foreground text-xs font-medium">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>

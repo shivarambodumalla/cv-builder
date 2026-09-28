@@ -6,12 +6,12 @@ import { CvReviewSectionTracker } from "./section-tracker";
 import {
   CheckCircle2, Upload, FileEdit, Download,
   ShieldCheck, Zap, Check, AlertCircle,
-  Quote, Clock, RotateCcw, FileText,
-  TrendingUp, Target, Award,
+  Clock, RotateCcw, FileText,
+  TrendingUp, Target, Award, UserCheck,
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for UAE, Saudi Arabia & GCC — Interview-Ready in 24h",
+  title: "Expert CV Review for UAE, Saudi Arabia & GCC: Interview-Ready in 24h",
   description: "Get your CV reviewed by a hiring specialist with expertise in UAE, Saudi Arabia, Qatar, Kuwait and GCC markets. ATS-optimized, every section rewritten. 80+ score guarantee.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review",
@@ -40,7 +40,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       "name": "Why is it only $9? Is the quality real?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Because it's a launch offer for the first 100 customers. We're running every review with care to earn trust and feedback. After 100 customers, the price goes to $29. The quality doesn't change — but the wait time will, so order during launch pricing." },
+      "acceptedAnswer": { "@type": "Answer", "text": "Because it's a launch offer for the first 100 customers. We're running every review with care to earn trust and feedback. After 100 customers, the price goes to $29. The quality doesn't change, but the wait time will, so order during launch pricing." },
     },
     {
       "@type": "Question",
@@ -55,12 +55,12 @@ const faqJsonLd = {
     {
       "@type": "Question",
       "name": "How is this different from the free CVEdge ATS scanner?",
-      "acceptedAnswer": { "@type": "Answer", "text": "The free tool diagnoses what's wrong. This service fixes it — a real human + AI rewrite using your actual experience. Diagnosis vs treatment." },
+      "acceptedAnswer": { "@type": "Answer", "text": "The free tool diagnoses what's wrong. This service fixes it. A real human + AI rewrite using your actual experience. Diagnosis vs treatment." },
     },
     {
       "@type": "Question",
-      "name": "Do you cover GCC markets — UAE, Saudi Arabia, Qatar, Kuwait?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes — GCC is one of our strongest markets. We have a dedicated Middle East hiring specialist with deep expertise across UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. If you're targeting roles in Dubai, Abu Dhabi, Riyadh, Jeddah, or Doha, your CV will be reviewed and rewritten by someone who knows exactly what GCC recruiters and local ATS systems look for." },
+      "name": "Do you cover GCC markets: UAE, Saudi Arabia, Qatar, Kuwait?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. GCC is one of our strongest markets. We have a dedicated Middle East hiring specialist with deep expertise across UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. If you're targeting roles in Dubai, Abu Dhabi, Riyadh, Jeddah, or Doha, your CV will be reviewed and rewritten by someone who knows exactly what GCC recruiters and local ATS systems look for." },
     },
   ],
 };
@@ -111,7 +111,7 @@ export default function CvReviewPage() {
       {/* ── 1. HERO ── */}
       <section className="overflow-hidden">
 
-        {/* Mobile photo — face-centered crop, testimonial overlay */}
+        {/* Mobile photo — face-centered crop */}
         <div className="relative lg:hidden w-full h-52 sm:h-60">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -120,31 +120,6 @@ export default function CvReviewPage() {
             className="w-full h-full object-cover object-[38%_25%]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-
-          {/* Mini testimonial */}
-          <div className="absolute bottom-2 left-3 right-3 rounded-xl px-3 py-2" style={{ backgroundColor: "rgba(10,18,40,0.88)" }}>
-            <p className="text-white text-[11px] font-medium leading-tight mb-1.5">
-              &ldquo;Score jumped from 61 to 94. Three interviews in the first week.&rdquo;
-            </p>
-            <div className="flex items-center justify-between">
-              <div className="flex gap-0.5">
-                {[0, 1, 2, 3, 4].map(i => <span key={i} className="text-amber-400 text-[10px]">★</span>)}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="flex -space-x-1.5">
-                  {[
-                    "https://randomuser.me/api/portraits/women/44.jpg",
-                    "https://randomuser.me/api/portraits/men/32.jpg",
-                    "https://randomuser.me/api/portraits/women/65.jpg",
-                  ].map((src, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img key={i} src={src} alt="" className="w-5 h-5 rounded-full border border-white/20 object-cover" style={{ zIndex: 3 - i }} />
-                  ))}
-                </div>
-                <span className="text-white/55 text-[10px] font-medium">+1,200</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Content */}
@@ -155,9 +130,9 @@ export default function CvReviewPage() {
               {/* LEFT */}
               <div className="text-center lg:text-left lg:pt-6">
 
-                {/* Badge — social proof */}
+                {/* Badge */}
                 <div className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold mb-4" style={{ backgroundColor: "rgba(30,58,95,0.08)", borderColor: "rgba(30,58,95,0.2)", color: "#1E3A5F" }}>
-                  1,200+ CVs reviewed &nbsp;&middot;&nbsp; Free ATS check
+                  Human expert review &nbsp;&middot;&nbsp; Free ATS check
                 </div>
 
                 <h1 className="text-[1.55rem] leading-[1.1] sm:text-[1.9rem] lg:text-5xl xl:text-6xl font-extrabold tracking-tight mb-2 lg:mb-5">
@@ -195,7 +170,7 @@ export default function CvReviewPage() {
                 </div>
               </div>
 
-              {/* RIGHT — Idea 1: Portrait photo + floating cards */}
+              {/* RIGHT — portrait photo + floating cards */}
               <div className="relative hidden lg:block">
                 <div className="absolute inset-0 rounded-[2.5rem] bg-primary/15 translate-x-3 translate-y-3" />
 
@@ -206,53 +181,10 @@ export default function CvReviewPage() {
                     alt="Professional CV review specialist"
                     className="w-full h-full object-cover object-[35%_center]"
                   />
-
-                  {/* Testimonial card — dark overlay inside photo */}
-                  <div className="absolute bottom-4 left-4 right-4 rounded-2xl p-4" style={{ backgroundColor: "rgba(10,18,40,0.88)" }}>
-                    <p className="text-white text-[13px] font-medium leading-relaxed mb-3">
-                      &ldquo;My ATS score went from 61 to 94. Got three interviews in the first week of applying.&rdquo;
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-0.5">
-                        {[0, 1, 2, 3, 4].map(i => <span key={i} className="text-amber-400 text-sm">★</span>)}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src="https://randomuser.me/api/portraits/women/44.jpg"
-                          alt="Sarah M."
-                          className="w-8 h-8 rounded-full object-cover border-2"
-                          style={{ borderColor: "rgba(255,255,255,0.2)" }}
-                        />
-                        <div>
-                          <div className="text-white text-[11px] font-bold leading-none">Sarah M.</div>
-                          <div className="text-[10px] font-medium leading-none mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>Senior PM · Monzo</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                {/* ① Rating + stacked avatars — violet */}
-                <div className="absolute -bottom-5 -left-7 rounded-2xl px-4 py-3 shadow-xl z-10 overflow-hidden" style={{ backgroundColor: "#5B21B6" }}>
-                  <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full opacity-20" style={{ backgroundColor: "#7C3AED" }} />
-                  <div className="flex -space-x-2 mb-2 relative">
-                    {[
-                      "https://randomuser.me/api/portraits/men/32.jpg",
-                      "https://randomuser.me/api/portraits/women/65.jpg",
-                      "https://randomuser.me/api/portraits/men/41.jpg",
-                      "https://randomuser.me/api/portraits/women/29.jpg",
-                    ].map((src, i) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={i} src={src} alt="" className="w-7 h-7 rounded-full object-cover" style={{ border: "2px solid #5B21B6", zIndex: 4 - i }} />
-                    ))}
-                  </div>
-                  <div className="text-sm font-extrabold text-white relative">★ 4.9 / 5.0</div>
-                  <div className="text-[11px] font-medium relative" style={{ color: "rgba(255,255,255,0.65)" }}>2,400+ CVs reviewed</div>
-                </div>
-
-                {/* ② 80+ Guarantee — emerald */}
-                <div className="absolute -top-4 -left-7 rounded-2xl px-4 py-3 shadow-xl z-10 overflow-hidden" style={{ backgroundColor: "#065F46" }}>
+                {/* ① 80+ Guarantee — emerald */}
+                <div className="absolute -bottom-5 -left-7 rounded-2xl px-4 py-3 shadow-xl z-10 overflow-hidden" style={{ backgroundColor: "#065F46" }}>
                   <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-full opacity-20" style={{ backgroundColor: "#34D399" }} />
                   <div className="flex items-center gap-2 relative">
                     <ShieldCheck className="w-5 h-5 text-white shrink-0" />
@@ -263,34 +195,27 @@ export default function CvReviewPage() {
                   </div>
                 </div>
 
-                {/* ③ Expert ready — deep ocean blue */}
+                {/* ② Human reviewer — deep ocean blue */}
                 <div className="absolute top-[30%] -right-7 rounded-2xl px-3.5 py-3 shadow-xl z-10 overflow-hidden" style={{ backgroundColor: "#0C4A6E" }}>
                   <div className="absolute -top-3 -left-3 w-10 h-10 rounded-full opacity-20" style={{ backgroundColor: "#38BDF8" }} />
                   <div className="flex items-center gap-2.5 relative">
-                    <div className="relative shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="https://randomuser.me/api/portraits/women/68.jpg"
-                        alt="Expert"
-                        className="w-9 h-9 rounded-full object-cover"
-                        style={{ border: "2px solid rgba(255,255,255,0.25)" }}
-                      />
-                      <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2" style={{ backgroundColor: "#4ADE80", borderColor: "#0C4A6E" }} />
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
+                      <UserCheck className="w-[18px] h-[18px] text-white" />
                     </div>
                     <div>
-                      <div className="text-[12px] font-extrabold leading-none text-white">Expert ready</div>
-                      <div className="text-[10px] leading-none mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>Reviewing now</div>
+                      <div className="text-[12px] font-extrabold leading-none text-white">Human expert</div>
+                      <div className="text-[10px] leading-none mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>Not a bot</div>
                     </div>
                   </div>
                 </div>
 
-                {/* ④ Delivery — warm amber */}
+                {/* ③ Delivery — warm amber */}
                 <div className="absolute -top-4 -right-4 rounded-2xl px-3.5 py-3 shadow-xl z-10 overflow-hidden" style={{ backgroundColor: "#92400E" }}>
                   <div className="absolute -bottom-2 -left-2 w-10 h-10 rounded-full opacity-20" style={{ backgroundColor: "#FCD34D" }} />
                   <div className="flex items-center gap-2 relative">
                     <Zap className="w-4 h-4 text-white shrink-0" />
                     <div>
-                      <div className="text-[12px] font-extrabold leading-none text-white">24hr avg.</div>
+                      <div className="text-[12px] font-extrabold leading-none text-white">24 hours</div>
                       <div className="text-[10px] leading-none mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>Delivery</div>
                     </div>
                   </div>
@@ -303,7 +228,7 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 3. PROBLEM ── */}
+      {/* ── 2. PROBLEM ── */}
       <section className="py-12 px-4 lg:py-24 lg:px-6 relative">
         <CvReviewSectionTracker section="problem" />
         <div className="max-w-6xl mx-auto">
@@ -331,7 +256,7 @@ export default function CvReviewPage() {
                 <div className="text-3xl lg:text-4xl font-extrabold text-white/20 mb-1">01</div>
                 <h3 className="text-lg lg:text-xl font-extrabold mb-2 lg:mb-3 text-white">Wrong Keywords</h3>
                 <p className="text-sm lg:text-base leading-relaxed text-white/75">
-                  Your CV uses job titles and skills that don&apos;t match recruiter search terms — invisible to ATS filters before a human ever sees it.
+                  Your CV uses job titles and skills that don&apos;t match recruiter search terms, invisible to ATS filters before a human ever sees it.
                 </p>
               </div>
             </div>
@@ -347,7 +272,7 @@ export default function CvReviewPage() {
                 <div className="text-3xl lg:text-4xl font-extrabold mb-1" style={{ color: "rgba(255,255,255,0.15)" }}>02</div>
                 <h3 className="text-lg lg:text-xl font-extrabold mb-2 lg:mb-3 text-white">Weak Bullets</h3>
                 <p className="text-sm lg:text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>
-                  Vague phrases like &quot;responsible for&quot; signal nothing. Recruiters need impact — numbers, outcomes, and strong action verbs.
+                  Vague phrases like &quot;responsible for&quot; signal nothing. Recruiters need impact: numbers, outcomes, and strong action verbs.
                 </p>
               </div>
             </div>
@@ -372,60 +297,22 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 4. EXPERT PROFILE ── */}
+      {/* ── 3. EXPERT PROFILE ── */}
       <section className="py-12 px-4 lg:py-24 lg:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="flex flex-col items-center gap-8 w-full">
-              {/* Expert team card */}
+              {/* Markets card */}
               <div className="bg-card border border-border/80 rounded-3xl p-8 w-full max-w-sm">
-                <p className="text-xs font-bold text-primary uppercase tracking-widest mb-8 text-center">Our Review Specialists</p>
-
-                {/* Row 1 — 3 large avatars */}
-                <div className="flex justify-center -space-x-4 mb-4">
-                  {[
-                    "https://randomuser.me/api/portraits/men/32.jpg",
-                    "https://randomuser.me/api/portraits/women/44.jpg",
-                    "https://randomuser.me/api/portraits/men/68.jpg",
-                  ].map((src, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={src}
-                      alt="Review specialist"
-                      className="w-16 h-16 rounded-full border-4 border-card object-cover"
-                      style={{ zIndex: 3 - i }}
-                    />
+                <p className="text-xs font-bold text-primary uppercase tracking-widest mb-6 text-center">Markets we cover</p>
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                  {["UAE", "Saudi Arabia", "Qatar", "Kuwait", "Bahrain", "Oman", "India", "UK", "US"].map((market) => (
+                    <span key={market} className="text-xs font-bold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                      {market}
+                    </span>
                   ))}
                 </div>
-
-                {/* Row 2 — 4 smaller avatars */}
-                <div className="flex justify-center -space-x-3 mb-8">
-                  {[
-                    "https://randomuser.me/api/portraits/women/65.jpg",
-                    "https://randomuser.me/api/portraits/men/41.jpg",
-                    "https://randomuser.me/api/portraits/women/29.jpg",
-                    "https://randomuser.me/api/portraits/men/77.jpg",
-                  ].map((src, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={src}
-                      alt="Review specialist"
-                      className="w-11 h-11 rounded-full border-[3px] border-card object-cover"
-                      style={{ zIndex: 4 - i }}
-                    />
-                  ))}
-                  <div
-                    className="w-11 h-11 rounded-full border-[3px] border-card bg-muted flex items-center justify-center font-extrabold text-xs text-foreground"
-                    style={{ zIndex: 0 }}
-                  >
-                    +8
-                  </div>
-                </div>
-
-                <p className="text-center font-extrabold text-foreground text-lg">15 hiring specialists</p>
-                <p className="text-center text-sm text-muted-foreground mt-1 font-medium">across GCC, India, UK — tech, finance &amp; consulting</p>
+                <p className="text-center text-sm text-muted-foreground font-medium">Tech, finance, consulting &amp; operations roles</p>
               </div>
 
               {/* Stats */}
@@ -435,12 +322,12 @@ export default function CvReviewPage() {
                   <div className="text-xs lg:text-sm text-muted-foreground font-bold mt-1">Years in hiring</div>
                 </div>
                 <div>
-                  <div className="text-2xl lg:text-3xl font-extrabold text-primary">2,400+</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground font-bold mt-1">CVs reviewed</div>
+                  <div className="text-2xl lg:text-3xl font-extrabold text-primary">24h</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground font-bold mt-1">Delivery</div>
                 </div>
                 <div>
-                  <div className="text-2xl lg:text-3xl font-extrabold text-primary">94%</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground font-bold mt-1">Interview rate</div>
+                  <div className="text-2xl lg:text-3xl font-extrabold text-primary">80+</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground font-bold mt-1">ATS score guarantee</div>
                 </div>
               </div>
             </div>
@@ -458,7 +345,7 @@ export default function CvReviewPage() {
                 {[
                   "Former talent acquisition lead at top-tier companies across GCC, India, and the UK",
                   "Expertise across tech, finance, consulting, and operations in UAE, Saudi Arabia, and global markets",
-                  "Dedicated Middle East hiring specialist on the team — covers Dubai, Riyadh, Doha and beyond",
+                  "Dedicated Middle East hiring specialist on the team, covering Dubai, Riyadh, Doha and beyond",
                   "Writes personalised notes explaining every change made",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3 font-medium">
@@ -472,7 +359,7 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 5. WHAT YOU GET ── */}
+      {/* ── 4. WHAT YOU GET ── */}
       <section className="py-12 px-4 lg:py-24 lg:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 lg:mb-16">
@@ -540,7 +427,7 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 6. HOW IT WORKS ── */}
+      {/* ── 5. HOW IT WORKS ── */}
       <section className="py-12 px-4 lg:py-24 lg:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10 lg:mb-20">
@@ -582,7 +469,7 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 7. PRICING — 3 BLOCKS ── */}
+      {/* ── 6. PRICING — 3 BLOCKS ── */}
       <section id="pricing" className="py-12 px-4 lg:py-24 lg:px-6 relative">
         <CvReviewSectionTracker section="pricing" />
         <div className="max-w-6xl mx-auto">
@@ -725,62 +612,7 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 8. TESTIMONIALS ── */}
-      <section className="py-12 px-4 lg:py-24 lg:px-6 relative">
-        <CvReviewSectionTracker section="testimonials" />
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-2 lg:mb-4">What candidates say</h2>
-            <p className="text-muted-foreground text-sm sm:text-base lg:text-xl">Real results from real people.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4 lg:gap-6">
-            <div className="bg-card border border-border/80 rounded-2xl p-5 lg:p-8 flex flex-col">
-              <Quote className="w-6 h-6 lg:w-8 lg:h-8 text-primary/30 mb-4 lg:mb-6 shrink-0" />
-              <p className="text-foreground font-medium leading-relaxed mb-5 lg:mb-8 flex-1">
-                &ldquo;My ATS score went from 61 to 94. Landed three interviews in the first week of sending it out.&rdquo;
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-extrabold shrink-0" style={{ backgroundColor: "#1a7a6d" }}>SM</div>
-                <div>
-                  <div className="font-extrabold text-sm">Sarah M.</div>
-                  <div className="text-muted-foreground text-xs font-medium">Senior PM · Applied to Monzo</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border/80 rounded-2xl p-5 lg:p-8 flex flex-col">
-              <Quote className="w-6 h-6 lg:w-8 lg:h-8 text-primary/30 mb-4 lg:mb-6 shrink-0" />
-              <p className="text-foreground font-medium leading-relaxed mb-5 lg:mb-8 flex-1">
-                &ldquo;I had no idea my CV was being filtered out. The keyword audit and full rewrite made a massive difference.&rdquo;
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-extrabold shrink-0" style={{ backgroundColor: "#1E3A5F" }}>RK</div>
-                <div>
-                  <div className="font-extrabold text-sm">Rahul K.</div>
-                  <div className="text-muted-foreground text-xs font-medium">Software Engineer · Dubai, UAE</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border/80 rounded-2xl p-5 lg:p-8 flex flex-col">
-              <Quote className="w-6 h-6 lg:w-8 lg:h-8 text-primary/30 mb-4 lg:mb-6 shrink-0" />
-              <p className="text-foreground font-medium leading-relaxed mb-5 lg:mb-8 flex-1">
-                &ldquo;The reviewer rewrote my entire summary. It actually sounds like me, just a much stronger and clearer version.&rdquo;
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-extrabold shrink-0" style={{ backgroundColor: "#92400e" }}>PN</div>
-                <div>
-                  <div className="font-extrabold text-sm">Priya N.</div>
-                  <div className="text-muted-foreground text-xs font-medium">Finance Analyst · Riyadh, Saudi Arabia</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 9. FAQ ── */}
+      {/* ── 7. FAQ ── */}
       <section className="py-12 px-4 lg:py-24 lg:px-6 relative">
         <CvReviewSectionTracker section="faq" />
         <div className="max-w-3xl mx-auto">
@@ -791,7 +623,7 @@ export default function CvReviewPage() {
         </div>
       </section>
 
-      {/* ── 10. FINAL CTA ── */}
+      {/* ── 8. FINAL CTA ── */}
       <section className="py-10 px-4 pb-16 lg:py-20 lg:px-6 lg:pb-32 relative">
         <CvReviewSectionTracker section="cta" />
         <div className="max-w-5xl mx-auto">
@@ -812,7 +644,7 @@ export default function CvReviewPage() {
                 Get your CV interview-ready<br className="hidden md:block" /> in 24 hours.
               </h2>
               <p className="text-sm sm:text-base lg:text-xl mb-7 lg:mb-10 max-w-2xl mx-auto font-medium" style={{ color: "rgba(255,255,255,0.8)" }}>
-                Stop guessing why you aren&apos;t getting interviews. Whether you&apos;re applying in Dubai, Riyadh, London, or Mumbai — let an industry expert rewrite your CV today.
+                Stop guessing why you aren&apos;t getting interviews. Whether you&apos;re applying in Dubai, Riyadh, London, or Mumbai, let an industry expert rewrite your CV today.
               </p>
               <CvReviewCtaTracker ctaName="footer_primary">
                 <Link href="/cv-review/new" className="inline-flex justify-center items-center bg-background hover:bg-card text-foreground px-8 py-4 lg:px-12 lg:py-5 rounded-full font-bold text-base lg:text-xl transition-colors border border-border/50">
@@ -835,14 +667,14 @@ export default function CvReviewPage() {
       <section className="container mx-auto max-w-4xl px-4 py-14">
         <h2 className="text-xl font-bold tracking-tight mb-2">CV review by region</h2>
         <p className="text-sm text-muted-foreground mb-6">
-          Hiring conventions differ by market — photo, nationality, visa status and length expectations all change.
+          Hiring conventions differ by market: photo, nationality, visa status and length expectations all change.
           These guides cover what reviewers in each region look for.
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           {[
             { href: "/cv-review/uae", label: "UAE CV review", detail: "Dubai and Abu Dhabi conventions, visa status, photo expectations." },
             { href: "/cv-review/saudi-arabia", label: "Saudi Arabia CV review", detail: "Saudisation context, credential expectations and formatting." },
-            { href: "/cv-review/gcc", label: "GCC CV review", detail: "Qatar, Kuwait, Bahrain and Oman — shared regional norms." },
+            { href: "/cv-review/gcc", label: "GCC CV review", detail: "Qatar, Kuwait, Bahrain and Oman, with shared regional norms." },
           ].map((r) => (
             <Link
               key={r.href}

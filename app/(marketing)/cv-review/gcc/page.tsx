@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CvReviewPageTracker, CvReviewCtaTracker } from "../tracker";
 import { CvReviewFaqSection } from "../faq-section";
-import { Check, ShieldCheck, Zap, Award, Quote, Upload, FileEdit, Download } from "lucide-react";
+import { Check, ShieldCheck, Zap, Award, Upload, FileEdit, Download } from "lucide-react";
 import { GccFormatSection } from "@/components/marketing/gcc-format-section";
 
 export const metadata: Metadata = {
-  title: "Expert CV Review for GCC — UAE, Saudi Arabia, Qatar, Kuwait",
+  title: "Expert CV Review for GCC: UAE, Saudi Arabia, Qatar, Kuwait",
   description: "Get your CV reviewed by a GCC hiring specialist. ATS-optimized for UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman job markets. 80+ score guarantee. 24-hour turnaround.",
   alternates: {
     canonical: "https://www.thecvedge.com/cv-review/gcc",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Expert CV Review for GCC — UAE, Saudi Arabia, Qatar, Kuwait | CVEdge",
+    title: "Expert CV Review for GCC: UAE, Saudi Arabia, Qatar, Kuwait | CVEdge",
     description: "GCC hiring specialist reviews and rewrites your CV for UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman job markets. ATS-optimized, 24-hour delivery.",
     url: "https://www.thecvedge.com/cv-review/gcc",
     images: [{ url: "/img/cv-review-hero.jpg", width: 1200, height: 630, alt: "CV review specialist for GCC job seekers" }],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": "CVEdge Expert CV Review — GCC Markets",
+  "name": "CVEdge Expert CV Review: GCC Markets",
   "url": "https://www.thecvedge.com/cv-review/gcc",
   "description": "Professional CV review and rewrite by GCC hiring specialists. ATS-optimized for UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman employers.",
   "provider": { "@type": "Organization", "name": "CVEdge", "url": "https://www.thecvedge.com" },
@@ -78,7 +78,7 @@ export default function CvReviewGccPage() {
       <section className="py-16 lg:py-24 px-5 lg:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold mb-6" style={{ backgroundColor: "rgba(30,58,95,0.08)", borderColor: "rgba(30,58,95,0.2)", color: "#1E3A5F" }}>
-            <Award className="w-4 h-4" /> GCC Hiring Specialist — All 6 Countries
+            <Award className="w-4 h-4" /> GCC Hiring Specialist, All 6 Countries
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1]">
@@ -89,7 +89,7 @@ export default function CvReviewGccPage() {
           </h1>
 
           <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
-            We have dedicated hiring specialists covering UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman — who know each market&apos;s ATS systems, employer expectations, and keyword requirements.
+            We have dedicated hiring specialists covering UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman who know each market&apos;s ATS systems, employer expectations, and keyword requirements.
           </p>
 
           <CvReviewCtaTracker ctaName="gcc_hero_primary">
@@ -156,7 +156,7 @@ export default function CvReviewGccPage() {
             <div className="hidden md:block absolute top-10 left-[20%] right-[20%] h-px bg-border/60" />
             {[
               { icon: <Upload className="w-8 h-8 text-white" />, step: "01", color: "#1a7a6d", title: "Upload your CV", body: "PDF or Word. Tell us your target role and GCC country. Takes 60 seconds." },
-              { icon: <FileEdit className="w-8 h-8 text-white" />, step: "02", color: "#1E3A5F", title: "GCC specialist reviews", body: "Your reviewer is matched to your specific country — UAE, Saudi, Qatar, or beyond." },
+              { icon: <FileEdit className="w-8 h-8 text-white" />, step: "02", color: "#1E3A5F", title: "GCC specialist reviews", body: "Your reviewer is matched to your specific country: UAE, Saudi, Qatar, or beyond." },
               { icon: <Download className="w-8 h-8 text-white" />, step: "03", color: "#065F46", title: "Download and apply", body: "Receive your rewritten CV in PDF and Word within 24 hours with a reviewer note." },
             ].map((s) => (
               <div key={s.step} className="flex flex-col items-center text-center">
@@ -238,35 +238,6 @@ export default function CvReviewGccPage() {
               <ShieldCheck className="w-6 h-6 text-primary shrink-0" />
               <p className="font-bold text-sm"><span className="text-primary">80+ ATS score guarantee</span> on Professional Rewrite and Executive Package. Full refund within 7 days.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="py-16 px-5 lg:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-extrabold tracking-tight mb-3">What GCC candidates say</h2>
-            <p className="text-muted-foreground">Real results from professionals across the Gulf.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              { initials: "SM", color: "#1a7a6d", quote: "My ATS score went from 61 to 94. Landed three interviews in the first week of sending it out.", name: "Sarah M.", role: "Senior PM · Dubai, UAE" },
-              { initials: "AK", color: "#1E3A5F", quote: "Applied for a role at ARAMCO and got shortlisted. The Saudi-specific keyword optimization made all the difference.", name: "Ahmed K.", role: "Project Manager · Riyadh, KSA" },
-              { initials: "PN", color: "#065F46", quote: "The reviewer understood exactly what GCC employers look for. My summary reads like a regional expert wrote it.", name: "Priya N.", role: "Finance Analyst · Riyadh, Saudi Arabia" },
-            ].map((t, i) => (
-              <div key={i} className="bg-card border border-border/80 rounded-2xl p-7 flex flex-col">
-                <Quote className="w-7 h-7 text-primary/30 mb-5 shrink-0" />
-                <p className="text-foreground font-medium leading-relaxed mb-7 flex-1">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-extrabold shrink-0" style={{ backgroundColor: t.color }}>{t.initials}</div>
-                  <div>
-                    <div className="font-extrabold text-sm">{t.name}</div>
-                    <div className="text-muted-foreground text-xs font-medium">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
