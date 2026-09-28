@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Clock, ArrowRight, Loader2 } from "lucide-react";
 import { type BlogPost, formatDate } from "@/lib/blog/posts";
 import { loadMorePosts } from "./actions";
+import { PostCard } from "./post-card";
 
 interface Props {
   initialPosts: BlogPost[];
@@ -81,44 +82,7 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
       {rest.length > 0 && (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((post) => (
-            <Link
-              key={post.id}
-              href={`/blog/${post.slug}`}
-              className="group rounded-xl border bg-card overflow-hidden flex flex-col hover:border-primary/40 transition-colors"
-            >
-              {post.coverImage && (
-                <div className="relative h-40 w-full shrink-0 overflow-hidden bg-muted">
-                  <Image
-                    src={post.coverImage.url}
-                    alt={post.title}
-                    title={post.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </div>
-              )}
-              <div className="flex flex-col flex-1 p-5 gap-2.5">
-                {post.tags.length > 0 && (
-                  <span className="text-[10px] font-semibold tracking-widest uppercase text-primary">
-                    {post.tags[0].name}
-                  </span>
-                )}
-                <h3 className="font-semibold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                  {post.title}
-                </h3>
-                <p className="text-sm text-muted-foreground line-clamp-2 flex-1 leading-relaxed">
-                  {post.brief}
-                </p>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-auto pt-3">
-                  <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-                  <span className="flex items-center gap-1 ml-auto">
-                    <Clock className="h-3 w-3" />
-                    {post.readTimeInMinutes} min
-                  </span>
-                </div>
-              </div>
-            </Link>
+            <PostCard key={post.id} post={post} />
           ))}
         </div>
       )}

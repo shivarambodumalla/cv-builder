@@ -168,6 +168,70 @@ async function unlinkScheduledPosts(html: string): Promise<string> {
   );
 }
 
+// Filler words that are rare enough in slugs to score highly under IDF while
+// saying nothing about the topic ("how-much-does…" vs "…how-does-it-work").
+const SLUG_STOPWORDS = new Set([
+  "a", "an", "and", "the", "to", "for", "of", "in", "on", "vs", "is", "it", "s", "re",
+  "how", "what", "why", "does", "do", "much", "not", "get", "can", "need", "that", "with",
+  "by", "your", "you", "actually", "really", "best", "work", "cost", "guide",
+]);
+
+const slugTokens = (slug: string) =>
+  new Set(slug.split("-").filter((t) => t && !SLUG_STOPWORDS.has(t) && !/^\d+$/.test(t)));
+
+// Gulf posts serve a different job market; mixing them into US or European
+// reading lists (and vice versa) matches words, not readers.
+const REGIONAL_TAG = "Gulf Careers";
+const isRegional = (p: BlogPost) => p.tags.some((t) => t.name === REGIONAL_TAG);
+
+/**
+ * Rank sister posts by shared tags and shared slug words, each weighted by
+ * rarity (IDF): sharing "Gulf Careers" says far more than sharing "Resume
+ * Writing", which half the blog carries. A candidate needs at least one shared
+ * tag; slug words only reorder within that. Ties go to the newer post, and a
+ * post with too few matches is topped up with the latest articles.
+ */
+export function rankRelatedPosts(current: BlogPost, pool: BlogPost[], limit = 3): BlogPost[] {
+  const others = pool.filter(
+    (p) => p.slug !== current.slug && isRegional(p) === isRegional(current)
+  );
+  const docs = [current, ...others].map((p) => ({
+    tags: new Set(p.tags.map((t) => t.name)),
+    words: slugTokens(p.slug),
+  }));
+  const df = new Map<string, number>();
+  for (const d of docs) {
+    for (const t of d.tags) df.set(`t:${t}`, (df.get(`t:${t}`) ?? 0) + 1);
+    for (const w of d.words) df.set(`w:${w}`, (df.get(`w:${w}`) ?? 0) + 1);
+  }
+  const idf = (key: string) => Math.log(docs.length / (df.get(key) ?? docs.length));
+
+  const [self, ...rest] = docs;
+  const scored = others.map((post, i) => {
+    let tagScore = 0;
+    let wordScore = 0;
+    for (const t of rest[i].tags) if (self.tags.has(t)) tagScore += idf(`t:${t}`);
+    for (const w of rest[i].words) if (self.words.has(w)) wordScore += idf(`w:${w}`);
+    return { post, score: tagScore > 0 ? tagScore + wordScore / 2 : 0 };
+  });
+
+  return scored
+    .sort((a, b) => b.score - a.score || b.post.publishedAt.localeCompare(a.post.publishedAt))
+    .slice(0, limit)
+    .map((s) => s.post);
+}
+
+export async function getRelatedPosts(current: BlogPost, limit = 3): Promise<BlogPost[]> {
+  const db = createAdminClient();
+  const { data, error } = await db
+    .from("blog_posts")
+    .select("id, slug, title, brief, published_at, read_time_minutes, cover_image_url, tags")
+    .eq("is_published", true);
+
+  if (error) throw new Error(error.message);
+  return rankRelatedPosts(current, (data ?? []).map(rowToPost), limit);
+}
+
 export async function getAllSlugs(): Promise<string[]> {
   const db = createAdminClient();
   const { data, error } = await db

@@ -3,11 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
-import { getPost, getAllSlugs, formatDate, extractFaq } from "@/lib/blog/posts";
+import { getPost, getAllSlugs, getRelatedPosts, formatDate, extractFaq } from "@/lib/blog/posts";
+import { getInlineCta, splitForInlineCta } from "@/lib/blog/inline-cta";
 import { AUTHOR, AUTHOR_JSON_LD } from "@/lib/blog/author";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { CtaSection } from "@/components/shared/cta-section";
 import { LinkTracker } from "./link-tracker";
+import { InlineCta } from "./inline-cta";
+import { RelatedPosts } from "./related-posts";
 
 export const revalidate = 3600;
 
@@ -67,6 +70,12 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const faq = extractFaq(post.content.html);
+  const split = splitForInlineCta(post.content.html);
+  // Related posts are a nice-to-have: a failed lookup must not take the article down.
+  const related = await getRelatedPosts(post).catch((e) => {
+    console.error("[blog] related posts failed:", e);
+    return [];
+  });
   const faqJsonLd = faq.length
     ? {
         "@context": "https://schema.org",
@@ -182,51 +191,67 @@ export default async function BlogPostPage({
           </div>
         </header>
 
-        {/* Article content */}
-        <article
-          className="
-            prose prose-base sm:prose-lg max-w-none
-            dark:prose-invert
-            prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
-            prose-p:text-foreground/80 prose-p:leading-relaxed
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-            prose-strong:text-foreground prose-strong:font-semibold
-            prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-[0.85em] prose-code:font-medium prose-code:before:content-none prose-code:after:content-none
-            prose-pre:bg-card prose-pre:border prose-pre:rounded-xl prose-pre:text-sm
-            prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:not-italic
-            prose-li:text-foreground/80
-            prose-img:rounded-2xl prose-img:border
-            prose-hr:border-border
-          "
-          dangerouslySetInnerHTML={{ __html: post.content.html }}
-        />
-
-        {/* Author — who wrote this and why they are worth reading */}
-        <aside className="mt-14 rounded-2xl border bg-card p-6">
-          <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-3">
-            About the author
-          </p>
-          <p className="font-semibold text-foreground">{AUTHOR.name}</p>
-          <p className="text-sm text-muted-foreground mb-3">{AUTHOR.role}</p>
-          <p className="text-sm text-foreground/80 leading-relaxed">{AUTHOR.bio}</p>
-          <Link
-            href="/about"
-            className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+        <div data-link-track-root>
+          {/* Article content — the inline CTA sits between the two halves */}
+          <article
+            className="
+              prose prose-base sm:prose-lg max-w-none
+              dark:prose-invert
+              prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
+              prose-p:text-foreground/80 prose-p:leading-relaxed
+              prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium
+              prose-strong:text-foreground prose-strong:font-semibold
+              prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-[0.85em] prose-code:font-medium prose-code:before:content-none prose-code:after:content-none
+              prose-pre:bg-card prose-pre:border prose-pre:rounded-xl prose-pre:text-sm
+              prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:not-italic
+              prose-li:text-foreground/80
+              prose-img:rounded-2xl prose-img:border
+              prose-hr:border-border
+            "
           >
-            More about CVEdge
-          </Link>
-        </aside>
+            {split ? (
+              <>
+                <div className="[&>*:first-child]:mt-0" dangerouslySetInnerHTML={{ __html: split[0] }} />
+                <InlineCta cta={getInlineCta(post)} />
+                <div className="[&>*:last-child]:mb-0" dangerouslySetInnerHTML={{ __html: split[1] }} />
+              </>
+            ) : (
+              <div
+                className="[&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                dangerouslySetInnerHTML={{ __html: post.content.html }}
+              />
+            )}
+          </article>
 
-        {/* CTA */}
-        <div className="mt-16">
-          <CtaSection
-            label="Free — no sign-up needed"
-            heading="Is your CV getting filtered out?"
-            subtext="Check your ATS score in 60 seconds and fix issues with AI."
-            buttonText="Scan my CV free"
-            buttonHref="/upload-resume"
-            trustItems={["Free to start", "No credit card", "80+ score guaranteed"]}
-          />
+          {/* Author — who wrote this and why they are worth reading */}
+          <aside className="mt-14 rounded-2xl border bg-card p-6">
+            <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-3">
+              About the author
+            </p>
+            <p className="font-semibold text-foreground">{AUTHOR.name}</p>
+            <p className="text-sm text-muted-foreground mb-3">{AUTHOR.role}</p>
+            <p className="text-sm text-foreground/80 leading-relaxed">{AUTHOR.bio}</p>
+            <Link
+              href="/about"
+              className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+            >
+              More about CVEdge
+            </Link>
+          </aside>
+
+          <RelatedPosts posts={related} />
+
+          {/* CTA */}
+          <div className="mt-16" data-track-placement="bottom-cta">
+            <CtaSection
+              label="Free — no sign-up needed"
+              heading="Is your CV getting filtered out?"
+              subtext="Check your ATS score in 60 seconds and fix issues with AI."
+              buttonText="Scan my CV free"
+              buttonHref="/upload-resume"
+              trustItems={["Free to start", "No credit card", "80+ score guaranteed"]}
+            />
+          </div>
         </div>
       </div>
     </>
