@@ -1,3 +1,35 @@
+// blog.thecvedge.com was a Hashnode blog whose posts now live at /blog/<slug>
+// under the same slugs. It stayed live with self-referencing canonicals, so
+// Google ranked both copies against each other. The subdomain now points at
+// this project and every old URL 301s to its /blog counterpart.
+const OLD_BLOG_HOST = [{ type: "host", value: "blog.thecvedge.com" }];
+const SITE = "https://www.thecvedge.com";
+
+const oldBlogRedirects = [
+  // Posts retired since the move: skip the /blog hop and land on the survivor.
+  ["/ats-resume-gude-2026", "/blog/ats-resume-format-what-actually-works-in-2026"],
+  ["/how-to-get-past-the-ats-in-2026-complete-resume-optimization-guide", "/blog/how-to-get-past-the-ats"],
+  ["/how-to-tailor-your-resume-for-every-job-application-step-by-step-guide", "/blog/how-to-tailor-your-cv-for-a-job-description"],
+  ["/your-cv-is-failing-before-a-human-sees-it-here-s-why", "/blog/why-your-cv-never-reaches-a-human-recruiter"],
+  ["/page/your-cv-is-failing-before-a-human-sees-it", "/blog/why-your-cv-never-reaches-a-human-recruiter"],
+  ["/sitemap.xml", "/sitemap.xml"],
+  ["/robots.txt", "/robots.txt"],
+  ["/rss.xml", "/blog"],
+  ["/", "/blog"],
+  // Hashnode listing pages (archive, recommendations, tags, series, pages).
+  ["/archive", "/blog"],
+  ["/recommendations", "/blog"],
+  ["/:section(tag|series|page|newsletter)/:path*", "/blog"],
+  // Every Hashnode post sits at /<slug>, the same slug as its /blog copy.
+  ["/:slug", "/blog/:slug"],
+  ["/:path*", "/blog"],
+].map(([source, destination]) => ({
+  source,
+  has: OLD_BLOG_HOST,
+  destination: `${SITE}${destination}`,
+  permanent: true,
+}));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -10,6 +42,7 @@ const nextConfig = {
   poweredByHeader: false,
   async redirects() {
     return [
+      ...oldBlogRedirects,
       { source: "/stories", destination: "/interview-coach", permanent: true },
       { source: "/stories/:path*", destination: "/interview-coach", permanent: true },
       // Retired as a near-duplicate of the surviving PM guide. Redirect rather
