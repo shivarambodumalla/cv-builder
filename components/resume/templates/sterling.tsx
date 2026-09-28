@@ -55,7 +55,7 @@ export function Sterling({
 
   const contactLines = [
     [contact.location, contact.phone],
-    [contact.email, contact.linkedin, contact.website],
+    [contact.email, contact.linkedin, contact.github, contact.website],
   ]
     .map((line) => line.filter(Boolean) as string[])
     .filter((line) => line.length > 0);

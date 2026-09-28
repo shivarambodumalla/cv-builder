@@ -80,7 +80,7 @@ function Avatar({ name, photoUrl, accent, mode, shape, size, initialsBg }: Avata
   );
 }
 
-type ContactIconKind = "phone" | "mail" | "globe" | "map" | "linkedin" | "user" | "cake";
+type ContactIconKind = "phone" | "mail" | "globe" | "map" | "linkedin" | "github" | "user" | "cake";
 
 function ContactIcon({ kind, size = 18 }: { kind: ContactIconKind; size?: number }) {
   const common = {
@@ -120,6 +120,12 @@ function ContactIcon({ kind, size = 18 }: { kind: ContactIconKind; size?: number
         <svg {...common}>
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
           <circle cx="12" cy="10" r="3" />
+        </svg>
+      );
+    case "github":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="#ffffff">
+          <path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12 12 0 0 0 12 .3" />
         </svg>
       );
     case "linkedin":
@@ -570,6 +576,7 @@ export function Coastal({
   if (contact.email) contactRow.push({ kind: "mail", value: contact.email });
   if (contact.website) contactRow.push({ kind: "globe", value: contact.website });
   if (contact.linkedin) contactRow.push({ kind: "linkedin", value: contact.linkedin });
+  if (contact.github) contactRow.push({ kind: "github", value: contact.github });
   if (contact.location) contactRow.push({ kind: "map", value: contact.location });
 
   return (

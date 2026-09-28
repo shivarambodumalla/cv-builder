@@ -77,6 +77,8 @@ function inferExperienceLevel(years: number | null): string | null {
 }
 
 function extractGithubUrl(content: ResumeContent): string | null {
+  const github = content.contact?.github?.trim();
+  if (github) return github;
   const website = content.contact?.website;
   if (website?.includes("github.com")) return website;
   for (const proj of content.projects?.items ?? []) {

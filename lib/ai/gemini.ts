@@ -67,5 +67,13 @@ export async function structureCvText(
     userId: caller?.userId,
     ip: caller?.ip,
   });
-  return result as Record<string, unknown>;
+  const parsed = result as Record<string, unknown>;
+  // The parse prompt's contact shape predates the github field, so a GitHub
+  // profile often lands in website. Move it so templates show it as GitHub.
+  const contact = parsed.contact as Record<string, unknown> | undefined;
+  if (contact && typeof contact.website === "string" && !contact.github && /github\.com/i.test(contact.website)) {
+    contact.github = contact.website;
+    contact.website = "";
+  }
+  return parsed;
 }

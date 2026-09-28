@@ -52,6 +52,7 @@ export function Graphite({
     contact.phone,
     contact.email,
     contact.linkedin,
+    contact.github,
     contact.website,
   ].filter(Boolean);
 

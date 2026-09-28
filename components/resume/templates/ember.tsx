@@ -295,6 +295,7 @@ export function Ember({
       { label: "Email", value: contact.email },
       { label: "Phone", value: contact.phone },
       { label: "LinkedIn", value: contact.linkedin },
+      { label: "GitHub", value: contact.github },
       { label: "Website", value: contact.website },
     ].filter((f) => f.value);
     if (fields.length === 0) return null;

@@ -189,6 +189,7 @@ const CONTACT_LABELS: Record<string, string> = {
   phone: "Phone",
   location: "Address",
   linkedin: "LinkedIn",
+  github: "GitHub",
   website: "Website",
 };
 
@@ -337,12 +338,13 @@ export function BoldAccent({
   };
 
   // Contact entries for header (filtered to non-empty)
-  type ContactKind = "email" | "phone" | "location" | "linkedin" | "website";
+  type ContactKind = "email" | "phone" | "location" | "linkedin" | "github" | "website";
   const contactEntries: { kind: ContactKind; value: string }[] = [
     contact.location && { kind: "location" as const, value: contact.location },
     contact.phone && { kind: "phone" as const, value: contact.phone },
     contact.email && { kind: "email" as const, value: contact.email },
     contact.linkedin && { kind: "linkedin" as const, value: contact.linkedin },
+    contact.github && { kind: "github" as const, value: contact.github },
     contact.website && { kind: "website" as const, value: contact.website },
   ].filter(Boolean) as { kind: ContactKind; value: string }[];
 

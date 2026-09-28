@@ -61,6 +61,7 @@ export function Regent({
     contact.phone,
     contact.email,
     contact.linkedin,
+    contact.github,
     contact.website,
     contact.location,
   ].filter(Boolean) as string[];

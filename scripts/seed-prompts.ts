@@ -14,7 +14,7 @@ const PROMPTS = [
 
 Return this exact JSON structure (fill in from the CV, use empty strings/arrays for missing fields):
 {
-  "contact": { "name": "", "email": "", "phone": "", "location": "", "linkedin": "", "website": "" },
+  "contact": { "name": "", "email": "", "phone": "", "location": "", "linkedin": "", "github": "", "website": "" },
   "targetTitle": { "title": "" },
   "summary": { "content": "" },
   "experience": { "items": [{ "company": "", "role": "", "location": "", "startDate": "", "endDate": "", "isCurrent": false, "bullets": [] }] },

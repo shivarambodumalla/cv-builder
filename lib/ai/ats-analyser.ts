@@ -151,6 +151,8 @@ function buildFieldRefs(report: AtsReportData): AtsReportData {
           issue.field_ref = { section: "contact", field: "location" };
         } else if (desc.includes("linkedin")) {
           issue.field_ref = { section: "contact", field: "linkedin" };
+        } else if (desc.includes("github")) {
+          issue.field_ref = { section: "contact", field: "github" };
         } else {
           issue.field_ref = { section: "contact", field: null };
         }

@@ -18,6 +18,7 @@ const PLACEHOLDER: ResumeContent = {
     phone: "+1 234 567 890",
     location: "City, Country",
     linkedin: "linkedin.com/in/yourname",
+    github: "",
     website: "",
   },
   targetTitle: { title: "Your Target Role" },

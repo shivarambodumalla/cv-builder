@@ -69,7 +69,7 @@ function SidebarLayout({
   };
 
   const contactItems = [
-    contact.email, contact.phone, contact.location, contact.linkedin, contact.website,
+    contact.email, contact.phone, contact.location, contact.linkedin, contact.github, contact.website,
   ].filter(Boolean);
 
   /* ── Sidebar heading (white on accent) ── */

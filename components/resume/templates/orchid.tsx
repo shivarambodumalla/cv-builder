@@ -231,6 +231,7 @@ export function OrchidTemplate({
     contact.email,
     contact.location,
     contact.linkedin,
+    contact.github,
     contact.website,
   ].filter(Boolean) as string[];
 

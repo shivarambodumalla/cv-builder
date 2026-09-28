@@ -12,6 +12,7 @@ export const SAMPLE_CV: ResumeContent = {
     phone: "+91 98400 12345",
     location: "Bengaluru, India",
     linkedin: "linkedin.com/in/arjunmehta",
+    github: "",
     website: "",
   },
   targetTitle: { title: "Senior ML Engineer" },

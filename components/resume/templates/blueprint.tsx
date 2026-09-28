@@ -288,6 +288,9 @@ export function Blueprint({
         {contact.linkedin && (
           <div style={{ marginBottom: 2, wordBreak: "break-word" }}>{contact.linkedin}</div>
         )}
+        {contact.github && (
+          <div style={{ marginBottom: 2, wordBreak: "break-word" }}>{contact.github}</div>
+        )}
         {contact.location && <div style={{ marginBottom: 2 }}>{contact.location}</div>}
         {contact.phone && <div style={{ marginBottom: 2 }}>{contact.phone}</div>}
         {contact.email && <div style={{ wordBreak: "break-word" }}>{contact.email}</div>}
@@ -306,7 +309,7 @@ export function Blueprint({
           color: bodyText,
         }}
       >
-        {[contact.email, contact.phone, contact.location, contact.linkedin, contact.website]
+        {[contact.email, contact.phone, contact.location, contact.linkedin, contact.github, contact.website]
           .filter(Boolean)
           .join(contactSeparator)}
       </div>
@@ -403,6 +406,7 @@ export function Blueprint({
       <div data-resume-section-title="" style={labelStyle}>Social:</div>
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         {contact.linkedin && <SocialIcon kind="linkedin" bg={resolvedAccent} fg="#ffffff" />}
+        {contact.github && <SocialIcon kind="github" bg={resolvedAccent} fg="#ffffff" />}
         {contact.website && <SocialIcon kind="globe" bg={resolvedAccent} fg="#ffffff" />}
         {contact.phone && <SocialIcon kind="phone" bg={resolvedAccent} fg="#ffffff" />}
         {contact.email && <SocialIcon kind="mail" bg={resolvedAccent} fg="#ffffff" />}

@@ -152,6 +152,7 @@ export function Linen({
     { label: "Website", value: contact.website },
     { label: "Location", value: contact.location },
     { label: "LinkedIn", value: contact.linkedin },
+    { label: "GitHub", value: contact.github },
   ].filter((f) => Boolean(f.value));
 
   const showTitle = visibleSections.includes("targetTitle") && !!targetTitle.title;

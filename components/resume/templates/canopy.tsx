@@ -60,6 +60,7 @@ export function Canopy({
     [contact.email, contact.phone].filter(Boolean).join(sep),
     contact.location,
     contact.linkedin,
+    contact.github,
     contact.website,
   ].filter(Boolean) as string[];
 

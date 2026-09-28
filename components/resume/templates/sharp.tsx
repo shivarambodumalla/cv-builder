@@ -38,6 +38,7 @@ export function SharpTemplate({
     contact.phone,
     contact.location,
     contact.linkedin,
+    contact.github,
     contact.website,
   ].filter(Boolean);
 

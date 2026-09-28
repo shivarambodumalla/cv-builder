@@ -56,7 +56,7 @@ export const DEFAULT_CONTENT: ResumeContent = {
     volunteering: false,
     publications: false,
   },
-  contact: { name: "", email: "", phone: "", location: "", linkedin: "", website: "" },
+  contact: { name: "", email: "", phone: "", location: "", linkedin: "", github: "", website: "" },
   targetTitle: { title: "" },
   summary: { content: "" },
   experience: { items: [] },

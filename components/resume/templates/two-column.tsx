@@ -25,6 +25,7 @@ export function TwoColumnTemplate({
   const contactFields = [
     { label: "Email", value: contact.email },
     { label: "LinkedIn", value: contact.linkedin },
+    { label: "GitHub", value: contact.github },
     { label: "Phone", value: contact.phone },
     { label: "Location", value: contact.location },
     { label: "Website", value: contact.website },

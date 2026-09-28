@@ -85,7 +85,7 @@ function InlineIcon({
   kind,
   color,
 }: {
-  kind: "globe" | "linkedin" | "pin" | "mail" | "phone";
+  kind: "globe" | "linkedin" | "github" | "pin" | "mail" | "phone";
   color: string;
 }) {
   const common = {
@@ -105,6 +105,12 @@ function InlineIcon({
           <circle cx="12" cy="12" r="10" />
           <line x1="2" y1="12" x2="22" y2="12" />
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+      );
+    case "github":
+      return (
+        <svg {...common} fill={color} stroke="none">
+          <path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.31-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12 12 0 0 0 12 .3" />
         </svg>
       );
     case "linkedin":
@@ -193,8 +199,9 @@ export function Wentworth({
     contact.phone && { kind: "phone" as const, value: contact.phone },
     contact.location && { kind: "pin" as const, value: contact.location },
     contact.linkedin && { kind: "linkedin" as const, value: contact.linkedin },
+    contact.github && { kind: "github" as const, value: contact.github },
     contact.website && { kind: "globe" as const, value: contact.website },
-  ].filter(Boolean) as { kind: "globe" | "linkedin" | "pin" | "mail" | "phone"; value: string }[];
+  ].filter(Boolean) as { kind: "globe" | "linkedin" | "github" | "pin" | "mail" | "phone"; value: string }[];
 
   const renderDateRange = (start: string, end: string, isCurrent?: boolean) => {
     const s = formatDate(start);

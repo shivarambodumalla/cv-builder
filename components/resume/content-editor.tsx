@@ -431,7 +431,11 @@ function ContactFields({ register }: { register: any }) {
         <Label className="text-xs">LinkedIn</Label>
         <Input {...register("contact.linkedin")} placeholder="linkedin.com/in/..." />
       </div>
-      <div className="col-span-2">
+      <div>
+        <Label className="text-xs">GitHub</Label>
+        <Input {...register("contact.github")} placeholder="github.com/..." />
+      </div>
+      <div>
         <Label className="text-xs">Website</Label>
         <Input {...register("contact.website")} placeholder="yoursite.com" />
       </div>
