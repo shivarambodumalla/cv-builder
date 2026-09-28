@@ -17,10 +17,11 @@ interface PageBreak {
   pageNum: number;
   isManual: boolean;
   sectionKey?: string;
-  /** Horizontal extent of the column the break belongs to (unscaled px). */
+  /** Horizontal extent of the line (unscaled px): the paper width, less any
+   *  column that still has content at this height or breaks at its own. */
   left: number;
   width: number;
-  /** Only the first break for a page number carries the "Page N" label. */
+  /** Only one break per page number (the widest) carries the "Page N" label. */
   labelled: boolean;
 }
 
@@ -40,6 +41,8 @@ interface Column {
   centerX: number;
   left: number;
   width: number;
+  top: number;
+  bottom: number;
   sections: HTMLElement[];
 }
 
@@ -100,9 +103,12 @@ export function PaperPreview({
       const centerX = r.left + r.width / 2 - containerRect.left;
       let col = columns.find((c) => Math.abs(c.centerX - centerX) < widthPx * 0.15);
       if (!col) {
-        col = { centerX, left: r.left - containerRect.left, width: r.width, sections: [] };
+        col = { centerX, left: r.left - containerRect.left, width: r.width, top: Infinity, bottom: -Infinity, sections: [] };
         columns.push(col);
       }
+      const { top, bottom } = rel(section);
+      col.top = Math.min(col.top, top);
+      col.bottom = Math.max(col.bottom, bottom);
       col.sections.push(section);
     });
 
@@ -115,7 +121,8 @@ export function PaperPreview({
       if (title) blocks.push({ ...rel(title), keepWithNext: true });
 
       for (const entry of entries) {
-        const bullets = Array.from(entry.querySelectorAll<HTMLElement>("li"));
+        // Templates render bullets as <li> or as <div data-resume-bullet>.
+        const bullets = Array.from(entry.querySelectorAll<HTMLElement>("li, [data-resume-bullet]"));
         const er = rel(entry);
         if (bullets.length === 0) {
           blocks.push({ ...er, keepWithNext: false });
@@ -128,13 +135,13 @@ export function PaperPreview({
       return blocks;
     }
 
-    const result: PageBreak[] = [];
+    const result: (PageBreak & { col: Column })[] = [];
 
     for (const col of columns) {
       let pageBottom = usable(1);
       let pageNum = 1;
       const push = (offsetY: number, isManual: boolean, sectionKey?: string) => {
-        result.push({ offsetY, pageNum, isManual, sectionKey, left: col.left, width: col.width, labelled: false });
+        result.push({ offsetY, pageNum, isManual, sectionKey, left: 0, width: widthPx, labelled: false, col });
       };
 
       for (const section of col.sections) {
@@ -175,9 +182,31 @@ export function PaperPreview({
       }
     }
 
-    // Label the first (topmost) break per page number; other columns' breaks
-    // for the same page draw only the dashed line.
-    result.sort((a, b) => a.pageNum - b.pageNum || a.offsetY - b.offsetY);
+    // A page edge crosses the whole sheet, so each line runs to the paper
+    // edges. It stops short (mid-gutter) only at a column beside it that
+    // breaks for the same page at its own height, or whose content crosses
+    // the line; in print that content sits on the other side of the edge.
+    for (const b of result) {
+      const c = b.col;
+      let left = 0;
+      let right = widthPx;
+      for (const d of columns) {
+        if (d === c) continue;
+        const blocks =
+          (d.top < b.offsetY && d.bottom > b.offsetY) ||
+          result.some((o) => o.col === d && o.pageNum === b.pageNum);
+        if (!blocks) continue;
+        if (d.left + d.width <= c.left) left = Math.max(left, (d.left + d.width + c.left) / 2);
+        else if (d.left >= c.left + c.width) right = Math.min(right, (c.left + c.width + d.left) / 2);
+      }
+      b.left = left;
+      b.width = right - left;
+    }
+
+    // Label one break per page number: the widest line (so a stepped break is
+    // labelled across the main column, not a narrow sidebar), topmost on a
+    // tie. Other columns' breaks for the same page draw only the dashed line.
+    result.sort((a, b) => a.pageNum - b.pageNum || b.width - a.width || a.offsetY - b.offsetY);
     const seen = new Set<number>();
     for (const b of result) {
       if (!seen.has(b.pageNum)) {
@@ -186,7 +215,7 @@ export function PaperPreview({
       }
     }
 
-    setBreaks(result);
+    setBreaks(result.map(({ col: _col, ...b }) => b));
   }, [pageHeight, widthPx, topMarginIn, manualBreaks]);
 
   useEffect(() => {
@@ -233,7 +262,7 @@ export function PaperPreview({
         >
         <div
           ref={contentRef}
-          className="bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.06)] rounded-sm"
+          className="flow-root bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.06)] rounded-sm"
           style={{ minHeight: pageHeight }}
         >
           {children}

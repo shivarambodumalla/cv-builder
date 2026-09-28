@@ -521,30 +521,42 @@ export function ColumnBase({
   // column is taller (on page 1 and all subsequent pages).
   const bgGradient = `linear-gradient(to right, ${leftBackground} 260px, white 260px)`;
 
+  // Print: a column's full height must fit on its last page, or Chromium
+  // prints a blank page after it. So the columns have no bottom padding (the
+  // row's bottom margin gives that space and is dropped at a page break), and
+  // each column's sections sit in a wrapper whose negative margin cancels the
+  // last section's bottom margin.
+  const trimLastMargin = { marginBottom: -sectionSpacing };
+
   return (
     <div style={{
       display: "flex", minHeight: "100%", fontFamily: "var(--resume-font)",
       fontSize: "var(--resume-body-size)", lineHeight: "var(--resume-line-spacing)",
       background: bgGradient,
+      marginBottom: `${marginY}in`,
     }}>
       {/* LEFT COLUMN */}
       <div style={{
         width: 260,
         borderRight: showDivider ? "1pt solid #E2E8F0" : "none",
-        padding: `${marginY}in ${marginX * 0.6}in`, flexShrink: 0,
+        padding: `${marginY}in ${marginX * 0.6}in 0`, flexShrink: 0,
         fontFamily: "var(--resume-font)",
         overflow: "hidden", overflowWrap: "break-word" as const, wordBreak: "break-word" as const,
       }}>
-        {leftOrdered.map((key) => wrapSection(key, renderLeftSection(key)))}
+        <div style={trimLastMargin}>
+          {leftOrdered.map((key) => wrapSection(key, renderLeftSection(key)))}
+        </div>
       </div>
 
       {/* RIGHT COLUMN */}
       <div style={{
         flex: 1,
-        padding: `${marginY}in ${marginX * 0.7}in`,
+        padding: `${marginY}in ${marginX * 0.7}in 0`,
         fontFamily: "var(--resume-font)",
       }}>
-        {rightOrdered.map((key) => wrapSection(key, renderRightSection(key)))}
+        <div style={trimLastMargin}>
+          {rightOrdered.map((key) => wrapSection(key, renderRightSection(key)))}
+        </div>
       </div>
     </div>
   );

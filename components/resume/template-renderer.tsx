@@ -251,8 +251,10 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
         /* An entry with bullets may break between bullets, never inside one,
            and its header stays with the first bullet. Keeping whole entries
            unbreakable pushed a tall first entry (and, in two-column layouts,
-           the entire column row) onto the next page, leaving page 1 blank. */
-        [data-resume-entry]:not(:has(li)) {
+           the entire column row) onto the next page, leaving page 1 blank.
+           Some templates render bullets as <div data-resume-bullet> instead
+           of <li>; those count as bullets too. */
+        [data-resume-entry]:not(:has(li)):not(:has([data-resume-bullet])) {
           page-break-inside: avoid;
           break-inside: avoid;
         }
@@ -269,7 +271,7 @@ export function TemplateRenderer({ content, design }: TemplateRendererProps) {
         /* Everything above the bullet list (role, company, dates, location)
            is the entry header: never split it and never leave it behind at
            the foot of a page. */
-        [data-resume-entry] > :not(ul):not(ol):not(:has(li)) {
+        [data-resume-entry] > :not(ul):not(ol):not(:has(li)):not([data-resume-bullet]):not(:has([data-resume-bullet])) {
           page-break-inside: avoid;
           break-inside: avoid;
           page-break-after: avoid;

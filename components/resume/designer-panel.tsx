@@ -53,7 +53,7 @@ import { fileToResizedDataUrl } from "@/lib/resume/avatar";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { getPreviewContent } from "@/lib/resume/placeholder";
-import { PHOTO_TEMPLATES, templateThumbnail } from "@/lib/resume/template-thumbnails";
+import { PHOTO_TEMPLATES, THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH, templateThumbnail } from "@/lib/resume/template-thumbnails";
 import {
   FONT_STACKS,
   ACCENT_COLORS,
@@ -765,7 +765,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     <div className="mx-auto flex h-full max-w-[360px] items-center justify-center">
                       <div
                         className="w-full overflow-hidden rounded-md border bg-background shadow-sm"
-                        style={{ aspectRatio: "210/297" }}
+                        style={{ aspectRatio: `${THUMBNAIL_WIDTH}/${THUMBNAIL_HEIGHT}` }}
                       >
                         {renderTemplateThumb(stagedTemplate ?? design.template)}
                       </div>
@@ -838,7 +838,7 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
                     {(contactName.match(/\S+/g) ?? []).map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
                   </span>
                 ) : (
-                  <span>—</span>
+                  <span>–</span>
                 )}
               </div>
               <div className="flex flex-1 flex-col gap-1">

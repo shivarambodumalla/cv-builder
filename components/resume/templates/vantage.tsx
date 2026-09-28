@@ -89,6 +89,17 @@ function InlineIcon({ kind, color, size = 10 }: { kind: IconKind; color: string;
 }
 
 const LOGO_SIZE = 32;
+const LOGO_GAP = 10;
+const STAR_TILE_SIZE = 22;
+
+// Tile rows (logo or icon beside the entry text) float the tile and indent
+// the text by a fixed margin instead of using a flex row. Chromium won't split
+// a flex row holding a tile inside the column grid, so a long entry at the foot
+// of a page moved wholesale to the next one and left a gap. The indent is a
+// margin, not float avoidance, so text continued on the next page (where the
+// float isn't) keeps the same width. The row is flow-root to contain the float.
+const floatTile: React.CSSProperties = { float: "left" };
+const tileText = (tileSize: number, gap: number): React.CSSProperties => ({ marginLeft: tileSize + gap });
 
 function LogoTile({ src, alt, fallback }: { src?: string; alt: string; fallback: "briefcase" | "graduation" }) {
   if (src) {
@@ -104,8 +115,8 @@ function LogoTile({ src, alt, fallback }: { src?: string; alt: string; fallback:
           borderRadius: 3,
           border: "1px solid #e3e3e3",
           background: "#ffffff",
-          flexShrink: 0,
           display: "block",
+          ...floatTile,
         }}
       />
     );
@@ -120,7 +131,7 @@ function LogoTile({ src, alt, fallback }: { src?: string; alt: string; fallback:
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        flexShrink: 0,
+        ...floatTile,
       }}
     >
       <InlineIcon kind={fallback} color="var(--resume-accent)" size={16} />
@@ -261,6 +272,10 @@ export function Vantage({
   };
 
   // Entry wrapper: dotted separator between entries, none after the last.
+  // In logo/icon rows (experience, education, strengths) data-resume-entry
+  // sits on the text column, not the row: the print rules give an entry's
+  // non-bullet children break-after: avoid, which on the tile made every
+  // break in the section "avoid" and pushed Experience off page 1.
   const entryStyle = (i: number, count: number): React.CSSProperties => ({
     paddingBottom: i < count - 1 ? 9 : 0,
     marginBottom: i < count - 1 ? 9 : 0,
@@ -281,11 +296,10 @@ export function Vantage({
         {experience.items.map((item, i) => (
           <div
             key={i}
-            data-resume-entry=""
-            style={{ display: "flex", gap: 10, alignItems: "flex-start", ...entryStyle(i, experience.items.length) }}
+            style={{ display: "flow-root", ...entryStyle(i, experience.items.length) }}
           >
             <LogoTile src={item.logoUrl} alt={item.company} fallback="briefcase" />
-            <div style={{ minWidth: 0, flex: 1 }}>
+            <div data-resume-entry="" style={tileText(LOGO_SIZE, LOGO_GAP)}>
               {item.role && <div style={entryTitle}>{item.role}</div>}
               {item.company && <div style={entrySubtitle}>{item.company}</div>}
               {metaRow([
@@ -306,11 +320,10 @@ export function Vantage({
         {education.items.map((item, i) => (
           <div
             key={i}
-            data-resume-entry=""
-            style={{ display: "flex", gap: 10, alignItems: "flex-start", ...entryStyle(i, education.items.length) }}
+            style={{ display: "flow-root", ...entryStyle(i, education.items.length) }}
           >
             <LogoTile src={item.logoUrl} alt={item.institution} fallback="graduation" />
-            <div style={{ minWidth: 0, flex: 1 }}>
+            <div data-resume-entry="" style={tileText(LOGO_SIZE, LOGO_GAP)}>
               <div style={entryTitle}>{[item.degree, item.field].filter(Boolean).join(" in ")}</div>
               {item.institution && <div style={entrySubtitle}>{item.institution}</div>}
               {metaRow([{ kind: "calendar", value: renderDateRange(item.startDate, item.endDate) }])}
@@ -382,25 +395,24 @@ export function Vantage({
         {awards.items.map((item, i) => (
           <div
             key={i}
-            data-resume-entry=""
-            style={{ display: "flex", gap: 8, alignItems: "flex-start", ...entryStyle(i, awards.items.length) }}
+            style={{ display: "flow-root", ...entryStyle(i, awards.items.length) }}
           >
             <div
               style={{
-                width: 22,
-                height: 22,
+                width: STAR_TILE_SIZE,
+                height: STAR_TILE_SIZE,
                 borderRadius: 3,
                 background: "color-mix(in srgb, var(--resume-accent) 12%, white)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                flexShrink: 0,
+                ...floatTile,
                 marginTop: 1,
               }}
             >
               <InlineIcon kind="star" color={accent} size={12} />
             </div>
-            <div style={{ minWidth: 0, flex: 1 }}>
+            <div data-resume-entry="" style={tileText(STAR_TILE_SIZE, 8)}>
               <div style={entrySubtitle}>
                 {item.title}
                 {item.date && <span style={{ ...metaText, fontWeight: 400, marginLeft: 6 }}>{formatDate(item.date)}</span>}
