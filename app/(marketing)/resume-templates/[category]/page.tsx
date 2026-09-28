@@ -174,7 +174,7 @@ export default async function TemplateCategoryPage({
             </h2>
             <div className="space-y-3 text-sm text-muted-foreground leading-relaxed mb-8">
               {cat.intro.split(". ").filter(Boolean).map((sentence, i) => (
-                <p key={i}>{sentence}.</p>
+                <p key={i}>{/[.!?]$/.test(sentence) ? sentence : `${sentence}.`}</p>
               ))}
             </div>
             <div className="grid sm:grid-cols-2 gap-4">

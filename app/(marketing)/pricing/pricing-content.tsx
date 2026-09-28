@@ -38,7 +38,7 @@ const PRO_FEATURES = [
   "Unlimited AI rewrites",
   "Unlimited job matches",
   "Unlimited cover letters",
-  "Interview story bank",
+  "Interview Coach",
   "80+ ATS score guarantee",
   "Priority support",
 ];
@@ -188,7 +188,7 @@ export function PricingContent() {
       <div className="mx-auto max-w-[720px] mb-16">
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold tracking-tight">Frequently asked questions</h2>
-          <p className="mt-3 text-base text-muted-foreground">Everything you need to know about pricing, billing, and the 80+ guarantee.</p>
+          <p className="mt-3 text-base text-muted-foreground">Answers on pricing, billing, and the 80+ guarantee.</p>
         </div>
         <div>
           {PRICING_FAQS.map((faq, i) => (

@@ -52,11 +52,11 @@ export function UploadResumeContent() {
   const handleFile = useCallback((f: File) => {
     setError("");
     if (f.type !== "application/pdf") {
-      setError("Only PDF files are accepted.");
+      setError("Only PDF files work here. Save your resume as a PDF and try again.");
       return;
     }
     if (f.size > MAX_FILE_SIZE) {
-      setError("File must be under 5 MB.");
+      setError("This file is too large. Choose a PDF under 5 MB.");
       return;
     }
     setFile(f);
@@ -105,7 +105,7 @@ export function UploadResumeContent() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Upload failed. Please try again.");
+        throw new Error(data.error || "Upload failed. Check your connection and try again.");
       }
 
       const data = await res.json();
@@ -137,7 +137,7 @@ export function UploadResumeContent() {
 
       router.push(`/login?ref=${token}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(err instanceof Error ? err.message : "We couldn't analyze your resume. Try again in a moment.");
       setLoading(false);
       setCurrentStep("uploading");
     }
@@ -167,7 +167,7 @@ export function UploadResumeContent() {
           router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`);
           return;
         }
-        throw new Error(data.error || "Could not create resume.");
+        throw new Error(data.error || "Couldn't create your resume. Try again in a moment.");
       }
 
       const { cv_id } = await res.json();
@@ -178,7 +178,7 @@ export function UploadResumeContent() {
         : `/resume/${cv_id}/pick-template`;
       router.push(dest);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Couldn't create your resume. Try again in a moment.");
       setLoading(false);
       setCurrentStep("uploading");
     }

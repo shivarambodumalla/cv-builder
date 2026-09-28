@@ -237,7 +237,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
               <Crown className="h-7 w-7 text-white" />
             </div>
             <div className="flex-1 space-y-2">
-              <h2 className="text-lg font-bold text-white">Unlock the full power of CVEdge</h2>
+              <h2 className="text-lg font-bold text-white">Remove every limit with CVEdge Pro</h2>
               <p className="text-sm text-white/70">Unlimited ATS scans, AI rewrites, job matching, cover letters, and all templates.</p>
               <div className="flex flex-wrap gap-3 pt-1">
                 {["Unlimited scans", "AI rewrites", "All templates", "From $2.30/week"].map((t) => (

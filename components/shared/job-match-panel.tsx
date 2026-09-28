@@ -125,7 +125,7 @@ export function JobMatchPanel({
 
   async function handleAnalyse() {
     if (jobDescription.length < 50) {
-      setError("Job description must be at least 50 characters");
+      setError("This job description is too short. Paste at least 50 characters.");
       return;
     }
 

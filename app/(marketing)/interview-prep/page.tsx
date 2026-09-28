@@ -37,7 +37,7 @@ const STEPS = [
   },
   {
     icon: Target,
-    title: "Ace your interviews",
+    title: "Prep for each interview",
     body: "Paste a job description before any interview. CVEdge surfaces your most relevant stories with talking points.",
     proofLabel: "Top match for this role",
     proofText: "94% match",
@@ -48,7 +48,7 @@ const FEATURES = [
   {
     icon: CheckCircle,
     title: "STAR framework built in",
-    desc: "Every story follows Situation, Task, Action, Result. No more rambling answers. Just clear, structured responses.",
+    desc: "Every story follows Situation, Task, Action, Result, so your answers stay clear and on point.",
   },
   {
     icon: Brain,
@@ -131,8 +131,8 @@ export default function InterviewStoriesPage() {
       {/* Features */}
       <div className="mx-auto max-w-4xl mb-16">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Everything you need to nail the interview</h2>
-          <p className="mt-3 text-muted-foreground">Structured stories, smart matching, and confidence when it counts.</p>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">What the Interview Coach does</h2>
+          <p className="mt-3 text-muted-foreground">Turn your experience into structured answers, then see which ones fit each role.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {FEATURES.map((f) => (

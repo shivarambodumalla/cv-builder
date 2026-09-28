@@ -10,7 +10,7 @@ const CONFIGS = {
     features: [
       "Score breakdown across 6 categories",
       "Missing keywords with one-click fix",
-      "AI bullet rewrites to boost your score",
+      "AI bullet rewrites to raise your score",
       "Detailed fix suggestions per issue",
     ],
   },

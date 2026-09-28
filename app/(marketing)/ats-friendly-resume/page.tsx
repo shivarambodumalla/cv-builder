@@ -31,7 +31,7 @@ const FAQS = [
   {
     question: "What is a good ATS score?",
     answer:
-      "CVEdge scores resumes 0–100 across 6 categories. A score of 75+ is 'Strong Profile'. 90+ is 'Interview Ready'. Below 60 is 'At Risk', as format or content issues are likely causing ATS rejection. The average unoptimised resume scores 52 on CVEdge's analyzer. After using Fix All ATS, average improvement is 24 points.",
+      "CVEdge scores resumes 0–100 across 6 categories. A score of 75+ is 'Strong Profile'. 90+ is 'Interview Ready'. Below 60 is 'At Risk', as format or content issues are likely causing ATS rejection. The average unoptimized resume scores 52 on CVEdge's analyzer. After using Fix All ATS, average improvement is 24 points.",
   },
   {
     question: "Do two-column resume templates pass ATS?",
@@ -73,7 +73,7 @@ const ATS_CATEGORIES = [
   },
   {
     name: "Bullet Quality",
-    desc: "Bullets start with strong action verbs (Led, Built, Reduced, Grew) and describe impact rather than responsibility. 'Responsible for X' fails; 'Built X that achieved Y' passes.",
+    desc: "Bullets start with strong action verbs (Led, Built, Reduced, Grew) and describe impact rather than responsibility. 'Responsible for X' fails. 'Built X that achieved Y' passes.",
     tips: ["Strong opening verb required", "No passive language", "Focus on outcome not activity"],
   },
   {

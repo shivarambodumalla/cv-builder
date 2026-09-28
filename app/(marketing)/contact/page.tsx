@@ -27,7 +27,7 @@ const REASONS = [
   },
   {
     title: "Privacy and data requests",
-    body: "Access, correction or deletion of your data. You can delete your CVs from the dashboard at any time; email us if you want your whole account and its data removed. See the privacy policy for what we hold and why.",
+    body: "Access, correction or deletion of your data. You can delete your CVs from the dashboard at any time. Email us if you want your whole account and its data removed. See the privacy policy for what we hold and why.",
   },
   {
     title: "The 80+ score guarantee",
@@ -35,7 +35,7 @@ const REASONS = [
   },
   {
     title: "Feedback, bugs and press",
-    body: "Feature requests, things that are wrong, corrections to anything we have published, or press and partnership enquiries. All to the same address.",
+    body: "Feature requests, things that are wrong, corrections to anything we have published, or press and partnership inquiries. All to the same address.",
   },
 ];
 

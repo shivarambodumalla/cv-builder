@@ -284,7 +284,7 @@ export default async function RoleResumeExamplePage({
             },
             {
               section: "Experience",
-              guidance: `Reverse chronological order. 3–5 bullet points per role for the last 3 positions; 1–3 for older roles. Every bullet should have an action verb, what you did, and a measurable result. For ${role.label.toLowerCase()} roles, prioritize bullets that show scale, impact, and technical/functional depth.`,
+              guidance: `Reverse chronological order. 3–5 bullet points per role for the last 3 positions, and 1–3 for older roles. Every bullet should have an action verb, what you did, and a measurable result. For ${role.label.toLowerCase()} roles, prioritize bullets that show scale, impact, and technical/functional depth.`,
             },
             {
               section: "Skills",
@@ -393,7 +393,7 @@ export default async function RoleResumeExamplePage({
               Before and after: {role.label.toLowerCase()} resume bullets
             </h2>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Each pair below rewrites a bullet we see constantly on {role.label.toLowerCase()} Resumes, with the reason
+              Each pair below rewrites a bullet we see constantly on {role.label.toLowerCase()} resumes, with the reason
               the rewrite works for this role specifically.
             </p>
             <div className="space-y-5">
@@ -459,7 +459,7 @@ export default async function RoleResumeExamplePage({
           {/* Role-specific red flags */}
           <div className="mx-auto max-w-3xl mb-14">
             <h2 className="text-xl font-bold tracking-tight mb-5">
-              What gets {role.label.toLowerCase()} Resumes screened out
+              What gets {role.label.toLowerCase()} resumes screened out
             </h2>
             <div className="space-y-3">
               {content.redFlags.map((f) => (

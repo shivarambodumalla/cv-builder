@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const WHAT_WE_BUILD = [
   {
     title: "ATS analysis",
-    body: "We parse your resume the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. The output is not a number on its own; it is the specific list of what is costing you points and why.",
+    body: "We parse your resume the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. You get more than a number: the specific list of what is costing you points and why.",
     href: "/upload-resume",
     linkLabel: "Check your resume free",
   },
@@ -53,14 +53,14 @@ const WHAT_WE_BUILD = [
 const PRINCIPLES = [
   {
     title: "We do not fabricate your experience",
-    body: "Plenty of tools will generate achievements from a job title. Those achievements are fiction, and they become the worst possible interview topic, and interviewers probe numbers precisely because they are checkable. Everything our AI produces is a restructuring of something you told us.",
+    body: "Plenty of tools will generate achievements from a job title. Those achievements are fiction. They also make the worst possible interview topic, because interviewers probe numbers to check them. Everything our AI produces is a restructuring of something you told us.",
   },
   {
     title: "A score is a floor, not a target",
     body: "An ATS score measures whether your resume is machine-readable and relevant to a role. It cannot measure whether your experience is compelling. A 95% score on vague, unmeasured bullets still loses to a 78% resume that clearly shows someone shipped valuable work. We say so in the product, even though a higher number would be easier to sell.",
   },
   {
-    title: "Free should be genuinely useful",
+    title: "Free should be useful",
     body: "You can check your ATS score, see the full category breakdown and the specific issues found without an account or a card. The free plan includes real usage of the AI features every week. We would rather you find the tool useful and upgrade than hit a wall on the first click.",
   },
   {
@@ -166,7 +166,7 @@ export default function AboutPage() {
         <p className="text-muted-foreground leading-relaxed mb-4">
           Alongside the product we write guides on how applicant tracking systems actually work, what recruiters do
           in the first pass over a resume, and what a strong resume looks like for specific roles. It is written to be
-          useful whether or not you use the tool, including the parts where the honest answer is that a tool will
+          useful even if you never use the tool, including the parts where the honest answer is that a tool will
           not help you.
         </p>
         <div className="flex flex-wrap gap-2">

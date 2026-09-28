@@ -6,11 +6,11 @@ import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
   title: "AI Resume Builder: Free ATS-Friendly Templates",
-  description: "12 free ATS-friendly CV templates. Upload your CV, get an instant ATS score, fix everything with AI. No signup required.",
+  description: "28 free ATS-friendly CV templates. Upload your CV, get an instant ATS score, fix everything with AI. No signup required.",
   alternates: { canonical: "https://www.thecvedge.com/resumes" },
   openGraph: {
     title: "Free ATS-Friendly Resume Templates | CVEdge",
-    description: "12 free ATS-friendly resume templates with AI rewriting, score tracking, and one-click PDF export.",
+    description: "28 free ATS-friendly resume templates with AI rewriting, score tracking, and one-click PDF export.",
     url: "https://www.thecvedge.com/resumes",
   },
 };
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const FEATURES = [
   { icon: BarChart3, title: "Know your score before recruiters see your resume", desc: "Upload your resume and get an instant ATS score across 6 categories. See exactly what software flags, and fix each issue one by one." },
   { icon: Sparkles, title: "Fix weak bullet points with one click", desc: "Every bullet has a Rewrite button. Pick a mode, get a better version, and insert it instantly. Your experience, stronger words." },
-  { icon: Layout, title: "12 professional templates, each ATS-optimized", desc: "Choose from Classic, Sharp, Minimal, Executive, Sidebar and more. Every template is tested to pass ATS filters and look great on screen." },
+  { icon: Layout, title: "32 professional templates, each ATS-optimized", desc: "Choose from Classic, Sharp, Minimal, Executive, Sidebar and more. Every template is tested to pass ATS filters and look great on screen." },
   { icon: Target, title: "See how well you match any job before applying", desc: "Paste a job description and get a match score with missing keywords highlighted. Fix gaps before you hit apply." },
   { icon: Download, title: "Download clean PDFs", desc: "Export your finished resume as a polished PDF ready to send. No branding, no surprises." },
 ];

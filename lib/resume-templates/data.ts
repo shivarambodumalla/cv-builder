@@ -56,7 +56,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
       "Free resume templates for software engineers. Single-column and two-column layouts that score 90+ on ATS. Works for L1 to staff engineer, FAANG to startup.",
     h1: "Software Engineer Resume Templates",
     intro:
-      "Software engineering roles attract hundreds of applicants per position. The first filter isn't human. It's the ATS. These templates are structured specifically for SWE roles: single-column layouts that parse cleanly through Greenhouse, Workday, and Lever; section order that puts experience above the fold; and formatting that lets quantified achievements speak clearly. Pick the template that matches your seniority and apply with confidence.",
+      "Software engineering roles attract hundreds of applicants per position. The first filter isn't human. It's the ATS. These templates are built for SWE roles. The single-column layouts parse cleanly through Greenhouse, Workday, and Lever, the section order puts experience above the fold, and the formatting lets quantified achievements speak for themselves. Pick the one that matches your seniority.",
     templates: [
       {
         leafSlug: "classic-cv",
@@ -233,7 +233,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
       "Free resume templates for marketing professionals. Balanced visual presence with ATS safety. Ideal for digital marketing, growth, brand, and performance roles.",
     h1: "Marketing Resume Templates",
     intro:
-      "Marketing resumes walk a fine line: they need to look polished enough to show you understand brand, but structured enough to pass ATS screening. These templates are chosen for marketing roles specifically: visual presence without sacrificing parsability. Whether you're in performance marketing, brand strategy, content, or growth, there's a template here that matches your audience.",
+      "Marketing resumes walk a fine line: they need to look polished enough to show you understand brand, but structured enough to pass ATS screening. These templates were picked for marketing roles: visual presence without giving up parsability. People in performance marketing, brand strategy, content, and growth will each find one that suits their audience.",
     templates: [
       {
         leafSlug: "aurora-cv",
@@ -355,11 +355,11 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         faqs: [
           {
             q: "Do progress bars on CVs look unprofessional?",
-            a: "In moderation, no. Clean Sidebar's bars are subtle and precise. They signal confidence in your self-assessment. Avoid rating yourself 100% on anything; 80–90% on core tools reads as honest and strong.",
+            a: "In moderation, no. Clean Sidebar's bars are subtle and precise. They signal confidence in your self-assessment. Avoid rating yourself 100% on anything. Rating core tools at 80–90% reads as honest and strong.",
           },
           {
             q: "Is Clean Sidebar template good for marketing manager roles?",
-            a: "Clean Sidebar works best for IC roles (analyst, specialist, associate) and mid-level managers. For VP/Director, it can feel too visual, consider Executive or Classic instead.",
+            a: "Clean Sidebar works best for IC roles (analyst, specialist, associate) and mid-level managers. For VP/Director roles it can feel too visual. Consider Executive or Classic instead.",
           },
         ],
       },
@@ -540,13 +540,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "sharp-cv",
         templateSlug: "sharp",
         displayName: "Sharp Resume for Tech Freshers",
-        headline: "Bold, modern, and ATS-safe. Stand out from the sea of generic first resumes.",
+        headline: "Bold, modern, and ATS-safe. Looks nothing like the generic first resume.",
         description:
           "Most freshers submit identical resumes: white page, Times New Roman or Arial, minimal structure. Sharp immediately differentiates you with bold section dividers and modern typography while keeping every ATS requirement intact.\n\nFor CS, engineering, and tech-adjacent freshers, Sharp communicates that you understand design fundamentals without going overboard. It says: I know what good looks like, and I applied that to my own resume.\n\nSharp fills well with limited experience because the bold section headers and dividers create visual structure even when individual sections have only 2–3 bullets. The page feels complete rather than thin.\n\nSharp works particularly well for tech freshers applying to startups and growth companies, which tend to have less automated screening and more recruiter review time, meaning visual differentiation actually matters.",
         whoFor: [
           "CS and engineering freshers",
           "Tech graduates applying to startups and scale-ups",
-          "Freshers who want to stand out from generic first resumes",
+          "Freshers who don't want a generic-looking first resume",
           "Developers and designers with some side project experience",
         ],
         features: [
@@ -620,7 +620,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           },
           {
             q: "How long should a C-suite or VP resume be?",
-            a: "Two pages is standard and expected at this level; one page reads as thin above director grade. Three is only defensible for academic, medical or board resumes where publications and appointments are themselves the credential. Executive's spacing is calibrated for two pages. If you are spilling onto a third, the fix is compressing early roles rather than tightening the leading.",
+            a: "Two pages is standard and expected at this level. One page reads as thin above director grade. Three is only defensible for academic, medical or board resumes where publications and appointments are themselves the credential. Executive's spacing is calibrated for two pages. If you are spilling onto a third, the fix is compressing early roles rather than tightening the leading.",
           },
         ],
       },
@@ -690,7 +690,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         faqs: [
           {
             q: "Is Executive Sidebar good for C-suite applications in the UK?",
-            a: "Yes. Executive Sidebar's photo integration and formal structure suit UK corporate expectations. For US applications, the photo sidebar is less conventional, consider Executive or Executive Pro instead.",
+            a: "Yes. Executive Sidebar's photo integration and formal structure suit UK corporate expectations. For US applications the photo sidebar is less conventional, so consider Executive or Executive Pro instead.",
           },
           {
             q: "Can Executive Sidebar accommodate 20+ years of experience?",
@@ -935,7 +935,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           },
           {
             q: "Is Classic Serif good for law firm applications?",
-            a: "Yes. Law firm portals (often using resume Library or Workday) parse Classic Serif cleanly. The formal aesthetic also matches law firm recruiting expectations for in-person review.",
+            a: "Yes. Law firm portals (often using CV-Library or Workday) parse Classic Serif cleanly. The formal aesthetic also matches law firm recruiting expectations for in-person review.",
           },
         ],
       },
@@ -1153,7 +1153,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         faqs: [
           {
             q: "Is Electric Lilac suitable for senior UX designer roles?",
-            a: "Yes. For UX leads and creative directors, Electric Lilac signals design literacy. Apply with caution via automated ATS portals; it shines for direct submissions and recruiter outreach.",
+            a: "Yes. For UX leads and creative directors, Electric Lilac signals design literacy. Be careful with automated ATS portals. It shines in direct submissions and recruiter outreach.",
           },
           {
             q: "Can I change the lilac colour to match my personal brand?",

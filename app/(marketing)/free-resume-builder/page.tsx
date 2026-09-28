@@ -21,7 +21,7 @@ const FAQS = [
   {
     question: "Is CVEdge's resume builder really free?",
     answer:
-      "Yes. The free plan includes: 3 resumes, 10 ATS scans per week, 25 AI bullet rewrites per week, 5 job match analyses per week, 5 cover letters per week, 3 PDF downloads per week, and access to all 28 free templates. No credit card required. Pro (unlimited everything + 4 Pro templates) costs £5/week.",
+      "Yes. The free plan includes: 3 resumes, 10 ATS scans per week, 25 AI bullet rewrites per week, 5 job match analyses per week, 5 cover letters per week, 3 PDF downloads per week, and access to all 28 free templates. No credit card required. Pro (unlimited everything + 4 Pro templates) costs $5/week.",
   },
   {
     question: "How long does it take to build a resume on CVEdge?",
@@ -31,7 +31,7 @@ const FAQS = [
   {
     question: "Does the free resume builder add watermarks to the PDF?",
     answer:
-      "No. CVEdge's free plan generates clean, professional PDFs with no CVEdge branding or watermarks. The PDF looks identical to a professionally formatted document. There is no 'remove watermark' upgrade. All plans export clean PDFs.",
+      "No. CVEdge's free plan generates clean, professional PDFs with no CVEdge branding or watermarks. There is no 'remove watermark' upgrade. All plans export clean PDFs.",
   },
   {
     question: "Can I use CVEdge to update an existing resume?",
@@ -46,7 +46,7 @@ const FAQS = [
   {
     question: "What is the difference between free and Pro on CVEdge?",
     answer:
-      "Free plan: 3 resumes, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 28 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs £5/week (or £14/month, £120/year).",
+      "Free plan: 3 resumes, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 28 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs $5/week (or $14/month, $120/year).",
   },
 ];
 
@@ -54,7 +54,7 @@ const FREE_FEATURES = [
   {
     icon: FileText,
     title: "Upload your existing resume or start from scratch",
-    desc: "Paste a job description. CVEdge extracts your content automatically or walks you through a structured form. You're editing within 60 seconds.",
+    desc: "Upload a PDF or paste your resume text. CVEdge extracts your content automatically or walks you through a structured form. You're editing within 60 seconds.",
   },
   {
     icon: BarChart3,
@@ -74,7 +74,7 @@ const FREE_FEATURES = [
   {
     icon: Download,
     title: "Clean PDF download, no watermarks, ever",
-    desc: "Export your finished resume as a polished, print-ready PDF. No CVEdge branding. The same PDF whether you're on free or Pro.",
+    desc: "Export your finished resume as a polished, print-ready PDF. No CVEdge branding. Free and Pro export the same PDF.",
   },
   {
     icon: CheckCircle,
@@ -297,7 +297,7 @@ export default function FreeResumeBuilderPage() {
           Build your resume for free, right now
         </h2>
         <p className="mt-3 text-muted-foreground">
-          No sign-up friction, no watermarks, no credit card. Upload your resume or start
+          No watermarks and no credit card. Upload your resume or start
           fresh and be done in under 10 minutes.
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">

@@ -40,11 +40,11 @@ export function JobDescriptionModal({ open, onOpenChange }: JobDescriptionModalP
 
   function handleFile(f: File) {
     if (f.type !== "application/pdf") {
-      setError("Only PDF files are accepted");
+      setError("Only PDF files work here. Save your resume as a PDF and try again.");
       return;
     }
     if (f.size > 5 * 1024 * 1024) {
-      setError("File must be under 5MB");
+      setError("This file is too large. Choose a PDF under 5 MB.");
       return;
     }
     setError("");
@@ -77,7 +77,7 @@ export function JobDescriptionModal({ open, onOpenChange }: JobDescriptionModalP
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error || "Something went wrong");
+      setError(data.error || "Couldn't create your resume. Try again in a moment.");
       setSubmitting(false);
       return;
     }

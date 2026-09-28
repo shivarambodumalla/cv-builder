@@ -37,9 +37,9 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
     case "template_click":
       return { title: `Use ${ctx.templateName || "this template"} free. Sign in to start`, subtitle: "All templates are free. No credit card." };
     case "job_search":
-      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}". Sign in to unlock scores.` : "Every listing shows how well your resume matches." };
+      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}". Sign in to see your scores.` : "Every listing shows how well your resume matches." };
     case "role_page":
-      return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to unlock personalized match scores." };
+      return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to see match scores based on your resume." };
     case "resumes_cta":
       return { title: "Pick your template and build your resume free", subtitle: "All templates. ATS-optimized. No credit card." };
     case "jobs_cta":

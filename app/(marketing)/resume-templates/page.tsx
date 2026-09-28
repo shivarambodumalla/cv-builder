@@ -9,12 +9,12 @@ import { TemplateShowcase } from "../resumes/template-showcase";
 export const metadata: Metadata = {
   title: "Free Resume Templates: ATS-Friendly & Professional",
   description:
-    "24 free ATS-friendly resume templates for every role and industry. Single-column and two-column layouts tested on Greenhouse, Workday, and Lever. Upload your CV and score instantly.",
+    "28 free ATS-friendly resume templates for every role and industry. Single-column and two-column layouts tested on Greenhouse, Workday, and Lever. Upload your CV and score instantly.",
   alternates: { canonical: "https://www.thecvedge.com/resume-templates" },
   openGraph: {
     title: "Free Resume Templates: ATS-Friendly & Professional | CVEdge",
     description:
-      "24 free ATS-friendly resume templates. Upload your resume, get an instant ATS score, fix with AI, and download a polished PDF.",
+      "28 free ATS-friendly resume templates. Upload your resume, get an instant ATS score, fix with AI, and download a polished PDF.",
     url: "https://www.thecvedge.com/resume-templates",
   },
 };
@@ -83,7 +83,7 @@ const WHY_MATTERS = [
   {
     icon: Download,
     title: "Download a polished PDF ready to send",
-    desc: "Clean, print-ready PDF export with zero CVEdge branding. The PDF that comes out looks exactly like a professionally formatted document.",
+    desc: "Clean, print-ready PDF export with zero CVEdge branding.",
   },
 ];
 
@@ -189,7 +189,7 @@ export default function ResumeTemplatesPage() {
           <div className="mx-auto max-w-4xl">
             <div className="text-center mb-10">
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Why your resume template matters more than you think
+                Why your resume template matters
               </h2>
               <p className="mt-3 text-muted-foreground">
                 Most resumes are rejected before a human sees them. CVEdge fixes that.

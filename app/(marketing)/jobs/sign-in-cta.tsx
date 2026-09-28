@@ -29,8 +29,8 @@ export function SignInCTA() {
           Sign in free to find jobs matching your resume
         </h2>
         <p className="text-white/70 text-sm max-w-md mx-auto mb-6">
-          CVEdge analyzes your skills and experience to surface the best-fit
-          roles, so you apply smarter, not harder.
+          CVEdge reads your skills and experience and ranks the roles that fit
+          you best, so you spend your time on the ones worth applying to.
         </p>
         <Button
           onClick={() => showSignupModal({ trigger: "jobs_cta" })}

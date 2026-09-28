@@ -208,7 +208,7 @@ export default async function RoleInterviewPrepPage({
             <div>
               <p className="text-sm font-semibold">Need the resume before the interview?</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                See {lower} Resume examples, before/after bullets, and the metrics reviewers look for.
+                See {lower} resume examples, before/after bullets, and the metrics reviewers look for.
               </p>
             </div>
             <Button variant="outline" asChild>

@@ -123,7 +123,7 @@ const ATS_FAQ = [
   {
     question: "Is the ATS check really free?",
     answer:
-      "Yes. Upload a resume or paste its text and you get the full category breakdown and the specific issues found, without an account or a card. Free accounts also include a number of AI rewrites and job matches each week; unlimited use requires a paid plan.",
+      "Yes. Upload a resume or paste its text and you get the full category breakdown and the specific issues found, without an account or a card. Free accounts also include a number of AI rewrites and job matches each week. Unlimited use requires a paid plan.",
   },
   {
     question: "What file formats can I upload?",
@@ -138,7 +138,7 @@ const ATS_FAQ = [
   {
     question: "Do you store my CV?",
     answer:
-      "Your resume is processed to generate the analysis. If you are signed in, it is saved to your account so you can edit and re-score it; you can delete it at any time. See our privacy policy for the full detail on retention and processing.",
+      "Your resume is processed to generate the analysis. If you are signed in, it is saved to your account so you can edit and re-score it. You can delete it at any time. See our privacy policy for the full detail on retention and processing.",
   },
   {
     question: "Why does my CV score differently on other tools?",

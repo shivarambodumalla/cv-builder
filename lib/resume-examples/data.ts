@@ -26,7 +26,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Built internal CI/CD pipeline handling 200+ daily deployments with zero-downtime rollouts, cutting engineer build-wait time by 65%",
     ],
     commonMistakes: [
-      "Listing technologies without context: \"Used React, Python, AWS\" says nothing; show what you built with them",
+      "Listing technologies without context: \"Used React, Python, AWS\" says nothing. Show what you built with them",
       "Weak bullet openings: \"Responsible for\" or \"Worked on\" instead of strong action verbs (Built, Redesigned, Led, Reduced)",
       "Missing scale: always include user counts, request volume, team size, or business impact where possible",
     ],
@@ -62,7 +62,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "No deployment story: include cloud platforms and infrastructure experience explicitly",
     ],
     advice:
-      "Full-stack roles span a wide range: some want T-shaped engineers who lead in one area, others want genuine 50/50 split. Read the JD carefully and weight your bullets to match. Lead with your strongest side, then show breadth.",
+      "Full-stack roles span a wide range: some want T-shaped engineers who lead in one area, others want an even 50/50 split. Read the JD carefully and weight your bullets to match. Lead with your strongest side, then show breadth.",
     bestTemplates: [
       { name: "Classic", categorySlug: "software-engineer", leafSlug: "classic-cv" },
       { name: "Horizon", categorySlug: "software-engineer", leafSlug: "two-column-cv" },
@@ -119,7 +119,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Introduced continuous discovery program with weekly user research cadence; insight-driven prioritization increased sprint delivery confidence from 62% to 89% across 4 teams",
     ],
     commonMistakes: [
-      "Writing feature lists instead of outcomes. Nobody cares what you shipped; they care about the impact",
+      "Writing feature lists instead of outcomes. Nobody cares what you shipped. They care about the impact",
       "Vague ownership language: \"involved in\" or \"contributed to\" instead of \"owned\", \"led\", \"decided\"",
       "No quantification of scale: always include number of users, team size, revenue, or metric improvement",
     ],
@@ -150,8 +150,8 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Ran discovery sprint for B2B dashboard feature involving 12 enterprise customer interviews; research directly prevented shipping a $200K development investment based on incorrect assumption",
     ],
     commonMistakes: [
-      "Showing outputs not outcomes: \"Designed 20 screens\" is irrelevant; \"Reduced task completion time by 35%\" is what hiring managers want",
-      "Missing process: include how you worked (research methods, testing approach) not just what you designed",
+      "Showing outputs not outcomes: \"Designed 20 screens\" is irrelevant. \"Reduced task completion time by 35%\" is what hiring managers want",
+      "Missing process: show how you worked (research methods, testing approach) as well as what you designed",
       "Not including portfolio link: every UX designer application needs a portfolio URL in the header",
     ],
     advice:
@@ -243,7 +243,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Designed feature store architecture for 200+ real-time features serving 15 ML models in production; reduced feature engineering duplication by 70% across 8 teams",
     ],
     commonMistakes: [
-      "Research-mode bullets in an engineering context: focus on production deployment and scale, not just model accuracy",
+      "Research-mode bullets in an engineering context: model accuracy alone won't carry it, so show production deployment and scale",
       "Missing MLOps evidence: show how you train, version, monitor, and retrain models in production",
       "No latency/throughput numbers: ML engineering roles care as much about serving performance as model quality",
     ],
@@ -279,7 +279,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Missing accessibility: most modern frontend roles require explicit accessibility evidence",
     ],
     advice:
-      "Frontend roles increasingly blend engineering rigour with product sensibility. Show performance numbers (LCP, FCP, bundle size), accessibility work (WCAG compliance), and user-facing impact (conversion, engagement). The best frontend engineers can articulate why their technical decisions improved user outcomes.",
+      "Frontend roles increasingly blend engineering rigor with product sensibility. Show performance numbers (LCP, FCP, bundle size), accessibility work (WCAG compliance), and user-facing impact (conversion, engagement). The best frontend engineers can articulate why their technical decisions improved user outcomes.",
     bestTemplates: [
       { name: "Classic", categorySlug: "software-engineer", leafSlug: "classic-cv" },
       { name: "Sharp", categorySlug: "software-engineer", leafSlug: "sharp-cv" },
@@ -305,7 +305,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Built async job processing system using Redis queues handling 2M background jobs daily with zero data loss and automatic retry on transient failures",
     ],
     commonMistakes: [
-      "No scale context: \"Built API\" tells nothing; \"Built API handling 40M daily transactions\" tells everything",
+      "No scale context: \"Built API\" tells nothing. \"Built API handling 40M daily transactions\" tells everything",
       "Missing reliability story: uptime, error rates, and resilience patterns are backend credibility markers",
       "Avoiding security/compliance, especially for fintech, healthcare, or regulated industry roles",
     ],
@@ -337,7 +337,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     commonMistakes: [
       "Generic cloud tool lists: show which cloud, which services, and at what scale",
-      "Missing cost awareness: cloud engineers are expected to understand FinOps; include cost saving examples",
+      "Missing cost awareness: cloud engineers are expected to understand FinOps, so include cost-saving examples",
       "No security posture evidence: compliance certifications and security architecture show you take it seriously",
     ],
     advice:
@@ -461,7 +461,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     commonMistakes: [
       "Generic architecture language: \"designed systems\" without the scale, constraints, and tradeoffs you navigated",
-      "Missing business impact: architecture decisions have commercial consequences; show what your design choices enabled or saved",
+      "Missing business impact: architecture decisions have commercial consequences, so show what your design choices enabled or saved",
       "No pre-sales evidence: for consulting/vendor SA roles, deal sizes and win rates are critical resume elements",
     ],
     advice:
@@ -523,7 +523,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
     ],
     commonMistakes: [
       "Manual-only testing experience at a company that needs automation: be explicit about your automation capability",
-      "No bug prevention metrics: quantify how your testing reduced production incidents, not just how many tests you wrote",
+      "No bug prevention metrics: quantify how your testing reduced production incidents. A count of tests written doesn't show that",
       "Missing coverage and tooling specifics: \"wrote tests\" vs \"built Playwright suite with 95% critical path coverage\"",
     ],
     advice:
@@ -589,7 +589,7 @@ const ROLE_EXAMPLES: Record<string, RoleExampleData> = {
       "Missing cost/latency: production AI engineering requires explicit cost-per-request and latency numbers",
     ],
     advice:
-      "AI engineering is still a young field and many resumes consist of hype without substance. Stand out by showing production deployments with real metrics: accuracy on a defined eval set, cost per request, latency at load, and the business problem you actually solved. Evaluation rigour separates engineers from experimenters.",
+      "AI engineering is still a young field and many resumes consist of hype without substance. Stand out by showing production deployments with real metrics: accuracy on a defined eval set, cost per request, latency at load, and the business problem you actually solved. Rigorous evaluation is what separates engineers from experimenters.",
     bestTemplates: [
       { name: "Classic", categorySlug: "software-engineer", leafSlug: "classic-cv" },
       { name: "Sharp", categorySlug: "software-engineer", leafSlug: "sharp-cv" },

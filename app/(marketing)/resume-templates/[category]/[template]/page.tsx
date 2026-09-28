@@ -147,7 +147,7 @@ export default async function TemplateLeafPage({
                     <div className="space-y-1.5">
                       <p className="text-center text-xs text-muted-foreground">
                         Pro template:{" "}
-                        <Link href="/pricing" className="underline hover:text-foreground">unlock with CVEdge Pro</Link>
+                        <Link href="/pricing" className="underline hover:text-foreground">included with CVEdge Pro</Link>
                       </p>
                       {leaf.freeAlternative && (
                         <p className="text-center text-xs text-muted-foreground">

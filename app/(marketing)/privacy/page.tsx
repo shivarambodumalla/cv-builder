@@ -39,7 +39,7 @@ const sections = [
   {
     title: "3. How we use your data",
     list: [
-      "To provide CV analysis, building, and optimisation tools",
+      "To provide CV analysis, building, and optimization tools",
       "To send transactional emails (welcome, usage resets, upgrade prompts) via Resend",
       "To process your CV through AI for ATS scoring, rewriting, job matching, and cover letter generation",
       "To track usage limits and manage your subscription",

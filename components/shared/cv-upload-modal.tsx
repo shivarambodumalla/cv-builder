@@ -106,7 +106,7 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error || "Something went wrong");
+      setError(data.error || "Upload failed. Try again in a moment.");
       setSubmitting(false);
       return;
     }

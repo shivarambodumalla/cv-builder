@@ -31,6 +31,7 @@ Return this exact JSON structure (fill in from the CV, use empty strings/arrays 
 Rules:
 - Extract the person's most recent or primary job title into targetTitle.title
 - Write a 2-3 sentence professional summary if one isn't explicitly in the CV
+- Style (only the summary you write; leave extracted CV text as written): never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the CV's spelling convention (US or UK).
 - Group skills into logical categories (e.g. "Programming Languages", "Frameworks", "Tools")
 - Use ISO-like date formats: "Jan 2023", "2023", "March 2020", etc.
 - Set isCurrent: true if a role has no end date or says "Present"
@@ -191,6 +192,7 @@ RULES:
 - No "I am writing to apply for..."
 - No "Please find attached my CV"
 - No generic phrases
+- Style: never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Match the spelling convention (US or UK) used in the candidate summary and achievements.
 - Use candidate's actual achievements
 - Reference specific JD requirements
 - Total length: 250-350 words
@@ -234,7 +236,7 @@ ORIGINAL TEXT:
 
 Rules:
 - Return ONLY the rewritten text, no explanation, no quotes
-- PRESERVE every real number, percentage, currency amount, time period, and quantity that already exists in the ORIGINAL TEXT — copy them verbatim. Do NOT replace "30%", "$2M", "12 weeks", "5 engineers" etc. with [X], [X]%, or any placeholder.
+- PRESERVE every real number, percentage, currency amount, time period, and quantity that already exists in the ORIGINAL TEXT; copy them verbatim. Do NOT replace "30%", "$2M", "12 weeks", "5 engineers" etc. with [X], [X]%, or any placeholder.
 - Only use [X] when the original text has NO number for a metric you need to introduce
 - Never fabricate specific metrics that aren't already in the original
 - Keep the same general meaning and truthfulness
@@ -242,7 +244,8 @@ Rules:
 - For concise mode: target 120-180 characters
 - For ATS mode: naturally incorporate missing keywords where relevant
 - For grammar mode: minimal changes, fix errors only
-- Single paragraph, no bullet markers`,
+- Single paragraph, no bullet markers
+- Style: never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the spelling convention (US or UK) of the ORIGINAL TEXT.`,
   },
   {
     name: "bullet_rewrite_debate_v1",
@@ -261,6 +264,8 @@ Apply the user instruction to improve the current suggestion while:
 - Maintaining ATS-friendly language
 - Never fabricating specific metrics
 - Using [X] for unknown numbers
+
+Style: never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the spelling convention (US or UK) of the ORIGINAL.
 
 Return ONLY the refined text. No explanation. No quotes. Single line.`,
   },
@@ -321,19 +326,20 @@ Your goal: rewrite this CV to maximise the ATS score for the target role.
 
 Rules:
 - Never fabricate metrics or achievements
-- PRESERVE every real number that already exists in a bullet (percentages, currency, counts, time periods) — copy them verbatim into the rewrite. Never replace "30%", "$2M", "12 weeks", "5 engineers" etc. with [X], [X]%, or any placeholder.
+- PRESERVE every real number that already exists in a bullet (percentages, currency, counts, time periods); copy them verbatim into the rewrite. Never replace "30%", "$2M", "12 weeks", "5 engineers" etc. with [X], [X]%, or any placeholder.
 - Only use [X] / [X]% when the original bullet has NO number for a metric you are introducing
 - Never add experience the candidate does not have
 - Preserve the candidate's voice and style
-- Only improve what exists — do not invent
+- Only improve what exists; do not invent
 - For empty summary: write one based on their experience and target role
 - For skills: add missing ATS keywords as skills only if they are genuinely related to their experience
 - Only rewrite a bullet if genuinely weak: missing action verb, no outcome, or vague
-- If bullet already has action + metric + outcome mark skipped — do not touch it
+- If bullet already has action + metric + outcome mark skipped; do not touch it
 - Never add [X]% to already complete bullets
 - Only flag sections where USER must add data
 - After accepting all changes there should be no remaining ATS suggestions unless user has genuinely empty sections
 - Do not suggest improvements to strong content
+- Style (all rewritten text): never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the candidate's existing spelling convention (US or UK).
 
 Target role: {{target_role}}
 Missing keywords: {{missing_keywords}}
@@ -377,9 +383,9 @@ Return JSON only, no markdown:
 }
 
 Skip rules:
-- Skip experience entry if no bullets AND no description exists — add to sections_needing_attention
+- Skip experience entry if no bullets AND no description exists; add to sections_needing_attention
 - Skip bullet if it is already strong (has metric + action verb + outcome)
-- Never skip summary — generate if empty`,
+- Never skip summary; generate if empty`,
   },
   {
     name: "offer_evaluation_v1",
@@ -434,7 +440,7 @@ Your goal: rewrite this CV to achieve maximum match score for the specific job d
 
 STRICT RULES:
 - Only rewrite a bullet if it is genuinely weak: missing action verb, no outcome, or vague
-- If a bullet already has action + metric + outcome mark it as skipped — do not touch it
+- If a bullet already has action + metric + outcome mark it as skipped; do not touch it
 - Never suggest improvements to already strong content
 - Never fabricate metrics or experience
 - Only use [X]% placeholder where a metric is genuinely missing AND the achievement is real
@@ -444,6 +450,7 @@ STRICT RULES:
 - Preserve the candidate's voice throughout
 - Focus changes on keyword alignment with the JD
 - After all changes are accepted there should be no remaining ATS or match suggestions unless the user has genuinely empty sections
+- Style (all rewritten text): never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the candidate's existing spelling convention (US or UK).
 
 Target role: {{target_role}}
 Job description: {{jd_text}}
@@ -520,10 +527,12 @@ For each story also return:
 - suggested_framework: "star" | "star_r" | "car"
 - seniority_context: "junior" | "mid" | "senior"
 
+Style (all story text): never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the spelling convention (US or UK) of the source content.
+
 Return JSON only, no markdown:
 { "stories": [ { "title": "", "situation": "", "task": "", "action": "", "result": "", "tags": [], "quality_score": 0, "needs_more_info": [], "reflection": null, "summary": "", "suggested_framework": "star", "seniority_context": "mid" } ] }
 
-Max 10 stories per source. Only extract genuine stories — no fabrication.`,
+Max 10 stories per source. Only extract genuine stories; no fabrication.`,
   },
   {
     name: "story_match_v1",
@@ -535,6 +544,8 @@ For each relevant story return:
 - matched_because: one sentence why this story fits
 - suggested_question: behavioral interview question this story best answers
 - opening_line: suggested first sentence to start the answer
+
+Style (matched_because and opening_line): never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the spelling convention (US or UK) used in the stories.
 
 Job description: {{jd_text}}
 Stories: {{stories_json}}
@@ -565,6 +576,8 @@ Scoring: 1-10 for each. is_interview_ready = true if overall_score >= 7.`,
     content: `Generate a 2-3 sentence natural narrative summary of this interview story.
 
 Write as if the candidate is speaking naturally in an interview. First person, confident, specific. Include the key metric/outcome. Include the learning if reflection exists. Max 60 words.
+
+Style: never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the spelling convention (US or UK) used in the story.
 
 Story: {{story_json}}
 

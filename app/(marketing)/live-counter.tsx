@@ -53,7 +53,7 @@ export function LiveCounter({ initialCount, lastReportAt }: Props) {
     return (
       <p className="text-xs text-muted-foreground flex items-center gap-1.5">
         <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
-        Be the first to analyse today
+        Be the first to analyze today
       </p>
     );
   }

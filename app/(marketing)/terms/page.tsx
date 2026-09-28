@@ -61,7 +61,7 @@ const sections = [
   {
     title: "6. AI disclaimer",
     content:
-      "CVEdge uses AI to analyse and suggest improvements. AI suggestions are not guaranteed to result in job offers. Always review AI suggestions before use.",
+      "CVEdge uses AI to analyze and suggest improvements. AI suggestions are not guaranteed to result in job offers. Always review AI suggestions before use.",
   },
   {
     title: "7. Intellectual property",

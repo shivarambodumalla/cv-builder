@@ -30,6 +30,8 @@ Focus on:
 - Quantifiable achievements
 - Action verbs
 
+Style (improved_text): never use em dashes (—) or en dashes (–) as punctuation; use commas, periods, colons or parentheses. Write plainly, like a skilled human writer. Avoid clichés such as "leverage", "spearheaded", "synergy", "seamless", "robust", "passionate", "results-driven", "dynamic", "in today's fast-paced". Keep the CV's spelling convention (US or UK).
+
 Target role: {{target_role}}
 Target country: {{target_country}}
 

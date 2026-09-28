@@ -65,7 +65,7 @@ const TABS = [
     icon: BarChart3,
     label: "Scoring",
     heading: "How we calculate your score",
-    desc: "No black box. No guesswork. Every point is explainable, fixable, and transparent. Six weighted categories, each with specific rules you can address one by one.",
+    desc: "Six weighted categories, each with specific rules. You can see where every point comes from and fix issues one by one.",
     points: [],
     cta: "Get started free",
     ctaLink: "/upload-resume",
@@ -95,14 +95,14 @@ const TABS = [
     heading: "Beautiful PDFs, total design control",
     desc: "32 ATS-optimized templates with full design controls. Export clean PDFs ready to send, or customize every detail from fonts to section order.",
     points: [
-      "12 professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
+      "32 professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
       "Customize font, accent color, spacing, margins, bullet style, and section order",
       "Two-column templates with configurable sidebar sections",
       "PDF export: clean, formatted, ATS-friendly, with no watermark, ever",
       "Cover letter export: PDF, TXT, or copy to clipboard",
       "Paper size: A4 and US Letter supported",
     ],
-    cta: "Browse Templates",
+    cta: "Browse templates",
     ctaLink: "/resumes",
   },
 ];
@@ -121,7 +121,7 @@ export function FeaturesTabs() {
               Features
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-              Everything you need to go from application to offer letter
+              From first application to offer letter
             </h2>
           </div>
 

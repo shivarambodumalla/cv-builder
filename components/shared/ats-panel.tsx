@@ -868,7 +868,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
                     const res = await fetch("/api/guarantee/claim", { method: "POST" });
                     const data = await res.json();
                     setGuaranteeResult(data.message || data.error);
-                  } catch { setGuaranteeResult("Something went wrong. Please try again."); }
+                  } catch { setGuaranteeResult("We couldn't send your claim. Email hello@thecvedge.com and we'll review it."); }
                   setGuaranteeClaiming(false);
                 }}
                 disabled={guaranteeClaiming}

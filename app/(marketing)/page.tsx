@@ -74,7 +74,7 @@ export default async function HomePage() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
-    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "12 Professional Templates"],
+    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "32 Professional Templates"],
     areaServed: [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
@@ -110,7 +110,7 @@ export default async function HomePage() {
       { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge Pro users are guaranteed an 80+ ATS score after using Fix All. If your score does not reach 80+, contact us within 14 days of signing up and we will personally review your resume. If we still cannot reach 80+, we refund you in full." } },
       { "@type": "Question", name: "Does CVEdge have a job search?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge includes a free AI job search across 1 million+ live listings. Every job shows a match score against your resume so you can prioritize the roles you are most qualified for." } },
       { "@type": "Question", name: "Does CVEdge work for jobs in the UAE, Saudi Arabia, and the Middle East?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is used by job seekers across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. ATS screening is standard among large GCC employers and multinationals in the region. CVEdge scores your CV against the same criteria, helps you match keywords from local job descriptions, and generates cover letters for GCC-specific applications. The cv-review service also includes a Middle East specialist." } },
-      { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimization in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology throughout (not just 'resume'), supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
+      { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimization in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology alongside 'resume', supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
     ],
   };
 
@@ -416,7 +416,7 @@ export default async function HomePage() {
           {/* Header */}
           <div className="mb-10 md:mb-14 max-w-[1100px] mx-auto">
             <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">Why CVEdge</span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mt-3">Built for real people, not robots</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mt-3">Your experience, scored honestly</h2>
           </div>
 
           {/* Card container */}
@@ -546,7 +546,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-[720px]">
             <div className="mb-10">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Common questions</h2>
-              <p className="mt-3 text-base text-muted-foreground">Everything you need to know before getting started.</p>
+              <p className="mt-3 text-base text-muted-foreground">Quick answers on pricing, scoring, and your data.</p>
             </div>
             <FaqSection />
           </div>
@@ -559,7 +559,7 @@ export default async function HomePage() {
           <CtaSection
             label="Don't wait"
             heading="Your resume might be getting filtered out right now"
-            subtext="Every day you wait is a missed opportunity. Scan your resume in 60 seconds."
+            subtext="Scan your resume in 60 seconds and see exactly what to fix."
             buttonText="Check my resume score"
           />
         </div>
