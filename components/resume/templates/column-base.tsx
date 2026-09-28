@@ -522,24 +522,31 @@ export function ColumnBase({
   const bgGradient = `linear-gradient(to right, ${leftBackground} 260px, white 260px)`;
 
   // Print: a column's full height must fit on its last page, or Chromium
-  // prints a blank page after it. So the columns have no bottom padding (the
-  // row's bottom margin gives that space and is dropped at a page break), and
-  // each column's sections sit in a wrapper whose negative margin cancels the
-  // last section's bottom margin.
+  // prints a blank page after it. So in print the columns have no bottom
+  // padding (the row's bottom margin gives that space and is dropped at a page
+  // break), and each column's sections sit in a wrapper whose negative margin
+  // cancels the last section's bottom margin. On screen the padding stays on
+  // the columns so the sidebar fill and divider reach the paper's bottom edge.
   const trimLastMargin = { marginBottom: -sectionSpacing };
+  const bottomSpaceCss =
+    "[data-column-base-col]{padding-bottom:var(--resume-column-bottom)}" +
+    "@media print{[data-column-base-col]{padding-bottom:0}" +
+    "[data-column-base-row]{margin-bottom:var(--resume-column-bottom)}}";
 
   return (
-    <div style={{
+    <div data-column-base-row="" style={{
       display: "flex", minHeight: "100%", fontFamily: "var(--resume-font)",
       fontSize: "var(--resume-body-size)", lineHeight: "var(--resume-line-spacing)",
       background: bgGradient,
-      marginBottom: `${marginY}in`,
+      ["--resume-column-bottom" as string]: `${marginY}in`,
     }}>
+      <style>{bottomSpaceCss}</style>
       {/* LEFT COLUMN */}
-      <div style={{
+      <div data-column-base-col="" style={{
         width: 260,
         borderRight: showDivider ? "1pt solid #E2E8F0" : "none",
-        padding: `${marginY}in ${marginX * 0.6}in 0`, flexShrink: 0,
+        paddingTop: `${marginY}in`, paddingLeft: `${marginX * 0.6}in`, paddingRight: `${marginX * 0.6}in`,
+        flexShrink: 0,
         fontFamily: "var(--resume-font)",
         overflow: "hidden", overflowWrap: "break-word" as const, wordBreak: "break-word" as const,
       }}>
@@ -549,9 +556,9 @@ export function ColumnBase({
       </div>
 
       {/* RIGHT COLUMN */}
-      <div style={{
+      <div data-column-base-col="" style={{
         flex: 1,
-        padding: `${marginY}in ${marginX * 0.7}in 0`,
+        paddingTop: `${marginY}in`, paddingLeft: `${marginX * 0.7}in`, paddingRight: `${marginX * 0.7}in`,
         fontFamily: "var(--resume-font)",
       }}>
         <div style={trimLastMargin}>
