@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { templateThumbnail } from "@/lib/resume/template-thumbnails";
+import type { TemplateName } from "@/lib/resume/types";
 
-type Template = { slug: string; name: string; ac: string; tier: "Free" | "Pro" };
+type Template = { slug: TemplateName; name: string; ac: string; tier: "Free" | "Pro" };
 
 const TPL: Template[] = [
   { slug: "orchid", name: "Orchid", ac: "#9F1239", tier: "Free" },
@@ -48,8 +50,13 @@ const COL = [
   { c: "#14532D", n: "Forest", hr: -8, sat: 1.2, br: 0.85 },
 ];
 
-const imgSrc = (slug: string) =>
-  `/_next/image?url=${encodeURIComponent(`/img/templates/${slug}.jpg`)}&w=640&q=80`;
+const imgSrc = (slug: TemplateName) =>
+  `/_next/image?url=${encodeURIComponent(templateThumbnail(slug).src)}&w=640&q=80`;
+
+// The live-edit step shows TPL[0] (Orchid), whose thumbnail is the Rachel
+// Brooks sample persona (lib/resume/sample-personas.ts); keep these in step.
+const EDIT_PHONE_BEFORE = "(602) 555-0173";
+const EDIT_PHONE_AFTER = "(480) 555-0122";
 
 export function HeroAnimation() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -129,7 +136,7 @@ export function HeroAnimation() {
 
     let curF = "";
 
-    const swap = (slug: string) => {
+    const swap = (slug: TemplateName) => {
       const t = TPL.find((x) => x.slug === slug);
       if (!t) return;
       i0.style.opacity = "0";
@@ -166,18 +173,18 @@ export function HeroAnimation() {
 
 
     async function doEdit() {
-      phoneTxt.textContent = "+1 (765) 434-533x";
+      phoneTxt.textContent = EDIT_PHONE_BEFORE;
       phoneField.classList.add("focused");
       epSaved.classList.remove("on");
       await wait(600);
-      let s = "+1 (765) 434-533x";
+      let s = EDIT_PHONE_BEFORE;
       while (s.length > 0 && !cancelled) {
         s = s.slice(0, -1);
         phoneTxt.textContent = s;
         await wait(44);
       }
       await wait(150);
-      const n = "+44 7700 900855";
+      const n = EDIT_PHONE_AFTER;
       for (const ch of n) {
         if (cancelled) return;
         s += ch;
@@ -402,20 +409,20 @@ export function HeroAnimation() {
           <div className="ep-body">
             <div className="ep-field">
               <div className="ep-lbl">Full Name</div>
-              <div className="ep-muted">SARAH MITCHELL</div>
+              <div className="ep-muted">RACHEL BROOKS</div>
             </div>
             <div className="ep-field">
               <div className="ep-lbl">Phone</div>
               <div className="ep-input focused" data-el="phoneField">
                 <span className="ep-input-txt" data-el="phoneTxt">
-                  +1 (765) 434-533x
+                  {EDIT_PHONE_BEFORE}
                 </span>
                 <div className="ep-cursor" />
               </div>
             </div>
             <div className="ep-field">
               <div className="ep-lbl">Email</div>
-              <div className="ep-muted">sarh.mitchel@gmail.com</div>
+              <div className="ep-muted">rbrooks@example.com</div>
             </div>
           </div>
           <div className="ep-saved" data-el="epSaved">
@@ -426,9 +433,9 @@ export function HeroAnimation() {
 
         <div className="pill" data-el="pill" style={{ left: 300, top: 48 }}>
           <div className="pav">
-            <div className="pav-inner">S</div>
+            <div className="pav-inner">R</div>
           </div>
-          Sarah
+          Rachel
         </div>
 
         <div className="toast" data-el="toast">

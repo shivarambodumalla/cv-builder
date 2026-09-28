@@ -165,7 +165,14 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 Per-template design defaults (font, alignment, separator, name weight, skills style) live in `DESIGN_DEFAULTS_BY_TEMPLATE` (lib/resume/defaults.ts) and column splits in `COLUMN_DEFAULTS_BY_TEMPLATE`; both apply on template pick and on new-CV creation via normalizeDesignSettings.
 
-All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`). `avatarPosition` is only offered for the templates listed in `AVATAR_POSITION_TEMPLATES` (designer-panel.tsx); sidebar layouts stack the avatar above the name.
+Only the 12 templates in `PHOTO_TEMPLATES` (lib/resume/template-thumbnails.ts) render an avatar and honour the avatar controls (`avatarMode`, `avatarShape`, `avatarSize`, `avatarInitialsBg`); the designer panel shows those controls only for them. `avatarPosition` is only offered for the templates listed in `AVATAR_POSITION_TEMPLATES` (designer-panel.tsx); sidebar layouts stack the avatar above the name.
+
+### Template Thumbnails
+
+- One Letter-size JPEG per template (1275×1650, 150 DPI) at `public/img/templates/<name>-resume-template.jpg`. Old filenames (`harward.jpg`, `slate.jpg`, …) 301 to the new ones via `oldThumbnailRedirects` in next.config.mjs.
+- Generated, never hand-made: `npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts [template…]`. It renders the PDF print document (`buildResumeDocument` + `applyPrintLayoutFixes` from lib/pdf/html-to-pdf.ts), trims oldest bullets until page 1 fits, and screenshots it. Re-run after changing a template's look and commit the images.
+- Sample content: 15 fictional US personas in `lib/resume/sample-personas.ts` (555-01xx phones, example.com emails, invented employers, real universities). `TEMPLATE_PERSONA` maps each template to one so category pages, the homepage grid, the features tabs and the hero never repeat a face and /resumes never repeats one within five cards. Check those surfaces before reassigning. Headshots are AI-generated, in `scripts/assets/personas/`.
+- Every surface reads path + alt text from `templateThumbnail()` (lib/resume/template-thumbnails.ts) via `<TemplateThumbnailImage>` (components/shared/template-thumbnail.tsx). Grids use next/image; a template page's main preview uses `canonical` so the indexed URL matches og:image, the `ImageObjectJsonLd` and `/image-sitemap.xml` (listed in robots.txt). Harvard is the top SEO page: keep its alt naming the format.
 
 | Template | Type | Tier | Display Name |
 |----------|------|------|-------------|
@@ -184,12 +191,12 @@ All templates honour avatar design controls (`avatarMode`, `avatarShape`, `avata
 | harvard | — | Free | Harvard |
 | ledger | — | Free | Ledger |
 | aurora | 2-column (chips) | Free | Aurora |
-| electric-lilac | 2-column (vibrant sidebar) | Pro | Electric Lilac *(placeholder thumbnail)* |
-| bold-accent | single-column (accent chips) | Free | Bold Accent *(placeholder thumbnail)* |
-| executive-sidebar | 2-column (dark sidebar) | Pro | Executive Sidebar *(placeholder thumbnail)* |
-| clean-sidebar | 2-column (warm sidebar + bars) | Free | Clean Sidebar *(placeholder thumbnail)* |
-| blueprint | 2-column (editorial header block) | Free | Blueprint *(placeholder thumbnail)* |
-| wentworth | single-column (editorial minimal) | Pro | Wentworth *(placeholder thumbnail)* |
+| electric-lilac | 2-column (vibrant sidebar) | Pro | Electric Lilac |
+| bold-accent | single-column (accent chips) | Free | Bold Accent |
+| executive-sidebar | 2-column (dark sidebar) | Pro | Executive Sidebar |
+| clean-sidebar | 2-column (warm sidebar + bars) | Free | Clean Sidebar |
+| blueprint | 2-column (editorial header block) | Free | Blueprint |
+| wentworth | single-column (editorial minimal) | Pro | Wentworth |
 | coastal | 2-column (teal header + photo + objective band) | Free | Coastal |
 | orchid | 2-column (warm sidebar + accent headings + navy corner) | Free | Orchid |
 | portrait | 2-column (split-weight name + photo + plus-marker headings on grey canvas) | Free | Portrait |
@@ -353,6 +360,7 @@ Two reset mechanisms coexist:
 - Free: 3 PDF downloads per 7-day rolling window, no watermark. Pro: unlimited, no watermark.
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
 - Multi-page painting (lib/pdf/html-to-pdf.ts): Chromium clips column backgrounds to content height and never paints the canvas into `@page` margins. The pipeline folds page-spanning flex/grid columns (fills + divider borders) into one gradient, promotes it to the `<html>` canvas, and paints the pages-2+ top margin via a Puppeteer header template (laid out 20px below the page edge, hence the nested offset box). Per-page decorations (Orchid wedge) use `@media print { position: fixed }` and are hoisted to `<body>` so Chromium repeats them on every page.
+- A column row (side-by-side flex/grid) starting at the top of page 1 and at least half a page tall is promoted to the page canvas even when its content ends early, so sidebars run the full page on one-page CVs.
 - Print keep-together rules live in template-renderer.tsx: the `<style>` must use dangerouslySetInnerHTML — React escapes `>` in a text child, which a `<style>` element does not decode, silently killing child-combinator selectors.
 
 ## Blank Template Downloads (.docx)

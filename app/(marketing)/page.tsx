@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +19,7 @@ import { FaqSection } from "./faq-section";
 import { CtaSection } from "@/components/shared/cta-section";
 import { FeaturesTabs } from "@/components/marketing/features-tabs";
 import { HeroAnimation } from "@/components/marketing/hero-animation";
+import { TemplateThumbnailImage } from "@/components/shared/template-thumbnail";
 import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
@@ -197,26 +197,26 @@ export default async function HomePage() {
                   <div className="flex gap-3 items-start">
                     <div className="flex-1 flex flex-col gap-3">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/orchid.jpg" alt="Orchid resume template" title="Orchid resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <TemplateThumbnailImage template="orchid" sizes="(min-width: 1024px) 15vw, 30vw" className="w-full h-auto" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/vantage.jpg" alt="Vantage resume template" title="Vantage resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <TemplateThumbnailImage template="vantage" sizes="(min-width: 1024px) 15vw, 30vw" className="w-full h-auto" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-10">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/portrait.jpg" alt="Portrait resume template" title="Portrait resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <TemplateThumbnailImage template="portrait" sizes="(min-width: 1024px) 15vw, 30vw" className="w-full h-auto" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/meridian.jpg" alt="Meridian resume template" title="Meridian resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <TemplateThumbnailImage template="meridian" sizes="(min-width: 1024px) 15vw, 30vw" className="w-full h-auto" />
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col gap-3 mt-4">
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/coastal.jpg" alt="Coastal resume template" title="Coastal resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <TemplateThumbnailImage template="coastal" sizes="(min-width: 1024px) 15vw, 30vw" className="w-full h-auto" />
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white">
-                        <Image src="/img/templates/regent.jpg" alt="Regent resume template" title="Regent resume template" width={621} height={877} className="w-full h-auto" loading="lazy" />
+                        <TemplateThumbnailImage template="regent" sizes="(min-width: 1024px) 15vw, 30vw" className="w-full h-auto" />
                       </div>
                     </div>
                   </div>

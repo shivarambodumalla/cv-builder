@@ -79,6 +79,10 @@ export function ColumnBase({
   const nameParts = contact.name.trim().split(/\s+/);
   const firstName = nameParts.slice(0, -1).join(" ") || nameParts[0];
   const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+  // The sidebar fits about 7 uppercase letters per line at the default name
+  // size; shrink longer names so "THOMPSON" doesn't break into "THOMPSO / N".
+  const longestNamePart = Math.max(...nameParts.map((p) => p.length));
+  const sidebarNameScale = Math.min(1, 7 / longestNamePart);
 
   const sectionLabel = (title: string) => (
     <div
@@ -109,7 +113,7 @@ export function ColumnBase({
           <div key={key}>
             <div style={{ marginBottom: 8 }}>
               <div style={{
-                fontSize: "var(--resume-name-size)",
+                fontSize: `calc(var(--resume-name-size) * ${sidebarNameScale.toFixed(3)})`,
                 fontWeight: "var(--resume-name-weight)" as unknown as number,
                 color: "#0F172A", lineHeight: 1.05, letterSpacing: -0.5,
                 fontFamily: "var(--resume-font)", textTransform: "uppercase" as const,

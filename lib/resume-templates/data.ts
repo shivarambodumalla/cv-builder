@@ -1,13 +1,14 @@
+import type { TemplateName } from "@/lib/resume/types";
+
 export interface TemplateLeafData {
   leafSlug: string;
-  templateSlug: string;
+  templateSlug: TemplateName;
   displayName: string;
   headline: string;
   description: string;
   whoFor: string[];
   features: string[];
   tier: "free" | "pro";
-  imgPath: string | null;
   faqs: { q: string; a: string }[];
   /**
    * Hand-tuned meta title. Never include " | CVEdge" — the root layout applies
@@ -78,7 +79,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Clean PDF export — no formatting surprises",
         ],
         tier: "free",
-        imgPath: "/img/templates/classic.jpg",
         faqs: [
           {
             q: "Is the Classic template ATS-friendly for software engineering roles?",
@@ -115,7 +115,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Skills section supports both text lists and tagged chips",
         ],
         tier: "free",
-        imgPath: "/img/templates/sharp.jpg",
         faqs: [
           {
             q: "Does the Sharp template pass ATS filters?",
@@ -148,7 +147,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Section spacing highlights strong bullets",
         ],
         tier: "free",
-        imgPath: "/img/templates/minimal.jpg",
         faqs: [
           {
             q: "Will a minimal resume look empty if I have less experience?",
@@ -181,7 +179,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Supports certifications, publications, and patents cleanly",
         ],
         tier: "free",
-        imgPath: "/img/templates/executive.jpg",
         faqs: [
           {
             q: "When should I use Executive vs Classic for engineering roles?",
@@ -214,7 +211,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Scores well on ATS — clean header parsing",
         ],
         tier: "free",
-        imgPath: "/img/templates/horizon.jpg",
         faqs: [
           {
             q: "Does Horizon's two-column layout cause ATS parsing issues?",
@@ -260,7 +256,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "ATS-compatible despite visual richness",
         ],
         tier: "free",
-        imgPath: "/img/templates/aurora.jpg",
         faqs: [
           {
             q: "Is Aurora template good for marketing roles?",
@@ -293,7 +288,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Clean PDF output with consistent brand feel",
         ],
         tier: "free",
-        imgPath: "/img/templates/bold-accent.jpg",
         faqs: [
           {
             q: "Is Bold Accent suitable for senior marketing positions?",
@@ -326,7 +320,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Colour customisation for brand alignment",
         ],
         tier: "free",
-        imgPath: "/img/templates/coastal.jpg",
         faqs: [
           {
             q: "Should I include a photo on my marketing resume?",
@@ -359,7 +352,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Two-column ATS compatibility via standard structure",
         ],
         tier: "free",
-        imgPath: "/img/templates/clean-sidebar.jpg",
         faqs: [
           {
             q: "Do progress bars on CVs look unprofessional?",
@@ -392,7 +384,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "PDF export with colour fidelity",
         ],
         tier: "pro",
-        imgPath: "/img/templates/electric-lilac.jpg",
         faqs: [
           {
             q: "Is Electric Lilac ATS-friendly?",
@@ -438,7 +429,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "No design decisions required — just add your content",
         ],
         tier: "free",
-        imgPath: "/img/templates/classic.jpg",
         faqs: [
           {
             q: "Should freshers put Education above Experience on their resume?",
@@ -471,7 +461,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Looks premium even with limited content",
         ],
         tier: "free",
-        imgPath: "/img/templates/minimal.jpg",
         faqs: [
           {
             q: "Does Minimal look too empty for fresher resumes?",
@@ -504,7 +493,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Supports certifications prominently",
         ],
         tier: "free",
-        imgPath: "/img/templates/bold-accent.jpg",
         faqs: [
           {
             q: "Is Bold Accent good for graduate scheme applications?",
@@ -537,7 +525,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Scales well with distinctions, awards, and activities",
         ],
         tier: "free",
-        imgPath: "/img/templates/classic-serif.png",
         faqs: [
           {
             q: "Is Classic Serif good for investment banking applications?",
@@ -570,7 +557,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Accent colour customisable for personality",
         ],
         tier: "free",
-        imgPath: "/img/templates/sharp.jpg",
         faqs: [
           {
             q: "Is Sharp a good first resume template for CS graduates?",
@@ -623,7 +609,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Certifications, board seats and publications carry appropriate weight",
         ],
         tier: "free",
-        imgPath: "/img/templates/executive.jpg",
         faqs: [
           {
             q: "Is the executive resume template ATS-friendly?",
@@ -665,7 +650,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "PDF export with full colour fidelity for direct submissions",
         ],
         tier: "pro",
-        imgPath: "/img/templates/executive-pro.jpg",
         faqs: [
           {
             q: "Is Executive Pro suitable for executive search firm submissions?",
@@ -703,7 +687,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Premium PDF output suitable for board-level submission",
         ],
         tier: "pro",
-        imgPath: "/img/templates/executive-sidebar.jpg",
         faqs: [
           {
             q: "Is Executive Sidebar good for C-suite applications in the UK?",
@@ -736,7 +719,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Professional typography for regulated industry applications",
         ],
         tier: "free",
-        imgPath: "/img/templates/ledger.jpg",
         faqs: [
           {
             q: "Is Ledger template good for investment banking applications?",
@@ -769,7 +751,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Serif defaults applied automatically on pick",
         ],
         tier: "free",
-        imgPath: "/img/templates/regent.jpg",
         metaTitle: "Regent Resume Template — Classic Serif, Free",
         metaDescription: "Free Regent resume template: cream canvas, centred serif header and hairline rules for senior roles in law, finance and consulting. ATS-safe single column.",
         faqs: [
@@ -804,7 +785,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "2px accent rules under every heading",
         ],
         tier: "free",
-        imgPath: "/img/templates/vantage.jpg",
         metaTitle: "Vantage Resume Template with Company Logos — Free",
         metaDescription: "Free two-column resume template with a company or school logo beside every entry. Upload a logo per employer; Vantage shows your career progression at a glance.",
         faqs: [
@@ -852,7 +832,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "CVEdge ATS analyser gives real-time score as you edit",
         ],
         tier: "free",
-        imgPath: "/img/templates/classic.jpg",
         faqs: [
           {
             q: "Which ATS systems does the Classic template work with?",
@@ -885,7 +864,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "CVEdge ATS analyser scores Minimal highest in format compliance",
         ],
         tier: "free",
-        imgPath: "/img/templates/minimal.jpg",
         faqs: [
           {
             q: "Is Minimal really better for ATS than Classic?",
@@ -918,7 +896,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Human-appealing visual for recruiter review post-ATS",
         ],
         tier: "free",
-        imgPath: "/img/templates/sharp.jpg",
         faqs: [
           {
             q: "Is Sharp less ATS-safe than Classic or Minimal?",
@@ -951,7 +928,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "92–95 ATS score on CVEdge analyser",
         ],
         tier: "free",
-        imgPath: "/img/templates/classic-serif.png",
         faqs: [
           {
             q: "Does the serif font in Classic Serif cause ATS issues?",
@@ -991,7 +967,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Matches resume conventions at top consulting firms",
         ],
         tier: "free",
-        imgPath: "/img/templates/harward.jpg",
         faqs: [
           {
             q: "Is the Harvard resume template ATS-friendly?",
@@ -1028,7 +1003,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Verified through Greenhouse, Workday, and iCIMS",
         ],
         tier: "free",
-        imgPath: "/img/templates/executive.jpg",
         faqs: [
           {
             q: "Do senior executives need to worry about ATS?",
@@ -1061,7 +1035,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Serif body with sans headings applied on pick",
         ],
         tier: "free",
-        imgPath: "/img/templates/sterling.jpg",
         metaTitle: "Sterling ATS Resume Template — Free, Serif",
         metaDescription: "Free ATS resume template with a serif body, sans headings and a skills table. Sterling is the plainest CVEdge layout: single column, black text, every keyword parseable.",
         faqs: [
@@ -1096,7 +1069,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "No icons, rules or fills anywhere",
         ],
         tier: "free",
-        imgPath: "/img/templates/ember.jpg",
         metaTitle: "Ember Two-Column ATS Resume Template — Free",
         metaDescription: "Free two-column ATS resume template. Ember uses plain text only: a wide main column for experience and a right rail for contact details and skills. No icons, no boxes.",
         faqs: [
@@ -1131,7 +1103,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Light weights and dot separator applied on pick",
         ],
         tier: "free",
-        imgPath: "/img/templates/canopy.jpg",
         metaTitle: "Canopy Resume Template with Achievements — Free",
         metaDescription: "Free ATS-optimised resume template with a soft header band, oversized headings and a dedicated Achievements section. Canopy turns awards into a headline block.",
         faqs: [
@@ -1179,7 +1150,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Colour customisation for personal brand alignment",
         ],
         tier: "pro",
-        imgPath: "/img/templates/electric-lilac.jpg",
         faqs: [
           {
             q: "Is Electric Lilac suitable for senior UX designer roles?",
@@ -1212,7 +1182,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Accent colour customisation",
         ],
         tier: "free",
-        imgPath: "/img/templates/aurora.jpg",
         faqs: [
           {
             q: "Is Aurora suitable for UX designer job applications?",
@@ -1245,7 +1214,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Colour customisation to match portfolio palette",
         ],
         tier: "free",
-        imgPath: "/img/templates/coastal.jpg",
         faqs: [
           {
             q: "Is Coastal template good for art director applications?",
@@ -1278,7 +1246,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Memorable in shortlist review — stands out in stacks",
         ],
         tier: "free",
-        imgPath: "/img/templates/portrait.jpg",
         faqs: [
           {
             q: "When should I use Portrait vs Aurora for design roles?",
@@ -1311,7 +1278,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Works well printed for in-person interview rounds",
         ],
         tier: "free",
-        imgPath: "/img/templates/orchid.jpg",
         faqs: [
           {
             q: "Is Orchid a good template for content strategists?",
@@ -1344,7 +1310,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Accent colour customisation for brand alignment",
         ],
         tier: "free",
-        imgPath: "/img/templates/bold-accent.jpg",
         faqs: [
           {
             q: "Is Bold Accent the most ATS-friendly creative template?",
@@ -1377,7 +1342,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Sidebar sections movable from the Design tab",
         ],
         tier: "free",
-        imgPath: "/img/templates/meridian.jpg",
         metaTitle: "Meridian Startup Resume Template — Free",
         metaDescription: "Free modern resume template for startups and founders. Meridian pairs a mint sidebar and blob-framed photo with icon headings and a Key Achievements block.",
         faqs: [
@@ -1412,7 +1376,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Centred header applied on pick",
         ],
         tier: "free",
-        imgPath: "/img/templates/linen.jpg",
         metaTitle: "Linen Minimalist Resume Template — Free",
         metaDescription: "Free minimalist resume template. Linen pairs an off-white canvas and grey header blocks with a vertical divider and diamond markers. Two columns, no icons.",
         faqs: [
@@ -1447,7 +1410,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, parses cleanly",
         ],
         tier: "free",
-        imgPath: "/img/templates/graphite.jpg",
         metaTitle: "Graphite Black & White Resume Template — Free",
         metaDescription: "Free black and white resume template. Graphite sets a white rounded card on a grey canvas with grey pill headings and a three-column skills grid. Single column, ATS-safe.",
         faqs: [

@@ -25,7 +25,7 @@ interface PopupConfig {
 const POPUPS: PopupConfig[] = [
   // Signup modals
   { id: "timed", name: "Timed Modal", category: "signup_modal", trigger: "timed", pages: ["/", "/resumes", "/jobs", "/pricing"], who: "Anonymous", condition: "2.5min + 40% scroll + idle 15s", frequency: "7 days", signupContext: { trigger: "timed" } },
-  { id: "template_click", name: "Template Click", category: "signup_modal", trigger: "template_click", pages: ["/resumes"], who: "Anonymous", condition: "Clicks template card", frequency: "Session", signupContext: { trigger: "template_click", templateName: "Classic", templateImg: "/img/templates/classic.jpg" } },
+  { id: "template_click", name: "Template Click", category: "signup_modal", trigger: "template_click", pages: ["/resumes"], who: "Anonymous", condition: "Clicks template card", frequency: "Session", signupContext: { trigger: "template_click", templateName: "Classic", templateImg: "/img/templates/classic-resume-template.jpg" } },
   { id: "job_search", name: "Job Search", category: "signup_modal", trigger: "job_search", pages: ["/jobs"], who: "Anonymous", condition: "Submits search", frequency: "Session", signupContext: { trigger: "job_search", searchQuery: "Software Engineer" } },
   { id: "role_page", name: "Role Page", category: "signup_modal", trigger: "role_page", pages: ["/jobs/[role]"], who: "Anonymous", condition: "Clicks sign-in CTA", frequency: "Session", signupContext: { trigger: "role_page", roleName: "Software Engineer" } },
   { id: "resumes_cta", name: "Resumes CTA", category: "signup_modal", trigger: "resumes_cta", pages: ["/resumes"], who: "Anonymous", condition: "'Get started free' click", frequency: "Session", signupContext: { trigger: "resumes_cta" } },

@@ -1,4 +1,5 @@
 import React from "react";
+import type { Page } from "puppeteer-core";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
 import { RESUME_FONTS_URL } from "@/lib/resume/fonts";
 
@@ -40,7 +41,7 @@ function isETXTBSY(err: unknown): boolean {
   return code === "ETXTBSY" || msg.includes("ETXTBSY");
 }
 
-async function launchBrowser() {
+export async function launchBrowser() {
   const puppeteer = await import("puppeteer-core");
 
   // Mac dev — use system Chrome. Override via LOCAL_CHROMIUM_PATH.
@@ -77,11 +78,16 @@ async function launchBrowser() {
   throw lastErr;
 }
 
-export async function renderHtmlToPdf(
+/**
+ * The print document the PDF export renders: the template markup plus the
+ * page CSS. Also used by scripts/generate-template-thumbnails.ts so template
+ * thumbnails are screenshots of exactly what a download prints.
+ */
+export function buildResumeDocument(
   content: ResumeContent,
   design: ResumeDesignSettings,
   watermark: boolean = false,
-): Promise<Buffer> {
+): { html: string; viewport: { width: number; height: number } } {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { renderToStaticMarkup } = require("react-dom/server");
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -142,6 +148,183 @@ ${templateHtml}
 </body>
 </html>`;
 
+  return { html: fullHtml, viewport };
+}
+
+/**
+ * Page-level print fixes the PDF export applies before printing: column
+ * backgrounds folded into one gradient and the page canvas promoted to
+ * <html>. Shared with the thumbnail generator so previews paint like PDFs.
+ * Returns the resolved canvas so the PDF header can paint the page-2+ margin.
+ */
+export async function applyPrintLayoutFixes(page: Page): Promise<{ color: string; image: string } | null> {
+  // Generic fix: Chromium's print/PDF renderer clips column backgrounds to
+  // the column's own content height rather than its stretched height, so a
+  // sidebar background (or a column divider drawn as a border) vanishes
+  // wherever the shorter column's content ends — on any page.
+  // Solution: find page-spanning column containers (a single-row flex or
+  // grid), build a linear-gradient from the children's resolved background
+  // colours and column borders, paint it on the container and clear the
+  // children. Runs after font loading so computed widths are stable.
+  await page.evaluate(() => {
+    const root = document.querySelector("body > div");
+    if (!root) return;
+
+    const TRANSPARENT = "rgba(0, 0, 0, 0)";
+    const isColored = (c: string) => c !== TRANSPARENT && c !== "rgb(255, 255, 255)";
+
+    function fixColumnBg(el: Element) {
+      const cs = getComputedStyle(el as HTMLElement);
+      const isRow =
+        (cs.display === "flex" && cs.flexDirection !== "column") ||
+        (cs.display === "grid" && cs.gridTemplateColumns !== "none");
+      if (!isRow) return;
+
+      const box = (el as HTMLElement).getBoundingClientRect();
+      // Only target page-spanning columns (≥ 50 % viewport width). Chip rows,
+      // buttons, nav items etc. are left untouched.
+      if (box.width < window.innerWidth * 0.5) return;
+
+      const kids = Array.from(el.children).filter(
+        (k) => getComputedStyle(k as HTMLElement).display !== "none"
+      ) as HTMLElement[];
+      if (kids.length < 2) return;
+      // A grid laid out as several rows (e.g. quadrants) is not a column split.
+      const tops = kids.map((k) => k.getBoundingClientRect().top);
+      if (Math.max(...tops) - Math.min(...tops) > 1) return;
+
+      type Seg = { from: number; to: number; color: string };
+      const segs: Seg[] = [];
+      let hasColor = false;
+
+      kids.forEach((kid) => {
+        const kcs = getComputedStyle(kid);
+        const r = kid.getBoundingClientRect();
+        const from = r.left - box.left;
+        const to = r.right - box.left;
+        const bg = kcs.backgroundColor;
+        if (kcs.backgroundImage !== "none") return; // keep patterned children as they are
+        if (isColored(bg)) hasColor = true;
+        segs.push({ from, to, color: bg });
+        kid.style.backgroundColor = "transparent";
+
+        // Column dividers drawn as borders stop with the column's content
+        // too; fold them into the gradient and hide the original.
+        const bl = parseFloat(kcs.borderLeftWidth);
+        if (bl > 0 && kcs.borderLeftStyle !== "none" && kcs.borderLeftColor !== TRANSPARENT) {
+          segs.push({ from, to: from + bl, color: kcs.borderLeftColor });
+          kid.style.borderLeftColor = "transparent";
+          hasColor = true;
+        }
+        const br = parseFloat(kcs.borderRightWidth);
+        if (br > 0 && kcs.borderRightStyle !== "none" && kcs.borderRightColor !== TRANSPARENT) {
+          segs.push({ from: to - br, to, color: kcs.borderRightColor });
+          kid.style.borderRightColor = "transparent";
+          hasColor = true;
+        }
+      });
+
+      if (!hasColor) return;
+      // Segments overlap (a border sits on its column's fill) and a gradient
+      // needs monotonic stops, so rebuild as non-overlapping spans where the
+      // last segment covering a span wins.
+      const edges = Array.from(new Set(segs.flatMap((sg) => [sg.from, sg.to]))).sort((a, b) => a - b);
+      const spans: string[] = [];
+      for (let i = 0; i < edges.length - 1; i++) {
+        const a = edges[i];
+        const b = edges[i + 1];
+        if (b - a < 0.01) continue;
+        const mid = (a + b) / 2;
+        let color = "transparent";
+        for (const sg of segs) if (sg.from <= mid && mid <= sg.to) color = sg.color;
+        spans.push(`${color} ${a.toFixed(2)}px`, `${color} ${b.toFixed(2)}px`);
+      }
+      (el as HTMLElement).style.backgroundImage = `linear-gradient(to right, ${spans.join(", ")})`;
+    }
+
+    // Walk up to 4 levels from the template root.
+    function walk(node: Element, depth: number) {
+      if (depth === 0) return;
+      Array.from(node.children).forEach((child) => {
+        fixColumnBg(child);
+        walk(child, depth - 1);
+      });
+    }
+
+    walk(root, 4);
+  });
+
+  // Promote the page canvas background to the root element. The template root
+  // only carries a one-page min-height, so when content spills onto a further
+  // page and stops part-way, Chromium paints the remainder of that page white.
+  // The root element's background propagates to the canvas, which covers every
+  // printed page in full. Runs after the column fix so a column gradient is
+  // picked up when that is what paints the page. Returns the resolved canvas
+  // so the header template can paint the page-2+ top margin, which the
+  // canvas background does not reach.
+  return page.evaluate(() => {
+    const root = document.querySelector("body > div");
+    if (!root) return null;
+
+    const isPainted = (cs: CSSStyleDeclaration) =>
+      (cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "rgb(255, 255, 255)") ||
+      cs.backgroundImage !== "none";
+
+    // Side-by-side columns (a single-row flex or grid of 2+ children).
+    function isColumnRow(el: Element): boolean {
+      const cs = getComputedStyle(el);
+      const isRow =
+        (cs.display === "flex" && cs.flexDirection !== "column") ||
+        (cs.display === "grid" && cs.gridTemplateColumns !== "none");
+      if (!isRow) return false;
+      const kids = Array.from(el.children).filter((k) => getComputedStyle(k).display !== "none");
+      if (kids.length < 2) return false;
+      const tops = kids.map((k) => k.getBoundingClientRect().top);
+      return Math.max(...tops) - Math.min(...tops) <= 1;
+    }
+
+    // Shallowest element that spans the whole first page and paints a background.
+    // A column row from the top of the page counts even when its content ends
+    // part-way down: a sidebar is meant to run the full page, and on a one-page
+    // CV the row is only as tall as its longest column. The half-page floor
+    // keeps a coloured header band (also a row) from flooding the page.
+    function findCanvas(node: Element, depth: number): CSSStyleDeclaration | null {
+      if (depth === 0) return null;
+      for (const child of Array.from(node.children)) {
+        const r = child.getBoundingClientRect();
+        const reachesBottom =
+          r.bottom >= window.innerHeight - 1 ||
+          (r.height >= window.innerHeight * 0.5 && isColumnRow(child));
+        const spansPage =
+          r.top <= 1 && r.left <= 1 &&
+          r.width >= window.innerWidth * 0.98 &&
+          reachesBottom;
+        if (!spansPage) continue;
+        const cs = getComputedStyle(child);
+        if (isPainted(cs)) return cs;
+        const deeper = findCanvas(child, depth - 1);
+        if (deeper) return deeper;
+      }
+      return null;
+    }
+
+    const canvas = findCanvas(root, 4);
+    if (!canvas) return null;
+    const html = document.documentElement;
+    html.style.backgroundColor = canvas.backgroundColor;
+    if (canvas.backgroundImage !== "none") html.style.backgroundImage = canvas.backgroundImage;
+    return { color: canvas.backgroundColor, image: canvas.backgroundImage };
+  });
+}
+
+export async function renderHtmlToPdf(
+  content: ResumeContent,
+  design: ResumeDesignSettings,
+  watermark: boolean = false,
+): Promise<Buffer> {
+  const { html: fullHtml, viewport } = buildResumeDocument(content, design, watermark);
+  const paper = PAPER_SIZES[design.paperSize] || PAPER_SIZES.a4;
+
   const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
@@ -158,143 +341,7 @@ ${templateHtml}
       // Font loading failure must not abort PDF export — system fallbacks apply.
     }
 
-    // Generic fix: Chromium's print/PDF renderer clips column backgrounds to
-    // the column's own content height rather than its stretched height, so a
-    // sidebar background (or a column divider drawn as a border) vanishes
-    // wherever the shorter column's content ends — on any page.
-    // Solution: find page-spanning column containers (a single-row flex or
-    // grid), build a linear-gradient from the children's resolved background
-    // colours and column borders, paint it on the container and clear the
-    // children. Runs after font loading so computed widths are stable.
-    await page.evaluate(() => {
-      const root = document.querySelector("body > div");
-      if (!root) return;
-
-      const TRANSPARENT = "rgba(0, 0, 0, 0)";
-      const isColored = (c: string) => c !== TRANSPARENT && c !== "rgb(255, 255, 255)";
-
-      function fixColumnBg(el: Element) {
-        const cs = getComputedStyle(el as HTMLElement);
-        const isRow =
-          (cs.display === "flex" && cs.flexDirection !== "column") ||
-          (cs.display === "grid" && cs.gridTemplateColumns !== "none");
-        if (!isRow) return;
-
-        const box = (el as HTMLElement).getBoundingClientRect();
-        // Only target page-spanning columns (≥ 50 % viewport width). Chip rows,
-        // buttons, nav items etc. are left untouched.
-        if (box.width < window.innerWidth * 0.5) return;
-
-        const kids = Array.from(el.children).filter(
-          (k) => getComputedStyle(k as HTMLElement).display !== "none"
-        ) as HTMLElement[];
-        if (kids.length < 2) return;
-        // A grid laid out as several rows (e.g. quadrants) is not a column split.
-        const tops = kids.map((k) => k.getBoundingClientRect().top);
-        if (Math.max(...tops) - Math.min(...tops) > 1) return;
-
-        type Seg = { from: number; to: number; color: string };
-        const segs: Seg[] = [];
-        let hasColor = false;
-
-        kids.forEach((kid) => {
-          const kcs = getComputedStyle(kid);
-          const r = kid.getBoundingClientRect();
-          const from = r.left - box.left;
-          const to = r.right - box.left;
-          const bg = kcs.backgroundColor;
-          if (kcs.backgroundImage !== "none") return; // keep patterned children as they are
-          if (isColored(bg)) hasColor = true;
-          segs.push({ from, to, color: bg });
-          kid.style.backgroundColor = "transparent";
-
-          // Column dividers drawn as borders stop with the column's content
-          // too; fold them into the gradient and hide the original.
-          const bl = parseFloat(kcs.borderLeftWidth);
-          if (bl > 0 && kcs.borderLeftStyle !== "none" && kcs.borderLeftColor !== TRANSPARENT) {
-            segs.push({ from, to: from + bl, color: kcs.borderLeftColor });
-            kid.style.borderLeftColor = "transparent";
-            hasColor = true;
-          }
-          const br = parseFloat(kcs.borderRightWidth);
-          if (br > 0 && kcs.borderRightStyle !== "none" && kcs.borderRightColor !== TRANSPARENT) {
-            segs.push({ from: to - br, to, color: kcs.borderRightColor });
-            kid.style.borderRightColor = "transparent";
-            hasColor = true;
-          }
-        });
-
-        if (!hasColor) return;
-        // Segments overlap (a border sits on its column's fill) and a gradient
-        // needs monotonic stops, so rebuild as non-overlapping spans where the
-        // last segment covering a span wins.
-        const edges = Array.from(new Set(segs.flatMap((sg) => [sg.from, sg.to]))).sort((a, b) => a - b);
-        const spans: string[] = [];
-        for (let i = 0; i < edges.length - 1; i++) {
-          const a = edges[i];
-          const b = edges[i + 1];
-          if (b - a < 0.01) continue;
-          const mid = (a + b) / 2;
-          let color = "transparent";
-          for (const sg of segs) if (sg.from <= mid && mid <= sg.to) color = sg.color;
-          spans.push(`${color} ${a.toFixed(2)}px`, `${color} ${b.toFixed(2)}px`);
-        }
-        (el as HTMLElement).style.backgroundImage = `linear-gradient(to right, ${spans.join(", ")})`;
-      }
-
-      // Walk up to 4 levels from the template root.
-      function walk(node: Element, depth: number) {
-        if (depth === 0) return;
-        Array.from(node.children).forEach((child) => {
-          fixColumnBg(child);
-          walk(child, depth - 1);
-        });
-      }
-
-      walk(root, 4);
-    });
-
-    // Promote the page canvas background to the root element. The template root
-    // only carries a one-page min-height, so when content spills onto a further
-    // page and stops part-way, Chromium paints the remainder of that page white.
-    // The root element's background propagates to the canvas, which covers every
-    // printed page in full. Runs after the column fix so a column gradient is
-    // picked up when that is what paints the page. Returns the resolved canvas
-    // so the header template can paint the page-2+ top margin, which the
-    // canvas background does not reach.
-    const canvasBg = await page.evaluate(() => {
-      const root = document.querySelector("body > div");
-      if (!root) return null;
-
-      const isPainted = (cs: CSSStyleDeclaration) =>
-        (cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "rgb(255, 255, 255)") ||
-        cs.backgroundImage !== "none";
-
-      // Shallowest element that spans the whole first page and paints a background.
-      function findCanvas(node: Element, depth: number): CSSStyleDeclaration | null {
-        if (depth === 0) return null;
-        for (const child of Array.from(node.children)) {
-          const r = child.getBoundingClientRect();
-          const spansPage =
-            r.top <= 1 && r.left <= 1 &&
-            r.width >= window.innerWidth * 0.98 &&
-            r.bottom >= window.innerHeight - 1;
-          if (!spansPage) continue;
-          const cs = getComputedStyle(child);
-          if (isPainted(cs)) return cs;
-          const deeper = findCanvas(child, depth - 1);
-          if (deeper) return deeper;
-        }
-        return null;
-      }
-
-      const canvas = findCanvas(root, 4);
-      if (!canvas) return null;
-      const html = document.documentElement;
-      html.style.backgroundColor = canvas.backgroundColor;
-      if (canvas.backgroundImage !== "none") html.style.backgroundImage = canvas.backgroundImage;
-      return { color: canvas.backgroundColor, image: canvas.backgroundImage };
-    });
+    const canvasBg = await applyPrintLayoutFixes(page);
 
     // Templates mark per-page furniture (e.g. a corner decoration) with
     // `@media print { position: fixed }`. Chromium repeats a fixed box on

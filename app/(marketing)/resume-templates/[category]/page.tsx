@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { TEMPLATE_CATEGORIES, CATEGORY_MAP } from "@/lib/resume-templates/data";
+import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
 
 export const revalidate = 86400;
 
@@ -132,24 +133,12 @@ export default async function TemplateCategoryPage({
                   href={`/resume-templates/${cat.slug}/${t.leafSlug}`}
                   className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow"
                 >
-                  <div className="aspect-[1242/1754] bg-muted overflow-hidden relative">
-                    {t.imgPath ? (
-                      <>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={t.imgPath}
-                          alt={`${t.displayName} preview`}
-                          title={t.displayName}
-                          className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
-                          loading="lazy"
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent" />
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-sm text-muted-foreground">
-                        Preview
-                      </div>
-                    )}
+                  <div className={`${THUMBNAIL_ASPECT} bg-muted overflow-hidden relative`}>
+                    <TemplateThumbnailImage
+                      template={t.templateSlug}
+                      className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent" />
                   </div>
                   <div className="px-3 py-3">
                     <div className="flex items-center gap-2 flex-wrap">

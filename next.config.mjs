@@ -5,6 +5,27 @@
 const OLD_BLOG_HOST = [{ type: "host", value: "blog.thecvedge.com" }];
 const SITE = "https://www.thecvedge.com";
 
+// Template thumbnails were renamed to descriptive, keyword-bearing filenames
+// (e.g. harward.jpg → harvard-resume-template.jpg) when they were regenerated
+// with US sample personas. The old URLs are indexed in Google Images and
+// linked from outside, so each 301s to its replacement.
+const oldThumbnailRedirects = [
+  ["classic.jpg", "classic"], ["classic-serif.png", "classic-serif"], ["sharp.jpg", "sharp"],
+  ["minimal.jpg", "minimal"], ["executive.jpg", "executive"], ["executive-pro.jpg", "executive-pro"],
+  ["slate.jpg", "slate"], ["onyx.jpg", "onyx"], ["horizon.jpg", "horizon"], ["divide.jpg", "divide"],
+  ["folio.jpg", "folio"], ["harward.jpg", "harvard"], ["ledger.jpg", "ledger"], ["aurora.jpg", "aurora"],
+  ["electric-lilac.jpg", "electric-lilac"], ["bold-accent.jpg", "bold-accent"],
+  ["executive-sidebar.jpg", "executive-sidebar"], ["clean-sidebar.jpg", "clean-sidebar"],
+  ["blueprint.jpg", "blueprint"], ["wentworth.jpg", "wentworth"], ["orchid.jpg", "orchid"],
+  ["coastal.jpg", "coastal"], ["portrait.jpg", "portrait"], ["regent.jpg", "regent"],
+  ["meridian.jpg", "meridian"], ["vantage.jpg", "vantage"], ["linen.jpg", "linen"],
+  ["graphite.jpg", "graphite"], ["sterling.jpg", "sterling"], ["ember.jpg", "ember"], ["canopy.jpg", "canopy"],
+].map(([from, name]) => ({
+  source: `/img/templates/${from}`,
+  destination: `/img/templates/${name}-resume-template.jpg`,
+  permanent: true,
+}));
+
 const oldBlogRedirects = [
   // Posts retired since the move: skip the /blog hop and land on the survivor.
   ["/ats-resume-gude-2026", "/blog/ats-resume-format-what-actually-works-in-2026"],
@@ -43,6 +64,7 @@ const nextConfig = {
   async redirects() {
     return [
       ...oldBlogRedirects,
+      ...oldThumbnailRedirects,
       { source: "/stories", destination: "/interview-coach", permanent: true },
       { source: "/stories/:path*", destination: "/interview-coach", permanent: true },
       // Retired as a near-duplicate of the surviving PM guide. Redirect rather

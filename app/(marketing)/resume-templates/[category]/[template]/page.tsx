@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download } from "lucide-react";
-import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import { CATEGORY_MAP, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
+import { BreadcrumbJsonLd, FaqJsonLd, ImageObjectJsonLd } from "@/components/shared/structured-data";
+import { CATEGORY_MAP, getAllLeafParams, getCanonicalLeafPath, getLeafData, type TemplateLeafData } from "@/lib/resume-templates/data";
 import { getLeafGuidance } from "@/lib/resume-templates/guidance";
+import { templateThumbnail } from "@/lib/resume/template-thumbnails";
+import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
 
 export const revalidate = 86400;
 
@@ -39,9 +41,20 @@ export async function generateMetadata({
       title: `${title} | CVEdge`,
       description,
       url: `https://www.thecvedge.com/resume-templates/${catSlug}/${leafSlug}`,
-      images: leaf.imgPath ? [leaf.imgPath] : [],
+      images: [thumbnailOgImage(leaf.templateSlug)],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | CVEdge`,
+      description,
+      images: [thumbnailOgImage(leaf.templateSlug).url],
     },
   };
+}
+
+function thumbnailOgImage(template: TemplateLeafData["templateSlug"]) {
+  const thumb = templateThumbnail(template);
+  return { url: `https://www.thecvedge.com${thumb.src}`, width: thumb.width, height: thumb.height, alt: thumb.alt };
 }
 
 export default async function TemplateLeafPage({
@@ -55,6 +68,7 @@ export default async function TemplateLeafPage({
   if (!cat || !leaf) notFound();
 
   const relatedTemplates = cat.templates.filter((t) => t.leafSlug !== leafSlug).slice(0, 3);
+  const thumb = templateThumbnail(leaf.templateSlug);
 
   const guidance = getLeafGuidance(catSlug, leafSlug);
   // Guidance FAQs are audience-specific, so they extend rather than replace the
@@ -81,6 +95,14 @@ export default async function TemplateLeafPage({
         ]}
       />
       <FaqJsonLd items={allFaqs.map((f) => ({ question: f.q, answer: f.a }))} />
+      <ImageObjectJsonLd
+        contentUrl={`https://www.thecvedge.com${thumb.src}`}
+        pageUrl={`https://www.thecvedge.com${getCanonicalLeafPath(catSlug, leaf)}`}
+        name={thumb.title}
+        caption={thumb.alt}
+        width={thumb.width}
+        height={thumb.height}
+      />
 
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#f5f0e8] dark:bg-background">
@@ -98,19 +120,12 @@ export default async function TemplateLeafPage({
             <div className="grid lg:grid-cols-[300px_1fr] gap-10 items-start">
               {/* Template thumbnail */}
               <div className="rounded-xl border overflow-hidden shadow-sm lg:sticky lg:top-20 self-start">
-                {leaf.imgPath ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={leaf.imgPath}
-                    alt={`${leaf.displayName} resume template preview`}
-                    title={leaf.displayName}
-                    className="w-full object-cover object-top"
-                  />
-                ) : (
-                  <div className="aspect-[1242/1754] bg-muted flex items-center justify-center text-sm text-muted-foreground">
-                    Preview
-                  </div>
-                )}
+                <TemplateThumbnailImage
+                  template={leaf.templateSlug}
+                  canonical
+                  priority
+                  className="w-full h-auto"
+                />
                 <div className="p-3 bg-card border-t space-y-2">
                   <Button className="w-full" asChild>
                     <Link href={`/login?template=${leaf.templateSlug}`}>Use this template free</Link>
@@ -345,19 +360,12 @@ export default async function TemplateLeafPage({
                     href={`/resume-templates/${cat.slug}/${t.leafSlug}`}
                     className="group rounded-xl border bg-card overflow-hidden hover:shadow-sm transition-shadow"
                   >
-                    <div className="aspect-[1242/1754] bg-muted overflow-hidden">
-                      {t.imgPath ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={t.imgPath}
-                          alt={t.displayName}
-                          title={t.displayName}
-                          className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">Preview</div>
-                      )}
+                    <div className={`${THUMBNAIL_ASPECT} bg-muted overflow-hidden`}>
+                      <TemplateThumbnailImage
+                        template={t.templateSlug}
+                        sizes="(min-width: 640px) 33vw, 100vw"
+                        className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
+                      />
                     </div>
                     <div className="p-3">
                       <p className="text-xs font-semibold">{t.displayName}</p>

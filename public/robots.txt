@@ -31,3 +31,4 @@ Disallow: /*?ref=
 Disallow: /*?utm_
 
 Sitemap: https://www.thecvedge.com/sitemap.xml
+Sitemap: https://www.thecvedge.com/image-sitemap.xml

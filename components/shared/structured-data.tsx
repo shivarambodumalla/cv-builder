@@ -195,3 +195,47 @@ export function HowToJsonLd({
     />
   );
 }
+
+interface ImageObjectProps {
+  /** Absolute URL of the image file. */
+  contentUrl: string;
+  /** Absolute URL of the page the image represents. */
+  pageUrl: string;
+  name: string;
+  caption: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * ImageObject JSON-LD for a page's primary image. The creator, copyright and
+ * license fields are what Google Images needs to show image metadata; the
+ * license page is the page itself because the template is free to use there.
+ */
+export function ImageObjectJsonLd({ contentUrl, pageUrl, name, caption, width, height }: ImageObjectProps) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    contentUrl,
+    url: contentUrl,
+    name,
+    caption,
+    description: caption,
+    width,
+    height,
+    encodingFormat: "image/jpeg",
+    representativeOfPage: true,
+    mainEntityOfPage: pageUrl,
+    creator: { "@type": "Organization", name: "CVEdge", url: "https://www.thecvedge.com" },
+    creditText: "CVEdge",
+    copyrightNotice: "© CVEdge",
+    license: "https://www.thecvedge.com/terms",
+    acquireLicensePage: pageUrl,
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}

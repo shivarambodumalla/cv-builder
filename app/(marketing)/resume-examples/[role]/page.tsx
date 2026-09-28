@@ -7,6 +7,7 @@ import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getRoleExampleData, generateGenericExampleData } from "@/lib/resume-examples/data";
 import { getLeafData } from "@/lib/resume-templates/data";
+import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
 import { getRoleContent } from "@/lib/roles/role-content";
 
 /**
@@ -317,15 +318,11 @@ export default async function RoleResumeExamplePage({
                   href={`/resume-templates/${t.categorySlug}/${t.leafSlug}`}
                   className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow"
                 >
-                  <div className="aspect-[1242/1754] bg-muted overflow-hidden">
-                    {leaf?.imgPath ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={leaf.imgPath}
-                        alt={`${t.name} resume template`}
-                        title={`${t.name} resume template`}
+                  <div className={`${THUMBNAIL_ASPECT} bg-muted overflow-hidden`}>
+                    {leaf ? (
+                      <TemplateThumbnailImage
+                        template={leaf.templateSlug}
                         className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
-                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
