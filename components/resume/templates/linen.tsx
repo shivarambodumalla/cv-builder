@@ -495,7 +495,11 @@ export function Linen({
       style={{
         ...bodyStyle,
         background: PAGE_BG,
-        padding: `${marginY}in ${marginX}in`,
+        // No bottom padding: Chromium can't break the column grid inside it,
+        // so when only the padding ran past page 1 the whole grid moved to
+        // page 2. The grid's bottom margin gives the same space and is
+        // dropped at a page break.
+        padding: `${marginY}in ${marginX}in 0`,
         minHeight: paperHeight,
       }}
     >
@@ -506,6 +510,7 @@ export function Linen({
           display: "grid",
           gridTemplateColumns: `${LEFT_COL + HALF_GUTTER}% ${RIGHT_COL + HALF_GUTTER}%`,
           alignItems: "stretch",
+          marginBottom: `${marginY}in`,
         }}
       >
         {/* LEFT column: sections separated by a rule ending in a diamond on the divider */}

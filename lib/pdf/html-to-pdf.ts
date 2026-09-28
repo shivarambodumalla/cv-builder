@@ -184,6 +184,10 @@ export async function applyPrintLayoutFixes(page: Page): Promise<{ color: string
       // Only target page-spanning columns (≥ 50 % viewport width). Chip rows,
       // buttons, nav items etc. are left untouched.
       if (box.width < window.innerWidth * 0.5) return;
+      // Nor short rows: a header band (name beside a photo, as in Aurora and
+      // Executive Pro) is a wide flex row too, and folding it painted its
+      // photo cell's fill and border as full-height stripes.
+      if (box.height < window.innerHeight * 0.5) return;
 
       const kids = Array.from(el.children).filter(
         (k) => getComputedStyle(k as HTMLElement).display !== "none"

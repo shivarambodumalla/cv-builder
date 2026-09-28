@@ -24,6 +24,7 @@ import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import { getPublicRatingStats } from "@/lib/feedback/stats";
+import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
@@ -62,7 +63,7 @@ const COMPARISON = [
 export default async function HomePage() {
   // Real post-download ratings. Null until enough exist to display, and the
   // schema below only carries a rating that is visible on this page.
-  const rating = await getPublicRatingStats();
+  const [rating, testimonials] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials()]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -507,7 +508,9 @@ export default async function HomePage() {
       </section>
 
       {/* ─── TESTIMONIALS ─── */}
-      <TestimonialsCarousel rating={rating} />
+      {/* Real testimonials and ratings only; hidden until there are some.
+          The rating line must stay visible whenever AggregateRating is emitted. */}
+      {(testimonials.length > 0 || rating) && <TestimonialsCarousel testimonials={testimonials} rating={rating} />}
 
       {/* ─── POPULAR ROLES (SEO internal linking) ─── */}
       <section className="py-16 md:py-20">

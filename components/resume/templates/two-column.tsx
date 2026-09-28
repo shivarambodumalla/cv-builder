@@ -401,11 +401,16 @@ export function TwoColumnTemplate({
         }}
       />
 
-      {/* ── BODY: TWO COLUMNS ── */}
+      {/* ── BODY: TWO COLUMNS ──
+          Bottom space is a margin, not padding. Chromium can't break a flex
+          row inside its padding, so when only the padding ran past page 1 it
+          moved the whole row to page 2 and left page 1 with just the header.
+          A margin at a page break is simply dropped. */}
       <div
         style={{
           display: "flex",
-          padding: `${marginY * 0.5}in ${marginX}in ${marginY}in`,
+          padding: `${marginY * 0.5}in ${marginX}in 0`,
+          marginBottom: `${marginY}in`,
           gap: `${marginX * 0.4}in`,
         }}
       >

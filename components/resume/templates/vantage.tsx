@@ -533,7 +533,11 @@ export function Vantage({
         fontSize: "var(--resume-body-size)",
         lineHeight: "var(--resume-line-spacing)",
         color: bodyText,
-        padding: `${marginY}in ${marginX}in`,
+        // No bottom padding: Chromium can't break the column grid inside it,
+        // so when only the padding ran past page 1 the whole grid moved to
+        // page 2. The grid's bottom margin gives the same space and is
+        // dropped at a page break.
+        padding: `${marginY}in ${marginX}in 0`,
         minHeight: paperHeight,
       }}
     >
@@ -610,6 +614,7 @@ export function Vantage({
           gridTemplateColumns: "minmax(0, 57fr) minmax(0, 40fr)",
           columnGap: 24,
           alignItems: "start",
+          marginBottom: `${marginY}in`,
         }}
       >
         <div style={{ minWidth: 0 }}>{renderColumn(leftContent)}</div>
