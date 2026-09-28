@@ -35,7 +35,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
         <div className="rounded-2xl bg-[#F0EDE6] dark:bg-muted/30 p-5 sm:p-6 space-y-4 mb-8">
           <div>
             <h1 className="text-xl font-bold tracking-tight">Find jobs that match your CV</h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">Search any role — sign in to see your match score for every listing</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">Search any role. Sign in to see your match score for every listing</p>
           </div>
           <JobSearchForm defaultQuery={query} defaultLocation={location} />
         </div>
@@ -50,7 +50,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             {[
               { icon: Upload, step: "1", title: "Upload your CV", body: "Paste or upload your CV once. CVEdge parses and optimises it automatically." },
               { icon: BarChart2, step: "2", title: "See your match %", body: "Every job shows an ATS match score so you know your chances before you apply." },
-              { icon: Target, step: "3", title: "Apply to the best", body: "Focus your effort on the roles you are most likely to get — and tailor in one click." },
+              { icon: Target, step: "3", title: "Apply to the best", body: "Focus your effort on the roles you are most likely to get, and tailor in one click." },
             ].map((item) => (
               <div key={item.step} className="rounded-xl border bg-card p-6 text-center">
                 <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">

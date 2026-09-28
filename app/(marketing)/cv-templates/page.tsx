@@ -6,12 +6,12 @@ import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data
 import { TemplateShowcase } from "../resumes/template-showcase";
 
 export const metadata: Metadata = {
-  title: "Free CV Templates — ATS-Friendly for UK & Australia",
+  title: "Free CV Templates: ATS-Friendly for UK & Australia",
   description:
     "Free CV templates for UK, Australian, and international job applications. ATS-safe formats with instant score, AI rewriting, and clean PDF download. No sign-up required.",
   alternates: { canonical: "https://www.thecvedge.com/cv-templates" },
   openGraph: {
-    title: "Free CV Templates — ATS-Friendly for UK & Australia | CVEdge",
+    title: "Free CV Templates: ATS-Friendly for UK & Australia | CVEdge",
     description:
       "Free CV templates tested on UK and Australian ATS systems. Upload your CV, get an instant score, fix with AI, and download a polished PDF.",
     url: "https://www.thecvedge.com/cv-templates",
@@ -22,12 +22,12 @@ const FAQS = [
   {
     question: "What is the difference between a CV and a resume?",
     answer:
-      "In the UK, Australia, and most of Europe, 'CV' (curriculum vitae) is the standard term for the document you send to employers — regardless of length. In the US and Canada, 'resume' is used for a 1–2 page tailored document, while 'CV' is reserved for longer academic documents. For practical purposes, CVEdge templates work for both. If you're in the UK or Australia, 'CV template' and 'resume template' mean the same thing.",
+      "In the UK, Australia, and most of Europe, 'CV' (curriculum vitae) is the standard term for the document you send to employers, regardless of length. In the US and Canada, 'resume' is used for a 1–2 page tailored document, while 'CV' is reserved for longer academic documents. For practical purposes, CVEdge templates work for both. If you're in the UK or Australia, 'CV template' and 'resume template' mean the same thing.",
   },
   {
     question: "Are these CV templates suitable for UK job applications?",
     answer:
-      "Yes — CVEdge templates are designed for UK, Australian, and international job applications. The formats follow standard UK CV conventions: clear contact section, reverse-chronological work history, education with grades, and optional personal profile. UK ATS systems (including those used by NHS, civil service, and major employers) are fully supported.",
+      "Yes. CVEdge templates are designed for UK, Australian, and international job applications. The formats follow standard UK CV conventions: clear contact section, reverse-chronological work history, education with grades, and optional personal profile. UK ATS systems (including those used by NHS, civil service, and major employers) are fully supported.",
   },
   {
     question: "Should I include a photo on my UK CV?",
@@ -42,12 +42,12 @@ const FAQS = [
   {
     question: "Do CVEdge CV templates work with UK ATS systems?",
     answer:
-      "Yes. CVEdge single-column templates are tested against ATS systems widely used by UK employers including Workday, Taleo, and SmartRecruiters. UK public sector and NHS applications may have specific formatting requirements — always check the job listing's guidance before submitting.",
+      "Yes. CVEdge single-column templates are tested against ATS systems widely used by UK employers including Workday, Taleo, and SmartRecruiters. UK public sector and NHS applications may have specific formatting requirements, so always check the job listing's guidance before submitting.",
   },
   {
     question: "What should I include in a UK CV personal profile?",
     answer:
-      "A UK CV personal profile is 3–4 sentences: your job title/specialism, years of experience, key strengths, and what you're looking for. Keep it under 80 words. Avoid clichés like 'results-driven professional' — be specific. CVEdge's AI can write your summary from your existing experience if you're stuck.",
+      "A UK CV personal profile is 3–4 sentences: your job title/specialism, years of experience, key strengths, and what you're looking for. Keep it under 80 words. Avoid clichés like 'results-driven professional'. Be specific. CVEdge's AI can write your summary from your existing experience if you're stuck.",
   },
 ];
 
@@ -62,7 +62,7 @@ const CV_VS_RESUME = [
 const TEMPLATE_TIPS = [
   {
     title: "Single-column CVs score highest on UK ATS",
-    desc: "Classic, Sharp, Minimal, Classic Serif, and Harvard all score 90+ on CVEdge's ATS analyser — ideal for UK portal applications.",
+    desc: "Classic, Sharp, Minimal, Classic Serif, and Harvard all score 90+ on CVEdge's ATS analyser, ideal for UK portal applications.",
   },
   {
     title: "Two-column CVs work for direct applications",
@@ -92,10 +92,10 @@ export default function CvTemplatesPage() {
         <div className="relative container mx-auto px-4 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
-              CV Templates — UK & Australia
+              CV Templates: UK & Australia
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl md:text-5xl leading-[1.12]">
-              Free CV Templates —{" "}
+              Free CV Templates:{" "}
               <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
                 ATS-Ready for UK & Australia
               </span>
@@ -107,7 +107,7 @@ export default function CvTemplatesPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV — free ATS score</Link>
+                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Start from scratch free</Link>
@@ -155,7 +155,7 @@ export default function CvTemplatesPage() {
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold tracking-tight">All 32 CV templates</h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Switch templates any time — your content transfers in one click.
+                Switch templates any time. Your content transfers in one click.
               </p>
             </div>
             <TemplateShowcase />

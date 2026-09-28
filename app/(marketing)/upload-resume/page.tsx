@@ -29,7 +29,7 @@ export default function UploadResumePage() {
       />
       <ServiceJsonLd
         name="Free ATS Resume Checker"
-        description="Upload your CV or paste text to instantly check your ATS score. CVEdge analyses your resume across 6 categories — keywords, formatting, measurable results, bullet quality, sections, and contact info — and shows you exactly what to fix."
+        description="Upload your CV or paste text to instantly check your ATS score. CVEdge analyses your resume across 6 categories (keywords, formatting, measurable results, bullet quality, sections, and contact info) and shows you exactly what to fix."
         url="https://www.thecvedge.com/upload-resume"
         serviceType="ATS Resume Analysis"
       />
@@ -54,7 +54,7 @@ function AtsCheckerExplainer() {
       <div className="mb-14">
         <h2 className="text-2xl font-bold tracking-tight mb-4">What the ATS checker looks at</h2>
         <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-          An applicant tracking system parses your CV into structured fields before anyone reads it — contact block,
+          An applicant tracking system parses your CV into structured fields before anyone reads it: contact block,
           work history, skills, education. Anything that breaks that parse is invisible to you and decisive for your
           application. CVEdge scores your CV across the six categories that determine whether it survives.
         </p>
@@ -105,18 +105,18 @@ function AtsCheckerExplainer() {
 
 const ATS_CATEGORIES = [
   { name: "Contact details", detail: "Whether your name, email and phone are extractable. Details placed in a document header are frequently not read at all, which can make you unreachable." },
-  { name: "Sections", detail: "Whether standard headings — Experience, Education, Skills — are present and recognised. Content under an unconventional heading may be dropped from the parsed record." },
+  { name: "Sections", detail: "Whether standard headings (Experience, Education, Skills) are present and recognised. Content under an unconventional heading may be dropped from the parsed record." },
   { name: "Keywords", detail: "Coverage of the vocabulary used in the roles you are targeting, including where your phrasing differs from the posting's for the same skill." },
   { name: "Measurable results", detail: "How many bullets carry a number. Bullets describing responsibilities rather than outcomes are the most common reason a CV reads as unremarkable." },
   { name: "Bullet quality", detail: "Whether bullets open with a strong action verb and state what changed, rather than starting with \"Responsible for\"." },
-  { name: "Formatting", detail: "Tables, text boxes, multi-column layouts, icons and image-based text — the choices that corrupt reading order or extract as nothing." },
+  { name: "Formatting", detail: "Tables, text boxes, multi-column layouts, icons and image-based text, the choices that corrupt reading order or extract as nothing." },
 ];
 
 const SCORE_BANDS = [
   { band: "90+", label: "Interview ready", detail: "Parses cleanly and reads as relevant. Further effort is better spent on the strength of your bullets than on the score." },
   { band: "75–89", label: "Strong profile", detail: "No structural problems. Usually a keyword-alignment gap against the specific roles you are applying to." },
   { band: "60–74", label: "Needs improvement", detail: "Typically a missing skills section, unmeasured bullets, or vocabulary that does not match the postings." },
-  { band: "Under 60", label: "At risk", detail: "Usually a parsing failure — contact details in a header, a table-based layout, or text embedded in an image." },
+  { band: "Under 60", label: "At risk", detail: "Usually a parsing failure: contact details in a header, a table-based layout, or text embedded in an image." },
 ];
 
 const ATS_FAQ = [
@@ -133,7 +133,7 @@ const ATS_FAQ = [
   {
     question: "Does a high ATS score guarantee interviews?",
     answer:
-      "No, and it is worth being clear about that. The score measures whether your CV is machine-readable and relevant to a target role — it cannot measure whether your experience is compelling. A 95% score on vague, unmeasured bullets will still lose to a 78% CV that clearly shows someone shipped valuable work. Treat the score as a floor to clear, not a number to maximise.",
+      "No, and it is worth being clear about that. The score measures whether your CV is machine-readable and relevant to a target role, so it cannot measure whether your experience is compelling. A 95% score on vague, unmeasured bullets will still lose to a 78% CV that clearly shows someone shipped valuable work. Treat the score as a floor to clear, not a number to maximise.",
   },
   {
     question: "Do you store my CV?",

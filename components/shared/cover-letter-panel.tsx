@@ -233,7 +233,7 @@ export function CoverLetterPanel({
             >
               {jobMatches.map((jm) => (
                 <option key={jm.id} value={jm.id}>
-                  {jm.job_title || "Untitled"} — {jm.match_score}% match
+                  {jm.job_title || "Untitled"} · {jm.match_score}% match
                 </option>
               ))}
             </select>

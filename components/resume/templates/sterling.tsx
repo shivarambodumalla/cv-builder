@@ -255,7 +255,7 @@ export function Sterling({
           {entryList(publications.items, (item) => (
             <>
               {entryHead(item.title, item.date ? formatDate(item.date) : "")}
-              {entrySub([item.publisher, item.url].filter(Boolean).join(" — "))}
+              {entrySub([item.publisher, item.url].filter(Boolean).join(", "))}
             </>
           ), 8)}
         </>

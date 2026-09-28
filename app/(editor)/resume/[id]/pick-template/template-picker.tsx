@@ -49,7 +49,7 @@ const TEMPLATES: Template[] = [
   { name: "Clean Sidebar", slug: "clean-sidebar", category: ["all", "two-column"], type: "Sidebar left", desc: "Warm light sidebar with progress bars and links. Versatile and friendly.", tags: ["New"] },
   { name: "Executive", slug: "executive", category: ["all", "single", "professional"], type: "Single column", desc: "Premium feel for senior roles. Refined typography and spacing.", tags: [] },
   { name: "Onyx", slug: "sidebar-right", category: ["all", "two-column"], type: "Sidebar right", desc: "Right sidebar for skills and education. Clean content hierarchy.", tags: [] },
-  { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo — corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
+  { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo for corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
   { name: "Divide", slug: "divide", category: ["all", "two-column"], type: "Two column", desc: "Vertical divider splits content. Balanced left-right layout.", tags: [] },
   { name: "Folio", slug: "folio", category: ["all", "two-column"], type: "Two column", desc: "Coloured sidebar with clean white main area. Portfolio-style.", tags: [] },
   { name: "Harvard", slug: "harvard", category: ["all", "single", "professional"], type: "Single column", desc: "Academic-style formatting. Formal and structured.", tags: [] },
@@ -166,7 +166,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
             disabled={selecting !== null}
             className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
           >
-            {selecting === "classic" ? "Loading…" : "Skip — use Classic"}
+            {selecting === "classic" ? "Loading…" : "Skip and use Classic"}
           </button>
         </div>
       </div>
@@ -183,7 +183,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
           </h1>
           <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-muted-foreground px-2">
             {title
-              ? `We parsed "${title}" — now choose a look. You can change it any time.`
+              ? `We parsed "${title}". Now choose a look. You can change it any time.`
               : "Every template is ATS-optimised. You can change it any time."}
           </p>
         </div>

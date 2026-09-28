@@ -17,16 +17,16 @@ const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: n
 
 const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
   cv_limit: { title: "You have 3 CVs", subtitle: "Upgrade to create unlimited CVs tailored for different roles.", icon: "crown" },
-  ats_limit: { title: "ATS scans used up", subtitle: "Resets in 7 days — or upgrade for unlimited ATS analysis.", icon: "zap" },
-  rewrite_limit: { title: "AI rewrites used up", subtitle: "Resets in 7 days — or upgrade for unlimited rewrites.", icon: "sparkles" },
-  job_match_limit: { title: "Job matches used up", subtitle: "Resets in 7 days — or upgrade for unlimited matching.", icon: "sparkles" },
-  cover_letter_limit: { title: "Cover letters used up", subtitle: "Resets in 7 days — or upgrade for unlimited letters.", icon: "sparkles" },
-  fix_all_limit: { title: "Fix All uses reached", subtitle: "Resets Monday — or upgrade for unlimited AI fixes.", icon: "sparkles" },
-  cv_tailor_limit: { title: "CV tailoring used this week", subtitle: "Resets Monday — or upgrade for unlimited tailoring.", icon: "sparkles" },
-  offer_eval_limit: { title: "Offer evaluations used", subtitle: "Resets Monday — or upgrade for unlimited evaluations.", icon: "sparkles" },
+  ats_limit: { title: "ATS scans used up", subtitle: "Resets in 7 days, or upgrade for unlimited ATS analysis.", icon: "zap" },
+  rewrite_limit: { title: "AI rewrites used up", subtitle: "Resets in 7 days, or upgrade for unlimited rewrites.", icon: "sparkles" },
+  job_match_limit: { title: "Job matches used up", subtitle: "Resets in 7 days, or upgrade for unlimited matching.", icon: "sparkles" },
+  cover_letter_limit: { title: "Cover letters used up", subtitle: "Resets in 7 days, or upgrade for unlimited letters.", icon: "sparkles" },
+  fix_all_limit: { title: "Fix All uses reached", subtitle: "Resets Monday, or upgrade for unlimited AI fixes.", icon: "sparkles" },
+  cv_tailor_limit: { title: "CV tailoring used this week", subtitle: "Resets Monday, or upgrade for unlimited tailoring.", icon: "sparkles" },
+  offer_eval_limit: { title: "Offer evaluations used", subtitle: "Resets Monday, or upgrade for unlimited evaluations.", icon: "sparkles" },
   portfolio_scan_limit: { title: "Portfolio scanning limited", subtitle: "Upgrade to scan unlimited portfolios and GitHub profiles.", icon: "sparkles" },
-  story_summary_limit: { title: "Story summaries used", subtitle: "Resets Monday — or upgrade for unlimited AI summaries.", icon: "sparkles" },
-  interview_prep_limit: { title: "Interview prep sessions used", subtitle: "Resets Monday — or upgrade for unlimited prep.", icon: "sparkles" },
+  story_summary_limit: { title: "Story summaries used", subtitle: "Resets Monday, or upgrade for unlimited AI summaries.", icon: "sparkles" },
+  interview_prep_limit: { title: "Interview prep sessions used", subtitle: "Resets Monday, or upgrade for unlimited prep.", icon: "sparkles" },
   template_locked: { title: "This template is Pro", subtitle: "Unlock every premium template plus unlimited ATS scans, rewrites and downloads.", icon: "crown" },
   download: { title: "Download your CV", subtitle: "Your PDF is always clean. Upgrade for unlimited everything else.", icon: "zap" },
   generic: { title: "Upgrade to Pro", subtitle: "Unlimited everything for serious job seekers.", icon: "crown" },
@@ -178,7 +178,7 @@ export function UpgradeModal() {
               onClick={handleCheckout}
               disabled={checkoutLoading}
             >
-              {checkoutLoading ? "Processing..." : `Get Pro \u2014 $${selected.sale}/${selected.per}`}
+              {checkoutLoading ? "Processing..." : `Get Pro: $${selected.sale}/${selected.per}`}
             </Button>
 
             <p className="text-center text-[11px] text-muted-foreground">

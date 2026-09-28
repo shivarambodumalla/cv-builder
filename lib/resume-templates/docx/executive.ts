@@ -30,7 +30,7 @@ export async function buildExecutiveDocx(): Promise<Buffer> {
     {
       title: "Executive Resume Template",
       description:
-        "Blank executive resume template for C-suite, VP and director roles — single column, ATS-safe.",
+        "Blank executive resume template for C-suite, VP and director roles. Single column, ATS-safe.",
     },
     [
       ...b.header(
@@ -43,7 +43,7 @@ export async function buildExecutiveDocx(): Promise<Buffer> {
         "Three or four lines, and the most-read part of a senior resume. State your level, your domain, the scale you operate at, and the one outcome you want remembered. Write it last, once the rest of the page exists."
       ),
       b.body(
-        "Operating executive with 00 years across [industry], currently accountable for [scope: P&L size, headcount, region]. Track record of [the outcome you are hired for] — most recently [single strongest result, with a number]."
+        "Operating executive with 00 years across [industry], currently accountable for [scope: P&L size, headcount, region]. Track record of [the outcome you are hired for], most recently [single strongest result, with a number]."
       ),
 
       b.sectionHeading("Experience"),
@@ -60,7 +60,7 @@ export async function buildExecutiveDocx(): Promise<Buffer> {
         "Lead on scope, not activity: “Owned a £00m P&L across three markets, growing contribution margin from 00% to 00% in two years.”"
       ),
       b.bullet(
-        "Name what you built or changed structurally — a team, a function, an operating model — and the size of it."
+        "Name what you built or changed structurally (a team, a function, an operating model) and the size of it."
       ),
       b.bullet(
         "One bullet should be a decision you made that carried risk, and how it resolved. Senior readers look for judgement."
@@ -68,10 +68,10 @@ export async function buildExecutiveDocx(): Promise<Buffer> {
       b.entryLine("Previous Company", "City, Country"),
       b.subLine("Your Job Title", "Mar 2017 – Dec 2020"),
       b.bullet("Two or three bullets. Recency earns space."),
-      b.bullet("Keep the metric density up — at this level, unquantified claims read as filler."),
+      b.bullet("Keep the metric density up. At this level, unquantified claims read as filler."),
       b.entryLine("Earlier Career", ""),
       b.body(
-        "Company — Title (2012–2017)  ·  Company — Title (2009–2012)  ·  Company — Title (2006–2009)",
+        "Company | Title (2012–2017)  ·  Company | Title (2009–2012)  ·  Company | Title (2006–2009)",
         { spacing: { before: 20, after: 60 } }
       ),
       b.hint(
@@ -80,14 +80,14 @@ export async function buildExecutiveDocx(): Promise<Buffer> {
 
       b.sectionHeading("Board, Advisory & Governance"),
       b.hint(
-        "Optional, and worth keeping only if you hold appointments. Delete the section otherwise — an empty heading is worse than no heading."
+        "Optional, and worth keeping only if you hold appointments. Delete the section otherwise. An empty heading is worse than no heading."
       ),
       b.entryLine("Organisation", "2022 – Present"),
       b.subLine("Non-Executive Director / Advisor / Trustee"),
 
       b.sectionHeading("Education & Credentials"),
       b.hint(
-        "Brief at this level. Institution, qualification, year. Drop grades and coursework entirely — nobody is checking a 2:1 from 1998."
+        "Brief at this level. Institution, qualification, year. Drop grades and coursework entirely. Nobody is checking a 2:1 from 1998."
       ),
       b.entryLine("Business School or University", "2004"),
       b.subLine("MBA / Degree, Subject"),
@@ -101,7 +101,7 @@ export async function buildExecutiveDocx(): Promise<Buffer> {
       b.bullet("The single result you would lead with in a first conversation, with its number."),
 
       ...b.footer(
-        "Delete every italic prompt before you send this. Two pages is standard at executive level — if you are spilling onto a third, compress early roles rather than tightening the spacing."
+        "Delete every italic prompt before you send this. Two pages is standard at executive level. If you are spilling onto a third, compress early roles rather than tightening the spacing."
       ),
     ]
   );

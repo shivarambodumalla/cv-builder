@@ -1043,7 +1043,7 @@ function CertItem({ index, control, register, onRemove, watched, dragHandle }: {
   const [open, setOpen] = useState(false);
   const name = watched?.certifications?.items?.[index]?.name || "";
   const issuer = watched?.certifications?.items?.[index]?.issuer || "";
-  const headerText = [name, issuer].filter(Boolean).join(" — ") || "New Certification";
+  const headerText = [name, issuer].filter(Boolean).join(", ") || "New Certification";
 
   return (
     <div className="rounded-lg border">

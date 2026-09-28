@@ -231,10 +231,10 @@ export function WeeklyJobsEmail({
                     </Text>
                     <Text style={signalHint}>
                       {atsScore >= 80
-                        ? "Strong — you're ready to apply."
+                        ? "Strong. You're ready to apply."
                         : atsScore >= 60
                           ? "Good. A quick polish could push you past 80."
-                          : "Room to improve — tighten it before applying."}
+                          : "Room to improve. Tighten it before applying."}
                     </Text>
                   </td>
                   <td style={{ verticalAlign: "middle", textAlign: "right" as const, width: 140 }}>

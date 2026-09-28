@@ -274,17 +274,17 @@ export function JobsAnalyticsDashboard() {
                     <tr key={u.id} className="border-b last:border-0 hover:bg-muted/20">
                       <td className="px-4 py-2.5">
                         <a href={`/admin/users/${u.user_number}`} className="hover:underline">
-                          <p className="font-medium">{u.name || "—"}</p>
+                          <p className="font-medium">{u.name || "–"}</p>
                           <p className="text-[10px] text-muted-foreground">{u.email}</p>
                         </a>
                       </td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{u.role || "—"}</td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{u.city || "—"}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{u.role || "–"}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{u.city || "–"}</td>
                       <td className="px-4 py-2.5 text-right font-bold tabular-nums">{u.clicks}</td>
                       <td className="px-4 py-2.5 text-right">
                         {u.avgScore > 0 ? (
                           <span className={cn("font-bold tabular-nums", u.avgScore >= 70 ? "text-success" : u.avgScore >= 40 ? "text-warning" : "text-muted-foreground")}>{u.avgScore}%</span>
-                        ) : "—"}
+                        ) : "–"}
                       </td>
                     </tr>
                   ))}
@@ -318,16 +318,16 @@ export function JobsAnalyticsDashboard() {
                     {data.recentApplications.map((a) => (
                       <tr key={a.id} className="border-b last:border-0 hover:bg-muted/20">
                         <td className="px-4 py-2">
-                          <p className="font-medium truncate max-w-[120px]">{a.user.name || "—"}</p>
+                          <p className="font-medium truncate max-w-[120px]">{a.user.name || "–"}</p>
                           <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">{a.user.role || a.user.email}</p>
                         </td>
                         <td className="px-4 py-2 font-medium max-w-[180px] truncate">{a.jobTitle}</td>
                         <td className="px-4 py-2 text-muted-foreground">{a.company}</td>
                         <td className="px-4 py-2 text-muted-foreground truncate max-w-[120px]">{a.location}</td>
                         <td className="px-4 py-2 text-right">
-                          {a.matchScore ? <span className={cn("font-bold tabular-nums", a.matchScore >= 70 ? "text-success" : a.matchScore >= 40 ? "text-warning" : "text-muted-foreground")}>{a.matchScore}%</span> : "—"}
+                          {a.matchScore ? <span className={cn("font-bold tabular-nums", a.matchScore >= 70 ? "text-success" : a.matchScore >= 40 ? "text-warning" : "text-muted-foreground")}>{a.matchScore}%</span> : "–"}
                         </td>
-                        <td className="px-4 py-2 text-right text-muted-foreground whitespace-nowrap">{a.salary || "—"}</td>
+                        <td className="px-4 py-2 text-right text-muted-foreground whitespace-nowrap">{a.salary || "–"}</td>
                         <td className="px-4 py-2 text-right text-muted-foreground whitespace-nowrap">
                           {new Date(a.appliedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                           <span className="text-[10px] ml-1">{new Date(a.appliedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>

@@ -352,7 +352,7 @@ export function BlogEditorClient({ postId }: { postId?: string }) {
           />
           <p className="text-xs text-muted-foreground">
             {form.is_published
-              ? "Already published — unpublish it first to schedule."
+              ? "Already published. Unpublish it first to schedule."
               : form.scheduled_at
               ? "Saved as a draft and published automatically on this date, at 06:00 UTC."
               : "Leave empty to publish manually. Set a date to have it go live on its own."}

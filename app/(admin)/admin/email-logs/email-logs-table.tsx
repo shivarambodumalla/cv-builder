@@ -43,7 +43,7 @@ interface Props {
 }
 
 function pct(numerator: number, denominator: number): string {
-  if (denominator <= 0) return "—";
+  if (denominator <= 0) return "–";
   return `${Math.round((numerator / denominator) * 100)}%`;
 }
 
@@ -92,9 +92,9 @@ export function EmailLogsTable({
       {engagement.length > 0 && (
         <div className="rounded-md border bg-muted/30">
           <div className="flex items-center justify-between px-3 py-2 border-b">
-            <h2 className="text-sm font-semibold">Engagement — last {engagementWindowDays} days</h2>
+            <h2 className="text-sm font-semibold">Engagement: last {engagementWindowDays} days</h2>
             <p className="text-[11px] text-muted-foreground">
-              Open/click rates inflated by image pre-fetch (Apple Mail) — read directionally.
+              Open/click rates inflated by image pre-fetch (Apple Mail). Read directionally.
             </p>
           </div>
           <div className="overflow-x-auto">
@@ -208,13 +208,13 @@ export function EmailLogsTable({
                   </span>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap" title={log.delivered_at ?? undefined}>
-                  {log.delivered_at ? <span className="text-success">✓</span> : <span className="text-muted-foreground/60">—</span>}
+                  {log.delivered_at ? <span className="text-success">✓</span> : <span className="text-muted-foreground/60">–</span>}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap tabular-nums" title={log.opened_at ?? undefined}>
-                  {log.open_count > 0 ? log.open_count : <span className="text-muted-foreground/60">—</span>}
+                  {log.open_count > 0 ? log.open_count : <span className="text-muted-foreground/60">–</span>}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap tabular-nums" title={log.clicked_at ?? undefined}>
-                  {log.click_count > 0 ? log.click_count : <span className="text-muted-foreground/60">—</span>}
+                  {log.click_count > 0 ? log.click_count : <span className="text-muted-foreground/60">–</span>}
                 </td>
                 <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
                   {new Date(log.created_at).toLocaleString()}

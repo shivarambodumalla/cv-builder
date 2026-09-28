@@ -402,7 +402,7 @@ export function OrchidTemplate({
           {sectionHeading("Education", isFirst ? 0 : 8)}
           {education.items.map((item, i) => {
             const degreeField = [item.degree, item.field].filter(Boolean).join(" in ");
-            const line = [degreeField, item.institution].filter(Boolean).join(" — ");
+            const line = [degreeField, item.institution].filter(Boolean).join(", ");
             const dates = renderDateRange(item.startDate, item.endDate);
             return (
               <div
@@ -491,7 +491,7 @@ export function OrchidTemplate({
                   {item.title}
                 </span>
                 {item.issuer && (
-                  <span style={{ color: BODY_TEXT }}> — {item.issuer}</span>
+                  <span style={{ color: BODY_TEXT }}>, {item.issuer}</span>
                 )}
                 {item.date && (
                   <span style={{ color: MUTED_TEXT }}>
@@ -618,7 +618,7 @@ export function OrchidTemplate({
                   {item.title}
                 </span>
                 {item.publisher && (
-                  <span style={{ color: BODY_TEXT }}> — {item.publisher}</span>
+                  <span style={{ color: BODY_TEXT }}>, {item.publisher}</span>
                 )}
                 {item.date && (
                   <span style={{ color: MUTED_TEXT }}>

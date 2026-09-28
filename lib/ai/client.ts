@@ -22,7 +22,7 @@ function enqueue(): Promise<void> {
     const now = Date.now();
     const wait = Math.max(0, MIN_GAP_MS - (now - lastRequestTime));
     if (wait > 0) {
-      console.log(`[callAI] Queued — waiting ${wait}ms to respect RPM limit`);
+      console.log(`[callAI] Queued, waiting ${wait}ms to respect RPM limit`);
       await new Promise((r) => setTimeout(r, wait));
     }
     lastRequestTime = Date.now();
@@ -177,7 +177,7 @@ export async function callAI({ promptName, variables, feature, parseJson = true,
   } catch (err) {
     console.error(`[callAI] JSON parse failed for ${promptName} (feature=${feature}, finishReason=${finishReason}, length=${text.length}, maxTokens=${settings.max_tokens}, outputTokens=${outputTokens})`);
     if (finishReason === "MAX_TOKENS") {
-      throw new TruncatedResponseError(`Response hit token limit for ${promptName} — CV may be too long`);
+      throw new TruncatedResponseError(`Response hit token limit for ${promptName}. CV may be too long`);
     }
     throw err;
   }

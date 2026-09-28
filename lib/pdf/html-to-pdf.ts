@@ -115,7 +115,7 @@ export function buildResumeDocument(
 
   html, body {
     width: ${paper.width};
-    /* no height — @page controls PDF page size; fixing height here can cause
+    /* no height; @page controls PDF page size; fixing height here can cause
        content that slightly exceeds one page to overflow onto a blank page 2 */
     margin: 0;
     padding: 0;

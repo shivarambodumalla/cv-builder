@@ -31,7 +31,7 @@ export async function buildLebenslaufDocx(): Promise<Buffer> {
     {
       title: "Lebenslauf-Vorlage (tabellarisch)",
       description:
-        "Leere tabellarische Lebenslauf-Vorlage nach deutscher Konvention — einspaltig und ATS-optimiert.",
+        "Leere tabellarische Lebenslauf-Vorlage nach deutscher Konvention – einspaltig und ATS-optimiert.",
     },
     [
       ...b.header(
@@ -39,12 +39,12 @@ export async function buildLebenslaufDocx(): Promise<Buffer> {
         "Straße Hausnummer  ·  PLZ Ort  ·  ihre.email@example.de  ·  +49 000 0000000  ·  linkedin.com/in/ihrname"
       ),
       b.hint(
-        "Ein Bewerbungsfoto ist in Deutschland weiterhin üblich, seit dem AGG aber freiwillig. Wenn Sie eines einfügen, platzieren Sie es oben rechts im Dokument — nicht in der Kopfzeile, die viele Bewerbermanagementsysteme nicht auslesen."
+        "Ein Bewerbungsfoto ist in Deutschland weiterhin üblich, seit dem AGG aber freiwillig. Wenn Sie eines einfügen, platzieren Sie es oben rechts im Dokument – nicht in der Kopfzeile, die viele Bewerbermanagementsysteme nicht auslesen."
       ),
 
       b.sectionHeading("Persönliche Daten"),
       b.hint(
-        "Geburtsdatum und Geburtsort sind üblich, aber freiwillig. Familienstand, Konfession und Staatsangehörigkeit können Sie weglassen — sie werden zunehmend als überholt angesehen."
+        "Geburtsdatum und Geburtsort sind üblich, aber freiwillig. Familienstand, Konfession und Staatsangehörigkeit können Sie weglassen – sie werden zunehmend als überholt angesehen."
       ),
       b.labelled("Geburtsdatum", "TT.MM.JJJJ in Ort"),
       b.labelled("Staatsangehörigkeit", "optional"),
@@ -52,15 +52,15 @@ export async function buildLebenslaufDocx(): Promise<Buffer> {
 
       b.sectionHeading("Berufserfahrung"),
       b.hint(
-        "Antichronologisch, also die aktuellste Position zuerst. Das ist der heutige Standard; die früher übliche chronologische Reihenfolge wirkt veraltet. Monat und Jahr genügen — Tagesangaben sind unüblich."
+        "Antichronologisch, also die aktuellste Position zuerst. Das ist der heutige Standard; die früher übliche chronologische Reihenfolge wirkt veraltet. Monat und Jahr genügen – Tagesangaben sind unüblich."
       ),
       b.entryLine("Position, Unternehmen, Ort", "seit 01/2022"),
-      b.bullet("Aufgabe und messbares Ergebnis in einem Satz — sachlich, ohne Werbesprache."),
+      b.bullet("Aufgabe und messbares Ergebnis in einem Satz – sachlich, ohne Werbesprache."),
       b.bullet("Verantwortungsumfang nennen: Teamgröße, Budget, Region, Projektvolumen."),
       b.entryLine("Position, Unternehmen, Ort", "03/2019 – 12/2021"),
       b.bullet("Zwei bis drei Punkte je Station reichen."),
       b.hint(
-        "Lücken von mehr als zwei bis drei Monaten offen benennen — etwa „Elternzeit“, „Weiterbildung“ oder „berufliche Neuorientierung“. In Deutschland fällt eine unerklärte Lücke deutlich stärker auf als eine erklärte."
+        "Lücken von mehr als zwei bis drei Monaten offen benennen – etwa „Elternzeit“, „Weiterbildung“ oder „berufliche Neuorientierung“. In Deutschland fällt eine unerklärte Lücke deutlich stärker auf als eine erklärte."
       ),
 
       b.sectionHeading("Ausbildung"),

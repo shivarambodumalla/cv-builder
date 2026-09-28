@@ -29,7 +29,7 @@ export async function buildHarvardDocx(): Promise<Buffer> {
     {
       title: "Harvard Resume Template",
       description:
-        "Blank Harvard-format resume template — single column, ATS-safe. Not affiliated with Harvard University.",
+        "Blank Harvard-format resume template. Single column, ATS-safe. Not affiliated with Harvard University.",
     },
     [
       ...b.header(
@@ -42,20 +42,20 @@ export async function buildHarvardDocx(): Promise<Buffer> {
         "Education leads while you are a student or within a year or two of graduating. Once you have more professional experience than academic credentials, move this section below Experience."
       ),
       b.entryLine("University Name", "City, Country"),
-      b.subLine("Degree, Subject — Grade or honours", "Sept 2020 – June 2024"),
+      b.subLine("Degree, Subject | Grade or honours", "Sept 2020 – June 2024"),
       b.bullet("Relevant coursework, thesis title, or an academic award worth naming."),
       b.bullet("A society, committee or leadership role, if it shows something a job cannot."),
 
       b.sectionHeading("Experience"),
       b.hint(
-        "Reverse chronological. Lead each bullet with what changed, not what you were assigned — the format gives you no visual hierarchy to hide behind, so weak lines are conspicuous."
+        "Reverse chronological. Lead each bullet with what changed, not what you were assigned. The format gives you no visual hierarchy to hide behind, so weak lines are conspicuous."
       ),
       b.entryLine("Company Name", "City, Country"),
       b.subLine("Your Job Title", "Jan 2024 – Present"),
       b.bullet(
         "Start with a strong past-tense verb, state the result, and attach a number: “Reduced onboarding time 40% by rewriting the setup flow.”"
       ),
-      b.bullet("Name the scale you worked at — users, revenue, team size, requests, budget."),
+      b.bullet("Name the scale you worked at: users, revenue, team size, requests, budget."),
       b.bullet("Keep each bullet to one or two lines. Three is a paragraph pretending to be a bullet."),
       b.entryLine("Previous Company", "City, Country"),
       b.subLine("Your Job Title", "Jun 2022 – Dec 2023"),

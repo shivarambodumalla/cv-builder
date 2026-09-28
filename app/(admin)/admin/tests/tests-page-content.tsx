@@ -163,7 +163,7 @@ export function TestsPageContent({
                     {cases.map((tc) => (
                       <tr key={tc.id} className="border-b last:border-0" style={{ borderColor: "#E0D8CC" }}>
                         <td className="px-4 py-3 font-medium">{tc.name}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{tc.description || "—"}</td>
+                        <td className="px-4 py-3 text-muted-foreground">{tc.description || "–"}</td>
                         <td className="px-4 py-3">
                           <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">{tc.spec_file}</code>
                         </td>

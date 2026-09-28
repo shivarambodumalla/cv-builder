@@ -9,8 +9,8 @@ import { hasRoleContent } from "@/lib/roles/role-content";
 const ROLE_GUIDES = ALL_ROLES.filter((r) => hasRoleContent(r.slug));
 
 export const metadata = {
-  title: "Interview Coach — Prepare STAR Stories from Your CV",
-  description: "Build a bank of interview stories from your CV, GitHub, and portfolio. Get AI-powered STAR frameworks, quality scoring, and job-specific prep — free.",
+  title: "Interview Coach: Prepare STAR Stories from Your CV",
+  description: "Build a bank of interview stories from your CV, GitHub, and portfolio. Get AI-powered STAR frameworks, quality scoring, and job-specific prep, free.",
   openGraph: {
     title: "Interview Coach | CVEdge",
     description: "Build interview stories from your CV. Get AI-powered STAR frameworks and job-specific prep.",
@@ -48,7 +48,7 @@ const FEATURES = [
   {
     icon: CheckCircle,
     title: "STAR framework built in",
-    desc: "Every story follows Situation, Task, Action, Result. No more rambling answers — just clear, structured responses.",
+    desc: "Every story follows Situation, Task, Action, Result. No more rambling answers. Just clear, structured responses.",
   },
   {
     icon: Brain,
@@ -102,7 +102,7 @@ export default function InterviewStoriesPage() {
       <div className="mx-auto max-w-2xl text-center mb-16">
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Interview Coach</p>
         <h1 className="text-3xl font-bold tracking-tight mt-2">Walk into every interview prepared</h1>
-        <p className="text-muted-foreground mt-3">Build a personal library of your best career stories. CVEdge tells you which ones to tell — and how.</p>
+        <p className="text-muted-foreground mt-3">Build a personal library of your best career stories. CVEdge tells you which ones to tell, and how.</p>
         <Button className="mt-6" asChild>
           <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>
         </Button>

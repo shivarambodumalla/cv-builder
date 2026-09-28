@@ -291,7 +291,7 @@ export async function POST(request: NextRequest) {
         current_period_end: null,
       }).eq("id", userId);
       console.log(`[webhook] ${eventName} for ${userId}, access revoked`);
-      alertAdmin("Refund processed", `${eventName} — access revoked`, {
+      alertAdmin("Refund processed", `${eventName}: access revoked`, {
         userId,
         email: attrs?.user_email ?? "unknown",
         orderId: String(attrs?.order_id ?? payload.data?.id ?? "unknown"),

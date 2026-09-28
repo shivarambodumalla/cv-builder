@@ -130,7 +130,7 @@ export default async function RoleInterviewPrepPage({
             Technical {lower} interview questions
           </h2>
           <p className="text-sm text-muted-foreground mb-6">
-            Questions of this shape recur across {lower} loops. Practise them aloud — interviewers score how you
+            Questions of this shape recur across {lower} loops. Practise them aloud. Interviewers score how you
             reason, not only where you land.
           </p>
           <ul className="space-y-3">

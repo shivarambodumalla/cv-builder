@@ -156,7 +156,7 @@ export function CampaignManager({
                     {c.status}
                   </span>
                 </td>
-                <td className="py-2 text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}</td>
+                <td className="py-2 text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "–"}</td>
               </tr>
             ))}
             {campaigns.length === 0 && (

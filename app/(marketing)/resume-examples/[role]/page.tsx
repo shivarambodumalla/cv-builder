@@ -35,7 +35,7 @@ export async function generateMetadata({
   const { role: slug } = await params;
   const role = ROLE_MAP.get(slug);
   if (!role) return {};
-  const title = `${role.label} Resume Example 2026 — Templates & Tips`;
+  const title = `${role.label} Resume Example 2026: Templates & Tips`;
   const description = `${role.label} resume example with ATS keywords, strong bullet point samples, common mistakes to avoid, and free templates. Build your ${role.label.toLowerCase()} resume in minutes.`;
   return {
     title,
@@ -62,15 +62,15 @@ function buildFaqs(label: string) {
     },
     {
       question: `What are the most important ATS keywords for ${label} roles?`,
-      answer: `ATS keywords for ${label} roles include: role-specific tools and technologies, methodologies, certifications, and skills listed explicitly in the job description. Use CVEdge's Job Match tool — paste any ${label} job description and it identifies which keywords are missing from your resume and which would increase your match score most.`,
+      answer: `ATS keywords for ${label} roles include: role-specific tools and technologies, methodologies, certifications, and skills listed explicitly in the job description. Use CVEdge's Job Match tool. Paste any ${label} job description and it identifies which keywords are missing from your resume and which would increase your match score most.`,
     },
     {
       question: `How do I make my ${label} resume ATS-friendly?`,
-      answer: `Use a single-column template (Classic, Sharp, or Minimal score 90+ on CVEdge's ATS analyser), standard section headings (Experience, Education, Skills), bullet points starting with strong action verbs, and role-specific keywords in natural language. Upload your resume to CVEdge for a free ATS score — you'll see exactly which category is dragging your score and how to fix it.`,
+      answer: `Use a single-column template (Classic, Sharp, or Minimal score 90+ on CVEdge's ATS analyser), standard section headings (Experience, Education, Skills), bullet points starting with strong action verbs, and role-specific keywords in natural language. Upload your resume to CVEdge for a free ATS score. You'll see exactly which category is dragging your score and how to fix it.`,
     },
     {
       question: `How do I write strong bullet points for a ${label} resume?`,
-      answer: `Strong bullets follow this formula: [strong action verb] + [what you did or built] + [measurable result]. Example: "Led migration of X, reducing latency by 40% for 2M users." Avoid: "Responsible for X" or "Helped with Y." Every bullet should have a result — use [X] placeholders where you don't have a specific number. CVEdge's AI rewriter converts weak bullets to strong ones automatically.`,
+      answer: `Strong bullets follow this formula: [strong action verb] + [what you did or built] + [measurable result]. Example: "Led migration of X, reducing latency by 40% for 2M users." Avoid: "Responsible for X" or "Helped with Y." Every bullet should have a result. Use [X] placeholders where you don't have a specific number. CVEdge's AI rewriter converts weak bullets to strong ones automatically.`,
     },
   ];
 }
@@ -125,7 +125,7 @@ export default async function RoleResumeExamplePage({
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV — free ATS score</Link>
+                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Build {role.label} resume free</Link>
@@ -156,7 +156,7 @@ export default async function RoleResumeExamplePage({
           Strong {role.label.toLowerCase()} resume bullet examples
         </h2>
         <p className="text-sm text-muted-foreground mb-6">
-          These are examples of well-written resume bullets for {role.label.toLowerCase()} roles —
+          These are examples of well-written resume bullets for {role.label.toLowerCase()} roles:
           metric-led, action-verb-first, and specific enough to be credible.
         </p>
         <div className="space-y-3">
@@ -190,7 +190,7 @@ export default async function RoleResumeExamplePage({
         </h2>
         <p className="text-sm text-muted-foreground mb-6">
           These are commonly screened keywords for {role.label.toLowerCase()} roles.
-          Include the ones relevant to your experience — naturally integrated in your bullets
+          Include the ones relevant to your experience, naturally integrated in your bullets
           and skills section, not keyword-stuffed.
         </p>
         <div className="flex flex-wrap gap-2 mb-6">
@@ -207,7 +207,7 @@ export default async function RoleResumeExamplePage({
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Get role-specific keywords for your exact job description.</span>{" "}
             CVEdge&apos;s Job Match tool compares your resume against any {role.label.toLowerCase()} job description
-            and shows which keywords are missing — with one-click add.{" "}
+            and shows which keywords are missing, with one-click add.{" "}
             <Link href="/login" className="underline hover:text-foreground">
               Try it free
             </Link>
@@ -245,7 +245,7 @@ export default async function RoleResumeExamplePage({
           <div className="grid sm:grid-cols-3 gap-4 mb-6">
             {[
               { label: "Action verb", example: "\"Led\", \"Built\", \"Reduced\", \"Grew\"", desc: "Strong opening that shows agency and ownership." },
-              { label: "What you did", example: "\"migration of X\", \"dashboard covering Y\"", desc: "Specific enough to be credible — avoid vague 'improved process'." },
+              { label: "What you did", example: "\"migration of X\", \"dashboard covering Y\"", desc: "Specific enough to be credible. Avoid vague 'improved process'." },
               { label: "Measurable result", example: "\"by 40% for 2M users\", \"saving $420K\"", desc: "The number that makes a recruiter stop scrolling." },
             ].map((part) => (
               <div key={part.label} className="text-center">
@@ -280,7 +280,7 @@ export default async function RoleResumeExamplePage({
           {[
             {
               section: "Professional Summary",
-              guidance: `3–4 sentences: your job title + years of experience + 2 core specialisms + what you're looking for. For ${role.label.toLowerCase()} roles, lead with your most relevant strength. Keep it under 80 words. Avoid clichés like 'results-driven' — be specific about what you actually do.`,
+              guidance: `3–4 sentences: your job title + years of experience + 2 core specialisms + what you're looking for. For ${role.label.toLowerCase()} roles, lead with your most relevant strength. Keep it under 80 words. Avoid clichés like 'results-driven'. Be specific about what you actually do.`,
             },
             {
               section: "Experience",
@@ -288,7 +288,7 @@ export default async function RoleResumeExamplePage({
             },
             {
               section: "Skills",
-              guidance: `List role-relevant tools, technologies, methodologies, and certifications. Group into categories where you have 5+ skills (e.g. Languages, Cloud, Frameworks). For ATS, ensure exact keyword matches with the job description — spell tools and technologies exactly as they appear in JDs.`,
+              guidance: `List role-relevant tools, technologies, methodologies, and certifications. Group into categories where you have 5+ skills (e.g. Languages, Cloud, Frameworks). For ATS, ensure exact keyword matches with the job description. Spell tools and technologies exactly as they appear in JDs.`,
             },
             {
               section: "Education",
@@ -504,7 +504,7 @@ export default async function RoleResumeExamplePage({
           <div className="mx-auto max-w-3xl mb-14">
             <div className="rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold">CV sorted — now the interview</p>
+                <p className="text-sm font-semibold">CV sorted. Now the interview</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Real {role.label.toLowerCase()} interview questions and what each round is scored on.
                 </p>
@@ -540,7 +540,7 @@ export default async function RoleResumeExamplePage({
       {/* CTA */}
       <div className="mx-auto max-w-xl text-center">
         <h2 className="text-2xl font-bold tracking-tight">
-          Build your {role.label.toLowerCase()} resume — free
+          Build your {role.label.toLowerCase()} resume for free
         </h2>
         <p className="mt-3 text-muted-foreground">
           Upload your existing CV or start fresh. Get an ATS score in seconds and fix

@@ -26,7 +26,7 @@ export function UploadCvNudge() {
   return (
     <AppPopover
       id="upload_cv"
-      title="Upload your CV — takes 30 seconds"
+      title="Upload your CV. Takes 30 seconds"
       subtitle="Get your ATS score and start improving."
       ctaText="Upload now"
       onAction={() => router.push("/upload-resume")}

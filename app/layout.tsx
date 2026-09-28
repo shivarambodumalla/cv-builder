@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.thecvedge.com"),
   title: {
-    default: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
+    default: "CVEdge: Get More Interviews. Fix Your CV in 8 Minutes.",
     template: "%s | CVEdge",
   },
   description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. Free forever. 80+ ATS score guaranteed or your money back.",
@@ -41,11 +41,11 @@ export const metadata: Metadata = {
     alternateLocale: ["en_GB", "en_AE", "en_SA", "en_QA"],
     url: "https://www.thecvedge.com",
     siteName: "CVEdge",
-    title: "CVEdge — Get More Interviews. Fix Your CV in 8 Minutes.",
+    title: "CVEdge: Get More Interviews. Fix Your CV in 8 Minutes.",
     description: "Free AI-powered resume and CV optimization. Find why your resume gets rejected and fix it instantly. 80+ ATS score guaranteed.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge — AI-powered resume and CV optimization" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge: AI-powered resume and CV optimization" }],
   },
-  twitter: { card: "summary_large_image", title: "CVEdge — Get More Interviews", description: "Free AI-powered resume and CV optimization. 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
+  twitter: { card: "summary_large_image", title: "CVEdge: Get More Interviews", description: "Free AI-powered resume and CV optimization. 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }], apple: "/img/CV-Edge-Logo-square.svg" },
   // Pinterest website claim — keeps pins attributed to thecvedge.com.
   other: { "p:domain_verify": "20e129163b0f32eba76c007ea3c95db7" },

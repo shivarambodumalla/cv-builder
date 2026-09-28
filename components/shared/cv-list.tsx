@@ -387,7 +387,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-[#0C1A0E] truncate">
                           {displayName}
-                          {targetRole && <span className="text-[#78716C] font-normal ml-1.5">— {targetRole}</span>}
+                          {targetRole && <span className="text-[#78716C] font-normal ml-1.5">· {targetRole}</span>}
                         </p>
                         <div className="flex items-center gap-1.5 mt-1">
                           <Badge variant="secondary" className="bg-black/[0.06] text-[#374151] rounded-full px-2 py-0.5 text-[11px] font-medium border-0">

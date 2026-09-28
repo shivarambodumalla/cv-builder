@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ChevronLeft, ShieldCheck, Zap, RotateCcw } from "lucide-react";
 
-export const metadata: Metadata = { title: "Get Your CV Reviewed — CVEdge" };
+export const metadata: Metadata = { title: "Get Your CV Reviewed | CVEdge" };
 
 export default async function CvReviewNewPage() {
   const supabase = await createClient();

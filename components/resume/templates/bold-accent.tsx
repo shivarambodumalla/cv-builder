@@ -425,7 +425,7 @@ export function BoldAccent({
                         lineHeight: 1.25,
                       }}
                     >
-                      {[item.degree, item.field].filter(Boolean).join(" — ")}
+                      {[item.degree, item.field].filter(Boolean).join(", ")}
                     </div>
                   )}
                   {item.institution && (
@@ -522,7 +522,7 @@ export function BoldAccent({
                       {item.issuer && (
                         <span style={{ fontWeight: 400, color: bodyText }}>
                           {" "}
-                          — {item.issuer}
+                          , {item.issuer}
                         </span>
                       )}
                     </div>
@@ -646,7 +646,7 @@ export function BoldAccent({
                       {item.publisher && (
                         <span style={{ fontWeight: 400, color: bodyText }}>
                           {" "}
-                          — {item.publisher}
+                          , {item.publisher}
                         </span>
                       )}
                     </div>

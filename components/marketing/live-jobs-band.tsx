@@ -52,7 +52,7 @@ export function LiveJobsBand() {
                 </h2>
 
                 <p className="text-sm sm:text-base text-muted-foreground max-w-md leading-relaxed">
-                  Sourced from 50+ job feeds across the web — refreshed daily, with an AI match score on every listing.
+                  Sourced from 50+ job feeds across the web, refreshed daily, with an AI match score on every listing.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2">

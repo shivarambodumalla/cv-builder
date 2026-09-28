@@ -759,7 +759,7 @@ function NewVsReturning({ rows }: { rows: NvRRow[] }) {
               <span className="text-success font-medium">
                 {retRow.engagementRate - newRow.engagementRate}% more engaged
               </span>{" "}
-              — strong remarketing signal.
+              , a strong remarketing signal.
             </p>
           )}
         </>
@@ -962,7 +962,7 @@ function AudienceProfileCard({ queries }: { queries: QueryRow[] }) {
             )
           )}
         </div>
-        <p className="text-[10px] text-muted-foreground italic">Industry benchmark — career/resume tools</p>
+        <p className="text-[10px] text-muted-foreground italic">Industry benchmark for career/resume tools</p>
       </div>
     </div>
   );
@@ -1216,7 +1216,7 @@ function TimeIntelligence({ dayOfWeek, hourly }: { dayOfWeek: DayRow[]; hourly: 
 // ─── Enhanced Query Intelligence ──────────────────────────────────────────────
 
 function PositionDelta({ delta }: { delta: number | null }) {
-  if (delta === null) return <span className="text-muted-foreground">—</span>;
+  if (delta === null) return <span className="text-muted-foreground">–</span>;
   if (delta === 0) return (
     <span className="inline-flex items-center gap-0.5 text-muted-foreground">
       <Minus className="h-2.5 w-2.5" />
@@ -1356,7 +1356,7 @@ function EnhancedQueryTable({ rows, hasGa4 }: { rows: QueryRow[]; hasGa4: boolea
                       {row.page ? (
                         <span className="text-muted-foreground line-clamp-1 text-[11px]">{row.page}</span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">–</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -1377,10 +1377,10 @@ function EnhancedQueryTable({ rows, hasGa4 }: { rows: QueryRow[]; hasGa4: boolea
                     {hasGa4 && (
                       <>
                         <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
-                          {row.sessions != null ? row.sessions.toLocaleString() : "—"}
+                          {row.sessions != null ? row.sessions.toLocaleString() : "–"}
                         </td>
                         <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
-                          {row.engagementRate != null ? `${row.engagementRate}%` : "—"}
+                          {row.engagementRate != null ? `${row.engagementRate}%` : "–"}
                         </td>
                       </>
                     )}

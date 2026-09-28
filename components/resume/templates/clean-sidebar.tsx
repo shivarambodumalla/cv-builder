@@ -723,7 +723,7 @@ export function CleanSidebar({
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <span style={{ fontWeight: 700, color: DARK_TEXT }}>{item.title}</span>
-                  {item.issuer && <span style={{ color: BODY_TEXT }}> — {item.issuer}</span>}
+                  {item.issuer && <span style={{ color: BODY_TEXT }}>, {item.issuer}</span>}
                 </div>
                 {item.date && (
                   <div style={{ color: MUTED_TEXT, whiteSpace: "nowrap" }}>{formatDate(item.date)}</div>
@@ -754,7 +754,7 @@ export function CleanSidebar({
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <span style={{ fontWeight: 700, color: DARK_TEXT }}>{item.title}</span>
-                  {item.publisher && <span style={{ color: BODY_TEXT }}> — {item.publisher}</span>}
+                  {item.publisher && <span style={{ color: BODY_TEXT }}>, {item.publisher}</span>}
                 </div>
                 {item.date && (
                   <div style={{ color: MUTED_TEXT, whiteSpace: "nowrap" }}>{formatDate(item.date)}</div>

@@ -415,7 +415,7 @@ export function Coastal({
             </div>
             {(item.name || item.issuer) && (
               <div style={{ marginLeft: 14, marginTop: 2, color: bodyText }}>
-                {[item.name, item.issuer].filter(Boolean).join(" — ")}
+                {[item.name, item.issuer].filter(Boolean).join(", ")}
               </div>
             )}
           </div>
@@ -445,7 +445,7 @@ export function Coastal({
               </div>
             </div>
             <div style={{ marginLeft: 14, marginTop: 2, color: bodyText }}>
-              {[item.title, item.issuer, item.description].filter(Boolean).join(" — ")}
+              {[item.title, item.issuer, item.description].filter(Boolean).join(" · ")}
             </div>
           </div>
         ))}
@@ -514,7 +514,7 @@ export function Coastal({
                 {triangle}
                 <div>
                   <span style={{ fontWeight: 700, color: darkText }}>{item.title}</span>
-                  {item.publisher && <span style={{ color: bodyText }}> — {item.publisher}</span>}
+                  {item.publisher && <span style={{ color: bodyText }}>, {item.publisher}</span>}
                 </div>
               </div>
               {item.date && (

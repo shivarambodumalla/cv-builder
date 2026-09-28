@@ -35,17 +35,17 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
     case "timed":
       return { title: "Get your ATS score free", subtitle: "30 seconds. No credit card." };
     case "template_click":
-      return { title: `Use ${ctx.templateName || "this template"} free — sign in to start`, subtitle: "All templates are free. No credit card." };
+      return { title: `Use ${ctx.templateName || "this template"} free. Sign in to start`, subtitle: "All templates are free. No credit card." };
     case "job_search":
-      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}" — sign in to unlock scores.` : "Every listing shows how well your CV matches." };
+      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}". Sign in to unlock scores.` : "Every listing shows how well your CV matches." };
     case "role_page":
       return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to unlock personalised match scores." };
     case "resumes_cta":
       return { title: "Pick your template and build your CV free", subtitle: "All templates. ATS-optimised. No credit card." };
     case "jobs_cta":
-      return { title: "Find jobs matching your CV — sign in free", subtitle: "Every listing shows your ATS match score." };
+      return { title: "Find jobs matching your CV. Sign in free", subtitle: "Every listing shows your ATS match score." };
     case "exit_intent":
-      return { title: "Before you go — check your ATS score free", subtitle: "75% of CVs are rejected before anyone reads them." };
+      return { title: "Before you go, check your ATS score free", subtitle: "75% of CVs are rejected before anyone reads them." };
     case "ats_score":
       return { title: "Your CV could score 90+", subtitle: "See your real ATS score in 30 seconds." };
     case "template_hover":

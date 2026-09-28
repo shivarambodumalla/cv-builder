@@ -21,7 +21,7 @@ export function HelloBar() {
       <div className="flex items-center gap-2.5 text-center">
         <Sparkles className="shrink-0 text-[#34D399]" size={16} />
         <p className="leading-snug">
-          Review by Experts — human feedback on your CV in 24 hours.{" "}
+          Review by Experts: human feedback on your CV in 24 hours.{" "}
           <Link
             href="/cv-review"
             className="inline-flex items-center gap-1 font-semibold text-[#34D399] hover:opacity-80 transition-opacity"

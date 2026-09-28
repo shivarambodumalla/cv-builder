@@ -155,7 +155,7 @@ export default async function CvFormatPage({
             </p>
             <ul className="space-y-2 mb-5">
               {[
-                "Single column with standard headings — no tables, text boxes or graphics",
+                "Single column with standard headings, no tables, text boxes or graphics",
                 "Verified to parse cleanly through the same library CVEdge uses to read uploads",
                 "Editable in Word, Google Docs or Pages",
                 "No account, no card, no watermark",

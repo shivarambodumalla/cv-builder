@@ -141,11 +141,11 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Target role</span>
-            <span className="text-right max-w-[100px] truncate">{review.target_role || "—"}</span>
+            <span className="text-right max-w-[100px] truncate">{review.target_role || "–"}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Country</span>
-            <span>{review.target_country || "—"}</span>
+            <span>{review.target_country || "–"}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Reviews</span>
@@ -185,7 +185,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
           <div className="space-y-1.5">
             {files.map((f) => (
               <div key={f.id} className="text-xs rounded border p-2">
-                <div className="font-medium">v{f.version_number} — {f.uploaded_by === "admin" ? "Admin" : "User"}</div>
+                <div className="font-medium">v{f.version_number} · {f.uploaded_by === "admin" ? "Admin" : "User"}</div>
                 <div className="text-muted-foreground truncate">{f.file_name || "file"}</div>
                 <div className="flex gap-2 mt-1">
                   <a href={f.file_url} target="_blank" rel="noreferrer" className="text-[#065F46] hover:underline">View</a>
@@ -221,7 +221,7 @@ export function AdminReviewEditor({ review, messages: initialMessages, files, su
               {files.map((f) => (
                 <div key={f.id} className="rounded-xl border p-4 flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm">v{f.version_number} — {f.file_name || "CV"}</div>
+                    <div className="font-medium text-sm">v{f.version_number} · {f.file_name || "CV"}</div>
                     <div className="text-xs text-muted-foreground mt-0.5">{f.uploaded_by === "admin" ? "Admin upload" : "User upload"} · {new Date(f.created_at).toLocaleDateString("en-GB")}</div>
                   </div>
                   <div className="flex gap-2">

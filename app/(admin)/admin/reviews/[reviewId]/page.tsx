@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
 import { AdminReviewEditor } from "./admin-review-editor";
 
-export const metadata: Metadata = { title: "Review Detail — Admin" };
+export const metadata: Metadata = { title: "Review Detail | Admin" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminReviewDetailPage({ params }: { params: { reviewId: string } }) {

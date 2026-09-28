@@ -83,14 +83,14 @@ export function ReviewsQueue({ reviews }: { reviews: Review[] }) {
                 return (
                   <tr key={r.id} className="hover:bg-muted/20 transition-colors">
                     <td className="px-4 py-3">
-                      <div className="font-medium">{r.profile?.full_name || "—"}</div>
-                      <div className="text-xs text-muted-foreground">{r.profile?.email || "—"}</div>
+                      <div className="font-medium">{r.profile?.full_name || "–"}</div>
+                      <div className="text-xs text-muted-foreground">{r.profile?.email || "–"}</div>
                     </td>
                     <td className="px-4 py-3">
                       <span className="px-2 py-0.5 rounded-full text-xs font-semibold capitalize" style={{ background: "#F0FDF4", color: "#065F46" }}>{r.tier}</span>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground max-w-[160px] truncate">{r.target_role || "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.target_country || "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground max-w-[160px] truncate">{r.target_role || "–"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{r.target_country || "–"}</td>
                     <td className="px-4 py-3">
                       <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: st.bg, color: st.color }}>{st.label}</span>
                     </td>

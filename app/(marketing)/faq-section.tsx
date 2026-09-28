@@ -23,19 +23,19 @@ const FAQS = [
   },
   {
     q: "Do I need to start from scratch?",
-    a: "No. Upload your existing resume as a PDF and we parse everything automatically. Improve what you have — no blank templates, no manual entry.",
+    a: "No. Upload your existing resume as a PDF and we parse everything automatically. Improve what you have. No blank templates, no manual entry.",
   },
   {
     q: "How is this different from other resume tools?",
-    a: "CVEdge combines ATS scoring, AI bullet rewrites, job matching, cover letter generation, and interview prep in one tool — at a fraction of the price. Most tools only do one of these.",
+    a: "CVEdge combines ATS scoring, AI bullet rewrites, job matching, cover letter generation, and interview prep in one tool, at a fraction of the price. Most tools only do one of these.",
   },
   {
     q: "Can I cancel anytime?",
-    a: "Yes — cancel with one click from your billing page. No emails, no forms. Your access continues until the end of your billing period.",
+    a: "Yes. Cancel with one click from your billing page. No emails, no forms. Your access continues until the end of your billing period.",
   },
   {
     q: "What roles do you support?",
-    a: "130+ roles across 12 domains — Engineering, Design, Product, Data, Marketing, Sales, Finance, HR, Operations, Content, Mechanical, and Digital Economy.",
+    a: "130+ roles across 12 domains: Engineering, Design, Product, Data, Marketing, Sales, Finance, HR, Operations, Content, Mechanical, and Digital Economy.",
   },
 ];
 

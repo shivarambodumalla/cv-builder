@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (err instanceof TruncatedResponseError) {
-      console.warn("[cv/analyse] Token limit hit — CV too large:", error.message);
+      console.warn("[cv/analyse] Token limit hit, CV too large:", error.message);
       return NextResponse.json(
         { error: "Your CV has too many bullets for a single analysis pass. Try keeping each role to 6 bullets or fewer, then re-analyse.", code: "cv_too_large" },
         { status: 422 }

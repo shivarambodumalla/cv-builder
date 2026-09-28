@@ -131,7 +131,7 @@ function buildSampleItems(): { top: WeeklyJobItem; others: WeeklyJobItem[] } {
   };
   const others: WeeklyJobItem[] = [
     { id: "sample-2", title: "Product Manager, Growth", company: "Linear", location: "New York, NY", salary: "$160k–$190k", postedAgo: "1 day ago", applyUrl: `${APP_URL}/jobs`, provider: "careerjet", ...makeBadge(87) },
-    { id: "sample-3", title: "Principal PM — Platform", company: "Notion", location: "San Francisco, CA", salary: "$210k–$250k", postedAgo: "3 days ago", applyUrl: `${APP_URL}/jobs`, provider: "adzuna", ...makeBadge(78) },
+    { id: "sample-3", title: "Principal PM, Platform", company: "Notion", location: "San Francisco, CA", salary: "$210k–$250k", postedAgo: "3 days ago", applyUrl: `${APP_URL}/jobs`, provider: "adzuna", ...makeBadge(78) },
     { id: "sample-4", title: "Senior PM, Payments", company: "Square", location: "Remote", salary: null, postedAgo: "4 days ago", applyUrl: `${APP_URL}/jobs`, provider: "adzuna", ...makeBadge(71) },
     { id: "sample-5", title: "Lead Product Manager", company: "Figma", location: "San Francisco, CA", salary: "$200k–$240k", postedAgo: "5 days ago", applyUrl: `${APP_URL}/jobs`, provider: "jooble", ...makeBadge(64) },
   ];

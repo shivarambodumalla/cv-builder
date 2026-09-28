@@ -24,7 +24,7 @@ export function GccFormatSection({ market }: { market: "uae" | "saudi-arabia" | 
         </h2>
         <p className="text-muted-foreground leading-relaxed mb-8">
           A CV that works in London or New York is usually missing the fields Gulf
-          recruiters screen on first. The layout barely changes — single column, no
+          recruiters screen on first. The layout barely changes: single column, no
           tables, so it still parses cleanly through the ATS the employer runs. What
           changes is a short personal details block near the top.
         </p>
@@ -48,7 +48,7 @@ export function GccFormatSection({ market }: { market: "uae" | "saudi-arabia" | 
               d: "Arabic proficiency is worth stating even if conversational. Give a level rather than “good”.",
             },
             {
-              t: "A photo — optional but normal",
+              t: "A photo: optional but normal",
               d: "Unremarkable in the Gulf, unusual in the US and UK. If you include one, place it in the document body, never in the page header where parsers cannot read it.",
             },
             {

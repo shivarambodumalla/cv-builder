@@ -5,7 +5,7 @@ import { ResumesGetStarted } from "./resumes-get-started";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "AI Resume Builder — Free ATS-Friendly Templates",
+  title: "AI Resume Builder: Free ATS-Friendly Templates",
   description: "12 free ATS-friendly CV templates. Upload your CV, get an instant ATS score, fix everything with AI. No signup required.",
   alternates: { canonical: "https://www.thecvedge.com/resumes" },
   openGraph: {
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 const FEATURES = [
-  { icon: BarChart3, title: "Know your score before recruiters see your CV", desc: "Upload your CV and get an instant ATS score across 6 categories. See exactly what software flags — and fix each issue one by one." },
+  { icon: BarChart3, title: "Know your score before recruiters see your CV", desc: "Upload your CV and get an instant ATS score across 6 categories. See exactly what software flags, and fix each issue one by one." },
   { icon: Sparkles, title: "Fix weak bullet points with one click", desc: "Every bullet has a Rewrite button. Pick a mode, get a better version, and insert it instantly. Your experience, stronger words." },
   { icon: Layout, title: "12 professional templates, each ATS-optimised", desc: "Choose from Classic, Sharp, Minimal, Executive, Sidebar and more. Every template is tested to pass ATS filters and look great on screen." },
   { icon: Target, title: "See how well you match any job before applying", desc: "Paste a job description and get a match score with missing keywords highlighted. Fix gaps before you hit apply." },
@@ -36,7 +36,7 @@ export default function ResumesPage() {
       <div className="mx-auto max-w-2xl text-center mb-14">
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase mb-2">Templates</p>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Free ATS-Friendly Resume Templates</h1>
-        <p className="text-muted-foreground mt-3">Pick your style — every template passes ATS filters. All free to try.</p>
+        <p className="text-muted-foreground mt-3">Pick your style. Every template passes ATS filters. All free to try.</p>
       </div>
 
       {/* Template showcase — client component for filter tabs */}

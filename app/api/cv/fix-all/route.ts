@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
   const keywords = reportData?.keywords as { missing?: string[] } | undefined;
   const missingKeywords = keywords?.missing ?? [];
 
-  const targetRole = cv.target_role || content.targetTitle?.title || "Not specified — optimise for general ATS compatibility";
+  const targetRole = cv.target_role || content.targetTitle?.title || "Not specified. Optimise for general ATS compatibility";
 
   try {
     const cvPayload = {

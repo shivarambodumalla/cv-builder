@@ -242,7 +242,7 @@ export function ClassicSerifTemplate({
                     color: "#111",
                   }}
                 >
-                  {[item.degree, item.field].filter(Boolean).join(" — ")}
+                  {[item.degree, item.field].filter(Boolean).join(", ")}
                 </div>
                 <div
                   style={{
@@ -307,7 +307,7 @@ export function ClassicSerifTemplate({
             >
               <div>
                 <span style={{ fontWeight: 700, color: "#111" }}>{item.name}</span>
-                {item.issuer && <span style={{ color: "#333" }}> — {item.issuer}</span>}
+                {item.issuer && <span style={{ color: "#333" }}>, {item.issuer}</span>}
               </div>
               <div style={{ color: "#333", whiteSpace: "nowrap" }}>
                 {renderDateRange(item.startDate, item.endDate, item.isCurrent)}
@@ -335,7 +335,7 @@ export function ClassicSerifTemplate({
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <span style={{ fontWeight: 700, color: "#111" }}>{item.title}</span>
-                  {item.issuer && <span style={{ color: "#333" }}> — {item.issuer}</span>}
+                  {item.issuer && <span style={{ color: "#333" }}>, {item.issuer}</span>}
                 </div>
                 {item.date && (
                   <div style={{ color: "#333", whiteSpace: "nowrap" }}>{formatDate(item.date)}</div>
@@ -438,7 +438,7 @@ export function ClassicSerifTemplate({
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <span style={{ fontWeight: 700, color: "#111" }}>{item.title}</span>
-                  {item.publisher && <span style={{ color: "#333" }}> — {item.publisher}</span>}
+                  {item.publisher && <span style={{ color: "#333" }}>, {item.publisher}</span>}
                 </div>
                 {item.date && (
                   <div style={{ color: "#333", whiteSpace: "nowrap" }}>{formatDate(item.date)}</div>

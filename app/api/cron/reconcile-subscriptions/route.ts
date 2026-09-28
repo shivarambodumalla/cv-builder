@@ -18,8 +18,8 @@ function buildReport(checked: number, discrepancies: Discrepancy[]): string {
   const rows = discrepancies.map((d) => `
     <tr>
       <td style="padding:8px;border-bottom:1px solid #eee;color:${COLORS[d.kind]};font-weight:600">${LABELS[d.kind]}</td>
-      <td style="padding:8px;border-bottom:1px solid #eee">${d.email || "—"}</td>
-      <td style="padding:8px;border-bottom:1px solid #eee;font-family:monospace;font-size:12px">${d.subscriptionId || "—"}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee">${d.email || "–"}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;font-family:monospace;font-size:12px">${d.subscriptionId || "–"}</td>
       <td style="padding:8px;border-bottom:1px solid #eee">${d.healed ? "Auto-fixed" : "Needs you"}</td>
       <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px">${d.detail}</td>
     </tr>`).join("");

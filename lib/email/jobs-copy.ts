@@ -35,7 +35,7 @@ const DEFAULTS: Record<JobsTemplate, JobsEmailCopy> = {
     footerNote: "You're getting this weekly digest because you have a CV on {{logoText}}.",
   },
   jobs_weekly_empty: {
-    subject: "No new matches this week — let's fix that",
+    subject: "No new matches this week. Let's fix that",
     heroHeading: "No fresh matches this week",
     heroSub: "Here's what we'd tweak so next week looks different.",
     footerNote: "You're getting this because you opted into weekly job picks on {{logoText}}.",
@@ -43,7 +43,7 @@ const DEFAULTS: Record<JobsTemplate, JobsEmailCopy> = {
   welcome_jobs: {
     subject: "Your first {{logoText}} job picks are here",
     heroHeading: "Your first picks for {{targetTitle}}",
-    heroSub: "Roles matched to your CV — sent fresh every Tue, Wed, Thu.",
+    heroSub: "Roles matched to your CV, sent fresh every Tue, Wed, Thu.",
     footerNote: "You're getting this because you signed up for weekly job picks on {{logoText}}.",
   },
 };

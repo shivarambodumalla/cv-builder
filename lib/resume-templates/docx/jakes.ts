@@ -23,7 +23,7 @@ export async function buildJakesDocx(): Promise<Buffer> {
     {
       title: "Jake's Resume Template (Word)",
       description:
-        "Word recreation of the Jake's Resume LaTeX layout by Jake Gutierrez (MIT licence) — single column, ATS-safe. Not affiliated with the author.",
+        "Word recreation of the Jake's Resume LaTeX layout by Jake Gutierrez (MIT licence). Single column, ATS-safe. Not affiliated with the author.",
     },
     [
       ...b.header(
@@ -40,14 +40,14 @@ export async function buildJakesDocx(): Promise<Buffer> {
 
       b.sectionHeading("Experience"),
       b.hint(
-        "Two lines per entry — title with dates on the right, then company with location. Bullets of one or two lines each. The tight leading is what lets a full internship history fit on one page."
+        "Two lines per entry: title with dates on the right, then company with location. Bullets of one or two lines each. The tight leading is what lets a full internship history fit on one page."
       ),
       b.entryLine("Software Engineer Intern", "Jun 2025 – Aug 2025"),
       b.subLine("Company Name", "City, State"),
       b.bullet(
         "Start with the verb, name the result, attach the number: “Cut p95 API latency 42% by replacing an N+1 query with a batched loader.”"
       ),
-      b.bullet("Say what you built and what it ran against — traffic, data volume, users."),
+      b.bullet("Say what you built and what it ran against: traffic, data volume, users."),
       b.bullet("One bullet on collaboration or scope if the role had any: reviews, on-call, design docs."),
       b.entryLine("Software Engineer Intern", "Jun 2024 – Aug 2024"),
       b.subLine("Company Name", "City, State"),
@@ -55,7 +55,7 @@ export async function buildJakesDocx(): Promise<Buffer> {
 
       b.sectionHeading("Projects"),
       b.hint(
-        "The section that carries new-grad applications, and the reason this template suits students. Name the stack in a parenthetical, then say what it does and which part was yours — “E-commerce site (React, Node)” tells a reader nothing."
+        "The section that carries new-grad applications, and the reason this template suits students. Name the stack in a parenthetical, then say what it does and which part was yours. “E-commerce site (React, Node)” tells a reader nothing."
       ),
       b.entryLine("Project Name (React, Node.js, PostgreSQL)", "Mar 2025"),
       b.bullet("What it does and who uses it, in one line."),
@@ -65,7 +65,7 @@ export async function buildJakesDocx(): Promise<Buffer> {
 
       b.sectionHeading("Technical Skills"),
       b.hint(
-        "Four grouped lines, not one undifferentiated block. This is where keyword matching does most of its work — mirror the vocabulary in the posting rather than your own shorthand, and resist padding: twelve languages reads as strong in none."
+        "Four grouped lines, not one undifferentiated block. This is where keyword matching does most of its work. Mirror the vocabulary in the posting rather than your own shorthand, and resist padding: twelve languages reads as strong in none."
       ),
       b.labelled("Languages", "Python, Java, TypeScript, Go, SQL"),
       b.labelled("Frameworks", "React, Next.js, Node.js, Django, FastAPI"),
@@ -73,7 +73,7 @@ export async function buildJakesDocx(): Promise<Buffer> {
       b.labelled("Libraries", "pandas, NumPy, PyTorch, React Query"),
 
       ...b.footer(
-        "Delete every italic prompt before you send this. Keep it to one page — cut a project rather than reducing the font size. A Word recreation of the Jake's Resume layout, originally a LaTeX template by Jake Gutierrez released under the MIT licence; not affiliated with or endorsed by its author. The original source is on GitHub and Overleaf."
+        "Delete every italic prompt before you send this. Keep it to one page. Cut a project rather than reducing the font size. A Word recreation of the Jake's Resume layout, originally a LaTeX template by Jake Gutierrez released under the MIT licence; not affiliated with or endorsed by its author. The original source is on GitHub and Overleaf."
       ),
     ]
   );

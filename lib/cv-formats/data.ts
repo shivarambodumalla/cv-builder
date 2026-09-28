@@ -54,30 +54,30 @@ export const CV_FORMATS: CvFormat[] = [
   {
     slug: "iim-resume",
     name: "IIM Resume Format",
-    metaTitle: "IIM Resume Format — Free Word Template, One Page",
+    metaTitle: "IIM Resume Format: Free Word Template, One Page",
     metaDescription:
       "The one-page IIM resume format used in Indian B-school placements: academic marks table, Positions of Responsibility, achievement bullets. Free Word download, no account needed.",
     eyebrow: "India · B-school placements",
     headline:
-      "The one-page format Indian B-school placement cells expect — marks table, Positions of Responsibility, and achievement bullets that carry numbers. Free as a Word file.",
+      "The one-page format Indian B-school placement cells expect: marks table, Positions of Responsibility, and achievement bullets that carry numbers. Free as a Word file.",
     market: "IIM, ISB and Indian B-school placements; Indian campus recruiting generally",
     intro: [
-      "The IIM resume format is a genuine convention rather than a design. It compresses an entire academic and professional record onto a single page, opens with a table of marks rather than a summary, and gives an unusual amount of space to leadership roles held outside work. If you have seen an Indian B-school placement resume, you have seen it: everyone's looks broadly the same, and that is deliberate — the format exists so recruiters can compare two hundred candidates on identical axes.",
+      "The IIM resume format is a genuine convention rather than a design. It compresses an entire academic and professional record onto a single page, opens with a table of marks rather than a summary, and gives an unusual amount of space to leadership roles held outside work. If you have seen an Indian B-school placement resume, you have seen it: everyone's looks broadly the same, and that is deliberate. The format exists so recruiters can compare two hundred candidates on identical axes.",
       "It is worth being clear about one thing up front, because a lot of pages online are not. There is no official IIM resume template. The IIMs do not publish one. What exists is a strongly held convention, enforced in practice by each institute's placement committee, with small variations between IIM Ahmedabad, Bangalore and Calcutta. This template follows the common core that holds across all of them.",
-      "The format is also unusually strict about length. One page is not a guideline here, it is the rule, and placement cells routinely send resumes back over it. That constraint is what drives every other choice below — the marks table instead of prose, the single-line bullets, the absence of an objective statement.",
+      "The format is also unusually strict about length. One page is not a guideline here, it is the rule, and placement cells routinely send resumes back over it. That constraint is what drives every other choice below. The marks table instead of prose, the single-line bullets, the absence of an objective statement.",
     ],
     sections: [
       {
-        title: "Academic qualifications — as a table, at the top",
+        title: "Academic qualifications: as a table, at the top",
         body: "Class X, Class XII and graduation, each with institute, board or university, year of completion, and marks as a percentage or CGPA. This goes first, above work experience, and it is non-negotiable: Indian recruiting screens on academic consistency, and a missing percentage reads as something being hidden. Include your B-school CGPA once you have one.",
       },
       {
         title: "Positions of Responsibility",
-        body: "The section that has no equivalent in a Western resume, and the one candidates most often underweight. Committee roles, club leadership, fest coordination, student council — with the scale attached. \"Coordinated a 40-member team across a ₹12 lakh budget\" is doing real work here; \"Member, Marketing Club\" is not.",
+        body: "The section that has no equivalent in a Western resume, and the one candidates most often underweight. Committee roles, club leadership, fest coordination, student council, with the scale attached. \"Coordinated a 40-member team across a ₹12 lakh budget\" is doing real work here; \"Member, Marketing Club\" is not.",
       },
       {
         title: "Work experience and internships",
-        body: "Reverse chronological, one or two lines each. Lead on the result with a number attached. Freshers put internships here rather than in a separate section — the placement cell reads it as the same thing at a smaller scale.",
+        body: "Reverse chronological, one or two lines each. Lead on the result with a number attached. Freshers put internships here rather than in a separate section. The placement cell reads it as the same thing at a smaller scale.",
       },
       {
         title: "Academic projects",
@@ -85,13 +85,13 @@ export const CV_FORMATS: CvFormat[] = [
       },
       {
         title: "Scholastic achievements and extra-curriculars",
-        body: "Ranks, percentiles, scholarships, olympiads, national-level sport or music. Percentile beats rank where you have it — \"99.4 percentile, CAT 2024\" is legible to every reader, \"AIR 812\" is not without the denominator.",
+        body: "Ranks, percentiles, scholarships, olympiads, national-level sport or music. Percentile beats rank where you have it: \"99.4 percentile, CAT 2024\" is legible to every reader, \"AIR 812\" is not without the denominator.",
       },
     ],
     mistakes: [
       "Adding a career objective or summary paragraph. It is not part of the convention and it costs you two lines you cannot spare on a one-page format.",
       "Omitting Class X or XII marks because they were weak. Placement cells notice the gap immediately, and an absent number reads worse than a mediocre one.",
-      "Treating Positions of Responsibility as a list of memberships. The section is about scale and outcome — team size, budget, footfall, funds raised.",
+      "Treating Positions of Responsibility as a list of memberships. The section is about scale and outcome: team size, budget, footfall, funds raised.",
       "Using a two-column layout copied from a Western template. Indian corporate ATS deployments are as literal as any other, and the placement cell will usually reject the format before a recruiter sees it.",
       "Running to a second page. One page is enforced, not advisory.",
       "Writing achievements without denominators. \"Ranked 3rd\" means nothing; \"Ranked 3rd of 480\" means something.",
@@ -100,22 +100,22 @@ export const CV_FORMATS: CvFormat[] = [
       {
         question: "Is there an official IIM resume template?",
         answer:
-          "No. The IIMs do not publish one, and any page claiming to host the official file is mistaken. What exists is a convention enforced in practice by each institute's placement committee, with minor variations between campuses — IIM Ahmedabad, Bangalore and Calcutta each have house preferences about section order and how much detail belongs in Positions of Responsibility. This template follows the common core. If your placement cell issues its own format, use theirs.",
+          "No. The IIMs do not publish one, and any page claiming to host the official file is mistaken. What exists is a convention enforced in practice by each institute's placement committee, with minor variations between campuses (IIM Ahmedabad, Bangalore and Calcutta each have house preferences about section order and how much detail belongs in Positions of Responsibility. This template follows the common core. If your placement cell issues its own format, use theirs.",
       },
       {
         question: "Should the IIM resume be strictly one page?",
         answer:
-          "Yes. This is the one length rule in resume writing that is genuinely enforced rather than advisory — placement committees return resumes that run over. If you are spilling onto a second page, cut academic projects before you cut Positions of Responsibility, and compress pre-MBA work experience to one line per role.",
+          "Yes. This is the one length rule in resume writing that is genuinely enforced rather than advisory. Placement committees return resumes that run over. If you are spilling onto a second page, cut academic projects before you cut Positions of Responsibility, and compress pre-MBA work experience to one line per role.",
       },
       {
         question: "What is the Positions of Responsibility section for?",
         answer:
-          "It captures leadership held outside paid work — committees, clubs, fests, student government, sports captaincy. Indian campus recruiting weights it heavily because it is the main evidence of leadership available for candidates with two or three years of experience. Write it the way you would write work experience: scale, action, outcome, number. A recruiter comparing two hundred profiles is looking for the one that says \"managed a ₹12 lakh budget across a 40-member team\", not the one that says \"active member\".",
+          "It captures leadership held outside paid work: committees, clubs, fests, student government, sports captaincy. Indian campus recruiting weights it heavily because it is the main evidence of leadership available for candidates with two or three years of experience. Write it the way you would write work experience: scale, action, outcome, number. A recruiter comparing two hundred profiles is looking for the one that says \"managed a ₹12 lakh budget across a 40-member team\", not the one that says \"active member\".",
       },
       {
         question: "Does this format work outside campus placements?",
         answer:
-          "For lateral hiring in India, partly. The marks table stays useful for the first few years and then becomes noise — by year five, recruiters care about your last two roles. Once you are hiring laterally, move work experience above academics, drop academic projects, and keep Positions of Responsibility only where it shows scale you have not demonstrated at work. For applications outside India, use a standard single-column format instead: the marks table reads as unusual and personal-detail-heavy to US and UK recruiters.",
+          "For lateral hiring in India, partly. The marks table stays useful for the first few years and then becomes noise. By year five, recruiters care about your last two roles. Once you are hiring laterally, move work experience above academics, drop academic projects, and keep Positions of Responsibility only where it shows scale you have not demonstrated at work. For applications outside India, use a standard single-column format instead: the marks table reads as unusual and personal-detail-heavy to US and UK recruiters.",
       },
       {
         question: "Is this format ATS-friendly?",
@@ -135,38 +135,38 @@ export const CV_FORMATS: CvFormat[] = [
   {
     slug: "europass-cv",
     name: "Europass CV",
-    metaTitle: "Europass CV Template — Free Word Download, EU Standard",
+    metaTitle: "Europass CV Template: Free Word Download, EU Standard",
     metaDescription:
-      "The EU's Europass CV format as a free Word file — the download the official site stopped offering in 2020. Includes the CEFR language grid. ATS-safe single column, no account needed.",
+      "The EU's Europass CV format as a free Word file, the download the official site stopped offering in 2020. Includes the CEFR language grid. ATS-safe single column, no account needed.",
     eyebrow: "European Union · EURES and EPSO",
     headline:
-      "The EU-standard CV, as a Word file you can actually edit — including the CEFR language grid. The official site stopped offering a download in 2020.",
+      "The EU-standard CV, as a Word file you can actually edit, including the CEFR language grid. The official site stopped offering a download in 2020.",
     market: "EU and EEA applications, EURES, EPSO, and employers across Germany, France, Italy, Spain, Poland and the Netherlands",
     intro: [
       "Europass is the European Union's own CV standard. It exists so that a qualification earned in one member state is legible to an employer in another, and it is the expected format for EURES listings, EPSO applications to the EU institutions, and a great many public-sector and academic roles across the bloc.",
-      "There is a practical problem with it, and it is the reason this page exists. Until the 2020 relaunch, the European Commission published a downloadable Word template. It no longer does — Europass is now an online editor built on a profile you create and log into, and there is no official file to take away. Every \"official Europass Word template\" you will find today is a third-party recreation. This one is too, and says so.",
+      "There is a practical problem with it, and it is the reason this page exists. Until the 2020 relaunch, the European Commission published a downloadable Word template. It no longer does. Europass is now an online editor built on a profile you create and log into, and there is no official file to take away. Every \"official Europass Word template\" you will find today is a third-party recreation. This one is too, and says so.",
       "The format's distinguishing feature is the CEFR language grid: listening, reading, spoken interaction, spoken production and writing, each rated A1 to C2 separately. It is more granular than the single \"fluent\" line most CVs carry, and for multilingual applications in Europe it is genuinely the thing being assessed.",
-      "One honest caveat. The default Europass output is verbose and, in its online form, laid out in a way that parses poorly. Where an employer asks for Europass, use it. Where they do not, a plain single-column CV usually serves you better — this template keeps the Europass structure but drops the layout choices that cause parsing failures.",
+      "One honest caveat. The default Europass output is verbose and, in its online form, laid out in a way that parses poorly. Where an employer asks for Europass, use it. Where they do not, a plain single-column CV usually serves you better. This template keeps the Europass structure but drops the layout choices that cause parsing failures.",
     ],
     sections: [
       {
         title: "Personal information",
-        body: "Name, address, phone, email, and optionally nationality and date of birth. Europass has historically prompted for more personal data than is wise elsewhere — nationality and date of birth are genuinely expected in parts of the EU and genuinely inadvisable for UK, Irish and North American applications. Include them only where the destination expects them.",
+        body: "Name, address, phone, email, and optionally nationality and date of birth. Europass has historically prompted for more personal data than is wise elsewhere: nationality and date of birth are genuinely expected in parts of the EU and genuinely inadvisable for UK, Irish and North American applications. Include them only where the destination expects them.",
       },
       {
         title: "About me",
-        body: "Three or four lines. Unlike a US summary, this is descriptive rather than promotional — European public-sector readers in particular treat overt self-marketing as a negative signal. State what you do, at what level, and in which domain.",
+        body: "Three or four lines. Unlike a US summary, this is descriptive rather than promotional. European public-sector readers in particular treat overt self-marketing as a negative signal. State what you do, at what level, and in which domain.",
       },
       {
         title: "Work experience",
-        body: "Reverse chronological with month and year. Europass expects the employer's name, town and country, and the sector — more institutional context than an Anglo-American CV carries, because the reader may not recognise the organisation.",
+        body: "Reverse chronological with month and year. Europass expects the employer's name, town and country, and the sector: more institutional context than an Anglo-American CV carries, because the reader may not recognise the organisation.",
       },
       {
         title: "Education and training",
         body: "Qualification, awarding institution, dates, and where possible the EQF level. The European Qualifications Framework level is the mechanism that makes a degree comparable across borders, and it is the single most useful field on the form for a cross-border application.",
       },
       {
-        title: "Language skills — the CEFR grid",
+        title: "Language skills: the CEFR grid",
         body: "The distinctive section. Mother tongue first, then each other language rated separately for listening, reading, spoken interaction, spoken production and writing, on the A1–C2 scale. Rate yourself honestly: these are frequently tested at interview for EU institutional roles, and an inflated C1 is found out quickly.",
       },
       {
@@ -196,7 +196,7 @@ export const CV_FORMATS: CvFormat[] = [
       {
         question: "Do I have to use Europass to apply for jobs in Europe?",
         answer:
-          "No, and it is often the wrong choice. It is expected for EURES listings, EPSO applications to the EU institutions, many public-sector roles, and some academic and research posts. For private-sector applications in Germany, France or the Netherlands, the national convention or a plain single-column CV typically reads better — a Europass CV sent to a Berlin startup can look like the applicant did not know what else to send.",
+          "No, and it is often the wrong choice. It is expected for EURES listings, EPSO applications to the EU institutions, many public-sector roles, and some academic and research posts. For private-sector applications in Germany, France or the Netherlands, the national convention or a plain single-column CV typically reads better. A Europass CV sent to a Berlin startup can look like the applicant did not know what else to send.",
       },
       {
         question: "What are CEFR levels and how should I rate myself?",
@@ -206,7 +206,7 @@ export const CV_FORMATS: CvFormat[] = [
       {
         question: "Should I include a photo on a Europass CV?",
         answer:
-          "It depends entirely on the destination country. Normal in Germany, Spain, Italy, Portugal and much of central Europe; inadvisable in the UK and Ireland, where employers frequently discard applications carrying photos to avoid discrimination claims. Europass makes the photo optional, which is the correct default — add it only when applying somewhere it is expected.",
+          "It depends entirely on the destination country. Normal in Germany, Spain, Italy, Portugal and much of central Europe; inadvisable in the UK and Ireland, where employers frequently discard applications carrying photos to avoid discrimination claims. Europass makes the photo optional, which is the correct default. Add it only when applying somewhere it is expected.",
       },
     ],
     docxSlug: "europass",
@@ -226,65 +226,65 @@ export const CV_FORMATS: CvFormat[] = [
   {
     slug: "jakes-resume",
     name: "Jake's Resume Template",
-    metaTitle: "Jake's Resume Template — Free Word Version, No LaTeX",
+    metaTitle: "Jake's Resume Template: Free Word Version, No LaTeX",
     metaDescription:
-      "The Jake's Resume layout as an editable Word file — same structure, no LaTeX and no Overleaf account. Single column, ATS-safe, free download. MIT-licensed original by Jake Gutierrez.",
+      "The Jake's Resume layout as an editable Word file, same structure, no LaTeX and no Overleaf account. Single column, ATS-safe, free download. MIT-licensed original by Jake Gutierrez.",
     eyebrow: "Software engineering · the LaTeX standard",
     headline:
-      "The most-used LaTeX resume among software engineers, rebuilt as a Word file. Same structure and reading order — without Overleaf or a single line of .tex.",
+      "The most-used LaTeX resume among software engineers, rebuilt as a Word file. Same structure and reading order, without Overleaf or a single line of .tex.",
     market: "Software engineering, new-grad and intern applications, technical roles generally",
     intro: [
-      "Jake's Resume is the template a large share of computer science students and working engineers actually use. It is a compact single-column LaTeX layout — Education, Experience, Projects, Technical Skills — written by Jake Gutierrez and released under the MIT licence, and it became the default largely because it is disciplined: tight spacing, no ornament, and just enough room for one page of real content.",
-      "The friction is LaTeX. Using the original means an Overleaf account, compiling a .tex file, and editing markup to change a bullet. That is fine if you already work that way and a genuine obstacle if you do not — and it is why people search for the template far more often than they finish one.",
+      "Jake's Resume is the template a large share of computer science students and working engineers actually use. It is a compact single-column LaTeX layout (Education, Experience, Projects, Technical Skills) written by Jake Gutierrez and released under the MIT licence, and it became the default largely because it is disciplined: tight spacing, no ornament, and just enough room for one page of real content.",
+      "The friction is LaTeX. Using the original means an Overleaf account, compiling a .tex file, and editing markup to change a bullet. That is fine if you already work that way and a genuine obstacle if you do not, and it is why people search for the template far more often than they finish one.",
       "This is the same layout as an editable Word document. Identical section order, identical entry structure with the role on the left and dates flush right, the same compact spacing. What it is not is the original file: if you want the .tex source, it is on GitHub and Overleaf, and you should get it there.",
-      "The layout also happens to be a strong ATS candidate, which is not why it became popular but is worth knowing. Single column, standard headings, no tables and no graphics — the four things that actually decide whether a parser reads your resume in the order you wrote it.",
+      "The layout also happens to be a strong ATS candidate, which is not why it became popular but is worth knowing. Single column, standard headings, no tables and no graphics: the four things that actually decide whether a parser reads your resume in the order you wrote it.",
     ],
     sections: [
       {
-        title: "Education first — but only while it earns the position",
+        title: "Education first, but only while it earns the position",
         body: "The original puts Education at the top, which is correct for students and new graduates and wrong within a couple of years of your first job. Move Experience above it once you have shipped anything. The template's structure does not change; only the order does.",
       },
       {
-        title: "Experience — role left, dates flush right",
-        body: "Each entry is two lines: job title with dates on the right, then company with location on the right. Bullets underneath, one or two lines each. The tight leading is doing real work — it is what lets a full internship history fit on one page without shrinking the type.",
+        title: "Experience: role left, dates flush right",
+        body: "Each entry is two lines: job title with dates on the right, then company with location on the right. Bullets underneath, one or two lines each. The tight leading is doing real work. It is what lets a full internship history fit on one page without shrinking the type.",
       },
       {
-        title: "Projects — the section that carries new-grad applications",
+        title: "Projects: the section that carries new-grad applications",
         body: "The reason this template suits students specifically. Each project gets a name, its stack in a parenthetical, and one or two bullets on what it does and what you built. For a candidate without much work history, this section is the evidence, and it deserves as much space as Experience.",
       },
       {
-        title: "Technical skills — grouped, not listed",
-        body: "Languages, frameworks, developer tools, libraries — as four labelled lines rather than one undifferentiated block. This is where keyword matching does most of its work, so mirror the vocabulary in the job posting rather than your own shorthand.",
+        title: "Technical skills: grouped, not listed",
+        body: "Languages, frameworks, developer tools, libraries) as four labelled lines rather than one undifferentiated block. This is where keyword matching does most of its work, so mirror the vocabulary in the job posting rather than your own shorthand.",
       },
     ],
     mistakes: [
       "Keeping Education at the top three years into a career, because the template put it there. The order is a default for students, not a rule.",
       "Filling the page because the tight spacing allows it. The layout fits more; that is not an instruction to include more.",
-      "Listing projects without saying what you built. \"E-commerce site (React, Node)\" tells a reader nothing — what did it do, and which part was yours?",
+      "Listing projects without saying what you built. \"E-commerce site (React, Node)\" tells a reader nothing. What did it do, and which part was yours?",
       "Padding the skills section with everything ever touched. A recruiter reading twelve languages assumes you are strong in none of them.",
       "Reducing the font to squeeze onto one page. Cut a project instead; sub-10pt type reads as desperation and parses worse.",
-      "Sending the compiled PDF without checking it parses. Some LaTeX PDF output extracts in the wrong reading order — worth running through a checker whichever version you use.",
+      "Sending the compiled PDF without checking it parses. Some LaTeX PDF output extracts in the wrong reading order. It is worth running through a checker whichever version you use.",
     ],
     faqs: [
       {
         question: "Is this the actual Jake's Resume template?",
         answer:
-          "It is the same layout, not the same file. The original is a LaTeX template by Jake Gutierrez, released under the MIT licence and available on GitHub and Overleaf — if you want the .tex source, get it from there. This is a Word recreation with the same section order, entry structure and spacing, for people who would rather not compile anything. Layouts are not themselves copyrightable and the original is permissively licensed, but the credit belongs to its author.",
+          "It is the same layout, not the same file. The original is a LaTeX template by Jake Gutierrez, released under the MIT licence and available on GitHub and Overleaf. If you want the .tex source, get it from there. This is a Word recreation with the same section order, entry structure and spacing, for people who would rather not compile anything. Layouts are not themselves copyrightable and the original is permissively licensed, but the credit belongs to its author.",
       },
       {
         question: "Why use the Word version instead of LaTeX?",
         answer:
-          "Because the LaTeX toolchain is the reason most people who find this template never finish one. If you already use Overleaf, the original is better — you get the typographic precision LaTeX is for. If you do not, an Overleaf account and a compile cycle to fix a typo is a poor trade for a layout you can have directly.",
+          "Because the LaTeX toolchain is the reason most people who find this template never finish one. If you already use Overleaf, the original is better. You get the typographic precision LaTeX is for. If you do not, an Overleaf account and a compile cycle to fix a typo is a poor trade for a layout you can have directly.",
       },
       {
         question: "Is Jake's Resume ATS-friendly?",
         answer:
-          "The layout is: one column, standard heading names, no tables, no text boxes, no graphics. That covers the failure modes that actually matter. One caveat specific to the LaTeX original — PDF output from LaTeX occasionally extracts in an unexpected reading order depending on how the document is compiled, so it is worth running the compiled file through a checker. The Word version here parses cleanly, verified against the same library CVEdge uses to read uploads.",
+          "The layout is: one column, standard heading names, no tables, no text boxes, no graphics. That covers the failure modes that actually matter. One caveat specific to the LaTeX original. PDF output from LaTeX occasionally extracts in an unexpected reading order depending on how the document is compiled, so it is worth running the compiled file through a checker. The Word version here parses cleanly, verified against the same library CVEdge uses to read uploads.",
       },
       {
         question: "Is Jake's Resume good for experienced engineers?",
         answer:
-          "Yes, with two changes. Move Experience above Education, and cut Projects down or drop it — past about five years, personal projects compete for space with work that a recruiter weights more heavily. The compact spacing is arguably more useful to a senior engineer than to a student, because it is what lets fifteen years fit on two pages without the document feeling crowded.",
+          "Yes, with two changes. Move Experience above Education, and cut Projects down or drop it. Past about five years, personal projects compete for space with work that a recruiter weights more heavily. The compact spacing is arguably more useful to a senior engineer than to a student, because it is what lets fifteen years fit on two pages without the document feeling crowded.",
       },
       {
         question: "What about Deedy, Awesome CV and the other LaTeX templates?",

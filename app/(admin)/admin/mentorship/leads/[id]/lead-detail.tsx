@@ -168,15 +168,15 @@ export function LeadDetail({ leadId }: { leadId: string }) {
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Phone</dt>
-                <dd>{lead.phone || "—"}</dd>
+                <dd>{lead.phone || "–"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Country</dt>
-                <dd>{lead.country_code || "—"}</dd>
+                <dd>{lead.country_code || "–"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Experience</dt>
-                <dd>{lead.experience_level || "—"}</dd>
+                <dd>{lead.experience_level || "–"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Source</dt>
@@ -184,11 +184,11 @@ export function LeadDetail({ leadId }: { leadId: string }) {
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Campaign</dt>
-                <dd>{lead.utm_campaign || "—"}</dd>
+                <dd>{lead.utm_campaign || "–"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Consent</dt>
-                <dd>{lead.consent_at ? fmtDate(lead.consent_at) : "—"}</dd>
+                <dd>{lead.consent_at ? fmtDate(lead.consent_at) : "–"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Created</dt>
@@ -196,7 +196,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">Owner</dt>
-                <dd>{lead.owner_admin_email || "—"}</dd>
+                <dd>{lead.owner_admin_email || "–"}</dd>
               </div>
             </dl>
           </div>

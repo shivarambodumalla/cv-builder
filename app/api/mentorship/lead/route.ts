@@ -199,7 +199,7 @@ export async function POST(request: NextRequest) {
         await resend.emails.send({
           from: "CVEdge <hello@thecvedge.com>",
           to: adminEmails,
-          subject: `Mentorship lead: ${mapping.event} — ${name} (${email})`,
+          subject: `Mentorship lead: ${mapping.event} | ${name} (${email})`,
           html: `<h2>New mentorship activity: ${mapping.event}</h2>
 <p><strong>Name:</strong> ${name}</p>
 <p><strong>Email:</strong> ${email}</p>

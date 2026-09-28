@@ -23,7 +23,7 @@ export async function buildEuropassDocx(): Promise<Buffer> {
     {
       title: "Europass CV Template",
       description:
-        "Blank Europass-format CV with the CEFR language grid — single column and ATS-safe. Not affiliated with the European Commission.",
+        "Blank Europass-format CV with the CEFR language grid. Single column and ATS-safe. Not affiliated with the European Commission.",
     },
     [
       ...b.header(
@@ -36,7 +36,7 @@ export async function buildEuropassDocx(): Promise<Buffer> {
 
       b.sectionHeading("About Me"),
       b.hint(
-        "Three or four lines, descriptive rather than promotional. European public-sector readers in particular treat overt self-marketing as a negative signal — state what you do, at what level, in which domain."
+        "Three or four lines, descriptive rather than promotional. European public-sector readers in particular treat overt self-marketing as a negative signal. State what you do, at what level, in which domain."
       ),
       b.body(
         "[Job title] with 00 years' experience in [domain], currently at [organisation] in [city, country]. Focused on [specialism]. Seeking [type of role] in [country or institution]."
@@ -44,14 +44,14 @@ export async function buildEuropassDocx(): Promise<Buffer> {
 
       b.sectionHeading("Work Experience"),
       b.hint(
-        "Reverse chronological with month and year. Europass expects the employer's town, country and sector — more institutional context than an Anglo-American CV carries, because the reader may not recognise the organisation."
+        "Reverse chronological with month and year. Europass expects the employer's town, country and sector: more institutional context than an Anglo-American CV carries, because the reader may not recognise the organisation."
       ),
       b.entryLine("Job Title", "01/2022 – Present"),
-      b.subLine("Employer, Town, Country — Sector"),
+      b.subLine("Employer, Town, Country | Sector"),
       b.bullet("Main activity or responsibility, with the outcome and a number."),
       b.bullet("Scale: budget, headcount, markets, contract value."),
       b.entryLine("Job Title", "03/2019 – 12/2021"),
-      b.subLine("Employer, Town, Country — Sector"),
+      b.subLine("Employer, Town, Country | Sector"),
       b.bullet("Two or three points per role."),
 
       b.sectionHeading("Education and Training"),
@@ -59,14 +59,14 @@ export async function buildEuropassDocx(): Promise<Buffer> {
         "Include the EQF level where you know it. The European Qualifications Framework is the mechanism that makes a degree comparable across borders, and it is the single most useful field on the form for a cross-border application."
       ),
       b.entryLine("Qualification, Subject", "09/2015 – 06/2019"),
-      b.subLine("Awarding Institution, Town, Country — EQF level 0"),
+      b.subLine("Awarding Institution, Town, Country | EQF level 0"),
 
       b.sectionHeading("Language Skills"),
       b.hint(
-        "The distinctive Europass section. Rate each skill separately on the A1–C2 CEFR scale, not one overall level. These are frequently tested at interview for EU institutional roles — an inflated C1 is found out quickly."
+        "The distinctive Europass section. Rate each skill separately on the A1–C2 CEFR scale, not one overall level. These are frequently tested at interview for EU institutional roles. An inflated C1 is found out quickly."
       ),
       b.labelled("Mother tongue", "Your first language"),
-      b.body("OTHER LANGUAGES — Listening · Reading · Spoken interaction · Spoken production · Writing"),
+      b.body("OTHER LANGUAGES: Listening · Reading · Spoken interaction · Spoken production · Writing"),
       b.labelled("English", "C1 · C2 · B2 · B2 · C1"),
       b.labelled("German", "B1 · B2 · A2 · A2 · B1"),
       b.hint(
@@ -81,11 +81,11 @@ export async function buildEuropassDocx(): Promise<Buffer> {
       b.hint(
         "Optional. Driving licence category is expected in much of continental Europe and omitted almost everywhere else. Publications, projects, conferences and volunteering go here, and only if relevant."
       ),
-      b.labelled("Driving licence", "Category B — remove if not relevant"),
+      b.labelled("Driving licence", "Category B. Remove if not relevant"),
       b.labelled("Publications / Projects", "Title, venue, year."),
 
       ...b.footer(
-        "Delete every italic prompt before you send this. Two pages is the working maximum — Europass will happily let you produce five. A recreation of the European Union's Europass CV structure; not affiliated with or endorsed by the European Commission. The official service is at europa.eu/europass."
+        "Delete every italic prompt before you send this. Two pages is the working maximum. Europass will happily let you produce five. A recreation of the European Union's Europass CV structure; not affiliated with or endorsed by the European Commission. The official service is at europa.eu/europass."
       ),
     ]
   );

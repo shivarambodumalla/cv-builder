@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ role: str
   const role = ROLE_MAP.get(slug);
   if (!role) return {};
   return {
-    title: `${role.title} Jobs — See Your Match Score`,
+    title: `${role.title} Jobs: See Your Match Score`,
     description: role.description,
     openGraph: { title: `${role.title} Jobs | CVEdge`, description: role.description, url: `https://www.thecvedge.com/jobs/${role.slug}` },
     alternates: { canonical: `https://www.thecvedge.com/jobs/${role.slug}` },
@@ -131,7 +131,7 @@ export default async function RoleJobsPage({ params }: { params: Promise<{ role:
           <div className="mt-10 rounded-xl border bg-[rgba(6,95,70,0.05)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="text-sm font-semibold">Got an interview lined up?</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Prep STAR stories tailored to {role.title.toLowerCase()} interviews — common questions, answer frameworks, and job-matched practice.</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Prep STAR stories tailored to {role.title.toLowerCase()} interviews: common questions, answer frameworks, and job-matched practice.</p>
             </div>
             <a
               href={`/interview-prep/${role.slug}`}

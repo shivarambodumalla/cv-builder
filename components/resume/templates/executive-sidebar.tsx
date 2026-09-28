@@ -452,7 +452,7 @@ export function ExecutiveSidebar({
             >
               {bulletChar && <span style={{ marginRight: 6, color: sidebarIconColor }}>{bulletChar}</span>}
               <span style={{ fontWeight: 600, color: sidebarHeading }}>{item.name}</span>
-              {item.issuer && <span style={{ color: sidebarMuted }}> — {item.issuer}</span>}
+              {item.issuer && <span style={{ color: sidebarMuted }}>, {item.issuer}</span>}
             </li>
           ))}
         </ul>
@@ -487,7 +487,7 @@ export function ExecutiveSidebar({
             >
               {bulletChar && <span style={{ marginRight: 6, color: sidebarIconColor }}>{bulletChar}</span>}
               <span style={{ fontWeight: 600, color: sidebarHeading }}>{item.title}</span>
-              {item.issuer && <span style={{ color: sidebarMuted }}> — {item.issuer}</span>}
+              {item.issuer && <span style={{ color: sidebarMuted }}>, {item.issuer}</span>}
             </li>
           ))}
         </ul>
@@ -643,7 +643,7 @@ export function ExecutiveSidebar({
             >
               {bulletChar && <span style={{ marginRight: 6, color: accent }}>{bulletChar}</span>}
               <span style={{ fontWeight: 700, color: darkText }}>{item.name}</span>
-              {item.issuer && <span style={{ color: bodyText }}> — {item.issuer}</span>}
+              {item.issuer && <span style={{ color: bodyText }}>, {item.issuer}</span>}
               {(item.startDate || item.endDate) && (
                 <span style={{ color: mutedText }}>
                   {" "}· {renderDateRange(item.startDate, item.endDate, item.isCurrent)}
@@ -691,7 +691,7 @@ export function ExecutiveSidebar({
           >
             <div>
               <span style={{ fontWeight: 700, color: darkText }}>{item.title}</span>
-              {item.issuer && <span style={{ color: bodyText }}> — {item.issuer}</span>}
+              {item.issuer && <span style={{ color: bodyText }}>, {item.issuer}</span>}
               {item.date && <span style={{ color: mutedText }}> · {formatDate(item.date)}</span>}
             </div>
             {item.description && (
@@ -826,7 +826,7 @@ export function ExecutiveSidebar({
           >
             <div>
               <span style={{ fontWeight: 700, color: darkText }}>{item.title}</span>
-              {item.publisher && <span style={{ color: bodyText }}> — {item.publisher}</span>}
+              {item.publisher && <span style={{ color: bodyText }}>, {item.publisher}</span>}
               {item.date && <span style={{ color: mutedText }}> · {formatDate(item.date)}</span>}
             </div>
             {item.url && (

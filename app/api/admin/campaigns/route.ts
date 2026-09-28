@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     if (segment === "custom_emails" && customEmails) {
       if (isJobs) {
         return NextResponse.json(
-          { error: "Jobs templates can't send to a custom email list — pick a user segment." },
+          { error: "Jobs templates can't send to a custom email list, pick a user segment." },
           { status: 400 }
         );
       }

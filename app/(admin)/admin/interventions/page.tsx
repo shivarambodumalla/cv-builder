@@ -8,7 +8,7 @@ export default function InterventionsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Interventions</h1>
-        <p className="text-sm text-muted-foreground mt-1">Track all signup modals, popovers, and nudges — shown, clicked, dismissed.</p>
+        <p className="text-sm text-muted-foreground mt-1">Track all signup modals, popovers, and nudges: shown, clicked, dismissed.</p>
       </div>
       <InterventionsDashboard />
     </div>

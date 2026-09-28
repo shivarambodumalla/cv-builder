@@ -5,12 +5,12 @@ import { CheckCircle, Sparkles, BarChart3, Target, Download, FileText } from "lu
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "Free Resume Builder — Build, Score, and Download in Minutes",
+  title: "Free Resume Builder: Build, Score, and Download in Minutes",
   description:
     "Free resume builder with ATS scoring, AI bullet rewriting, job match analysis, and PDF download. 28 free templates. No credit card required. Build your resume in under 10 minutes.",
   alternates: { canonical: "https://www.thecvedge.com/free-resume-builder" },
   openGraph: {
-    title: "Free Resume Builder — Build, Score & Download | CVEdge",
+    title: "Free Resume Builder: Build, Score & Download | CVEdge",
     description:
       "Free resume builder with ATS scoring, AI rewriting, and PDF download. 28 free templates. No credit card required.",
     url: "https://www.thecvedge.com/free-resume-builder",
@@ -31,17 +31,17 @@ const FAQS = [
   {
     question: "Does the free resume builder add watermarks to the PDF?",
     answer:
-      "No. CVEdge's free plan generates clean, professional PDFs with no CVEdge branding or watermarks. The PDF looks identical to a professionally formatted document. There is no 'remove watermark' upgrade — all plans export clean PDFs.",
+      "No. CVEdge's free plan generates clean, professional PDFs with no CVEdge branding or watermarks. The PDF looks identical to a professionally formatted document. There is no 'remove watermark' upgrade. All plans export clean PDFs.",
   },
   {
     question: "Can I use CVEdge to update an existing resume?",
     answer:
-      "Yes — upload your existing CV (PDF or Word) and CVEdge parses it into the editor. Your content is preserved in the correct sections. You can then choose a new template, improve your ATS score, update your experience, and download a new version. You're not starting from scratch.",
+      "Yes. Upload your existing CV (PDF or Word) and CVEdge parses it into the editor. Your content is preserved in the correct sections. You can then choose a new template, improve your ATS score, update your experience, and download a new version. You're not starting from scratch.",
   },
   {
     question: "What file formats does CVEdge accept for upload?",
     answer:
-      "CVEdge accepts PDF (.pdf) and Microsoft Word (.docx) files. PDF parsing works for most standard resumes. Word parsing handles all common layouts. If your upload doesn't parse correctly, you can manually enter your content in the editor — the structured form makes this fast.",
+      "CVEdge accepts PDF (.pdf) and Microsoft Word (.docx) files. PDF parsing works for most standard resumes. Word parsing handles all common layouts. If your upload doesn't parse correctly, you can manually enter your content in the editor. The structured form makes this fast.",
   },
   {
     question: "What is the difference between free and Pro on CVEdge?",
@@ -59,7 +59,7 @@ const FREE_FEATURES = [
   {
     icon: BarChart3,
     title: "Instant ATS score across 6 categories",
-    desc: "See exactly where your resume fails ATS screening — contact info, sections, keywords, metrics, bullet quality, and formatting — with specific fixes for each issue.",
+    desc: "See exactly where your resume fails ATS screening (contact info, sections, keywords, metrics, bullet quality, and formatting) with specific fixes for each issue.",
   },
   {
     icon: Sparkles,
@@ -69,11 +69,11 @@ const FREE_FEATURES = [
   {
     icon: Target,
     title: "Job match score for any role",
-    desc: "Paste a job description and see your keyword match score with missing terms highlighted. Know your match rate before you apply — not after.",
+    desc: "Paste a job description and see your keyword match score with missing terms highlighted. Know your match rate before you apply, not after.",
   },
   {
     icon: Download,
-    title: "Clean PDF download — no watermarks, ever",
+    title: "Clean PDF download, no watermarks, ever",
     desc: "Export your finished resume as a polished, print-ready PDF. No CVEdge branding. The same PDF whether you're on free or Pro.",
   },
   {
@@ -92,7 +92,7 @@ const PLAN_COMPARE = [
   { feature: "PDF downloads per week", free: "3", pro: "Unlimited" },
   { feature: "Templates", free: "28 free", pro: "32 (incl. 4 Pro)" },
   { feature: "PDF watermark", free: "None", pro: "None" },
-  { feature: "80+ score guarantee", free: "—", pro: "✓" },
+  { feature: "80+ score guarantee", free: "–", pro: "✓" },
   { feature: "Fix All ATS", free: "3/week", pro: "Unlimited" },
   { feature: "CV Tailor for JD", free: "3/week", pro: "Unlimited" },
 ];
@@ -122,7 +122,7 @@ export default function FreeResumeBuilderPage() {
           Free Resume Builder
         </p>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Build, Score, and Download Your Resume — Free
+          Build, Score, and Download Your Resume Free
         </h1>
         <p className="text-muted-foreground mt-3 text-base leading-relaxed">
           Upload your existing CV or start from scratch. Get an ATS score in seconds,
@@ -131,7 +131,7 @@ export default function FreeResumeBuilderPage() {
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Upload my CV — free</Link>
+            <Link href="/upload-resume">Upload my CV: free</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch free</Link>
@@ -190,12 +190,12 @@ export default function FreeResumeBuilderPage() {
             {
               step: "1",
               title: "Upload your CV or start fresh",
-              desc: "Upload a PDF or Word file — CVEdge parses it into a structured editor in under 60 seconds. Or use the form to enter your experience section by section.",
+              desc: "Upload a PDF or Word file. CVEdge parses it into a structured editor in under 60 seconds. Or use the form to enter your experience section by section.",
             },
             {
               step: "2",
               title: "Check your ATS score",
-              desc: "CVEdge scores your resume across 6 categories instantly. You see specific issues in each category — a keyword gap, a weak bullet, a missing section — with one-click fixes.",
+              desc: "CVEdge scores your resume across 6 categories instantly. You see specific issues in each category (a keyword gap, a weak bullet, a missing section) with one-click fixes.",
             },
             {
               step: "3",
@@ -240,7 +240,7 @@ export default function FreeResumeBuilderPage() {
             >
               free Harvard resume template
             </Link>{" "}
-            downloads as a blank Word document with the structure and spacing already set — no
+            downloads as a blank Word document with the structure and spacing already set. No
             account, no card. Fill it in offline, then upload it here for a free ATS score when
             you are ready.
           </p>
@@ -250,7 +250,7 @@ export default function FreeResumeBuilderPage() {
       {/* Free vs Pro comparison */}
       <div className="mx-auto max-w-2xl mb-20">
         <h2 className="text-xl font-bold tracking-tight text-center mb-6">
-          Free vs Pro — what&apos;s the difference?
+          Free vs Pro: what&apos;s the difference?
         </h2>
         <div className="rounded-xl border overflow-hidden">
           <div className="grid grid-cols-3 bg-muted text-xs font-semibold uppercase tracking-wide">
@@ -294,7 +294,7 @@ export default function FreeResumeBuilderPage() {
       {/* CTA */}
       <div className="mx-auto max-w-xl text-center">
         <h2 className="text-2xl font-bold tracking-tight">
-          Build your resume for free — right now
+          Build your resume for free, right now
         </h2>
         <p className="mt-3 text-muted-foreground">
           No sign-up friction, no watermarks, no credit card. Upload your CV or start
@@ -302,7 +302,7 @@ export default function FreeResumeBuilderPage() {
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Upload my CV — free</Link>
+            <Link href="/upload-resume">Upload my CV: free</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch free</Link>

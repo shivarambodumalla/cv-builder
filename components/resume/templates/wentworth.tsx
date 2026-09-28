@@ -506,7 +506,7 @@ export function Wentworth({
                 <div>
                   <span style={{ fontWeight: 700, color: entryTitle }}>{item.title}</span>
                   {item.issuer && (
-                    <span style={{ color: bodyText }}> — {item.issuer}</span>
+                    <span style={{ color: bodyText }}>, {item.issuer}</span>
                   )}
                 </div>
                 {item.date && (
@@ -549,7 +549,7 @@ export function Wentworth({
                 <div>
                   <span style={{ fontWeight: 700, color: entryTitle }}>{item.title}</span>
                   {item.publisher && (
-                    <span style={{ color: bodyText }}> — {item.publisher}</span>
+                    <span style={{ color: bodyText }}>, {item.publisher}</span>
                   )}
                 </div>
                 {item.date && (

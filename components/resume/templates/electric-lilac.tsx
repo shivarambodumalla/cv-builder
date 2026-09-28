@@ -537,7 +537,7 @@ export function ElectricLilac({
               )}
               <span style={{ color: darkText, fontWeight: 600 }}>{item.title}</span>
               {item.issuer && (
-                <span style={{ color: bodyText }}> — {item.issuer}</span>
+                <span style={{ color: bodyText }}>, {item.issuer}</span>
               )}
               {item.description && (
                 <span style={{ color: bodyText }}>: {item.description}</span>

@@ -318,7 +318,7 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="font-medium group-hover:underline truncate">{user.full_name || "—"}</p>
+              <p className="font-medium group-hover:underline truncate">{user.full_name || "–"}</p>
               <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </div>
           </Link>
@@ -358,19 +358,19 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
               {locationLine}
               {cc && <span className="text-[10px] font-semibold uppercase opacity-60">{cc}</span>}
             </span>
-          ) : "—"}
+          ) : "–"}
         </td>
       );
     case "cv_location":
       return (
         <td className="px-4 py-3 text-muted-foreground text-xs">
-          {user.cv_location || <span className="opacity-30">—</span>}
+          {user.cv_location || <span className="opacity-30">–</span>}
         </td>
       );
     case "country":
       return (
         <td className="px-4 py-3 text-muted-foreground text-xs">
-          {user.country || user.signup_country || <span className="opacity-30">—</span>}
+          {user.country || user.signup_country || <span className="opacity-30">–</span>}
         </td>
       );
     case "role":
@@ -378,33 +378,33 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
         <td className="px-4 py-3">
           {user.target_role
             ? <span className="text-xs text-muted-foreground">{user.target_role}</span>
-            : <span className="text-xs text-muted-foreground/30">—</span>}
+            : <span className="text-xs text-muted-foreground/30">–</span>}
         </td>
       );
     case "industry":
       return (
         <td className="px-4 py-3 text-xs text-muted-foreground">
-          {user.industry || <span className="opacity-30">—</span>}
+          {user.industry || <span className="opacity-30">–</span>}
         </td>
       );
     case "experience_level": {
       const EXP_LABEL: Record<string, string> = { early: "Early Career", mid: "Mid", senior: "Senior", expert: "Expert" };
       return (
         <td className="px-4 py-3 text-xs text-muted-foreground">
-          {user.experience_level ? (EXP_LABEL[user.experience_level] ?? user.experience_level) : <span className="opacity-30">—</span>}
+          {user.experience_level ? (EXP_LABEL[user.experience_level] ?? user.experience_level) : <span className="opacity-30">–</span>}
         </td>
       );
     }
     case "years_experience":
       return (
         <td className="px-4 py-3 text-right tabular-nums text-xs">
-          {user.years_experience != null ? `${user.years_experience}y` : <span className="text-muted-foreground/30">—</span>}
+          {user.years_experience != null ? `${user.years_experience}y` : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
     case "employment_status":
       return (
         <td className="px-4 py-3 text-xs text-muted-foreground capitalize">
-          {user.employment_status?.replace(/_/g, " ") || <span className="opacity-30">—</span>}
+          {user.employment_status?.replace(/_/g, " ") || <span className="opacity-30">–</span>}
         </td>
       );
     case "best_ats_score":
@@ -416,25 +416,25 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
                 user.best_ats_score >= 75 ? "text-success" :
                 user.best_ats_score >= 60 ? "text-warning" : "text-error",
               )}>{user.best_ats_score}</span>
-            : <span className="text-muted-foreground/30">—</span>}
+            : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
     case "primary_goal":
       return (
         <td className="px-4 py-3 text-xs text-muted-foreground capitalize">
-          {user.primary_goal?.replace(/_/g, " ") || <span className="opacity-30">—</span>}
+          {user.primary_goal?.replace(/_/g, " ") || <span className="opacity-30">–</span>}
         </td>
       );
     case "total_cvs":
-      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.total_cvs || <span className="text-muted-foreground/30">—</span>}</td>;
+      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.total_cvs || <span className="text-muted-foreground/30">–</span>}</td>;
     case "total_pdf_downloads":
-      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.total_pdf_downloads || <span className="text-muted-foreground/30">—</span>}</td>;
+      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.total_pdf_downloads || <span className="text-muted-foreground/30">–</span>}</td>;
     case "job_clicks":
-      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.job_clicks || <span className="text-muted-foreground/30">—</span>}</td>;
+      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.job_clicks || <span className="text-muted-foreground/30">–</span>}</td>;
     case "saved_jobs":
-      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.saved_jobs || <span className="text-muted-foreground/30">—</span>}</td>;
+      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.saved_jobs || <span className="text-muted-foreground/30">–</span>}</td>;
     case "stories":
-      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.stories || <span className="text-muted-foreground/30">—</span>}</td>;
+      return <td className="px-4 py-3 text-right tabular-nums text-xs">{user.stories || <span className="text-muted-foreground/30">–</span>}</td>;
     case "linkedin_url":
       return (
         <td className="px-4 py-3 text-xs">
@@ -442,7 +442,7 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
             ? <a href={user.linkedin_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline truncate max-w-[140px]">
                 LinkedIn <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-            : <span className="text-muted-foreground/30">—</span>}
+            : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
     case "github_url":
@@ -452,7 +452,7 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
             ? <a href={user.github_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline truncate max-w-[140px]">
                 GitHub <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-            : <span className="text-muted-foreground/30">—</span>}
+            : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
     case "portfolio_url":
@@ -462,13 +462,13 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
             ? <a href={user.portfolio_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline truncate max-w-[140px]">
                 Portfolio <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-            : <span className="text-muted-foreground/30">—</span>}
+            : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
     case "phone":
       return (
         <td className="px-4 py-3 text-xs text-muted-foreground">
-          {user.phone || <span className="opacity-30">—</span>}
+          {user.phone || <span className="opacity-30">–</span>}
         </td>
       );
     case "cv_preview":
@@ -483,7 +483,7 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
               >
                 View PDF <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-            : <span className="text-muted-foreground/30">—</span>}
+            : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
     default:

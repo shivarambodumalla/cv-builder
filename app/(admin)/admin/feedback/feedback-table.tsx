@@ -124,7 +124,7 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap"><Stars n={r.rating} /></td>
                   <td className="px-3 py-2 max-w-md">
-                    {r.comment ? <p className="whitespace-pre-wrap">{r.comment}</p> : <span className="text-xs text-muted-foreground">—</span>}
+                    {r.comment ? <p className="whitespace-pre-wrap">{r.comment}</p> : <span className="text-xs text-muted-foreground">–</span>}
                     {r.comment && (
                       <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "OK to quote (first name)" : "Private"}</p>
                     )}

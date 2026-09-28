@@ -329,10 +329,10 @@ export function EmailManager({
                 onChange={(e) => setNewCustomHtml(e.target.value)}
                 rows={10}
                 className="font-mono text-xs"
-                placeholder="Paste your full email HTML here. This overrides the base layout — you control everything."
+                placeholder="Paste your full email HTML here. This overrides the base layout, so you control everything."
               />
               <p className="text-[10px] text-muted-foreground mt-1">
-                Use {"{{variables}}"} like {"{{name}}"}, {"{{appUrl}}"} — they get replaced at send time.
+                Use {"{{variables}}"} like {"{{name}}"}, {"{{appUrl}}"} and they get replaced at send time.
               </p>
             </div>
           )}
@@ -415,7 +415,7 @@ export function EmailManager({
           <div className="mb-2">
             <h2 className="text-sm font-semibold">Code-rendered Templates</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Layout lives in React components. The voice — subject, hero, footer — is editable here.
+              Layout lives in React components. The voice (subject, hero, footer) is editable here.
               Job cards, tips, and ATS hints stay code-driven.
             </p>
           </div>

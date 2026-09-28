@@ -49,16 +49,16 @@ export default async function TemplateCategoryPage({
     },
     {
       question: `How do I tailor my resume for ${cat.label.toLowerCase()} jobs?`,
-      answer: `Paste the job description into CVEdge's Job Match tool. It compares your resume against the JD and highlights missing keywords, skills gaps, and ATS score for that specific role. The Match score shows exactly how aligned your current resume is — and which fixes would increase it most.`,
+      answer: `Paste the job description into CVEdge's Job Match tool. It compares your resume against the JD and highlights missing keywords, skills gaps, and ATS score for that specific role. The Match score shows exactly how aligned your current resume is, and which fixes would increase it most.`,
     },
     {
       question: `Do these templates work for ${cat.label.toLowerCase()} jobs at large companies?`,
-      answer: `Yes. Every template on this page is tested against major ATS systems used by large employers — Greenhouse, Workday, Lever, and iCIMS. Single-column templates score 90–97 on CVEdge's ATS analyser. Two-column templates score 85–93. Run your resume through the analyser before applying via any portal.`,
+      answer: `Yes. Every template on this page is tested against major ATS systems used by large employers: Greenhouse, Workday, Lever, and iCIMS. Single-column templates score 90–97 on CVEdge's ATS analyser. Two-column templates score 85–93. Run your resume through the analyser before applying via any portal.`,
     },
     {
       question: "Can I switch templates after building my resume?",
       answer:
-        "Yes — CVEdge lets you switch templates in one click. Your content (experience, skills, education) transfers instantly. Preview your resume in multiple layouts before deciding which to submit.",
+        "Yes. CVEdge lets you switch templates in one click. Your content (experience, skills, education) transfers instantly. Preview your resume in multiple layouts before deciding which to submit.",
     },
   ];
 
@@ -106,7 +106,7 @@ export default async function TemplateCategoryPage({
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV — free ATS score</Link>
+                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Start from scratch free</Link>
@@ -248,7 +248,7 @@ export default async function TemplateCategoryPage({
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-xl font-bold tracking-tight">
-              Start with any template — switch any time
+              Start with any template and switch any time
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Upload your CV for a free ATS score or start from scratch. All templates free to try.

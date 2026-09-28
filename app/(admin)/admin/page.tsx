@@ -323,7 +323,7 @@ export default async function AdminDashboardPage() {
             {
               label: "Stickiness",
               value: `${engagement.stickiness_pct ?? 0}%`,
-              hint: "DAU / MAU — 20%+ is healthy",
+              hint: "DAU / MAU (20%+ is healthy)",
             },
           ].map((m) => (
             <Card key={m.label}>

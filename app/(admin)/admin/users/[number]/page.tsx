@@ -359,7 +359,7 @@ export default async function UserDetailPage({
               <div>
                 <dt className="text-muted-foreground">Years of Experience</dt>
                 <dd className="font-medium">
-                  {yearsOfExperience === null ? "—" : `${yearsOfExperience} yrs`}
+                  {yearsOfExperience === null ? "–" : `${yearsOfExperience} yrs`}
                 </dd>
               </div>
             </dl>
@@ -378,7 +378,7 @@ export default async function UserDetailPage({
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-xs text-muted-foreground">Name</dt>
-                <dd className="mt-1 font-medium">{profile.full_name || "—"}</dd>
+                <dd className="mt-1 font-medium">{profile.full_name || "–"}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Email</dt>
@@ -387,7 +387,7 @@ export default async function UserDetailPage({
               <div>
                 <dt className="text-xs text-muted-foreground">Signup location</dt>
                 <dd className="mt-1 font-medium">
-                  {signupLocationLine ?? "—"}
+                  {signupLocationLine ?? "–"}
                   {enriched?.signup_country_code && (
                     <span className="ml-2 text-[10px] font-semibold uppercase opacity-60">{enriched.signup_country_code}</span>
                   )}
@@ -398,7 +398,7 @@ export default async function UserDetailPage({
                 <dd className="mt-1 font-medium">
                   {enriched?.signup_location_captured_at
                     ? new Date(enriched.signup_location_captured_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-                    : "—"}
+                    : "–"}
                 </dd>
               </div>
             </dl>
@@ -417,16 +417,16 @@ export default async function UserDetailPage({
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               <div>
                 <dt className="text-xs text-muted-foreground">Current Role</dt>
-                <dd className="mt-1 font-medium">{currentRoleLine ?? "—"}</dd>
+                <dd className="mt-1 font-medium">{currentRoleLine ?? "–"}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Target Role</dt>
-                <dd className="mt-1 font-medium">{targetRole ?? "—"}</dd>
+                <dd className="mt-1 font-medium">{targetRole ?? "–"}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Education</dt>
                 <dd className="mt-1 font-medium">
-                  {eduLine ?? "—"}
+                  {eduLine ?? "–"}
                   {enriched?.field_of_study && (
                     <span className="ml-2 text-xs text-muted-foreground">{enriched.field_of_study}</span>
                   )}
@@ -434,12 +434,12 @@ export default async function UserDetailPage({
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Location on CV</dt>
-                <dd className="mt-1 font-medium">{cvLocationLine ?? "—"}</dd>
+                <dd className="mt-1 font-medium">{cvLocationLine ?? "–"}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Experience Level</dt>
                 <dd className="mt-1 font-medium">
-                  {experienceLevel ? EXPERIENCE_LEVEL_LABEL[experienceLevel] : "—"}
+                  {experienceLevel ? EXPERIENCE_LEVEL_LABEL[experienceLevel] : "–"}
                   {yearsOfExperience !== null && (
                     <span className="ml-2 text-xs text-muted-foreground">{yearsOfExperience} yrs</span>
                   )}
@@ -447,15 +447,15 @@ export default async function UserDetailPage({
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Phone</dt>
-                <dd className="mt-1 font-medium">{enriched?.phone || "—"}</dd>
+                <dd className="mt-1 font-medium">{enriched?.phone || "–"}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">LinkedIn</dt>
-                <dd className="mt-1 font-medium break-all">{enriched?.cv_linkedin || "—"}</dd>
+                <dd className="mt-1 font-medium break-all">{enriched?.cv_linkedin || "–"}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Website</dt>
-                <dd className="mt-1 font-medium break-all">{enriched?.cv_website || "—"}</dd>
+                <dd className="mt-1 font-medium break-all">{enriched?.cv_website || "–"}</dd>
               </div>
             </dl>
           </CardContent>
@@ -474,35 +474,35 @@ export default async function UserDetailPage({
               <dl className="grid gap-4 text-sm sm:grid-cols-2">
                 <div>
                   <dt className="text-xs text-muted-foreground">Location</dt>
-                  <dd className="mt-1 font-medium">{profileLocationLine ?? "—"}</dd>
+                  <dd className="mt-1 font-medium">{profileLocationLine ?? "–"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">Industry</dt>
-                  <dd className="mt-1 font-medium">{enriched?.industry || "—"}</dd>
+                  <dd className="mt-1 font-medium">{enriched?.industry || "–"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">Employment Status</dt>
                   <dd className="mt-1 font-medium capitalize">
-                    {enriched?.employment_status ? enriched.employment_status.replace(/_/g, " ") : "—"}
+                    {enriched?.employment_status ? enriched.employment_status.replace(/_/g, " ") : "–"}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">Preferred Job Type</dt>
                   <dd className="mt-1 font-medium">
-                    {enriched?.preferred_job_type?.length ? enriched.preferred_job_type.join(", ") : "—"}
+                    {enriched?.preferred_job_type?.length ? enriched.preferred_job_type.join(", ") : "–"}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">LinkedIn</dt>
-                  <dd className="mt-1 font-medium break-all">{enriched?.linkedin_url || "—"}</dd>
+                  <dd className="mt-1 font-medium break-all">{enriched?.linkedin_url || "–"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">GitHub</dt>
-                  <dd className="mt-1 font-medium break-all">{enriched?.github_url || "—"}</dd>
+                  <dd className="mt-1 font-medium break-all">{enriched?.github_url || "–"}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-muted-foreground">Portfolio</dt>
-                  <dd className="mt-1 font-medium break-all">{enriched?.portfolio_url || "—"}</dd>
+                  <dd className="mt-1 font-medium break-all">{enriched?.portfolio_url || "–"}</dd>
                 </div>
               </dl>
             </CardContent>
@@ -554,15 +554,15 @@ export default async function UserDetailPage({
               </div>
               <div>
                 <dt className="text-muted-foreground">Billing Period</dt>
-                <dd className="font-medium capitalize">{profile.subscription_period || "—"}</dd>
+                <dd className="font-medium capitalize">{profile.subscription_period || "–"}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Subscription ID</dt>
-                <dd className="font-mono text-xs">{profile.subscription_id || "—"}</dd>
+                <dd className="font-mono text-xs">{profile.subscription_id || "–"}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">{profile.subscription_status === "cancelled" ? "Access Until" : "Renews On"}</dt>
-                <dd className="font-medium">{renewalDate || "—"}</dd>
+                <dd className="font-medium">{renewalDate || "–"}</dd>
               </div>
             </dl>
           </CardContent>

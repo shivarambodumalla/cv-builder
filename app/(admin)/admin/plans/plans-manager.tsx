@@ -142,7 +142,7 @@ export function PlansManager({
           label="Free CVs on a Pro template"
           value={atRisk}
           tone={atRisk > 0 && !grandfather ? "error" : atRisk > 0 ? "warning" : "default"}
-          hint={grandfather ? "grandfathered — still work" : "paywalled on next switch"}
+          hint={grandfather ? "grandfathered and still work" : "paywalled on next switch"}
         />
       </section>
 
@@ -152,7 +152,7 @@ export function PlansManager({
           <div>
             <p className="font-semibold text-error">Default template is not free</p>
             <p className="mt-1 text-muted-foreground">
-              New CVs are created on <code className="rounded bg-muted px-1 py-0.5">{defaultTemplate || "—"}</code>,
+              New CVs are created on <code className="rounded bg-muted px-1 py-0.5">{defaultTemplate || "–"}</code>,
               which free users cannot select. Pick a free template as the default below.
             </p>
           </div>

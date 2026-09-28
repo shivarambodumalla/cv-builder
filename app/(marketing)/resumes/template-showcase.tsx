@@ -46,7 +46,7 @@ const TEMPLATES: Template[] = [
   { name: "Clean Sidebar", slug: "clean-sidebar", category: ["all", "two-column"], type: "Sidebar left", desc: "Warm light sidebar with progress bars and links. Versatile and friendly.", tags: ["Free", "New"] },
   { name: "Executive", slug: "executive", category: ["all", "single", "professional"], type: "Single column", desc: "Premium feel for senior roles. Refined typography and spacing.", tags: ["Free"] },
   { name: "Onyx", slug: "sidebar-right", category: ["all", "two-column"], type: "Sidebar right", desc: "Right sidebar for skills and education. Clean content hierarchy.", tags: ["Free"] },
-  { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo — corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
+  { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo for corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
   { name: "Divide", slug: "divide", category: ["all", "two-column"], type: "Two column", desc: "Vertical divider splits content. Balanced left-right layout.", tags: ["Free"] },
   { name: "Folio", slug: "folio", category: ["all", "two-column"], type: "Two column", desc: "Coloured sidebar with clean white main area. Portfolio-style.", tags: ["Free"] },
   { name: "Harvard", slug: "harvard", category: ["all", "single", "professional"], type: "Single column", desc: "Academic-style formatting. Formal and structured.", tags: ["Free"] },

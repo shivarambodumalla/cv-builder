@@ -50,7 +50,7 @@ interface Props { stories: Story[]; cvs: CvOption[]; isPro: boolean; storiesThis
 const COMMON_TAGS = ["Leadership", "Problem Solving", "Teamwork", "Technical", "Communication", "Initiative", "Conflict Resolution", "Growth", "Customer Focus", "Innovation"];
 const STAR_HINTS: Record<string, string> = {
   situation: "Add specific context: team size, timeline, business impact at stake",
-  task: "Clarify YOUR responsibility — what were you specifically asked to do?",
+  task: "Clarify YOUR responsibility. What were you specifically asked to do?",
   action: "Detail the steps YOU took. Use 'I' not 'we'. Mention tools/methods.",
   result: "Add numbers: %, $, time saved, users impacted. Quantify the outcome.",
 };
@@ -498,7 +498,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                   title: "Ace your interviews",
                   body: "Paste a JD before any interview. Get your most relevant stories.",
                   proofLabel: "Top match for this role",
-                  proof: <p className="text-[10px] text-[#065F46] font-medium truncate">#1 Improving Engagement — 94%</p>,
+                  proof: <p className="text-[10px] text-[#065F46] font-medium truncate">#1 Improving Engagement: 94%</p>,
                 },
               ].map((s) => (
                 <div key={s.title} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-3.5 flex flex-col items-center gap-2 relative z-10">
@@ -579,8 +579,8 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed">
                     {formFramework === "star" && "Situation → Task → Action → Result. The classic framework for most behavioral questions."}
-                    {formFramework === "star_r" && "STAR + Reflection. Best when they ask \"What did you learn?\" — shows self-awareness and growth."}
-                    {formFramework === "car" && "Challenge → Action → Result. Quick and concise — ideal for follow-up answers or time-limited responses."}
+                    {formFramework === "star_r" && "STAR + Reflection. Best when they ask \"What did you learn?\" This shows self-awareness and growth."}
+                    {formFramework === "car" && "Challenge → Action → Result. Quick and concise, ideal for follow-up answers or time-limited responses."}
                   </p>
                 </div>
 

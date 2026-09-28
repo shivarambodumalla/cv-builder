@@ -111,7 +111,7 @@ export function WeeklyJobsEmptyEmail({
               <Text style={bigValue}>ATS score not yet measured</Text>
             )}
             <Text style={scoreLabelText}>
-              <strong>{atsLabel}</strong> — {atsMessage}
+              <strong>{atsLabel}</strong>: {atsMessage}
             </Text>
             <Section style={{ marginTop: 14 }}>
               <Link href={improveScoreUrl} style={{ ...primaryButton, backgroundColor: BRAND_GREEN }}>

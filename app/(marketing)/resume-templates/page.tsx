@@ -7,12 +7,12 @@ import { TEMPLATE_CATEGORIES } from "@/lib/resume-templates/data";
 import { TemplateShowcase } from "../resumes/template-showcase";
 
 export const metadata: Metadata = {
-  title: "Free Resume Templates — ATS-Friendly & Professional",
+  title: "Free Resume Templates: ATS-Friendly & Professional",
   description:
     "24 free ATS-friendly resume templates for every role and industry. Single-column and two-column layouts tested on Greenhouse, Workday, and Lever. Upload your CV and score instantly.",
   alternates: { canonical: "https://www.thecvedge.com/resume-templates" },
   openGraph: {
-    title: "Free Resume Templates — ATS-Friendly & Professional | CVEdge",
+    title: "Free Resume Templates: ATS-Friendly & Professional | CVEdge",
     description:
       "24 free ATS-friendly resume templates. Upload your CV, get an instant ATS score, fix with AI, and download a polished PDF.",
     url: "https://www.thecvedge.com/resume-templates",
@@ -23,12 +23,12 @@ const FAQS = [
   {
     question: "Which resume template is best for passing ATS?",
     answer:
-      "Single-column templates score highest on ATS systems. CVEdge's Classic, Minimal, Sharp, Classic Serif, and Harvard templates all score 92–97 on our ATS analyser. The key factors are: single column, standard heading names (Experience, Education, Skills), no images or tables in the body, and a parseable font. Two-column templates can also pass ATS with modern systems — run CVEdge's ATS analyser on any template to check your specific score.",
+      "Single-column templates score highest on ATS systems. CVEdge's Classic, Minimal, Sharp, Classic Serif, and Harvard templates all score 92–97 on our ATS analyser. The key factors are: single column, standard heading names (Experience, Education, Skills), no images or tables in the body, and a parseable font. Two-column templates can also pass ATS with modern systems. Run CVEdge's ATS analyser on any template to check your specific score.",
   },
   {
     question: "Are all CVEdge resume templates free?",
     answer:
-      "28 out of 32 templates are free. Four Pro-only templates — Executive Pro, Electric Lilac, Executive Sidebar, and Wentworth — require a Pro subscription. All free templates include ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse.",
+      "28 out of 32 templates are free. Four Pro-only templates (Executive Pro, Electric Lilac, Executive Sidebar, and Wentworth) require a Pro subscription. All free templates include ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse.",
   },
   {
     question: "What is the difference between a CV and a resume?",
@@ -38,7 +38,7 @@ const FAQS = [
   {
     question: "Can I change the template after building my resume?",
     answer:
-      "Yes — CVEdge lets you switch templates in one click without losing any content. Your experience, skills, and all sections transfer instantly. Test multiple layouts before deciding which to submit.",
+      "Yes. CVEdge lets you switch templates in one click without losing any content. Your experience, skills, and all sections transfer instantly. Test multiple layouts before deciding which to submit.",
   },
   {
     question: "How do I know which template to pick for my industry?",
@@ -116,7 +116,7 @@ export default function ResumeTemplatesPage() {
               Resume Templates
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl md:text-5xl leading-[1.12]">
-              Free Resume Templates —{" "}
+              Free Resume Templates:{" "}
               <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">
                 ATS-Ready for Every Role
               </span>
@@ -127,7 +127,7 @@ export default function ResumeTemplatesPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Upload my CV — free ATS score</Link>
+                <Link href="/upload-resume">Upload my CV: free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Start from scratch free</Link>

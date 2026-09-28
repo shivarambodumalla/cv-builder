@@ -287,7 +287,7 @@ export function Canopy({
             return (
               <div style={bodyStyle}>
                 <span style={{ fontWeight: 500, color: ink }}>{item.name}</span>
-                {meta && <span style={{ color: mutedText }}> — {meta}</span>}
+                {meta && <span style={{ color: mutedText }}>, {meta}</span>}
               </div>
             );
           }, 8)}
@@ -306,7 +306,7 @@ export function Canopy({
               return bullet(
                 <span data-resume-entry="">
                   <span style={{ fontWeight: 500, color: ink }}>{item.title}</span>
-                  {meta && <span style={{ color: mutedText }}> — {meta}</span>}
+                  {meta && <span style={{ color: mutedText }}>, {meta}</span>}
                   {item.description && <div style={{ textIndent: 0 }}>{item.description}</div>}
                 </span>,
                 i
@@ -362,7 +362,7 @@ export function Canopy({
             return (
               <div style={bodyStyle}>
                 <span style={{ fontWeight: 500, color: ink }}>{item.title}</span>
-                {meta && <span style={{ color: mutedText }}> — {meta}</span>}
+                {meta && <span style={{ color: mutedText }}>, {meta}</span>}
                 {item.url && (
                   <div style={{ color: mutedText, wordBreak: "break-word" }}>{item.url}</div>
                 )}

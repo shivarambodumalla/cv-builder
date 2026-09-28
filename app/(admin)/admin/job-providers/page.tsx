@@ -96,7 +96,7 @@ export default function JobProvidersPage() {
   }
 
   function maskKey(key: string): string {
-    if (!key) return "—";
+    if (!key) return "–";
     if (key.length <= 8) return "••••••••";
     return key.slice(0, 4) + "••••" + key.slice(-4);
   }
@@ -170,16 +170,16 @@ export default function JobProvidersPage() {
 
                   {!isEditing ? (
                     <div className="space-y-1 text-xs text-muted-foreground">
-                      <p>URL: {p.api_base_url || "—"}</p>
+                      <p>URL: {p.api_base_url || "–"}</p>
                       <p className="flex items-center gap-1">
-                        App ID: {p.app_id ? (keyVisible ? p.app_id : maskKey(p.app_id)) : "—"}
+                        App ID: {p.app_id ? (keyVisible ? p.app_id : maskKey(p.app_id)) : "–"}
                         {p.app_id && (
                           <button onClick={() => toggleKeyVisibility(p.id)} className="text-muted-foreground hover:text-foreground">
                             {keyVisible ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                           </button>
                         )}
                       </p>
-                      <p>App Key: {p.app_key ? (keyVisible ? p.app_key : maskKey(p.app_key)) : "—"}</p>
+                      <p>App Key: {p.app_key ? (keyVisible ? p.app_key : maskKey(p.app_key)) : "–"}</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">

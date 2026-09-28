@@ -198,7 +198,7 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
                       Drag & drop or click to select
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      PDF, DOC, DOCX — max 5MB
+                      PDF, DOC, DOCX up to 5MB
                     </p>
                   </div>
                 )}

@@ -5,7 +5,7 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "Why is it only $9? Is the quality real?",
-    a: "Because it's a launch offer for the first 100 customers. We're running every review with care to earn trust and feedback. After 100 customers, the price goes to $29. The quality doesn't change — but the wait time will, so order during launch pricing.",
+    a: "Because it's a launch offer for the first 100 customers. We're running every review with care to earn trust and feedback. After 100 customers, the price goes to $29. The quality doesn't change, but the wait time will, so order during launch pricing.",
   },
   {
     q: "What if I don't like it?",
@@ -17,11 +17,11 @@ const FAQS = [
   },
   {
     q: "How is this different from the free CVEdge ATS scanner?",
-    a: "The free tool diagnoses what's wrong. This service fixes it for you — a real human + AI rewrite using your actual experience. Diagnosis vs treatment.",
+    a: "The free tool diagnoses what's wrong. This service fixes it for you. A real human + AI rewrite using your actual experience. Diagnosis vs treatment.",
   },
   {
-    q: "Do you cover GCC markets — UAE, Saudi Arabia, Qatar, Kuwait?",
-    a: "Yes — GCC is one of our strongest markets. We have a dedicated Middle East hiring specialist with deep expertise across UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. If you're targeting roles in Dubai, Abu Dhabi, Riyadh, Jeddah, or Doha, your CV will be reviewed and rewritten by someone who knows exactly what GCC recruiters and local ATS systems look for. We also cover India, UK, and US.",
+    q: "Do you cover GCC markets: UAE, Saudi Arabia, Qatar, Kuwait?",
+    a: "Yes. GCC is one of our strongest markets. We have a dedicated Middle East hiring specialist with deep expertise across UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. If you're targeting roles in Dubai, Abu Dhabi, Riyadh, Jeddah, or Doha, your CV will be reviewed and rewritten by someone who knows exactly what GCC recruiters and local ATS systems look for. We also cover India, UK, and US.",
   },
 ];
 

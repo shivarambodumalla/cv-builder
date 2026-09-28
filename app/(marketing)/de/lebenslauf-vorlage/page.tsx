@@ -10,9 +10,9 @@ import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data
 // i18n layer: if it performs, the investment is justified; if it does not, the
 // cost was a page.
 export const metadata: Metadata = {
-  title: "Lebenslauf-Vorlage 2026 — kostenlose Word-Vorlage, ATS-optimiert",
+  title: "Lebenslauf-Vorlage 2026 – kostenlose Word-Vorlage, ATS-optimiert",
   description:
-    "Kostenlose tabellarische Lebenslauf-Vorlage nach deutscher Konvention. Als Word-Datei herunterladen oder online ausfüllen — einspaltig, ATS-optimiert, mit Hinweisen zu jedem Abschnitt.",
+    "Kostenlose tabellarische Lebenslauf-Vorlage nach deutscher Konvention. Als Word-Datei herunterladen oder online ausfüllen – einspaltig, ATS-optimiert, mit Hinweisen zu jedem Abschnitt.",
   alternates: {
     canonical: "https://www.thecvedge.com/de/lebenslauf-vorlage",
     languages: {
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Lebenslauf-Vorlage 2026 — kostenlose Word-Vorlage | CVEdge",
+    title: "Lebenslauf-Vorlage 2026 – kostenlose Word-Vorlage | CVEdge",
     description:
       "Kostenlose tabellarische Lebenslauf-Vorlage nach deutscher Konvention. Einspaltig, ATS-optimiert, sofort als Word-Datei.",
     url: "https://www.thecvedge.com/de/lebenslauf-vorlage",
@@ -34,17 +34,17 @@ const FAQS = [
   {
     question: "Ist ein Foto im Lebenslauf noch üblich?",
     answer:
-      "Ja, in Deutschland ist ein Bewerbungsfoto weiterhin verbreitet — seit dem Allgemeinen Gleichbehandlungsgesetz aber ausdrücklich freiwillig. Sie müssen keines beifügen, und ein seriöser Arbeitgeber wird es auch nicht einfordern. Wenn Sie eines verwenden, platzieren Sie es oben rechts im Dokument selbst und nicht in der Kopfzeile: viele Bewerbermanagementsysteme lesen Kopf- und Fußzeilen gar nicht aus, und ein dort platziertes Foto kann die Auswertung stören.",
+      "Ja, in Deutschland ist ein Bewerbungsfoto weiterhin verbreitet – seit dem Allgemeinen Gleichbehandlungsgesetz aber ausdrücklich freiwillig. Sie müssen keines beifügen, und ein seriöser Arbeitgeber wird es auch nicht einfordern. Wenn Sie eines verwenden, platzieren Sie es oben rechts im Dokument selbst und nicht in der Kopfzeile: viele Bewerbermanagementsysteme lesen Kopf- und Fußzeilen gar nicht aus, und ein dort platziertes Foto kann die Auswertung stören.",
   },
   {
     question: "Chronologisch oder antichronologisch?",
     answer:
-      "Antichronologisch, also die aktuellste Station zuerst. Das ist heute der Standard in Deutschland. Die früher übliche chronologische Reihenfolge — beginnend mit der Schule — wirkt inzwischen veraltet und zwingt Personalverantwortliche dazu, bis ans Ende zu lesen, um Ihre jetzige Position zu finden.",
+      "Antichronologisch, also die aktuellste Station zuerst. Das ist heute der Standard in Deutschland. Die früher übliche chronologische Reihenfolge – beginnend mit der Schule – wirkt inzwischen veraltet und zwingt Personalverantwortliche dazu, bis ans Ende zu lesen, um Ihre jetzige Position zu finden.",
   },
   {
     question: "Wie gehe ich mit Lücken im Lebenslauf um?",
     answer:
-      "Benennen Sie sie offen. Lücken ab etwa zwei bis drei Monaten fallen auf, weil im deutschen Lebenslauf Monatsangaben üblich sind und eine Lücke dadurch sichtbar wird. Elternzeit, Weiterbildung, Pflege von Angehörigen, Krankheit oder berufliche Neuorientierung gelten alle als akzeptierte Angaben. Eine erklärte Lücke ist unproblematisch — eine unerklärte wirft Fragen auf, die Sie im Gespräch nicht mehr steuern können.",
+      "Benennen Sie sie offen. Lücken ab etwa zwei bis drei Monaten fallen auf, weil im deutschen Lebenslauf Monatsangaben üblich sind und eine Lücke dadurch sichtbar wird. Elternzeit, Weiterbildung, Pflege von Angehörigen, Krankheit oder berufliche Neuorientierung gelten alle als akzeptierte Angaben. Eine erklärte Lücke ist unproblematisch – eine unerklärte wirft Fragen auf, die Sie im Gespräch nicht mehr steuern können.",
   },
   {
     question: "Wie lang darf ein Lebenslauf sein?",
@@ -54,23 +54,23 @@ const FAQS = [
   {
     question: "Welche persönlichen Daten muss ich angeben?",
     answer:
-      "Verpflichtend ist nichts außer Ihren Kontaktdaten. Geburtsdatum und Geburtsort sind üblich, aber freiwillig. Familienstand, Konfession und Staatsangehörigkeit können Sie weglassen — sie werden zunehmend als überholt angesehen und sind für die Eignung ohne Bedeutung. Bewerben Sie sich zusätzlich international, lassen Sie diese Angaben besser ganz weg.",
+      "Verpflichtend ist nichts außer Ihren Kontaktdaten. Geburtsdatum und Geburtsort sind üblich, aber freiwillig. Familienstand, Konfession und Staatsangehörigkeit können Sie weglassen – sie werden zunehmend als überholt angesehen und sind für die Eignung ohne Bedeutung. Bewerben Sie sich zusätzlich international, lassen Sie diese Angaben besser ganz weg.",
   },
   {
     question: "Ist diese Vorlage ATS-optimiert?",
     answer:
-      "Ja. Die Vorlage ist einspaltig, verwendet Standardüberschriften und enthält keine Tabellen, Textfelder oder Grafiken — also genau die Elemente, an denen Bewerbermanagementsysteme scheitern. Sie können den ausgefüllten Lebenslauf anschließend bei CVEdge hochladen und kostenlos auf seine ATS-Tauglichkeit prüfen lassen.",
+      "Ja. Die Vorlage ist einspaltig, verwendet Standardüberschriften und enthält keine Tabellen, Textfelder oder Grafiken – also genau die Elemente, an denen Bewerbermanagementsysteme scheitern. Sie können den ausgefüllten Lebenslauf anschließend bei CVEdge hochladen und kostenlos auf seine ATS-Tauglichkeit prüfen lassen.",
   },
 ];
 
 const SECTIONS = [
   {
     t: "Persönliche Daten",
-    d: "Name, Anschrift, Telefonnummer, E-Mail-Adresse. Geburtsdatum und -ort sind freiwillig. Eine seriöse E-Mail-Adresse ist Pflicht — Spitznamen und Zahlenkombinationen wirken unprofessionell.",
+    d: "Name, Anschrift, Telefonnummer, E-Mail-Adresse. Geburtsdatum und -ort sind freiwillig. Eine seriöse E-Mail-Adresse ist Pflicht – Spitznamen und Zahlenkombinationen wirken unprofessionell.",
   },
   {
     t: "Berufserfahrung",
-    d: "Antichronologisch, mit Monat und Jahr. Pro Station zwei bis vier Stichpunkte: Aufgabe, Verantwortungsumfang und ein messbares Ergebnis. Sachlich formulieren — Werbesprache wirkt im deutschen Kontext schnell unseriös.",
+    d: "Antichronologisch, mit Monat und Jahr. Pro Station zwei bis vier Stichpunkte: Aufgabe, Verantwortungsumfang und ein messbares Ergebnis. Sachlich formulieren – Werbesprache wirkt im deutschen Kontext schnell unseriös.",
   },
   {
     t: "Ausbildung",
@@ -78,7 +78,7 @@ const SECTIONS = [
   },
   {
     t: "Kenntnisse und Fähigkeiten",
-    d: "Sprachen mit GER-Niveau (A1 bis C2) statt „gut“ oder „fließend“. IT-Kenntnisse konkret benennen. Hier findet das Keyword-Matching der Systeme statt — verwenden Sie die Begriffe aus der Stellenanzeige.",
+    d: "Sprachen mit GER-Niveau (A1 bis C2) statt „gut“ oder „fließend“. IT-Kenntnisse konkret benennen. Hier findet das Keyword-Matching der Systeme statt – verwenden Sie die Begriffe aus der Stellenanzeige.",
   },
   {
     t: "Weiterbildung und Engagement",
@@ -86,14 +86,14 @@ const SECTIONS = [
   },
   {
     t: "Ort, Datum und Unterschrift",
-    d: "Am Ende weiterhin üblich, aber nicht zwingend. Bei einer digitalen Bewerbung genügt eine eingescannte Unterschrift — oder Sie lassen beides weg.",
+    d: "Am Ende weiterhin üblich, aber nicht zwingend. Bei einer digitalen Bewerbung genügt eine eingescannte Unterschrift – oder Sie lassen beides weg.",
   },
 ];
 
 const MISTAKES = [
-  "Chronologische statt antichronologischer Reihenfolge — wirkt veraltet und versteckt Ihre aktuelle Position am Seitenende.",
+  "Chronologische statt antichronologischer Reihenfolge – wirkt veraltet und versteckt Ihre aktuelle Position am Seitenende.",
   "Zweispaltige Designvorlagen aus dem Internet. Sie sehen gut aus und werden von Bewerbermanagementsystemen regelmäßig falsch ausgelesen.",
-  "Kontaktdaten in der Kopfzeile. Viele Systeme lesen Kopfzeilen nicht aus — Ihre Telefonnummer fehlt dann in der Bewerberdatenbank.",
+  "Kontaktdaten in der Kopfzeile. Viele Systeme lesen Kopfzeilen nicht aus – Ihre Telefonnummer fehlt dann in der Bewerberdatenbank.",
   "Aufgabenbeschreibungen ohne Ergebnis. „Zuständig für das Reporting“ sagt weniger als „Reporting für drei Standorte aufgebaut, Erstellungsdauer von fünf auf zwei Tage gesenkt“.",
   "Unerklärte Lücken. Im deutschen Lebenslauf mit Monatsangaben fallen sie zwangsläufig auf.",
   "Sprachniveaus als „gut“ oder „Grundkenntnisse“ statt nach GER. Das ist ungenau und wird als Schönfärberei gelesen.",
@@ -122,7 +122,7 @@ export default function LebenslaufVorlagePage() {
               Lebenslauf
             </span>
             <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl md:text-5xl leading-[1.12]">
-              Lebenslauf-Vorlage — kostenlos und ATS-optimiert
+              Lebenslauf-Vorlage – kostenlos und ATS-optimiert
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
               Eine leere tabellarische Vorlage nach deutscher Konvention: einspaltig, ohne
@@ -157,7 +157,7 @@ export default function LebenslaufVorlagePage() {
             <p>
               Der tabellarische Lebenslauf ist in Deutschland, Österreich und der Schweiz
               der Standard. Er verzichtet auf Fließtext und ordnet die Stationen Ihres
-              Werdegangs in klar getrennten Abschnitten an — links die Inhalte, rechts die
+              Werdegangs in klar getrennten Abschnitten an – links die Inhalte, rechts die
               Zeiträume. Anders als im angelsächsischen Raum gehört kein einleitender
               Absatz mit einer Selbstbeschreibung an den Anfang: Personalverantwortliche
               lesen die Tabelle, keine Eigenwerbung.
@@ -165,7 +165,7 @@ export default function LebenslaufVorlagePage() {
             <p>
               Der zweite Unterschied betrifft die Genauigkeit der Zeitangaben. Im deutschen
               Lebenslauf sind Monat und Jahr üblich, nicht nur Jahreszahlen. Das macht
-              Lücken sichtbar — und genau deshalb sollten Sie diese benennen, statt sie durch
+              Lücken sichtbar – und genau deshalb sollten Sie diese benennen, statt sie durch
               vage Jahresangaben zu verdecken. Personalverantwortliche kennen diesen Trick.
             </p>
             <p>
@@ -221,12 +221,12 @@ export default function LebenslaufVorlagePage() {
             <h2 className="text-base font-bold mb-2">Vorlage herunterladen</h2>
             <p className="text-sm text-muted-foreground mb-4">
               Eine leere Word-Datei mit fertiger Struktur, Überschriften und Abständen. Unter
-              jedem Abschnitt steht ein kursiver Hinweis, was dort hingehört — den löschen Sie
+              jedem Abschnitt steht ein kursiver Hinweis, was dort hingehört – den löschen Sie
               vor dem Versenden.
             </p>
             <ul className="space-y-2 mb-5">
               {[
-                "Einspaltig und ATS-optimiert — keine Tabellen, keine Textfelder",
+                "Einspaltig und ATS-optimiert – keine Tabellen, keine Textfelder",
                 "Antichronologisch, mit Monatsangaben",
                 "Persönliche Daten als Block, Foto optional",
                 "Sprachniveaus nach GER vorbereitet",

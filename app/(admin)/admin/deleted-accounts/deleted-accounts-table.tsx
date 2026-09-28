@@ -4,7 +4,7 @@ import { AlertTriangle } from "lucide-react";
 import type { DeletedAccount } from "./page";
 
 function fmt(date: string | null): string {
-  if (!date) return "—";
+  if (!date) return "–";
   return new Date(date).toLocaleDateString(undefined, {
     year: "numeric", month: "short", day: "numeric",
   });
@@ -65,7 +65,7 @@ export function DeletedAccountsTable({ accounts }: { accounts: DeletedAccount[] 
                 {billing.length} deleted account{billing.length > 1 ? "s are" : " is"} still being charged
               </p>
               <p className="text-muted-foreground mt-1">
-                Cancel these in Lemon Squeezy and refund the last payment — there is no
+                Cancel these in Lemon Squeezy and refund the last payment. There is no
                 account left to deliver anything to.
               </p>
             </div>
@@ -111,14 +111,14 @@ export function DeletedAccountsTable({ accounts }: { accounts: DeletedAccount[] 
                     <td className="py-2.5">
                       {a.plan === "pro"
                         ? <Chip variant="active">Pro</Chip>
-                        : <span className="text-muted-foreground">{a.plan ?? "—"}</span>}
+                        : <span className="text-muted-foreground">{a.plan ?? "–"}</span>}
                     </td>
                     <td className="py-2.5 font-mono text-xs text-muted-foreground">
-                      {a.subscription_id ?? "—"}
+                      {a.subscription_id ?? "–"}
                     </td>
                     <td className="py-2.5">
                       {!a.subscription_id ? (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">–</span>
                       ) : a.subscription_cancelled ? (
                         <span className="text-success font-medium">Cancelled</span>
                       ) : (

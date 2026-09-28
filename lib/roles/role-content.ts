@@ -66,7 +66,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Software Engineer loops are weighted toward problem-solving under observation. Most companies run two coding rounds, one system design round, and one behavioural round; the coding rounds screen for correctness and communication in roughly equal measure, and the design round is where mid-level and senior candidates are separated. Your CV is read for evidence that you have owned something in production, not just shipped features.",
     interviewFocus: [
       { area: "Coding under observation", detail: "Data structures and algorithms applied to a problem you have not seen, narrated aloud. Interviewers score how you clarify ambiguity and test your own solution as much as whether you reach the optimal complexity." },
-      { area: "System design", detail: "Designing a service end to end — API surface, data model, caching, failure modes. Expected from mid-level upward; at junior level it is replaced with a code-extension exercise." },
+      { area: "System design", detail: "Designing a service end to end: API surface, data model, caching, failure modes. Expected from mid-level upward; at junior level it is replaced with a code-extension exercise." },
       { area: "Production ownership", detail: "What broke, how you found it, what you changed so it could not recur. This is where on-call experience and postmortem habits show." },
       { area: "Code review and collaboration", detail: "How you give and take review feedback, and how you handle disagreement about technical direction." },
     ],
@@ -89,7 +89,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     questionsToAsk: [
       "What does on-call look like here, and how often does the rotation page?",
       "How long does it take from merged PR to production?",
-      "What is the test and review culture — what stops a bad change reaching users?",
+      "What is the test and review culture? What stops a bad change reaching users?",
       "What is the largest source of technical debt the team is carrying right now?",
     ],
     faq: [
@@ -101,7 +101,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Do I still need to grind LeetCode for Software Engineer interviews?",
         answer:
-          "You need fluency in the common patterns rather than volume. Roughly 150 well-understood problems covering arrays and hashing, two pointers, sliding window, binary search, trees and graphs, and dynamic programming will cover the large majority of what gets asked. Practising aloud matters more than practising more — interviewers score communication, and candidates who solve silently frequently fail rounds they technically passed.",
+          "You need fluency in the common patterns rather than volume. Roughly 150 well-understood problems covering arrays and hashing, two pointers, sliding window, binary search, trees and graphs, and dynamic programming will cover the large majority of what gets asked. Practising aloud matters more than practising more. Interviewers score communication, and candidates who solve silently frequently fail rounds they technically passed.",
       },
       {
         question: "What should a Software Engineer CV lead with?",
@@ -120,7 +120,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Responsible for developing new features for the company's main web application.",
         strong: "Shipped 14 features to a React/Node application serving 2M monthly users, including a self-serve refund flow that removed ~600 support tickets per month.",
-        why: "\"Responsible for\" describes a job description, not a person. Engineering CVs are scanned for scale (2M users), volume (14 features), and second-order effect (600 tickets) — the refund flow is memorable because it connects code to a business cost.",
+        why: "\"Responsible for\" describes a job description, not a person. Engineering CVs are scanned for scale (2M users), volume (14 features), and second-order effect (600 tickets). The refund flow is memorable because it connects code to a business cost.",
       },
       {
         weak: "Improved application performance and fixed various bugs.",
@@ -140,19 +140,19 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Junior (0–2 yrs)", expectation: "Ships well-scoped tickets with review. CV should show working software, tests, and a language you can defend in depth." },
       { level: "Mid (2–5 yrs)", expectation: "Owns features end to end including rollout and monitoring. CV should show at least one system you were the primary owner of." },
       { level: "Senior (5–8 yrs)", expectation: "Owns design across services and mentors. CV should show a migration or architecture change with measured before/after." },
-      { level: "Staff (8+ yrs)", expectation: "Sets direction beyond one team. CV should show org-level impact — a standard adopted, a platform others build on, or a multi-quarter technical strategy." },
+      { level: "Staff (8+ yrs)", expectation: "Sets direction beyond one team. CV should show org-level impact: a standard adopted, a platform others build on, or a multi-quarter technical strategy." },
     ],
     redFlags: [
-      "A skills section listing 30+ technologies — reviewers read it as unfamiliarity with all of them.",
+      "A skills section listing 30+ technologies. Reviewers read it as unfamiliarity with all of them.",
       "No indication of scale anywhere (users, RPS, data volume), which makes every achievement unrankable.",
       "Bullets that describe the team's work with no signal about which parts were yours.",
-      "Listing 'Agile', 'Scrum', and 'SDLC' as skills — these are assumed and consume scanning attention.",
+      "Listing 'Agile', 'Scrum', and 'SDLC' as skills. These are assumed and consume scanning attention.",
     ],
   },
 
   "frontend-developer": {
     intro:
-      "Frontend interviews have moved away from algorithm puzzles toward building something real in the browser. Expect a live component build, questions about rendering and state, and increasingly a round on accessibility and performance budgets. Hiring managers read frontend CVs for evidence you understand what happens after the component renders — bundle size, Core Web Vitals, and how the UI behaves on a slow device.",
+      "Frontend interviews have moved away from algorithm puzzles toward building something real in the browser. Expect a live component build, questions about rendering and state, and increasingly a round on accessibility and performance budgets. Hiring managers read frontend CVs for evidence you understand what happens after the component renders: bundle size, Core Web Vitals, and how the UI behaves on a slow device.",
     interviewFocus: [
       { area: "Live component build", detail: "Implementing something like a typeahead, modal, or data table in a sandbox, usually without a component library. Scored on state handling, edge cases (empty, loading, error), and whether you reach for a keyboard-accessible pattern unprompted." },
       { area: "Browser and rendering fundamentals", detail: "The event loop, reflow versus repaint, how the browser paints, and why a given interaction drops frames. This is what separates candidates who use a framework from candidates who understand one." },
@@ -190,12 +190,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How much JavaScript do I need to know beyond React?",
         answer:
-          "Enough to explain what React is doing for you. Interviewers commonly ask you to predict output order across setTimeout, promises and microtasks, implement debounce from scratch, or explain closures and prototypal inheritance. Candidates who only know framework idioms tend to fail these. Knowing the platform — the DOM, events, the browser's rendering pipeline — is what differentiates mid from senior in this role.",
+          "Enough to explain what React is doing for you. Interviewers commonly ask you to predict output order across setTimeout, promises and microtasks, implement debounce from scratch, or explain closures and prototypal inheritance. Candidates who only know framework idioms tend to fail these. Knowing the platform (the DOM, events, the browser's rendering pipeline) is what differentiates mid from senior in this role.",
       },
       {
         question: "What belongs on a Frontend Developer CV?",
         answer:
-          "Measurable interface outcomes. Bundle size reduced, Lighthouse or Core Web Vitals scores moved, conversion or task-completion rates improved, accessibility violations closed. \"Cut LCP from 4.1s to 1.6s on the product page, lifting mobile conversion 8%\" is worth more than any list of frameworks, because it proves you connect frontend work to user behaviour. Include a link to deployed work — frontend is one of the few roles where reviewers actually click.",
+          "Measurable interface outcomes. Bundle size reduced, Lighthouse or Core Web Vitals scores moved, conversion or task-completion rates improved, accessibility violations closed. \"Cut LCP from 4.1s to 1.6s on the product page, lifting mobile conversion 8%\" is worth more than any list of frameworks, because it proves you connect frontend work to user behaviour. Include a link to deployed work. Frontend is one of the few roles where reviewers actually click.",
       },
       {
         question: "Do I need a portfolio site as a Frontend Developer?",
@@ -209,17 +209,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Built responsive user interfaces using React, Redux, and CSS.",
         strong: "Rebuilt the product listing page in React with virtualised rendering, holding 60fps scroll on 500+ items and cutting time-to-interactive from 6.2s to 2.1s on mid-tier Android.",
-        why: "Listing React and Redux tells a reviewer nothing — nearly every applicant lists them. Naming the technique (virtualisation), the constraint (mid-tier Android), and the measured result is what proves the depth the tools alone imply.",
+        why: "Listing React and Redux tells a reviewer nothing. Nearly every applicant lists them. Naming the technique (virtualisation), the constraint (mid-tier Android), and the measured result is what proves the depth the tools alone imply.",
       },
       {
         weak: "Made the website accessible and compliant with standards.",
         strong: "Closed 340 axe-reported WCAG 2.2 AA violations across 60 screens and added automated accessibility checks to CI, preventing regressions on every subsequent PR.",
-        why: "\"Made accessible\" is unverifiable and reads as box-ticking. The count, the standard, and — most importantly — the CI gate show you fixed the process rather than doing a one-off cleanup, which is what senior frontend hiring looks for.",
+        why: "\"Made accessible\" is unverifiable and reads as box-ticking. The count, the standard, and, most importantly, the CI gate show you fixed the process rather than doing a one-off cleanup, which is what senior frontend hiring looks for.",
       },
       {
         weak: "Worked closely with designers to implement mockups.",
         strong: "Built and documented a 40-component design system in Storybook adopted by 5 product teams, cutting new-feature UI build time roughly 30%.",
-        why: "Implementing mockups is the baseline expectation for the role. Reframing the same collaboration as leverage — a system other teams adopted — moves the bullet from execution to impact.",
+        why: "Implementing mockups is the baseline expectation for the role. Reframing the same collaboration as leverage (a system other teams adopted) moves the bullet from execution to impact.",
       },
     ],
     coreSkills: ["Semantic HTML", "Modern CSS (grid, flexbox, container queries)", "JavaScript fundamentals", "TypeScript", "React", "State management", "Web accessibility (WCAG)", "Core Web Vitals", "Cross-browser debugging"],
@@ -232,7 +232,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Lead (8+ yrs)", expectation: "Sets frontend direction. CV should show framework or tooling decisions and their organisational effect." },
     ],
     redFlags: [
-      "No link to anything deployed — unusual and conspicuous for this role.",
+      "No link to anything deployed, which is unusual and conspicuous for this role.",
       "Framework lists with no evidence of platform fundamentals underneath.",
       "No performance or accessibility numbers anywhere, which reads as pixel-pushing.",
       "Claiming 'pixel-perfect' implementations, which signals a handoff mindset rather than a product one.",
@@ -266,7 +266,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     questionsToAsk: [
       "How do you handle schema migrations against large tables in production?",
-      "What is your approach to service boundaries — how did the current split come about?",
+      "What is your approach to service boundaries? How did the current split come about?",
       "What does your alerting look like, and what is the current false-positive rate?",
       "How is data consistency handled between services today?",
     ],
@@ -274,7 +274,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between a Backend Developer and a Full Stack Developer interview?",
         answer:
-          "Depth versus breadth. Backend loops go deep on one axis — you may spend a full round on database isolation levels or queue semantics, and you are expected to reason precisely about failure. Full stack loops sample more widely and accept less depth in each area, but add a UI build round. If you are targeting backend roles, your CV should show a system you operated at scale rather than a broad list of layers you have touched.",
+          "Depth versus breadth. Backend loops go deep on one axis. You may spend a full round on database isolation levels or queue semantics, and you are expected to reason precisely about failure. Full stack loops sample more widely and accept less depth in each area, but add a UI build round. If you are targeting backend roles, your CV should show a system you operated at scale rather than a broad list of layers you have touched.",
       },
       {
         question: "How much do backend interviews test SQL?",
@@ -321,7 +321,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Staff (8+ yrs)", expectation: "Owns platform-level architecture. CV should show standards or infrastructure other teams build on." },
     ],
     redFlags: [
-      "No numbers for scale — backend work is judged on load, and its absence suggests low-traffic systems.",
+      "No numbers for scale. Backend work is judged on load, and its absence suggests low-traffic systems.",
       "'Microservices' claimed with no mention of how services communicate or fail.",
       "No operational signal at all: no on-call, no incidents, no monitoring.",
       "ORM-only vocabulary with no evidence of SQL underneath it.",
@@ -329,15 +329,15 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
   },
   "full-stack-developer": {
     intro:
-      "Full stack loops sample breadth deliberately: a UI build, an API and schema design, and a round on how the two meet — auth, caching, and where validation lives. The trap is presenting as a generalist with no depth anywhere. Strong full stack CVs name one end as the deeper one and show a feature owned from schema through interface.",
+      "Full stack loops sample breadth deliberately: a UI build, an API and schema design, and a round on how the two meet: auth, caching, and where validation lives. The trap is presenting as a generalist with no depth anywhere. Strong full stack CVs name one end as the deeper one and show a feature owned from schema through interface.",
     interviewFocus: [
       { area: "End-to-end feature design", detail: "Given a feature, design the schema, the API, and the interface, and justify where each piece of logic lives. The signature full stack round." },
       { area: "Auth and session handling", detail: "Sessions versus tokens, refresh strategies, CSRF and XSS defences, and where authorisation is enforced. Asked because it is exactly the seam full stack engineers own." },
-      { area: "Frontend competence", detail: "A component build with real state — usually lighter than a dedicated frontend loop but still hands-on." },
+      { area: "Frontend competence", detail: "A component build with real state, usually lighter than a dedicated frontend loop but still hands-on." },
       { area: "Backend competence", detail: "Data modelling and a query or caching problem, again lighter than a specialist round but expecting correct instincts." },
     ],
     technicalQuestions: [
-      "Design a commenting system with nested replies — schema, API, and rendering strategy.",
+      "Design a commenting system with nested replies: schema, API, and rendering strategy.",
       "Where do you validate input: client, API, or database? Defend covering more than one.",
       "Explain how you would implement 'stay signed in' securely, including refresh token rotation.",
       "The page is slow. How do you determine whether the bottleneck is frontend, network, or backend?",
@@ -353,39 +353,39 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Describe a project where you had to make product decisions as well as technical ones.",
     ],
     questionsToAsk: [
-      "How is ownership split — do engineers here own features end to end or by layer?",
+      "How is ownership split? Do engineers here own features end to end or by layer?",
       "Where does the team draw the line between frontend and backend responsibility?",
-      "What is the deployment story for the frontend and the API — coupled or independent?",
+      "What is the deployment story for the frontend and the API: coupled or independent?",
       "How much product input do engineers have on scope?",
     ],
     faq: [
       {
         question: "Is 'full stack' still a credible title in 2026?",
         answer:
-          "Yes, and it is strongest at startups and scale-ups where owning a feature end to end is the job. It is weakest when it reads as an absence of specialisation. The way to keep it credible on a CV is to declare a centre of gravity — \"full stack, backend-leaning\" — and then prove that depth with one system you owned properly, while showing the breadth through features delivered across the stack.",
+          "Yes, and it is strongest at startups and scale-ups where owning a feature end to end is the job. It is weakest when it reads as an absence of specialisation. The way to keep it credible on a CV is to declare a centre of gravity (\"full stack, backend-leaning\") and then prove that depth with one system you owned properly, while showing the breadth through features delivered across the stack.",
       },
       {
         question: "How do full stack interviews differ from specialist ones?",
         answer:
-          "You get sampled on more axes with less depth on each. A typical loop is one component build, one API and schema design, one round on the seam between them (auth, caching, data fetching), and a behavioural round. Specialists get one deep round instead. This means full stack candidates fail most often on the seam questions — where validation belongs, how sessions are refreshed — rather than on either end individually.",
+          "You get sampled on more axes with less depth on each. A typical loop is one component build, one API and schema design, one round on the seam between them (auth, caching, data fetching), and a behavioural round. Specialists get one deep round instead. This means full stack candidates fail most often on the seam questions (where validation belongs, how sessions are refreshed) rather than on either end individually.",
       },
       {
         question: "What should a Full Stack Developer CV emphasise?",
         answer:
-          "Features owned from database to interface, with impact stated at the product level. \"Built subscription billing end to end — Stripe integration, Postgres schema, and self-serve upgrade UI — lifting paid conversion 14%\" demonstrates the whole span in one line. Add a note about which end you are deeper in, because hiring managers are staffing a specific gap and a CV that answers that question is easier to route.",
+          "Features owned from database to interface, with impact stated at the product level. \"Built subscription billing end to end (Stripe integration, Postgres schema, and self-serve upgrade UI), lifting paid conversion 14%\" demonstrates the whole span in one line. Add a note about which end you are deeper in, because hiring managers are staffing a specific gap and a CV that answers that question is easier to route.",
       },
       {
         question: "Do full stack roles pay less than specialist roles?",
         answer:
-          "Not inherently — the pay gap tracks company type more than title. Full stack roles cluster at startups and mid-size product companies, where compensation is more variable; the highest specialist bands sit at large tech companies that hire by discipline. A full stack engineer with genuine depth in one area typically interviews successfully for the specialist role too, which is the more reliable route to the higher band.",
+          "Not inherently. The pay gap tracks company type more than title. Full stack roles cluster at startups and mid-size product companies, where compensation is more variable; the highest specialist bands sit at large tech companies that hire by discipline. A full stack engineer with genuine depth in one area typically interviews successfully for the specialist role too, which is the more reliable route to the higher band.",
       },
     ],
     summaryExample:
-      "Full stack engineer (backend-leaning) with 6 years at early-stage SaaS. Owned subscription billing end to end — Stripe integration, Postgres schema, and self-serve upgrade flow — lifting paid conversion 14%. Comfortable from query plans to React state, and the first engineer on-call for a platform serving 500k users.",
+      "Full stack engineer (backend-leaning) with 6 years at early-stage SaaS. Owned subscription billing end to end (Stripe integration, Postgres schema, and self-serve upgrade flow), lifting paid conversion 14%. Comfortable from query plans to React state, and the first engineer on-call for a platform serving 500k users.",
     bulletExamples: [
       {
         weak: "Worked on both frontend and backend development using the MERN stack.",
-        strong: "Owned the subscription billing feature end to end: Postgres schema, Stripe webhook handling with idempotency, and the self-serve upgrade UI — lifting paid conversion from 3.1% to 3.5%.",
+        strong: "Owned the subscription billing feature end to end: Postgres schema, Stripe webhook handling with idempotency, and the self-serve upgrade UI, lifting paid conversion from 3.1% to 3.5%.",
         why: "\"Both frontend and backend\" is the claim every full stack CV makes. Walking one feature through all three layers proves the span concretely, and the idempotency detail signals real depth rather than tutorial familiarity.",
       },
       {
@@ -410,7 +410,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     redFlags: [
       "Equal-weight claims across ten technologies with no stated centre of gravity.",
-      "No end-to-end feature described — only layer-specific tasks.",
+      "No end-to-end feature described, only layer-specific tasks.",
       "'MERN stack' or similar acronym used as the main qualification.",
       "No product metric anywhere, which is the main advantage full stack CVs have available.",
     ],
@@ -420,7 +420,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     intro:
       "DevOps interviews test whether you can make delivery fast and failure survivable. Expect a scenario-based round on debugging a broken pipeline or a degraded cluster, an infrastructure-as-code exercise, and detailed questions about your incident history. Hiring managers read these CVs for DORA-style metrics: how often you deploy, how long changes take, how often they fail, and how fast you recover.",
     interviewFocus: [
-      { area: "Live troubleshooting", detail: "A described outage — pods crash-looping, a pipeline failing intermittently, disk filling — where you narrate your diagnostic path. The highest-signal round." },
+      { area: "Live troubleshooting", detail: "A described outage (pods crash-looping, a pipeline failing intermittently, disk filling) where you narrate your diagnostic path. The highest-signal round." },
       { area: "Infrastructure as code", detail: "Writing or reviewing Terraform, covering state management, module structure, and how you avoid drift and destructive plans." },
       { area: "CI/CD design", detail: "Designing a pipeline with sensible gates, rollback strategy, and deployment pattern (blue/green, canary, rolling)." },
       { area: "Reliability practice", detail: "SLOs, error budgets, alert design, and what you have changed after an incident." },
@@ -445,28 +445,28 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "What are your current DORA metrics, and which one are you trying to move?",
       "How is on-call structured, and do developers share it?",
       "How much of the infrastructure is actually defined in code today?",
-      "What does the postmortem process look like — blameless in practice or in name?",
+      "What does the postmortem process look like? Blameless in practice or in name?",
     ],
     faq: [
       {
         question: "What does a DevOps Engineer interview focus on?",
         answer:
-          "Scenario troubleshooting above everything else. The defining round describes a failure — crash-looping pods, an intermittent pipeline failure, a disk filling in production — and asks you to narrate your diagnosis command by command. Around that sit an infrastructure-as-code exercise (usually Terraform), a CI/CD design discussion, and a deep dive on an incident from your history. Pure trivia rounds are increasingly rare; interviewers want to watch you think under uncertainty.",
+          "Scenario troubleshooting above everything else. The defining round describes a failure (crash-looping pods, an intermittent pipeline failure, a disk filling in production) and asks you to narrate your diagnosis command by command. Around that sit an infrastructure-as-code exercise (usually Terraform), a CI/CD design discussion, and a deep dive on an incident from your history. Pure trivia rounds are increasingly rare; interviewers want to watch you think under uncertainty.",
       },
       {
         question: "Which metrics should a DevOps CV show?",
         answer:
-          "The four DORA metrics are the shared vocabulary: deployment frequency, lead time for change, change-failure rate, and mean time to recovery. Add cost and reliability alongside them — monthly cloud spend reduced, uptime against SLO, incident volume. \"Raised deploy frequency from weekly to 40x/day while cutting change-failure rate from 18% to 4%\" is the single most effective bullet shape in this discipline because it shows speed and stability moving together.",
+          "The four DORA metrics are the shared vocabulary: deployment frequency, lead time for change, change-failure rate, and mean time to recovery. Add cost and reliability alongside them: monthly cloud spend reduced, uptime against SLO, incident volume. \"Raised deploy frequency from weekly to 40x/day while cutting change-failure rate from 18% to 4%\" is the single most effective bullet shape in this discipline because it shows speed and stability moving together.",
       },
       {
         question: "Do I need Kubernetes to get a DevOps job?",
         answer:
-          "For most postings, yes in practice — it appears in the large majority of DevOps descriptions, and interviews assume working familiarity. You need to debug a failing pod, read and write manifests, understand services and ingress, and reason about resource limits and probes. You do not need to have written a controller or operated the control plane yourself; that depth belongs to platform engineering roles.",
+          "For most postings, yes in practice. It appears in the large majority of DevOps descriptions, and interviews assume working familiarity. You need to debug a failing pod, read and write manifests, understand services and ingress, and reason about resource limits and probes. You do not need to have written a controller or operated the control plane yourself; that depth belongs to platform engineering roles.",
       },
       {
         question: "Is DevOps Engineer the same as SRE?",
         answer:
-          "They overlap heavily but weight differently. DevOps roles centre on delivery — pipelines, infrastructure as code, developer experience — and are measured on how fast and safely teams ship. SRE roles centre on reliability of running systems, formalised through SLOs and error budgets, and typically involve more software engineering and more on-call. Interview loops reflect this: SRE loops include more coding, DevOps loops more tooling and pipeline design.",
+          "They overlap heavily but weight differently. DevOps roles centre on delivery (pipelines, infrastructure as code, developer experience) and are measured on how fast and safely teams ship. SRE roles centre on reliability of running systems, formalised through SLOs and error budgets, and typically involve more software engineering and more on-call. Interview loops reflect this: SRE loops include more coding, DevOps loops more tooling and pipeline design.",
       },
     ],
     summaryExample:
@@ -479,7 +479,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Responsible for cloud infrastructure and cost optimisation on AWS.",
-        strong: "Cut AWS spend 34% ($780k/yr) by rightsizing 200 over-provisioned instances, moving batch workloads to spot, and adding per-team cost alerting — with no SLO regression.",
+        strong: "Cut AWS spend 34% ($780k/yr) by rightsizing 200 over-provisioned instances, moving batch workloads to spot, and adding per-team cost alerting, with no SLO regression.",
         why: "Cost bullets are only credible with the reliability caveat attached. Naming the three mechanisms and the absolute saving shows the analysis, and \"no SLO regression\" pre-empts the obvious interview challenge.",
       },
       {
@@ -498,7 +498,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Lead / Principal (8+ yrs)", expectation: "Sets reliability and delivery strategy. CV should show org-wide standards and their measured effect." },
     ],
     redFlags: [
-      "Tool lists with no metrics — DevOps is one of the most quantifiable disciplines, so their absence stands out.",
+      "Tool lists with no metrics. DevOps is one of the most quantifiable disciplines, so their absence stands out.",
       "No incident stories, which suggests no production ownership.",
       "'Automated processes' with no before/after timing.",
       "Cost savings quoted with no reliability context, which reads as risk-taking.",
@@ -507,7 +507,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "qa-engineer": {
     intro:
-      "QA interviews have shifted decisively toward automation and toward judgement about what not to test. Expect to design a test strategy for a described feature, write automation against a real page or API, and answer questions about flakiness — the single most discussed problem in the discipline. QA CVs are read for escaped-defect rates and pipeline reliability, not for counts of test cases written.",
+      "QA interviews have shifted decisively toward automation and toward judgement about what not to test. Expect to design a test strategy for a described feature, write automation against a real page or API, and answer questions about flakiness, the single most discussed problem in the discipline. QA CVs are read for escaped-defect rates and pipeline reliability, not for counts of test cases written.",
     interviewFocus: [
       { area: "Test strategy design", detail: "Given a feature, decide what to test at unit, integration, and end-to-end level and justify the split. Interviewers look for a pyramid instinct and for explicit decisions about what you would not automate." },
       { area: "Automation implementation", detail: "Writing a Playwright, Cypress, or Selenium test, usually including a selector strategy and a wait strategy. Flaky-by-construction solutions are the common failure." },
@@ -534,13 +534,13 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "What is the current escaped-defect rate, and how is it tracked?",
       "How flaky is the suite today, and who owns fixing it?",
       "Does QA gate releases, or advise on them?",
-      "How early is QA involved — at design, or after code complete?",
+      "How early is QA involved: at design, or after code complete?",
     ],
     faq: [
       {
         question: "Is manual QA still hireable, or is everything automation now?",
         answer:
-          "Manual-only roles have contracted sharply, but exploratory testing skill remains valued — it is the part automation cannot replicate. The realistic position is hybrid: you are expected to write and maintain automation while bringing the judgement that finds bugs no scripted test would. If your experience is manual-only, the highest-leverage move is shipping a small Playwright or Cypress suite you can discuss in detail, since interviews now almost always include a hands-on round.",
+          "Manual-only roles have contracted sharply, but exploratory testing skill remains valued. It is the part automation cannot replicate. The realistic position is hybrid: you are expected to write and maintain automation while bringing the judgement that finds bugs no scripted test would. If your experience is manual-only, the highest-leverage move is shipping a small Playwright or Cypress suite you can discuss in detail, since interviews now almost always include a hands-on round.",
       },
       {
         question: "What metrics should a QA Engineer CV show?",
@@ -550,7 +550,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How do I answer the flaky test question well?",
         answer:
-          "Show a systematic process rather than a fix. Strong answers quarantine the flaky test immediately so the suite stays trustworthy, then categorise the cause — timing and implicit waits, test interdependence, shared mutable state, environment differences, genuine race conditions in the product. The point worth making explicitly is that some flakes are real bugs surfacing under timing pressure, and that treating every flake as a test problem is how genuine race conditions reach production.",
+          "Show a systematic process rather than a fix. Strong answers quarantine the flaky test immediately so the suite stays trustworthy, then categorise the cause: timing and implicit waits, test interdependence, shared mutable state, environment differences, genuine race conditions in the product. The point worth making explicitly is that some flakes are real bugs surfacing under timing pressure, and that treating every flake as a test problem is how genuine race conditions reach production.",
       },
       {
         question: "What is the career path from QA Engineer?",
@@ -569,12 +569,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Found and reported bugs to the development team using Jira.",
         strong: "Introduced contract testing between 6 services, catching 40+ breaking API changes pre-merge and cutting integration defects reaching staging by 65%.",
-        why: "Reporting bugs after the fact is reactive and unmeasurable. Shifting detection earlier — pre-merge — is the modern quality argument, and the defect reduction quantifies it.",
+        why: "Reporting bugs after the fact is reactive and unmeasurable. Shifting detection earlier (pre-merge) is the modern quality argument, and the defect reduction quantifies it.",
       },
       {
         weak: "Improved test automation coverage and maintained the test suite.",
         strong: "Cut suite flake rate from 12% to 0.8% by replacing implicit waits with deterministic network interception and isolating shared fixtures, ending the team's practice of re-running failed builds.",
-        why: "\"Improved coverage\" invites the question of whether coverage was the right target. Naming flake rate, the two specific causes fixed, and the team behaviour that stopped shows you understood the real problem — trust in the suite.",
+        why: "\"Improved coverage\" invites the question of whether coverage was the right target. Naming flake rate, the two specific causes fixed, and the team behaviour that stopped shows you understood the real problem: trust in the suite.",
       },
     ],
     coreSkills: ["Test strategy & risk analysis", "Test automation", "Exploratory testing", "API testing", "Defect isolation & reporting", "CI integration", "Performance testing basics", "Accessibility testing"],
@@ -587,7 +587,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Lead (8+ yrs)", expectation: "Owns quality across teams. CV should show organisational quality metrics and the practices behind them." },
     ],
     redFlags: [
-      "Counts of test cases written or bugs logged as headline achievements — these measure activity, not quality.",
+      "Counts of test cases written or bugs logged as headline achievements. These measure activity, not quality.",
       "No automation experience at all, which closes most current postings.",
       "No escaped-defect or cycle-time numbers.",
       "Framing QA as a gate rather than as an enabler of release speed.",
@@ -598,9 +598,9 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "data-scientist": {
     intro:
-      "Data Scientist loops test statistical judgement more than modelling technique. The rounds that fail candidates are the case study — where you must translate a vague business question into a measurable one — and the experimentation round, where interviewers probe whether you understand what an A/B test can and cannot tell you. Modelling questions are usually shallower than candidates expect and focus on evaluation choices rather than architectures.",
+      "Data Scientist loops test statistical judgement more than modelling technique. The rounds that fail candidates are the case study (where you must translate a vague business question into a measurable one) and the experimentation round, where interviewers probe whether you understand what an A/B test can and cannot tell you. Modelling questions are usually shallower than candidates expect and focus on evaluation choices rather than architectures.",
     interviewFocus: [
-      { area: "Business case framing", detail: "Given a vague prompt — \"engagement is down\" — define the metric, form hypotheses, and state what data would distinguish them. The highest-weighted round at most companies." },
+      { area: "Business case framing", detail: "Given a vague prompt (\"engagement is down\"), define the metric, form hypotheses, and state what data would distinguish them. The highest-weighted round at most companies." },
       { area: "Statistics and experimentation", detail: "A/B test design, power and sample size, p-values and their misinterpretation, multiple comparisons, and novelty effects. Interviewers commonly ask you to critique a flawed experiment." },
       { area: "SQL and data manipulation", detail: "Window functions, cohort queries, and joins against a realistic schema. Almost always a standalone round." },
       { area: "Modelling judgement", detail: "Choosing and defending an evaluation metric, handling class imbalance, explaining why a model is failing in production." },
@@ -622,7 +622,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Tell me about a time you chose not to build a model.",
     ],
     questionsToAsk: [
-      "How are experiments run here — is there a platform, and who decides what ships?",
+      "How are experiments run here? Is there a platform, and who decides what ships?",
       "How often do models make it to production versus staying as analyses?",
       "Who owns the data pipelines the science team depends on?",
       "How is data science success measured on this team?",
@@ -631,7 +631,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the hardest round in a Data Scientist interview?",
         answer:
-          "The business case. You are given something deliberately vague — \"retention dropped, find out why\" — and scored on how you decompose it: segmenting to localise the change, separating seasonality from a real shift, distinguishing a data-collection bug from a product regression, and stating what evidence would confirm each hypothesis. Candidates who jump straight to modelling fail this round. Interviewers are testing whether you would spend three weeks on the right question or the wrong one.",
+          "The business case. You are given something deliberately vague (\"retention dropped, find out why\") and scored on how you decompose it: segmenting to localise the change, separating seasonality from a real shift, distinguishing a data-collection bug from a product regression, and stating what evidence would confirm each hypothesis. Candidates who jump straight to modelling fail this round. Interviewers are testing whether you would spend three weeks on the right question or the wrong one.",
       },
       {
         question: "How much SQL do Data Scientists need?",
@@ -639,14 +639,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
           "Deep working fluency, and it is nearly always a separate round. Expect window functions, self-joins, cohort and funnel queries, and date arithmetic against a schema you see for the first time. Many companies screen on SQL before any statistics round, so it is the most common early elimination point. Being able to write a retention cohort query from scratch is a reasonable bar to hold yourself to.",
       },
       {
-        question: "Data Scientist versus Machine Learning Engineer — which should I apply for?",
+        question: "Data Scientist versus Machine Learning Engineer: which should I apply for?",
         answer:
-          "Data Scientists answer questions; ML Engineers ship systems. If your strength is experimentation, causal reasoning, and communicating findings that change decisions, target Data Scientist. If it is training pipelines, serving infrastructure, latency, and model monitoring in production, target ML Engineer. The interviews differ accordingly — DS loops weight statistics and case studies, MLE loops weight system design and coding. Applying to both with one CV usually reads as unfocused to each.",
+          "Data Scientists answer questions; ML Engineers ship systems. If your strength is experimentation, causal reasoning, and communicating findings that change decisions, target Data Scientist. If it is training pipelines, serving infrastructure, latency, and model monitoring in production, target ML Engineer. The interviews differ accordingly. DS loops weight statistics and case studies, MLE loops weight system design and coding. Applying to both with one CV usually reads as unfocused to each.",
       },
       {
         question: "What should a Data Scientist CV show?",
         answer:
-          "Decisions changed, not models built. \"Redesigned the pricing experiment framework, cutting time-to-decision from 6 weeks to 9 days and catching a $2M annual revenue leak from an under-powered test\" beats any list of algorithms. Name the business metric you moved, the size of the population affected, and the decision that followed. Keep the technique list compact — hiring managers assume you know regression and gradient boosting.",
+          "Decisions changed, not models built. \"Redesigned the pricing experiment framework, cutting time-to-decision from 6 weeks to 9 days and catching a $2M annual revenue leak from an under-powered test\" beats any list of algorithms. Name the business metric you moved, the size of the population affected, and the decision that followed. Keep the technique list compact. Hiring managers assume you know regression and gradient boosting.",
       },
     ],
     summaryExample:
@@ -664,7 +664,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Used A/B testing to evaluate new product features.",
-        strong: "Rebuilt the A/B framework with sequential testing and pre-registered hypotheses, cutting average test duration 40% and reducing false-positive launches — 3 of 11 prior 'wins' failed to replicate.",
+        strong: "Rebuilt the A/B framework with sequential testing and pre-registered hypotheses, cutting average test duration 40% and reducing false-positive launches: 3 of 11 prior 'wins' failed to replicate.",
         why: "Running A/B tests is table stakes. Improving how an organisation experiments is a senior contribution, and the replication failure is a concrete, memorable detail that proves methodological depth.",
       },
     ],
@@ -680,7 +680,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     redFlags: [
       "Kaggle rankings or coursework leading the CV ahead of applied work.",
       "Model accuracy quoted with no business metric attached.",
-      "Long algorithm lists — assumed knowledge that displaces evidence of judgement.",
+      "Long algorithm lists: assumed knowledge that displaces evidence of judgement.",
       "No mention of experimentation or causal reasoning anywhere.",
     ],
   },
@@ -689,7 +689,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     intro:
       "Data Analyst interviews are dominated by SQL and by the ability to turn a number into a recommendation. Nearly every loop includes a live SQL round, a case study where you interpret a metric movement, and a communication round where you present findings to a non-technical stakeholder. The CVs that succeed show decisions influenced, not dashboards delivered.",
     interviewFocus: [
-      { area: "Live SQL", detail: "Writing queries against an unfamiliar schema — joins, aggregations, window functions, cohort and funnel logic. The most common elimination round in the discipline." },
+      { area: "Live SQL", detail: "Writing queries against an unfamiliar schema: joins, aggregations, window functions, cohort and funnel logic. The most common elimination round in the discipline." },
       { area: "Metric interpretation", detail: "Given a chart or a metric change, explain plausible causes and what you would check. Interviewers test whether you consider seasonality, mix shift, and instrumentation before product causes." },
       { area: "Stakeholder communication", detail: "Presenting a finding to someone non-technical and defending a recommendation, including what you are uncertain about." },
       { area: "Dashboard and metric design", detail: "Choosing what to display and defining a metric precisely enough that two teams compute it identically." },
@@ -725,12 +725,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What separates a Data Analyst from a Data Scientist?",
         answer:
-          "Analysts describe and diagnose what happened; scientists predict and establish causality. Analyst work centres on SQL, BI tooling, metric definition, and stakeholder communication, with statistics used mostly for significance and sizing. Scientist work adds experimental design, causal inference, and modelling. In practice the boundary varies by company — at smaller organisations one analyst does both — but the interviews differ sharply, so target the loop you can pass.",
+          "Analysts describe and diagnose what happened; scientists predict and establish causality. Analyst work centres on SQL, BI tooling, metric definition, and stakeholder communication, with statistics used mostly for significance and sizing. Scientist work adds experimental design, causal inference, and modelling. In practice the boundary varies by company (at smaller organisations one analyst does both), but the interviews differ sharply, so target the loop you can pass.",
       },
       {
         question: "What belongs on a Data Analyst CV?",
         answer:
-          "The decision each analysis produced. \"Identified that 31% of signup drop-off came from one verification step; removing it lifted completed signups 22%\" is the shape that works, because it names the finding, the action, and the result. Also state the scale you worked at — rows, users, revenue covered — and the tools, but keep tooling brief. Listing dashboards built without saying what changed is the most common weakness in this discipline's CVs.",
+          "The decision each analysis produced. \"Identified that 31% of signup drop-off came from one verification step; removing it lifted completed signups 22%\" is the shape that works, because it names the finding, the action, and the result. Also state the scale you worked at (rows, users, revenue covered) and the tools, but keep tooling brief. Listing dashboards built without saying what changed is the most common weakness in this discipline's CVs.",
       },
       {
         question: "Do I need Python for Data Analyst roles?",
@@ -744,7 +744,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Created dashboards in Tableau to track key business metrics.",
         strong: "Replaced 23 overlapping Tableau dashboards with 4 role-based views built on a governed dbt metric layer, ending recurring disputes between marketing and finance over revenue figures.",
-        why: "Dashboard counts measure output, not value. Consolidation plus a governed metric layer solves the actual organisational problem — disagreement about the numbers — which is the outcome a hiring manager recognises.",
+        why: "Dashboard counts measure output, not value. Consolidation plus a governed metric layer solves the actual organisational problem (disagreement about the numbers), which is the outcome a hiring manager recognises.",
       },
       {
         weak: "Analysed customer data to identify trends and provide insights.",
@@ -776,12 +776,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "data-engineer": {
     intro:
-      "Data Engineering interviews centre on pipeline design and on what happens when a pipeline fails halfway. Expect a data modelling round, a pipeline architecture round covering batch versus streaming, and detailed SQL. The distinguishing senior signal is how you handle idempotency, backfills, and late-arriving data — the problems that separate people who have operated pipelines from people who have written them.",
+      "Data Engineering interviews centre on pipeline design and on what happens when a pipeline fails halfway. Expect a data modelling round, a pipeline architecture round covering batch versus streaming, and detailed SQL. The distinguishing senior signal is how you handle idempotency, backfills, and late-arriving data, the problems that separate people who have operated pipelines from people who have written them.",
     interviewFocus: [
       { area: "Pipeline architecture", detail: "Designing ingestion through to serving for a described source, choosing batch or streaming, and justifying the orchestration and storage layers." },
       { area: "Data modelling", detail: "Star schemas, slowly changing dimensions, normalisation trade-offs, and partitioning strategy for query performance and cost." },
       { area: "Failure semantics", detail: "Idempotent writes, exactly-once processing, backfill strategy, and handling late or out-of-order events. The senior differentiator." },
-      { area: "SQL and performance", detail: "Complex transformations plus cost and performance tuning on a warehouse — partition pruning, clustering, and why a query scanned 4TB." },
+      { area: "SQL and performance", detail: "Complex transformations plus cost and performance tuning on a warehouse: partition pruning, clustering, and why a query scanned 4TB." },
     ],
     technicalQuestions: [
       "Design a pipeline ingesting 500M events/day into a warehouse with a 15-minute freshness SLA.",
@@ -801,7 +801,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     questionsToAsk: [
       "What are the freshness SLAs, and how often are they missed?",
-      "How is data quality monitored — tests in the pipeline, or downstream discovery?",
+      "How is data quality monitored: tests in the pipeline, or downstream discovery?",
       "What is the current warehouse spend and is it a concern?",
       "Who owns the schema contracts between producers and the platform?",
     ],
@@ -814,17 +814,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Do Data Engineers need Spark, or is SQL and dbt enough?",
         answer:
-          "It depends on the data volume the company handles. Modern warehouse-centric stacks — Snowflake or BigQuery with dbt and an orchestrator — cover a large share of postings, and there SQL depth plus dbt is genuinely sufficient. Spark remains required where volumes exceed comfortable warehouse processing or where the work is unstructured. Read the posting: if it names Spark, Flink, or Kafka prominently, the loop will test distributed processing properly.",
+          "It depends on the data volume the company handles. Modern warehouse-centric stacks (Snowflake or BigQuery with dbt and an orchestrator) cover a large share of postings, and there SQL depth plus dbt is genuinely sufficient. Spark remains required where volumes exceed comfortable warehouse processing or where the work is unstructured. Read the posting: if it names Spark, Flink, or Kafka prominently, the loop will test distributed processing properly.",
       },
       {
         question: "What metrics belong on a Data Engineer CV?",
         answer:
-          "Volume, freshness, reliability, and cost. Events or rows processed per day, pipeline SLA attainment, freshness lag, warehouse spend reduced, and the number of downstream consumers you serve. \"Rebuilt the events pipeline to process 500M events/day at 8-minute freshness while cutting warehouse spend 45%\" works because it captures scale, service level, and cost in one line — the three things this discipline is managed on.",
+          "Volume, freshness, reliability, and cost. Events or rows processed per day, pipeline SLA attainment, freshness lag, warehouse spend reduced, and the number of downstream consumers you serve. \"Rebuilt the events pipeline to process 500M events/day at 8-minute freshness while cutting warehouse spend 45%\" works because it captures scale, service level, and cost in one line: the three things this discipline is managed on.",
       },
       {
         question: "Is Data Engineer a good move from Data Analyst?",
         answer:
-          "It is one of the most common and successful transitions, because the SQL foundation transfers directly and analysts already understand what consumers need. The gap to close is software engineering practice: version control, testing, orchestration, and infrastructure. Analytics engineering — dbt-centred modelling work — is the natural intermediate step, and many people find it is the destination rather than a waypoint.",
+          "It is one of the most common and successful transitions, because the SQL foundation transfers directly and analysts already understand what consumers need. The gap to close is software engineering practice: version control, testing, orchestration, and infrastructure. Analytics engineering (dbt-centred modelling work) is the natural intermediate step, and many people find it is the destination rather than a waypoint.",
       },
     ],
     summaryExample:
@@ -865,9 +865,9 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "machine-learning-engineer": {
     intro:
-      "ML Engineer loops are closer to software engineering interviews than to data science ones. Expect a coding round, an ML system design round covering training and serving infrastructure, and questions about what happens to a model after deployment — drift, retraining, rollback. Candidates who prepare only modelling theory and not systems consistently underperform here.",
+      "ML Engineer loops are closer to software engineering interviews than to data science ones. Expect a coding round, an ML system design round covering training and serving infrastructure, and questions about what happens to a model after deployment: drift, retraining, rollback. Candidates who prepare only modelling theory and not systems consistently underperform here.",
     interviewFocus: [
-      { area: "ML system design", detail: "Designing an end-to-end system — feature pipeline, training, evaluation, serving, monitoring — for a described product need. The defining round." },
+      { area: "ML system design", detail: "Designing an end-to-end system (feature pipeline, training, evaluation, serving, monitoring) for a described product need. The defining round." },
       { area: "Production ML operations", detail: "Detecting drift, deciding retraining cadence, shadow deployment and rollback, and reproducing a training run months later." },
       { area: "Coding", detail: "Standard software engineering problems plus occasionally implementing a component (a metric, a sampler, an attention step) from scratch." },
       { area: "Modelling depth", detail: "Evaluation metric selection, overfitting diagnosis, and trade-offs between model complexity and serving latency." },
@@ -891,14 +891,14 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     questionsToAsk: [
       "How many models are in production, and who owns them after launch?",
       "What does the retraining and promotion process look like?",
-      "How is model performance monitored — and who gets paged?",
+      "How is model performance monitored, and who gets paged?",
       "Where is the boundary between the science and engineering teams here?",
     ],
     faq: [
       {
         question: "How is an ML Engineer interview different from a Data Scientist interview?",
         answer:
-          "It is a software engineering loop with ML content. You get a standard coding round, an ML system design round about feature pipelines and serving infrastructure, and questions about production concerns — drift, retraining, rollback, reproducibility. Data Science loops instead weight statistics, experimentation, and business case framing. Candidates who prepare modelling theory alone typically fail ML Engineer loops on the systems rounds, which carry the most weight.",
+          "It is a software engineering loop with ML content. You get a standard coding round, an ML system design round about feature pipelines and serving infrastructure, and questions about production concerns: drift, retraining, rollback, reproducibility. Data Science loops instead weight statistics, experimentation, and business case framing. Candidates who prepare modelling theory alone typically fail ML Engineer loops on the systems rounds, which carry the most weight.",
       },
       {
         question: "What is the most common ML system design mistake in interviews?",
@@ -908,12 +908,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Do I need deep learning experience for ML Engineer roles?",
         answer:
-          "It depends on the domain, and less often than job descriptions imply. Recommendation, ranking, fraud, and forecasting work still runs substantially on gradient-boosted trees, and interviews for those roles focus on pipelines and features. Deep learning depth is genuinely required for computer vision, NLP, and generative AI roles. What is universally required is the systems side — serving, monitoring, and reproducibility — regardless of model family.",
+          "It depends on the domain, and less often than job descriptions imply. Recommendation, ranking, fraud, and forecasting work still runs substantially on gradient-boosted trees, and interviews for those roles focus on pipelines and features. Deep learning depth is genuinely required for computer vision, NLP, and generative AI roles. What is universally required is the systems side (serving, monitoring, and reproducibility) regardless of model family.",
       },
       {
         question: "What should an ML Engineer CV show?",
         answer:
-          "Models in production and the systems around them. State the serving scale (requests per second, latency percentile), the business metric moved, and the operational maturity — retraining cadence, monitoring, rollback. \"Deployed a ranking model serving 10k RPS at p99 62ms, lifting click-through 14%, with automated weekly retraining and drift alerting\" covers modelling, systems, and impact together, which is exactly the combination the role is hired for.",
+          "Models in production and the systems around them. State the serving scale (requests per second, latency percentile), the business metric moved, and the operational maturity: retraining cadence, monitoring, rollback. \"Deployed a ranking model serving 10k RPS at p99 62ms, lifting click-through 14%, with automated weekly retraining and drift alerting\" covers modelling, systems, and impact together, which is exactly the combination the role is hired for.",
       },
     ],
     summaryExample:
@@ -947,7 +947,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     redFlags: [
       "Only notebook and prototype work, with nothing shown reaching production.",
       "Model metrics with no serving or business numbers.",
-      "No monitoring, retraining, or rollback signal — the production half of the job.",
+      "No monitoring, retraining, or rollback signal, the production half of the job.",
       "Paper reimplementations presented as engineering experience.",
     ],
   },
@@ -956,7 +956,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "product-manager": {
     intro:
-      "Product Manager loops test judgement under incomplete information across four repeatable formats: product sense, analytical, execution, and behavioural. The most common failure is jumping to solutions before establishing the user and the goal. PM CVs are read for outcomes owned rather than features shipped — a list of launches without metrics reads as project management.",
+      "Product Manager loops test judgement under incomplete information across four repeatable formats: product sense, analytical, execution, and behavioural. The most common failure is jumping to solutions before establishing the user and the goal. PM CVs are read for outcomes owned rather than features shipped. A list of launches without metrics reads as project management.",
     interviewFocus: [
       { area: "Product sense", detail: "\"Design X for Y\" or \"improve product Z\". Scored on whether you segment users, pick a target segment with a reason, generate a range of solutions, and choose using stated criteria." },
       { area: "Analytical / metrics", detail: "Defining success metrics, diagnosing a metric drop, and estimating market size. Interviewers check whether you name a counter-metric unprompted." },
@@ -977,34 +977,34 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Describe influencing a team over which you had no authority.",
       "Tell me about killing a feature or project.",
       "Describe a time engineering told you something was impossible in the timeframe.",
-      "Tell me about using data to overturn a strongly held opinion — including your own.",
+      "Tell me about using data to overturn a strongly held opinion, including your own.",
     ],
     questionsToAsk: [
       "How are roadmap decisions actually made, and what role does the PM play?",
       "What does the discovery process look like before something enters the roadmap?",
-      "How is PM success measured here — outputs or outcomes?",
+      "How is PM success measured here: outputs or outcomes?",
       "What is the relationship between product and engineering leadership?",
     ],
     faq: [
       {
         question: "What are the four types of Product Manager interview round?",
         answer:
-          "Product sense (design or improve a product), analytical (metrics definition, diagnosing a drop, market sizing), execution (prioritisation, trade-offs, launch planning), and behavioural (influence, conflict, failure). Most loops include all four across four to six rounds. Product sense and analytical are where candidates most often fail — the former because they solution before establishing the user and goal, the latter because they define success metrics without a counter-metric.",
+          "Product sense (design or improve a product), analytical (metrics definition, diagnosing a drop, market sizing), execution (prioritisation, trade-offs, launch planning), and behavioural (influence, conflict, failure). Most loops include all four across four to six rounds. Product sense and analytical are where candidates most often fail: the former because they solution before establishing the user and goal, the latter because they define success metrics without a counter-metric.",
       },
       {
         question: "How do I structure a product sense answer?",
         answer:
-          "Clarify the goal, segment the users, pick one segment and say why, articulate that segment's specific pain, generate three or four distinct solutions, choose using stated criteria (impact, effort, strategic fit), then define success and a counter-metric. The structure matters less than the discipline of not skipping the first three steps — interviewers are explicitly checking whether you can resist proposing features before you have established who you are building for.",
+          "Clarify the goal, segment the users, pick one segment and say why, articulate that segment's specific pain, generate three or four distinct solutions, choose using stated criteria (impact, effort, strategic fit), then define success and a counter-metric. The structure matters less than the discipline of not skipping the first three steps. Interviewers are explicitly checking whether you can resist proposing features before you have established who you are building for.",
       },
       {
         question: "What makes a Product Manager CV stand out?",
         answer:
-          "Outcomes with the constraints visible. \"Grew activation 34% by rebuilding onboarding around a single aha-moment, prioritised over 6 competing requests with a data-backed case to leadership\" shows the metric, the insight, and the influence, which is the whole job. Feature launch lists without metrics read as project management. Also include scale — users affected, revenue owned, team size you worked with — so reviewers can level you.",
+          "Outcomes with the constraints visible. \"Grew activation 34% by rebuilding onboarding around a single aha-moment, prioritised over 6 competing requests with a data-backed case to leadership\" shows the metric, the insight, and the influence, which is the whole job. Feature launch lists without metrics read as project management. Also include scale (users affected, revenue owned, team size you worked with) so reviewers can level you.",
       },
       {
         question: "How do I move into product management without PM experience?",
         answer:
-          "The reliable routes are internal and adjacent. Move into an APM or associate PM programme, or transition inside your current company from engineering, design, analytics, or support — internal moves dominate because the hardest thing to demonstrate externally is judgement in a specific domain. Whatever your current role, start producing PM artefacts: write the spec, run the user interviews, define the metrics. Those become the evidence your CV needs, since the bar is proof you can own outcomes rather than a certificate.",
+          "The reliable routes are internal and adjacent. Move into an APM or associate PM programme, or transition inside your current company from engineering, design, analytics, or support. Internal moves dominate because the hardest thing to demonstrate externally is judgement in a specific domain. Whatever your current role, start producing PM artefacts: write the spec, run the user interviews, define the metrics. Those become the evidence your CV needs, since the bar is proof you can own outcomes rather than a certificate.",
       },
     ],
     summaryExample:
@@ -1036,7 +1036,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Group PM / Director (8+ yrs)", expectation: "Owns a portfolio and often PMs. CV should show org-level strategy, team growth, and revenue scale." },
     ],
     redFlags: [
-      "Feature launch lists with no metrics — the most common reason PM CVs are rejected.",
+      "Feature launch lists with no metrics, the most common reason PM CVs are rejected.",
       "No evidence of user research, which suggests a backlog-administrator role.",
       "Ownership stated without scale (users, revenue, team size).",
       "Framework name-dropping (RICE, JTBD) without a decision it produced.",
@@ -1070,7 +1070,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     questionsToAsk: [
       "How is design involved in deciding what gets built, not just how it looks?",
-      "What research capacity does the team have — dedicated researchers or designer-led?",
+      "What research capacity does the team have: dedicated researchers or designer-led?",
       "How do you measure whether a design succeeded after launch?",
       "What is the state of the design system?",
     ],
@@ -1083,12 +1083,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How do I show impact as a UX Designer when I do not own the metrics?",
         answer:
-          "Use both usability and business measures, and be honest about attribution. Task success rate, time on task, error rate, and SUS scores from your own testing are directly attributable to your design. Alongside those, cite the product metric that moved after launch — conversion, completion, support ticket volume — while stating that it was a team outcome. Reviewers respond well to \"cut support tickets about billing 40% after redesigning the invoice screen\" because it links design work to a cost the business already tracks.",
+          "Use both usability and business measures, and be honest about attribution. Task success rate, time on task, error rate, and SUS scores from your own testing are directly attributable to your design. Alongside those, cite the product metric that moved after launch (conversion, completion, support ticket volume) while stating that it was a team outcome. Reviewers respond well to \"cut support tickets about billing 40% after redesigning the invoice screen\" because it links design work to a cost the business already tracks.",
       },
       {
         question: "Is UX Designer the same as Product Designer?",
         answer:
-          "They increasingly overlap, with Product Designer implying a broader remit: more involvement in product strategy, metrics, and often visual and interaction design end to end. UX Designer can mean a research-heavier role in some organisations and a generalist one in others. Read the responsibilities rather than the title, and mirror the posting's own language on your CV — the same portfolio usually serves both, with the framing adjusted.",
+          "They increasingly overlap, with Product Designer implying a broader remit: more involvement in product strategy, metrics, and often visual and interaction design end to end. UX Designer can mean a research-heavier role in some organisations and a generalist one in others. Read the responsibilities rather than the title, and mirror the posting's own language on your CV. The same portfolio usually serves both, with the framing adjusted.",
       },
       {
         question: "Do UX Designers need to know how to code?",
@@ -1107,7 +1107,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Conducted user research to understand customer needs.",
         strong: "Ran 24 contextual interviews with warehouse staff that reframed a requested 'faster search' as a scanning-hardware problem, redirecting a quarter of roadmap effort toward a fix that cut pick errors 27%.",
-        why: "\"Conducted research\" gives no evidence the research changed anything. Showing research overturning the stated problem — and the downstream effect — is the strongest form of design impact a CV can claim.",
+        why: "\"Conducted research\" gives no evidence the research changed anything. Showing research overturning the stated problem, and the downstream effect, is the strongest form of design impact a CV can claim.",
       },
       {
         weak: "Created and maintained the company design system.",
@@ -1127,7 +1127,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     redFlags: [
       "A portfolio of final screens with no problem framing or decision trail.",
       "No measurement of any kind, usability or business.",
-      "Unclear contribution on team projects — reviewers assume the least.",
+      "Unclear contribution on team projects. Reviewers assume the least.",
       "Redesign concepts of famous apps with no real constraints, presented as primary work.",
     ],
   },
@@ -1136,11 +1136,11 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "rpa-developer": {
     intro:
-      "RPA interviews test whether you can tell an automatable process from one that should be fixed instead. Expect a process-design round, hands-on questions about a specific platform (usually UiPath, Automation Anywhere or Power Automate), and detailed probing on exception handling — because unattended bots fail silently and the cost of a bad automation is worse than no automation. CVs are read for hours saved and for bots that survived in production.",
+      "RPA interviews test whether you can tell an automatable process from one that should be fixed instead. Expect a process-design round, hands-on questions about a specific platform (usually UiPath, Automation Anywhere or Power Automate), and detailed probing on exception handling, because unattended bots fail silently and the cost of a bad automation is worse than no automation. CVs are read for hours saved and for bots that survived in production.",
     interviewFocus: [
-      { area: "Process assessment", detail: "Given a described process, judge whether it is a good automation candidate — rule-based, stable, high volume, structured input — or whether the real answer is fixing the underlying system. Interviewers are checking that you would not automate a broken process." },
+      { area: "Process assessment", detail: "Given a described process, judge whether it is a good automation candidate (rule-based, stable, high volume, structured input) or whether the real answer is fixing the underlying system. Interviewers are checking that you would not automate a broken process." },
       { area: "Platform depth", detail: "Selectors and their fragility, orchestrator scheduling, queues and transactions, reusable components. Usually specific to one vendor, so read the posting." },
-      { area: "Exception handling and resilience", detail: "Business versus system exceptions, retry logic, and what happens when a screen changes. The senior differentiator — juniors build happy-path bots." },
+      { area: "Exception handling and resilience", detail: "Business versus system exceptions, retry logic, and what happens when a screen changes. The senior differentiator: juniors build happy-path bots." },
       { area: "Governance", detail: "Credential handling, audit logging, version control, and how a bot change gets tested and promoted. Increasingly weighted in regulated sectors." },
     ],
     technicalQuestions: [
@@ -1169,7 +1169,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does an RPA Developer interview focus on?",
         answer:
-          "Process judgement first, platform skill second. The round that decides most loops describes a business process and asks whether you would automate it — interviewers want to hear you check for rule-based logic, stable inputs, sufficient volume, and whether an API exists that would make the bot unnecessary. After that come platform-specific questions on selectors, orchestrator queues and reusable components, and a deep dive on exception handling, which is where unattended automation actually lives or dies.",
+          "Process judgement first, platform skill second. The round that decides most loops describes a business process and asks whether you would automate it. Interviewers want to hear you check for rule-based logic, stable inputs, sufficient volume, and whether an API exists that would make the bot unnecessary. After that come platform-specific questions on selectors, orchestrator queues and reusable components, and a deep dive on exception handling, which is where unattended automation actually lives or dies.",
       },
       {
         question: "Which RPA platform should I learn?",
@@ -1179,12 +1179,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What metrics belong on an RPA Developer CV?",
         answer:
-          "Hours returned to the business, transactions processed, and bot reliability. \"Automated invoice matching across 3 ERPs, processing 5,000 transactions/night at 99.4% straight-through rate and returning ~2,100 FTE-hours annually\" works because it names volume, quality and value together. Also state how many bots you have in production and whether they are attended or unattended — unattended bots imply a much higher bar for exception handling.",
+          "Hours returned to the business, transactions processed, and bot reliability. \"Automated invoice matching across 3 ERPs, processing 5,000 transactions/night at 99.4% straight-through rate and returning ~2,100 FTE-hours annually\" works because it names volume, quality and value together. Also state how many bots you have in production and whether they are attended or unattended? Unattended bots imply a much higher bar for exception handling.",
       },
       {
         question: "Is RPA a dead end now that AI can automate processes?",
         answer:
-          "The field is changing rather than disappearing, but the change is real and worth positioning for. Straightforward screen-scraping work is being displaced by API integration and by AI-based document processing that handles unstructured input RPA never could. The developers doing well are the ones moving toward intelligent automation — combining bots with document understanding and decision models — and toward the process-analysis skills that hold value regardless of tooling. A CV that shows only screen automation on legacy applications is the exposed position.",
+          "The field is changing rather than disappearing, but the change is real and worth positioning for. Straightforward screen-scraping work is being displaced by API integration and by AI-based document processing that handles unstructured input RPA never could. The developers doing well are the ones moving toward intelligent automation (combining bots with document understanding and decision models) and toward the process-analysis skills that hold value regardless of tooling. A CV that shows only screen automation on legacy applications is the exposed position.",
       },
     ],
     summaryExample:
@@ -1198,12 +1198,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Handled exceptions and maintained existing automations.",
         strong: "Re-architected 8 fragile linear bots into a queue-based framework with typed business/system exception handling, cutting failed transactions from 11% to 0.6% and eliminating overnight manual restarts.",
-        why: "Maintenance sounds like keeping the lights on. Naming the architectural change and the failure-rate movement shows you fixed the design rather than patching symptoms — and \"eliminating overnight manual restarts\" is the human cost a manager recognises immediately.",
+        why: "Maintenance sounds like keeping the lights on. Naming the architectural change and the failure-rate movement shows you fixed the design rather than patching symptoms, and \"eliminating overnight manual restarts\" is the human cost a manager recognises immediately.",
       },
       {
         weak: "Worked with business teams to identify automation opportunities.",
         strong: "Assessed 40 candidate processes against volume, rule stability and input structure; automated 14 and recommended API integration or process redesign for 9, avoiding an estimated £180k of low-value bot build.",
-        why: "Identifying opportunities is easy; the senior skill is declining the bad ones. Quantifying what you recommended against — and the spend avoided — is unusual on RPA CVs and reads as genuine judgement.",
+        why: "Identifying opportunities is easy; the senior skill is declining the bad ones. Quantifying what you recommended against, and the spend avoided, is unusual on RPA CVs and reads as genuine judgement.",
       },
     ],
     coreSkills: ["Process assessment & ROI analysis", "Queue-based bot architecture", "Exception handling design", "Selector engineering", "Orchestrator administration", "Process documentation (PDD/SDD)", "Credential & secrets handling", "Reusable component design"],
@@ -1217,7 +1217,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     redFlags: [
       "Bot counts with no transaction volume or reliability figures.",
-      "No mention of exception handling — the half of RPA that determines whether bots survive.",
+      "No mention of exception handling: the half of RPA that determines whether bots survive.",
       "Only attended/desktop automation, which implies a much lower engineering bar.",
       "Claimed savings with no basis stated, which invites scepticism in a field known for inflated business cases.",
     ],
@@ -1225,10 +1225,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "automation-engineer": {
     intro:
-      "Automation Engineer means different things at different companies — test automation, infrastructure automation, or business-process automation — so the first job of your CV is making clear which one you are. Interviews test whether you build automation that other people trust and maintain, rather than scripts that only work on your machine.",
+      "Automation Engineer means different things at different companies (test automation, infrastructure automation, or business-process automation), so the first job of your CV is making clear which one you are. Interviews test whether you build automation that other people trust and maintain, rather than scripts that only work on your machine.",
     interviewFocus: [
       { area: "Scoping what to automate", detail: "Judging where automation pays back and where it creates a maintenance burden worse than the manual task. The question behind most scenario rounds." },
-      { area: "Hands-on scripting", detail: "Python, Bash or PowerShell against a realistic problem — parsing output, calling an API, handling partial failure. Usually a live exercise." },
+      { area: "Hands-on scripting", detail: "Python, Bash or PowerShell against a realistic problem: parsing output, calling an API, handling partial failure. Usually a live exercise." },
       { area: "Reliability and idempotency", detail: "What happens when your automation runs twice, or dies halfway. The most common gap between junior and senior candidates." },
       { area: "Handover and maintainability", detail: "Logging, documentation, alerting, and whether someone else can debug your automation at 3am." },
     ],
@@ -1249,7 +1249,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Tell me about a time the manual process turned out to be the right answer.",
     ],
     questionsToAsk: [
-      "What does 'automation engineer' cover on this team — testing, infrastructure, or business process?",
+      "What does 'automation engineer' cover on this team: testing, infrastructure, or business process?",
       "Who maintains automation after the person who wrote it moves on?",
       "How is automation success measured here?",
       "What is the largest manual process still running today?",
@@ -1258,17 +1258,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does an Automation Engineer actually do?",
         answer:
-          "It depends heavily on the company, and this ambiguity is the main thing to resolve before applying. In some organisations it is test automation and sits inside QA; in others it is infrastructure and CI/CD work overlapping with DevOps; in others it is business-process automation close to RPA. Read the tools in the posting — Selenium and Playwright mean testing, Terraform and Ansible mean infrastructure, UiPath or Power Automate mean process. Mirror the corresponding vocabulary on your CV.",
+          "It depends heavily on the company, and this ambiguity is the main thing to resolve before applying. In some organisations it is test automation and sits inside QA; in others it is infrastructure and CI/CD work overlapping with DevOps; in others it is business-process automation close to RPA. Read the tools in the posting. Selenium and Playwright mean testing, Terraform and Ansible mean infrastructure, UiPath or Power Automate mean process. Mirror the corresponding vocabulary on your CV.",
       },
       {
         question: "What separates a senior automation engineer from a junior one?",
         answer:
-          "Judgement about what not to automate, and building things that survive handover. Juniors write scripts that work; seniors write automation with logging, alerting on silent failure, idempotent behaviour on re-run, and documentation that lets someone else debug it. The interview question that exposes this is \"your automation stopped running three weeks ago and nobody noticed\" — a senior answer talks about heartbeat monitoring and alerting on absence, not just on errors.",
+          "Judgement about what not to automate, and building things that survive handover. Juniors write scripts that work; seniors write automation with logging, alerting on silent failure, idempotent behaviour on re-run, and documentation that lets someone else debug it. The interview question that exposes this is \"your automation stopped running three weeks ago and nobody noticed\". A senior answer talks about heartbeat monitoring and alerting on absence, not just on errors.",
       },
       {
         question: "What metrics belong on an Automation Engineer CV?",
         answer:
-          "Manual hours removed, error rates before and after, and reliability of the automation itself. \"Automated the monthly reconciliation, removing 18 hours of manual work per cycle and eliminating the three recurring transposition errors that had triggered restatements\" carries both the time saved and the quality gain. Also state how much of what you built is still running — automation that outlives your tenure is the strongest possible signal.",
+          "Manual hours removed, error rates before and after, and reliability of the automation itself. \"Automated the monthly reconciliation, removing 18 hours of manual work per cycle and eliminating the three recurring transposition errors that had triggered restatements\" carries both the time saved and the quality gain. Also state how much of what you built is still running. Automation that outlives your tenure is the strongest possible signal.",
       },
       {
         question: "Do I need to be a strong programmer?",
@@ -1281,7 +1281,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     bulletExamples: [
       {
         weak: "Automated manual processes using Python scripts.",
-        strong: "Automated 30 recurring operations processes in Python, removing ~1,400 manual hours annually — all with heartbeat alerting, so silent failures page within 15 minutes rather than being discovered weeks later.",
+        strong: "Automated 30 recurring operations processes in Python, removing ~1,400 manual hours annually, all with heartbeat alerting, so silent failures page within 15 minutes rather than being discovered weeks later.",
         why: "Script-writing is the baseline. The hours returned quantify value, and the heartbeat detail demonstrates the maturity that distinguishes automation which is trusted from automation which is quietly abandoned.",
       },
       {
@@ -1318,7 +1318,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     intro:
       "Network Security Engineer interviews go deeper on protocol fundamentals than most security roles, because the job is defending the layer where theory meets packet capture. Expect firewall and segmentation design, hands-on troubleshooting, and questions about the trade-off every control creates between security and the network actually working. CVs are read for the scale of the estate you defended and for changes that reduced attack surface measurably.",
     interviewFocus: [
-      { area: "Protocol and packet-level fundamentals", detail: "TCP handshakes, TLS negotiation, DNS behaviour, routing and NAT. Interviewers ask you to read a capture or explain why a connection fails — this is where claimed depth is verified quickly." },
+      { area: "Protocol and packet-level fundamentals", detail: "TCP handshakes, TLS negotiation, DNS behaviour, routing and NAT. Interviewers ask you to read a capture or explain why a connection fails. This is where claimed depth is verified quickly." },
       { area: "Firewall and segmentation design", detail: "Rule-base design, zero-trust segmentation, east-west traffic control, and how you avoid the any-any rule that accumulates in every mature estate." },
       { area: "Detection and response at the network layer", detail: "IDS/IPS tuning, egress monitoring, identifying command-and-control traffic and data exfiltration patterns." },
       { area: "Operational trade-offs", detail: "How you deploy a control without breaking production, and how you have handled the change that did break it." },
@@ -1343,7 +1343,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "How segmented is the estate today, honestly?",
       "Is IPS running in prevent mode, and if not, what is blocking that?",
       "Who owns firewall rule hygiene, and when was the base last reviewed?",
-      "How much of the network is visible to monitoring — including egress?",
+      "How much of the network is visible to monitoring, including egress?",
     ],
     faq: [
       {
@@ -1359,12 +1359,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is network security still relevant with everything moving to cloud and zero trust?",
         answer:
-          "The layer has shifted rather than disappeared, and the shift is where the opportunity is. Perimeter firewalls matter less; identity-aware segmentation, cloud security groups, service mesh policy, and egress control matter more. The skills that transfer are the fundamentals — understanding traffic flow, trust boundaries and failure modes. The engineers at risk are those whose experience is entirely appliance administration on a single vendor; those who have moved into cloud network security and micro-segmentation are in strong demand.",
+          "The layer has shifted rather than disappeared, and the shift is where the opportunity is. Perimeter firewalls matter less; identity-aware segmentation, cloud security groups, service mesh policy, and egress control matter more. The skills that transfer are the fundamentals: understanding traffic flow, trust boundaries and failure modes. The engineers at risk are those whose experience is entirely appliance administration on a single vendor; those who have moved into cloud network security and micro-segmentation are in strong demand.",
       },
       {
         question: "Which certifications matter for this role?",
         answer:
-          "Vendor certifications carry real weight here because estates are vendor-specific: Palo Alto PCNSE, Cisco CCNP Security, Fortinet NSE. Alongside those, CISSP is common for senior and architecture-track roles, and cloud certifications increasingly matter as segmentation moves into AWS and Azure. List the vendor certification that matches the posting's stack prominently — it is frequently used as a screening filter.",
+          "Vendor certifications carry real weight here because estates are vendor-specific: Palo Alto PCNSE, Cisco CCNP Security, Fortinet NSE. Alongside those, CISSP is common for senior and architecture-track roles, and cloud certifications increasingly matter as segmentation moves into AWS and Azure. List the vendor certification that matches the posting's stack prominently. It is frequently used as a screening filter.",
       },
     ],
     summaryExample:
@@ -1372,7 +1372,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     bulletExamples: [
       {
         weak: "Managed firewalls and network security infrastructure.",
-        strong: "Rationalised a 3,000-rule Palo Alto base to 640 by mapping every rule to an owning application, removing 41 any-any rules and 900 rules with no traffic hits in 12 months — with no service disruption.",
+        strong: "Rationalised a 3,000-rule Palo Alto base to 640 by mapping every rule to an owning application, removing 41 any-any rules and 900 rules with no traffic hits in 12 months, with no service disruption.",
         why: "\"Managed firewalls\" is administration. The rule-count reduction, the method (mapping to owning applications), and the any-any removal show a disciplined project, and \"no service disruption\" pre-empts the obvious risk question.",
       },
       {
@@ -1399,16 +1399,16 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Vendor GUI familiarity with no evidence of protocol-level understanding.",
       "No estate scale stated, making the environment impossible to gauge.",
       "Segmentation claimed with no mention of dependency discovery or rollout approach.",
-      "No operational outcomes — the discipline is judged on changes that did not break production.",
+      "No operational outcomes: the discipline is judged on changes that did not break production.",
     ],
   },
 
   "iam-engineer": {
     intro:
-      "IAM Engineer interviews centre on protocol precision and on lifecycle design. Expect to be asked to explain OAuth and SAML flows accurately — this is a field where approximate understanding shows immediately — plus questions about joiner-mover-leaver processes, privileged access, and the access reviews that auditors will examine. CVs are read for identities managed, access removed, and audit outcomes.",
+      "IAM Engineer interviews centre on protocol precision and on lifecycle design. Expect to be asked to explain OAuth and SAML flows accurately (this is a field where approximate understanding shows immediately), plus questions about joiner-mover-leaver processes, privileged access, and the access reviews that auditors will examine. CVs are read for identities managed, access removed, and audit outcomes.",
     interviewFocus: [
       { area: "Protocol depth", detail: "OAuth 2.0 grant types, OIDC versus SAML, token validation, and the difference between authentication and authorisation. Interviewers ask you to walk a full flow; vague answers end loops." },
-      { area: "Lifecycle and provisioning", detail: "Joiner-mover-leaver automation, SCIM provisioning, and the mover case specifically — accumulated entitlements from role changes are the most common real-world IAM failure." },
+      { area: "Lifecycle and provisioning", detail: "Joiner-mover-leaver automation, SCIM provisioning, and the mover case specifically: accumulated entitlements from role changes are the most common real-world IAM failure." },
       { area: "Privileged access", detail: "PAM design, just-in-time elevation, break-glass accounts, and how you have reduced standing privilege." },
       { area: "Governance and audit", detail: "Access certification campaigns, segregation of duties, and evidence production for auditors." },
     ],
@@ -1448,12 +1448,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Which is the harder problem, joiners or leavers?",
         answer:
-          "Movers, and it is worth saying so in an interview. Joiners are usually well handled because someone is waiting for access, and leavers get attention because the risk is obvious. Movers accumulate entitlements quietly — someone transfers department and keeps their old permissions alongside their new ones, until years later they hold access spanning three roles. This is the mechanism behind most segregation-of-duties findings, and demonstrating that you have designed for it signals real operational experience.",
+          "Movers, and it is worth saying so in an interview. Joiners are usually well handled because someone is waiting for access, and leavers get attention because the risk is obvious. Movers accumulate entitlements quietly. Someone transfers department and keeps their old permissions alongside their new ones, until years later they hold access spanning three roles. This is the mechanism behind most segregation-of-duties findings, and demonstrating that you have designed for it signals real operational experience.",
       },
       {
         question: "Is IAM a good specialisation to move into?",
         answer:
-          "It is one of the more durable security specialisations, because identity has become the primary control plane as perimeters dissolved. Demand is steady, the skills transfer across cloud providers, and the work sits close to both engineering and governance, which opens routes in either direction. The common entry paths are from systems administration, service desk with an access-management focus, or general security operations. Protocol depth plus one major platform — Entra ID, Okta or SailPoint — is a strong starting position.",
+          "It is one of the more durable security specialisations, because identity has become the primary control plane as perimeters dissolved. Demand is steady, the skills transfer across cloud providers, and the work sits close to both engineering and governance, which opens routes in either direction. The common entry paths are from systems administration, service desk with an access-management focus, or general security operations. Protocol depth plus one major platform (Entra ID, Okta or SailPoint) is a strong starting position.",
       },
     ],
     summaryExample:
@@ -1494,12 +1494,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "security-architect": {
     intro:
-      "Security Architect interviews test whether you can design controls that a business will actually accept. Expect an architecture review round where you critique a proposed design, threat modelling, and questions about risk acceptance — because the defining skill is choosing which risks to carry, not eliminating all of them. CVs are read for systems designed, risk reduced, and standards other teams adopted.",
+      "Security Architect interviews test whether you can design controls that a business will actually accept. Expect an architecture review round where you critique a proposed design, threat modelling, and questions about risk acceptance, because the defining skill is choosing which risks to carry, not eliminating all of them. CVs are read for systems designed, risk reduced, and standards other teams adopted.",
     interviewFocus: [
       { area: "Architecture review", detail: "Given a proposed system, identify the trust boundaries, the failure modes, and the controls you would require versus recommend. The core round." },
       { area: "Threat modelling", detail: "STRIDE or attack-tree reasoning over a described system, and prioritising findings by realistic exploitability rather than theoretical severity." },
       { area: "Risk communication", detail: "Explaining a technical risk to an executive in business terms, and defending a decision to accept a risk rather than remediate it." },
-      { area: "Breadth across domains", detail: "Identity, network, application, cloud and data security — architects are expected to reason across all of them rather than deeply in one." },
+      { area: "Breadth across domains", detail: "Identity, network, application, cloud and data security. Architects are expected to reason across all of them rather than deeply in one." },
     ],
     technicalQuestions: [
       "Here is a proposed architecture for a customer portal. Walk me through your threat model.",
@@ -1527,12 +1527,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What separates a Security Architect from a senior Security Engineer?",
         answer:
-          "Breadth and influence rather than depth. Engineers own and operate specific controls; architects design across domains — identity, network, application, cloud, data — and are measured on whether teams adopt what they specify. The interview reflects this: architect loops centre on reviewing a design and defending trade-offs, including which risks you would accept, while engineer loops go deeper hands-on in one area. If you cannot yet reason across all the domains, the engineer track is the stronger application.",
+          "Breadth and influence rather than depth. Engineers own and operate specific controls; architects design across domains (identity, network, application, cloud, data) and are measured on whether teams adopt what they specify. The interview reflects this: architect loops centre on reviewing a design and defending trade-offs, including which risks you would accept, while engineer loops go deeper hands-on in one area. If you cannot yet reason across all the domains, the engineer track is the stronger application.",
       },
       {
         question: "How important is risk acceptance in these interviews?",
         answer:
-          "More than candidates expect, and it is a common failure point. Architects who require every finding remediated get routed around by delivery teams, which makes them ineffective regardless of technical correctness. Strong answers show a framework — likelihood, impact, exploitability, compensating controls — and at least one concrete example of a risk you accepted, documented, and revisited. Being able to say \"we accepted it for two quarters with monitoring in place, and here is what would have changed my mind\" signals real seniority.",
+          "More than candidates expect, and it is a common failure point. Architects who require every finding remediated get routed around by delivery teams, which makes them ineffective regardless of technical correctness. Strong answers show a framework (likelihood, impact, exploitability, compensating controls) and at least one concrete example of a risk you accepted, documented, and revisited. Being able to say \"we accepted it for two quarters with monitoring in place, and here is what would have changed my mind\" signals real seniority.",
       },
       {
         question: "What metrics belong on a Security Architect CV?",
@@ -1550,12 +1550,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     bulletExamples: [
       {
         weak: "Designed security architecture for enterprise applications.",
-        strong: "Designed a secure-by-default AWS landing zone — enforced encryption, private networking and guardrail SCPs — adopted by 14 teams and cutting misconfiguration findings per deployment 78%.",
+        strong: "Designed a secure-by-default AWS landing zone (enforced encryption, private networking and guardrail SCPs) adopted by 14 teams and cutting misconfiguration findings per deployment 78%.",
         why: "Design work only counts if it is used. Naming the controls and, critically, the adoption across 14 teams converts an architecture document into organisational change with a measured effect.",
       },
       {
         weak: "Conducted threat modelling and security reviews.",
-        strong: "Ran threat modelling across 40 systems, prioritising by realistic exploitability rather than CVSS alone — 31 criticals remediated, 9 formally risk-accepted with compensating monitoring and quarterly review.",
+        strong: "Ran threat modelling across 40 systems, prioritising by realistic exploitability rather than CVSS alone: 31 criticals remediated, 9 formally risk-accepted with compensating monitoring and quarterly review.",
         why: "Review counts alone say nothing about outcomes. Splitting remediated from accepted shows the judgement the role exists for, and the compensating controls demonstrate that acceptance was deliberate rather than neglect.",
       },
       {
@@ -1574,7 +1574,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     redFlags: [
       "Frameworks listed with no design you personally owned.",
-      "No adoption evidence — standards written but not taken up.",
+      "No adoption evidence: standards written but not taken up.",
       "Every finding presented as remediated, implying no real prioritisation.",
       "No cloud architecture experience, which is now assumed in most postings.",
     ],
@@ -1587,7 +1587,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Game Designer hiring is decided by a portfolio and a design test, not a CV alone. Studios want evidence you can specify a system precisely enough for engineers to build, iterate it based on playtest data, and cut your own ideas when they do not work. The most common weakness is presenting concepts rather than shipped, tuned systems.",
     interviewFocus: [
       { area: "Portfolio and shipped work", detail: "Systems you designed, your specific contribution, and how the design changed between first version and ship. Studios probe hard on what you personally owned." },
-      { area: "Design test", detail: "A take-home or on-site brief — design a mechanic, rebalance an economy, fix a described problem. Scored on constraint awareness and on whether you specify clearly enough to be built." },
+      { area: "Design test", detail: "A take-home or on-site brief: design a mechanic, rebalance an economy, fix a described problem. Scored on constraint awareness and on whether you specify clearly enough to be built." },
       { area: "Systems and balance reasoning", detail: "Economy tuning, progression curves, difficulty pacing, and how you would instrument a system to know whether it works." },
       { area: "Playtesting and iteration", detail: "How you gather feedback, distinguish what players say from what they do, and decide what to change." },
     ],
@@ -1617,22 +1617,22 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does a game design portfolio need to contain?",
         answer:
-          "Two or three systems shown in depth, not a catalogue of concepts. For each: the design problem and its constraints, your specific contribution if it was a team project, the first version, what playtesting revealed, and what you changed as a result. Include the actual artefacts — a spec, a balance spreadsheet, a progression curve — because studios want to see whether you can specify precisely enough to be built. Shipped work beats unshipped, and a small shipped game beats an elaborate design document for a game that never existed.",
+          "Two or three systems shown in depth, not a catalogue of concepts. For each: the design problem and its constraints, your specific contribution if it was a team project, the first version, what playtesting revealed, and what you changed as a result. Include the actual artefacts (a spec, a balance spreadsheet, a progression curve) because studios want to see whether you can specify precisely enough to be built. Shipped work beats unshipped, and a small shipped game beats an elaborate design document for a game that never existed.",
       },
       {
         question: "Do I need to be able to code or use an engine?",
         answer:
-          "You do not need to be an engineer, but designers who can prototype in Unity or Unreal — even roughly, with blueprints or simple scripts — iterate faster and are consistently more employable. Being able to build a grey-box version of your own idea removes a dependency and lets you test a mechanic before asking anyone to build it properly. Scripting and data-driven tuning (spreadsheets, config files) are effectively baseline expectations rather than differentiators.",
+          "You do not need to be an engineer, but designers who can prototype in Unity or Unreal (even roughly, with blueprints or simple scripts) iterate faster and are consistently more employable. Being able to build a grey-box version of your own idea removes a dependency and lets you test a mechanic before asking anyone to build it properly. Scripting and data-driven tuning (spreadsheets, config files) are effectively baseline expectations rather than differentiators.",
       },
       {
         question: "What metrics belong on a game designer's CV?",
         answer:
-          "Titles shipped and their scale first — platform, player numbers, review scores where flattering. Then design outcomes: retention or session-length change after a system you tuned, conversion or engagement effects of an economy change, difficulty completion rates you moved. \"Rebalanced the mid-game economy, lifting D30 retention from 8% to 12%\" is strong because retention is the number the whole studio is judged on. Be careful to claim only your contribution — studios verify.",
+          "Titles shipped and their scale first: platform, player numbers, review scores where flattering. Then design outcomes: retention or session-length change after a system you tuned, conversion or engagement effects of an economy change, difficulty completion rates you moved. \"Rebalanced the mid-game economy, lifting D30 retention from 8% to 12%\" is strong because retention is the number the whole studio is judged on. Be careful to claim only your contribution. Studios verify.",
       },
       {
         question: "How do I break into game design without shipped titles?",
         answer:
-          "Ship something small yourself. A finished, tuned game jam entry or a released mod demonstrates more than an unbuilt design document, because it proves you can carry an idea through constraints to completion. Mod communities, jams and small collaborative projects are the conventional routes. Also consider adjacent entry points — QA and live-ops roles inside studios convert to design fairly often, and they give you the playtest and telemetry exposure the discipline runs on.",
+          "Ship something small yourself. A finished, tuned game jam entry or a released mod demonstrates more than an unbuilt design document, because it proves you can carry an idea through constraints to completion. Mod communities, jams and small collaborative projects are the conventional routes. Also consider adjacent entry points: QA and live-ops roles inside studios convert to design fairly often, and they give you the playtest and telemetry exposure the discipline runs on.",
       },
     ],
     summaryExample:
@@ -1646,11 +1646,11 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Created design documents and worked with the development team.",
         strong: "Wrote the specs for 14 shipped systems including a crafting rework built by a 5-engineer team, cutting design-clarification requests to under 2 per feature through worked examples and edge-case tables.",
-        why: "Documentation is only valuable if it is buildable. Quantifying clarification requests is an unusual, credible way to show your specs are actually precise — which is the practical skill studios hire designers for.",
+        why: "Documentation is only valuable if it is buildable. Quantifying clarification requests is an unusual, credible way to show your specs are actually precise, which is the practical skill studios hire designers for.",
       },
       {
         weak: "Conducted playtesting and gathered player feedback.",
-        strong: "Ran 30+ moderated playtests and paired them with funnel telemetry, identifying that players quit at a difficulty spike they described as 'boring' rather than hard — reframing the fix from tuning to pacing and cutting tutorial drop-off 24%.",
+        strong: "Ran 30+ moderated playtests and paired them with funnel telemetry, identifying that players quit at a difficulty spike they described as 'boring' rather than hard. Reframing the fix from tuning to pacing and cutting tutorial drop-off 24%.",
         why: "The distinction between what players say and what the data shows is the core playtesting skill. This bullet demonstrates it concretely and ties it to a measurable outcome.",
       },
     ],
@@ -1667,17 +1667,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Concept documents for unbuilt games presented as primary work.",
       "No shipped or finished project of any size.",
       "Team credits with no statement of what you personally owned.",
-      "No engagement with data — design intuition alone is not sufficient in live-service hiring.",
+      "No engagement with data. Design intuition alone is not sufficient in live-service hiring.",
     ],
   },
 
   "game-developer": {
     intro:
-      "Game programming interviews weight performance and mathematics more heavily than general software roles. Expect maths questions (vectors, matrices, interpolation), an engine-specific round, and detailed probing on frame budget — because the constraint that defines the discipline is doing everything within roughly 16 milliseconds. CVs are read for shipped titles, platforms, and evidence you have optimised something real.",
+      "Game programming interviews weight performance and mathematics more heavily than general software roles. Expect maths questions (vectors, matrices, interpolation), an engine-specific round, and detailed probing on frame budget, because the constraint that defines the discipline is doing everything within roughly 16 milliseconds. CVs are read for shipped titles, platforms, and evidence you have optimised something real.",
     interviewFocus: [
       { area: "Maths and geometry", detail: "Dot and cross products, quaternions versus Euler angles, interpolation, collision detection. Asked directly and expected to be fluent rather than derived from first principles." },
       { area: "Performance and profiling", detail: "Frame budget, draw calls, cache behaviour, garbage collection spikes, and how you have diagnosed a real frame-rate problem with a profiler." },
-      { area: "Engine specifics", detail: "Unity or Unreal internals — the update loop, physics stepping, memory and asset management, and the platform quirks of your target hardware." },
+      { area: "Engine specifics", detail: "Unity or Unreal internals: the update loop, physics stepping, memory and asset management, and the platform quirks of your target hardware." },
       { area: "Gameplay implementation", detail: "Translating a design spec into systems that are data-driven enough for designers to tune without engineering time." },
     ],
     technicalQuestions: [
@@ -1699,7 +1699,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     questionsToAsk: [
       "What is the frame budget and target hardware, and how close are you?",
       "How much of the codebase is engine-standard versus custom systems?",
-      "How do designers tune systems — through data, or by asking engineers?",
+      "How do designers tune systems: through data, or by asking engineers?",
       "What does the build and certification pipeline look like?",
     ],
     faq: [
@@ -1711,17 +1711,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does a game developer CV need beyond shipped titles?",
         answer:
-          "Platform and performance detail. State the platforms you shipped on, the target frame rate and hardware, and at least one concrete optimisation with before and after numbers — \"cut frame time from 22ms to 14ms on Switch by batching draw calls and pooling projectiles\" tells a studio more than a list of engines. Also name the systems you personally owned, since team credits are otherwise ambiguous, and include a playable link or repository where you can.",
+          "Platform and performance detail. State the platforms you shipped on, the target frame rate and hardware, and at least one concrete optimisation with before and after numbers, such as \"cut frame time from 22ms to 14ms on Switch by batching draw calls and pooling projectiles\" tells a studio more than a list of engines. Also name the systems you personally owned, since team credits are otherwise ambiguous, and include a playable link or repository where you can.",
       },
       {
-        question: "Unity or Unreal — which is more employable?",
+        question: "Unity or Unreal: which is more employable?",
         answer:
-          "Both, in different segments. Unity dominates mobile, indie and much of the mid-size market and uses C#. Unreal dominates AAA, and its C++ requirement raises the technical bar in ways that transfer well to general engineering. Pick based on the studios you want: mobile and indie leans Unity, console and AAA leans Unreal. Deep knowledge of one plus the underlying fundamentals — memory, rendering, maths — matters far more than surface exposure to both.",
+          "Both, in different segments. Unity dominates mobile, indie and much of the mid-size market and uses C#. Unreal dominates AAA, and its C++ requirement raises the technical bar in ways that transfer well to general engineering. Pick based on the studios you want: mobile and indie leans Unity, console and AAA leans Unreal. Deep knowledge of one plus the underlying fundamentals (memory, rendering, maths) matters far more than surface exposure to both.",
       },
       {
         question: "Do I need shipped commercial titles to get hired?",
         answer:
-          "It helps substantially but it is not the only route. A finished, polished small game demonstrates more than an unfinished ambitious one, because shipping is itself the skill studios are checking for. Game jams, mods, and a technical demo that solves a genuinely hard problem — a custom renderer feature, a networked prototype, a performance-constrained port — all work. What does not work is a portfolio of tutorial-following projects, which reads as coursework rather than capability.",
+          "It helps substantially but it is not the only route. A finished, polished small game demonstrates more than an unfinished ambitious one, because shipping is itself the skill studios are checking for. Game jams, mods, and a technical demo that solves a genuinely hard problem (a custom renderer feature, a networked prototype, a performance-constrained port) all work. What does not work is a portfolio of tutorial-following projects, which reads as coursework rather than capability.",
       },
     ],
     summaryExample:
@@ -1730,11 +1730,11 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Developed gameplay features using Unity and C#.",
         strong: "Built the combat and enemy AI systems for a shipped Switch/PC title, exposing 40+ tuning parameters as designer-editable data so balance changes shipped without engineering time.",
-        why: "\"Developed gameplay features\" is every game programmer's CV. Naming the systems owned and the data-driven design shows you built for the studio's workflow, not just for the feature — which is what distinguishes a senior gameplay engineer.",
+        why: "\"Developed gameplay features\" is every game programmer's CV. Naming the systems owned and the data-driven design shows you built for the studio's workflow, not just for the feature, which is what distinguishes a senior gameplay engineer.",
       },
       {
         weak: "Optimised game performance for console platforms.",
-        strong: "Led the Switch performance pass that cut frame time from 22ms to 14ms — batching 1,800 draw calls into 300, pooling projectile allocations, and eliminating a GC spike that caused a visible hitch every 8 seconds.",
+        strong: "Led the Switch performance pass that cut frame time from 22ms to 14ms by batching 1,800 draw calls into 300, pooling projectile allocations, and eliminating a GC spike that caused a visible hitch every 8 seconds.",
         why: "Optimisation claims need the profiler detail. The before/after frame time, the three specific causes and the observable symptom removed prove genuine diagnosis rather than generic tweaking, and Switch is a recognisably hard target.",
       },
       {
@@ -1764,7 +1764,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     intro:
       "AI Product Manager interviews test whether you understand what makes AI products different from software products: non-deterministic output, evaluation instead of acceptance criteria, and a failure mode that is plausible-but-wrong rather than broken. Expect a product sense round framed around an AI feature, questions about evaluation and guardrails, and probing on when not to use a model at all.",
     interviewFocus: [
-      { area: "AI product sense", detail: "Designing a feature where the model is a component, not the product. Interviewers check whether you design for the failure case — what the user sees when the model is confidently wrong." },
+      { area: "AI product sense", detail: "Designing a feature where the model is a component, not the product. Interviewers check whether you design for the failure case: what the user sees when the model is confidently wrong." },
       { area: "Evaluation and measurement", detail: "How you define quality for a non-deterministic system, build an eval set, and decide whether a model change is a regression. The round that most distinguishes AI PMs from general PMs." },
       { area: "Technical fluency", detail: "Enough understanding of latency, cost per call, context limits, fine-tuning versus prompting versus retrieval to make credible scoping decisions." },
       { area: "Risk and trust", detail: "Hallucination handling, human-in-the-loop design, disclosure, and the regulatory or reputational exposure of getting it wrong." },
@@ -1795,7 +1795,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How does AI product management differ from regular product management?",
         answer:
-          "Three ways that show up directly in interviews. Output is non-deterministic, so acceptance criteria are replaced by evaluation against a curated set with a quality threshold. Failure is plausible rather than obvious — a wrong answer that looks right is more dangerous than a crash, which changes how you design the interface. And unit economics matter continuously, because every interaction has a marginal cost that scales with usage in a way conventional software does not. A PM who scopes an AI feature without mentioning evals, failure UX or cost per call is the common miss.",
+          "Three ways that show up directly in interviews. Output is non-deterministic, so acceptance criteria are replaced by evaluation against a curated set with a quality threshold. Failure is plausible rather than obvious. A wrong answer that looks right is more dangerous than a crash, which changes how you design the interface. And unit economics matter continuously, because every interaction has a marginal cost that scales with usage in a way conventional software does not. A PM who scopes an AI feature without mentioning evals, failure UX or cost per call is the common miss.",
       },
       {
         question: "How technical do I need to be as an AI PM?",
@@ -1805,12 +1805,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What should an AI Product Manager CV show?",
         answer:
-          "AI features actually shipped, with quality and adoption numbers alongside the business outcome. \"Shipped an AI summarisation feature to 200k users, reaching 78% task-success on a 500-case eval set with human review for low-confidence outputs, lifting weekly active use 14%\" demonstrates the whole discipline — evaluation rigour, failure-case design, and product impact. Roadmap ownership without a shipped model-backed feature reads as conventional PM experience with AI vocabulary attached.",
+          "AI features actually shipped, with quality and adoption numbers alongside the business outcome. \"Shipped an AI summarisation feature to 200k users, reaching 78% task-success on a 500-case eval set with human review for low-confidence outputs, lifting weekly active use 14%\" demonstrates the whole discipline: evaluation rigour, failure-case design, and product impact. Roadmap ownership without a shipped model-backed feature reads as conventional PM experience with AI vocabulary attached.",
       },
       {
         question: "Is AI PM a real specialisation or just a title trend?",
         answer:
-          "It is real where the product's core value depends on model behaviour, because the skills genuinely differ — evaluation design, failure-mode UX, and cost modelling are not part of standard PM practice. It is a title trend where a company has added a chatbot to an existing product and renamed a PM role. Read the posting for whether they discuss evaluation and quality thresholds; the ones that do are hiring for the real specialisation, and their interviews will test it.",
+          "It is real where the product's core value depends on model behaviour, because the skills genuinely differ: evaluation design, failure-mode UX, and cost modelling are not part of standard PM practice. It is a title trend where a company has added a chatbot to an existing product and renamed a PM role. Read the posting for whether they discuss evaluation and quality thresholds; the ones that do are hiring for the real specialisation, and their interviews will test it.",
       },
     ],
     summaryExample:
@@ -1823,12 +1823,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Worked with engineering to integrate AI capabilities into the product.",
-        strong: "Redesigned the summarisation UX around confidence — surfacing source citations and routing low-confidence outputs to human review — cutting user-reported inaccuracies 62% without changing the underlying model.",
+        strong: "Redesigned the summarisation UX around confidence, surfacing source citations and routing low-confidence outputs to human review, cutting user-reported inaccuracies 62% without changing the underlying model.",
         why: "Integration is execution. Solving a quality problem through interface design rather than model change is exactly the AI PM's distinctive contribution, and the outcome is measured.",
       },
       {
         weak: "Analysed usage data to improve AI feature adoption.",
-        strong: "Cut inference cost 41% ($180k/yr) by routing 70% of requests to a smaller model after eval testing showed no measurable quality difference on the dominant use case — funding two further AI features within the same budget.",
+        strong: "Cut inference cost 41% ($180k/yr) by routing 70% of requests to a smaller model after eval testing showed no measurable quality difference on the dominant use case, funding two further AI features within the same budget.",
         why: "Unit economics are a first-class AI PM concern that most CVs omit entirely. Grounding the routing decision in eval evidence, and connecting the saving to what it unlocked, shows commercial and technical judgement together.",
       },
     ],
@@ -1853,7 +1853,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     interviewFocus: [
       { area: "Platform lifecycle", detail: "Activity/fragment or view-controller lifecycle, process death and state restoration, background execution limits. The area where mobile differs most from web and where candidates most often reveal shallow experience." },
       { area: "Offline and sync", detail: "Local persistence, conflict resolution, and what the UI does on a flaky connection. Almost always asked because it is the defining mobile constraint." },
-      { area: "Performance and size", detail: "Cold start time, frame drops during scrolling, memory pressure, and app binary size — which directly affects install conversion." },
+      { area: "Performance and size", detail: "Cold start time, frame drops during scrolling, memory pressure, and app binary size, which directly affects install conversion." },
       { area: "Release discipline", detail: "Store review, staged rollout, crash monitoring, and how you handle a bad release you cannot instantly revert." },
     ],
     technicalQuestions: [
@@ -1875,12 +1875,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     questionsToAsk: [
       "What is the release cadence, and do you use staged rollout?",
       "What are your crash-free session rate and cold start time today?",
-      "Native, cross-platform, or both — and how was that decided?",
+      "Native, cross-platform, or both? And how was that decided?",
       "What is your minimum supported OS version and device tier?",
     ],
     faq: [
       {
-        question: "Native or cross-platform — which is more employable?",
+        question: "Native or cross-platform: which is more employable?",
         answer:
           "Both have healthy demand and they serve different segments. Native (Swift/Kotlin) dominates where performance, platform integration or a premium feel matter, and it usually pays better at the senior end. React Native and Flutter dominate where a small team must ship both platforms, which describes most startups and a lot of mid-market work. The strongest position is depth in one native platform plus working cross-platform experience, because it lets you argue the trade-off credibly rather than defending whichever you happen to know.",
       },
@@ -1892,7 +1892,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How important is the app store link on my CV?",
         answer:
-          "Very — this is one of the few disciplines where reviewers will download your work. A live app with real users beats any description, and the store listing itself gives them rating, review count and update history at a glance. If your commercial work is under NDA or you were one of many contributors, ship something small of your own; a modest published app demonstrates you can navigate review, signing and release, which is a meaningful part of the job.",
+          "Very. This is one of the few disciplines where reviewers will download your work. A live app with real users beats any description, and the store listing itself gives them rating, review count and update history at a glance. If your commercial work is under NDA or you were one of many contributors, ship something small of your own; a modest published app demonstrates you can navigate review, signing and release, which is a meaningful part of the job.",
       },
       {
         question: "What do mobile interviews test that web interviews do not?",
@@ -1910,13 +1910,13 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Improved app performance and reduced loading times.",
-        strong: "Cut cold start from 3.4s to 1.1s by deferring non-critical initialisation and lazy-loading feature modules, and reduced app size 78MB to 41MB — lifting install conversion 9%.",
+        strong: "Cut cold start from 3.4s to 1.1s by deferring non-critical initialisation and lazy-loading feature modules, and reduced app size 78MB to 41MB, lifting install conversion 9%.",
         why: "\"Improved performance\" is unverifiable. Naming the technique, the before/after on two distinct metrics, and connecting app size to install conversion shows you understand the commercial consequence, not just the engineering.",
       },
       {
         weak: "Fixed bugs and crashes reported by users.",
         strong: "Raised crash-free sessions from 98.1% to 99.7% by instrumenting low-memory terminations that Crashlytics was not capturing, fixing a bitmap cache that failed only on sub-3GB devices.",
-        why: "Bug fixing is undifferentiated. The specific class of failure — invisible to standard crash reporting, device-tier dependent — is exactly the mobile-specific depth interviewers probe for.",
+        why: "Bug fixing is undifferentiated. The specific class of failure (invisible to standard crash reporting, device-tier dependent) is exactly the mobile-specific depth interviewers probe for.",
       },
     ],
     coreSkills: ["Platform lifecycle & state restoration", "Offline-first architecture", "Performance profiling", "Memory management", "App release & staged rollout", "Crash monitoring", "Push notifications", "Accessibility on mobile", "API integration"],
@@ -1929,18 +1929,18 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Lead (8+ yrs)", expectation: "Sets mobile direction. CV should show platform decisions and team-level outcomes." },
     ],
     redFlags: [
-      "No published app or store link — conspicuous in this discipline.",
+      "No published app or store link, which is conspicuous in this discipline.",
       "No install, rating or crash metrics, making quality unrankable.",
-      "No mention of lifecycle, offline or release process — the mobile-specific parts of the job.",
+      "No mention of lifecycle, offline or release process: the mobile-specific parts of the job.",
       "Cross-platform framework listed with no evidence of native understanding underneath.",
     ],
   },
 
   "cloud-engineer": {
     intro:
-      "Cloud Engineer interviews test whether you can design for failure and for the bill in equal measure. Expect an architecture round on a described workload, hands-on infrastructure-as-code, and detailed cost questions — because cloud spend is where most organisations feel the consequences of engineering decisions most directly. CVs are read for the scale of the estate and for cost and reliability numbers.",
+      "Cloud Engineer interviews test whether you can design for failure and for the bill in equal measure. Expect an architecture round on a described workload, hands-on infrastructure-as-code, and detailed cost questions, because cloud spend is where most organisations feel the consequences of engineering decisions most directly. CVs are read for the scale of the estate and for cost and reliability numbers.",
     interviewFocus: [
-      { area: "Architecture design", detail: "Designing a workload end to end — compute choice, networking, storage, availability zones, failover. Interviewers check whether you design to a stated availability target rather than over-engineering by default." },
+      { area: "Architecture design", detail: "Designing a workload end to end: compute choice, networking, storage, availability zones, failover. Interviewers check whether you design to a stated availability target rather than over-engineering by default." },
       { area: "Infrastructure as code", detail: "Terraform or CloudFormation: module structure, state management, drift, and how you avoid a destructive plan reaching production." },
       { area: "Cost engineering", detail: "Rightsizing, reserved versus spot, storage tiering, egress charges, and the ability to estimate what a design will cost before building it." },
       { area: "Reliability and security posture", detail: "Multi-AZ versus multi-region trade-offs, backup and restore testing, IAM least privilege, and network isolation." },
@@ -1971,7 +1971,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Which cloud should I specialise in?",
         answer:
-          "AWS still has the largest share of postings and the deepest job market, so it is the safest default. Azure is strong in enterprises with existing Microsoft agreements, particularly finance, healthcare and government. GCP is smaller but concentrated in data and ML-heavy organisations. The concepts transfer well — compute, networking, IAM and storage tiers map across providers — so go deep in one and be conversant in a second rather than shallow in three.",
+          "AWS still has the largest share of postings and the deepest job market, so it is the safest default. Azure is strong in enterprises with existing Microsoft agreements, particularly finance, healthcare and government. GCP is smaller but concentrated in data and ML-heavy organisations. The concepts transfer well (compute, networking, IAM and storage tiers map across providers), so go deep in one and be conversant in a second rather than shallow in three.",
       },
       {
         question: "What metrics belong on a Cloud Engineer CV?",
@@ -1981,12 +1981,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "How much cost knowledge do interviews really expect?",
         answer:
-          "More than most candidates prepare for. It is common to be asked to estimate roughly what a design will cost, to explain why egress charges surprise people, or to walk through investigating an unexplained bill increase. This is because cloud cost is a direct output of architecture decisions, and engineers who cannot reason about it design expensive systems. You do not need pricing memorised — you need the mental model of which choices are expensive and why.",
+          "More than most candidates prepare for. It is common to be asked to estimate roughly what a design will cost, to explain why egress charges surprise people, or to walk through investigating an unexplained bill increase. This is because cloud cost is a direct output of architecture decisions, and engineers who cannot reason about it design expensive systems. You do not need pricing memorised. You need the mental model of which choices are expensive and why.",
       },
       {
-        question: "Cloud Engineer or DevOps Engineer — what is the difference?",
+        question: "Cloud Engineer or DevOps Engineer: what is the difference?",
         answer:
-          "They overlap heavily and titles are used loosely. Cloud Engineer skews toward infrastructure design, provisioning and cost — what the platform is. DevOps skews toward delivery pipelines, automation and developer experience — how software reaches it. In smaller organisations one person does both. Read the posting's tools: heavy Terraform, networking and cost language means cloud; heavy CI/CD, release and pipeline language means DevOps.",
+          "They overlap heavily and titles are used loosely. Cloud Engineer skews toward infrastructure design, provisioning and cost: what the platform is. DevOps skews toward delivery pipelines, automation and developer experience: how software reaches it. In smaller organisations one person does both. Read the posting's tools: heavy Terraform, networking and cost language means cloud; heavy CI/CD, release and pipeline language means DevOps.",
       },
     ],
     summaryExample:
@@ -1999,7 +1999,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Worked on cost optimisation initiatives for cloud spending.",
-        strong: "Cut AWS spend 38% ($1.1M/yr) by rightsizing 300 instances, moving to compute savings plans, and tiering 400TB of S3 to intelligent-tiering — with no SLO regression across the period.",
+        strong: "Cut AWS spend 38% ($1.1M/yr) by rightsizing 300 instances, moving to compute savings plans, and tiering 400TB of S3 to intelligent-tiering, with no SLO regression across the period.",
         why: "Cost bullets need mechanism and a reliability caveat. Three named levers plus the absolute saving show real analysis rather than a one-off instance purge, and the SLO note pre-empts the obvious challenge.",
       },
       {
@@ -2027,7 +2027,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "ai-engineer": {
     intro:
-      "AI Engineer has become distinct from ML Engineer: the work centres on building products on top of foundation models rather than training them. Interviews test retrieval design, evaluation, latency and cost control, and — most of all — how you handle a model that is confidently wrong. CVs are read for systems shipped to real users with quality measured rather than asserted.",
+      "AI Engineer has become distinct from ML Engineer: the work centres on building products on top of foundation models rather than training them. Interviews test retrieval design, evaluation, latency and cost control, and, most of all, how you handle a model that is confidently wrong. CVs are read for systems shipped to real users with quality measured rather than asserted.",
     interviewFocus: [
       { area: "RAG and retrieval design", detail: "Chunking, embedding choice, hybrid search, reranking, and diagnosing whether a bad answer came from retrieval or generation. The most common technical round." },
       { area: "Evaluation", detail: "Building an eval set, choosing metrics for open-ended output, LLM-as-judge and its failure modes, and detecting regression when you change a prompt or model." },
@@ -2060,12 +2060,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between an AI Engineer and an ML Engineer?",
         answer:
-          "AI Engineers build products on top of existing foundation models; ML Engineers build and serve models themselves. The AI Engineer skill set centres on retrieval, prompting, evaluation, latency and cost — closer to backend and product engineering than to research. ML Engineering involves training pipelines, feature stores and model serving infrastructure. Interviews differ accordingly: AI Engineer loops rarely ask you to derive backpropagation, and frequently ask you to design a RAG system and defend how you would know it works.",
+          "AI Engineers build products on top of existing foundation models; ML Engineers build and serve models themselves. The AI Engineer skill set centres on retrieval, prompting, evaluation, latency and cost, closer to backend and product engineering than to research. ML Engineering involves training pipelines, feature stores and model serving infrastructure. Interviews differ accordingly: AI Engineer loops rarely ask you to derive backpropagation, and frequently ask you to design a RAG system and defend how you would know it works.",
       },
       {
         question: "What is the most common RAG interview question?",
         answer:
-          "Diagnosing a wrong answer. Interviewers describe a system returning poor responses and expect you to separate retrieval failure from generation failure — checking whether the correct chunk was retrieved at all, whether it ranked highly enough to survive the context window, whether chunking split the answer across boundaries, and only then whether the model ignored what it was given. Candidates who jump straight to prompt tweaking without inspecting retrieval reveal they have not debugged one in production.",
+          "Diagnosing a wrong answer. Interviewers describe a system returning poor responses and expect you to separate retrieval failure from generation failure: checking whether the correct chunk was retrieved at all, whether it ranked highly enough to survive the context window, whether chunking split the answer across boundaries, and only then whether the model ignored what it was given. Candidates who jump straight to prompt tweaking without inspecting retrieval reveal they have not debugged one in production.",
       },
       {
         question: "What should an AI Engineer CV show?",
@@ -2075,7 +2075,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Do I need a machine learning background to become an AI Engineer?",
         answer:
-          "No, and many strong AI engineers come from backend or full-stack engineering. What matters is solid software engineering, comfort with APIs and data pipelines, and a rigorous instinct for measurement. The concepts you genuinely need — embeddings, vector search, context limits, sampling parameters, evaluation design — are learnable without formal ML training. Deep learning theory becomes relevant only if you move toward fine-tuning or model training, which is the ML Engineer path.",
+          "No, and many strong AI engineers come from backend or full-stack engineering. What matters is solid software engineering, comfort with APIs and data pipelines, and a rigorous instinct for measurement. The concepts you genuinely need (embeddings, vector search, context limits, sampling parameters, evaluation design) are learnable without formal ML training. Deep learning theory becomes relevant only if you move toward fine-tuning or model training, which is the ML Engineer path.",
       },
     ],
     summaryExample:
@@ -2093,7 +2093,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       },
       {
         weak: "Worked on improving the accuracy of AI-generated responses.",
-        strong: "Diagnosed that 60% of wrong answers were retrieval failures rather than generation, and fixed them by re-chunking on semantic boundaries and adding metadata filtering — lifting accuracy from 64% to 82%.",
+        strong: "Diagnosed that 60% of wrong answers were retrieval failures rather than generation, and fixed them by re-chunking on semantic boundaries and adding metadata filtering, lifting accuracy from 64% to 82%.",
         why: "\"Improving accuracy\" says nothing about method. Splitting retrieval from generation failure is the core RAG debugging skill, and the before/after proves the diagnosis was correct.",
       },
     ],
@@ -2118,9 +2118,9 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     intro:
       "Cybersecurity Engineer sits between analyst and architect: you are expected to build and operate controls, not just monitor or design them. Interviews test hands-on depth across at least two domains, incident experience, and whether you can automate security work rather than performing it manually. CVs are read for controls implemented and risk measurably reduced.",
     interviewFocus: [
-      { area: "Hands-on control implementation", detail: "Deploying and tuning a control end to end — EDR, WAF, SIEM detections, vulnerability management. Interviewers probe what broke and how you handled it." },
+      { area: "Hands-on control implementation", detail: "Deploying and tuning a control end to end: EDR, WAF, SIEM detections, vulnerability management. Interviewers probe what broke and how you handled it." },
       { area: "Incident response", detail: "A described scenario walked through from detection to containment to eradication and lessons learned. Expected to be a real story, not a framework recital." },
-      { area: "Security automation", detail: "Scripting and tooling to remove manual work — enrichment, response playbooks, policy-as-code. Increasingly the senior differentiator." },
+      { area: "Security automation", detail: "Scripting and tooling to remove manual work: enrichment, response playbooks, policy-as-code. Increasingly the senior differentiator." },
       { area: "Secure engineering", detail: "How you work with development teams: SAST/DAST in CI, dependency management, secrets scanning, and why teams adopt or bypass your controls." },
     ],
     technicalQuestions: [
@@ -2173,12 +2173,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Implemented and managed security tools across the organisation.",
         strong: "Deployed CrowdStrike EDR to 5,000 endpoints reaching 98% coverage in 9 weeks, running a phased detect-only rollout that caught 40 legitimate applications before prevention was enabled.",
-        why: "Tool deployment is the role's baseline. Coverage, timeline and the phased approach show a rollout that did not break production — which is the part that actually distinguishes competent security engineering.",
+        why: "Tool deployment is the role's baseline. Coverage, timeline and the phased approach show a rollout that did not break production, which is the part that actually distinguishes competent security engineering.",
       },
       {
         weak: "Managed vulnerability scanning and remediation efforts.",
         strong: "Cut critical vulnerability time-to-patch from 40 days to 7 by embedding scanning into CI, auto-filing tickets with owning-team routing, and agreeing remediation SLAs with 6 engineering leads.",
-        why: "Finding vulnerabilities is easy; the hard part is getting them fixed. The time-to-patch movement plus the mechanism — automation and negotiated SLAs — shows both engineering and influence.",
+        why: "Finding vulnerabilities is easy; the hard part is getting them fixed. The time-to-patch movement plus the mechanism (automation and negotiated SLAs) shows both engineering and influence.",
       },
       {
         weak: "Responded to security incidents and performed investigations.",
@@ -2207,7 +2207,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     intro:
       "Security Analyst interviews centre on triage judgement under time pressure. Expect a live investigation scenario, questions about how you distinguish a true positive from noise, and probing on what you escalated and why. The discipline is entered more often than any other in security, so interviewers screen hard for people who have actually worked a queue rather than studied one.",
     interviewFocus: [
-      { area: "Alert triage and investigation", detail: "Given an alert, describe what you check, in what order, and what would make you escalate. The defining round — interviewers watch whether you gather evidence before forming a conclusion." },
+      { area: "Alert triage and investigation", detail: "Given an alert, describe what you check, in what order, and what would make you escalate. The defining round: interviewers watch whether you gather evidence before forming a conclusion." },
       { area: "Log and telemetry analysis", detail: "Reading authentication logs, process trees and network telemetry to reconstruct what happened. Often a hands-on exercise against sample data." },
       { area: "Attack knowledge", detail: "MITRE ATT&CK techniques, common attack chains, and what a given technique looks like in logs rather than in theory." },
       { area: "Communication", detail: "Writing an incident summary a non-security manager can act on, and escalating without crying wolf." },
@@ -2238,12 +2238,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What does a Security Analyst interview focus on?",
         answer:
-          "Investigation process above knowledge recall. The central round describes an alert — PowerShell spawning from a Word document is the classic — and asks what you check and in what order. Interviewers score whether you gather evidence systematically (parent process, command line, user context, network connections, whether this is normal for that host) before concluding, and whether you know what would make you escalate. Candidates who jump to \"it's malware, isolate the host\" without investigating fail this round even when the conclusion is right.",
+          "Investigation process above knowledge recall. The central round describes an alert (PowerShell spawning from a Word document is the classic) and asks what you check and in what order. Interviewers score whether you gather evidence systematically (parent process, command line, user context, network connections, whether this is normal for that host) before concluding, and whether you know what would make you escalate. Candidates who jump to \"it's malware, isolate the host\" without investigating fail this round even when the conclusion is right.",
       },
       {
         question: "How do I get a Security Analyst job with no experience?",
         answer:
-          "It is the most common entry point into security, and the realistic routes are a home lab you can discuss in detail, Security+ or an equivalent baseline certification, and demonstrable log-analysis practice through platforms like TryHackMe or Blue Team Labs. Adjacent internal moves work well too — service desk and systems administration convert into SOC roles regularly because the troubleshooting instinct transfers. What interviewers want is evidence you have actually looked at logs and reasoned from them, not that you have watched courses about doing so.",
+          "It is the most common entry point into security, and the realistic routes are a home lab you can discuss in detail, Security+ or an equivalent baseline certification, and demonstrable log-analysis practice through platforms like TryHackMe or Blue Team Labs. Adjacent internal moves work well too: service desk and systems administration convert into SOC roles regularly because the troubleshooting instinct transfers. What interviewers want is evidence you have actually looked at logs and reasoned from them, not that you have watched courses about doing so.",
       },
       {
         question: "What metrics belong on a Security Analyst CV?",
@@ -2253,7 +2253,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Is a SOC analyst role a dead end?",
         answer:
-          "Not if you treat it as a starting point, which is how the industry generally treats it. Typical progressions run to detection engineering, incident response, threat hunting, or security engineering — usually within two to four years. What accelerates it is doing more than the queue: writing detections, automating enrichment, building a home lab, learning Python. Analysts who only triage tend to plateau; those who improve the systems around the queue move quickly.",
+          "Not if you treat it as a starting point, which is how the industry generally treats it. Typical progressions run to detection engineering, incident response, threat hunting, or security engineering, usually within two to four years. What accelerates it is doing more than the queue: writing detections, automating enrichment, building a home lab, learning Python. Analysts who only triage tend to plateau; those who improve the systems around the queue move quickly.",
       },
     ],
     summaryExample:
@@ -2262,11 +2262,11 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Monitored security alerts and escalated incidents as needed.",
         strong: "Triaged ~350 alerts/week across 8,000 endpoints in Splunk, escalating 40 confirmed incidents with a 91% true-positive rate on escalations.",
-        why: "Monitoring is the role definition. Volume, estate size and — critically — the true-positive rate on your escalations show you exercise judgement rather than forwarding everything upward.",
+        why: "Monitoring is the role definition. Volume, estate size and, critically, the true-positive rate on your escalations show you exercise judgement rather than forwarding everything upward.",
       },
       {
         weak: "Investigated potential security threats and documented findings.",
-        strong: "Identified a credential-stuffing campaign that signature detections missed, by baselining normal authentication timing and spotting a 3am success pattern from 40 source IPs — leading to MFA enforcement on 1,200 legacy accounts.",
+        strong: "Identified a credential-stuffing campaign that signature detections missed, by baselining normal authentication timing and spotting a 3am success pattern from 40 source IPs, leading to MFA enforcement on 1,200 legacy accounts.",
         why: "\"Investigated threats\" is unmeasurable. A specific catch that standard tooling missed, the method behind it, and the control change it drove is the single most persuasive bullet an analyst can have.",
       },
       {
@@ -2286,7 +2286,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     ],
     redFlags: [
       "No alert volume or estate size, making the environment impossible to gauge.",
-      "No specific investigation described — the discipline is judged on what you caught.",
+      "No specific investigation described. The discipline is judged on what you caught.",
       "Only tool names, with no evidence of investigation methodology.",
       "No sign of improving detections, which reads as pure queue consumption.",
     ],
@@ -2318,7 +2318,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "Tell me about working with a technical team on something you did not fully understand.",
     ],
     questionsToAsk: [
-      "How early are BAs involved — at problem definition or after a solution is chosen?",
+      "How early are BAs involved: at problem definition or after a solution is chosen?",
       "How is success measured after delivery?",
       "What is the working relationship between BAs, product and engineering?",
       "How much of the role is process improvement versus systems requirements?",
@@ -2327,22 +2327,22 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the most common Business Analyst interview question?",
         answer:
-          "A vague stakeholder request that you must unpack — typically \"someone asks for a new report, what do you do?\" The expected answer is not to gather report specifications. It is to establish what decision the report is meant to support, who makes it, how often, what they do today, and whether existing data already answers it. Interviewers are checking whether you find the underlying need rather than transcribing the requested solution, because that distinction is the entire value of the role.",
+          "A vague stakeholder request that you must unpack, typically \"someone asks for a new report, what do you do?\" The expected answer is not to gather report specifications. It is to establish what decision the report is meant to support, who makes it, how often, what they do today, and whether existing data already answers it. Interviewers are checking whether you find the underlying need rather than transcribing the requested solution, because that distinction is the entire value of the role.",
       },
       {
         question: "What is the difference between a Business Analyst and a Product Owner?",
         answer:
-          "BAs analyse problems and specify solutions; Product Owners prioritise and own outcomes. In practice the roles overlap heavily and many organisations use the titles interchangeably. The clearest distinction is decision authority — a Product Owner decides what gets built and in what order, while a BA informs that decision with analysis and then specifies it properly. If you want the decision rights, target PO or PM roles; the analysis skills transfer directly.",
+          "BAs analyse problems and specify solutions; Product Owners prioritise and own outcomes. In practice the roles overlap heavily and many organisations use the titles interchangeably. The clearest distinction is decision authority. A Product Owner decides what gets built and in what order, while a BA informs that decision with analysis and then specifies it properly. If you want the decision rights, target PO or PM roles; the analysis skills transfer directly.",
       },
       {
         question: "What metrics belong on a Business Analyst CV?",
         answer:
-          "Process outcomes and delivery impact. Cycle time reduced, manual hours removed, error rates cut, cost saved, systems or users affected, and requirements delivered without rework. \"Mapped and redesigned the claims intake process across 4 teams, cutting handling time from 6 days to 2 and removing 3 duplicate approval steps\" works because it names the scope, the mechanism and the measurable result — which is unusual on BA CVs and therefore stands out.",
+          "Process outcomes and delivery impact. Cycle time reduced, manual hours removed, error rates cut, cost saved, systems or users affected, and requirements delivered without rework. \"Mapped and redesigned the claims intake process across 4 teams, cutting handling time from 6 days to 2 and removing 3 duplicate approval steps\" works because it names the scope, the mechanism and the measurable result, which is unusual on BA CVs and therefore stands out.",
       },
       {
         question: "Do Business Analysts need technical skills?",
         answer:
-          "SQL is the one that consistently pays back, because it lets you validate assumptions yourself rather than queuing for data. Beyond that, understanding how systems integrate, being able to read an API specification, and comfort with process notation (BPMN) cover most expectations. You do not need to code. What is increasingly expected is data literacy — being able to define a metric precisely and check whether the change you specified actually moved it.",
+          "SQL is the one that consistently pays back, because it lets you validate assumptions yourself rather than queuing for data. Beyond that, understanding how systems integrate, being able to read an API specification, and comfort with process notation (BPMN) cover most expectations. You do not need to code. What is increasingly expected is data literacy: being able to define a metric precisely and check whether the change you specified actually moved it.",
       },
     ],
     summaryExample:
@@ -2351,12 +2351,12 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Gathered and documented business requirements from stakeholders.",
         strong: "Ran 30 stakeholder interviews across 4 departments for a policy-admin migration affecting 400 users, producing specifications that delivered with under 5% post-release change requests.",
-        why: "Requirements gathering is the role definition. Scope, user scale, and the post-release change rate prove the specifications were actually right — which is the only real measure of BA quality.",
+        why: "Requirements gathering is the role definition. Scope, user scale, and the post-release change rate prove the specifications were actually right, which is the only real measure of BA quality.",
       },
       {
         weak: "Analysed business processes and recommended improvements.",
         strong: "Mapped the claims intake process end to end, finding 3 duplicate approval steps and a handoff causing 2-day queues; the redesign cut handling time from 6 days to 2 with no headcount change.",
-        why: "\"Recommended improvements\" often means recommendations that went nowhere. Naming the specific waste found, the redesign and the outcome — with the constraint that headcount stayed flat — makes it concrete and credible.",
+        why: "\"Recommended improvements\" often means recommendations that went nowhere. Naming the specific waste found, the redesign and the outcome (with the constraint that headcount stayed flat) makes it concrete and credible.",
       },
       {
         weak: "Created user stories and acceptance criteria for the development team.",
@@ -2383,7 +2383,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "ui-designer": {
     intro:
-      "UI Designer interviews weight craft more heavily than UX roles — typography, spacing, hierarchy and colour are assessed directly — but modern hiring also expects systems thinking and enough accessibility knowledge to avoid shipping something unusable. Portfolios are judged on visual quality and on whether your decisions are defensible rather than decorative.",
+      "UI Designer interviews weight craft more heavily than UX roles (typography, spacing, hierarchy and colour are assessed directly), but modern hiring also expects systems thinking and enough accessibility knowledge to avoid shipping something unusable. Portfolios are judged on visual quality and on whether your decisions are defensible rather than decorative.",
     interviewFocus: [
       { area: "Visual craft", detail: "Typography, spacing rhythm, hierarchy, colour and contrast, assessed directly through your portfolio and any exercise. The area where UI roles differ most from UX." },
       { area: "Design systems", detail: "Component structure, tokens, variants, and documentation. Increasingly the core of the job rather than an adjunct." },
@@ -2397,7 +2397,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       "How do you check colour contrast, and what do you do when the brand palette fails AA?",
       "What states does a button need, and which do designers most often forget?",
       "How do you design a data table that works on mobile?",
-      "How do you decide spacing values — and why not just eyeball it?",
+      "How do you decide spacing values, and why not just eyeball it?",
     ],
     behaviouralQuestions: [
       "Tell me about design feedback you disagreed with. How did you handle it?",
@@ -2416,17 +2416,17 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What is the difference between a UI Designer and a UX Designer?",
         answer:
-          "UI focuses on the visual and interactive surface — typography, layout, colour, components, states. UX focuses on the problem and flow — research, information architecture, usability. In practice many roles combine both under the Product Designer title, and pure UI roles are most common at larger organisations with dedicated researchers, or in agency work. Read the responsibilities rather than the title: if the posting emphasises research and discovery it is a UX role regardless of what it is called.",
+          "UI focuses on the visual and interactive surface: typography, layout, colour, components, states. UX focuses on the problem and flow: research, information architecture, usability. In practice many roles combine both under the Product Designer title, and pure UI roles are most common at larger organisations with dedicated researchers, or in agency work. Read the responsibilities rather than the title: if the posting emphasises research and discovery it is a UX role regardless of what it is called.",
       },
       {
         question: "What should a UI portfolio show?",
         answer:
-          "High-craft work with visible reasoning. Show the typographic scale and spacing system you used, not just finished screens; show component sets with their states and variants; show a before and after where you fixed a hierarchy problem and can articulate why the new version works. Reviewers are assessing craft directly, so quality of execution matters more here than in UX portfolios — but decoration without rationale reads as styling rather than design.",
+          "High-craft work with visible reasoning. Show the typographic scale and spacing system you used, not just finished screens; show component sets with their states and variants; show a before and after where you fixed a hierarchy problem and can articulate why the new version works. Reviewers are assessing craft directly, so quality of execution matters more here than in UX portfolios, but decoration without rationale reads as styling rather than design.",
       },
       {
         question: "How much do UI designers need to know about accessibility?",
         answer:
-          "Enough to not ship something excluding people, and it is increasingly asked about directly. The practical minimum is colour contrast ratios and how to check them, focus states and visible focus indicators, touch target sizing, and not using colour alone to convey meaning. A common interview question is what you do when the brand palette fails AA contrast — a strong answer involves adjusting values for interface use while preserving brand identity, rather than either ignoring it or refusing to work.",
+          "Enough to not ship something excluding people, and it is increasingly asked about directly. The practical minimum is colour contrast ratios and how to check them, focus states and visible focus indicators, touch target sizing, and not using colour alone to convey meaning. A common interview question is what you do when the brand palette fails AA contrast. A strong answer involves adjusting values for interface use while preserving brand identity, rather than either ignoring it or refusing to work.",
       },
       {
         question: "Do UI designers still need to know how to code?",
@@ -2450,7 +2450,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Ensured designs met accessibility standards.",
         strong: "Brought 60 screens to WCAG 2.2 AA by rebuilding the palette's interface tokens for contrast while preserving brand colours for marketing, closing 90+ contrast violations without a rebrand.",
-        why: "\"Met standards\" is unverifiable. The specific tension — accessibility versus an existing brand — and how it was resolved shows judgement, and the violation count makes it concrete.",
+        why: "\"Met standards\" is unverifiable. The specific tension (accessibility versus an existing brand) and how it was resolved shows judgement, and the violation count makes it concrete.",
       },
     ],
     coreSkills: ["Typography & type systems", "Layout & spacing systems", "Colour theory & contrast", "Design systems & tokens", "Component & variant architecture", "Interaction states", "Responsive design", "Accessibility (WCAG)", "Design handoff"],
@@ -2463,7 +2463,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       { level: "Lead (8+ yrs)", expectation: "Sets visual language across products. Portfolio should show standards and team-level impact." },
     ],
     redFlags: [
-      "Screens with no visible system — inconsistent spacing and type across a single portfolio piece.",
+      "Screens with no visible system: inconsistent spacing and type across a single portfolio piece.",
       "No design system work at all, now central to most UI roles.",
       "No accessibility awareness, increasingly a scored area.",
       "Dribbble-style concepts with no real product constraints as primary work.",
@@ -2472,10 +2472,10 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
 
   "solutions-architect": {
     intro:
-      "Solutions Architect interviews are conversation-led: you are assessed on how you handle ambiguity, elicit constraints, and defend trade-offs in front of people who may disagree. Expect an open-ended design round, questions about cost and delivery reality, and — in pre-sales-leaning roles — an exercise in explaining a technical decision to a non-technical audience.",
+      "Solutions Architect interviews are conversation-led: you are assessed on how you handle ambiguity, elicit constraints, and defend trade-offs in front of people who may disagree. Expect an open-ended design round, questions about cost and delivery reality, and (in pre-sales-leaning roles) an exercise in explaining a technical decision to a non-technical audience.",
     interviewFocus: [
       { area: "Open-ended architecture design", detail: "A deliberately underspecified problem where the first move should be asking about scale, budget, timeline, existing estate and non-functional requirements. Jumping to a diagram is the classic failure." },
-      { area: "Trade-off reasoning", detail: "Build versus buy, monolith versus services, managed versus self-hosted — and what you give up in each case. Interviewers push back to see whether you defend or fold." },
+      { area: "Trade-off reasoning", detail: "Build versus buy, monolith versus services, managed versus self-hosted, and what you give up in each case. Interviewers push back to see whether you defend or fold." },
       { area: "Commercial awareness", detail: "What the design costs to build and run, and how it fits a delivery timeline and team capability. Architecture divorced from budget is a common weakness." },
       { area: "Communication", detail: "Explaining the same decision to an engineer and to a CFO. Central in customer-facing and pre-sales architecture roles." },
     ],
@@ -2505,7 +2505,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "What do Solutions Architect interviews actually test?",
         answer:
-          "Whether you gather constraints before designing. The signature round gives you a deliberately vague problem, and strong candidates spend the first several minutes asking questions — expected scale, budget, timeline, existing systems, team capability, compliance requirements, availability targets — before proposing anything. Candidates who start drawing boxes immediately are marked down regardless of the quality of the architecture, because the failure being tested for is designing confidently for the wrong problem.",
+          "Whether you gather constraints before designing. The signature round gives you a deliberately vague problem, and strong candidates spend the first several minutes asking questions (expected scale, budget, timeline, existing systems, team capability, compliance requirements, availability targets) before proposing anything. Candidates who start drawing boxes immediately are marked down regardless of the quality of the architecture, because the failure being tested for is designing confidently for the wrong problem.",
       },
       {
         question: "How is a Solutions Architect different from a Software Architect?",
@@ -2520,7 +2520,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         question: "Do I need certifications for architecture roles?",
         answer:
-          "Cloud provider architect certifications — AWS Solutions Architect Professional, Azure Solutions Architect Expert — carry genuine weight, particularly in consultancies and for partner-status reasons, and are often used as screening filters. TOGAF appears in enterprise architecture functions. That said, they establish credibility rather than capability: interviews test whether you can hold an ambiguous design conversation, and no certification prepares you for that. Get the one matching your target cloud, then practise designing aloud.",
+          "Cloud provider architect certifications (AWS Solutions Architect Professional, Azure Solutions Architect Expert) carry genuine weight, particularly in consultancies and for partner-status reasons, and are often used as screening filters. TOGAF appears in enterprise architecture functions. That said, they establish credibility rather than capability: interviews test whether you can hold an ambiguous design conversation, and no certification prepares you for that. Get the one matching your target cloud, then practise designing aloud.",
       },
     ],
     summaryExample:
@@ -2529,16 +2529,16 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
       {
         weak: "Designed solution architectures for enterprise clients.",
         strong: "Designed and delivered an event-driven integration platform connecting 12 systems for 8,000 users, delivered in 7 months against a 12-month estimate and £1.4M below the packaged-vendor alternative.",
-        why: "Architecture claims need delivery and commercial outcomes. The system count, user scale, timeline against estimate and cost comparison show the design survived contact with reality — which diagrams alone never demonstrate.",
+        why: "Architecture claims need delivery and commercial outcomes. The system count, user scale, timeline against estimate and cost comparison show the design survived contact with reality, which diagrams alone never demonstrate.",
       },
       {
         weak: "Provided technical guidance and recommendations to stakeholders.",
-        strong: "Recommended against a proposed microservices rewrite after modelling the operational cost against a 6-engineer team, proposing a modular monolith instead — delivered 5 months earlier with no reliability regression.",
+        strong: "Recommended against a proposed microservices rewrite after modelling the operational cost against a 6-engineer team, proposing a modular monolith instead, delivered 5 months earlier with no reliability regression.",
         why: "\"Provided guidance\" is unmeasurable and often ignored. Talking a stakeholder out of a fashionable decision, with the reasoning and the outcome stated, is the strongest possible architecture bullet.",
       },
       {
         weak: "Worked with clients to understand their technical requirements.",
-        strong: "Ran discovery across 4 business units to establish real availability needs, finding the stated 99.99% requirement applied to one workflow rather than the platform — cutting projected infrastructure cost 45%.",
+        strong: "Ran discovery across 4 business units to establish real availability needs, finding the stated 99.99% requirement applied to one workflow rather than the platform, cutting projected infrastructure cost 45%.",
         why: "Requirements gathering becomes compelling when it changes the answer. Challenging an assumed non-functional requirement and quantifying the saving demonstrates exactly the commercial judgement the role exists for.",
       },
     ],

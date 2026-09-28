@@ -25,7 +25,7 @@ const TOOLTIP_W = 208; // w-52 in px
 export function ActivityChart({
   series,
   days30,
-  title = "Activity — last 30 days",
+  title = "Activity: last 30 days",
 }: {
   series: ChartSeries[];
   days30: string[];
@@ -294,7 +294,7 @@ export function ActivityChart({
                       ({r.pct}%)
                     </span>
                   ) : !r.isBaseline ? (
-                    <span className="w-9 text-right text-[10px] text-muted-foreground">—</span>
+                    <span className="w-9 text-right text-[10px] text-muted-foreground">–</span>
                   ) : (
                     <span className="w-9" />
                   )}

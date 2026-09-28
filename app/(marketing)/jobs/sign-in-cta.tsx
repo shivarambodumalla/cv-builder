@@ -30,7 +30,7 @@ export function SignInCTA() {
         </h2>
         <p className="text-white/70 text-sm max-w-md mx-auto mb-6">
           CVEdge analyses your skills and experience to surface the best-fit
-          roles — so you apply smarter, not harder.
+          roles, so you apply smarter, not harder.
         </p>
         <Button
           onClick={() => showSignupModal({ trigger: "jobs_cta" })}

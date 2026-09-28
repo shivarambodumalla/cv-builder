@@ -286,7 +286,7 @@ export function UsageHistory() {
                       <tr key={u.id} className="border-b">
                         <td className="py-1.5">
                           <div>
-                            <span className="text-xs font-medium">{u.name || "—"}</span>
+                            <span className="text-xs font-medium">{u.name || "–"}</span>
                             <span className="text-[10px] text-muted-foreground ml-1.5">{u.email}</span>
                           </div>
                         </td>

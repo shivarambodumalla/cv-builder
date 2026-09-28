@@ -5,7 +5,7 @@ import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { AUTHOR, AUTHOR_JSON_LD } from "@/lib/blog/author";
 
 export const metadata: Metadata = {
-  title: "About CVEdge — Who We Are and What We Build",
+  title: "About CVEdge: Who We Are and What We Build",
   description:
     "CVEdge builds ATS analysis, AI resume rewriting and interview preparation tools for job seekers. What we make, how it works, and the principles behind it.",
   alternates: { canonical: "https://www.thecvedge.com/about" },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const WHAT_WE_BUILD = [
   {
     title: "ATS analysis",
-    body: "We parse your CV the way an applicant tracking system does, then score it across six categories — contact details, sections, keywords, measurable results, bullet quality and formatting. The output is not a number on its own; it is the specific list of what is costing you points and why.",
+    body: "We parse your CV the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. The output is not a number on its own; it is the specific list of what is costing you points and why.",
     href: "/upload-resume",
     linkLabel: "Check your CV free",
   },
@@ -32,7 +32,7 @@ const WHAT_WE_BUILD = [
   },
   {
     title: "Job matching",
-    body: "Paste a job description and we identify which keywords are missing, which are already covered, and which would move your match score most — so tailoring is driven by evidence rather than guesswork.",
+    body: "Paste a job description and we identify which keywords are missing, which are already covered, and which would move your match score most, so tailoring is driven by evidence rather than guesswork.",
     href: "/jobs",
     linkLabel: "Browse jobs",
   },
@@ -53,7 +53,7 @@ const WHAT_WE_BUILD = [
 const PRINCIPLES = [
   {
     title: "We do not fabricate your experience",
-    body: "Plenty of tools will generate achievements from a job title. Those achievements are fiction, and they become the worst possible interview topic — interviewers probe numbers precisely because they are checkable. Everything our AI produces is a restructuring of something you told us.",
+    body: "Plenty of tools will generate achievements from a job title. Those achievements are fiction, and they become the worst possible interview topic, and interviewers probe numbers precisely because they are checkable. Everything our AI produces is a restructuring of something you told us.",
   },
   {
     title: "A score is a floor, not a target",
@@ -166,7 +166,7 @@ export default function AboutPage() {
         <p className="text-muted-foreground leading-relaxed mb-4">
           Alongside the product we write guides on how applicant tracking systems actually work, what recruiters do
           in the first pass over a CV, and what a strong resume looks like for specific roles. It is written to be
-          useful whether or not you use the tool — including the parts where the honest answer is that a tool will
+          useful whether or not you use the tool, including the parts where the honest answer is that a tool will
           not help you.
         </p>
         <div className="flex flex-wrap gap-2">

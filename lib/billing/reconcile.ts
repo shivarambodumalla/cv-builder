@@ -168,7 +168,7 @@ export async function reconcileSubscriptions(): Promise<{
       subscriptionId: p.subscription_id,
       email: p.email,
       userId: p.id,
-      detail: `Pro locally but subscription ${p.subscription_id} is not active upstream. Not auto-revoked — verify before downgrading.`,
+      detail: `Pro locally but subscription ${p.subscription_id} is not active upstream. Not auto-revoked. Verify before downgrading.`,
       healed: false,
     });
   }

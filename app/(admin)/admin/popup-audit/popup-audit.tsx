@@ -34,7 +34,7 @@ const POPUPS: PopupConfig[] = [
   // Popovers (bottom-right, non-blocking)
   { id: "download_nudge", name: "Download Nudge", category: "popover", trigger: "nudge", pages: ["/resume/[id]"], who: "Authenticated", condition: "ATS score + 0 downloads", frequency: "3 days", previewTitle: "You scored 84 but haven't downloaded", previewSubtitle: "Take your improved CV with you.", previewCta: "Download my CV", previewIcon: "download" },
   { id: "jobs_discovery", name: "Jobs Discovery", category: "popover", trigger: "nudge", pages: ["/dashboard", "/resume/[id]"], who: "Authenticated", condition: "Has CV + never visited /my-jobs", frequency: "7 days", previewTitle: "Your CV can match live jobs", previewSubtitle: "See which roles you're most likely to land.", previewCta: "See matching jobs", previewIcon: "briefcase" },
-  { id: "upload_cv", name: "Upload CV", category: "popover", trigger: "nudge", pages: ["/dashboard"], who: "Authenticated", condition: "0 CVs + 60s delay", frequency: "7 days", previewTitle: "Upload your CV — takes 30 seconds", previewSubtitle: "Get your ATS score and start improving.", previewCta: "Upload now", previewIcon: "upload" },
+  { id: "upload_cv", name: "Upload CV", category: "popover", trigger: "nudge", pages: ["/dashboard"], who: "Authenticated", condition: "0 CVs + 60s delay", frequency: "7 days", previewTitle: "Upload your CV. Takes 30 seconds", previewSubtitle: "Get your ATS score and start improving.", previewCta: "Upload now", previewIcon: "upload" },
   { id: "feedback_prompt", name: "Feedback Prompt", category: "popover", trigger: "nudge", pages: ["/resume/[id]", "/dashboard"], who: "Authenticated", condition: "Right after a PDF download", frequency: "Until a 4-5 rating; 24h if skipped", previewTitle: "How did CVEdge do?", previewSubtitle: "1-5 stars + optional comment, feeds /admin/feedback.", previewCta: "Send feedback", previewIcon: "sparkles" },
   { id: "return_visit", name: "Return Visit", category: "popover", trigger: "nudge", pages: ["/dashboard"], who: "Authenticated", condition: "3+ days since last sign-in", frequency: "1 day", previewTitle: "Welcome back! Your ATS score was 72.", previewSubtitle: "Pick up where you left off.", previewCta: "Continue where you left off", previewIcon: "arrow-right" },
   // Inline (contextual, stays in page)
@@ -50,9 +50,9 @@ const ICON_MAP: Record<string, React.ElementType> = {
 const CATEGORY_LABELS = { signup_modal: "Signup Modals", popover: "Bottom-Right Popovers", inline: "Inline Nudges" };
 const CATEGORY_COLORS = { signup_modal: "bg-[#065F46] text-white", popover: "bg-primary/10 text-primary", inline: "bg-muted text-muted-foreground" };
 const CATEGORY_DESCS = {
-  signup_modal: "Full-screen modals for anonymous visitors — drive signups",
-  popover: "Non-blocking bottom-right cards for authenticated users — green header + beige body",
-  inline: "Contextual indicators embedded in the page — subtle engagement nudges",
+  signup_modal: "Full-screen modals for anonymous visitors to drive signups",
+  popover: "Non-blocking bottom-right cards for authenticated users: green header + beige body",
+  inline: "Contextual indicators embedded in the page: subtle engagement nudges",
 };
 
 export function PopupAudit() {
@@ -135,7 +135,7 @@ export function PopupAudit() {
           {POPUPS.map((p) => (
             <div key={p.id} className="flex items-center gap-2">
               <Check className="h-3.5 w-3.5 text-success shrink-0" />
-              <span className="text-xs">{p.name} — {p.condition}</span>
+              <span className="text-xs">{p.name}: {p.condition}</span>
             </div>
           ))}
         </div>

@@ -365,7 +365,7 @@ export function FunnelDashboard() {
                         <div className="h-full rounded bg-[#065F46]/20" style={{ width: `${barW}%` }} />
                         <span className="absolute inset-y-0 left-2 flex items-center text-[10px] font-bold tabular-nums">{pv.count.toLocaleString()}</span>
                       </div>
-                      <span className="text-[10px] text-muted-foreground tabular-nums w-10 text-right">{signups > 0 ? fp(p(pv.count, signups)) : "—"}</span>
+                      <span className="text-[10px] text-muted-foreground tabular-nums w-10 text-right">{signups > 0 ? fp(p(pv.count, signups)) : "–"}</span>
                     </div>
                   );
                 })}
@@ -416,7 +416,7 @@ export function FunnelDashboard() {
                 <TrendingUp className="h-4 w-4 text-success" />
                 <h2 className="text-sm font-semibold">Where signups come from</h2>
               </div>
-              <p className="text-[11px] text-muted-foreground mb-4">First page new users visit after signing up — indicates what brought them in</p>
+              <p className="text-[11px] text-muted-foreground mb-4">First page new users visit after signing up. Indicates what brought them in</p>
               {data.signupSources.length > 0 ? (
                 <div className="space-y-2.5">
                   {data.signupSources.map((s, i) => {
@@ -643,8 +643,8 @@ function FunnelSection({ title, desc, stages, base, accent }: { title: string; d
                   <td className="px-4 py-2"><div className="flex items-center gap-2"><Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" /><span className="font-medium">{s.label}</span></div></td>
                   <td className="px-4 py-2 text-right font-bold tabular-nums">{s.count.toLocaleString()}</td>
                   <td className="px-4 py-2 text-right tabular-nums text-muted-foreground">{fp(p(s.count, base))}</td>
-                  <td className="px-4 py-2 text-right">{i === 0 ? <span className="text-muted-foreground">—</span> : <span className={cn("font-semibold tabular-nums", stepConv >= 60 ? "text-success" : stepConv >= 30 ? "text-warning" : "text-error")}>{fp(stepConv)}</span>}</td>
-                  <td className="px-4 py-2 text-right">{i === 0 ? <span className="text-muted-foreground">—</span> : drop > 0 ? <span className={cn("font-semibold tabular-nums", drop >= 50 ? "text-error" : drop >= 30 ? "text-warning" : "text-muted-foreground")}>{fp(drop)}</span> : <span className="text-success font-semibold">0%</span>}</td>
+                  <td className="px-4 py-2 text-right">{i === 0 ? <span className="text-muted-foreground">–</span> : <span className={cn("font-semibold tabular-nums", stepConv >= 60 ? "text-success" : stepConv >= 30 ? "text-warning" : "text-error")}>{fp(stepConv)}</span>}</td>
+                  <td className="px-4 py-2 text-right">{i === 0 ? <span className="text-muted-foreground">–</span> : drop > 0 ? <span className={cn("font-semibold tabular-nums", drop >= 50 ? "text-error" : drop >= 30 ? "text-warning" : "text-muted-foreground")}>{fp(drop)}</span> : <span className="text-success font-semibold">0%</span>}</td>
                 </tr>
               );
             })}
@@ -893,7 +893,7 @@ function VisitsOverTime({ visits, signups, preset }: { visits: TimePoint[]; sign
             <MiniStat label="Total views" value={totalVisits.toLocaleString()} sub={`${avgVisits.toLocaleString()}/avg ${bucketLabelName}`} />
             <MiniStat label="Signups" value={totalSignups.toLocaleString()} sub={`${conversionPct}% conv.`} tone={conversionPct >= 5 ? "success" : conversionPct >= 2 ? "warning" : "muted"} />
             <MiniStat label={`Peak ${bucketLabelName}`} value={peakVisits.visits.toLocaleString()} sub={peakVisits.label} />
-            <MiniStat label="Best signup" value={bestSignupDay.signups.toLocaleString()} sub={bestSignupDay.signups > 0 ? bestSignupDay.label : "—"} tone={bestSignupDay.signups > 0 ? "success" : "muted"} />
+            <MiniStat label="Best signup" value={bestSignupDay.signups.toLocaleString()} sub={bestSignupDay.signups > 0 ? bestSignupDay.label : "–"} tone={bestSignupDay.signups > 0 ? "success" : "muted"} />
             <MiniStat
               label="Trend"
               value={trendPct > 0 ? `+${trendPct}%` : `${trendPct}%`}

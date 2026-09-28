@@ -77,7 +77,7 @@ export default async function AdminPlansPage() {
       <div>
         <h1 className="text-2xl font-bold">Plans &amp; Packaging</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Free-plan quotas and which templates sit behind Pro. Changes go live within a minute — no deploy.
+          Free-plan quotas and which templates sit behind Pro. Changes go live within a minute, no deploy.
         </p>
       </div>
 

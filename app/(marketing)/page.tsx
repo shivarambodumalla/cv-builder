@@ -28,7 +28,7 @@ import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
-  title: "Free ATS Resume Scanner — Check Your ATS Score",
+  title: "Free ATS Resume Scanner: Check Your ATS Score",
   description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score, fixes issues with AI, and gets you more interviews. Free. 1,200+ resumes scanned.",
   alternates: {
     canonical: "https://www.thecvedge.com",
@@ -100,7 +100,7 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
-      { "@type": "Question", name: "What is CVEdge?", acceptedAnswer: { "@type": "Answer", text: "CVEdge is a free AI-powered resume builder and ATS checker. It analyses your CV against applicant tracking system criteria, gives you a real ATS score, rewrites bullet points with AI, matches your resume to job descriptions, and generates cover letters — all in one tool." } },
+      { "@type": "Question", name: "What is CVEdge?", acceptedAnswer: { "@type": "Answer", text: "CVEdge is a free AI-powered resume builder and ATS checker. It analyses your CV against applicant tracking system criteria, gives you a real ATS score, rewrites bullet points with AI, matches your resume to job descriptions, and generates cover letters, all in one tool." } },
       { "@type": "Question", name: "What is an ATS score?", acceptedAnswer: { "@type": "Answer", text: "An ATS score measures how well your resume passes through applicant tracking system software used by employers to filter applications. Scores are rated across categories like keyword match, formatting, measurable results, and section completeness. A score of 80+ is considered interview-ready. CVEdge scores your resume instantly across 6 categories." } },
       { "@type": "Question", name: "What causes CVs to fail ATS screening?", acceptedAnswer: { "@type": "Answer", text: "The most common ATS failures are: missing role-specific keywords, non-standard section headings, complex formatting (tables, columns, graphics) that parsers cannot read, lack of measurable results in bullet points, and missing contact information. CVEdge identifies all of these and provides specific fixes." } },
       { "@type": "Question", name: "How do I improve my ATS score?", acceptedAnswer: { "@type": "Answer", text: "To improve your ATS score: add role-specific keywords from the job description, use standard section headings (Experience, Education, Skills), remove tables and graphics, quantify your achievements with numbers, and ensure your contact details are complete. CVEdge's Fix All feature rewrites your summary and bullet points automatically to address all of these." } },
@@ -134,22 +134,21 @@ export default async function HomePage() {
                 <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
               </h1>
               <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Get a real ATS score, fix critical issues, and start getting interview calls — in under 10 minutes.
+                Get a real ATS score, fix critical issues, and start getting interview calls in under 10 minutes.
               </p>
-              <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 sm:gap-4 mt-1">
+              <div className="flex w-full flex-col sm:w-auto sm:flex-row items-stretch sm:items-center gap-3 mt-1">
                 <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
                   <Link href="/upload-resume">Scan my resume free</Link>
                 </Button>
-                <Link
-                  href="/jobs"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-primary underline-offset-4 hover:underline transition-colors"
-                >
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
-                  </span>
-                  Or browse 1M+ live jobs
-                </Link>
+                <Button size="lg" variant="outline" className="h-12 gap-2 px-8 text-[0.9375rem] font-medium bg-transparent" asChild>
+                  <Link href="/jobs">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+                    </span>
+                    Browse 1M+ live jobs
+                  </Link>
+                </Button>
               </div>
 
               {/* Trust line */}
@@ -338,7 +337,7 @@ export default async function HomePage() {
           <div className="max-w-5xl mx-auto mb-14 md:mb-16">
             <p className="text-xs sm:text-sm font-semibold tracking-widest text-primary uppercase">How it works</p>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground mt-3">From rejected to interview-ready in 3 steps</h2>
-            <p className="text-sm sm:text-base text-muted-foreground mt-4 leading-relaxed max-w-xl">Upload your resume, see exactly what&apos;s wrong, and fix everything — before the recruiter ever sees it.</p>
+            <p className="text-sm sm:text-base text-muted-foreground mt-4 leading-relaxed max-w-xl">Upload your resume, see exactly what&apos;s wrong, and fix everything before the recruiter ever sees it.</p>
           </div>
 
           {/* Step cards */}
@@ -351,7 +350,7 @@ export default async function HomePage() {
                   step: "01",
                   icon: Upload,
                   title: "Upload your resume",
-                  body: "Drop your PDF or paste text. AI parses every section in seconds — no manual entry needed.",
+                  body: "Drop your PDF or paste text. AI parses every section in seconds. No manual entry needed.",
                   proofLabel: "Parsed in seconds",
                   proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded-md px-2.5 py-1 text-xs font-medium">14 experiences found</span>,
                 },
@@ -359,7 +358,7 @@ export default async function HomePage() {
                   step: "02",
                   icon: Sparkles,
                   title: "Get your ATS analysis",
-                  body: "See your score, missing keywords, formatting errors, and exactly what to fix — ranked by impact.",
+                  body: "See your score, missing keywords, formatting errors, and exactly what to fix, ranked by impact.",
                   proofLabel: "Answer quality score",
                   proof: (
                     <div className="flex items-center gap-3">
@@ -374,7 +373,7 @@ export default async function HomePage() {
                   title: "Fix and optimise",
                   body: "Apply AI suggestions with one click. Rewrite bullets, add keywords, and watch your score climb.",
                   proofLabel: "Top match for this role",
-                  proof: <p className="text-xs text-[#065F46] font-semibold truncate">#1 Improving Engagement Metrics — 94%</p>,
+                  proof: <p className="text-xs text-[#065F46] font-semibold truncate">#1 Improving Engagement Metrics: 94%</p>,
                 },
               ].map((s) => (
                 <div key={s.title} className="bg-background border border-border/60 rounded-2xl p-6 sm:p-7 flex flex-col items-start gap-3 relative z-10 shadow-sm hover:shadow-md transition-shadow">
@@ -486,8 +485,8 @@ export default async function HomePage() {
                 {/* Trust points */}
                 <div className="space-y-3 pt-2">
                   {[
-                    { title: "Never fabricates", desc: "Uses [X] placeholders — your words, not ours" },
-                    { title: "Your experience only", desc: "Nothing invented — every point explained" },
+                    { title: "Never fabricates", desc: "Uses [X] placeholders. Your words, not ours" },
+                    { title: "Your experience only", desc: "Nothing invented. Every point explained" },
                     { title: "Fully transparent scoring", desc: "See exactly why your score changed" },
                   ].map((t) => (
                     <div key={t.title} className="flex items-start gap-3 rounded-xl bg-background/60 dark:bg-muted/30 border border-border/40 px-4 py-3">

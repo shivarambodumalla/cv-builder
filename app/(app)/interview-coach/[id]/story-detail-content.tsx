@@ -36,7 +36,7 @@ const COMMON_TAGS = ["Leadership", "Problem Solving", "Teamwork", "Technical", "
 
 const STAR_LABELS: Record<string, { full: string; hint: string }> = {
   situation: { full: "Situation", hint: "Add specific context: team size, timeline, business impact at stake" },
-  task: { full: "Task", hint: "Clarify YOUR responsibility — what were you specifically asked to do?" },
+  task: { full: "Task", hint: "Clarify YOUR responsibility. What were you specifically asked to do?" },
   action: { full: "Action", hint: "Detail the steps YOU took. Use 'I' not 'we'. Mention tools/methods." },
   result: { full: "Result", hint: "Add numbers: %, $, time saved, users impacted. Quantify the outcome." },
 };
@@ -123,7 +123,7 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
       if (!starComplete(action)) suggestions.push({ section: "Action", suggestion: "List 2-3 concrete steps you took. Mention specific tools, frameworks, or methods." });
       if (!result || !/\d/.test(result)) suggestions.push({ section: "Result", suggestion: "Add a specific metric: percentage improvement, revenue impact, time saved, or users affected." });
       if (starComplete(situation) && starComplete(task) && starComplete(action) && starComplete(result) && /\d/.test(result)) {
-        suggestions.push({ section: "Overall", suggestion: "Your story looks strong! Consider adding a 'So what' — why this achievement mattered to the business." });
+        suggestions.push({ section: "Overall", suggestion: "Your story looks strong! Consider adding a 'So what': why this achievement mattered to the business." });
       }
       setAiSuggestions(suggestions);
     } catch { /* ignore */ }
@@ -193,8 +193,8 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
                 </div>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {framework === "star" && "Situation → Task → Action → Result. The classic framework for most behavioral questions."}
-                  {framework === "star_r" && "STAR + Reflection. Best when they ask \"What did you learn?\" — shows self-awareness and growth."}
-                  {framework === "car" && "Challenge → Action → Result. Quick and concise — ideal for follow-up answers or time-limited responses."}
+                  {framework === "star_r" && "STAR + Reflection. Best when they ask \"What did you learn?\" This shows self-awareness and growth."}
+                  {framework === "car" && "Challenge → Action → Result. Quick and concise, ideal for follow-up answers or time-limited responses."}
                 </p>
               </div>
 

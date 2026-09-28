@@ -6,19 +6,19 @@ import { BlogList } from "./blog-list";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Blog — CV & Job Search Advice",
+  title: "Blog: CV & Job Search Advice",
   description:
     "Practical advice on CV writing, ATS optimisation, job searching, and landing interviews. Updated regularly by the CVEdge team.",
   alternates: { canonical: "https://www.thecvedge.com/blog" },
   openGraph: {
-    title: "CVEdge Blog — CV & Job Search Advice",
+    title: "CVEdge Blog: CV & Job Search Advice",
     description: "Practical advice on CV writing, ATS optimisation, and job searching.",
     url: "https://www.thecvedge.com/blog",
     images: [{ url: "https://www.thecvedge.com/img/CV-Edge-Logo-square.svg", width: 1200, height: 630, alt: "CVEdge Blog" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CVEdge Blog — CV & Job Search Advice",
+    title: "CVEdge Blog: CV & Job Search Advice",
     description: "Practical advice on CV writing, ATS optimisation, and job searching.",
     images: ["https://www.thecvedge.com/img/CV-Edge-Logo-square.svg"],
   },
@@ -59,14 +59,14 @@ export default async function BlogPage() {
             </span>
           </h1>
           <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
-            Practical guides on CV writing, ATS optimisation, and job searching — written for real job seekers.
+            Practical guides on CV writing, ATS optimisation, and job searching, written for real job seekers.
           </p>
         </div>
       </section>
 
       <div className="container mx-auto max-w-5xl px-4 py-12">
         {posts.length === 0 ? (
-          <p className="text-center text-muted-foreground py-16">No posts yet — check back soon.</p>
+          <p className="text-center text-muted-foreground py-16">No posts yet. Check back soon.</p>
         ) : featured ? (
           <BlogList
             initialPosts={posts}

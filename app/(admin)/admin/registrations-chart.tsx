@@ -77,7 +77,7 @@ export function RegistrationsChart({
           <div>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <Users className="h-4 w-4 text-muted-foreground" />
-              Registrations — last 30 days
+              Registrations: last 30 days
             </CardTitle>
             <p className="mt-1 text-xs text-muted-foreground">
               {days30[0].slice(5)} → {days30[n - 1].slice(5)} · excluding admins

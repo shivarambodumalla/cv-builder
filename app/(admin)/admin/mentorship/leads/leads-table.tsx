@@ -166,8 +166,8 @@ export function LeadsTable() {
                       <div className="text-xs text-muted-foreground">{lead.email}</div>
                     </Link>
                   </td>
-                  <td className="px-4 py-2.5">{lead.country_code || "—"}</td>
-                  <td className="px-4 py-2.5">{lead.experience_level || "—"}</td>
+                  <td className="px-4 py-2.5">{lead.country_code || "–"}</td>
+                  <td className="px-4 py-2.5">{lead.experience_level || "–"}</td>
                   <td className="px-4 py-2.5 text-xs text-muted-foreground">
                     {lead.utm_source || "direct"}
                     {lead.utm_campaign ? ` / ${lead.utm_campaign}` : ""}
@@ -184,7 +184,7 @@ export function LeadsTable() {
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-xs text-muted-foreground">
-                    {lead.owner_admin_email?.split("@")[0] || "—"}
+                    {lead.owner_admin_email?.split("@")[0] || "–"}
                   </td>
                   <td className="px-4 py-2.5 text-xs text-muted-foreground">{timeAgo(lead.updated_at)}</td>
                 </tr>

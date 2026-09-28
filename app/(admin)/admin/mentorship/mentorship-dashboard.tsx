@@ -196,7 +196,7 @@ export function MentorshipDashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">AI Product Design — Course Funnel</h1>
+          <h1 className="text-2xl font-bold">AI Product Design: Course Funnel</h1>
           <p className="text-sm text-muted-foreground">
             Mentorship landing page traffic, leads &amp; pipeline (admin visits excluded)
           </p>
@@ -254,7 +254,7 @@ export function MentorshipDashboard() {
               </div>
               {stats.locations.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No location data yet — collected from the next visit onwards.
+                  No location data yet. Collected from the next visit onwards.
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -299,7 +299,7 @@ export function MentorshipDashboard() {
 
           {search && !search.configured && (
             <p className="text-sm text-muted-foreground">
-              Google Search Console not connected — search impressions &amp; keywords unavailable.
+              Google Search Console not connected. Search impressions &amp; keywords unavailable.
             </p>
           )}
 

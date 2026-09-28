@@ -5,11 +5,11 @@ import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 export const metadata: Metadata = {
   title: "Contact CVEdge",
   description:
-    "How to reach CVEdge — support, billing, privacy and data requests, and press. We reply to every email, usually within one business day.",
+    "How to reach CVEdge for support, billing, privacy and data requests, and press. We reply to every email, usually within one business day.",
   alternates: { canonical: "https://www.thecvedge.com/contact" },
   openGraph: {
     title: "Contact CVEdge",
-    description: "How to reach CVEdge — support, billing, privacy requests and press.",
+    description: "How to reach CVEdge for support, billing, privacy requests and press.",
     url: "https://www.thecvedge.com/contact",
   },
 };
@@ -19,7 +19,7 @@ const EMAIL = "hello@thecvedge.com";
 const REASONS = [
   {
     title: "Product support",
-    body: "Something not working, a CV that will not parse, or an export that failed. Include the CV name and roughly when it happened — that is usually enough for us to find it.",
+    body: "Something not working, a CV that will not parse, or an export that failed. Include the CV name and roughly when it happened. That is usually enough for us to find it.",
   },
   {
     title: "Billing and subscriptions",
@@ -53,7 +53,7 @@ export default function ContactPage() {
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Contact</p>
         <h1 className="text-3xl font-bold tracking-tight mt-2 mb-5">Contact CVEdge</h1>
         <p className="text-muted-foreground leading-relaxed mb-8">
-          We run on email rather than a ticket system — one address, read by the people who build the product. We
+          We run on email rather than a ticket system: one address, read by the people who build the product. We
           reply to every message, usually within one business day.
         </p>
 
@@ -74,7 +74,7 @@ export default function ContactPage() {
         {/* What to include */}
         <h2 className="text-2xl font-bold tracking-tight mt-14 mb-2">What to write to us about</h2>
         <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-          Everything goes to the same address — this is just what helps us answer quickly.
+          Everything goes to the same address. This is just what helps us answer quickly.
         </p>
         <div className="space-y-4">
           {REASONS.map((r) => (
@@ -101,7 +101,7 @@ export default function ContactPage() {
           <li className="text-sm text-muted-foreground leading-relaxed flex items-start gap-2.5">
             <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
             <span>
-              If your ATS score seems low, the category breakdown on the report names the specific issues — that is
+              If your ATS score seems low, the category breakdown on the report names the specific issues. That is
               usually a faster answer than we can give by email.
             </span>
           </li>

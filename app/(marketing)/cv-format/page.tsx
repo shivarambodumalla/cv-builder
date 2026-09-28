@@ -10,7 +10,7 @@ import { CV_FORMATS } from "@/lib/cv-formats/data";
 // URL /cv-format itself 404'd — a breadcrumb naming a level that does not exist
 // is exactly the kind of markup inconsistency Search Console flags.
 export const metadata: Metadata = {
-  title: "CV Formats by Country and Standard — Free Word Templates",
+  title: "CV Formats by Country and Standard: Free Word Templates",
   description:
     "Free downloadable templates for the named CV formats employers actually ask for: Europass, the German Lebenslauf, the IIM resume format, Gulf CVs and Jake's Resume. Word files, no account needed.",
   alternates: { canonical: "https://www.thecvedge.com/cv-format" },
@@ -30,14 +30,14 @@ const EXTERNAL_FORMATS = [
     name: "Lebenslauf Vorlage",
     eyebrow: "Deutschland · tabellarisch",
     blurb:
-      "The German tabellarischer Lebenslauf, written in German — antichronologisch, with the personal details block and CEFR language levels.",
+      "The German tabellarischer Lebenslauf, written in German (antichronologisch), with the personal details block and CEFR language levels.",
   },
   {
     href: "/cv-review/gcc",
     name: "Gulf CV Format",
     eyebrow: "UAE, Saudi Arabia, Qatar",
     blurb:
-      "The personal details block Gulf recruiters screen on first — visa status, notice period, nationality and current location.",
+      "The personal details block Gulf recruiters screen on first: visa status, notice period, nationality and current location.",
   },
 ];
 
@@ -62,7 +62,7 @@ export default function CvFormatIndexPage() {
               The formats employers actually ask for
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Some CV formats are conventions with names — a recruiter asks for a Europass
+              Some CV formats are conventions with names. A recruiter asks for a Europass
               CV or a placement cell expects the IIM format, and a generic template will not
               do. Each of these is a free Word file with the structure already set.
             </p>
@@ -128,7 +128,7 @@ export default function CvFormatIndexPage() {
             <h2 className="text-base font-bold mb-2">Not sure which you need?</h2>
             <p className="text-sm text-muted-foreground mb-4">
               If nobody has asked you for a named format, you do not need one. A plain
-              single-column CV is the safer default almost everywhere — it parses cleanly and
+              single-column CV is the safer default almost everywhere. It parses cleanly and
               never reads as inappropriate.
             </p>
             <div className="flex flex-col sm:flex-row gap-2">

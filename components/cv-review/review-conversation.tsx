@@ -243,7 +243,7 @@ export function ReviewConversation({ review, initialMessages, editorCvId }: Prop
                       </label>
                       {isAnswered ? (
                         <div className="rounded-lg px-3 py-2 text-sm" style={{ background: "#F0FDF4", color: "#065F46" }}>
-                          {draft[q.id] || "—"}
+                          {draft[q.id] || "–"}
                         </div>
                       ) : (
                         <textarea

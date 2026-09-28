@@ -35,12 +35,12 @@ export function getAdjacentRoles(cv: ResumeContent | null): string[] {
 const TIP_POOL: string[] = [
   "Keep your CV updated weekly, not monthly. Recruiters favour CVs modified in the last 7 days.",
   "Quantify one bullet per role. Numbers beat adjectives every time in ATS scoring.",
-  "Mirror the exact phrasing from target job descriptions — ATS keyword matching is literal.",
+  "Mirror the exact phrasing from target job descriptions. ATS keyword matching is literal.",
   "Short bullets win. Aim for one line per achievement, two tops.",
   "Lead every bullet with a strong verb. Passive voice reads as low-ownership to recruiters.",
   "Keep one master CV, then tailor one version per application. Two files, not twenty.",
   "Drop skills you haven't used in 5+ years. Relevance beats breadth.",
-  "Certifications get you past ATS. Link to the issuing body — not just a logo.",
+  "Certifications get you past ATS. Link to the issuing body, not just a logo.",
   "If your summary is longer than 3 sentences, it's a bio. Cut it back to a pitch.",
   "Add the city, even for remote roles. ATS location filters still run.",
 ];
@@ -71,7 +71,7 @@ export function getAtsMessage(score: number | null): { label: string; message: s
       message: "Run an ATS check on your CV to see where you stand.",
     };
   }
-  if (score >= 90) return { label: "Interview Ready", message: "You're in strong shape — focus on application volume." };
+  if (score >= 90) return { label: "Interview Ready", message: "You're in strong shape. Focus on application volume." };
   if (score >= 75) return { label: "Strong Profile", message: "Solid. A couple of tweaks and you'll be interview-ready." };
   if (score >= 60) return { label: "Needs Improvement", message: "Close the gaps in keywords and measurable results." };
   return { label: "At Risk", message: "Your CV is leaking matches. Tighten it before you apply." };

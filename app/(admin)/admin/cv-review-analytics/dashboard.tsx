@@ -260,7 +260,7 @@ function SalesFunnel({ funnel, ga4Available }: { funnel: FunnelStep[]; ga4Availa
         <div className="flex items-center gap-2 mx-5 mt-4 rounded-md bg-warning/10 border border-warning/20 px-3 py-2">
           <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
           <p className="text-[11px] text-warning">
-            GA4 not connected — top-of-funnel steps show 0. Purchases are live from the database.
+            GA4 not connected, so top-of-funnel steps show 0. Purchases are live from the database.
           </p>
         </div>
       )}
@@ -556,7 +556,7 @@ function GscPanel({ gsc, available }: { gsc: AnalyticsData["gsc"]; available: bo
             <GscStat label="Organic Clicks" value={fmt(gsc.clicks)} tone="success" />
             <GscStat label="Impressions" value={fmt(gsc.impressions)} />
             <GscStat label="Avg CTR" value={fp(Math.round(gsc.ctr * 100))} tone={gsc.ctr > 0.03 ? "success" : "warning"} />
-            <GscStat label="Avg Position" value={gsc.position > 0 ? gsc.position.toFixed(1) : "—"} tone={gsc.position > 0 && gsc.position <= 10 ? "success" : "warning"} />
+            <GscStat label="Avg Position" value={gsc.position > 0 ? gsc.position.toFixed(1) : "–"} tone={gsc.position > 0 && gsc.position <= 10 ? "success" : "warning"} />
           </div>
 
           {/* Top queries */}

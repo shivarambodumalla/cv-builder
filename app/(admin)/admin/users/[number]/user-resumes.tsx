@@ -154,18 +154,18 @@ export function UserResumes({ resumes }: { resumes: UserResume[] }) {
                     onClick={() => setSelectedId(r.id)}
                   >
                     <td className="px-4 py-2 font-medium">{r.title || "Untitled"}</td>
-                    <td className="px-4 py-2 text-muted-foreground">{r.target_role || "—"}</td>
+                    <td className="px-4 py-2 text-muted-foreground">{r.target_role || "–"}</td>
                     <td className="px-4 py-2 text-xs text-muted-foreground">
                       {TEMPLATE_LABEL[templateKey] || templateKey}
                     </td>
                     <td className="px-4 py-2 text-right">
                       <Badge variant="secondary" className={scoreColor(r.latest_ats_score)}>
-                        {r.latest_ats_score ?? "—"}
+                        {r.latest_ats_score ?? "–"}
                       </Badge>
                     </td>
                     <td className="px-4 py-2 text-right">
                       <Badge variant="secondary" className={scoreColor(r.latest_job_match_score)}>
-                        {r.latest_job_match_score ?? "—"}
+                        {r.latest_job_match_score ?? "–"}
                       </Badge>
                     </td>
                     <td className="px-4 py-2 text-right text-muted-foreground">{r.cover_letters_count}</td>
@@ -292,7 +292,7 @@ function AtsReportView({ report }: { report: AtsReportPayload | null }) {
     <div className="space-y-4 text-sm">
       <div className="flex items-center gap-3">
         <Badge variant="secondary" className={scorePillColor(report.score)}>
-          Score {report.score ?? "—"}
+          Score {report.score ?? "–"}
         </Badge>
         {report.confidence && (
           <Badge variant="secondary" className="text-[10px] uppercase">
@@ -414,7 +414,7 @@ function jmBarColor(score: number): string {
 }
 
 function getMatchLabel(score: number | null): string {
-  if (score === null) return "—";
+  if (score === null) return "–";
   if (score >= 85) return "Strong Match";
   if (score >= 70) return "Good Match";
   if (score >= 55) return "Partial Match";
@@ -465,7 +465,7 @@ function JobMatchView({ match }: { match: JobMatchPayload | null }) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
         <Badge variant="secondary" className={scorePillColor(score ?? null)}>
-          {score ?? "—"} · {getMatchLabel(score ?? null)}
+          {score ?? "–"} · {getMatchLabel(score ?? null)}
         </Badge>
         {match.job_title_target && (
           <span className="text-xs">

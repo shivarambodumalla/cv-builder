@@ -137,7 +137,7 @@ export function ActivityTimeline({ events }: { events: ActivityEvent[] }) {
           </div>
           <div className="px-3 py-2">
             <p className="text-[10px] uppercase text-muted-foreground">Most used</p>
-            <p className="mt-0.5 text-sm font-semibold truncate">{mostUsed?.[0] ?? "—"}</p>
+            <p className="mt-0.5 text-sm font-semibold truncate">{mostUsed?.[0] ?? "–"}</p>
           </div>
         </div>
 

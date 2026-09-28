@@ -310,7 +310,7 @@ export function AuroraTemplate({
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <span style={{ fontWeight: 700, color: darkText }}>{item.title}</span>
-                  {item.issuer && <span style={{ color: bodyText }}> — {item.issuer}</span>}
+                  {item.issuer && <span style={{ color: bodyText }}>, {item.issuer}</span>}
                 </div>
                 {item.date && <div style={{ color: mutedText, whiteSpace: "nowrap" }}>{formatDate(item.date)}</div>}
               </div>
@@ -328,7 +328,7 @@ export function AuroraTemplate({
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <span style={{ fontWeight: 700, color: darkText }}>{item.title}</span>
-                  {item.publisher && <span style={{ color: bodyText }}> — {item.publisher}</span>}
+                  {item.publisher && <span style={{ color: bodyText }}>, {item.publisher}</span>}
                 </div>
                 {item.date && <div style={{ color: mutedText, whiteSpace: "nowrap" }}>{formatDate(item.date)}</div>}
               </div>

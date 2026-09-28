@@ -205,7 +205,7 @@ export function Graphite({
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
         <span style={{ fontWeight: 700 }}>{name}</span>
-        {detail && <span> — {detail}</span>}
+        {detail && <span>, {detail}</span>}
         {date && <span style={{ color: mutedText }}> · {date}</span>}
         {extra && <div style={{ color: mutedText }}>{extra}</div>}
       </div>

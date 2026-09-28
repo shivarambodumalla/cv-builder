@@ -562,7 +562,7 @@ Two reset mechanisms coexist:
   spell the brand out explicitly.
 - Template leaves take optional `metaTitle` / `metaDescription` overrides on the
   leaf (lib/resume-templates/data.ts); everything else falls back to
-  `${displayName} — Free Download`.
+  `${displayName}: Free Download`.
 
 ### Error Handling
 

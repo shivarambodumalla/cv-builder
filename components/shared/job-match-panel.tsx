@@ -705,7 +705,7 @@ export function JobMatchRightPanel({
                   Live
                 </span>
               </div>
-              <p className="mt-1 text-sm text-white/80">See live roles your CV fits — ranked by match score</p>
+              <p className="mt-1 text-sm text-white/80">See live roles your CV fits, ranked by match score</p>
               <div className="mt-2 flex items-center gap-3 text-[11px] text-white/60">
                 <span className="inline-flex items-center gap-1">
                   <Sparkles size={11} className="text-[#34D399]" />

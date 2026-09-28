@@ -53,7 +53,7 @@ export function Regent({
 
   // The em dash is this template's marker; the generic dot default maps onto it.
   // Dash, arrow and none from the bullet-style picker are honoured as given.
-  const bulletMarker = bulletChar === "•" ? "—" : bulletChar;
+  const bulletMarker = bulletChar === "•" ? "–" : bulletChar;
 
   const sep = design.contactSeparator === "none" ? null : (contactSeparator ?? " · ").trim();
 
@@ -119,7 +119,7 @@ export function Regent({
   );
 
   const entrySub = (parts: (string | undefined)[]) => {
-    const text = parts.filter(Boolean).join(" — ");
+    const text = parts.filter(Boolean).join(", ");
     return text ? (
       <div style={{ fontFamily: "var(--resume-font)", fontSize: bodySize, color: muted, marginTop: 3 }}>
         {text}

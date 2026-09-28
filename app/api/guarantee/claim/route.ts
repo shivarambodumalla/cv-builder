@@ -59,7 +59,7 @@ export async function POST(_request: NextRequest) {
       await resend.emails.send({
         from: "CVEdge <hello@thecvedge.com>",
         to: adminEmails,
-        subject: `Guarantee Claim — Score ${report?.score ?? "?"} — ${user.email}`,
+        subject: `Guarantee Claim: Score ${report?.score ?? "?"} | ${user.email}`,
         html: `<h2>Guarantee Claim Submitted</h2>
 <p><strong>User:</strong> ${user.email}</p>
 <p><strong>Current Score:</strong> ${report?.score ?? "Unknown"}</p>
