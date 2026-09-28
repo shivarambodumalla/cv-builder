@@ -47,6 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "CVEdge — Get More Interviews", description: "Free AI-powered resume and CV optimization. 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }], apple: "/img/CV-Edge-Logo-square.svg" },
+  // Pinterest website claim — keeps pins attributed to thecvedge.com.
+  other: { "p:domain_verify": "20e129163b0f32eba76c007ea3c95db7" },
 };
 
 const ORGANIZATION_JSONLD = {
