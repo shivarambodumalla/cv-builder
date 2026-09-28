@@ -293,6 +293,8 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     configured: true,
+    // Env vars present but Google refused the refresh token (revoked/expired)
+    authFailed: (gscOn && !gscToken) || (ga4On && !ga4Token),
     gscConfigured: gscOn && !!gscToken,
     ga4Configured: ga4On && !!ga4Token,
     summary: { totalClicks, totalImpressions, avgCtr, avgPosition },

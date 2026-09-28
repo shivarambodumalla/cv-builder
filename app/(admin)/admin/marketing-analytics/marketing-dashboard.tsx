@@ -18,6 +18,7 @@ import {
   ArrowUp,
   ArrowDown,
   Minus,
+  AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -121,6 +122,7 @@ interface Summary {
 
 interface Data {
   configured: boolean;
+  authFailed?: boolean;
   gscConfigured: boolean;
   ga4Configured: boolean;
   summary: Summary;
@@ -1660,6 +1662,21 @@ export function MarketingDashboard() {
 
       {data && !loading && (
         <>
+          {data.authFailed && (
+            <div className="flex items-start gap-3 rounded-xl border border-warning/40 bg-warning/10 p-4 text-sm">
+              <AlertTriangle className="h-4 w-4 text-warning shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-medium">Google connection expired</p>
+                <p className="text-muted-foreground">
+                  Google rejected <code className="font-mono text-xs">GOOGLE_OAUTH_REFRESH_TOKEN</code>, so
+                  Search Console and GA4 data can&apos;t load. Run{" "}
+                  <code className="font-mono text-xs">npx tsx --env-file=.env.local scripts/get-gsc-token.ts</code>,
+                  then update the token in .env.local and Vercel.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* GSC summary cards */}
           {data.gscConfigured && (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
