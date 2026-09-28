@@ -1,0 +1,13 @@
+-- The cv-review-files bucket had a dashboard-created policy
+-- "admin_full_access_cv_review_files": FOR ALL TO public USING
+-- (bucket_id = 'cv-review-files'). "public" includes anon, so anyone with the
+-- site's anon key could list, download, overwrite or delete customers'
+-- uploaded CVs. The only code touching this bucket
+-- (app/api/cv-review/upload/route.ts) uses the service role, which bypasses
+-- RLS, so no replacement policy is needed.
+--
+-- Files are still served by public URL (the bucket itself is public); those
+-- URLs are no longer discoverable now that listing and the cv_review_files
+-- table are closed. Making the bucket private with signed URLs is the
+-- follow-up.
+DROP POLICY IF EXISTS "admin_full_access_cv_review_files" ON storage.objects;
