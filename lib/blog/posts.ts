@@ -136,7 +136,36 @@ export async function getPost(slug: string): Promise<BlogPostFull | null> {
     .single();
 
   if (error || !data) return null;
-  return rowToPostFull(data as Record<string, unknown>);
+  const post = rowToPostFull(data as Record<string, unknown>);
+  post.content.html = await unlinkScheduledPosts(post.content.html);
+  return post;
+}
+
+const BLOG_LINK_RE = /<a\s[^>]*href="(?:https:\/\/www\.thecvedge\.com)?\/blog\/([a-z0-9-]+)[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
+
+/**
+ * Drafts cross-link sister posts that publish on later dates. Render those
+ * links as plain text until the target goes live, so readers and crawlers
+ * never hit a 404. The page's hourly revalidate restores the link afterwards.
+ */
+async function unlinkScheduledPosts(html: string): Promise<string> {
+  const slugs = Array.from(new Set(Array.from(html.matchAll(BLOG_LINK_RE), (m) => m[1])));
+  if (slugs.length === 0) return html;
+
+  const db = createAdminClient();
+  const { data, error } = await db
+    .from("blog_posts")
+    .select("slug")
+    .in("slug", slugs)
+    .eq("is_published", false)
+    .not("scheduled_at", "is", null);
+  if (error) throw new Error(error.message);
+
+  const pending = new Set((data ?? []).map((r) => r.slug as string));
+  if (pending.size === 0) return html;
+  return html.replace(BLOG_LINK_RE, (anchor, slug: string, text: string) =>
+    pending.has(slug) ? text : anchor
+  );
 }
 
 export async function getAllSlugs(): Promise<string[]> {
