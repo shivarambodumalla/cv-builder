@@ -4,21 +4,21 @@ import { useEffect, useRef } from "react";
 import { HERO_ACCENTS, heroAccentSrc, templateThumbnail } from "@/lib/resume/template-thumbnails";
 import type { TemplateName } from "@/lib/resume/types";
 
-type Template = { slug: TemplateName; name: string; ac: string; tier: "Free" | "Pro" };
+type Template = { slug: TemplateName; name: string; ac: string };
 
 const TPL: Template[] = [
-  { slug: "orchid", name: "Orchid", ac: "#9F1239", tier: "Free" },
-  { slug: "clean-sidebar", name: "Clean Sidebar", ac: "#B45309", tier: "Free" },
-  { slug: "aurora", name: "Aurora", ac: "#1E3A8A", tier: "Free" },
-  { slug: "executive-pro", name: "Executive Pro", ac: "#3182CE", tier: "Pro" },
-  { slug: "coastal", name: "Coastal", ac: "#0F766E", tier: "Free" },
-  { slug: "wentworth", name: "Wentworth", ac: "#555555", tier: "Pro" },
-  { slug: "electric-lilac", name: "Electric Lilac", ac: "#7C3AED", tier: "Pro" },
-  { slug: "bold-accent", name: "Bold Accent", ac: "#E53E3E", tier: "Free" },
-  { slug: "regent", name: "Regent", ac: "#334155", tier: "Free" },
-  { slug: "meridian", name: "Meridian", ac: "#0F766E", tier: "Free" },
-  { slug: "vantage", name: "Vantage", ac: "#1E3A8A", tier: "Free" },
-  { slug: "canopy", name: "Canopy", ac: "#276749", tier: "Free" },
+  { slug: "orchid", name: "Orchid", ac: "#9F1239" },
+  { slug: "clean-sidebar", name: "Clean Sidebar", ac: "#B45309" },
+  { slug: "aurora", name: "Aurora", ac: "#1E3A8A" },
+  { slug: "executive-pro", name: "Executive Pro", ac: "#3182CE" },
+  { slug: "coastal", name: "Coastal", ac: "#0F766E" },
+  { slug: "wentworth", name: "Wentworth", ac: "#555555" },
+  { slug: "electric-lilac", name: "Electric Lilac", ac: "#7C3AED" },
+  { slug: "bold-accent", name: "Bold Accent", ac: "#E53E3E" },
+  { slug: "regent", name: "Regent", ac: "#334155" },
+  { slug: "meridian", name: "Meridian", ac: "#0F766E" },
+  { slug: "vantage", name: "Vantage", ac: "#1E3A8A" },
+  { slug: "canopy", name: "Canopy", ac: "#276749" },
 ];
 
 // Font option labels, in the order they're rendered in JSX:
@@ -58,7 +58,8 @@ const imgSrc = (slug: TemplateName) => optimised(templateThumbnail(slug).src);
 const EDIT_PHONE_BEFORE = "(602) 555-0173";
 const EDIT_PHONE_AFTER = "(480) 555-0122";
 
-export function HeroAnimation() {
+/** `proSlugs` comes from the template catalogue, so the tier chips follow /admin/plans. */
+export function HeroAnimation({ proSlugs }: { proSlugs: string[] }) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -221,7 +222,7 @@ export function HeroAnimation() {
           if (!t) continue;
           setAccent(t.ac);
           swap(slug);
-          showToast(t.name + (t.tier === "Pro" ? " · Pro ✦" : ""));
+          showToast(t.name + (proSlugs.includes(t.slug) ? " · Pro ✦" : ""));
         }
         await wait(400);
 
@@ -296,7 +297,7 @@ export function HeroAnimation() {
       timers.clear();
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [proSlugs]);
 
   return (
     <div className="hero-anim" ref={rootRef} aria-hidden="true" role="presentation">
@@ -329,9 +330,9 @@ export function HeroAnimation() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={imgSrc(t.slug)} alt={`${t.name} resume template preview`} title={`${t.name} resume template preview`} loading="lazy" />
                   <div
-                    className={`tier-chip ${t.tier === "Pro" ? "tier-pro" : "tier-free"}`}
+                    className={`tier-chip ${proSlugs.includes(t.slug) ? "tier-pro" : "tier-free"}`}
                   >
-                    {t.tier}
+                    {proSlugs.includes(t.slug) ? "Pro" : "Free"}
                   </div>
                   <div className="tinm">{t.name}</div>
                 </div>

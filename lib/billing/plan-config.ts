@@ -206,6 +206,14 @@ export async function getTemplateCounts(): Promise<TemplateCounts> {
   return { total: enabled.length, free: enabled.length - pro.length, proLabels: pro.map((t) => t.label) };
 }
 
+/**
+ * Slugs the catalogue marks Pro, for tier badges on marketing pages. A plain
+ * array so server pages can pass it straight to client components.
+ */
+export async function getProTemplateSlugs(): Promise<string[]> {
+  return (await getTemplateCatalog()).filter((t) => t.tier === "pro").map((t) => t.slug);
+}
+
 export async function getBillingSettings(): Promise<BillingSettings> {
   const cached = fresh(settingsCache);
   if (cached) return cached;

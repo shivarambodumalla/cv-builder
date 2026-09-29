@@ -24,7 +24,7 @@ import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import { getPublicRatingStats } from "@/lib/feedback/stats";
-import { getPlanLimits, getTemplateCounts } from "@/lib/billing/plan-config";
+import { getPlanLimits, getProTemplateSlugs, getTemplateCounts } from "@/lib/billing/plan-config";
 import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
@@ -64,7 +64,7 @@ const COMPARISON = [
 export default async function HomePage() {
   // Real post-download ratings. Null until enough exist to display, and the
   // schema below only carries a rating that is visible on this page.
-  const [rating, testimonials, planLimits, templateCounts] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials(), getPlanLimits(), getTemplateCounts()]);
+  const [rating, testimonials, planLimits, templateCounts, proSlugs] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials(), getPlanLimits(), getTemplateCounts(), getProTemplateSlugs()]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -160,7 +160,7 @@ export default async function HomePage() {
 
             {/* Right column: animated preview (scales responsively) */}
             <div className="relative w-full mx-auto max-w-[480px] min-w-0 md:ml-auto md:mr-0">
-              <HeroAnimation />
+              <HeroAnimation proSlugs={proSlugs} />
             </div>
           </div>
         </div>

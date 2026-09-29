@@ -8,7 +8,8 @@ export interface TemplateLeafData {
   description: string;
   whoFor: string[];
   features: string[];
-  tier: "free" | "pro";
+  // No tier here: whether a template is Pro is set in /admin/plans
+  // (template_catalog), so pages read it from getProTemplateSlugs().
   faqs: { q: string; a: string }[];
   /**
    * Hand-tuned meta title. Never include " | CVEdge" — the root layout applies
@@ -23,7 +24,8 @@ export interface TemplateLeafData {
   /** Hand-tuned meta description. Falls back to the first 160 chars of `description`. */
   metaDescription?: string;
   /**
-   * Path to a free leaf offering a similar layout. Set on Pro leaves that rank
+   * Path to a free leaf offering a similar layout, shown only while the
+   * catalogue marks this template Pro. Set on leaves that rank
    * for queries carrying free intent — executive-sidebar-cv sits at position 6.6
    * on "executive resume template"-type searches while the free Executive page
    * sat at 54, so the best-ranking result was a paywall.
@@ -77,9 +79,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Standard headings (Experience, Education, Skills) ATS parsers expect",
           "Works perfectly with CVEdge's AI bullet rewriter",
           "Clean PDF export, no formatting surprises",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is the Classic template ATS-friendly for software engineering roles?",
             a: "Yes. Single-column layout, standard fonts (Geist Sans), and no graphics make it parse cleanly through all major ATS systems. Scores 95+ on CVEdge's ATS analyzer for well-written content.",
@@ -113,9 +113,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Modern typography that reads well on screen and print",
           "Configurable accent color to match your personal brand",
           "Skills section supports both text lists and tagged chips",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Does the Sharp template pass ATS filters?",
             a: "Yes. Despite its bolder visual style, Sharp is single-column with standard heading tags and no graphics, so it passes all major ATS filters including Greenhouse and Workday.",
@@ -145,9 +143,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column with perfect ATS compatibility",
           "Works beautifully in both light and dark PDF modes",
           "Section spacing highlights strong bullets",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Will a minimal resume look empty if I have less experience?",
             a: "Minimal works best with 4+ years of solid experience. If you have 1–3 years, consider Classic or Sharp instead. They fill space better with section structure.",
@@ -177,9 +173,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, full ATS compatibility",
           "Refined section headings that communicate seniority",
           "Supports certifications, publications, and patents cleanly",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "When should I use Executive vs Classic for engineering roles?",
             a: "Use Executive for L5+ (senior), staff, principal, or engineering manager positions. Classic suits L1–L4. Executive's premium feel matches the seniority level these roles require.",
@@ -209,9 +203,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Skills column makes technical breadth immediately visible",
           "Configurable right-column sections via CVEdge designer",
           "Scores well on ATS, with clean header parsing",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Does Horizon's two-column layout cause ATS parsing issues?",
             a: "The full-width header parses cleanly. Two-column body sections are handled well by modern ATS systems. Run CVEdge's ATS analyzer on your specific content to catch any role-specific issues.",
@@ -254,9 +246,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Two-column layout balances experience and skills",
           "Accent color customization for brand alignment",
           "ATS-compatible despite visual richness",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Aurora template good for marketing roles?",
             a: "Aurora is specifically popular with marketing, growth, and PM professionals. The chip-based skills section showcases channel expertise (SEO, paid, email, analytics) at a glance.",
@@ -286,9 +276,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, ATS safe throughout",
           "Strong skills presentation for channel-heavy roles",
           "Clean PDF output with consistent brand feel",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Bold Accent suitable for senior marketing positions?",
             a: "Bold Accent works for mid-level roles (3–7 years). For VP or director-level marketing positions, consider Aurora or a cleaner format like Classic. Senior hiring panels expect restraint.",
@@ -318,9 +306,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Photo-friendly professional layout",
           "Two-column body with clear ATS structure",
           "Color customization for brand alignment",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Should I include a photo on my marketing resume?",
             a: "In the US, photos on resumes are generally avoided due to bias concerns. In the UK, Australia, and Europe, photos are common and expected. Coastal is designed for markets where photos are standard practice.",
@@ -350,9 +336,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Summary section prominent for career pivots",
           "Works beautifully printed for in-person interviews",
           "Two-column ATS compatibility via standard structure",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Do progress bars on CVs look unprofessional?",
             a: "In moderation, no. Clean Sidebar's bars are subtle and precise. They signal confidence in your self-assessment. Avoid rating yourself 100% on anything. Rating core tools at 80–90% reads as honest and strong.",
@@ -369,7 +353,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         displayName: "Electric Lilac Resume for Creative Marketing",
         headline: "Bold two-column sidebar for creative, brand, and design-adjacent marketing roles.",
         description:
-          "Electric Lilac is CVEdge's most bold template: a vibrant sidebar paired with a clean white main column. For creative directors, brand managers, and content leads where visual confidence is expected and rewarded, Electric Lilac makes you memorable in a stack of grey-and-white PDFs.\n\nThe sidebar carries your photo, contact details, and skills. The main column leads with your strongest experience. The contrast between sidebar richness and body clarity creates a professional look that's hard to achieve without design skills. CVEdge does it for you.\n\nElectric Lilac is a Pro template, reflecting the additional design investment. For creative marketing roles, design-forward agencies, and brand-first companies, the upfront statement it makes is worth the small upgrade.\n\nNote: Electric Lilac is less ATS-safe than single-column formats. Use CVEdge's ATS analyzer to verify your content before applying via portal submissions.",
+          "Electric Lilac is CVEdge's most bold template: a vibrant sidebar paired with a clean white main column. For creative directors, brand managers, and content leads where visual confidence is expected and rewarded, Electric Lilac makes you memorable in a stack of grey-and-white PDFs.\n\nThe sidebar carries your photo, contact details, and skills. The main column leads with your strongest experience. The contrast between sidebar richness and body clarity creates a professional look that's hard to achieve without design skills. CVEdge does it for you.\n\nFor creative marketing roles, design-forward agencies, and brand-first companies, that upfront statement is the point: the resume itself shows you understand visual branding.\n\nNote: Electric Lilac is less ATS-safe than single-column formats. Use CVEdge's ATS analyzer to verify your content before applying via portal submissions.",
         whoFor: [
           "Creative directors and brand managers",
           "Content strategists and social leads",
@@ -382,9 +366,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Clean white main column keeps experience readable",
           "Sidebar skills section shows channel depth visually",
           "PDF export with color fidelity",
-        ],
-        tier: "pro",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Electric Lilac ATS-friendly?",
             a: "Electric Lilac is less ATS-safe than single-column formats. Apply caution with portal submissions. Always run CVEdge's ATS analyzer. For direct recruiter outreach or portfolio submissions, it's an excellent choice.",
@@ -427,9 +409,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, passes all ATS filters",
           "Fills naturally with limited experience",
           "No design decisions required. Just add your content",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Should freshers put Education above Experience on their resume?",
             a: "Yes, if your education is your strongest credential. CVEdge's section reorder feature lets you move Education to the top. As you accumulate 1–2 years of experience, move it back below Experience.",
@@ -459,9 +439,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, full ATS compatibility",
           "Elegant typography for target-school graduates",
           "Looks premium even with limited content",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Does Minimal look too empty for fresher resumes?",
             a: "Only if you have fewer than 3 substantial experiences or projects. With 3+ well-written entries, the whitespace reads as confident curation. Use CVEdge's AI rewriter to strengthen each bullet first.",
@@ -491,9 +469,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Icon-bordered layout creates visual completeness",
           "Single column, ATS safe for graduate portal applications",
           "Supports certifications prominently",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Bold Accent good for graduate scheme applications?",
             a: "Yes. The chip skills section highlights competencies that graduate schemes screen for. The single-column ATS-safe layout ensures automated portals parse it correctly.",
@@ -523,9 +499,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Academic credentials displayed with appropriate weight",
           "ATS-safe single column for portal applications",
           "Scales well with distinctions, awards, and activities",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Classic Serif good for investment banking applications?",
             a: "Yes. IB recruiting at most banks expects formal, traditional formatting. Classic Serif matches that expectation while being ATS-safe for bank portal submissions.",
@@ -555,9 +529,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, ATS safe",
           "Fills well with limited experience via structured layout",
           "Accent color customizable for personality",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Sharp a good first resume template for CS graduates?",
             a: "Yes. Sharp is popular with CS and engineering freshers. The modern look suits startup and tech company applications while the ATS-safe structure handles automated screening.",
@@ -592,7 +564,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         headline:
           "Built for twenty years of career on two pages, with premium spacing and a summary that leads, on a single ATS-safe column. Free to edit online, or download as Word or PDF.",
         description:
-          "The executive resume template solves a problem junior formats do not have: you have more career than the page has room for. Twenty-five years, eight roles and three industries have to resolve into something a reader can scan in seconds and still come away knowing your level. Executive does that with generous line spacing, a clear typographic hierarchy, and a Professional Summary placed above the experience detail so your narrative leads rather than your last job title.\n\nSenior candidates often assume a polished template means giving up ATS safety. It does not. Executive is a single column with standard heading names and no tables, sidebars or graphics. It scores 93–96 on CVEdge's ATS analyzer, within a couple of points of the plainest format on the site. The premium feel comes from spacing and type, which are CSS properties, not images.\n\nThat matters more than most senior candidates expect. Below C-suite, director and VP applications still route through corporate portals and are parsed exactly like everyone else's. Executive search adds a human reader on top; it rarely replaces the machine underneath.\n\nThe layout is designed for curation. Recent roles expand into detailed impact statements, older roles compress into company, title and dates without the page looking uneven. For a C-suite resume the same structure carries board appointments, P&L scope and transformation mandates without crowding.\n\nDownload it as a blank Word document or PDF and fill it in offline, or open it in CVEdge, paste your existing resume, and get a scored version in a couple of minutes. Both free, neither needs a card.",
+          "The executive resume template solves a problem junior formats do not have: you have more career than the page has room for. Twenty-five years, eight roles and three industries have to resolve into something a reader can scan in seconds and still come away knowing your level. Executive does that with generous line spacing, a clear typographic hierarchy, and a Professional Summary placed above the experience detail so your narrative leads rather than your last job title.\n\nSenior candidates often assume a polished template means giving up ATS safety. It does not. Executive is a single column with standard heading names and no tables, sidebars or graphics. It scores 93–96 on CVEdge's ATS analyzer, within a couple of points of the plainest format on the site. The premium feel comes from spacing and type, which are CSS properties, not images.\n\nThat matters more than most senior candidates expect. Below C-suite, director and VP applications still route through corporate portals and are parsed exactly like everyone else's. Executive search adds a human reader on top; it rarely replaces the machine underneath.\n\nThe layout is designed for curation. Recent roles expand into detailed impact statements, older roles compress into company, title and dates without the page looking uneven. For a C-suite resume the same structure carries board appointments, P&L scope and transformation mandates without crowding.\n\nDownload it as a blank Word document and fill it in offline, or open it in CVEdge, paste your existing resume, and get a scored version to export as a PDF in a couple of minutes. Both free, neither needs a card.",
         whoFor: [
           "Senior professionals with 10+ years to fit on two pages",
           "C-suite, VP and board-level candidates",
@@ -601,15 +573,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Anyone whose application still goes through a corporate portal",
         ],
         features: [
-          "Free download as a blank Word (.docx) file or PDF, no account needed",
+          "Free download as a blank Word (.docx) file, no account needed",
           "Scores 93–96 on CVEdge's ATS analyzer",
           "Premium spacing and typographic hierarchy, single column throughout",
           "Summary positioned above experience so your narrative leads",
           "Handles 20+ years without crowding: recent roles expand, early roles compress",
           "Certifications, board seats and publications carry appropriate weight",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is the executive resume template ATS-friendly?",
             a: "Yes. It is a single column with standard headings and no tables, text boxes or images, the things that actually break parsers. It scores 93–96 on CVEdge's analyzer, a couple of points below the plainest formats purely because of spacing choices, which is irrelevant to real screening. This matters at senior level: below C-suite, most director and VP applications still go through Greenhouse, Workday or iCIMS and are parsed like any other.",
@@ -635,7 +605,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         },
         headline: "Bold photo header with dark contact bar. Leadership presence from the first line.",
         description:
-          "Executive Pro is the premium two-column template for senior executives who want immediate visual authority. The dark contact bar beneath a prominent header photo creates a powerful personal brand statement before a recruiter reads your summary, you've established presence.\n\nFor C-suite roles, board appointments, and senior leadership searches, where the hiring committee reviews a shortlist rather than scanning hundreds of applications, visual distinction matters. Executive Pro delivers it.\n\nThe two-column body pairs a detailed experience column with a sidebar carrying key credentials, skills, and board memberships. Senior leaders often have diverse credentials, Executive Pro organizes them into a hierarchy that reads logically.\n\nExecutive Pro is a Pro template. For senior leadership roles where you're often the deciding factor in a close-call hiring decision, the marginal investment in a polished format is worth it.",
+          "Executive Pro is the premium two-column template for senior executives who want immediate visual authority. The dark contact bar beneath a prominent header photo creates a powerful personal brand statement before a recruiter reads your summary, you've established presence.\n\nFor C-suite roles, board appointments, and senior leadership searches, where the hiring committee reviews a shortlist rather than scanning hundreds of applications, visual distinction matters. Executive Pro delivers it.\n\nThe two-column body pairs a detailed experience column with a sidebar carrying key credentials, skills, and board memberships. Senior leaders often have diverse credentials, Executive Pro organizes them into a hierarchy that reads logically.\n\nFor senior leadership shortlists, where a close-call hiring decision can turn on small signals, that polish earns its place.",
         whoFor: [
           "C-suite executives (CEO, CFO, CTO, COO)",
           "Board-level candidates and NEDs",
@@ -648,9 +618,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Board memberships and advisory roles displayed prominently",
           "Premium typography for high-profile applications",
           "PDF export with full color fidelity for direct submissions",
-        ],
-        tier: "pro",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Executive Pro suitable for executive search firm submissions?",
             a: "Yes. Executive search firms often review printed or PDF submissions rather than ATS portals. Executive Pro's visual quality matches what search firms expect for senior mandates.",
@@ -672,7 +640,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         },
         headline: "Dark sidebar with photo. Corporate and legal feel for senior roles.",
         description:
-          "Executive Sidebar pairs a dark left sidebar (carrying your photo, contact details, and key skills) with a clean white main column for your career narrative. The result is a resume that communicates gravitas and organization simultaneously.\n\nFor senior professionals in corporate law, finance, management consulting, and large enterprise leadership, Executive Sidebar matches the professional aesthetic those environments expect. The dark sidebar signals structure and precision; the white main column provides detailed, scannable experience.\n\nThe sidebar accommodates professional photo, contact details, core competencies, and professional memberships, keeping the main column clean for achievement-led experience bullets without credential clutter.\n\nExecutive Sidebar is a Pro template, appropriate for the seniority level it targets. The additional design quality signals that you take the application seriously, which is exactly the message senior roles require.",
+          "Executive Sidebar pairs a dark left sidebar (carrying your photo, contact details, and key skills) with a clean white main column for your career narrative. The result is a resume that communicates gravitas and organization simultaneously.\n\nFor senior professionals in corporate law, finance, management consulting, and large enterprise leadership, Executive Sidebar matches the professional aesthetic those environments expect. The dark sidebar signals structure and precision; the white main column provides detailed, scannable experience.\n\nThe sidebar accommodates professional photo, contact details, core competencies, and professional memberships, keeping the main column clean for achievement-led experience bullets without credential clutter.\n\nThe design is pitched at the seniority level it targets: the extra polish signals that you take the application seriously, which is exactly the message senior roles require.",
         whoFor: [
           "Senior professionals in corporate law, finance, and consulting",
           "VP and C-suite candidates in regulated industries",
@@ -685,9 +653,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Main column clean for achievement-led experience",
           "Professional memberships and certifications in sidebar",
           "Premium PDF output suitable for board-level submission",
-        ],
-        tier: "pro",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Executive Sidebar good for C-suite applications in the UK?",
             a: "Yes. Executive Sidebar's photo integration and formal structure suit UK corporate expectations. For US applications the photo sidebar is less conventional, so consider Executive or Executive Pro instead.",
@@ -717,9 +683,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "ATS-safe single column",
           "Precise spacing for dense financial experience",
           "Professional typography for regulated industry applications",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Ledger template good for investment banking applications?",
             a: "Yes. Ledger's clean, numbers-first structure suits IB applications. The layout makes P&L metrics and deal experience read clearly. Works at both analyst and director levels.",
@@ -749,9 +713,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Hairline rules and em-dash bullets keep a formal rhythm",
           "Single column, fully ATS-parseable",
           "Serif defaults applied automatically on pick",
-        ],
-        tier: "free",
-        metaTitle: "Regent Resume Template: Classic Serif, Free",
+        ],        metaTitle: "Regent Resume Template: Classic Serif, Free",
         metaDescription: "Free Regent resume template: cream canvas, centred serif header and hairline rules for senior roles in law, finance and consulting. ATS-safe single column.",
         faqs: [
           {
@@ -783,9 +745,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Strengths block turns awards into a headline section",
           "Underline-chip skills list",
           "2px accent rules under every heading",
-        ],
-        tier: "free",
-        metaTitle: "Vantage Resume Template with Company Logos (Free)",
+        ],        metaTitle: "Vantage Resume Template with Company Logos (Free)",
         metaDescription: "Free two-column resume template with a company or school logo beside every entry. Upload a logo per employer; Vantage shows your career progression at a glance.",
         faqs: [
           {
@@ -830,9 +790,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Standard heading names ATS systems expect",
           "No graphics, tables, or non-standard fonts",
           "CVEdge ATS analyzer gives real-time score as you edit",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Which ATS systems does the Classic template work with?",
             a: "Classic passes all major ATS systems: Greenhouse, Workday, Lever, iCIMS, Taleo, SmartRecruiters, Jobvite, BambooHR, and Recruiterbox. It follows universal ATS parsing conventions.",
@@ -862,9 +820,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, cleanest possible parse",
           "No borders, dividers, or complex layout elements",
           "CVEdge ATS analyzer scores Minimal highest in format compliance",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Minimal really better for ATS than Classic?",
             a: "They score identically for format safety. Minimal has slightly fewer elements that could theoretically cause issues in edge-case ATS systems. For practical purposes, both are fully ATS-safe.",
@@ -894,9 +850,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "93–95 ATS score on CVEdge analyzer",
           "Scores at identical ATS level to Classic in practice",
           "Human-appealing visual for recruiter review post-ATS",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Sharp less ATS-safe than Classic or Minimal?",
             a: "In practice, no. Sharp uses CSS styling that doesn't affect ATS parsing. CVEdge's ATS analyzer scores Sharp at 93–95 vs 95–97 for Classic, a difference that is irrelevant in real-world screening.",
@@ -926,9 +880,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Single column, full ATS compliance",
           "Handles multiple degrees, certifications, and memberships",
           "92–95 ATS score on CVEdge analyzer",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Does the serif font in Classic Serif cause ATS issues?",
             a: "No. CVEdge embeds the font as standard PDF text. ATS systems read PDF text layer, not font style. Classic Serif parses identically to sans-serif templates in terms of ATS compatibility.",
@@ -950,7 +902,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         headline:
           "The single-column academic format Harvard's career-services guidance describes, rebuilt to parse cleanly through every major ATS. Free to edit online, or download as Word or PDF.",
         description:
-          "The Harvard resume template is the plainest widely used resume format: one column, plain section headings, dates aligned right, no tables, no sidebars, no graphics. It takes its name from the conventions published in Harvard's career-services guidance, which generations of applicants have copied because the structure is unambiguous and travels everywhere.\n\nThat plainness is the reason it performs. An applicant tracking system reads a single column of text in exactly the order you wrote it, so nothing is dropped, reordered or garbled between your file and the recruiter's screen. Harvard scores 92–94 on CVEdge's ATS analyser, and the ceiling is your content rather than the format, which is how it should be.\n\nIt is worth being clear about a question people ask constantly: an ATS-friendly resume and a Harvard-style resume are not competing choices. Harvard is one of the formats that happens to be ATS-safe. The distinction that matters is single-column and text-only versus multi-column and graphical, and Harvard sits firmly on the safe side of it.\n\nThe format is strongest where credentials are read closely: MBA and PhD applications, management consulting at MBB and Tier 2, finance, law, policy and academia. Campus recruiting teams at those firms see this layout constantly from target schools, so it reads as convention rather than as a choice. It is equally reliable for any corporate portal application where you simply want formatting removed as a variable.\n\nDownload it as a blank Word document or PDF and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored, tailored version in a couple of minutes. Both are free and neither needs a card.",
+          "The Harvard resume template is the plainest widely used resume format: one column, plain section headings, dates aligned right, no tables, no sidebars, no graphics. It takes its name from the conventions published in Harvard's career-services guidance, which generations of applicants have copied because the structure is unambiguous and travels everywhere.\n\nThat plainness is the reason it performs. An applicant tracking system reads a single column of text in exactly the order you wrote it, so nothing is dropped, reordered or garbled between your file and the recruiter's screen. Harvard scores 92–94 on CVEdge's ATS analyser, and the ceiling is your content rather than the format, which is how it should be.\n\nIt is worth being clear about a question people ask constantly: an ATS-friendly resume and a Harvard-style resume are not competing choices. Harvard is one of the formats that happens to be ATS-safe. The distinction that matters is single-column and text-only versus multi-column and graphical, and Harvard sits firmly on the safe side of it.\n\nThe format is strongest where credentials are read closely: MBA and PhD applications, management consulting at MBB and Tier 2, finance, law, policy and academia. Campus recruiting teams at those firms see this layout constantly from target schools, so it reads as convention rather than as a choice. It is equally reliable for any corporate portal application where you simply want formatting removed as a variable.\n\nDownload it as a blank Word document and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored, tailored version to export as a PDF in a couple of minutes. Both are free and neither needs a card.",
         whoFor: [
           "Anyone applying through a corporate portal who wants formatting off the table",
           "Students and recent graduates, where education-first ordering is correct",
@@ -959,15 +911,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Finance, law and policy professionals with multiple qualifications",
         ],
         features: [
-          "Free download as a blank Word (.docx) file or PDF, no account needed",
+          "Free download as a blank Word (.docx) file, no account needed",
           "Scores 92–94 on CVEdge's ATS analyser",
           "Single column, plain headings, no tables, sidebars or graphics to misparse",
           "Correct section ordering for credential-heavy applications",
           "Publications, research and board memberships handled",
           "Matches resume conventions at top consulting firms",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is the Harvard resume template ATS-friendly?",
             a: "Yes, and it is one of the safest formats available. Applicant tracking systems fail on multi-column layouts, text boxes, tables, headers and footers, and images. Harvard uses none of them. It is a single column of plain text with standard headings, which is exactly what parsers are built to read. On CVEdge's own analyser the format scores 92–94, with the remaining points determined by your content rather than the layout.",
@@ -1001,9 +951,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Summary section positioned for narrative leadership",
           "Refined spacing ensures no dense-text parsing issues",
           "Verified through Greenhouse, Workday, and iCIMS",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Do senior executives need to worry about ATS?",
             a: "Yes. Even at VP and C-suite level, most large companies route applications through ATS. Executive solves this by delivering premium polish without sacrificing single-column ATS safety.",
@@ -1033,9 +981,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Heavy rule under each heading for scanning",
           "Diamond bullets by default",
           "Serif body with sans headings applied on pick",
-        ],
-        tier: "free",
-        metaTitle: "Sterling ATS Resume Template: Free, Serif",
+        ],        metaTitle: "Sterling ATS Resume Template: Free, Serif",
         metaDescription: "Free ATS resume template with a serif body, sans headings and a skills table. Sterling is the plainest CVEdge layout: single column, black text, every keyword parseable.",
         faqs: [
           {
@@ -1067,9 +1013,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Large regular-weight accent headings",
           "Sections movable between rail and main column",
           "No icons, rules or fills anywhere",
-        ],
-        tier: "free",
-        metaTitle: "Ember Two-Column ATS Resume Template (Free)",
+        ],        metaTitle: "Ember Two-Column ATS Resume Template (Free)",
         metaDescription: "Free two-column ATS resume template. Ember uses plain text only: a wide main column for experience and a right rail for contact details and skills. No icons, no boxes.",
         faqs: [
           {
@@ -1101,9 +1045,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Oversized light-weight accent headings",
           "Single column, ATS-safe body",
           "Light weights and dot separator applied on pick",
-        ],
-        tier: "free",
-        metaTitle: "Canopy Resume Template with Achievements (Free)",
+        ],        metaTitle: "Canopy Resume Template with Achievements (Free)",
         metaDescription: "Free ATS-optimised resume template with a soft header band, oversized headings and a dedicated Achievements section. Canopy turns awards into a headline block.",
         faqs: [
           {
@@ -1148,9 +1090,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Clean white main column balances bold sidebar",
           "Skill section with visual skill indicators",
           "Color customization for personal brand alignment",
-        ],
-        tier: "pro",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Electric Lilac suitable for senior UX designer roles?",
             a: "Yes. For UX leads and creative directors, Electric Lilac signals design literacy. Be careful with automated ATS portals. It shines in direct submissions and recruiter outreach.",
@@ -1180,9 +1120,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Two-column layout balances visual and content depth",
           "More ATS-compatible than most visual templates",
           "Accent color customization",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Aurora suitable for UX designer job applications?",
             a: "Aurora is one of the most popular templates for UX designers on CVEdge. The chip skills section displays design methods (user research, wireframing, prototyping) and tools (Figma, Maze, UserTesting) clearly.",
@@ -1212,9 +1150,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Photo integration professional and distinctive",
           "Two-column body for projects + skills alongside chronology",
           "Color customization to match portfolio palette",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Coastal template good for art director applications?",
             a: "Yes. Coastal's header brand moment suits art director applications where creative presence is expected. Particularly strong in markets where photos are standard (UK, AU, EU).",
@@ -1244,9 +1180,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Grey canvas creates editorial feel",
           "Plus-marker headings create visual rhythm",
           "Memorable in shortlist review. Stands out in stacks",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "When should I use Portrait vs Aurora for design roles?",
             a: "Portrait for senior/specialist roles at design agencies and studios where visual distinctiveness matters. Aurora for most mid-level roles and companies that use ATS portal screening.",
@@ -1276,9 +1210,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Warm sidebar tone is distinctive and professional",
           "Strong summary section for career narrative control",
           "Works well printed for in-person interview rounds",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Orchid a good template for content strategists?",
             a: "Yes. Orchid's warm, editorial feel suits content and creative strategy roles well. The serif typography signals writing sensibility, and the structured layout keeps the experience readable.",
@@ -1308,9 +1240,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Icon-bordered sections create visual rhythm",
           "Strongest ATS score among creative templates",
           "Accent color customization for brand alignment",
-        ],
-        tier: "free",
-        faqs: [
+        ],        faqs: [
           {
             q: "Is Bold Accent the most ATS-friendly creative template?",
             a: "Yes. Bold Accent is single-column with no images or tables, making it the most ATS-safe option in the creative category. It scores 90–93 on CVEdge's ATS analyzer.",
@@ -1340,9 +1270,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Icon tiles beside every heading",
           "Key Achievements block from your awards",
           "Sidebar sections movable from the Design tab",
-        ],
-        tier: "free",
-        metaTitle: "Meridian Startup Resume Template (Free)",
+        ],        metaTitle: "Meridian Startup Resume Template (Free)",
         metaDescription: "Free modern resume template for startups and founders. Meridian pairs a mint sidebar and blob-framed photo with icon headings and a Key Achievements block.",
         faqs: [
           {
@@ -1374,9 +1302,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Vertical divider with diamond section markers",
           "Labeled contact block and bulleted skills",
           "Centered header applied on pick",
-        ],
-        tier: "free",
-        metaTitle: "Linen Minimalist Resume Template (Free)",
+        ],        metaTitle: "Linen Minimalist Resume Template (Free)",
         metaDescription: "Free minimalist resume template. Linen pairs an off-white canvas and grey header blocks with a vertical divider and diamond markers. Two columns, no icons.",
         faqs: [
           {
@@ -1408,9 +1334,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Three-column skills grid",
           "Two-column entry lines with aligned dates",
           "Single column, parses cleanly",
-        ],
-        tier: "free",
-        metaTitle: "Graphite Black & White Resume Template (Free)",
+        ],        metaTitle: "Graphite Black & White Resume Template (Free)",
         metaDescription: "Free black and white resume template. Graphite sets a white rounded card on a grey canvas with grey pill headings and a three-column skills grid. Single column, ATS-safe.",
         faqs: [
           {

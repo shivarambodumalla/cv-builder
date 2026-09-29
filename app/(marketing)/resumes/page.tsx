@@ -3,7 +3,7 @@ import { BarChart3, Sparkles, Layout, Target, Download } from "lucide-react";
 import { TemplateShowcase } from "./template-showcase";
 import { ResumesGetStarted } from "./resumes-get-started";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
-import { getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
+import { getProTemplateSlugs, getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
 
 // Template counts come from the catalogue. force-static keeps the page static
 // (the admin client's no-store fetch would otherwise make it dynamic); it
@@ -35,6 +35,7 @@ const features = ({ total }: TemplateCounts) => [
 
 export default async function ResumesPage() {
   const FEATURES = features(await getTemplateCounts());
+  const proSlugs = await getProTemplateSlugs();
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
       <BreadcrumbJsonLd
@@ -51,7 +52,7 @@ export default async function ResumesPage() {
       </div>
 
       {/* Template showcase — client component for filter tabs */}
-      <TemplateShowcase />
+      <TemplateShowcase proSlugs={proSlugs} />
 
       {/* Features */}
       <div className="mx-auto max-w-4xl mt-24">

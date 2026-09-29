@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import { getTemplateCounts } from "@/lib/billing/plan-config";
+import { getProTemplateSlugs, getTemplateCounts } from "@/lib/billing/plan-config";
 import { TemplateShowcase } from "../resumes/template-showcase";
 
 // The template count comes from the catalogue. force-static keeps the page
@@ -82,6 +82,7 @@ const TEMPLATE_TIPS = [
 
 export default async function CvTemplatesPage() {
   const { total } = await getTemplateCounts();
+  const proSlugs = await getProTemplateSlugs();
   return (
     <>
       <BreadcrumbJsonLd
@@ -165,7 +166,7 @@ export default async function CvTemplatesPage() {
                 Switch templates any time. Your content transfers in one click.
               </p>
             </div>
-            <TemplateShowcase />
+            <TemplateShowcase proSlugs={proSlugs} />
           </div>
         </div>
       </section>

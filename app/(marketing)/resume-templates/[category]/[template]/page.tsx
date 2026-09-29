@@ -8,8 +8,13 @@ import { CATEGORY_MAP, getAllLeafParams, getCanonicalLeafPath, getLeafData, type
 import { getLeafGuidance } from "@/lib/resume-templates/guidance";
 import { templateThumbnail } from "@/lib/resume/template-thumbnails";
 import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
+import { getProTemplateSlugs } from "@/lib/billing/plan-config";
 
-export const revalidate = 86400;
+// The tier badge comes from the template catalogue. force-static keeps the page
+// static (the admin client's no-store fetch would otherwise make it dynamic);
+// it re-reads the tier hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return getAllLeafParams().map(({ category, template }) => ({ category, template }));
@@ -69,6 +74,7 @@ export default async function TemplateLeafPage({
 
   const relatedTemplates = cat.templates.filter((t) => t.leafSlug !== leafSlug).slice(0, 3);
   const thumb = templateThumbnail(leaf.templateSlug);
+  const isPro = (await getProTemplateSlugs()).includes(leaf.templateSlug);
 
   const guidance = getLeafGuidance(catSlug, leafSlug);
   // Guidance FAQs are audience-specific, so they extend rather than replace the
@@ -143,7 +149,7 @@ export default async function TemplateLeafPage({
                       </p>
                     </>
                   )}
-                  {leaf.tier === "pro" && (
+                  {isPro && (
                     <div className="space-y-1.5">
                       <p className="text-center text-xs text-muted-foreground">
                         Pro template:{" "}
@@ -174,12 +180,12 @@ export default async function TemplateLeafPage({
                   </span>
                   <span
                     className={
-                      leaf.tier === "pro"
+                      isPro
                         ? "rounded-full px-3 py-1 text-xs font-semibold bg-[#1E3A5F] text-white"
                         : "rounded-full px-3 py-1 text-xs font-semibold bg-[#D1FAE5] text-[#065F46]"
                     }
                   >
-                    {leaf.tier === "pro" ? "Pro template" : "Free template"}
+                    {isPro ? "Pro template" : "Free template"}
                   </span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-[-0.025em] leading-[1.15] mb-3">

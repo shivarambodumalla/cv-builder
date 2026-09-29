@@ -76,7 +76,7 @@ interface DesignerPanelProps {
 const TEMPLATES: { name: TemplateName; label: string; desc: string }[] = [
   { name: "classic", label: "Classic", desc: "Clean single-column layout. Works for any role." },
   { name: "orchid", label: "Orchid", desc: "Editorial serif headings with a warm sidebar and navy accent corner." },
-  { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Pro (not ATS-safe)." },
+  { name: "executive-pro", label: "Executive Pro", desc: "Bold photo header and dark contact bar. Not ATS-safe." },
   { name: "aurora", label: "Aurora", desc: "Modern two-column with avatar and skill chips." },
   { name: "portrait", label: "Portrait", desc: "Editorial split-weight name with headshot, plus-marker headings, and light grey canvas." },
   { name: "regent", label: "Regent", desc: "Refined serif single-column with centred header and hairline rules." },

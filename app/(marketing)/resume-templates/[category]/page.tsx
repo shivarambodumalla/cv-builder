@@ -6,8 +6,13 @@ import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { TEMPLATE_CATEGORIES, CATEGORY_MAP } from "@/lib/resume-templates/data";
 import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
+import { getProTemplateSlugs } from "@/lib/billing/plan-config";
 
-export const revalidate = 86400;
+// Tier badges come from the template catalogue. force-static keeps the page
+// static (the admin client's no-store fetch would otherwise make it dynamic);
+// it re-reads the tiers hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return TEMPLATE_CATEGORIES.map((c) => ({ category: c.slug }));
@@ -42,6 +47,7 @@ export default async function TemplateCategoryPage({
   const cat = CATEGORY_MAP.get(slug);
   if (!cat) notFound();
 
+  const proSlugs = await getProTemplateSlugs();
   const faqs = [
     {
       question: `What is the best resume template for ${cat.label.toLowerCase()} roles?`,
@@ -145,12 +151,12 @@ export default async function TemplateCategoryPage({
                       <h3 className="text-sm font-semibold">{t.displayName}</h3>
                       <span
                         className={
-                          t.tier === "pro"
+                          proSlugs.includes(t.templateSlug)
                             ? "rounded-full px-1.5 py-0.5 text-[9px] font-bold bg-[#1E3A5F] text-white"
                             : "rounded-full px-1.5 py-0.5 text-[9px] font-bold bg-[#D1FAE5] text-[#065F46]"
                         }
                       >
-                        {t.tier === "pro" ? "Pro" : "Free"}
+                        {proSlugs.includes(t.templateSlug) ? "Pro" : "Free"}
                       </span>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{t.headline}</p>

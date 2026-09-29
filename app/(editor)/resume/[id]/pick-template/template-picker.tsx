@@ -25,7 +25,7 @@ interface Template {
 const TEMPLATES: Template[] = [
   { name: "Classic", slug: "classic", category: ["all", "single", "professional"], type: "Single column", desc: "Clean and traditional. ATS-safe. Works for any industry.", tags: ["Popular"] },
   { name: "Orchid", slug: "orchid", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Editorial serif headings with a warm sidebar and navy accent corner. Photo-friendly.", tags: ["New"] },
-  { name: "Executive Pro", slug: "executive-pro", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold photo header with dark contact bar. Two-column layout for senior leadership roles.", tags: ["Pro", "New"] },
+  { name: "Executive Pro", slug: "executive-pro", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold photo header with dark contact bar. Two-column layout for senior leadership roles.", tags: ["New"] },
   { name: "Aurora", slug: "aurora", category: ["all", "two-column", "professional"], type: "Two column", desc: "Modern two-column with avatar and skill chips. Great for PM, design, and growth roles.", tags: ["New"] },
   { name: "Portrait", slug: "portrait", category: ["all", "two-column", "professional"], type: "Two column", desc: "Editorial split-weight name with headshot, plus-marker headings, and light grey canvas.", tags: ["New"] },
   { name: "Regent", slug: "regent", category: ["all", "single", "professional"], type: "Single column", desc: "Refined serif single-column with centred header and hairline rules. Law, finance, consulting.", tags: ["New"] },
@@ -38,18 +38,18 @@ const TEMPLATES: Template[] = [
   { name: "Canopy", slug: "canopy", category: ["all", "single"], type: "Single column", desc: "Sage header band, oversized light headings, dedicated Achievements section.", tags: ["New"] },
   { name: "Coastal", slug: "coastal", category: ["all", "two-column", "professional"], type: "Two column", desc: "Teal accent header with photo and objective band. Creative profile layout.", tags: ["New"] },
   { name: "Minimal", slug: "minimal", category: ["all", "single", "minimal"], type: "Single column", desc: "Maximum whitespace. Lets your content breathe. Elegant simplicity.", tags: [] },
-  { name: "Electric Lilac", slug: "electric-lilac", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold two-column with vibrant accent sidebar. Photo-friendly for creative roles.", tags: ["Pro", "New"] },
+  { name: "Electric Lilac", slug: "electric-lilac", category: ["all", "two-column", "professional"], type: "Two column", desc: "Bold two-column with vibrant accent sidebar. Photo-friendly for creative roles.", tags: ["New"] },
   { name: "Classic Serif", slug: "classic-serif", category: ["all", "single", "professional"], type: "Single column", desc: "Elegant serif typography with grey section bands. ATS-safe. Traditional and timeless.", tags: [] },
   { name: "Sharp", slug: "sharp", category: ["all", "single", "professional"], type: "Single column", desc: "Bold headings with clear section dividers. Confident and modern.", tags: [] },
   { name: "Slate", slug: "sidebar", category: ["all", "two-column"], type: "Sidebar left", desc: "Bold two-column layout. Dark sidebar. Great for design and tech roles.", tags: [] },
-  { name: "Wentworth", slug: "wentworth", category: ["all", "single", "minimal"], type: "Single column", desc: "Minimal editorial with split-weight name, circular photo, and accent line.", tags: ["Pro", "New"] },
+  { name: "Wentworth", slug: "wentworth", category: ["all", "single", "minimal"], type: "Single column", desc: "Minimal editorial with split-weight name, circular photo, and accent line.", tags: ["New"] },
   { name: "Bold Accent", slug: "bold-accent", category: ["all", "single"], type: "Single column", desc: "Energetic single-column with accent chips and icon-bordered sections.", tags: ["New"] },
   { name: "Blueprint", slug: "blueprint", category: ["all", "two-column"], type: "Two column", desc: "Editorial two-column with accent header block and bordered body.", tags: ["New"] },
   { name: "Horizon", slug: "two-column", category: ["all", "two-column"], type: "Two column", desc: "Header spans full width. Two columns below for dense content.", tags: [] },
   { name: "Clean Sidebar", slug: "clean-sidebar", category: ["all", "two-column"], type: "Sidebar left", desc: "Warm light sidebar with progress bars and links. Versatile and friendly.", tags: ["New"] },
   { name: "Executive", slug: "executive", category: ["all", "single", "professional"], type: "Single column", desc: "Premium feel for senior roles. Refined typography and spacing.", tags: [] },
   { name: "Onyx", slug: "sidebar-right", category: ["all", "two-column"], type: "Sidebar right", desc: "Right sidebar for skills and education. Clean content hierarchy.", tags: [] },
-  { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo for corporate and legal feel for senior roles.", tags: ["Pro", "New"] },
+  { name: "Executive Sidebar", slug: "executive-sidebar", category: ["all", "two-column", "professional"], type: "Sidebar left", desc: "Dark sidebar with photo for corporate and legal feel for senior roles.", tags: ["New"] },
   { name: "Divide", slug: "divide", category: ["all", "two-column"], type: "Two column", desc: "Vertical divider splits content. Balanced left-right layout.", tags: [] },
   { name: "Folio", slug: "folio", category: ["all", "two-column"], type: "Two column", desc: "Coloured sidebar with clean white main area. Portfolio-style.", tags: [] },
   { name: "Harvard", slug: "harvard", category: ["all", "single", "professional"], type: "Single column", desc: "Academic-style formatting. Formal and structured.", tags: [] },
@@ -263,8 +263,6 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                             "rounded-full px-1.5 py-0.5 text-[9px] font-bold",
                             tag === "Popular"
                               ? "bg-[#065F46] text-white"
-                              : tag === "Pro"
-                              ? "bg-[#1E3A5F] text-white"
                               : "bg-muted text-muted-foreground"
                           )}
                         >

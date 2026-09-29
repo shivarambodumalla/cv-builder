@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Zap, Download, BarChart3, Target } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 import { TEMPLATE_CATEGORIES } from "@/lib/resume-templates/data";
-import { getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
+import { getProTemplateSlugs, getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
 import { TemplateShowcase } from "../resumes/template-showcase";
 
 // Template counts come from the catalogue. force-static keeps the page static
@@ -104,6 +104,7 @@ const WHY_MATTERS = [
 
 export default async function ResumeTemplatesPage() {
   const counts = await getTemplateCounts();
+  const proSlugs = await getProTemplateSlugs();
   const FAQS = faqs(counts);
   return (
     <>
@@ -195,7 +196,7 @@ export default async function ResumeTemplatesPage() {
                 Filter by layout type or browse everything. Switch any time without losing your content.
               </p>
             </div>
-            <TemplateShowcase />
+            <TemplateShowcase proSlugs={proSlugs} />
           </div>
         </div>
       </section>
