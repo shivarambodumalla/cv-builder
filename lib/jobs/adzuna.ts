@@ -128,7 +128,10 @@ export class AdzunaProvider implements IJobProvider {
         next: { revalidate: 0 },
       });
 
-      if (!response.ok) return EMPTY_RESPONSE;
+      if (!response.ok) {
+        console.warn(`[adzuna] ${response.status} for ${title_only ? "title_only" : "what"}="${what}" (${country})`);
+        return EMPTY_RESPONSE;
+      }
 
       const data = (await response.json()) as AdzunaRawResponse;
       const normalized: SearchResponse = {
@@ -139,7 +142,8 @@ export class AdzunaProvider implements IJobProvider {
 
       setCache(cacheKey, normalized);
       return normalized;
-    } catch {
+    } catch (err) {
+      console.warn(`[adzuna] request failed for "${what}" (${country}):`, err instanceof Error ? err.message : err);
       return EMPTY_RESPONSE;
     }
   }

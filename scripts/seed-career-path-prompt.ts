@@ -36,6 +36,7 @@ How to choose the roles:
 - Mix move types realistically. "step_up" is a more senior version of their work. "lateral" is a sideways move that reuses most of their skills in a different role or function. "pivot" is a change of field.
 - Weight the mix by their preferences. "Higher pay" and "Lead people" favor step_up. "Change fields" favors pivot. "Go deeper in my craft" favors senior individual contributor or specialist roles. "Remote-friendly" and "Better work-life balance" favor roles where that is common. With no preferences, give a balanced mix with at least one step_up.
 - Every title must be a real job title that people type into job boards in {{country}}. No invented or hybrid titles.
+- Titles are 2 to 4 words, exactly as employers post them: no parentheses, slashes, seniority ranges or focus notes. Write "Data Scientist", not "Data Scientist (Associate/Junior)"; "Lead Frontend Engineer", not "Frontend Team Lead".
 - Fit is 0 to 100 and must be honest: how ready this person is today. A pivot is rarely above 70. A step_up for someone with few years is rarely above 80.
 - If resume text is provided, base everything on it: their actual titles, employers' industries, tools, and results. Never suggest a role they already hold or have held.
 - If no resume text is provided, reason from the current role and years of experience only, and keep claims general to that role.

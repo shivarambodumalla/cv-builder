@@ -5,7 +5,7 @@ import { callAI } from "@/lib/ai/client";
 import { findKeywordList } from "@/lib/ai/ats-analyser";
 import { getRoleMarket } from "./market";
 import { normaliseCareerPathResult, refineSkillsForResume } from "./normalise";
-import { PREFERENCES, type CareerPathResult, type PreferenceId } from "./types";
+import { PREFERENCES, type CareerPathOption, type CareerPathResult, type PreferenceId, type RoleMarket } from "./types";
 
 /** Resume text sent to the AI is capped to keep the prompt within budget. */
 export const MAX_RESUME_CHARS = 12000;
@@ -39,6 +39,22 @@ function describePreferences(ids: PreferenceId[]): string {
 }
 
 /**
+ * Market data for a path: its title first, then its job-board search titles.
+ * The model's title is sometimes one nobody posts under ("Frontend Team Lead")
+ * while a search title ("Lead Frontend Engineer") has real listings.
+ */
+async function marketForPath(path: CareerPathOption, country: string): Promise<RoleMarket | null> {
+  const candidates = [path.title, ...path.searchTitles].filter(
+    (t, i, all) => all.findIndex((o) => o.toLowerCase() === t.toLowerCase()) === i
+  );
+  for (const title of candidates.slice(0, 3)) {
+    const market = await getRoleMarket(title, country);
+    if (market) return market;
+  }
+  return null;
+}
+
+/**
  * Generate 3-5 career paths. Throws on AI failure or when fewer than 3 valid
  * paths come back (CareerPathValidationError); market data never throws and is
  * null per role when the providers have nothing.
@@ -64,7 +80,7 @@ export async function generateCareerPath(args: GenerateCareerPathArgs): Promise<
   let result = normaliseCareerPathResult(raw);
 
   const [markets, keywordLists] = await Promise.all([
-    Promise.all(result.paths.map((path) => getRoleMarket(path.title, args.country))),
+    Promise.all(result.paths.map((path) => marketForPath(path, args.country))),
     resumeText
       ? Promise.all(
           result.paths.map((path) =>

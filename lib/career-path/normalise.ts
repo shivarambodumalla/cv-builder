@@ -149,17 +149,26 @@ function normalisePlan(value: unknown): PlanPhase[] | null {
   return phases.length === PLAN_LABELS.length ? phases : null;
 }
 
+/**
+ * Job titles as people search them: the model sometimes qualifies a title
+ * ("Data Scientist (Associate/Junior)", "Solutions Architect (Frontend Focus)"),
+ * which no job board lists and which breaks the market lookup.
+ */
+function cleanJobTitle(value: unknown): string {
+  return cleanText(value, 80).replace(/\s*\([^)]*\)/g, "").replace(/\s{2,}/g, " ").trim();
+}
+
 function normalisePath(value: unknown): CareerPathOption | null {
   if (!value || typeof value !== "object") return null;
   const raw = value as Record<string, unknown>;
 
-  const title = cleanText(raw.title, 80);
+  const title = cleanJobTitle(raw.title);
   const fit = coerceFit(raw.fit);
   const why = cleanText(raw.why, 400);
   const plan90 = normalisePlan(raw.plan90);
   if (!title || fit === null || !why || !plan90) return null;
 
-  const searchTitles = cleanList(raw.searchTitles, LIMITS.searchTitles, 80);
+  const searchTitles = cleanList(raw.searchTitles, LIMITS.searchTitles, 80).map(cleanJobTitle).filter(Boolean);
   if (!searchTitles.some((t) => t.toLowerCase() === title.toLowerCase())) {
     searchTitles.unshift(title);
     searchTitles.splice(LIMITS.searchTitles);
