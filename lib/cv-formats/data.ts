@@ -48,6 +48,16 @@ export interface CvFormat {
   languages?: Record<string, string>;
   /** Related in-product template to build online with instead. */
   buildOnline: { href: string; label: string };
+  /**
+   * LaTeX source, for formats that are LaTeX templates first. When present the
+   * page leads with Open in Overleaf and Download .tex, then the builder pitch.
+   */
+  latex?: {
+    /** Public path of the .tex file under /public. */
+    path: string;
+    /** Short pitch for building the same kind of CV without LaTeX. */
+    builderPitch: string;
+  };
 }
 
 export const CV_FORMATS: CvFormat[] = [
@@ -231,12 +241,12 @@ export const CV_FORMATS: CvFormat[] = [
       "The Jake's Resume layout as an editable Word file, same structure, no LaTeX and no Overleaf account. Single column, ATS-safe, free download. MIT-licensed original by Jake Gutierrez.",
     eyebrow: "Software engineering · the LaTeX standard",
     headline:
-      "The most-used LaTeX resume among software engineers, rebuilt as a Word file. Same structure and reading order, without Overleaf or a single line of .tex.",
+      "The most-used LaTeX resume among software engineers. Open the source in Overleaf in one click, or take the same layout as a Word file.",
     market: "Software engineering, new-grad and intern applications, technical roles generally",
     intro: [
       "Jake's Resume is the template a large share of computer science students and working engineers actually use. It is a compact single-column LaTeX layout (Education, Experience, Projects, Technical Skills) written by Jake Gutierrez and released under the MIT licence, and it became the default largely because it is disciplined: tight spacing, no ornament, and just enough room for one page of real content.",
       "The friction is LaTeX. Using the original means an Overleaf account, compiling a .tex file, and editing markup to change a bullet. That is fine if you already work that way and a genuine obstacle if you do not, and it is why people search for the template far more often than they finish one.",
-      "This is the same layout as an editable Word document. Identical section order, identical entry structure with the role on the left and dates flush right, the same compact spacing. What it is not is the original file: if you want the .tex source, it is on GitHub and Overleaf, and you should get it there.",
+      "This page has both. The .tex file is the original layout and macros, unchanged, with placeholder content in place of the sample resume, and it opens as a new Overleaf project. The Word file is a recreation for people who would rather not compile anything: identical section order, the role on the left and dates flush right, the same compact spacing.",
       "The layout also happens to be a strong ATS candidate, which is not why it became popular but is worth knowing. Single column, standard headings, no tables and no graphics: the four things that actually decide whether a parser reads your resume in the order you wrote it.",
     ],
     sections: [
@@ -269,7 +279,12 @@ export const CV_FORMATS: CvFormat[] = [
       {
         question: "Is this the actual Jake's Resume template?",
         answer:
-          "It is the same layout, not the same file. The original is a LaTeX template by Jake Gutierrez, released under the MIT licence and available on GitHub and Overleaf. If you want the .tex source, get it from there. This is a Word recreation with the same section order, entry structure and spacing, for people who would rather not compile anything. Layouts are not themselves copyrightable and the original is permissively licensed, but the credit belongs to its author.",
+          "The .tex file is. It is Jake Gutierrez's original LaTeX source with the layout and macros unchanged, his MIT licence notice kept at the top, and the sample content swapped for placeholders. The Word file is a recreation of the same layout, not the same file. The original repository is github.com/jakegut/resume, archived by its author in 2024. The credit for the design belongs to him.",
+      },
+      {
+        question: "Can I open Jake's Resume in Overleaf?",
+        answer:
+          "Yes. The Open in Overleaf button on this page sends the .tex file to Overleaf, which creates a new project from it. You need a free Overleaf account. Compile with pdfLaTeX, the Overleaf default: the file uses a pdfLaTeX setting that keeps the PDF text readable by applicant tracking systems. To work offline instead, download the .tex and run pdflatex on it.",
       },
       {
         question: "Why use the Word version instead of LaTeX?",
@@ -294,10 +309,15 @@ export const CV_FORMATS: CvFormat[] = [
     ],
     docxSlug: "jakes",
     attribution:
-      "A Word recreation of the Jake's Resume layout, originally a LaTeX template by Jake Gutierrez, released under the MIT licence. Not affiliated with or endorsed by its author. The original source is on GitHub and Overleaf.",
+      "The .tex file is Jake Gutierrez's original LaTeX template, released under the MIT licence, with placeholder content. The Word file is a recreation of its layout. Not affiliated with or endorsed by its author. The original source is at github.com/jakegut/resume.",
     buildOnline: {
       href: "/resume-templates/software-engineer/classic-cv",
       label: "build a single-column CV online",
+    },
+    latex: {
+      path: "/downloads/jakes-resume.tex",
+      builderPitch:
+        "CVEdge's Classic template is a similar one-page, single-column layout. You fill it in through a form instead of editing markup, get an ATS score, and export a PDF. Sign in with Google; the free plan includes 3 PDF downloads a week.",
     },
   },
 ];
@@ -306,4 +326,15 @@ export const FORMAT_MAP = new Map(CV_FORMATS.map((f) => [f.slug, f]));
 
 export function getCvFormat(slug: string): CvFormat | undefined {
   return FORMAT_MAP.get(slug);
+}
+
+/**
+ * Overleaf's documented snip API (overleaf.com/devs): Overleaf fetches the file
+ * from our server and opens it as a new project. The URL must be absolute and
+ * public. pdfLaTeX is named explicitly because the Jake's source relies on
+ * \pdfgentounicode, which the other engines do not support.
+ */
+export function overleafUrl(texPath: string): string {
+  const snip = encodeURIComponent(`https://www.thecvedge.com${texPath}`);
+  return `https://www.overleaf.com/docs?snip_uri=${snip}&engine=pdflatex`;
 }

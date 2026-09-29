@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle, Download } from "lucide-react";
+import { CheckCircle, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import { CV_FORMATS, getCvFormat } from "@/lib/cv-formats/data";
+import { CV_FORMATS, getCvFormat, overleafUrl } from "@/lib/cv-formats/data";
 
 export const revalidate = 86400;
 
@@ -47,6 +47,7 @@ export default async function CvFormatPage({
   if (!format) notFound();
 
   const others = CV_FORMATS.filter((f) => f.slug !== format.slug);
+  const docxHref = `/api/templates/${format.docxSlug}/docx`;
 
   return (
     <>
@@ -73,23 +74,74 @@ export default async function CvFormatPage({
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
               {format.headline}
             </p>
-            <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-              <Button size="lg" className="h-12 px-8 shadow-md shadow-primary/20" asChild>
-                <a href={`/api/templates/${format.docxSlug}/docx`} download>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download the Word file
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="h-12 px-8" asChild>
-                <Link href="/upload-resume">Score my current CV</Link>
-              </Button>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Free · .docx · No account needed
-            </p>
+            {format.latex ? (
+              <>
+                {/* LaTeX-first formats: people arrive wanting the .tex, so it leads. */}
+                <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button size="lg" className="h-12 px-8 shadow-md shadow-primary/20" asChild>
+                    <a
+                      href={overleafUrl(format.latex.path)}
+                      target="_blank"
+                      rel="noopener nofollow"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Open in Overleaf
+                    </a>
+                  </Button>
+                  <Button size="lg" variant="outline" className="h-12 px-8" asChild>
+                    <a href={format.latex.path} download>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download .tex
+                    </a>
+                  </Button>
+                </div>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Free · MIT licence · Opens as a new Overleaf project
+                </p>
+                <Button variant="ghost" className="mt-2 h-11" asChild>
+                  <a href={docxHref} download>
+                    Prefer Word? Download the .docx
+                  </a>
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button size="lg" className="h-12 px-8 shadow-md shadow-primary/20" asChild>
+                    <a href={docxHref} download>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download the Word file
+                    </a>
+                  </Button>
+                  <Button size="lg" variant="outline" className="h-12 px-8" asChild>
+                    <Link href="/upload-resume">Score my current CV</Link>
+                  </Button>
+                </div>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Free · .docx · No account needed
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
+
+      {/* ── BUILDER PITCH (LaTeX formats only) ── */}
+      {format.latex && (
+        <section className="pt-12 px-5 lg:px-6">
+          <div className="mx-auto max-w-3xl rounded-xl border bg-card p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
+            <div>
+              <h2 className="text-base font-bold mb-1.5">Rather not edit LaTeX?</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {format.latex.builderPitch}
+              </p>
+            </div>
+            <Button variant="outline" className="mt-4 h-11 w-full sm:mt-0 sm:w-auto shrink-0" asChild>
+              <Link href={format.buildOnline.href}>Build it online</Link>
+            </Button>
+          </div>
+        </section>
+      )}
 
       {/* ── INTRO ── */}
       <section className="py-16 px-5 lg:px-6">
@@ -147,7 +199,9 @@ export default async function CvFormatPage({
       <section className="py-16 px-5 lg:px-6 bg-muted/30">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-6">
-            <h2 className="text-base font-bold mb-2">Download the template</h2>
+            <h2 className="text-base font-bold mb-2">
+              {format.latex ? "The Word version" : "Download the template"}
+            </h2>
             <p className="text-sm text-muted-foreground mb-4">
               A blank Word document with the structure, headings and spacing already set, and an
               italic prompt under each section explaining what belongs there. Delete the prompts
@@ -168,7 +222,7 @@ export default async function CvFormatPage({
             </ul>
             <div className="flex flex-col sm:flex-row gap-2">
               <Button asChild>
-                <a href={`/api/templates/${format.docxSlug}/docx`} download>
+                <a href={docxHref} download>
                   <Download className="mr-2 h-4 w-4" />
                   Download the Word file
                 </a>

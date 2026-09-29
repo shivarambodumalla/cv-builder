@@ -377,6 +377,10 @@ Two reset mechanisms coexist:
   lib/resume-templates/data.ts so TEMPLATE_PRIMARY_CATEGORY doesn't canonicalise
   them away to whichever visual template they resemble. Adding one is a data
   entry plus a docx builder.
+- A format can also set `latex: { path, builderPitch }` (lib/cv-formats/data.ts):
+  the page then leads with "Open in Overleaf" (snip_uri to the public .tex) and
+  a .tex download, with the builder as the fallback. Only jakes-resume uses it
+  (public/downloads/jakes-resume.tex, MIT, original licence header kept).
 - Currently: harvard, executive (template leaves) and gcc, lebenslauf, iim,
   europass, jakes (standalone formats). Verify any new one by parsing the output with
   `mammoth` (the same library the upload pipeline uses) — clean extraction in the
