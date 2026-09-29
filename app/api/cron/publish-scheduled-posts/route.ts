@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { submitToIndexNow } from "@/lib/seo/indexnow";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -12,7 +14,7 @@ export async function GET(request: Request) {
   // Find all drafts whose scheduled_at has passed
   const { data: posts, error } = await db
     .from("blog_posts")
-    .select("id, title, scheduled_at")
+    .select("id, slug, title, scheduled_at")
     .eq("is_published", false)
     .not("scheduled_at", "is", null)
     .lte("scheduled_at", new Date().toISOString());
@@ -30,5 +32,12 @@ export async function GET(request: Request) {
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
 
   console.log(`[cron] published ${ids.length} scheduled posts:`, posts.map((p) => p.title));
+
+  // Refresh the hourly ISR cache first so the crawler IndexNow sends sees the
+  // new posts, not a stale /blog listing.
+  const paths = [...posts.map((p) => `/blog/${p.slug}`), "/blog"];
+  paths.forEach((p) => revalidatePath(p));
+  await submitToIndexNow(paths);
+
   return NextResponse.json({ published: ids.length, posts: posts.map((p) => p.title) });
 }

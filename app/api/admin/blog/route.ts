@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { submitToIndexNow } from "@/lib/seo/indexnow";
 import { marked } from "marked";
 
 export async function GET() {
@@ -45,5 +47,11 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (data.is_published) {
+    const paths = [`/blog/${data.slug}`, "/blog"];
+    paths.forEach((p) => revalidatePath(p));
+    await submitToIndexNow(paths);
+  }
   return NextResponse.json(data);
 }
