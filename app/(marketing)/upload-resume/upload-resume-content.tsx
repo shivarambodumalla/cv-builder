@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Upload, BarChart3, Search, Lightbulb, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, Sparkles, Shield, Zap, PenLine, ClipboardPaste } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
@@ -29,6 +30,7 @@ const OPTIONS: { key: UploadMode; icon: React.ElementType; title: string; desc: 
 
 export function UploadResumeContent() {
   const router = useRouter();
+  const { openUpgradeModal } = useUpgradeModal();
   const searchParams = useSearchParams();
   const templateParam = searchParams.get("template");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -124,6 +126,12 @@ export function UploadResumeContent() {
           body: JSON.stringify({ redirect_token: token }),
         });
         const claimData = await claimRes.json();
+        if (claimData.upgradeTrigger) {
+          setLoading(false);
+          setCurrentStep("uploading");
+          openUpgradeModal(claimData.upgradeTrigger);
+          return;
+        }
         if (claimData.cv_id) {
           // If the user came in with a pre-selected template, skip the picker
           // and go straight to the editor.
@@ -165,6 +173,12 @@ export function UploadResumeContent() {
         const data = await res.json().catch(() => ({}));
         if (res.status === 401) {
           router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+          return;
+        }
+        if (data.upgradeTrigger) {
+          setLoading(false);
+          setCurrentStep("uploading");
+          openUpgradeModal(data.upgradeTrigger);
           return;
         }
         throw new Error(data.error || "Couldn't create your resume. Try again in a moment.");

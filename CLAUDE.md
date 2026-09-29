@@ -325,7 +325,7 @@ Quotas live in the `plan_limits` table (plan, feature, limit_value, reset_type; 
 Never type a quota into copy. Server components call `getPlanLimits()`; client components get the values as props. Phrase them with lib/billing/format-limits.ts (`describeQuota`, `formatLimit`, `summarizeAllowance`). Emails use `{{freeAtsScans}}`-style variables, which `sendEmail` fills from the same table. Static strings (metadata) must not state a free-plan number.
 
 Current values (2026-09-29):
-- Free, total: 1 CV (`cvs`). Not enforced yet: no CV-creation route checks it
+- Free, total: 1 CV (`cvs`). Enforced by `checkCvLimit()` (lib/billing/limits.ts) in /api/cv/create-blank, /api/cv/upload and /api/cv/claim (403 + `upgradeTrigger: "cv_limit"`). The OAuth callback's anonymous-upload claim is not gated, so a first-time signup never loses the resume they just uploaded
 - Free, 7-day rolling window: 3 ATS scans, 20 AI rewrites, 5 job matches, 5 cover letters, 1 PDF download
 - Free, weekly Monday reset: 5 Fix All, 3 CV tailors, 5 offer evals, 3 portfolio scans, 10 story summaries, 5 interview preps
 - Pro: -1 (unlimited) on every quota, 80+ score guarantee, priority support

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkCvLimit, cvLimitResponse } from "@/lib/billing/limits";
 import { DEFAULT_CONTENT, paperSizeForCountry } from "@/lib/resume/defaults";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { uniqueCvTitle } from "@/lib/resume/unique-title";
@@ -33,6 +34,8 @@ export async function POST(request: NextRequest) {
       : normalizeDesignSettings({ paperSize });
 
     const admin = createAdminClient();
+    const cvLimit = await checkCvLimit(admin, user.id);
+    if (!cvLimit.allowed) return NextResponse.json(cvLimitResponse(cvLimit.limit), { status: 403 });
     const title = await uniqueCvTitle(admin, user.id, "Untitled CV");
 
     const { data: cv, error: insertError } = await admin

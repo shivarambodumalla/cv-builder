@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkCvLimit, cvLimitResponse } from "@/lib/billing/limits";
 import { structureCvText } from "@/lib/ai/gemini";
 import { sanitizeDbJson, sanitizeDbString } from "@/lib/resume/sanitize";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
@@ -66,6 +67,8 @@ export async function POST(request: NextRequest) {
   const file = formData.get("file") as File | null;
   const pastedText = formData.get("text") as string | null;
   const admin = createAdminClient();
+  const cvLimit = await checkCvLimit(admin, user.id);
+  if (!cvLimit.allowed) return NextResponse.json(cvLimitResponse(cvLimit.limit), { status: 403 });
   const rawTitle = (formData.get("title") as string) || "Untitled CV";
   const title = await uniqueCvTitle(admin, user.id, rawTitle);
 

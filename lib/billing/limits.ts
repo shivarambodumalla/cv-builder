@@ -120,6 +120,42 @@ async function resolveLimit(plan: "free" | "pro", limitKey: string): Promise<num
   }
 }
 
+// --- Resume count ---
+
+/**
+ * `cvs` is a lifetime total, not a usage counter, so it is checked by counting
+ * the user's resumes rather than through COLUMN_MAP. Call before creating or
+ * claiming a resume; a 403 with `upgradeTrigger: "cv_limit"` opens the modal.
+ */
+export async function checkCvLimit(
+  admin: any,
+  userId: string
+): Promise<{ allowed: boolean; used: number; limit: number }> {
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("subscription_status, current_period_end")
+    .eq("id", userId)
+    .single();
+
+  const limit = await resolveLimit(getPlan(profile), "cvs");
+  if (limit === -1) return { allowed: true, used: 0, limit };
+
+  const { count } = await admin
+    .from("cvs")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  const used = count ?? 0;
+  return { allowed: used < limit, used, limit };
+}
+
+export function cvLimitResponse(limit: number) {
+  return {
+    error: `The free plan includes ${limit} ${limit === 1 ? "resume" : "resumes"}. Upgrade to Pro for unlimited resumes, or edit your existing one.`,
+    upgradeTrigger: "cv_limit" as const,
+  };
+}
+
 // --- Column mapping ---
 
 const WEEKLY_COLUMNS = [

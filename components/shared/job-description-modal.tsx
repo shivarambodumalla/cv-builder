@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,7 @@ interface JobDescriptionModalProps {
 
 export function JobDescriptionModal({ open, onOpenChange }: JobDescriptionModalProps) {
   const router = useRouter();
+  const { openUpgradeModal } = useUpgradeModal();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -77,6 +79,13 @@ export function JobDescriptionModal({ open, onOpenChange }: JobDescriptionModalP
     const data = await res.json();
 
     if (!res.ok) {
+      if (data.upgradeTrigger) {
+        setSubmitting(false);
+        reset();
+        onOpenChange(false);
+        openUpgradeModal(data.upgradeTrigger);
+        return;
+      }
       setError(data.error || "Couldn't create your resume. Try again in a moment.");
       setSubmitting(false);
       return;

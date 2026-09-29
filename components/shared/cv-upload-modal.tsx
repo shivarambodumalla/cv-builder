@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +37,7 @@ function getExtension(name: string): string {
 
 export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
   const router = useRouter();
+  const { openUpgradeModal } = useUpgradeModal();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [tab, setTab] = useState("upload");
   const [file, setFile] = useState<File | null>(null);
@@ -106,6 +108,13 @@ export function CvUploadModal({ open, onOpenChange }: CvUploadModalProps) {
     const data = await res.json();
 
     if (!res.ok) {
+      if (data.upgradeTrigger) {
+        setSubmitting(false);
+        reset();
+        onOpenChange(false);
+        openUpgradeModal(data.upgradeTrigger);
+        return;
+      }
       setError(data.error || "Upload failed. Try again in a moment.");
       setSubmitting(false);
       return;
