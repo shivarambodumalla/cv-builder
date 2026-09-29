@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Heart, CreditCard, ChevronRight, Settings } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
 
 interface UserMenuProps {
@@ -24,7 +22,6 @@ interface UserMenuProps {
 
 export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
   const [isPro, setIsPro] = useState(false);
   const [period, setPeriod] = useState("");
   const { openUpgradeModal } = useUpgradeModal();
@@ -110,27 +107,6 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
             <Settings className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
             <span className="text-[13px]">Preferences</span>
           </DropdownMenuItem>
-        </div>
-
-        {/* Theme control */}
-        <div className="px-4 py-2 border-t border-[#F0EDE6] dark:border-border">
-          <p className="text-[11px] font-medium text-[#0C1A0E] dark:text-foreground mb-1.5">Theme</p>
-          <div className="flex rounded-lg bg-[#F0EDE6] dark:bg-muted p-0.5 gap-0.5">
-            {([["light", "☀ Light"], ["dark", "☾ Dark"], ["system", "⊙ Auto"]] as const).map(([mode, label]) => (
-              <button
-                key={mode}
-                onClick={() => setTheme(mode)}
-                className={cn(
-                  "flex-1 rounded-md py-1 text-[11px] transition-all",
-                  theme === mode
-                    ? "bg-white dark:bg-background text-[#0C1A0E] dark:text-foreground font-semibold shadow-sm"
-                    : "text-[#78716C] font-normal hover:text-[#0C1A0E]"
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
         </div>
 
         <DropdownMenuSeparator className="bg-[#F0EDE6] dark:bg-border" />

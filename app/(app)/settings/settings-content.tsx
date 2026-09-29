@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, X, Loader2, Check, Trash2 } from "lucide-react";
@@ -41,7 +40,6 @@ export function SettingsContent({
   memberSince,
   emailPreferences,
 }: SettingsContentProps) {
-  const { theme, setTheme } = useTheme();
 
   const initials = fullName
     ? fullName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -311,27 +309,6 @@ export function SettingsContent({
                 />
               </button>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Appearance */}
-      <section className="rounded-xl border p-5 sm:p-6 mb-6">
-        <h2 className="text-base font-semibold mb-4">Appearance</h2>
-        <div className="flex rounded-xl bg-muted p-1 gap-1 max-w-xs">
-          {([["light", "Light"], ["dark", "Dark"], ["system", "Auto"]] as const).map(([mode, label]) => (
-            <button
-              key={mode}
-              onClick={() => setTheme(mode)}
-              className={cn(
-                "flex-1 rounded-lg py-2 text-sm font-medium transition-all",
-                theme === mode
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {label}
-            </button>
           ))}
         </div>
       </section>

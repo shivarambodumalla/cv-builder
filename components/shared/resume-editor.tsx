@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase/client";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,12 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { ContentEditor } from "@/components/resume/content-editor";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
@@ -43,9 +37,6 @@ import {
   ArrowLeft,
   Download,
   LogOut,
-  Sun,
-  Moon,
-  Monitor,
   LayoutDashboard,
   CreditCard,
   Check,
@@ -152,7 +143,6 @@ function formatSavedTime(date: Date): string {
 
 export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData, initialTab = "editor", autoScan = false, pdfDownloadsThisWindow = 0, lastFeedbackRating = null }: ResumeEditorProps) {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
   const { openUpgradeModal } = useUpgradeModal();
 
   const initialContent: ResumeContent = cv.parsed_json
@@ -650,19 +640,6 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   </DropdownMenuItem>
                 )}
               </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Sun className="mr-2 h-4 w-4 dark:hidden" /><Moon className="mr-2 h-4 w-4 hidden dark:block" />Theme
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-                    <DropdownMenuRadioItem value="light"><Sun className="mr-2 h-4 w-4" />Light</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="dark"><Moon className="mr-2 h-4 w-4" />Dark</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="system"><Monitor className="mr-2 h-4 w-4" />System</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive"><LogOut className="mr-2 h-4 w-4" />Log out</DropdownMenuItem>
             </DropdownMenuContent>

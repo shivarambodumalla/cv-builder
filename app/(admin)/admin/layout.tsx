@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { AdminMobileNav } from "./admin-mobile-nav";
 import { AdminSidebarNav } from "./admin-sidebar-nav";
 
@@ -104,7 +103,6 @@ export default function AdminLayout({
             </h2>
           </div>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
             <Link
               href="/dashboard"
               className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"

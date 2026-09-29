@@ -187,10 +187,11 @@ export default function RootLayout({
         </Script>
         <GAScripts />
         <HotjarScripts />
+        {/* Light only. Dark styles stay in the CSS; drop forcedTheme to bring them back. */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          forcedTheme="light"
+          enableSystem={false}
           disableTransitionOnChange
         >
           <SignupModalProvider>

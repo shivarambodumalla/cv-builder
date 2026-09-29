@@ -95,8 +95,9 @@ If the answer is no to all — do not implement.
 
 ### Theme
 
+- Light only: the root ThemeProvider sets `forcedTheme="light"` (ignores OS setting and any saved choice) and there is no theme picker anywhere. Dark styles (`.dark` tokens, `dark:` classes) are dormant, kept so dark mode can return by dropping forcedTheme.
 - Light: warm beige bg (#f5f0e8), teal primary (#1a7a6d), cream cards (#ece5d8)
-- Dark: deep teal bg (#141f1e), same teal primary, muted blue-gray text
+- Dark (dormant): deep teal bg (#141f1e), same teal primary, muted blue-gray text
 - Letter spacing: -0.01em
 - Font: Geist Sans/Mono
 
