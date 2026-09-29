@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import {
   Loader2, UserPlus, Layout, Upload, FileText, Pencil, ScanLine, Sparkles, Wand2,
   Briefcase, Mail, Download, CreditCard, Crown, Home, LogIn, TrendingUp, TrendingDown, ArrowRight,
-  Lightbulb, Eye, MousePointerClick, Users, BarChart3, BadgeCheck, CircleSlash,
+  Lightbulb, Eye, MousePointerClick, Users, BarChart3, BadgeCheck, CircleSlash, Route,
 } from "lucide-react";
 
 interface Stage { key: string; label: string; count: number; icon?: string }
@@ -21,9 +21,14 @@ interface PayClicker {
   firstClickedAt: string; lastClickedAt: string; convertedAt: string | null; converted: boolean;
 }
 interface TimePoint { date: string; count: number }
+interface CareerPathDetail {
+  rolePageViews: number; startedRole: number; startedResume: number;
+  created: { role: number; resume: number }; claimed: { role: number; resume: number };
+}
 interface FunnelData {
   awareness: Stage[]; acquisition: Stage[]; engagement: Stage[]; conversion: Stage[]; extras: Stage[];
   jobsFunnel: FunnelStep[]; interviewFunnel: FunnelStep[]; cvReviewFunnel: FunnelStep[];
+  careerPathFunnel: FunnelStep[]; careerPathDetail: CareerPathDetail;
   anonToSignup: FunnelStep[]; loginToDownload: FunnelStep[];
   pageVisits: PageVisit[]; totalAnonVisits: number; totalUniqueVisitors: number; totalPageViews: number; newSignups: number;
   bounceAnalysis: BounceItem[]; signupSources: SignupSource[];
@@ -320,6 +325,49 @@ export function FunnelDashboard() {
                 );
               })}
             </div>
+          </div>
+
+          {/* ── 2e. CAREER PATH FUNNEL ── */}
+          <div className="rounded-xl border p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Route className="h-4 w-4 text-[#1E3A5F] dark:text-primary" />
+              <h2 className="text-sm font-semibold">Career Path Funnel</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {data.careerPathFunnel.map((step, i) => {
+                const prev = i > 0 ? data.careerPathFunnel[i - 1].count : step.count;
+                const convPct = prev > 0 ? p(step.count, prev) : 0;
+                return (
+                  <div key={step.key} className="rounded-lg border p-3">
+                    <p className="text-[11px] text-muted-foreground">{step.label}</p>
+                    <p className="text-lg font-bold tabular-nums mt-0.5">{step.count.toLocaleString()}</p>
+                    {i > 0 && prev > 0 && (
+                      <p className={`text-[10px] font-medium mt-0.5 ${convPct >= 30 ? "text-[#1E3A5F] dark:text-primary" : convPct >= 10 ? "text-[#D97706]" : "text-[#DC2626]"}`}>
+                        {fp(convPct)} from prev
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {(() => {
+              const d = data.careerPathDetail;
+              const created = d.created.role + d.created.resume;
+              const claimed = d.claimed.role + d.claimed.resume;
+              return (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
+                  <MiniStat label="Role pages (/career-path/*)" value={d.rolePageViews.toLocaleString()} />
+                  <MiniStat label="Started" value={(d.startedRole + d.startedResume).toLocaleString()} sub={`${d.startedRole} role · ${d.startedResume} resume`} />
+                  <MiniStat label="Paths saved" value={created.toLocaleString()} sub={`${d.created.role} role · ${d.created.resume} resume`} />
+                  <MiniStat
+                    label="Claimed after sign-in"
+                    value={claimed.toLocaleString()}
+                    sub={`${d.claimed.role} role · ${d.claimed.resume} resume${created > 0 ? ` · ${fp(p(claimed, created))}` : ""}`}
+                    tone={claimed > 0 ? "success" : "muted"}
+                  />
+                </div>
+              );
+            })()}
           </div>
 
           {/* ── 3. ANONYMOUS VISITOR FLOW ── */}

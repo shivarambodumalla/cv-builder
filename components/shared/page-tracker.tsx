@@ -19,6 +19,8 @@ const PAGE_NAMES: Record<string, string> = {
   "/resumes": "Opened resumes page",
   "/blog": "Opened blog",
   "/interview-prep": "Opened interview prep page",
+  // Role pages and /career-path/plan/<id> share the first segment, so they log this too.
+  "/career-path": "Opened career path page",
   "/resume-templates": "Opened resume templates page",
   "/resume-examples": "Opened resume examples page",
   "/ats-friendly-resume": "Opened ATS guide page",

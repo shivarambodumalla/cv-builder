@@ -59,7 +59,7 @@ If the answer is no to all — do not implement.
 
 ## Route Groups
 
-- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /jobs, /privacy, /terms
+- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /jobs, /career-path, /privacy, /terms
 - (auth) — /login, /register (Google OAuth only)
 - (app) — authenticated: /dashboard, /billing, /interview-coach (renamed from /stories)
 - (editor) — /resume/[id] (two-panel resume editor)
@@ -306,7 +306,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 - client.ts: callAI() fetches prompt + settings from DB, substitutes {{variables}}, calls Gemini
 - maxOutputTokens: uses settings.max_tokens from DB (not hardcoded)
-- Settings: ats_analysis=8192, job_match=4096, cover_letter=1024, keyword_generate=2048, bullet_rewrite=512, bullet_rewrite_debate=512, cv_parse=4096, jd_red_flag=512, fix_all=4096, cv_tailor=4096, offer_evaluation=512, story_extract=4096, story_match=1024, story_quality=512, story_summary=256, story_framework_suggest=128
+- Settings: ats_analysis=8192, job_match=4096, cover_letter=1024, keyword_generate=2048, bullet_rewrite=512, bullet_rewrite_debate=512, cv_parse=4096, jd_red_flag=512, fix_all=4096, cv_tailor=4096, offer_evaluation=512, career_path=4096, story_extract=4096, story_match=1024, story_quality=512, story_summary=256, story_framework_suggest=128
 - JSON callers: callAI sets `responseMimeType: "application/json"` when `parseJson:true` so Gemini emits strict JSON. `parseJson:false` (rewrite, cover-letter, rewrite-debate, gemini.ts wrapper) returns free-form text.
 - thinkingBudget: 0 (disabled)
 - Spend cap: ai_settings.daily_spend_cap_usd (default $10/day)
@@ -392,6 +392,17 @@ Two reset mechanisms coexist:
   europass, jakes (standalone formats). Verify any new one by parsing the output with
   `mammoth` (the same library the upload pipeline uses) — clean extraction in the
   right reading order with zero warnings is the ATS-safety claim these pages make.
+
+## Career Path Finder (lead engine)
+
+- Free tool at /career-path: current role (or an uploaded resume via /api/cv/upload-public), optional years + up to 3 preferences → 3-5 next roles. No selling anywhere in the flow: no Pro, pricing or upgrade prompts, and the hello bar is hidden on /career-path.
+- POST /api/career-path → callAI("career_path_v1", feature `career_path`) → one `career_paths` row per visitor (full result stored). Anonymous viewers get `toPreview()` only (roles, fit, market data, a COUNT of skills). Named skill gaps, the 90-day plan and the proof project reach the browser only after Google sign-in; the lock is server-side.
+- Unlock = `/login?returnUrl=/career-path/plan/<id>?role=<title>` (not `ref`). The plan page calls `claimCareerPath()`: attaches the row, claims the uploaded resume like /api/cv/claim and sets `cvs.target_role` to the chosen role. At the free CV limit the upload stays pending and the CTA targets the existing resume instead (POST /api/career-path/[id]/apply). Resume content is never rewritten.
+- Market data (lib/career-path/market.ts): one Adzuna `title_only` query per title gives the open-jobs count and salary listings, plus Careerjet salaries. Jooble is excluded (loses the pay period). Cached 24h; Adzuna zero/failure → market hidden, never shown as 0. Never AI-generated numbers.
+- Role-mode results are reused for identical input (input_hash) for 7 days. `findKeywordList()` (ats-analyser) is the non-generating keyword lookup for anonymous traffic.
+- SEO pages /career-path/[role]: hand-written moves in lib/roles/career-moves/part-1.ts + part-2.ts (28 roles), ladder from role-content.ts `seniority`. `hasCareerPathPage()` (lib/roles/career-moves/pages.ts) is the single existence check for the page, sitemap, telemetry allowlist, llms.txt and cross-links. No generateStaticParams (providers are never called at build); ISR 1 day.
+- Funnel: client events as page views `/popup/career-path/<event>` (CAREER_PATH_EVENTS); /admin/funnel has a Career Path block.
+- Setup: migration 00080_career_paths.sql + `npx tsx scripts/seed-career-path-prompt.ts` (prompt + ai_settings).
 
 ## CV Tailor for JD
 
@@ -489,6 +500,7 @@ Two reset mechanisms coexist:
 25. email_suppressions — hard suppression list (bounces, complaints, unsubscribes) — checked before every non-transactional send
 26. email_sent_jobs — dedup log of (user_id, job_id, template_name) so Tue/Wed/Thu digests deliver fresh jobs only
 27. feedback — post-download ratings (user_id, cv_id, rating 1-5, comment, source popup|email, can_publish, status new|published|archived, testimonial_id)
+28. career_paths — Career Path Finder results (user_id null until sign-in, cv_id, source role|resume, current_role, result jsonb, selected_role, input_hash, claimed_at)
 
 **Important column names — do NOT guess, use these exact names:**
 - CVs: `parsed_json` (not "content"), `design_settings` (not "design"), `target_role` (top-level)

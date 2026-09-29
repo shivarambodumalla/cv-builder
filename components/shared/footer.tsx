@@ -46,6 +46,7 @@ const productLinks: { label: string; href: string; external?: boolean }[] = [
   { label: "CV Templates", href: "/cv-templates" },
   { label: "Free Resume Builder", href: "/free-resume-builder" },
   { label: "Interview Coach", href: "/interview-prep" },
+  { label: "Career Path Generator", href: "/career-path" },
   { label: "AI Product Design Mentorship", href: "/ai-product-design" },
   { label: "Blog", href: "/blog" },
 ];

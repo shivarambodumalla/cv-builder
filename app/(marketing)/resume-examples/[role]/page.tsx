@@ -9,6 +9,7 @@ import { getRoleExampleData, generateGenericExampleData } from "@/lib/resume-exa
 import { getLeafData } from "@/lib/resume-templates/data";
 import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
 import { getRoleContent } from "@/lib/roles/role-content";
+import { CareerPathCrossLink } from "@/components/career-path/role-page/career-path-cross-link";
 
 /**
  * A page is only worth indexing when there is hand-written material behind it —
@@ -369,6 +370,8 @@ export default async function RoleResumeExamplePage({
           </Button>
         </div>
       </div>
+
+      <CareerPathCrossLink slug={role.slug} className="mx-auto max-w-3xl mb-14" />
 
       {/* ── Role-specific material (only for roles with hand-written content) ── */}
       {content && (

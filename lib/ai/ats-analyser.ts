@@ -198,7 +198,7 @@ function inferIndustry(role: string): string {
   return "General";
 }
 
-interface KeywordListRow {
+export interface KeywordListRow {
   required: string[];
   important: string[];
   nice_to_have: string[];
@@ -262,8 +262,14 @@ async function generateKeywordList(role: string, domain: string, caller?: { user
 async function fetchKeywordList(
   supabase: ReturnType<typeof createAdminClient>,
   targetRole: string,
-  caller?: { userId?: string; ip?: string }
+  caller?: { userId?: string; ip?: string },
+  options: { allowGenerate?: boolean } = {}
 ): Promise<KeywordListRow | null> {
+  // allowGenerate false = read-only lookup: no AI generation and no
+  // missing_roles rows (used by anonymous tools, which must not spend AI or
+  // skew the Missing Roles tracker).
+  const allowGenerate = options.allowGenerate ?? true;
+
   const { data: exact } = await supabase
     .from("keyword_lists")
     .select("required, important, nice_to_have, synonym_map")
@@ -307,10 +313,14 @@ async function fetchKeywordList(
       .eq("role", lookupKey)
       .single();
     if (domainFallback) {
-      await recordMissingRole(supabase, targetRole, inferredDomain.replace(/^domain:/, ""), caller?.userId);
+      if (allowGenerate) {
+        await recordMissingRole(supabase, targetRole, inferredDomain.replace(/^domain:/, ""), caller?.userId);
+      }
       return { ...domainFallback, is_fallback: true, fallback_type: "domain" };
     }
   }
+
+  if (!allowGenerate) return null;
 
   const genDomain = domain || inferredDomain || "General";
 
@@ -346,6 +356,15 @@ async function fetchKeywordList(
 
   await recordMissingRole(supabase, targetRole, genDomain, caller?.userId);
   return null;
+}
+
+/**
+ * Keyword list for a role from the curated table only (exact, alias, fuzzy,
+ * then domain fallback). Never calls the AI and never writes, so it is safe
+ * for anonymous traffic. Returns null when nothing matches.
+ */
+export async function findKeywordList(targetRole: string): Promise<KeywordListRow | null> {
+  return fetchKeywordList(createAdminClient(), targetRole, undefined, { allowGenerate: false });
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

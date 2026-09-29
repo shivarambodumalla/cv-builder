@@ -33,6 +33,7 @@ export function UploadResumeContent() {
   const { openUpgradeModal } = useUpgradeModal();
   const searchParams = useSearchParams();
   const templateParam = searchParams.get("template");
+  const roleParam = searchParams.get("role")?.trim().slice(0, 100) || null;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [mode, setMode] = useState<UploadMode | null>(null);
@@ -99,6 +100,7 @@ export function UploadResumeContent() {
         formData.append("text", pastedText);
       }
       if (templateParam) formData.append("template", templateParam);
+      if (roleParam) formData.append("role", roleParam);
 
       const res = await fetch("/api/cv/upload-public", {
         method: "POST",

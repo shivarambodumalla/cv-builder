@@ -27,6 +27,8 @@ export interface SearchParams {
   salary_max?: number;
   contract_type?: string;
   sort_by?: "relevance" | "date" | "salary";
+  /** Match `what` against job titles only. Adzuna honours it; other providers ignore it. */
+  title_only?: boolean;
 }
 
 export interface SearchResponse {

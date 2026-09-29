@@ -105,13 +105,14 @@ export class AdzunaProvider implements IJobProvider {
       salary_max,
       contract_type,
       sort_by = "relevance",
+      title_only = false,
     } = params;
 
     const baseUrl = this.config.apiBaseUrl || "https://api.adzuna.com/v1/api/jobs";
     const url = new URL(`${baseUrl}/${country}/search/${page}`);
     url.searchParams.set("app_id", this.config.appId);
     url.searchParams.set("app_key", this.config.appKey);
-    url.searchParams.set("what", what);
+    url.searchParams.set(title_only ? "title_only" : "what", what);
     url.searchParams.set("results_per_page", String(results_per_page));
     url.searchParams.set("sort_by", sort_by);
     url.searchParams.set("content-type", "application/json");

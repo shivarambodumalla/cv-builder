@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { careerPathPageSlugs } from "@/lib/roles/career-moves/pages";
 
 // No auth required — tracks anonymous page views
 // GDPR-safe: no personal data stored, just path + daily aggregate count
@@ -8,7 +9,7 @@ const ALLOWED_EXACT = new Set([
   "/", "/pricing", "/upload-resume", "/login", "/register", "/resumes",
   "/interview-prep", "/jobs", "/cv-review", "/cv-review/new",
   "/ats-friendly-resume", "/cv-templates", "/free-resume-builder",
-  "/resume-templates", "/privacy", "/terms", "/unsubscribe",
+  "/resume-templates", "/privacy", "/terms", "/unsubscribe", "/career-path",
 ]);
 
 const ALLOWED_PREFIXES = [
@@ -17,8 +18,13 @@ const ALLOWED_PREFIXES = [
   "/resume-templates/", "/resume-examples/",
 ];
 
+// /career-path/<slug> only for published role pages. A bare "/career-path/"
+// prefix would also admit /career-path/plan/<uuid>, one row per saved plan.
+const CAREER_PATH_PAGES = new Set(careerPathPageSlugs().map((slug) => `/career-path/${slug}`));
+
 function isAllowed(path: string): boolean {
   if (ALLOWED_EXACT.has(path)) return true;
+  if (CAREER_PATH_PAGES.has(path)) return true;
   return ALLOWED_PREFIXES.some(prefix => path.startsWith(prefix));
 }
 

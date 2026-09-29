@@ -1,6 +1,7 @@
 import { getPosts, type BlogPost } from "@/lib/blog/posts";
 import { getPlanLimits, getTemplateCatalog } from "@/lib/billing/plan-config";
 import { CV_FORMATS } from "@/lib/cv-formats/data";
+import { careerPathPageSlugs, roleLabel } from "@/lib/roles/career-moves/pages";
 
 /**
  * /llms.txt: a plain-text map of the site for AI assistants (llmstxt.org).
@@ -8,8 +9,8 @@ import { CV_FORMATS } from "@/lib/cv-formats/data";
  * ChatGPT is the site's largest search-like referrer, so this file is worth
  * keeping true. The curated part is written by hand; everything that drifts on
  * its own is read at request time instead: plan quotas and template counts
- * (tunable from /admin/plans), the named CV formats (lib/cv-formats/data.ts)
- * and the published blog posts.
+ * (tunable from /admin/plans), the named CV formats (lib/cv-formats/data.ts),
+ * the career path role pages (lib/roles/career-moves) and the published blog posts.
  *
  * The Supabase admin client fetches with `cache: "no-store"`, which makes this
  * route dynamic, so `revalidate` alone would not cache it. The s-maxage header
@@ -98,6 +99,10 @@ async function buildLlmsTxt(): Promise<string> {
     `${plural(free.cover_letters, "cover letter")} and ${plural(free.pdf_downloads, "PDF download")}. ` +
     `${plural(free.fix_all, "Fix All run")} per week. ${templateLine[0].toUpperCase()}${templateLine.slice(1)}, no watermark.`;
 
+  const careerPathLines = careerPathPageSlugs().map(
+    (slug) => `- ${roleLabel(slug)} career path: ${SITE}/career-path/${slug}`
+  );
+
   const formatLines = CV_FORMATS.map((f) => `- ${f.name}: ${SITE}/cv-format/${f.slug} (used for: ${f.market})`);
 
   // With no posts loaded (DB down), list the curated posts anyway rather than dropping them.
@@ -128,6 +133,7 @@ CVEdge (${SITE}) helps job seekers get past applicant tracking systems (ATS). It
 - Tailor a resume to one job description
 - Cover letters in three tones: professional, conversational, confident
 - Interview prep: turns your resume into STAR answers and matches them to a job description: ${SITE}/interview-prep
+- Career path generator: enter a job title or upload a resume and get 3 to 5 next roles (step up, sideways move or career change) with a fit score, transferable skills, and open-job counts and advertised salaries from current job listings. Free; signing in with Google adds a 90-day plan for each role: ${SITE}/career-path
 - Job search with a match score on each listing: ${SITE}/jobs
 - CV review and rewrite by a hiring specialist, focused on the UAE, Saudi Arabia and the wider Gulf. One-time payment: ${SITE}/cv-review`,
 
@@ -146,6 +152,14 @@ ${formatLines.join("\n")}
 - GCC CV format (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman): ${SITE}/cv-review/gcc
 - German Lebenslauf template (page in German): ${SITE}/de/lebenslauf-vorlage
 - All formats: ${SITE}/cv-format`,
+
+    careerPathLines.length
+      ? `## Career paths by role
+
+Hand-written for each role: the levels, the moves people make next (step up, sideways, career change), the skills each move needs and what to show on a resume before applying.
+
+${careerPathLines.join("\n")}`
+      : "",
 
     postSection("Country CV guides: Gulf", GULF_GUIDES, live),
     postSection("Country CV guides: US and elsewhere", COUNTRY_GUIDES, live),

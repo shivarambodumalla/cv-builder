@@ -9,7 +9,8 @@ import { sendGA4Event } from "@/lib/analytics/ga4-server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const explicitNext = searchParams.get("next");
+  const next = explicitNext ?? "/dashboard";
   const ref = searchParams.get("ref");
 
   if (code) {
@@ -119,9 +120,11 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Check for template selection cookie — redirect to upload page
+      // Check for template selection cookie — redirect to upload page. An
+      // explicit `next` wins: the cookie lives 5 minutes, so it can outlast the
+      // template flow and hijack an unrelated sign-in (e.g. /career-path/plan).
       const templateCookie = request.headers.get("cookie")?.match(/cvedge_template=([^;]+)/)?.[1];
-      if (templateCookie) {
+      if (templateCookie && !explicitNext) {
         const res = redirectTo(appendAuthEvent(`${origin}/upload-resume?template=${templateCookie}`));
         res.cookies.delete("cvedge_template");
         return res;

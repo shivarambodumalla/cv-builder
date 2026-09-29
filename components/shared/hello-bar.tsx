@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
 
 // Pages with their own conversion goal — the CV-review banner competes with them
-const HIDDEN_PATHS = ["/ai-product-design"];
+const HIDDEN_PATHS = ["/ai-product-design", "/career-path"];
 
 export function HelloBar() {
   const [visible, setVisible] = useState(true);

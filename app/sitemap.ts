@@ -5,6 +5,7 @@ import { TEMPLATE_CATEGORIES, getAllLeafParams, getCanonicalLeafPath, getLeafDat
 import { CV_FORMATS } from "@/lib/cv-formats/data";
 import { hasRoleContent } from "@/lib/roles/role-content";
 import { getRoleExampleData } from "@/lib/resume-examples/data";
+import { careerPathPageSlugs } from "@/lib/roles/career-moves/pages";
 
 // Stable baseline timestamp — bump manually when content materially changes.
 // Avoids `new Date()` triggering a re-crawl on every build with no real update.
@@ -119,6 +120,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // --- Career path pages ---
+  // Only roles with hand-written moves and role content have a page; the rest 404.
+  const CAREER_PATH_LAST_MODIFIED = new Date("2026-09-29T00:00:00Z");
+  const careerPathPages: MetadataRoute.Sitemap = [
+    { url: "https://www.thecvedge.com/career-path", lastModified: CAREER_PATH_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.8 },
+    ...careerPathPageSlugs().map((slug) => ({
+      url: `https://www.thecvedge.com/career-path/${slug}`,
+      lastModified: CAREER_PATH_LAST_MODIFIED,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  ];
+
   return [
     { url: "https://www.thecvedge.com", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 1 },
     { url: "https://www.thecvedge.com/cv-review", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
@@ -138,6 +152,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...regionalPages,
     ...resumeExamplesPages,
     ...interviewPrepRolePages,
+    ...careerPathPages,
     ...blogPostPages,
     { url: "https://www.thecvedge.com/about", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.5 },
     { url: "https://www.thecvedge.com/contact", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.5 },

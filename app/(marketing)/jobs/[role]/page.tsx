@@ -5,6 +5,7 @@ import { RoleJobResults } from "./role-job-results";
 import { BrowseRoles } from "@/components/jobs/browse-roles";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { filterJobsByRole } from "@/lib/jobs/role-relevance";
+import { CareerPathCrossLink } from "@/components/career-path/role-page/career-path-cross-link";
 
 export const dynamic = "force-dynamic";
 
@@ -140,6 +141,8 @@ export default async function RoleJobsPage({ params }: { params: Promise<{ role:
               Prep for {role.title}
             </a>
           </div>
+
+          <CareerPathCrossLink slug={role.slug} className="mt-6" />
 
           {/* Browse other roles — SEO internal links */}
           <BrowseRoles currentSlug={role.slug} />

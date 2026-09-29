@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-auth";
 import { EXCLUDED_USER_IDS } from "@/lib/admin/constants";
+import { CAREER_PATH_EVENTS, type CareerPathEvent, type CareerPathSource } from "@/lib/career-path/types";
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
@@ -344,6 +345,59 @@ export async function GET(request: NextRequest) {
     { key: "cv_review_revenue", label: `Revenue ($${cvReviewRevenueTotal})`, count: cvReviewRevenueTotal },
   ];
 
+  // ── Career Path funnel ──
+  // Client events arrive as page views at /popup/career-path/<event>. Rows come
+  // from career_paths (migration 00080). Until that table exists its queries
+  // return an error, which counts as zero here rather than failing the page.
+  const careerEventTotals = await Promise.all(
+    CAREER_PATH_EVENTS.map((e) => pvRpc(`/popup/career-path/${e}`))
+  );
+  const careerEvent = (e: CareerPathEvent) =>
+    Number(careerEventTotals[CAREER_PATH_EVENTS.indexOf(e)].data?.total ?? 0);
+
+  const careerPathRows = (source: CareerPathSource, claimedOnly: boolean) => {
+    let q = admin.from("career_paths").select("id", { count: "exact", head: true })
+      .eq("source", source).gte("created_at", from).lte("created_at", to);
+    if (claimedOnly) q = q.not("claimed_at", "is", null);
+    return q;
+  };
+  const [pvCareerTool, careerRoleViewRows, pathsByRole, pathsByResume, claimedByRole, claimedByResume] = await Promise.all([
+    pvRpc("/career-path"),
+    // Only published role slugs are admitted by /api/telemetry/page-view, so
+    // plan pages (/career-path/plan/<id>) never show up under this prefix.
+    admin.from("page_views").select("count")
+      .like("path", "/career-path/%").gte("view_date", fromDate).lte("view_date", toDate),
+    careerPathRows("role", false),
+    careerPathRows("resume", false),
+    careerPathRows("role", true),
+    careerPathRows("resume", true),
+  ]);
+  const careerCount = (r: { count: number | null; error: { message: string } | null }) => {
+    if (r.error) {
+      console.warn("[admin/funnel] career_paths count unavailable:", r.error.message);
+      return 0;
+    }
+    return r.count ?? 0;
+  };
+  const careerRolePageViews = (careerRoleViewRows.data ?? [])
+    .reduce((sum, r) => sum + Number((r as { count: number }).count ?? 0), 0);
+
+  const careerPathFunnel = [
+    { key: "career_tool_page", label: "Tool Page", count: Number(pvCareerTool.data?.total ?? 0) },
+    { key: "career_started", label: "Started", count: careerEvent("started_role") + careerEvent("started_resume") },
+    { key: "career_results", label: "Results Shown", count: careerEvent("results_shown") },
+    { key: "career_unlock", label: "Unlock Clicked", count: careerEvent("unlock_clicked") },
+    { key: "career_plan", label: "Plan Viewed", count: careerEvent("plan_viewed") },
+    { key: "career_tailor", label: "Tailor Clicked", count: careerEvent("tailor_clicked") },
+  ];
+  const careerPathDetail = {
+    rolePageViews: careerRolePageViews,
+    startedRole: careerEvent("started_role"),
+    startedResume: careerEvent("started_resume"),
+    created: { role: careerCount(pathsByRole), resume: careerCount(pathsByResume) },
+    claimed: { role: careerCount(claimedByRole), resume: careerCount(claimedByResume) },
+  };
+
   // ── Anonymous → Signup funnel ──
   const anonToSignup = [
     { key: "anon_visitors", label: "Unique Visitors", count: totalUniqueVisitors || totalAnonVisits },
@@ -408,6 +462,8 @@ export async function GET(request: NextRequest) {
     jobsFunnel,
     interviewFunnel,
     cvReviewFunnel,
+    careerPathFunnel,
+    careerPathDetail,
     anonToSignup,
     loginToDownload,
     pageVisits,

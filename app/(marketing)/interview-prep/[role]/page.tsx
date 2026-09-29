@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getRoleContent, rolesWithContent } from "@/lib/roles/role-content";
+import { CareerPathCrossLink } from "@/components/career-path/role-page/career-path-cross-link";
 
 export const revalidate = 3600;
 
@@ -216,6 +217,8 @@ export default async function RoleInterviewPrepPage({
             </Button>
           </div>
         </section>
+
+        <CareerPathCrossLink slug={role.slug} className="mx-auto max-w-3xl mb-14" />
 
         {/* Other published guides — internal linking between real pages only */}
         {otherGuides.length > 0 && (

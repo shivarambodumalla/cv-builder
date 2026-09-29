@@ -72,6 +72,16 @@ async function getProviders(): Promise<IJobProvider[]> {
   }
 }
 
+/**
+ * Search one enabled provider by name. EMPTY_RESPONSE when it is disabled or
+ * not configured. Used where summing providers would distort a number, e.g.
+ * an open-jobs count (providers overlap, and only Adzuna honours title_only).
+ */
+export async function searchProvider(name: string, params: SearchParams): Promise<SearchResponse> {
+  const provider = (await getProviders()).find((p) => p.name === name);
+  return provider ? provider.search(params) : EMPTY_RESPONSE;
+}
+
 // ─── Unified search ──────────────────────────────────────────────────────────
 
 /**

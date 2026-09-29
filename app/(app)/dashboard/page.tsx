@@ -9,6 +9,8 @@ import { UploadCvNudge } from "@/components/popups/upload-cv-nudge";
 import { sendEmail } from "@/lib/email/sender";
 import { CvReviewDashboardBanner } from "@/components/cv-review/dashboard-banner";
 import { getPlanLimits } from "@/lib/billing/plan-config";
+import { listUserCareerPaths } from "@/lib/career-path/server";
+import { Compass } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -83,6 +85,16 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .eq("is_active", true);
 
+  // Most recent career plan, if any. A lookup failure only hides the link.
+  let careerPlan: { id: string; role: string } | null = null;
+  try {
+    const plans = await listUserCareerPaths(user.id);
+    const latest = [...plans].sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+    if (latest) careerPlan = { id: latest.id, role: latest.selectedRole ?? latest.currentRole };
+  } catch (err) {
+    console.error("[dashboard] career paths lookup failed:", err);
+  }
+
   const storyCount = stories?.length ?? 0;
   const readyStories = stories?.filter((s) => (s.quality_score ?? 0) >= 7).length ?? 0;
 
@@ -123,6 +135,20 @@ export default async function DashboardPage() {
         userName={userName}
         limitReached={anyLimitReached}
       />
+      {careerPlan && (
+        <Link
+          href={`/career-path/plan/${careerPlan.id}`}
+          className="mt-6 flex min-h-11 items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3 text-sm transition-colors hover:bg-accent"
+        >
+          <span className="flex min-w-0 items-center gap-2">
+            <Compass className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+            <span className="truncate">
+              Your career plan: <span className="font-medium">{careerPlan.role}</span>
+            </span>
+          </span>
+          <span className="shrink-0 text-muted-foreground" aria-hidden="true">→</span>
+        </Link>
+      )}
       <UploadCvNudge />
       {(activeReviews ?? []).length > 0 && (
         <div className="mt-10">
