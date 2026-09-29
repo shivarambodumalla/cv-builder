@@ -10,7 +10,7 @@ export default function MarketingAnalyticsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Marketing Analytics</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Google Search Console keywords, page rankings, and GA4 traffic channels.
+          Google Search Console keywords, page rankings, GA4 traffic channels, and Bing Webmaster data.
         </p>
       </div>
       <MarketingDashboard />

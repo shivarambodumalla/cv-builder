@@ -16,6 +16,7 @@ import {
   fetchGA4DayOfWeek,
   fetchGA4Hourly,
 } from "@/lib/gsc/queries";
+import { getBingReport } from "@/lib/bing/client";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,10 @@ export async function GET(request: NextRequest) {
   const gscOn = isGscConfigured();
   const ga4On = isGa4Configured();
 
-  if (!gscOn && !ga4On) return NextResponse.json({ configured: false });
+  // Bing needs only its own API key, so it loads even when Google is not set up.
+  const bingPromise = getBingReport(from, to);
+
+  if (!gscOn && !ga4On) return NextResponse.json({ configured: false, bing: await bingPromise });
 
   const [gscToken, ga4Token] = await Promise.all([
     gscOn ? getGscAccessToken() : Promise.resolve(null),
@@ -87,6 +91,7 @@ export async function GET(request: NextRequest) {
     rawLandingPages,
     rawDayOfWeek,
     rawHourly,
+    bing,
   ] = await Promise.all([
     gsc ? fetchGSCTopQueries(gscToken!, siteUrl, from, to) : Promise.resolve([]),
     gsc ? fetchGSCTopPages(gscToken!, siteUrl, from, to) : Promise.resolve([]),
@@ -101,6 +106,7 @@ export async function GET(request: NextRequest) {
     ga4 ? fetchGA4LandingPages(ga4Token!, propertyId, from, to) : Promise.resolve([]),
     ga4 ? fetchGA4DayOfWeek(ga4Token!, propertyId, from, to) : Promise.resolve([]),
     ga4 ? fetchGA4Hourly(ga4Token!, propertyId, from, to) : Promise.resolve([]),
+    bingPromise,
   ]);
 
   // ── Trend & summary ──────────────────────────────────────────────────────────
@@ -309,5 +315,6 @@ export async function GET(request: NextRequest) {
     landingPages,
     dayOfWeek,
     hourly,
+    bing,
   });
 }
