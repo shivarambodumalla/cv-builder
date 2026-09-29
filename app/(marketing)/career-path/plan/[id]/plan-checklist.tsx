@@ -34,13 +34,13 @@ export function PlanChecklist({ storageKey, actions }: { storageKey: string; act
   }
 
   return (
-    <ul className="space-y-1">
+    <ul className="space-y-1.5">
       {actions.map((action, i) => {
         const checked = done.has(i);
         return (
           <li key={i}>
             <label
-              className="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg px-2 py-2 hover:bg-background sm:min-h-0"
+              className="flex min-h-11 cursor-pointer items-start gap-3 py-1.5 sm:min-h-0"
             >
               <input
                 type="checkbox"

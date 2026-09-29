@@ -2,21 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  AlertCircle,
-  Briefcase,
-  CheckCircle2,
-  Compass,
-  FileText,
-  Lock,
-  RotateCcw,
-  Upload,
-  X,
-} from "lucide-react";
+import { Loader2, Lock, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { StepLoader } from "@/components/shared/step-loader";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import {
@@ -28,23 +17,23 @@ import {
   type PreferenceId,
 } from "@/lib/career-path/types";
 import { trackCareerPathEvent } from "./track";
-import { skillsCountLabel, unlockHref } from "./format";
-import { MarketLine } from "./market-line";
-import { FitMeter, MoveTypeBadge, SkillChips } from "./path-meta";
+import { formatCheckedOn, unlockHref } from "./format";
+import { FitMeter, MarketStats, MoveTypeBadge, SkillChips } from "./path-meta";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MAX_ROLE_LENGTH = 80;
 const MAX_YEARS = 50;
 /** The server finds roles first, then checks listings; we can't see that split, so move on after a typical wait. */
 const LISTINGS_STEP_DELAY_MS = 9000;
+const QUICK_ROLES = ["Software Engineer", "Data Analyst", "Product Manager", "UX Designer", "Business Analyst"];
 
 type Phase = "input" | "loading" | "results" | "error";
 type StepKey = "reading" | "finding" | "checking";
 
-const STEP_DEFS: Record<StepKey, { label: string; sub: string; icon: React.ElementType }> = {
-  reading: { label: "Reading your resume", sub: "Pulling out your roles, skills and experience", icon: FileText },
-  finding: { label: "Finding roles that fit", sub: "Weighing step ups, sideways moves and career changes", icon: Compass },
-  checking: { label: "Checking live job listings", sub: "Counting open jobs and advertised salaries", icon: Briefcase },
+const STEP_DEFS: Record<StepKey, { label: string; sub: string }> = {
+  reading: { label: "Reading your resume", sub: "Your titles, tools and time in each job" },
+  finding: { label: "Picking roles that fit", sub: "Step ups, sideways moves and bigger changes" },
+  checking: { label: "Counting live job ads", sub: "Open jobs and advertised pay for each role" },
 };
 
 class ToolError extends Error {
@@ -54,14 +43,20 @@ class ToolError extends Error {
 }
 
 function fallbackMessage(status: number): string {
-  if (status === 429) return "You've run several searches in the last hour. Wait a little and try again.";
-  if (status === 400 || status === 422) return "We couldn't use that input. Check your answers and try again.";
-  return "Something went wrong on our side. Try again in a moment.";
+  if (status === 429) {
+    return "We couldn't run another search. You've reached the hourly limit. Wait a few minutes, then try again.";
+  }
+  if (status === 400 || status === 422) {
+    return "We couldn't use those answers. The job title or years may be off. Check them and try again.";
+  }
+  return "We couldn't finish your results. Our server hit a problem. Try again in a minute.";
 }
 
 function validateFile(f: File): string | null {
-  if (!f.name.toLowerCase().endsWith(".pdf")) return "Only PDF files work here. Save your resume as a PDF and try again.";
-  if (f.size > MAX_FILE_SIZE) return "This file is too large. Choose a PDF under 5 MB.";
+  if (!f.name.toLowerCase().endsWith(".pdf")) {
+    return "Resume must be a PDF. In Word or Google Docs, download it as a PDF first.";
+  }
+  if (f.size > MAX_FILE_SIZE) return "Resume must be under 5 MB. Export it again without images.";
   return null;
 }
 
@@ -123,6 +118,13 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
     setFileError("");
   }
 
+  function chooseSource(resume: boolean) {
+    if (resume === useResume) return;
+    setUseResume(resume);
+    setRoleError("");
+    if (!resume) clearFile();
+  }
+
   function togglePref(id: PreferenceId) {
     setPrefs((cur) =>
       cur.includes(id) ? cur.filter((p) => p !== id) : cur.length >= MAX_PREFERENCES ? cur : [...cur, id]
@@ -135,7 +137,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
     let ok = true;
 
     if (!withResume && currentRole.length < 2) {
-      setRoleError(useResume ? "Enter your current role, or add your resume above." : "Enter your current role.");
+      setRoleError(useResume ? "Add your resume, or enter your job title." : "Enter your job title.");
       ok = false;
     } else {
       setRoleError("");
@@ -145,7 +147,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
     if (years.trim() !== "") {
       const n = Number(years);
       if (!Number.isInteger(n) || n < 0 || n > MAX_YEARS) {
-        setYearsError(`Enter a whole number from 0 to ${MAX_YEARS}, or leave it blank.`);
+        setYearsError(`Enter years as a whole number from 0 to ${MAX_YEARS}, or leave it blank.`);
         ok = false;
       } else {
         yearsExperience = n;
@@ -213,7 +215,10 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
       const toolError =
         err instanceof ToolError
           ? err
-          : new ToolError("We couldn't reach the server. Check your connection and try again.", null);
+          : new ToolError(
+              "We couldn't reach our server. Your connection may have dropped. Check it and try again.",
+              null
+            );
       console.error("[career-path] request failed:", err);
       setError(toolError);
       setPhase("error");
@@ -242,7 +247,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
 
   const statusText =
     phase === "loading"
-      ? `${STEP_DEFS[step].label}. This usually takes 10 to 30 seconds.`
+      ? `${STEP_DEFS[step].label}. This usually takes about 20 seconds.`
       : phase === "results" && result
         ? `Found ${result.preview.paths.length} roles.`
         : "";
@@ -250,49 +255,33 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
   const resumeActive = useResume && !!file;
 
   return (
-    <section aria-label="Career path finder" className="w-full">
+    <section aria-label="Career path generator" className="w-full">
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         {statusText}
       </p>
 
-      {phase === "loading" && (
-        <div className="rounded-2xl border bg-card">
-          <StepLoader
-            steps={shownSteps.map((k) => STEP_DEFS[k])}
-            currentStep={shownSteps.indexOf(step)}
-            centerIcon={Compass}
-            footerText="This usually takes 10 to 30 seconds. Keep this tab open."
-          />
-        </div>
-      )}
+      {phase === "loading" && <Loading steps={shownSteps} current={step} />}
 
       {phase === "error" && error && (
-        <div className="rounded-2xl border bg-card p-6 sm:p-8 text-center" role="alert">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-background">
-            <AlertCircle className="h-7 w-7 text-error" aria-hidden="true" />
-          </div>
-          <h2 ref={errorHeadingRef} tabIndex={-1} className="mt-4 text-xl font-bold outline-none">
-            We couldn&apos;t finish that
+        <div className="rounded-lg border bg-card p-5 sm:p-7" role="alert">
+          <h2 ref={errorHeadingRef} tabIndex={-1} className="text-xl font-semibold tracking-tight outline-none">
+            We couldn&apos;t get your results
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">{error.message}</p>
-          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button size="lg" className="h-11" onClick={run}>
-              <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" /> Try again
+          <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-muted-foreground">{error.message}</p>
+          <p className="mt-1 text-sm text-muted-foreground">Your answers are still here.</p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <Button className="h-11" onClick={run}>
+              Try again
             </Button>
-            <Button size="lg" variant="outline" className="h-11" onClick={editAnswers}>
-              Change my answers
+            <Button variant="outline" className="h-11 bg-background" onClick={editAnswers}>
+              Edit my answers
             </Button>
           </div>
         </div>
       )}
 
       {phase === "results" && result && (
-        <Results
-          result={result}
-          signedIn={signedIn}
-          headingRef={resultsHeadingRef}
-          onStartOver={startOver}
-        />
+        <Results result={result} signedIn={signedIn} headingRef={resultsHeadingRef} onStartOver={startOver} />
       )}
 
       {phase === "input" && (
@@ -302,95 +291,114 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
             e.preventDefault();
             run();
           }}
-          className="space-y-6 rounded-2xl border bg-card p-5 text-left shadow-sm sm:p-7"
+          className="rounded-lg border bg-card text-left"
         >
-          {/* Resume upload (optional) */}
-          {useResume && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between gap-3">
+          <div className="space-y-5 p-5 sm:p-6">
+            <fieldset>
+              <legend className="mb-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                Start with
+              </legend>
+              <div className="grid grid-cols-2 rounded-md border bg-background p-1">
+                {[
+                  { resume: false, label: "My job title" },
+                  { resume: true, label: "My resume (PDF)" },
+                ].map((opt) => {
+                  const checked = useResume === opt.resume;
+                  return (
+                    <label
+                      key={opt.label}
+                      className={cn(
+                        "flex min-h-11 cursor-pointer items-center justify-center rounded-[5px] px-3 text-sm font-medium transition-colors duration-150 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring sm:min-h-10",
+                        checked ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="cp-source"
+                        className="sr-only"
+                        checked={checked}
+                        onChange={() => chooseSource(opt.resume)}
+                      />
+                      {opt.label}
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            {useResume && (
+              <div className="space-y-2">
                 <p className="text-sm font-medium" id="cp-resume-label">
                   Your resume
                 </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUseResume(false);
-                    clearFile();
+                <label
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(true);
                   }}
-                  className="min-h-11 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground sm:min-h-0"
-                >
-                  Type my role instead
-                </button>
-              </div>
-              <label
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setDragOver(true);
-                }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setDragOver(false);
-                  const f = e.dataTransfer.files[0];
-                  if (f) selectFile(f);
-                }}
-                className={cn(
-                  "flex min-h-[112px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed bg-background p-5 text-center transition-colors focus-within:ring-2 focus-within:ring-ring",
-                  dragOver ? "border-primary" : "border-border hover:border-primary",
-                  file && "border-success"
-                )}
-              >
-                <input
-                  type="file"
-                  accept=".pdf,application/pdf"
-                  className="sr-only"
-                  aria-labelledby="cp-resume-label"
-                  aria-describedby="cp-resume-help"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragOver(false);
+                    const f = e.dataTransfer.files[0];
                     if (f) selectFile(f);
-                    e.target.value = "";
                   }}
-                />
-                {file ? (
-                  <>
-                    <CheckCircle2 className="h-6 w-6 text-success" aria-hidden="true" />
-                    <span className="text-sm font-semibold break-all">{file.name}</span>
-                    <span className="text-xs text-muted-foreground">Click to choose a different file</span>
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
-                    <span className="text-sm font-medium">Drop your resume here or click to choose</span>
-                  </>
-                )}
-              </label>
-              <div className="flex items-start justify-between gap-3">
-                <p id="cp-resume-help" className="text-xs text-muted-foreground">
-                  PDF, up to 5 MB. We read it to match roles to your experience.
-                </p>
-                {file && (
-                  <button
-                    type="button"
-                    onClick={clearFile}
-                    className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-foreground sm:min-h-0"
-                  >
-                    <X className="h-3.5 w-3.5" aria-hidden="true" /> Remove
-                  </button>
+                  className={cn(
+                    "flex min-h-[104px] cursor-pointer flex-col items-center justify-center gap-1.5 rounded-md border border-dashed bg-background p-5 text-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-ring",
+                    dragOver ? "border-primary" : "border-[#b9ab96] hover:border-primary",
+                    file && "border-solid border-primary"
+                  )}
+                >
+                  <input
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    className="sr-only"
+                    aria-labelledby="cp-resume-label"
+                    aria-describedby="cp-resume-help"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) selectFile(f);
+                      e.target.value = "";
+                    }}
+                  />
+                  {file ? (
+                    <>
+                      <span className="break-all text-sm font-semibold">{file.name}</span>
+                      <span className="text-xs text-muted-foreground">Ready. Click to choose a different file.</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                      <span className="text-sm font-medium">Drop your resume here, or click to choose it</span>
+                    </>
+                  )}
+                </label>
+                <div className="flex items-start justify-between gap-3">
+                  <p id="cp-resume-help" className="text-xs leading-relaxed text-muted-foreground">
+                    PDF, up to 5 MB. We read your past titles and skills to pick roles.
+                  </p>
+                  {file && (
+                    <button
+                      type="button"
+                      onClick={clearFile}
+                      className="inline-flex min-h-11 shrink-0 items-center text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground sm:min-h-0"
+                    >
+                      Remove file
+                    </button>
+                  )}
+                </div>
+                {fileError && (
+                  <p className="text-sm text-error" role="alert">
+                    {fileError}
+                  </p>
                 )}
               </div>
-              {fileError && (
-                <p className="text-sm text-error" role="alert">
-                  {fileError}
-                </p>
-              )}
-            </div>
-          )}
+            )}
 
-          <div className="grid gap-5 sm:grid-cols-[1fr_230px]">
             <div className="space-y-2">
               <Label htmlFor="cp-role">
-                Your current role{resumeActive && <span className="font-normal text-muted-foreground"> (optional)</span>}
+                {useResume ? "Current job title" : "Your current job title"}
+                {resumeActive && <span className="font-normal text-muted-foreground"> (optional)</span>}
               </Label>
               <Input
                 id="cp-role"
@@ -404,7 +412,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
                 placeholder="e.g. Data Analyst"
                 autoComplete="organization-title"
                 aria-invalid={!!roleError}
-                aria-describedby={roleError ? "cp-role-error" : undefined}
+                aria-describedby={[roleError && "cp-role-error", useResume && "cp-role-help"].filter(Boolean).join(" ") || undefined}
                 className="h-12 text-base"
               />
               {roleError && (
@@ -412,10 +420,41 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
                   {roleError}
                 </p>
               )}
+              {useResume ? (
+                <p id="cp-role-help" className="text-xs leading-relaxed text-muted-foreground">
+                  Add it if the top job on your resume isn&apos;t the one you do now.
+                </p>
+              ) : (
+                <div className="flex flex-wrap items-center gap-1.5 pt-1" role="group" aria-label="Common job titles">
+                  <span className="mr-1 text-xs text-muted-foreground">Or pick one:</span>
+                  {QUICK_ROLES.map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => {
+                        setRole(r);
+                        setRoleError("");
+                      }}
+                      aria-pressed={role.trim().toLowerCase() === r.toLowerCase()}
+                      className={cn(
+                        "inline-flex min-h-11 items-center rounded-[5px] border px-2.5 text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8",
+                        role.trim().toLowerCase() === r.toLowerCase()
+                          ? "border-foreground bg-background text-foreground"
+                          : "border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground"
+                      )}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="cp-years" className="whitespace-nowrap">
-                Years of experience <span className="font-normal text-muted-foreground">(optional)</span>
+          </div>
+
+          <div className="grid gap-5 border-t px-5 py-5 sm:grid-cols-[8.5rem_1fr] sm:px-6">
+            <div className="space-y-1.5">
+              <Label htmlFor="cp-years" className="text-[13px]">
+                Years in this work
               </Label>
               <Input
                 id="cp-years"
@@ -432,72 +471,97 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
                 }}
                 placeholder="e.g. 4"
                 aria-invalid={!!yearsError}
-                aria-describedby={yearsError ? "cp-years-error" : undefined}
-                className="h-12 text-base"
+                aria-describedby={yearsError ? "cp-years-error" : "cp-optional-help"}
+                className="h-10 w-28 text-base sm:w-full"
               />
-              {yearsError && (
-                <p id="cp-years-error" className="text-sm text-error">
-                  {yearsError}
-                </p>
-              )}
             </div>
+            <fieldset className="space-y-1.5" aria-describedby="cp-optional-help">
+              <legend className="text-[13px] font-medium">
+                What matters to you <span className="font-normal text-muted-foreground">(up to {MAX_PREFERENCES})</span>
+              </legend>
+              <div className="flex flex-wrap gap-1.5 pt-1.5">
+                {PREFERENCES.map((p) => {
+                  const selected = prefs.includes(p.id);
+                  const full = !selected && prefs.length >= MAX_PREFERENCES;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      aria-pressed={selected}
+                      disabled={full}
+                      onClick={() => togglePref(p.id)}
+                      className={cn(
+                        "inline-flex min-h-11 items-center rounded-[5px] border px-2.5 text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8",
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background text-foreground hover:border-foreground",
+                        full && "cursor-not-allowed opacity-50"
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+            {yearsError ? (
+              <p id="cp-years-error" className="text-sm text-error sm:col-span-2">
+                {yearsError}
+              </p>
+            ) : (
+              <p id="cp-optional-help" className="-mt-1 text-xs text-muted-foreground sm:col-span-2">
+                Both optional. They help us judge which moves are realistic for you.
+              </p>
+            )}
           </div>
 
-          <fieldset className="space-y-2.5">
-            <legend className="text-sm font-medium">
-              What matters most?{" "}
-              <span className="font-normal text-muted-foreground">Pick up to {MAX_PREFERENCES} (optional)</span>
-            </legend>
-            <div className="flex flex-wrap gap-2 pt-1">
-              {PREFERENCES.map((p) => {
-                const selected = prefs.includes(p.id);
-                const full = !selected && prefs.length >= MAX_PREFERENCES;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    aria-pressed={selected}
-                    disabled={full}
-                    onClick={() => togglePref(p.id)}
-                    className={cn(
-                      "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:min-h-9",
-                      selected
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-background hover:border-primary",
-                      full && "cursor-not-allowed opacity-50"
-                    )}
-                  >
-                    {selected && <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />}
-                    {p.label}
-                  </button>
-                );
-              })}
-            </div>
-          </fieldset>
-
-          <div className="space-y-3">
+          <div className="border-t px-5 py-5 sm:px-6">
             <Button type="submit" size="lg" className="h-12 w-full text-base font-semibold">
-              Find my next roles
+              Show my next roles
             </Button>
-            <div className="flex flex-col items-center justify-between gap-2 text-sm sm:flex-row">
-              <p className="text-muted-foreground">Free. No sign-in needed to see your roles.</p>
-              {!useResume && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUseResume(true);
-                    setRoleError("");
-                  }}
-                  className="inline-flex min-h-11 items-center gap-1.5 font-medium text-primary underline-offset-4 hover:underline sm:min-h-0"
-                >
-                  <FileText className="h-4 w-4" aria-hidden="true" /> Use my resume instead
-                </button>
-              )}
-            </div>
+            <p className="mt-3 text-center text-sm text-muted-foreground">
+              Free. No sign-up needed to see your results.
+            </p>
           </div>
         </form>
       )}
     </section>
+  );
+}
+
+function Loading({ steps, current }: { steps: StepKey[]; current: StepKey }) {
+  const currentIndex = steps.indexOf(current);
+  return (
+    <div className="rounded-lg border bg-card p-5 sm:p-7">
+      <p className="text-lg font-semibold tracking-tight">Finding your next roles</p>
+      <p className="mt-1 text-sm text-muted-foreground">This usually takes about 20 seconds. Keep this tab open.</p>
+      <ol className="mt-6 space-y-4">
+        {steps.map((key, i) => {
+          const state = i < currentIndex ? "done" : i === currentIndex ? "active" : "pending";
+          const def = STEP_DEFS[key];
+          return (
+            <li key={key} className={cn("flex gap-3", state === "pending" && "text-muted-foreground")}>
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center pt-0.5" aria-hidden="true">
+                {state === "active" ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary motion-reduce:animate-none" />
+                ) : (
+                  <span className={cn("h-2 w-2", state === "done" ? "bg-primary" : "border border-muted-foreground")} />
+                )}
+              </span>
+              <div>
+                <p className={cn("text-sm", state === "active" ? "font-semibold" : "font-medium")}>
+                  {def.label}
+                  {state === "done" && (
+                    <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-primary">Done</span>
+                  )}
+                </p>
+                <p className="text-xs text-muted-foreground">{def.sub}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }
 
@@ -514,89 +578,212 @@ function Results({
 }) {
   const { id, preview } = result;
   return (
-    <div className="space-y-5 text-left">
-      <div className="rounded-2xl border bg-card p-5 sm:p-7">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold tracking-tight outline-none">
-            Your next roles
+    <div className="text-left">
+      <div className="flex items-end justify-between gap-4 border-b pb-4">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Your results</p>
+          <h2 ref={headingRef} tabIndex={-1} className="mt-1 text-2xl font-bold tracking-tight outline-none">
+            {preview.paths.length} roles you could move into
           </h2>
-          <Button variant="outline" size="sm" className="h-11 self-start sm:h-9" onClick={onStartOver}>
-            <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" /> Start over
-          </Button>
         </div>
-        {preview.summary && (
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">{preview.summary}</p>
-        )}
+        <button
+          type="button"
+          onClick={onStartOver}
+          className="min-h-11 shrink-0 text-sm font-medium text-primary underline-offset-4 hover:underline sm:min-h-0"
+        >
+          Start over
+        </button>
       </div>
+      {preview.summary && <p className="mt-4 max-w-prose text-[15px] leading-relaxed">{preview.summary}</p>}
 
-      <ol className="space-y-4">
-        {preview.paths.map((path) => (
+      <ol className="mt-6 space-y-5">
+        {preview.paths.map((path, i) => (
           <li key={path.title}>
-            <PathCard id={id} path={path} signedIn={signedIn} />
+            <PathBlock id={id} index={i} path={path} signedIn={signedIn} />
           </li>
         ))}
       </ol>
 
-      <p className="text-center text-xs leading-relaxed text-muted-foreground">
-        {signedIn
-          ? "Role suggestions are AI-generated. "
-          : "Sign-in is free with Google, no card needed. Role suggestions are AI-generated. "}
-        Job counts and salaries come from live listings and change daily. Check them against your own judgment.
+      <p className="mt-5 max-w-prose text-xs leading-relaxed text-muted-foreground">
+        Roles and fit scores are AI suggestions based on what you entered. Job counts and pay come from live job ads and
+        change daily.
       </p>
     </div>
   );
 }
 
-function PathCard({ id, path, signedIn }: { id: string; path: CareerPathPreviewOption; signedIn: boolean }) {
-  const lockLabel = skillsCountLabel(path.skillsToBuildCount);
+// Placeholder widths for the hidden plan. Fixed so the layout never jumps.
+const SKILL_BARS = ["72%", "58%", "80%", "64%"];
+const PHASE_BARS = [
+  ["90%", "65%"],
+  ["75%", "85%"],
+  ["85%", "55%"],
+];
+const PHASES = ["Days 1-30", "Days 31-60", "Days 61-90"];
+
+function HiddenBar({ width }: { width: string }) {
+  return <span className="block h-2 rounded-sm bg-[#cbbfad] blur-[2px]" style={{ width }} />;
+}
+
+function PathBlock({
+  id,
+  index,
+  path,
+  signedIn,
+}: {
+  id: string;
+  index: number;
+  path: CareerPathPreviewOption;
+  signedIn: boolean;
+}) {
+  const headingId = `cp-path-${slugify(path.title)}`;
+  const count = path.skillsToBuildCount;
+  const checked = path.market ? formatCheckedOn(path.market) : null;
   return (
-    <article className="rounded-2xl border bg-card p-5 sm:p-6" aria-labelledby={`cp-path-${slugify(path.title)}`}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-2">
-          <h3 id={`cp-path-${slugify(path.title)}`} className="text-lg font-semibold leading-snug">
-            {path.title}
-          </h3>
-          <MoveTypeBadge moveType={path.moveType} />
-        </div>
-        <FitMeter fit={path.fit} />
-      </div>
+    <article className="rounded-lg border bg-card" aria-labelledby={headingId}>
+      <div className="p-5 sm:p-6">
+        <div className="flex gap-4">
+          <span className="pt-1.5 font-mono text-sm text-muted-foreground" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 id={headingId} className="text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
+              {path.title}
+            </h3>
+            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <MoveTypeBadge moveType={path.moveType} />
+              <FitMeter fit={path.fit} />
+            </div>
+            <p className="mt-4 max-w-prose text-[15px] leading-relaxed">{path.why}</p>
 
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{path.why}</p>
+            {path.market && (
+              <div className="mt-5 border-t pt-4">
+                <MarketStats market={path.market} />
+                {checked && (
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                    Live job ads, checked {checked}
+                  </p>
+                )}
+              </div>
+            )}
 
-      {path.transferableSkills.length > 0 && (
-        <div className="mt-4 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Skills you already have</p>
-          <SkillChips skills={path.transferableSkills} label={`Skills you already have for ${path.title}`} />
-        </div>
-      )}
-
-      {path.market && (
-        <div className="mt-4">
-          <MarketLine market={path.market} />
-        </div>
-      )}
-
-      <div className="mt-5 flex flex-col gap-3 rounded-xl border border-dashed bg-background p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3">
-          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <div>
-            <p className="text-sm font-semibold">{lockLabel}</p>
-            <p className="text-xs text-muted-foreground">
-              The skills in the order to learn them, a proof project and the job titles to search.
-            </p>
+            {path.transferableSkills.length > 0 && (
+              <div className="mt-5 border-t pt-4">
+                <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                  Skills you already have
+                </p>
+                <SkillChips skills={path.transferableSkills} label={`Skills you already have for ${path.title}`} />
+              </div>
+            )}
           </div>
         </div>
-        <Button asChild className="h-11 shrink-0">
-          <Link
-            href={unlockHref(id, path.title, signedIn)}
-            aria-label={`Unlock my 90-day plan for ${path.title}`}
-            onClick={() => trackCareerPathEvent("unlock_clicked")}
-          >
-            Unlock my 90-day plan
-          </Link>
-        </Button>
       </div>
+
+      <LockedPlan
+        href={unlockHref(id, path.title, signedIn)}
+        title={path.title}
+        count={count}
+        signedIn={signedIn}
+        full={index === 0}
+      />
     </article>
+  );
+}
+
+/**
+ * The signed-in half, shown as its real structure with the content hidden.
+ * The first role gets the full outline; the rest get one line, so the page
+ * doesn't repeat the same block four times. Only placeholder bars are blurred.
+ */
+function LockedPlan({
+  href,
+  title,
+  count,
+  signedIn,
+  full,
+}: {
+  href: string;
+  title: string;
+  count: number;
+  signedIn: boolean;
+  full: boolean;
+}) {
+  const skills = count > 0 ? `${count} ${count === 1 ? "skill" : "skills"} to learn, in order` : "The skills to learn, in order";
+  const cta = (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <Button asChild className="h-11 px-5">
+        <Link
+          href={href}
+          aria-label={`${signedIn ? "Open" : "Get"} my 90-day plan for ${title}`}
+          onClick={() => trackCareerPathEvent("unlock_clicked")}
+        >
+          {signedIn ? "Open my 90-day plan" : "Get my 90-day plan"}
+        </Link>
+      </Button>
+      {!signedIn && <p className="text-sm text-muted-foreground">Free with Google. No card.</p>}
+    </div>
+  );
+
+  if (!full) {
+    return (
+      <div className="rounded-b-lg border-t bg-background p-5 sm:p-6">
+        <p className="flex items-center gap-2 text-sm">
+          <Lock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <span>
+            <span className="font-medium">{skills}</span>
+            <span className="text-muted-foreground">, a 90-day plan and a proof project.</span>
+          </span>
+        </p>
+        <div className="mt-4">{cta}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-b-lg border-t bg-background p-5 sm:p-6">
+      <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+        <Lock className="h-3 w-3" aria-hidden="true" />
+        In your 90-day plan
+      </p>
+      <div className="mt-4 grid gap-6 sm:grid-cols-[1fr_1.35fr]">
+        <div>
+          <p className="text-sm font-medium">{skills}</p>
+          <ol className="mt-3 space-y-2.5" aria-hidden="true">
+            {SKILL_BARS.slice(0, Math.max(2, Math.min(count || 3, SKILL_BARS.length))).map((w, i) => (
+              <li key={i} className="flex items-center gap-2.5">
+                <span className="w-4 font-mono text-[11px] text-muted-foreground">{i + 1}</span>
+                <HiddenBar width={w} />
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div>
+          <p className="text-sm font-medium">What to do each month</p>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {PHASES.map((label, i) => (
+              <div key={label}>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                  {label}
+                </p>
+                <div className="mt-2 space-y-2" aria-hidden="true">
+                  {PHASE_BARS[i].map((w, j) => (
+                    <HiddenBar key={j} width={w} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-5">
+        <p className="text-sm font-medium">A project that proves you can do the job</p>
+        <div className="mt-2.5 space-y-2" aria-hidden="true">
+          <HiddenBar width="92%" />
+          <HiddenBar width="60%" />
+        </div>
+      </div>
+      <div className="mt-6">{cta}</div>
+    </div>
   );
 }
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FlaskConical, Search } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { CareerPathOption } from "@/lib/career-path/types";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { PlanChecklist } from "./plan-checklist";
@@ -33,29 +33,26 @@ export function RolePlan({
   heading: "h2" | "h4";
 }) {
   const skills = [...path.skillsToBuild].sort((a, b) => a.priority - b.priority);
-  const headingClass = H === "h2" ? "text-xl font-bold tracking-tight" : "text-base font-semibold";
+  const headingClass = H === "h2" ? "text-2xl font-bold tracking-tight" : "text-base font-semibold";
+  const label = "font-mono text-[11px] uppercase tracking-wider text-muted-foreground";
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {skills.length > 0 && (
         <section>
-          <H className={headingClass}>Skills to build</H>
-          <p className="mt-1 text-sm text-muted-foreground">In the order to learn them.</p>
-          <ol className="mt-4 space-y-3">
+          <H className={headingClass}>Skills to learn, in order</H>
+          <ol className="mt-4 border-t">
             {skills.map((s, i) => (
-              <li key={s.skill} className="flex gap-4 rounded-xl border bg-card p-4">
-                <span
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground"
-                  aria-hidden="true"
-                >
-                  {i + 1}
+              <li key={s.skill} className="grid grid-cols-[2rem_1fr] gap-x-3 border-b py-4">
+                <span className="pt-0.5 font-mono text-sm text-muted-foreground" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="min-w-0">
-                  <p className="flex flex-wrap items-baseline gap-x-2 text-sm font-semibold">
-                    {s.skill}
-                    <span className="text-xs font-medium text-muted-foreground">{PRIORITY_LABELS[s.priority] ?? ""}</span>
+                  <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="font-semibold">{s.skill}</span>
+                    <span className={label}>{PRIORITY_LABELS[s.priority] ?? ""}</span>
                   </p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{s.why}</p>
+                  <p className="mt-1 max-w-prose text-sm leading-relaxed text-muted-foreground">{s.why}</p>
                 </div>
               </li>
             ))}
@@ -66,27 +63,17 @@ export function RolePlan({
       {path.plan90.length > 0 && (
         <section>
           <H className={headingClass}>Your 90-day plan</H>
-          <p className="mt-1 text-sm text-muted-foreground">Tick things off as you go. Progress is saved in this browser.</p>
-          <ol className="mt-5 space-y-0">
+          <p className="mt-1 text-sm text-muted-foreground">
+            Tick things off as you go. We save your progress in this browser.
+          </p>
+          <ol className="mt-5 border-t">
             {path.plan90.map((phase, i) => (
-              <li key={phase.label} className="relative pb-8 pl-8 last:pb-0">
-                {i < path.plan90.length - 1 && (
-                  <span className="absolute left-[11px] top-7 bottom-0 w-0.5 bg-border" aria-hidden="true" />
-                )}
-                <span
-                  className="absolute left-0 top-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-primary bg-background text-[11px] font-bold text-primary"
-                  aria-hidden="true"
-                >
-                  {i + 1}
-                </span>
-                <p className="text-xs font-semibold uppercase tracking-wide text-primary">{phase.label}</p>
-                <p className="mt-1 text-sm font-semibold">{phase.focus}</p>
-                <div className="mt-2 rounded-xl border bg-card p-2">
-                  <PlanChecklist
-                    storageKey={`cp-plan-${planId}-${path.title}-${i}`}
-                    actions={phase.actions}
-                  />
+              <li key={phase.label} className="grid gap-x-6 gap-y-2 border-b py-5 sm:grid-cols-[9rem_1fr]">
+                <div>
+                  <p className={label}>{phase.label}</p>
+                  <p className="mt-1 font-semibold leading-snug">{phase.focus}</p>
                 </div>
+                <PlanChecklist storageKey={`cp-plan-${planId}-${path.title}-${i}`} actions={phase.actions} />
               </li>
             ))}
           </ol>
@@ -95,11 +82,10 @@ export function RolePlan({
 
       {path.proofProject && (
         <section>
-          <H className={headingClass}>Proof project</H>
-          <div className="mt-4 flex gap-4 rounded-xl border bg-card p-4">
-            <FlaskConical className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-            <p className="text-sm leading-relaxed">{path.proofProject}</p>
-          </div>
+          <H className={headingClass}>A project that proves you can do it</H>
+          <p className="mt-4 max-w-prose border-l-2 border-primary pl-4 text-base leading-relaxed">
+            {path.proofProject}
+          </p>
         </section>
       )}
 
@@ -107,17 +93,20 @@ export function RolePlan({
         <section>
           <H className={headingClass}>Job titles to search</H>
           <p className="mt-1 text-sm text-muted-foreground">
-            The same role goes by different names. Search all of them.
+            Employers use different names for the same job. Search them all.
           </p>
-          <ul className="mt-4 flex flex-wrap gap-2">
+          <ul className="mt-4 grid gap-x-6 border-t sm:grid-cols-2">
             {path.searchTitles.map((t) => (
-              <li key={t}>
+              <li key={t} className="border-b">
                 <Link
                   href={jobsHref(t)}
-                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border bg-card px-4 text-sm font-medium transition-colors hover:bg-accent sm:min-h-9"
+                  className="flex min-h-11 items-center justify-between gap-3 py-2 text-sm font-medium text-primary transition-colors duration-150 hover:text-foreground"
                 >
-                  <Search className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                  {t}
+                  <span>
+                    {t}
+                    <span className="sr-only"> jobs</span>
+                  </span>
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                 </Link>
               </li>
             ))}

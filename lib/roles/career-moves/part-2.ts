@@ -6,15 +6,15 @@ import type { RoleCareerPath } from "./types";
 export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
   "network-security-engineer": {
     overview:
-      "Most network security engineers arrive from network engineering or firewall operations and spend their first years getting fluent in one vendor stack. Past senior level the path forks: stay technical and move toward security architecture and zero trust design, or follow the same segmentation problems into cloud, where they now live in VPCs and security groups. A management track exists, but what raises the ceiling fastest is proof that you design controls rather than implement other people's change tickets.",
+      "Most network security engineers come up through network engineering or firewall operations. The first few years go into mastering one vendor's stack. Around senior level you have to pick a direction. Stay technical and grow into security architecture and zero trust design. Or follow segmentation into the cloud, where it lives in VPCs and security groups. Management is open too, but the fastest way to raise your ceiling is proof that you design controls instead of closing other people's change tickets.",
     moves: [
       {
         toRole: "Security Architect",
         toSlug: "security-architect",
         moveType: "step_up",
         typicalTiming:
-          "After 5-7 years, once you have designed segmentation for a site or business unit instead of implementing someone else's design",
-        why: "Trust zones, firewall policy standards and segmentation decisions are already architecture work at the network layer. The step up widens that same reasoning to identity, applications and data.",
+          "Around year 5 to 7, usually right after you design segmentation for a whole site or business unit yourself",
+        why: "Setting trust zones and writing firewall policy standards is already architecture, scoped to the network. Architects make the same calls about identity, applications and data.",
         skillsToAdd: [
           "Threat modeling with STRIDE or attack trees",
           "Zero trust reference architecture (NIST SP 800-207)",
@@ -23,15 +23,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISSP",
         ],
         proof:
-          "A segmentation or zero trust program you designed, with the attack-surface reduction it produced.",
+          "A segmentation or zero trust program you designed, with the attack surface it removed, such as flat VLANs retired or exposed services closed.",
       },
       {
         toRole: "Cloud Security Engineer",
         toSlug: "cloud-security-engineer",
         moveType: "lateral",
         typicalTiming:
-          "Any time after about 3 years, and easiest while your employer is already moving workloads to cloud",
-        why: "Security groups, network ACLs, private endpoints and cloud firewalls are the same allow-and-deny reasoning you apply on physical firewalls, just expressed in code and API calls.",
+          "Any time after year 3. It's easiest when your company is mid-migration and needs someone who understands both sides.",
+        why: "A security group is a firewall rule with an API. You've reasoned about allow and deny for years, and the cloud version simply lives in Terraform.",
         skillsToAdd: [
           "AWS VPC design, security groups and AWS Network Firewall (or Azure NSGs and Azure Firewall)",
           "Terraform",
@@ -39,14 +39,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "AWS Certified Security Specialty",
         ],
         proof:
-          "At least one cloud or hybrid network you secured, such as a site-to-site VPN or transit design, plus infrastructure code you wrote yourself.",
+          "A hybrid or cloud network you secured, like a site-to-site VPN or transit gateway design, plus Terraform you wrote rather than inherited.",
       },
       {
         toRole: "Detection Engineer",
         moveType: "lateral",
         typicalTiming:
-          "After 3-4 years, especially if IDS/IPS tuning already takes a real share of your week",
-        why: "Tuning IPS signatures and reading NetFlow and packet captures is detection work. Detection engineering formalizes it into version-controlled rules across endpoint, identity and cloud telemetry, not only the network.",
+          "Year 3 or 4, if IDS/IPS tuning already eats a real chunk of your week",
+        why: "Deciding which IPS signatures to trust after an afternoon in NetFlow and packet captures is detection work. The new part is writing rules as code and covering endpoint, identity and cloud logs too.",
         skillsToAdd: [
           "Sigma rules and detection-as-code workflows",
           "Zeek and Suricata",
@@ -55,15 +55,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Python for rule testing",
         ],
         proof:
-          "IPS or IDS tuning work with before-and-after false-positive numbers, and at least one custom signature you wrote.",
+          "A tuning project with false-positive counts before and after, and at least one custom signature you wrote from scratch.",
       },
       {
         toRole: "Penetration Tester",
         toSlug: "penetration-tester",
         moveType: "pivot",
         typicalTiming:
-          "After 3-5 years, usually following several months of lab work in your own time",
-        why: "You know exactly how VPNs, flat networks and forgotten firewall rules fail, which is the map an attacker needs for internal network testing.",
+          "Year 3 to 5, and only after several months of lab work on your own time",
+        why: "You know how flat networks, stale VPN accounts and forgotten any-any rules fail. That's the map an internal pen tester works from.",
         skillsToAdd: [
           "Nmap, Metasploit and Burp Suite",
           "Active Directory attack paths with BloodHound",
@@ -71,14 +71,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "OSCP",
         ],
         proof:
-          "OSCP or an equivalent hands-on certification, plus lab write-ups or an internal segmentation test you ran and documented.",
+          "OSCP or a similar hands-on cert, plus lab write-ups or an authorized internal segmentation test you ran and documented.",
       },
       {
         toRole: "Infrastructure Security Manager",
         moveType: "step_up",
         typicalTiming:
-          "After 6-8 years, often after informally running change reviews or an on-call rotation",
-        why: "You already arbitrate between network uptime and security policy every week. Managing the team turns that into prioritization, vendor decisions and budget ownership.",
+          "Usually 6 to 8 years in, often after you've been quietly running change review or the on-call rotation",
+        why: "Every week you referee between uptime and policy. As the manager you do it with a budget, a headcount and the vendor contracts attached.",
         skillsToAdd: [
           "Hiring, one-on-ones and performance reviews",
           "Vendor and license management",
@@ -86,38 +86,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISM",
         ],
         proof:
-          "Evidence you have led people or a program: engineers you mentored, a rotation you ran, or a multi-team rollout you coordinated.",
+          "Bullets that show you led people, such as engineers you mentored, the rotation you ran or a rollout you coordinated across teams.",
       },
     ],
     faqs: [
       {
         question: "Can a network engineer move into network security?",
         answer:
-          "Yes, and it is the most common way in. Start by taking on firewall and VPN changes in your current job, then add a vendor security certification such as Palo Alto PCNSE or Cisco CCNP Security. Hiring managers want to see that you already handle security changes, not only routing and switching.",
+          "Yes, and it's the most common way in. Volunteer for firewall and VPN changes in your current job, then earn a vendor security cert like Palo Alto PCNSE or Cisco CCNP Security. Hiring managers want security changes you've already made in production, not only routing and switching.",
       },
       {
-        question: "Should a network security engineer learn to code?",
+        question: "Do network security engineers need to know how to code?",
         answer:
-          "Enough to automate your own work, yes. Python for policy audits and bulk changes, plus Terraform or Ansible for configuration, separates engineers who move into cloud and architecture roles from those who stay on change tickets. You do not need software engineering depth.",
+          "Enough to automate your own work, yes. Python for policy audits and bulk changes, plus Terraform or Ansible, is what gets engineers pulled into cloud and architecture roles. You don't need a software engineer's depth.",
       },
       {
-        question: "Is it better to specialize in one firewall vendor or stay vendor-neutral?",
+        question: "Should I specialize in one firewall vendor or stay vendor-neutral?",
         answer:
-          "Go deep on one vendor early, because that is what gets you hired and trusted with production changes. After a few years, the vendor matters less than the concepts: segmentation design, policy hygiene and trust boundaries are what architecture interviews test.",
+          "Go deep on one vendor first, because that's what gets you hired and trusted with production changes. After a few years the vendor matters less. Architecture interviews test segmentation design, policy hygiene and trust boundaries, and those work on any platform.",
       },
     ],
   },
 
   "iam-engineer": {
     overview:
-      "IAM careers usually start in access administration or the service desk, move into lifecycle automation, and then split three ways: identity architecture, privileged access, or identity governance and audit. Because identity has become the main control boundary in cloud and zero trust designs, experienced IAM engineers have unusually direct access to architecture roles. Few people leave identity entirely; they tend to widen from it.",
+      "Most IAM (identity and access management) engineers start in access administration or on the service desk. Next comes automating how accounts get created, changed and removed. After that the path splits into identity architecture, privileged access, or governance and audit. Identity is the main security boundary in cloud and zero trust designs, so senior IAM engineers have a shorter road to architecture than most specialists. People rarely leave identity. They widen out from it.",
     moves: [
       {
         toRole: "Identity Architect",
         moveType: "step_up",
         typicalTiming:
-          "After 5-7 years, once other teams build on a federation or lifecycle pattern you designed",
-        why: "Designing SSO federation, provisioning flows and role models for one platform is architecture on a smaller canvas. The architect role extends it to workload identity, customer identity and the enterprise-wide access model.",
+          "After 5 to 7 years, once other teams are building on a federation or lifecycle pattern you designed",
+        why: "Designing SSO, provisioning and role models for one platform is identity architecture at small scale. The architect owns it for the whole company, including machine and customer identities.",
         skillsToAdd: [
           "Entitlement modeling (RBAC, ABAC and policy-based access)",
           "Workload identity (cloud IAM roles, SPIFFE)",
@@ -126,15 +126,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "IDPro CIDPro or CISSP",
         ],
         proof:
-          "An identity pattern you designed that multiple applications or teams adopted, with coverage or risk numbers.",
+          "An identity pattern you designed that several apps or teams adopted, with the count and the result, such as fewer orphaned accounts.",
       },
       {
         toRole: "Cloud Security Engineer",
         toSlug: "cloud-security-engineer",
         moveType: "lateral",
         typicalTiming:
-          "After 3-4 years, especially if you have already worked on cloud SSO or role federation",
-        why: "Over-permissioned identities are behind a large share of cloud incidents. Your least-privilege habits and access-review instincts apply directly to AWS IAM policies, Azure role assignments and service accounts.",
+          "Year 3 or 4, and easier if you've already set up cloud SSO or role federation",
+        why: "Cloud accounts fill up with over-permissioned roles and forgotten service accounts. Cleaning that up takes exactly the least-privilege instincts you use every day.",
         skillsToAdd: [
           "AWS IAM policies, SCPs and permission boundaries",
           "Microsoft Entra ID roles and Privileged Identity Management",
@@ -143,14 +143,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "AWS Certified Security Specialty",
         ],
         proof:
-          "A cloud access cleanup or least-privilege project with numbers, such as standing admin roles removed.",
+          "A least-privilege cleanup in AWS or Azure with numbers, like standing admin roles removed or unused permissions revoked.",
       },
       {
         toRole: "IAM Manager",
         moveType: "step_up",
         typicalTiming:
-          "After 6-8 years, usually after leading a platform migration or an access-certification program",
-        why: "Identity programs are cross-functional by nature (HR, IT, application owners, auditors). If you already run those conversations, managing the IAM team formalizes it with a roadmap and budget.",
+          "Around 6 to 8 years, typically after leading a platform migration or an access certification campaign",
+        why: "Identity work always pulls in HR, app owners and auditors. If you already run those meetings, the manager title mostly adds a roadmap and a budget.",
         skillsToAdd: [
           "Program roadmapping and stakeholder reporting",
           "Hiring and team leadership",
@@ -158,14 +158,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISM",
         ],
         proof:
-          "A program you led across teams, such as a JML automation rollout or PAM deployment, with delivery and audit outcomes.",
+          "A cross-team program you led, such as a joiner-mover-leaver automation or PAM rollout, with what shipped and how the next audit went.",
       },
       {
         toRole: "GRC Analyst",
         moveType: "pivot",
         typicalTiming:
-          "After 2-4 years, often by people who found access reviews and audit evidence more interesting than platform work",
-        why: "Access reviews, segregation of duties and audit evidence are a large share of IT general controls. You already know how those controls work technically, which most GRC hires have to learn.",
+          "Year 2 to 4. It suits people who found access reviews and audit evidence more interesting than platform work.",
+        why: "Access reviews and separation of duties make up a big share of the IT controls auditors test. You know how they work under the hood, which most GRC (governance, risk and compliance) hires learn on the job.",
         skillsToAdd: [
           "SOX ITGC testing",
           "NIST 800-53 and ISO 27001 control frameworks",
@@ -173,15 +173,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISA or CRISC",
         ],
         proof:
-          "An audit you supported with clean findings, or a segregation-of-duties or access-certification process you designed.",
+          "An audit you supported that closed clean, or an access certification or separation-of-duties process you designed and ran.",
       },
       {
         toRole: "Solutions Architect",
         toSlug: "solutions-architect",
         moveType: "pivot",
         typicalTiming:
-          "After 4-6 years of hands-on implementation on a major identity platform",
-        why: "Identity vendors and integrators need people who have deployed their platform in a messy real environment. Customer discovery calls are mostly the integration questions you have already answered internally.",
+          "After 4 to 6 years of hands-on work on one major identity platform",
+        why: "Identity vendors and integrators want people who've deployed the product somewhere messy. Most customer discovery calls are questions you've already answered for your own company.",
         skillsToAdd: [
           "Discovery calls and requirements gathering with customers",
           "Demo and proof-of-concept building",
@@ -189,38 +189,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Platform certifications such as Okta Certified Professional or CyberArk Defender",
         ],
         proof:
-          "Deep implementation experience on one identity platform, with application counts and at least one integration you designed.",
+          "Deep implementation history on one platform, with the number of applications you onboarded and at least one integration you designed.",
       },
     ],
     faqs: [
       {
         question: "Can a help desk or system administrator move into IAM?",
         answer:
-          "Yes, and it is one of the most reliable routes. Account provisioning, group management and Active Directory work are IAM fundamentals. Add SAML and OIDC knowledge and hands-on time with one identity platform, then ask to take on application onboarding in your current job.",
+          "Yes, and it's one of the most reliable routes. Provisioning accounts, managing groups and working in Active Directory are already IAM basics. Learn how SAML and OIDC work, get hands-on time with one identity platform, and ask to onboard applications in your current job.",
       },
       {
         question: "Does IAM lead to security architecture?",
         answer:
-          "More directly than most security specialties. Zero trust designs treat identity as the primary control, so senior IAM engineers who understand federation, workload identity and privileged access are natural candidates for identity or security architect roles.",
+          "Yes, more directly than most security specialties. Zero trust designs treat identity as the main control. Senior IAM engineers who understand federation, workload identity and privileged access are obvious candidates for identity or security architect roles.",
       },
       {
         question: "Should I specialize in privileged access or identity governance?",
         answer:
-          "Pick based on the work you prefer. Privileged access is closer to infrastructure and incident response, with vaulting, session control and just-in-time access. Governance is closer to audit and process, with certifications, role mining and segregation of duties. Both are hired separately at larger organizations.",
+          "Pick the work you'd rather do every day. Privileged access sits close to infrastructure and incident response, with vaulting, session recording and just-in-time access. Governance sits close to audit, with access certifications, role mining and separation of duties. Larger companies hire for them as separate jobs.",
       },
     ],
   },
 
   "security-architect": {
     overview:
-      "Security Architect is already a senior role reached after years of engineering, so progression is about scope rather than new skills: from one business area to the enterprise, and from reviewing designs to setting the standards others follow. Beyond principal architect the choices are the CISO track (management, budget and board reporting), broader enterprise or cloud architecture, or moving outward into consulting and pre-sales. At smaller organizations the IC ceiling arrives quickly, which is why many architects change employers to grow scope.",
+      "Nobody starts as a security architect. You get here after years of engineering, so growth from here is about scope, not new skills. You go from one business area to the whole company, and from reviewing designs to writing the standards others follow. Past principal, most architects head toward the CISO track, broader enterprise or cloud architecture, or consulting and pre-sales. Smaller companies run out of room early, so many architects change employers to get bigger problems.",
     moves: [
       {
         toRole: "Principal Security Architect",
         moveType: "step_up",
         typicalTiming:
-          "After 3-5 years as an architect, once your standards are used beyond the area you were hired for",
-        why: "The principal role is the same design and risk-acceptance work applied across the whole organization, where your decisions set the defaults other architects inherit.",
+          "Usually 3 to 5 years into the architect title, when teams outside your area start using your standards",
+        why: "Same work, bigger blast radius. Your decisions become the defaults every other architect inherits.",
         skillsToAdd: [
           "Enterprise security reference architecture",
           "Security metrics and risk quantification (FAIR)",
@@ -228,14 +228,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "SABSA Chartered Foundation",
         ],
         proof:
-          "Standards or reference designs adopted across multiple business units, with a measurable change in risk or review time.",
+          "Standards or reference designs used by more than one business unit, and what changed after, such as fewer exceptions or faster reviews.",
       },
       {
         toRole: "Chief Information Security Officer (CISO)",
         moveType: "step_up",
         typicalTiming:
-          "Usually after a director-level security role, well over a decade into a security career",
-        why: "Architects already translate technical risk into business trade-offs. The CISO does that for the board and owns the budget, team and incident accountability behind it.",
+          "Well over a decade into security, and almost always by way of a director-level role first",
+        why: "You already turn technical risk into business trade-offs. A CISO does it in front of the board and answers for the budget, the team and the breach.",
         skillsToAdd: [
           "Board and executive risk reporting",
           "Security budget and program management",
@@ -244,15 +244,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISM",
         ],
         proof:
-          "People leadership plus a security program you owned end to end, including a budget and results reported to executives.",
+          "A team you managed and a security program you owned end to end, including its budget and what you reported to executives.",
       },
       {
         toRole: "Enterprise Architect",
         toSlug: "enterprise-architect",
         moveType: "lateral",
         typicalTiming:
-          "After 3-5 years as an architect, especially if you already sit on an architecture review board",
-        why: "You already evaluate designs against business constraints and cross-system dependencies. Enterprise architecture widens the lens from security to the whole technology portfolio.",
+          "3 to 5 years into architecture, especially if you already sit on the architecture review board",
+        why: "On the review board you already weigh designs against cost, dependencies and business goals. Enterprise architects do that for every system, not only the security ones.",
         skillsToAdd: [
           "TOGAF",
           "Capability mapping and application portfolio rationalization",
@@ -260,15 +260,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "ArchiMate or a similar modeling notation",
         ],
         proof:
-          "Architecture decisions you made that shaped platforms or vendor choices, not only security controls.",
+          "Decisions you made that shaped platform or vendor choices, written so it's clear they went beyond security controls.",
       },
       {
         toRole: "Cloud Architect",
         toSlug: "cloud-architect",
         moveType: "lateral",
         typicalTiming:
-          "Any time after hands-on design work on a cloud migration or landing zone",
-        why: "Account structure, network design, identity and guardrails are half of a cloud landing zone. Security architects who designed those often move across to own the whole platform design.",
+          "Any point after you've done real design work on a cloud migration or landing zone",
+        why: "Half of a cloud landing zone is account structure, network design, identity and guardrails. If you designed those pieces, owning the rest of the platform is a short reach.",
         skillsToAdd: [
           "Landing zone design (AWS Control Tower or Azure landing zones)",
           "Cost and reliability trade-offs in cloud architecture",
@@ -276,15 +276,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "AWS Certified Solutions Architect Professional or Google Professional Cloud Architect",
         ],
         proof:
-          "A cloud environment you designed guardrails or architecture for, with the scale of accounts or workloads involved.",
+          "A cloud environment where you designed the guardrails or the architecture, with the number of accounts or workloads it covered.",
       },
       {
         toRole: "Solutions Architect",
         toSlug: "solutions-architect",
         moveType: "pivot",
         typicalTiming:
-          "After 2-4 years as an architect, often when you want broader industry exposure than one employer gives",
-        why: "Security vendors need architects who can sit with a customer's security team, understand their environment and design a deployment that survives their review board, which is the job you already do from the other side of the table.",
+          "After 2 to 4 years as an architect, usually when one employer's environment starts to feel small",
+        why: "Security vendors need someone who can sit with a customer's security team and design a rollout that survives their review board. You've spent years on the other side of that table.",
         skillsToAdd: [
           "Customer discovery and technical qualification",
           "Proof-of-concept planning",
@@ -292,38 +292,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Deep product knowledge in one security category (SIEM, SASE, CNAPP)",
         ],
         proof:
-          "Architecture reviews you led and a track record of presenting security decisions to non-security stakeholders.",
+          "Architecture reviews you led, and times you presented security decisions to people outside security, like finance, legal or executives.",
       },
     ],
     faqs: [
       {
         question: "How many years does it take to become a security architect?",
         answer:
-          "Most people get there after 8-10 years in security or infrastructure, with hands-on engineering in at least two domains. The title is rarely an entry point, because the job depends on having seen real controls fail in production.",
+          "Most people reach the title after 8 to 10 years in security or infrastructure. They usually have hands-on engineering in at least two areas. It's almost never an entry point, because the job depends on having watched real controls fail in production.",
       },
       {
         question: "Is security architect a management role?",
         answer:
-          "No. It is a senior individual contributor role with influence rather than direct reports. Architects who want people management usually move to a security engineering manager or director role, and the CISO track typically runs through management, not architecture alone.",
+          "No. It's a senior individual contributor role with influence but no direct reports. Architects who want to manage people usually move to security engineering manager or director. The road to CISO generally runs through management, not architecture alone.",
       },
       {
-        question: "Can a security architect move into general enterprise architecture?",
+        question: "Can a security architect become an enterprise architect?",
         answer:
-          "Yes, and it is a common lateral. Security architects already review designs across systems and weigh business constraints. The gap is usually breadth: application portfolio management, integration patterns and a framework such as TOGAF.",
+          "Yes, it's a common sideways move. You already review designs across systems and weigh business constraints. What's usually missing is breadth, meaning application portfolio management, integration patterns and a framework like TOGAF.",
       },
     ],
   },
 
   "game-designer": {
     overview:
-      "Game design ladders usually run from junior to designer, senior, lead, then design director or creative director, and the lead step is where the job changes from designing systems to steering other designers. Specializing (systems, economy, level, combat, narrative) is how most designers get past mid-level, because studios hire for the discipline, not the general title. Designers who leave the industry tend to go where player-behavior thinking and telemetry literacy transfer: product management and UX.",
+      "The game design ladder runs junior, designer, senior, lead, then design director or creative director. Lead is where the job flips from designing systems to steering other designers. Most people get past mid-level by specializing in systems, economy, levels, combat or narrative, because studios hire for the discipline. Designers who leave games tend to land in product management and UX. Both still pay for knowing how players behave and reading their data.",
     moves: [
       {
         toRole: "Lead Game Designer",
         moveType: "step_up",
         typicalTiming:
-          "After 6-8 years and at least one title where you owned a major system through launch",
-        why: "Leads keep the design coherent across systems and people. If you already review other designers' specs and resolve conflicts between systems, you are doing part of the job.",
+          "After 6 to 8 years, with at least one title where you owned a major system through launch",
+        why: "If you're already reviewing other designers' specs and settling fights between systems, you're doing half a lead's job without the title.",
         skillsToAdd: [
           "Design review and critique for other designers",
           "Scoping and cutting features against a production schedule",
@@ -331,14 +331,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Mentoring junior designers",
         ],
         proof:
-          "A shipped system you owned end to end, plus evidence you guided other designers' work on it.",
+          "A shipped system you owned end to end, plus specific examples of directing other designers' work on it.",
       },
       {
         toRole: "Economy Designer",
         moveType: "lateral",
         typicalTiming:
-          "After 2-4 years, often by systems designers who enjoy the spreadsheet side of tuning",
-        why: "Economy design is systems design where the variables are currencies, rewards and progression pacing, and it is measured directly in player data. Your balancing work is the foundation.",
+          "Year 2 to 4, usually systems designers who secretly enjoy the spreadsheet side of tuning",
+        why: "It's systems design where the knobs are currencies, rewards and progression pace. Player data grades your work every week.",
         skillsToAdd: [
           "Sink-and-faucet economy modeling in spreadsheets",
           "SQL for player telemetry",
@@ -346,14 +346,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Monetization and progression pacing for live games",
         ],
         proof:
-          "A progression or reward system you tuned using player data, with the behavior change it produced.",
+          "A progression or reward system you tuned from player data, and the change in player behavior that followed.",
       },
       {
         toRole: "Game Producer",
         moveType: "lateral",
         typicalTiming:
-          "After 3-5 years, usually by designers who already run feature teams informally",
-        why: "Producers own scope, schedule and cross-discipline coordination. Designers already negotiate feature scope with engineering and art, which is the core producer skill.",
+          "After 3 to 5 years, often designers who already run a feature team in all but name",
+        why: "Producers own scope, schedule and the handoffs between disciplines. Every time you talked a feature down with engineering and art, you were producing.",
         skillsToAdd: [
           "Agile planning in Jira or Hansoft",
           "Milestone and risk tracking",
@@ -361,15 +361,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Certified ScrumMaster (CSM)",
         ],
         proof:
-          "A feature or milestone you coordinated across design, engineering and art that shipped on schedule.",
+          "A feature or milestone you coordinated across design, engineering and art that shipped on the date it was planned for.",
       },
       {
         toRole: "Product Manager",
         toSlug: "product-manager",
         moveType: "pivot",
         typicalTiming:
-          "After 3-6 years, most often from live-service or free-to-play games",
-        why: "Retention loops, onboarding funnels and feature experiments are product management problems. Live-game designers already make decisions from cohort data and A/B tests.",
+          "Somewhere in years 3 to 6, and mostly from live-service or free-to-play games",
+        why: "Retention loops, onboarding funnels and A/B tests fill a live-game designer's week, and a consumer PM's too. The vocabulary differs. The decisions don't.",
         skillsToAdd: [
           "Product discovery and customer interviews",
           "Product analytics tools (Amplitude or Mixpanel)",
@@ -377,15 +377,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Roadmap prioritization frameworks (RICE)",
         ],
         proof:
-          "A feature you shaped using player data, with a retention, conversion or engagement result stated plainly.",
+          "A feature you shaped with player data, and the retention, conversion or engagement result written out plainly.",
       },
       {
         toRole: "UX Designer",
         toSlug: "ux-designer",
         moveType: "pivot",
         typicalTiming:
-          "After 2-4 years, typically by designers who worked on menus, onboarding or HUD",
-        why: "Game designers already design for learnability, feedback and flow, and they test with real players constantly. UX design applies the same thinking to apps and services.",
+          "Year 2 to 4, most naturally for designers who worked on menus, onboarding or the HUD",
+        why: "You design for learnability and clear feedback, then watch real players struggle in playtests. UX is that same loop pointed at apps and websites.",
         skillsToAdd: [
           "Figma",
           "Usability testing and interview synthesis",
@@ -393,38 +393,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "WCAG accessibility basics",
         ],
         proof:
-          "A portfolio case study that reframes a game onboarding or interface problem as a UX problem, with playtest evidence.",
+          "A portfolio case study that treats a game onboarding or interface problem as a UX problem, with playtest findings driving the changes.",
       },
     ],
     faqs: [
       {
-        question: "Can a game designer move into product management?",
+        question: "Can a game designer become a product manager?",
         answer:
-          "Yes, and designers from live-service games make the move most easily because they already work with retention and monetization data. Reframe your portfolio around outcomes (retention, conversion, engagement) rather than mechanics, and learn a product analytics tool.",
+          "Yes, and designers from live-service games have the easiest time. They already work with retention and monetization data. Rebuild your portfolio around outcomes like retention and conversion instead of mechanics, and get fluent in a product analytics tool such as Amplitude.",
       },
       {
-        question: "Is it better to specialize or stay a generalist game designer?",
+        question: "Should a game designer specialize or stay a generalist?",
         answer:
-          "Specialize after a few years. Generalist designers are useful on small teams, but mid-size and large studios hire for systems, level, combat, narrative or economy design, and senior openings almost always name the specialty.",
+          "Specialize after a few years. Generalists are valuable on small teams. Mid-size and large studios hire for systems, level, combat, narrative or economy design, and senior postings almost always name the specialty.",
       },
       {
-        question: "What does a game designer do after becoming a lead?",
+        question: "What comes after lead game designer?",
         answer:
-          "The next steps are design director or creative director, which own the vision of a title or a studio's portfolio. Some leads move to game director roles that combine design authority with production responsibility.",
+          "Design director or creative director, the people who own the vision for a title or a studio's lineup. Some leads become game directors instead, which adds production responsibility to design authority.",
       },
     ],
   },
 
   "game-developer": {
     overview:
-      "Game programmers progress from gameplay features toward ownership of an area such as engine, rendering, networking, tools or platform, and seniority is tied closely to shipped titles. Past senior, the fork is lead programmer or technical director on the leadership side, or a principal specialist role in graphics, engine or online systems. The industry is cyclical, so a well-traveled exit exists: the same real-time and C++ skills are valued in simulation, AR/VR and general software engineering.",
+      "Game programmers usually start on gameplay features and grow toward owning an area such as engine, rendering, networking, tools or platform. Seniority tracks shipped titles closely. Past senior you choose between leading people as lead programmer or technical director, and going deep as a principal in graphics, engine or online systems. The industry runs in boom and bust cycles. When it turns, real-time C++ skills sell well in simulation, AR/VR and general software.",
     moves: [
       {
         toRole: "Lead Programmer",
         moveType: "step_up",
         typicalTiming:
-          "After 6-8 years and at least two shipped titles, one with you owning a major system",
-        why: "Leads own technical decisions and code quality for a team. Senior programmers who already review code, unblock others and push back on unrealistic scope are doing much of it.",
+          "After 6 to 8 years and at least two shipped titles, one where a major system was yours",
+        why: "Senior programmers who review code, unblock people and push back on impossible scope are most of the way there. What's left is owning the technical calls for the whole team.",
         skillsToAdd: [
           "Technical planning and estimation for milestones",
           "Code review standards and team conventions",
@@ -432,14 +432,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Profiling across CPU, GPU and memory (PIX, RenderDoc, Unreal Insights)",
         ],
         proof:
-          "A shipped system you owned plus evidence of leading others, such as a feature team, code standards or new-hire onboarding.",
+          "A shipped system you owned, plus signs you led others, like a feature team, code standards you set or new programmers you onboarded.",
       },
       {
         toRole: "Engine Programmer",
         moveType: "lateral",
         typicalTiming:
-          "After 3-5 years, usually by gameplay programmers who keep ending up in performance work",
-        why: "Gameplay programmers who fix frame spikes and memory problems are already working below the gameplay layer. Engine programming makes that the whole job.",
+          "Year 3 to 5, usually gameplay programmers who keep getting handed the performance bugs",
+        why: "If you're the one people call about frame spikes and memory blowups, you already work below the gameplay layer. Engine programming makes that the whole job.",
         skillsToAdd: [
           "Modern C++ and data-oriented design",
           "Multithreading and job systems",
@@ -447,14 +447,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Unreal Engine source-level work",
         ],
         proof:
-          "An optimization with before-and-after frame time or memory numbers on a shipped or complete project.",
+          "An optimization with frame time or memory numbers before and after, on a shipped or finished project.",
       },
       {
         toRole: "AR/VR Engineer",
         toSlug: "ar-vr-engineer",
         moveType: "lateral",
-        typicalTiming: "Any time after 2-3 years of Unity or Unreal experience",
-        why: "XR runs on the same engines and demands even stricter frame budgets, because a dropped frame causes motion sickness rather than just stutter.",
+        typicalTiming: "Any time after 2 or 3 years in Unity or Unreal",
+        why: "Same engines, tighter frame budget. In a headset a dropped frame doesn't stutter, it makes people feel sick.",
         skillsToAdd: [
           "OpenXR",
           "Unity XR Interaction Toolkit or Unreal's XR framework",
@@ -462,15 +462,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Spatial interaction and hand-tracking design",
         ],
         proof:
-          "A finished XR prototype or shipped feature that holds frame rate on real headset hardware.",
+          "A finished XR prototype or shipped feature that holds frame rate on real headset hardware, with the device named.",
       },
       {
         toRole: "Software Engineer",
         toSlug: "software-engineer",
         moveType: "pivot",
         typicalTiming:
-          "Any time, most often after a studio closure or when steadier hours become the priority",
-        why: "Game programmers are strong at performance, debugging and data structures under pressure. Online services and backend work are the smoothest landing because networking and server code are already part of many games.",
+          "Any time. Most people make it after a studio closure or when predictable hours start to matter more.",
+        why: "Backend and online services are the softest landing, since many games already run server code. Years of chasing performance bugs on a deadline carry over well.",
         skillsToAdd: [
           "A mainstream backend language such as Go, Java or C#/.NET",
           "REST and gRPC API design",
@@ -479,14 +479,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Automated testing and CI pipelines",
         ],
         proof:
-          "One non-game project, such as a web service with tests and deployment, to show you can work outside an engine.",
+          "One project built outside an engine, like a web service with tests and a deploy pipeline. It shows you can work without Unity or Unreal.",
       },
       {
         toRole: "Simulation Engineer",
         moveType: "pivot",
         typicalTiming:
-          "After 3-5 years, particularly with physics, rendering or tools experience",
-        why: "Training simulators, autonomous-vehicle simulation and digital twins are built with game engines and real-time rendering. Your engine and physics knowledge transfers directly.",
+          "After 3 to 5 years, especially with physics, rendering or tools work behind you",
+        why: "Training simulators, self-driving car simulation and digital twins are built on game engines. Your physics and rendering knowledge goes straight across.",
         skillsToAdd: [
           "Physics simulation and numerical integration",
           "Sensor simulation basics (camera, lidar)",
@@ -501,31 +501,31 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
       {
         question: "Can game developers get jobs outside the games industry?",
         answer:
-          "Yes. Real-time rendering, C++ performance and engine skills are wanted in simulation, AR/VR, film and virtual production, and automotive. General software roles hire game programmers too, though you will usually need to show one project built outside an engine.",
+          "Yes, and real-time rendering, C++ performance and engine skills travel well. Simulation, AR/VR, film and virtual production, and automotive all hire for them. General software teams hire game programmers too, but you'll usually need one project built outside an engine.",
       },
       {
         question: "Should a game programmer specialize in graphics, engine or gameplay?",
         answer:
-          "Gameplay is the most common entry point and has the most openings. Graphics and engine specialists are fewer and harder to replace, which makes those roles more stable once you have the depth. Choose by what you already gravitate toward in your current work.",
+          "Start in gameplay, which has the most openings, then specialize toward whatever you keep drifting into. Graphics and engine programmers are fewer and harder to replace. That makes those jobs steadier once you have real depth.",
       },
       {
-        question: "How do game developers become technical directors?",
+        question: "How do game programmers become technical directors?",
         answer:
-          "Usually through lead programmer, after owning architecture decisions on a shipped title. Technical directors are judged on engine and platform choices and on the team's ability to ship, so leadership experience matters as much as technical depth.",
+          "Almost always through lead programmer, after owning architecture decisions on a shipped title. Technical directors are judged on engine and platform choices and on whether the team ships. Leading people counts as much as technical depth.",
       },
     ],
   },
 
   "ai-product-manager": {
     overview:
-      "AI PM is a young ladder: most people arrive from core product management, ML engineering or data science, and levels usually map to the same PM, senior, group and director steps as other product roles. After senior, the fork is whether you stay on model-facing products (evaluation, model choice, AI platforms) or broaden into general product leadership where AI is one tool among several. Because the specialty is new, owning evaluation and cost trade-offs counts for more than the title on your resume.",
+      "The AI PM ladder is young. Most people arrive from core product management, ML engineering or data science, and the levels match the usual PM, senior, group and director steps. After senior, decide whether to stay close to the model or broaden into general product leadership. Close to the model means evaluation, model choice and AI platforms. Few people have a long AI PM record yet, so owning evaluation and cost trade-offs says more than the title.",
     moves: [
       {
         toRole: "Group Product Manager",
         moveType: "step_up",
         typicalTiming:
-          "After 2-3 years as a senior PM with an AI product surface that shipped and stuck",
-        why: "Group PMs set direction across several PMs' areas. AI PMs who already made build-versus-buy and model-cost calls for their surface have the portfolio judgment the role needs.",
+          "Two or three years into senior PM, with an AI product that shipped and kept its users",
+        why: "Group PMs set direction across several PMs' areas. Making build-versus-buy and model-cost calls for your own surface is practice for exactly that judgment.",
         skillsToAdd: [
           "Portfolio prioritization across teams",
           "Coaching and hiring product managers",
@@ -533,15 +533,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Executive roadmap communication",
         ],
         proof:
-          "An AI product area you owned through launch and iteration, with quality, adoption and cost numbers.",
+          "An AI product area you owned through launch and iteration, with quality, adoption and cost numbers side by side.",
       },
       {
         toRole: "Technical Product Manager",
         toSlug: "technical-product-manager",
         moveType: "lateral",
         typicalTiming:
-          "After 2-4 years, often by AI PMs who find the platform layer more interesting than the feature layer",
-        why: "Internal AI platforms (evaluation tooling, model gateways, retrieval infrastructure) need PMs whose users are engineers. Your evaluation and guardrail experience is exactly what those customers care about.",
+          "Year 2 to 4, for AI PMs who find the platform layer more interesting than the features on top",
+        why: "Eval tooling, model gateways and retrieval infrastructure all need PMs whose users are engineers. Those engineers mostly care about evaluation and guardrails, which you've been living in.",
         skillsToAdd: [
           "API and developer platform product design",
           "Model gateway, routing and observability concepts",
@@ -549,14 +549,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Reading technical design docs critically",
         ],
         proof:
-          "An evaluation, cost or reliability decision you made with engineers, stated with its effect on quality or spend.",
+          "An evaluation, cost or reliability decision you made with engineers, and what it did to quality or spend.",
       },
       {
         toRole: "Product Manager",
         toSlug: "product-manager",
         moveType: "lateral",
-        typicalTiming: "Any time, especially when moving to a company where AI is one feature among many",
-        why: "The core of product work (discovery, prioritization, shipping and measuring) is the same. AI experience is an advantage on general product teams that are adding model-backed features.",
+        typicalTiming: "Any time, especially if you're joining a company where AI is one feature among many",
+        why: "Discovery, prioritization and measuring what shipped work the same way. Teams bolting model-backed features onto an existing product are glad to hire someone who has done it.",
         skillsToAdd: [
           "Domain knowledge for the new product area",
           "Growth and retention analytics",
@@ -564,15 +564,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Customer discovery at scale",
         ],
         proof:
-          "Product outcomes described in business terms (adoption, retention, revenue impact), not only model quality.",
+          "Outcomes in business terms, like adoption, retention or revenue, next to any model quality metrics.",
       },
       {
         toRole: "AI Engineer",
         toSlug: "ai-engineer",
         moveType: "pivot",
         typicalTiming:
-          "After 1-3 years, usually by PMs with an engineering background who already prototype their own features",
-        why: "AI PMs who write prompts, build eval sets and prototype with model APIs are already doing part of the engineering work. The pivot formalizes it into production code.",
+          "Year 1 to 3, mostly PMs with an engineering background who already prototype their own features",
+        why: "If you write prompts, build eval sets and hack on model APIs, you're doing part of the engineering job already. The pivot means doing it in production code with tests.",
         skillsToAdd: [
           "Python",
           "Retrieval-augmented generation (embeddings, vector databases)",
@@ -580,14 +580,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Production API integration and observability",
         ],
         proof:
-          "A working prototype or internal tool you built, ideally used by real people, with code you can show.",
+          "A working prototype or internal tool you built that real people used, with code you can show.",
       },
       {
         toRole: "Responsible AI Program Manager",
         moveType: "pivot",
         typicalTiming:
-          "After 3-5 years, often by PMs who owned safety reviews or policy decisions on their features",
-        why: "AI PMs already define guardrails, run red-team reviews and balance risk against launch dates. Responsible AI programs make that the whole job across the organization.",
+          "After 3 to 5 years, usually PMs who ended up owning safety reviews or policy calls on their features",
+        why: "Someone has to define guardrails, run red-team reviews and weigh risk against the launch date. You've done it for one feature. The program does it for the whole company.",
         skillsToAdd: [
           "NIST AI Risk Management Framework",
           "EU AI Act and emerging US state AI regulations",
@@ -595,38 +595,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Cross-functional program governance",
         ],
         proof:
-          "A guardrail, safety review or launch-readiness process you designed and ran for a shipped AI feature.",
+          "A guardrail, safety review or launch-readiness process you designed and ran for an AI feature that shipped.",
       },
     ],
     faqs: [
       {
         question: "Can a regular product manager become an AI product manager?",
         answer:
-          "Yes, and most AI PMs did exactly that. The gap is practical: learn how evaluation works, build a small model-backed prototype yourself, and ask to own an AI feature in your current product. One shipped AI feature with quality numbers outweighs any course.",
+          "Yes, and most AI PMs did exactly that. Learn how evaluation works, build a small model-backed prototype yourself, and ask to own an AI feature in your current product. One shipped AI feature with quality numbers beats any course.",
       },
       {
         question: "Can a data scientist or ML engineer become an AI PM?",
         answer:
-          "Yes, and technical backgrounds are valued here more than in general product roles. What you have to prove is product judgment: a problem you chose, users you talked to, and a trade-off you made for the product rather than the model.",
+          "Yes, and technical backgrounds count for more here than in most product roles. What you have to prove is product judgment. Show a problem you chose, users you talked to, and a trade-off you made for the product rather than the model.",
       },
       {
         question: "What comes after AI product manager?",
         answer:
-          "The usual next steps are group PM, director of product or head of AI product. Some move into AI platform product roles, and a growing number move into responsible AI or AI governance leadership.",
+          "Usually group PM, then director of product or head of AI product. Some move to AI platform product roles. A growing number go into responsible AI or AI governance leadership.",
       },
     ],
   },
 
   "mobile-app-developer": {
     overview:
-      "Mobile developers usually commit to iOS, Android or a cross-platform framework early, then grow by owning more of the release pipeline and the app's architecture. After senior, the options are a staff role owning the mobile platform (build systems, modularization, performance), engineering management, or broadening into full stack because product teams value engineers who can ship the API and the screen. The mobile-only ladder is short at small companies, which may employ only a handful of mobile engineers.",
+      "Mobile developers usually commit early to iOS, Android or a cross-platform framework. They grow by owning more of the release pipeline and the app's architecture. Past senior, you can take a staff role owning build systems, modularization and performance for every mobile team. You can also move into engineering management, or add backend skills and go full stack. Small companies may only have a handful of mobile engineers, so the mobile-only ladder there is short.",
     moves: [
       {
         toRole: "Staff Mobile Engineer",
         moveType: "step_up",
         typicalTiming:
-          "After 7-9 years, once your architecture or tooling decisions shape how every mobile team works",
-        why: "Staff mobile engineers own cross-team concerns such as modularization, build times, release trains and performance budgets. Seniors who already fixed one of those for their own team are working at the edges of the role.",
+          "Usually 7 to 9 years in, once your architecture or tooling decisions change how every mobile team works",
+        why: "Build times, release trains and performance budgets are nobody's job until a staff engineer owns them. Fixing one of those for your own team is the audition.",
         skillsToAdd: [
           "Build systems at scale (Gradle, Bazel or Tuist)",
           "App modularization and dependency boundaries",
@@ -634,14 +634,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Writing technical design docs for org-wide changes",
         ],
         proof:
-          "A cross-team mobile change you led, such as a modularization or build-time project, with before-and-after numbers.",
+          "A cross-team mobile change you led, like a modularization or build-time project, with numbers such as clean build minutes or crash rate before and after.",
       },
       {
         toRole: "Mobile Engineering Manager",
         moveType: "step_up",
         typicalTiming:
-          "After 5-7 years, often after acting as tech lead for a mobile squad",
-        why: "Release coordination, app store review cycles and platform trade-offs are already team-level concerns you handle. Management adds hiring, growth and delivery accountability on top.",
+          "After 5 to 7 years, typically after a stint as tech lead for a mobile squad",
+        why: "You already juggle release coordination, App Store review surprises and iOS-versus-Android trade-offs for the team. Management adds hiring, career conversations and owning delivery.",
         skillsToAdd: [
           "One-on-ones and career development conversations",
           "Hiring loops for iOS and Android engineers",
@@ -649,14 +649,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Delivery metrics and stakeholder reporting",
         ],
         proof:
-          "Tech lead experience: releases you coordinated, engineers you mentored and a delivery outcome you owned.",
+          "Tech lead experience with specifics, such as releases you coordinated, engineers you mentored and a delivery date you were accountable for.",
       },
       {
         toRole: "Full Stack Developer",
         toSlug: "full-stack-developer",
         moveType: "lateral",
-        typicalTiming: "Any time after 3 years, easiest on product teams that already own their own APIs",
-        why: "Mobile developers already consume APIs, handle auth tokens and design offline sync. Building the other side is a short step, and React Native developers bring TypeScript and React skills straight to the web.",
+        typicalTiming: "Any time after year 3, and easiest on product teams that own their own APIs",
+        why: "Calling APIs, handling auth tokens and designing offline sync puts you one short hop from the server side. React Native developers can carry TypeScript and React straight to the web.",
         skillsToAdd: [
           "Node.js or another backend runtime",
           "REST and GraphQL API design",
@@ -664,14 +664,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "React for web (if you come from native)",
         ],
         proof:
-          "A feature where you built or changed the API as well as the app, or a side project with both.",
+          "A feature where you changed the API as well as the app, or a side project with both halves.",
       },
       {
         toRole: "Application Security Engineer",
         toSlug: "application-security-engineer",
         moveType: "pivot",
-        typicalTiming: "After 4-6 years, usually by developers who already own auth or payments features",
-        why: "Mobile apps ship to devices you do not control, so secure storage, certificate pinning and reverse-engineering resistance are daily concerns. Mobile security specialists are scarce because few engineers understand both platforms deeply.",
+        typicalTiming: "After 4 to 6 years, usually developers who already own login or payments",
+        why: "Your app runs on phones you don't control, so secure storage, certificate pinning and tamper resistance are already your problem. Security teams struggle to find people who know both mobile platforms well.",
         skillsToAdd: [
           "OWASP MASVS and MASTG",
           "Mobile testing tools (Frida, MobSF, objection)",
@@ -679,14 +679,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Static analysis tools (Semgrep, CodeQL)",
         ],
         proof:
-          "Security work already on your resume, such as an auth flow you hardened or a vulnerability you found and fixed.",
+          "Security work that's already on your resume, like an auth flow you hardened or a vulnerability you found and fixed.",
       },
       {
         toRole: "Technical Product Manager",
         toSlug: "technical-product-manager",
         moveType: "pivot",
-        typicalTiming: "After 4-6 years, often by developers who already shape feature specs",
-        why: "Mobile developers see the whole user experience, app store feedback and crash data, and they understand the release constraints PMs often underestimate.",
+        typicalTiming: "After 4 to 6 years, often developers who keep rewriting the specs they're handed",
+        why: "You see the whole user experience, the app store reviews and the crash data. You also know the release constraints PMs tend to underestimate.",
         skillsToAdd: [
           "Product discovery and user interviews",
           "Product analytics (Amplitude, Mixpanel or Firebase Analytics)",
@@ -694,39 +694,39 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Prioritization frameworks",
         ],
         proof:
-          "A feature you proposed or shaped, with a user or business result, not only the implementation.",
+          "A feature you proposed or reshaped, with the user or business result, not only how you built it.",
       },
     ],
     faqs: [
       {
         question: "Can an iOS developer switch to Android, or the other way around?",
         answer:
-          "Yes, and it is easier than it looks. Swift and Kotlin are close in style, SwiftUI and Jetpack Compose share the declarative model, and the lifecycle and release concepts transfer. Build one complete app on the other platform before applying.",
+          "Yes, and it's easier than it looks. Swift and Kotlin feel alike, SwiftUI and Jetpack Compose share the same declarative model, and release concepts carry over. Build one complete app on the other platform before you apply.",
       },
       {
         question: "Do mobile developers hit a career ceiling?",
         answer:
-          "At small companies, often yes, because the mobile team may be too small to need a staff engineer or manager. At larger companies mobile has its own staff and principal levels. Many developers raise their ceiling by adding backend skills or moving to a larger mobile organization.",
+          "At small companies, often yes, because the mobile team may be too small to need a staff engineer or manager. Larger companies have their own staff and principal levels for mobile. Most developers raise the ceiling by adding backend skills or joining a bigger mobile team.",
       },
       {
-        question: "Is it worth learning Flutter or React Native if I already know native?",
+        question: "Should native mobile developers learn Flutter or React Native?",
         answer:
-          "It widens the jobs you can apply for, especially at startups that want one codebase. Native depth remains the stronger long-term signal for senior roles, because cross-platform apps still need native work for performance, platform features and debugging.",
+          "It's worth it for the extra openings, especially at startups that want one codebase. Native depth is still the stronger signal for senior roles. Cross-platform apps still need native work for performance, platform features and debugging.",
       },
     ],
   },
 
   "cloud-engineer": {
     overview:
-      "Cloud engineering overlaps DevOps and SRE so much that the platform and scale on your resume often matter more than the title. Progression runs toward architecture (cloud architect, then principal or enterprise), toward platform engineering (building internal tooling for other engineers), or into a specialty such as cloud security or cost. Infrastructure management exists, but most senior cloud engineers who stay technical move into architect titles.",
+      "Cloud engineering overlaps so much with DevOps and SRE that hiring managers read your platform and scale before your title. From here most people go one of three ways. Architecture means cloud architect, then principal or enterprise. Platform engineering means building internal tools other engineers use. Or you specialize in cloud security or cost. Infrastructure management exists, but most senior cloud engineers who stay hands-on end up with architect in their title.",
     moves: [
       {
         toRole: "Cloud Architect",
         toSlug: "cloud-architect",
         moveType: "step_up",
         typicalTiming:
-          "After 5-7 years, once you have designed an environment rather than only building to someone else's design",
-        why: "Account structure, networking, identity and cost decisions are what cloud architects own. Engineers who already built landing zones or led a migration have made those decisions at a smaller scale.",
+          "After 5 to 7 years, once you've designed an environment instead of building from someone else's diagram",
+        why: "Account structure, networking, identity and cost belong to the architect. If you built a landing zone or led a migration, you've made those calls at a smaller scale.",
         skillsToAdd: [
           "Multi-account and landing zone design",
           "Well-Architected reviews",
@@ -734,14 +734,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "AWS Certified Solutions Architect Professional or Azure Solutions Architect Expert",
         ],
         proof:
-          "An environment or migration you designed, with the scale, reliability and cost outcomes.",
+          "An environment or migration you designed, with its scale in accounts or workloads and what happened to reliability and cost.",
       },
       {
         toRole: "Platform Engineer",
         toSlug: "platform-engineer",
         moveType: "lateral",
-        typicalTiming: "After 3-4 years, particularly if you already write reusable Terraform modules",
-        why: "Platform teams turn infrastructure into a self-service product for developers. Your IaC modules and account vending are the raw material of an internal platform.",
+        typicalTiming: "Year 3 or 4, especially if other people already reuse your Terraform modules",
+        why: "Your reusable modules and account vending are the start of an internal platform. Platform teams turn that into a self-service product and treat developers as the customers.",
         skillsToAdd: [
           "Kubernetes and CKA",
           "Internal developer portals (Backstage)",
@@ -749,14 +749,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Golden-path templates and developer experience metrics",
         ],
         proof:
-          "Infrastructure you packaged for other teams to use without your help, with adoption numbers.",
+          "Infrastructure you packaged so other teams could use it without asking you, and how many teams did.",
       },
       {
         toRole: "Cloud Security Engineer",
         toSlug: "cloud-security-engineer",
         moveType: "lateral",
-        typicalTiming: "After 3-5 years, often after owning IAM or network design for an account estate",
-        why: "Most cloud security work is configuration: IAM, network exposure, encryption and logging. Cloud engineers already build those and know where the defaults are unsafe.",
+        typicalTiming: "After 3 to 5 years, often after owning IAM or network design across many accounts",
+        why: "Most cloud security is configuration. You've been setting IAM, network exposure, encryption and logging for years, and you know which defaults are unsafe.",
         skillsToAdd: [
           "Policy as code (OPA, AWS SCPs, Azure Policy)",
           "CSPM and CNAPP tools such as Wiz or Prisma Cloud",
@@ -764,14 +764,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "AWS Certified Security Specialty or CCSP",
         ],
         proof:
-          "Guardrails or security controls you implemented across accounts, with findings reduced or coverage gained.",
+          "Guardrails or security controls you rolled out across accounts, with findings reduced or coverage gained.",
       },
       {
         toRole: "Site Reliability Engineer",
         toSlug: "site-reliability-engineer",
         moveType: "lateral",
-        typicalTiming: "After 2-4 years, especially if you already carry the pager for production",
-        why: "SRE shifts the focus from provisioning infrastructure to keeping services reliable on it. Your understanding of failure domains, autoscaling and managed services is the foundation.",
+        typicalTiming: "Year 2 to 4, particularly if you already carry the pager for production",
+        why: "Site reliability engineering cares less about standing infrastructure up and more about keeping services healthy on it. Knowing failure domains, autoscaling and managed-service quirks is the groundwork.",
         skillsToAdd: [
           "SLOs and error budgets",
           "Observability (Prometheus, Grafana, OpenTelemetry)",
@@ -779,14 +779,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Go or Python for reliability tooling",
         ],
         proof:
-          "Production incidents you handled and a reliability improvement you made, with uptime or latency numbers.",
+          "Incidents you handled and one reliability fix you made, with uptime or latency numbers.",
       },
       {
         toRole: "Solutions Architect",
         toSlug: "solutions-architect",
         moveType: "pivot",
-        typicalTiming: "After 4-6 years, typically by engineers who enjoy explaining designs as much as building them",
-        why: "Cloud providers, consultancies and SaaS vendors need architects who have run real workloads. Customer design conversations draw on the same architecture and cost knowledge, with more whiteboarding and less on-call.",
+        typicalTiming: "After 4 to 6 years, usually engineers who like explaining a design as much as building it",
+        why: "Cloud providers, consultancies and SaaS vendors need architects who've run real workloads. You'll whiteboard more and carry the pager less.",
         skillsToAdd: [
           "Customer discovery and requirements elicitation",
           "Presenting architecture to non-technical buyers",
@@ -794,38 +794,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Cost estimation and business case writing",
         ],
         proof:
-          "Designs you explained to stakeholders outside engineering, plus migrations or builds with clear business outcomes.",
+          "Designs you explained to people outside engineering, and migrations or builds with a clear business outcome attached.",
       },
     ],
     faqs: [
       {
         question: "Can a system administrator become a cloud engineer?",
         answer:
-          "Yes, and it is one of the most common routes. Your Linux, networking and troubleshooting skills carry over. Add one cloud platform to an associate-level certification, learn Terraform, and rebuild something you administer today as code.",
+          "Yes, it's one of the most common routes in. Linux, networking and troubleshooting carry over directly. Pick one cloud, earn its associate-level certification, learn Terraform, and rebuild something you run today as code.",
       },
       {
         question: "What comes after cloud engineer?",
         answer:
-          "Most commonly senior cloud engineer, then cloud architect. Others move into platform engineering, SRE or cloud security, and a smaller group moves into customer-facing solutions architecture or infrastructure management.",
+          "Senior cloud engineer, then cloud architect, is the most common path. Others move into platform engineering, SRE or cloud security. A smaller group goes into solutions architecture or infrastructure management.",
       },
       {
         question: "Is FinOps a real career path for cloud engineers?",
         answer:
-          "It is a growing specialty at organizations with large cloud bills, often as a FinOps engineer or analyst who works between engineering and finance. The FinOps Certified Practitioner certification is the common starting point, and cost-reduction work on your resume is the main evidence.",
+          "Yes, at companies with large cloud bills, where FinOps engineers and analysts sit between engineering and finance. The FinOps Certified Practitioner cert is the usual starting point. Cost cuts you can put numbers on are what get you hired.",
       },
     ],
   },
 
   "ai-engineer": {
     overview:
-      "AI engineering is new enough that ladders are still being written, and most AI engineers came from software engineering, so their levels usually map to the standard senior, staff and principal ladder. The fork is depth: toward model training and fine-tuning (ML engineering), toward AI infrastructure and platform, or toward the customer and product side. Staff scope usually comes from owning evaluation or retrieval infrastructure that several teams depend on.",
+      "Nobody has finished writing the AI engineer ladder yet. Most AI engineers came from software engineering, so levels usually follow the standard senior, staff and principal track. The real choice is where to go deep. Training and fine-tuning lead toward ML engineering, serving and tooling toward AI infrastructure, and customer work toward product or forward deployed roles. Staff scope usually comes from owning evaluation or retrieval systems several teams depend on.",
     moves: [
       {
         toRole: "Staff AI Engineer",
         moveType: "step_up",
         typicalTiming:
-          "After 6-8 years of engineering overall, with at least two AI systems in production",
-        why: "Staff engineers set the patterns other teams follow. AI engineers who built a shared eval harness, a retrieval service or a model gateway are already working at staff scope.",
+          "About 6 to 8 years into engineering overall, with at least two AI systems running in production",
+        why: "If other teams call your eval harness, retrieval service or model gateway, you're already working at staff scope. The title follows once you set those patterns on purpose.",
         skillsToAdd: [
           "Shared evaluation infrastructure and quality gates in CI",
           "Model routing and cost controls across teams",
@@ -833,15 +833,15 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "LLM observability (Langfuse, Arize Phoenix or similar)",
         ],
         proof:
-          "An AI component other teams adopted, with the number of consumers and its effect on quality, latency or cost.",
+          "An AI component other teams adopted, with how many use it and what it did to quality, latency or cost.",
       },
       {
         toRole: "Machine Learning Engineer",
         toSlug: "machine-learning-engineer",
         moveType: "lateral",
         typicalTiming:
-          "After 2-4 years, usually when prompting and retrieval stop being enough and fine-tuning becomes necessary",
-        why: "You already build eval sets and diagnose model failures. ML engineering adds training: fine-tuning, data pipelines and deciding when a smaller trained model beats a large prompted one.",
+          "Year 2 to 4, usually when prompting and retrieval stop being enough and fine-tuning is on the table",
+        why: "You already build eval sets and diagnose model failures. The missing piece is training, plus the judgment to know when a small fine-tuned model beats a big prompted one.",
         skillsToAdd: [
           "PyTorch",
           "Fine-tuning methods (LoRA, QLoRA)",
@@ -849,14 +849,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Experiment tracking with MLflow or Weights & Biases",
         ],
         proof:
-          "A fine-tuned or trained model you evaluated against a prompted baseline, with the comparison numbers.",
+          "A fine-tuned or trained model you tested against a prompted baseline, with the comparison numbers.",
       },
       {
         toRole: "MLOps Engineer",
         toSlug: "mlops-engineer",
         moveType: "lateral",
-        typicalTiming: "After 2-4 years, often by engineers who ended up owning deployment and monitoring",
-        why: "Serving models, tracking versions and monitoring output quality in production are MLOps problems, and AI engineers who built that plumbing for their own features have done the work.",
+        typicalTiming: "After 2 to 4 years, often engineers who got stuck owning deployment and monitoring and liked it",
+        why: "Serving models, versioning them and watching output quality in production are MLOps problems. If you built that plumbing for your own features, you've done the job.",
         skillsToAdd: [
           "Model serving (vLLM, Triton or KServe)",
           "Kubernetes and GPU scheduling",
@@ -864,13 +864,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Production monitoring for drift and output quality",
         ],
         proof:
-          "A model deployment you own in production, with latency, throughput or cost figures.",
+          "A model deployment you run in production, with latency, throughput or cost figures.",
       },
       {
         toRole: "Forward Deployed Engineer",
         moveType: "lateral",
-        typicalTiming: "After 2-5 years, often by engineers who want more customer contact",
-        why: "Forward deployed engineers build AI systems inside customer environments. It is the same retrieval, evaluation and integration work, done against someone else's data and constraints.",
+        typicalTiming: "Year 2 to 5, often engineers who want to be in the room with customers",
+        why: "Same retrieval, evaluation and integration work, done inside a customer's environment. The data, the permissions and the deadline all belong to someone else.",
         skillsToAdd: [
           "Enterprise data integration (SSO, data connectors, permissions-aware retrieval)",
           "Scoping and requirements work with customers",
@@ -878,14 +878,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Security and compliance reviews for deployments",
         ],
         proof:
-          "An AI system you built for real users outside your own team, with adoption or quality results.",
+          "An AI system you built for users outside your own team, with adoption or quality results.",
       },
       {
         toRole: "AI Product Manager",
         toSlug: "ai-product-manager",
         moveType: "pivot",
-        typicalTiming: "After 3-5 years, typically by engineers who already shape what gets built",
-        why: "AI PMs need to understand evaluation, failure modes and cost trade-offs deeply, which engineers already do. The pivot is toward deciding what to build and for whom.",
+        typicalTiming: "After 3 to 5 years, usually engineers who already have strong opinions about what gets built",
+        why: "Most AI PMs have to learn evaluation, failure modes and model costs from scratch. You'd be learning the other half, which is deciding what to build and for whom.",
         skillsToAdd: [
           "User research and problem framing",
           "Writing product requirements and success metrics",
@@ -893,39 +893,39 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Unit economics of model-backed features",
         ],
         proof:
-          "A feature where you influenced scope or direction based on user feedback, not only implemented it.",
+          "A feature where user feedback led you to change scope or direction, and what happened after.",
       },
     ],
     faqs: [
       {
         question: "Can a software engineer become an AI engineer?",
         answer:
-          "Yes, most AI engineers are software engineers who added model skills. Build a retrieval-augmented application with a real evaluation set, measure its quality and cost, and ship it to some users. That single project covers most of what hiring managers screen for.",
+          "Yes, most AI engineers are software engineers who added model skills. Build a retrieval-augmented app with a real evaluation set, measure quality and cost, and put it in front of actual users. That one project covers most of what hiring managers screen for.",
       },
       {
-        question: "Is AI engineering a stable career path or a hype title?",
+        question: "Is AI engineer a stable career or a hype title?",
         answer:
-          "The title may evolve, but the work (building reliable products on top of models) is not going away. The durable skills are evaluation, retrieval design and production engineering, which carry over whatever the role is called in a few years.",
+          "The title may change, but building reliable products on top of models isn't going away. Evaluation, retrieval design and production engineering are the lasting skills. They'll carry over whatever the job is called in a few years.",
       },
       {
         question: "What comes after senior AI engineer?",
         answer:
-          "Staff and principal AI engineer on the IC track, or engineering manager for an AI team. Some move deeper into ML engineering and training, and others move into AI platform or forward deployed roles.",
+          "Staff and then principal AI engineer on the individual contributor track, or engineering manager for an AI team. Some go deeper into ML engineering and training. Others move into AI platform or forward deployed roles.",
       },
     ],
   },
 
   "cybersecurity-engineer": {
     overview:
-      "Security engineers usually pick a domain after a few years (cloud, application, detection, identity or network), and that specialty shapes the next decade more than the title does. Past senior, the IC route leads to principal engineer or security architect, and the management route to security engineering manager and eventually head of security. Engineers who write production-quality code have the widest range of options, because modern security teams build more of their own tooling.",
+      "Security engineers usually settle into one area after a few years, such as cloud, application, detection, identity or network. That choice shapes the next decade more than any title. Past senior, the individual contributor road runs to principal engineer or security architect. The management road runs to security engineering manager, then head of security. Engineers who write production-quality code get the most options, because modern security teams build a lot of their own tools.",
     moves: [
       {
         toRole: "Security Architect",
         toSlug: "security-architect",
         moveType: "step_up",
         typicalTiming:
-          "After 7-9 years with hands-on depth in at least two security domains",
-        why: "Architects decide which controls a system needs and which risks to accept. Engineers who have deployed, tuned and broken controls in production bring the realism that design reviews need.",
+          "After 7 to 9 years, with real depth in at least two security areas",
+        why: "Design reviews go better with someone who has deployed, tuned and broken controls in production. Architects decide which controls a system gets and which risks the business accepts.",
         skillsToAdd: [
           "Threat modeling for system designs",
           "Security reference architectures and standards writing",
@@ -933,13 +933,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISSP or SABSA",
         ],
         proof:
-          "A security design you led that other teams adopted, with the risk reduced or reviews shortened.",
+          "A security design you led that other teams adopted, and what it did to risk or review time.",
       },
       {
         toRole: "Security Engineering Manager",
         moveType: "step_up",
-        typicalTiming: "After 6-8 years, often after leading a program such as an EDR rollout or SIEM migration",
-        why: "Security engineering managers balance incident load, project work and hiring. If you already coordinate across teams and mentor juniors, you are practicing the job.",
+        typicalTiming: "Around 6 to 8 years, often right after leading something like an EDR rollout or a SIEM migration",
+        why: "The job is balancing incident load against project work while you hire. Coordinating across teams and mentoring juniors is the practice run.",
         skillsToAdd: [
           "Hiring and performance management",
           "Security roadmap planning and budgeting",
@@ -947,14 +947,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISM",
         ],
         proof:
-          "A multi-team security program you led, with coverage or risk results and evidence you mentored others.",
+          "A multi-team security program you led with coverage or risk results, plus engineers you mentored and how they grew.",
       },
       {
         toRole: "Application Security Engineer",
         toSlug: "application-security-engineer",
         moveType: "lateral",
-        typicalTiming: "After 3-5 years, easiest for engineers who already script and read code comfortably",
-        why: "AppSec moves the same risk thinking into the software development lifecycle. Your automation skills fit directly into SAST, dependency scanning and secure pipeline work.",
+        typicalTiming: "Year 3 to 5, easiest if you script daily and read other people's code comfortably",
+        why: "AppSec moves your risk thinking into how software gets built and shipped. Your automation habits slot straight into code scanning, dependency checks and pipeline hardening.",
         skillsToAdd: [
           "Secure code review",
           "SAST and SCA tools (Semgrep, CodeQL, Snyk)",
@@ -962,14 +962,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Threat modeling with developers",
         ],
         proof:
-          "Security automation you built into a CI pipeline, or vulnerabilities you found in code and helped fix.",
+          "Security automation you built into a CI pipeline, or vulnerabilities you found in code and helped developers fix.",
       },
       {
         toRole: "Penetration Tester",
         toSlug: "penetration-tester",
         moveType: "lateral",
-        typicalTiming: "After 3-5 years, usually after sustained lab practice",
-        why: "Engineers know how defenses are configured and where they are usually weak. Offensive work tests those same controls from the attacker's side.",
+        typicalTiming: "After 3 to 5 years, following months of steady lab practice",
+        why: "Engineers learn where defenses are usually weak by setting them up. Offense means testing those same controls from the attacker's side.",
         skillsToAdd: [
           "Burp Suite and Metasploit",
           "Active Directory and cloud attack techniques",
@@ -977,14 +977,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "OSCP or GIAC GPEN",
         ],
         proof:
-          "OSCP or equivalent, plus documented lab work or internal testing you performed with permission.",
+          "OSCP or equivalent, plus documented lab work or authorized internal testing you did.",
       },
       {
         toRole: "Product Manager",
         toSlug: "product-manager",
         moveType: "pivot",
-        typicalTiming: "After 5-7 years, most often into roles at security product companies",
-        why: "Security products are bought and run by people like you. Engineers who know how tools actually fail in daily operations bring the customer insight that security PM teams hire for.",
+        typicalTiming: "After 5 to 7 years, mostly into security product companies",
+        why: "Security tools are bought and run by people like you. Security vendors hire PMs who know how those tools fail on an ordinary Tuesday.",
         skillsToAdd: [
           "Customer discovery interviews",
           "Writing product requirements and success metrics",
@@ -992,37 +992,37 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Roadmap prioritization",
         ],
         proof:
-          "Tool evaluations or vendor selections you led, and internal tooling you designed around user needs.",
+          "Tool evaluations or vendor selections you led, and internal tooling you designed around what its users needed.",
       },
     ],
     faqs: [
       {
         question: "Can a security analyst become a cybersecurity engineer?",
         answer:
-          "Yes, and it is the most common route in. Start automating your own queue with Python and a SOAR platform, take on detection tuning, and volunteer for tool deployments. Engineering interviews look for things you built, not alerts you closed.",
+          "Yes, it's the most common route in. Automate your own queue with Python or a SOAR platform, take on detection tuning, and volunteer for tool rollouts. Engineering interviews ask about things you built, not alerts you closed.",
       },
       {
         question: "Which cybersecurity specialization has the most room to grow?",
         answer:
-          "Cloud and application security are where most new engineering work is, because that is where companies are building. Detection engineering is also growing as teams treat detections as code. Choose the one closest to what you already do, since depth beats breadth for senior roles.",
+          "Cloud and application security, because that's where companies are building. Detection engineering is growing too as teams manage detections as code. Pick the one closest to your current work, since depth beats breadth for senior roles.",
       },
       {
-        question: "Do cybersecurity engineers need management experience to reach senior pay levels?",
+        question: "Do cybersecurity engineers have to go into management to earn senior pay?",
         answer:
-          "Not at organizations with a real IC track, where principal engineers and architects sit at the same level as managers. At smaller organizations the senior roles are more often managerial, which is one reason experienced engineers move to larger security teams.",
+          "Not at companies with a real individual contributor track. There, principal engineers and architects are leveled alongside managers. At smaller companies the senior jobs are more often managerial, which is one reason experienced engineers move to bigger security teams.",
       },
     ],
   },
 
   "security-analyst": {
     overview:
-      "Security analyst is the most common way into security, and few people make a whole career of queue work: it is a launch point. The first real fork arrives around Tier 2, when you choose between going deeper on investigation (incident response, threat intelligence, hunting), moving into building (security or detection engineering), or moving toward risk and compliance. The analysts who move fastest are usually the ones who automated parts of their own queue.",
+      "Security analyst is the most common way into security, and hardly anyone works the alert queue for a whole career. The first real choice comes around Tier 2. You can go deeper on investigation through incident response, threat intel or hunting. You can start building as a security or detection engineer. Or you can head toward risk and compliance. The analysts who move up fastest tend to be the ones who automated part of their own queue.",
     moves: [
       {
         toRole: "Incident Responder",
         moveType: "step_up",
-        typicalTiming: "After 2-4 years in a SOC, once you have run investigations end to end",
-        why: "Incident response takes the investigations you escalate and finishes them: scoping, containment, forensics and the report. Analysts who already work cases past triage are halfway there.",
+        typicalTiming: "Usually 2 to 4 years into a SOC, once you've run an investigation from alert to closure",
+        why: "Incident response finishes the cases you escalate, from scoping and containment to forensics and the final report. If you already work cases past triage, you're halfway there.",
         skillsToAdd: [
           "Digital forensics (Velociraptor, KAPE, Volatility)",
           "EDR investigation in tools such as CrowdStrike Falcon or Microsoft Defender for Endpoint",
@@ -1030,14 +1030,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "GIAC GCIH or GCFA",
         ],
         proof:
-          "Investigations you led beyond triage, with scope, containment actions and outcome described.",
+          "Investigations you led beyond triage, each with the scope, the containment steps you took and how it ended.",
       },
       {
         toRole: "Security Operations Engineer",
         toSlug: "security-operations-engineer",
         moveType: "step_up",
-        typicalTiming: "After 2-4 years, usually after you started scripting away repetitive triage",
-        why: "Security operations engineers build the detections, integrations and playbooks analysts work from. You know which alerts waste time and which enrichment would have helped, which is the requirements list.",
+        typicalTiming: "After 2 to 4 years, usually once you've started scripting away repetitive triage",
+        why: "You know which alerts waste time and which lookups you keep doing by hand. That's the requirements list for the detections and playbooks security operations engineers build.",
         skillsToAdd: [
           "Python for automation",
           "SOAR playbooks (Splunk SOAR, Microsoft Sentinel playbooks or Tines)",
@@ -1045,13 +1045,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "SIEM engineering: log onboarding and parsing",
         ],
         proof:
-          "An automation or detection you built, with the analyst time saved or false positives removed.",
+          "An automation or detection you built, with the analyst hours saved or false positives removed.",
       },
       {
         toRole: "Threat Intelligence Analyst",
         moveType: "lateral",
-        typicalTiming: "After 2-3 years, often by analysts who enjoy research and writing more than triage speed",
-        why: "Threat intelligence starts from the indicators and TTPs you already see in alerts and asks who is behind them and what comes next. Your working knowledge of real attacks grounds the research.",
+        typicalTiming: "Year 2 or 3, usually analysts who'd rather research and write than race the queue",
+        why: "You see attacker indicators and techniques in alerts every shift. Threat intel asks who's behind them and what they'll do next, and your view of real attacks keeps the research honest.",
         skillsToAdd: [
           "MITRE ATT&CK mapping and adversary profiling",
           "Threat intelligence platforms (MISP, OpenCTI)",
@@ -1059,13 +1059,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "GIAC GCTI",
         ],
         proof:
-          "Intelligence you produced that changed a detection or decision, such as a campaign write-up that led to new rules.",
+          "Intelligence you produced that changed something, like a campaign write-up that led to new detection rules.",
       },
       {
         toRole: "GRC Analyst",
         moveType: "pivot",
-        typicalTiming: "After 1-3 years, typically by analysts who want regular hours and more policy work",
-        why: "GRC teams need people who understand how controls behave in practice. SOC experience makes your control testing and risk assessments more credible than those written purely from frameworks.",
+        typicalTiming: "Year 1 to 3, often analysts who want regular hours and more time on policy",
+        why: "Plenty of GRC (governance, risk and compliance) people know the frameworks but have never watched a control fail. You have, and it makes your control testing hard to argue with.",
         skillsToAdd: [
           "NIST CSF, NIST 800-53 and ISO 27001",
           "SOC 2 audit preparation",
@@ -1073,14 +1073,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CISA or CRISC over time",
         ],
         proof:
-          "Control evidence or audit support you contributed to, plus documentation or policy writing you owned.",
+          "Control evidence or audit support you contributed, plus documentation or policy you owned.",
       },
       {
         toRole: "Penetration Tester",
         toSlug: "penetration-tester",
         moveType: "pivot",
-        typicalTiming: "After 2-4 years plus sustained hands-on lab practice",
-        why: "Analysts see attacker behavior every day from the defender's side. Moving to offense uses that knowledge of what gets caught and what slips through.",
+        typicalTiming: "After 2 to 4 years, plus steady hands-on lab time outside work",
+        why: "Every shift shows you what gets caught and what slips through. On offense, that tells you where to push.",
         skillsToAdd: [
           "Nmap, Burp Suite and Metasploit",
           "Active Directory attack techniques",
@@ -1088,37 +1088,37 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "OSCP",
         ],
         proof:
-          "OSCP or equivalent, plus lab write-ups or a public portfolio of rooms and reports.",
+          "OSCP or equivalent, plus lab write-ups or a public profile of rooms and reports.",
       },
     ],
     faqs: [
       {
         question: "Is security analyst an entry-level job?",
         answer:
-          "Tier 1 SOC analyst roles are the closest thing security has to an entry-level job, but most still expect some IT background such as help desk, networking or system administration, plus a certification like CompTIA Security+. Senior analyst titles are not entry-level.",
+          "Tier 1 SOC analyst is the closest thing security has to an entry-level job. Most postings still expect some IT background, like help desk, networking or sysadmin work, plus a cert such as CompTIA Security+. Senior analyst titles are not entry level.",
       },
       {
         question: "Should a security analyst move into engineering or incident response?",
         answer:
-          "Choose engineering if you like building and automating, and incident response if you like the investigation itself. Both are common next steps. If you are unsure, automate something in your current queue: whether you enjoyed the building or the result tells you a lot.",
+          "Pick engineering if you like building and automating, and incident response if the investigation itself is the fun part. Both are common next steps. If you can't decide, automate something in your current queue and notice which part you enjoyed.",
       },
       {
-        question: "Do I need a degree to move beyond a Tier 2 analyst role?",
+        question: "Do I need a degree to move past a Tier 2 analyst role?",
         answer:
-          "Usually not. Security hiring weighs demonstrated skills and certifications heavily, and investigations or detections you can describe in detail count for more. Some government and defense roles do have degree or clearance requirements.",
+          "Usually not. Security hiring leans heavily on proven skills and certifications, and investigations or detections you can walk through in detail count for more. Some government and defense roles do require a degree or a clearance.",
       },
     ],
   },
 
   "business-analyst": {
     overview:
-      "Business analyst careers move from documenting requirements to shaping solutions, and the title ladder (BA, senior, lead) is shorter than the list of sideways options. The most common exits are product owner or product manager, where you own the priority decisions you used to inform, and data or BI analysis, where the analysis becomes more quantitative. Solutions architecture and consulting are the other routes, depending on whether you prefer the technical design or the problem framing.",
+      "Business analyst careers move from writing down requirements to shaping the solution. The title ladder of BA, senior and lead is shorter than the list of sideways exits. The usual exits are product owner or product manager, where you make the priority calls you used to inform. BI and data analysis are next, where the work gets more quantitative. Solutions architecture suits people who like the technical design, and consulting suits people who like framing the problem.",
     moves: [
       {
         toRole: "Product Owner",
         moveType: "lateral",
-        typicalTiming: "After 2-4 years, often inside the same agile team",
-        why: "Product owners write and prioritize the backlog that BAs already help refine. The difference is decision rights: you stop recommending and start choosing.",
+        typicalTiming: "After 2 to 4 years, often without leaving your current scrum team",
+        why: "The backlog you help refine becomes yours to prioritize. You stop recommending and start choosing.",
         skillsToAdd: [
           "Backlog prioritization (WSJF, MoSCoW)",
           "Writing acceptance criteria and user stories at scale",
@@ -1126,14 +1126,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "CSPO or PSPO I",
         ],
         proof:
-          "A backlog or release you shaped, with scope decisions you made and the result they produced.",
+          "A backlog or release you shaped, the scope calls you made, and what they produced.",
       },
       {
         toRole: "Product Manager",
         toSlug: "product-manager",
         moveType: "step_up",
-        typicalTiming: "After 3-6 years, usually via product owner or a BA role on a product team",
-        why: "PMs decide what to build and why. BAs already understand the users, processes and constraints; the step up adds strategy, market thinking and accountability for outcomes.",
+        typicalTiming: "Year 3 to 6, usually by way of product owner or a BA seat on a product team",
+        why: "A PM answers for strategy, the market and whether the thing worked. Knowing the users, processes and constraints cold is the half you bring.",
         skillsToAdd: [
           "Product discovery and customer interviews",
           "Product analytics (Amplitude, Mixpanel or Pendo)",
@@ -1141,14 +1141,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Defining success metrics before build",
         ],
         proof:
-          "A problem you reframed and the business result of the solution you pushed for, not only the requirements you wrote.",
+          "A problem you reframed and the business result of the solution you argued for. Requirements you wrote don't count on their own.",
       },
       {
         toRole: "Business Intelligence Analyst",
         toSlug: "business-intelligence-analyst",
         moveType: "lateral",
-        typicalTiming: "After 1-3 years, typically by BAs who already pull their own data",
-        why: "BI analysts answer business questions with data, and BAs already know which questions matter and where the data lives in the process.",
+        typicalTiming: "After 1 to 3 years, typically BAs who got tired of waiting for someone else to pull the data",
+        why: "You know which business questions matter and where in the process the data comes from. BI gives you the SQL and dashboards to answer them yourself.",
         skillsToAdd: [
           "SQL",
           "Power BI or Tableau",
@@ -1162,8 +1162,8 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
         toRole: "Solutions Architect",
         toSlug: "solutions-architect",
         moveType: "step_up",
-        typicalTiming: "After 5-8 years, most often on enterprise platforms such as Salesforce, ServiceNow or ERP systems",
-        why: "On configurable enterprise platforms, the line between analysis and design is thin. BAs who already decide how requirements map onto platform features are doing early solution design.",
+        typicalTiming: "After 5 to 8 years, most often on Salesforce, ServiceNow or an ERP platform",
+        why: "On configurable platforms, deciding how a requirement maps to platform features is already solution design. Architects own that mapping, plus the integrations and data model around it.",
         skillsToAdd: [
           "Platform architecture certifications (Salesforce Application Architect or ServiceNow CTA path)",
           "Integration patterns and APIs",
@@ -1171,13 +1171,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Solution design documents",
         ],
         proof:
-          "A platform solution you designed, not just specified, with the integrations and scale involved.",
+          "A platform solution you designed rather than only specified, with the integrations and scale involved.",
       },
       {
         toRole: "Management Consultant",
         moveType: "pivot",
-        typicalTiming: "After 3-5 years, often with an MBA or strong industry domain knowledge",
-        why: "Consultants frame business problems and drive change across stakeholders. Process mapping, stakeholder alignment and structured analysis are the same toolkit used at a more strategic level.",
+        typicalTiming: "After 3 to 5 years, often with an MBA or deep knowledge of one industry",
+        why: "Mapping processes, getting stakeholders to agree and structuring messy analysis is the consultant's toolkit too. Consulting aims it at bigger problems and puts you in front of executives.",
         skillsToAdd: [
           "Hypothesis-driven problem solving",
           "Executive slide writing",
@@ -1185,38 +1185,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Industry-specific domain depth",
         ],
         proof:
-          "A process or operational change you drove with measured financial or efficiency impact.",
+          "A process or operational change you drove, with the dollars or hours it saved.",
       },
     ],
     faqs: [
       {
-        question: "Is business analyst a good first step toward product management?",
+        question: "Is business analyst a good path to product management?",
         answer:
-          "Yes, it is one of the most common routes. BAs learn users, processes and requirements, which are core product skills. To make the move, look for a BA role on a product team, take on backlog ownership, and show outcomes rather than documents.",
+          "Yes, it's one of the most common routes into product. BAs already learn users, processes and requirements. Get a BA role on a product team, take on backlog ownership, and show outcomes rather than documents.",
       },
       {
         question: "What comes after senior business analyst?",
         answer:
-          "Lead BA or analysis practice lead if you want to stay in the discipline. Most senior BAs move sideways instead: product owner, product manager, solutions architect, program manager or consulting.",
+          "Lead BA or analysis practice lead, if you want to stay in the discipline. Most senior BAs move sideways instead. Product owner, product manager, solutions architect, program manager and consulting are the usual landing spots.",
       },
       {
         question: "Should a business analyst learn SQL?",
         answer:
-          "Yes. It lets you validate requirements against real data, answer your own questions, and opens the route to BI and data analyst roles. You do not need data engineering depth, just enough to query, join and aggregate confidently.",
+          "Yes. It lets you check requirements against real data and answer your own questions, and it opens the door to BI and data analyst roles. Joins, filters and aggregates are enough to start.",
       },
     ],
   },
 
   "ui-designer": {
     overview:
-      "UI design as a standalone title is narrower in the US than it used to be, because many companies hire product designers who cover both interface and experience work. So the most common progression is to broaden into product design, or to go deeper into design systems, where visual craft becomes shared infrastructure. Other directions are motion, and front-end development for designers who enjoy building what they draw.",
+      "UI designer is a less common title in the US than it used to be. Many companies now hire product designers to cover both interface and experience work. So most UI designers grow by broadening into product design, or by going deeper into design systems, where visual craft becomes shared infrastructure. Motion is another direction. So is front-end development, for designers who like building what they draw.",
     moves: [
       {
         toRole: "Product Designer",
         toSlug: "product-designer",
         moveType: "step_up",
-        typicalTiming: "After 2-4 years, once you are regularly involved before the visual stage",
-        why: "Product designers own the problem as well as the interface. UI designers who already shape flows, question requirements and join research sessions are doing part of the job.",
+        typicalTiming: "After 2 to 4 years, once you're regularly in the room before anything is visual",
+        why: "Product designers own the problem, not only the pixels. If you already question requirements, sketch flows and sit in on research, you're partway there.",
         skillsToAdd: [
           "User research and usability testing",
           "User flows and information architecture",
@@ -1224,13 +1224,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Measuring design outcomes with product analytics",
         ],
         proof:
-          "A portfolio case study that starts from a user problem, not a screen, and ends with a measured result.",
+          "A case study that opens with a user problem instead of a screen and ends with a measured result.",
       },
       {
         toRole: "Design Systems Designer",
         moveType: "lateral",
-        typicalTiming: "After 3-5 years, usually after building or extending a component library",
-        why: "Design systems turn consistency, spacing, typography and color decisions into reusable components. That is UI craft applied at the scale of a whole organization.",
+        typicalTiming: "Year 3 to 5, usually after you've built or extended a component library",
+        why: "Every spacing, type and color decision you've argued over becomes a component other designers reuse. It's UI craft at the scale of a whole company.",
         skillsToAdd: [
           "Figma variables, variants and component architecture",
           "Design tokens and token pipelines (Tokens Studio, Style Dictionary)",
@@ -1238,14 +1238,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "WCAG 2.2 accessibility requirements",
         ],
         proof:
-          "A component library or token system you built or extended, with adoption across teams.",
+          "A component library or token system you built or extended, and how many teams adopted it.",
       },
       {
         toRole: "Motion Designer",
         toSlug: "motion-designer",
         moveType: "lateral",
-        typicalTiming: "Any time, most often by UI designers who already prototype interactions",
-        why: "Product motion (transitions, feedback, onboarding animation) is an extension of interface hierarchy and timing. Your UI eye decides what motion should clarify.",
+        typicalTiming: "Any time, and most often for UI designers who already prototype interactions",
+        why: "Good product motion makes hierarchy and state changes easier to follow. Your UI eye decides where motion helps and where it's noise.",
         skillsToAdd: [
           "After Effects",
           "Rive or Lottie for production animation",
@@ -1253,14 +1253,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Prototyping in ProtoPie or Figma Smart Animate",
         ],
         proof:
-          "Motion work shipped in a real product, or a portfolio reel showing interface animations with their purpose explained.",
+          "Motion that shipped in a real product, or a reel of interface animations with a line on what each one clarifies.",
       },
       {
         toRole: "Frontend Developer",
         toSlug: "frontend-developer",
         moveType: "pivot",
-        typicalTiming: "After 2-4 years, typically by designers who already write some CSS",
-        why: "Front-end teams value people who care about pixel accuracy, spacing and interaction details. Designers who can build their own designs cut the handoff problems every team struggles with.",
+        typicalTiming: "After 2 to 4 years, usually designers who already write some CSS",
+        why: "Front-end teams value someone who notices when the padding is off by 4px. A designer who can build their own designs ends the handoff fights every team has.",
         skillsToAdd: [
           "HTML, CSS and modern layout (Flexbox, Grid)",
           "JavaScript and TypeScript",
@@ -1268,13 +1268,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Tailwind CSS or a CSS-in-JS approach",
         ],
         proof:
-          "Real code: a site or components you built, in a public repository, ideally matching a design you made.",
+          "Real code in a public repository, ideally a site or components built from a design you made.",
       },
       {
         toRole: "Brand Designer",
         moveType: "pivot",
-        typicalTiming: "After 2-4 years, usually by designers who prefer visual identity over product flows",
-        why: "Typography, color and composition are the core of brand work too. The pivot trades interface constraints for identity systems, campaigns and marketing surfaces.",
+        typicalTiming: "Year 2 to 4, for designers who'd rather work on identity than product flows",
+        why: "Type, color and composition are the core of brand work too. You give up interface constraints and get identity systems and campaigns instead.",
         skillsToAdd: [
           "Adobe Illustrator and InDesign",
           "Logo and identity system design",
@@ -1282,38 +1282,38 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Campaign and marketing design",
         ],
         proof:
-          "A portfolio with identity or marketing work, not only product screens.",
+          "A portfolio with identity or marketing work in it, not only product screens.",
       },
     ],
     faqs: [
       {
         question: "Is UI design a dying job title?",
         answer:
-          "The standalone title is less common in US tech because many companies hire product designers instead, but UI skills are not declining. Strong visual craft is exactly what product design teams struggle to hire for. The practical move is to add research and flow work so you qualify for product designer roles.",
+          "The title is less common in US tech, but UI skill isn't declining. Many companies hire product designers instead, and strong visual craft is exactly what those teams struggle to find. Add research and flow work to your portfolio so you qualify for product designer roles.",
       },
       {
-        question: "Can a graphic designer move into UI design?",
+        question: "Can a graphic designer become a UI designer?",
         answer:
-          "Yes. Typography, color and composition transfer directly. The gaps are interface-specific: responsive layout, interaction states, component systems and accessibility. Redesign a real app flow in Figma and show the states, not only the hero screen.",
+          "Yes. Typography, color and composition transfer directly. The gaps are interface skills like responsive layout, interaction states, component systems and accessibility. Redesign a real app flow in Figma and show every state, not only the hero screen.",
       },
       {
         question: "What is a design engineer, and can UI designers become one?",
         answer:
-          "A design engineer works between design and front-end, building production UI and prototypes with close attention to detail. UI designers who learn React and CSS well are natural candidates, and the role is growing at product-focused companies.",
+          "A design engineer works between design and front-end, building production UI and prototypes with close attention to detail. UI designers who learn React and CSS well are natural candidates. More product-focused companies are hiring for it.",
       },
     ],
   },
 
   "solutions-architect": {
     overview:
-      "Solutions architect covers two different jobs with one title: delivery architects inside companies and consultancies, and pre-sales architects at vendors who design solutions to win and land deals. In both, the IC route leads toward principal or enterprise architect, and the leadership route toward running an architecture practice or a solutions team. The pre-sales version has extra exits into product management and customer-facing leadership, because you spend your days learning what customers actually need.",
+      "One title, two jobs. Delivery architects design systems inside companies and consultancies. Pre-sales architects at vendors design solutions that win deals and then have to work. In both, the individual contributor route leads toward principal or enterprise architect. The leadership route leads to running an architecture practice or a solutions team. Pre-sales has extra exits into product management and customer-facing leadership, because you spend your days hearing what customers actually need.",
     moves: [
       {
         toRole: "Enterprise Architect",
         toSlug: "enterprise-architect",
         moveType: "step_up",
-        typicalTiming: "After 8-10 years overall, once your designs span several programs or business units",
-        why: "Enterprise architects set the standards and roadmap that individual solutions fit into. Solutions architects who already negotiate integration and platform choices across teams are working at that boundary.",
+        typicalTiming: "About 8 to 10 years into your career, once your designs span several programs or business units",
+        why: "If you already negotiate platform and integration choices across teams, you're working at the edge of enterprise architecture. The step up means setting the standards and roadmap everyone else builds within.",
         skillsToAdd: [
           "TOGAF",
           "Capability mapping and portfolio rationalization",
@@ -1321,13 +1321,13 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "ArchiMate",
         ],
         proof:
-          "Architecture decisions that shaped multiple programs or platform choices, with business outcomes.",
+          "Architecture decisions that shaped several programs or platform choices, with the business outcome of each.",
       },
       {
         toRole: "Director of Solutions Architecture",
         moveType: "step_up",
-        typicalTiming: "After 3-5 years as a senior architect, often after mentoring newer architects",
-        why: "The director builds and runs the architect team: hiring, coverage and quality of designs. Senior architects who already review peers' designs and coach juniors are practicing the role.",
+        typicalTiming: "After 3 to 5 years as a senior architect, often once you're mentoring newer architects",
+        why: "The director hires the architects, decides who covers which accounts and owns the quality of their designs. Reviewing peers' work and coaching juniors is the rehearsal.",
         skillsToAdd: [
           "Hiring and developing architects",
           "Team coverage and capacity planning",
@@ -1341,8 +1341,8 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
         toRole: "Cloud Architect",
         toSlug: "cloud-architect",
         moveType: "lateral",
-        typicalTiming: "Any time, most natural after several cloud-heavy engagements",
-        why: "Cloud architecture narrows the scope to one platform but goes deeper into landing zones, networking and cost. Most modern solutions already run on cloud, so the design experience carries over.",
+        typicalTiming: "Any time, and most natural after a run of cloud-heavy engagements",
+        why: "Most solutions you design already run on a cloud. Cloud architecture trades breadth for depth in one platform's landing zones, networking and cost.",
         skillsToAdd: [
           "AWS Certified Solutions Architect Professional or Google Professional Cloud Architect",
           "Landing zone and multi-account design",
@@ -1356,8 +1356,8 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
         toRole: "Software Architect",
         toSlug: "software-architect",
         moveType: "lateral",
-        typicalTiming: "After 5-8 years, usually by delivery-side architects who want more code-level involvement",
-        why: "Software architects own the internal structure of systems rather than the fit between them. Solutions architects with an engineering background already reason about services, data and interfaces.",
+        typicalTiming: "After 5 to 8 years, usually delivery-side architects who miss being close to the code",
+        why: "Software architects care about the inside of one system more than how systems fit together. With an engineering background, you already think in services, data and interfaces.",
         skillsToAdd: [
           "Domain-driven design",
           "Event-driven architecture (Kafka)",
@@ -1365,14 +1365,14 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Architecture decision records",
         ],
         proof:
-          "Recent hands-on engineering and a system whose internal design you owned.",
+          "Recent hands-on engineering and a system whose internal design was yours.",
       },
       {
         toRole: "Product Manager",
         toSlug: "product-manager",
         moveType: "pivot",
-        typicalTiming: "After 3-6 years, most often from pre-sales roles",
-        why: "Pre-sales architects hear customer needs, objections and workarounds constantly. That customer insight is what product teams hire for.",
+        typicalTiming: "After 3 to 6 years, and far more often from pre-sales than delivery",
+        why: "Pre-sales architects hear objections, feature requests and ugly workarounds all week. Product teams hire for that.",
         skillsToAdd: [
           "Product discovery and prioritization",
           "Roadmapping",
@@ -1380,24 +1380,24 @@ export const CAREER_PATHS_PART_2: Record<string, RoleCareerPath> = {
           "Competitive and market analysis",
         ],
         proof:
-          "Customer feedback you turned into product changes, or deals won because of a gap you identified.",
+          "Customer feedback you turned into product changes, or deals won because you spotted a gap.",
       },
     ],
     faqs: [
       {
         question: "Can a software engineer become a solutions architect?",
         answer:
-          "Yes, most do. The gap is not technical depth but communication and scope: gathering requirements, explaining trade-offs to non-engineers, and designing across systems rather than inside one. Take on design docs and customer-facing work in your current role first.",
+          "Yes, most solutions architects started as engineers. The gap is communication and scope, not technical depth. You need to gather requirements, explain trade-offs to non-engineers and design across systems. Start with design docs and customer-facing work in your current role.",
       },
       {
         question: "Is pre-sales solutions architecture a good career move?",
         answer:
-          "It suits people who enjoy customer conversations and variety over long build cycles. You trade deep ownership of one system for breadth across many customers, and often part of your pay is tied to sales results.",
+          "It is if you like customer conversations and variety more than long build cycles. You trade deep ownership of one system for breadth across many customers. Part of your pay is often tied to sales results.",
       },
       {
         question: "What comes after solutions architect?",
         answer:
-          "Principal or enterprise architect on the IC track, or director of solutions architecture on the leadership track. Pre-sales architects also move into product management and field CTO roles.",
+          "Principal or enterprise architect on the individual contributor track, or director of solutions architecture on the leadership track. Pre-sales architects also move into product management and field CTO roles.",
       },
     ],
   },

@@ -13,6 +13,8 @@ Disallow: /settings
 Disallow: /settings/
 Disallow: /interview-coach
 Disallow: /interview-coach/
+# Signed-in career plans (per-user, noindex)
+Disallow: /career-path/plan/
 
 # Admin + API
 Disallow: /admin

@@ -404,6 +404,7 @@ Two reset mechanisms coexist:
 - SEO pages /career-path/[role]: hand-written moves in lib/roles/career-moves/part-1.ts + part-2.ts (28 roles), ladder from role-content.ts `seniority`. `hasCareerPathPage()` (lib/roles/career-moves/pages.ts) is the single existence check for the page, sitemap, telemetry allowlist, llms.txt and cross-links. No generateStaticParams (providers are never called at build); ISR 1 day.
 - Funnel: client events as page views `/popup/career-path/<event>` (CAREER_PATH_EVENTS); /admin/funnel has a Career Path block.
 - Setup: migration 00080_career_paths.sql + `npx tsx scripts/seed-career-path-prompt.ts` (prompt + ai_settings).
+- Look and voice: an editorial "job-market report", deliberately not a SaaS template. Left-aligned, hairline rules instead of card grids, Geist Mono for data labels and figures, real tables for moves, no icon-in-circle features or gradients; surfaces only for the tool, results and locked plan. Copy is US English at a 7th-8th grade level, sentences of 25 words or fewer, 2-4 word buttons, FAQ answers fully visible. Role pages open with a quotable short answer (`shortAnswer()` in components/career-path/role-page/role-page-copy.ts). llms.txt lines carry each role's usual next moves.
 
 ## CV Tailor for JD
 

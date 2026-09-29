@@ -8,7 +8,7 @@ import { CareerPathNotFoundError, claimCareerPath, getCareerPathRecord } from "@
 import type { CareerPathOption, ClaimResult } from "@/lib/career-path/types";
 import { planPath } from "@/components/career-path/format";
 import { MarketLine } from "@/components/career-path/market-line";
-import { FitMeter, MoveTypeBadge, SkillChips } from "@/components/career-path/path-meta";
+import { FitMeter, MarketStats, MoveTypeBadge, SkillChips } from "@/components/career-path/path-meta";
 import { CareerPathEventOnMount } from "@/components/career-path/track";
 import { RolePlan } from "./role-plan";
 import { TailorCta, type TailorCvOption } from "./tailor-cta";
@@ -87,40 +87,39 @@ export default async function CareerPlanPage({
   const others = paths.filter((p) => p !== selected);
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-10 md:py-14">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
       <CareerPathEventOnMount event="plan_viewed" />
 
       <Link
         href="/career-path"
-        className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground sm:min-h-0"
+        className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground sm:min-h-0"
       >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Career path generator
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to the career path generator
       </Link>
 
       {/* Selected role */}
-      <header className="mt-6 rounded-2xl border bg-card p-5 sm:p-7">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Your 90-day plan</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">{selected.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">From {record.currentRole}</p>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
+      <header className="mt-8">
+        <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+          Your 90-day plan · From {record.currentRole}
+        </p>
+        <h1 className="mt-2 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{selected.title}</h1>
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
           <MoveTypeBadge moveType={selected.moveType} />
           <FitMeter fit={selected.fit} />
         </div>
-        <p className="mt-4 text-sm leading-relaxed">{selected.why}</p>
+        <p className="mt-5 max-w-prose text-base leading-relaxed">{selected.why}</p>
+        {selected.market && <MarketStats market={selected.market} className="mt-6 max-w-md border-t pt-4" />}
         {selected.transferableSkills.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Skills you already have</p>
+          <div className="mt-6 border-t pt-4">
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+              Skills you already have
+            </p>
             <SkillChips skills={selected.transferableSkills} label="Skills you already have" />
-          </div>
-        )}
-        {selected.market && (
-          <div className="mt-4">
-            <MarketLine market={selected.market} />
           </div>
         )}
       </header>
 
-      <div className="mt-10">
+      <div className="mt-12 border-t pt-10">
         <RolePlan planId={id} path={selected} heading="h2" />
       </div>
 
@@ -136,31 +135,29 @@ export default async function CareerPlanPage({
       </div>
 
       {others.length > 0 && (
-        <section className="mt-14" aria-labelledby="cp-other-roles">
-          <h2 id="cp-other-roles" className="text-xl font-bold tracking-tight">
-            Your other options
+        <section className="mt-14 border-t pt-10" aria-labelledby="cp-other-roles">
+          <h2 id="cp-other-roles" className="text-2xl font-bold tracking-tight">
+            Your other roles
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Open a role to see its plan, or make it your target instead.
-          </p>
-          <div className="mt-5 space-y-3">
+          <p className="mt-1 text-sm text-muted-foreground">Open one to see its plan, or make it your target.</p>
+          <div className="mt-5 border-t">
             {others.map((path) => (
-              <details key={path.title} className="group rounded-2xl border bg-card">
-                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 p-5 [&::-webkit-details-marker]:hidden">
-                  <div className="min-w-0 space-y-2">
-                    <h3 className="text-base font-semibold leading-snug">{path.title}</h3>
-                    <div className="flex flex-wrap items-center gap-3">
+              <details key={path.title} className="group border-b">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 py-4 [&::-webkit-details-marker]:hidden">
+                  <div className="min-w-0 space-y-1.5">
+                    <h3 className="text-lg font-semibold leading-snug">{path.title}</h3>
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
                       <MoveTypeBadge moveType={path.moveType} />
                       <FitMeter fit={path.fit} />
                     </div>
                   </div>
                   <ChevronDown
-                    className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+                    className="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-150 group-open:rotate-180 motion-reduce:transition-none"
                     aria-hidden="true"
                   />
                 </summary>
-                <div className="space-y-6 border-t px-5 pt-5 pb-6">
-                  <p className="text-sm leading-relaxed">{path.why}</p>
+                <div className="space-y-8 pb-8 pt-2">
+                  <p className="max-w-prose text-[15px] leading-relaxed">{path.why}</p>
                   {path.transferableSkills.length > 0 && (
                     <SkillChips skills={path.transferableSkills} label={`Skills you already have for ${path.title}`} />
                   )}
@@ -168,9 +165,10 @@ export default async function CareerPlanPage({
                   <RolePlan planId={id} path={path} heading="h4" />
                   <Link
                     href={planPath(id, path.title)}
-                    className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                    aria-label={`Make ${path.title} my target role`}
+                    className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-opacity duration-150 hover:opacity-90"
                   >
-                    Make {path.title} my target role
+                    Make this my target
                   </Link>
                 </div>
               </details>
@@ -179,9 +177,9 @@ export default async function CareerPlanPage({
         </section>
       )}
 
-      <p className="mt-12 text-center text-xs leading-relaxed text-muted-foreground">
-        Role suggestions and plans are AI-generated from what you shared. Job counts and salaries come from live listings
-        and change daily. Check them against real postings and your own judgment.
+      <p className="mt-12 max-w-prose text-xs leading-relaxed text-muted-foreground">
+        Roles and plans are AI suggestions based on what you shared. Job counts and pay come from live job ads and change
+        daily. Check them against real postings before you commit.
       </p>
     </div>
   );

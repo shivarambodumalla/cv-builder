@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FileText, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trackCareerPathEvent } from "@/components/career-path/track";
 
@@ -39,7 +39,7 @@ async function applyRole(careerPathId: string, cvId: string, role: string) {
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "We couldn't update your resume. Try again in a moment.");
+    throw new Error(data.error || "We couldn't update your resume. The save didn't go through. Try again in a minute.");
   }
 }
 
@@ -60,7 +60,7 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       router.push(`/resume/${chosen}`);
     } catch (err) {
       console.error("[career-path] apply failed:", err);
-      setError(err instanceof Error ? err.message : "We couldn't update your resume. Try again in a moment.");
+      setError(err instanceof Error ? err.message : "We couldn't update your resume. The save didn't go through. Try again in a minute.");
       setBusy(null);
     }
   }
@@ -77,13 +77,13 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.cv_id) {
-        throw new Error("We couldn't create a blank resume. Try again in a moment.");
+        throw new Error("We couldn't create a blank resume. The save didn't go through. Try again in a minute.");
       }
       await applyRole(careerPathId, data.cv_id, role);
       router.push(`/resume/${data.cv_id}/pick-template`);
     } catch (err) {
       console.error("[career-path] start from scratch failed:", err);
-      setError(err instanceof Error ? err.message : "We couldn't create a blank resume. Try again in a moment.");
+      setError(err instanceof Error ? err.message : "We couldn't create a blank resume. The save didn't go through. Try again in a minute.");
       setBusy(null);
     }
   }
@@ -93,8 +93,8 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
   let actions: React.ReactNode;
 
   if (cvId) {
-    title = `Your resume is set up for ${role}`;
-    body = `The resume you uploaded now has ${role} as its target role, so its ATS check and keyword suggestions measure it against this role.`;
+    title = `Your resume now targets ${role}`;
+    body = `We set ${role} as the target role on the resume you uploaded. Its ATS check and keyword tips now measure it against this job.`;
     actions = (
       <Button asChild size="lg" className="h-11">
         <Link href={`/resume/${cvId}`} onClick={() => trackCareerPathEvent("tailor_clicked")}>
@@ -103,8 +103,8 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       </Button>
     );
   } else if (cvs.length > 0) {
-    title = `Tailor your resume for ${role}`;
-    body = `Set ${role} as your resume's target role. Its ATS check and keyword suggestions then measure it against this role. Your content stays as it is until you change it.`;
+    title = `Point your resume at ${role}`;
+    body = `We'll set ${role} as your resume's target role. Its ATS check and keyword tips then measure it against this job. We won't change what you wrote.`;
     actions = (
       <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end">
         {cvs.length > 1 && (
@@ -117,7 +117,7 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
               value={chosen}
               onChange={(e) => setChosen(e.target.value)}
               disabled={busy !== null}
-              className="flex h-11 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="flex h-11 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {cvs.map((cv) => {
                 const updated = formatUpdated(cv.updatedAt);
@@ -138,8 +138,8 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       </div>
     );
   } else {
-    title = `Tailor your resume for ${role}`;
-    body = `Upload your resume and we'll set ${role} as its target role, so its ATS check and keyword suggestions measure it against this role.`;
+    title = `Get your resume ready for ${role}`;
+    body = `Upload your resume and we'll set ${role} as its target role. Its ATS check and keyword tips then measure it against this job.`;
     actions = (
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button asChild size="lg" className="h-11">
@@ -150,7 +150,7 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
             Upload my resume
           </Link>
         </Button>
-        <Button size="lg" variant="outline" className="h-11" onClick={startFromScratch} disabled={busy !== null}>
+        <Button size="lg" variant="outline" className="h-11 bg-background" onClick={startFromScratch} disabled={busy !== null}>
           {busy === "scratch" && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
           Start from scratch
         </Button>
@@ -159,20 +159,18 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
   }
 
   return (
-    <section aria-labelledby="cp-tailor-title" className="rounded-2xl border-2 border-primary bg-card p-5 sm:p-6">
-      <div className="flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <FileText className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <div className="min-w-0 space-y-1.5">
-          <h2 id="cp-tailor-title" className="text-lg font-semibold leading-snug">
+    <section aria-labelledby="cp-tailor-title" className="rounded-lg border bg-card p-5 sm:p-6">
+      <div>
+        <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Next step</p>
+        <div className="mt-1.5 min-w-0 space-y-1.5">
+          <h2 id="cp-tailor-title" className="text-xl font-semibold leading-snug tracking-tight">
             {title}
           </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">{body}</p>
           {!cvId && cvLimitReached && cvs.length > 0 && (
             <p className="text-sm leading-relaxed text-muted-foreground">
-              The resume you uploaded here wasn&apos;t added because you already have one saved, so this updates your
-              existing resume instead.
+              You already have a saved resume, so the one you uploaded here wasn&apos;t added. This updates your saved
+              resume instead.
             </p>
           )}
         </div>

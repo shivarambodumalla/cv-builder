@@ -761,7 +761,7 @@ export const ROLE_CONTENT: Record<string, RoleContent> = {
     tools: ["SQL", "Tableau", "Looker", "Power BI", "dbt", "BigQuery", "Snowflake", "Excel", "Python (pandas)", "Google Analytics", "Amplitude"],
     metrics: ["Business metric influenced", "Rows / users analyzed", "Analyst hours saved through automation", "Reporting turnaround time", "Adoption of dashboards built", "Revenue or cost impact of findings"],
     seniority: [
-      { level: "Junior (0–2 yrs)", expectation: "Fulfils defined requests. Resume should show solid SQL and one analysis with a conclusion." },
+      { level: "Junior (0–2 yrs)", expectation: "Fulfills defined requests. Resume should show solid SQL and one analysis with a conclusion." },
       { level: "Mid (2–4 yrs)", expectation: "Owns a business area's reporting. Resume should show a decision your work changed." },
       { level: "Senior (4–7 yrs)", expectation: "Defines metrics and mentors. Resume should show metric governance or self-serve enablement." },
       { level: "Lead (7+ yrs)", expectation: "Owns analytics strategy. Resume should show org-level measurement changes." },

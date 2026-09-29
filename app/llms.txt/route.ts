@@ -1,6 +1,7 @@
 import { getPosts, type BlogPost } from "@/lib/blog/posts";
 import { getPlanLimits, getTemplateCatalog } from "@/lib/billing/plan-config";
 import { CV_FORMATS } from "@/lib/cv-formats/data";
+import { getCareerPath } from "@/lib/roles/career-moves";
 import { careerPathPageSlugs, roleLabel } from "@/lib/roles/career-moves/pages";
 
 /**
@@ -99,9 +100,14 @@ async function buildLlmsTxt(): Promise<string> {
     `${plural(free.cover_letters, "cover letter")} and ${plural(free.pdf_downloads, "PDF download")}. ` +
     `${plural(free.fix_all, "Fix All run")} per week. ${templateLine[0].toUpperCase()}${templateLine.slice(1)}, no watermark.`;
 
-  const careerPathLines = careerPathPageSlugs().map(
-    (slug) => `- ${roleLabel(slug)} career path: ${SITE}/career-path/${slug}`
-  );
+  // Each line carries its answer ("usually moves to ..."), so an answer engine
+  // can use it without fetching the page.
+  const careerPathLines = careerPathPageSlugs().map((slug) => {
+    const moves = getCareerPath(slug)?.moves ?? [];
+    const next = moves.slice(0, 4).map((m) => m.toRole);
+    const leadsTo = next.length ? `, usually moves to ${next.slice(0, -1).join(", ")}${next.length > 1 ? " or " : ""}${next[next.length - 1]}` : "";
+    return `- ${roleLabel(slug)} career path${leadsTo}: ${SITE}/career-path/${slug}`;
+  });
 
   const formatLines = CV_FORMATS.map((f) => `- ${f.name}: ${SITE}/cv-format/${f.slug} (used for: ${f.market})`);
 
@@ -156,7 +162,7 @@ ${formatLines.join("\n")}
     careerPathLines.length
       ? `## Career paths by role
 
-Hand-written for each role: the levels, the moves people make next (step up, sideways, career change), the skills each move needs and what to show on a resume before applying.
+Written by hand for each role: the seniority levels, the moves people usually make next (a step up, a sideways move or a career change), when they make them, the skills each move needs and what to have on a resume before applying. Each page also shows open US job counts and advertised pay from live listings, refreshed daily.
 
 ${careerPathLines.join("\n")}`
       : "",
