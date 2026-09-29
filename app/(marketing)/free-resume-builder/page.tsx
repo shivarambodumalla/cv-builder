@@ -3,25 +3,37 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Sparkles, BarChart3, Target, Download, FileText } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
+import { getPlanLimits, getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
+import { formatLimit, LIMIT_RESET, summarizeAllowance, type PlanQuotas } from "@/lib/billing/format-limits";
 
-export const metadata: Metadata = {
-  title: "Free Resume Builder: Build, Score, and Download in Minutes",
-  description:
-    "Free resume builder with ATS scoring, AI bullet rewriting, job match analysis, and PDF download. 28 free templates. No credit card required. Build your resume in under 10 minutes.",
-  alternates: { canonical: "https://www.thecvedge.com/free-resume-builder" },
-  openGraph: {
-    title: "Free Resume Builder: Build, Score & Download | CVEdge",
-    description:
-      "Free resume builder with ATS scoring, AI rewriting, and PDF download. 28 free templates. No credit card required.",
-    url: "https://www.thecvedge.com/free-resume-builder",
-  },
-};
+type Quotas = { free: PlanQuotas; pro: PlanQuotas };
+const WINDOW_QUOTAS = ["ats_scans", "ai_rewrites", "job_matches", "cover_letters", "pdf_downloads"];
 
-const FAQS = [
+// Template counts come from the catalogue. force-static keeps the page static
+// (the admin client's no-store fetch would otherwise make it dynamic); it
+// re-reads the counts hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { free } = await getTemplateCounts();
+  return {
+    title: "Free Resume Builder: Build, Score, and Download in Minutes",
+    description: `Free resume builder with ATS scoring, AI bullet rewriting, job match analysis, and PDF download. ${free} free templates. No credit card required.`,
+    alternates: { canonical: "https://www.thecvedge.com/free-resume-builder" },
+    openGraph: {
+      title: "Free Resume Builder: Build, Score & Download | CVEdge",
+      description: `Free resume builder with ATS scoring, AI rewriting, and PDF download. ${free} free templates. No credit card required.`,
+      url: "https://www.thecvedge.com/free-resume-builder",
+    },
+  };
+}
+
+const faqs = ({ total, free, proLabels }: TemplateCounts, quotas: Quotas) => [
   {
     question: "Is CVEdge's resume builder really free?",
     answer:
-      "Yes. The free plan includes: 3 resumes, 10 ATS scans per week, 25 AI bullet rewrites per week, 5 job match analyses per week, 5 cover letters per week, 3 PDF downloads per week, and access to all 28 free templates. No credit card required. Pro (unlimited everything + 4 Pro templates) costs $5/week.",
+      `Yes. The free plan includes ${summarizeAllowance(quotas.free, WINDOW_QUOTAS)}, and access to ${free === total ? `all ${total}` : `all ${free} free`} templates. No credit card required. Pro (unlimited everything${proLabels.length ? ` + ${proLabels.length} Pro templates` : ""}) costs $5/week.`,
   },
   {
     question: "How long does it take to build a resume on CVEdge?",
@@ -46,11 +58,11 @@ const FAQS = [
   {
     question: "What is the difference between free and Pro on CVEdge?",
     answer:
-      "Free plan: 3 resumes, 10 ATS scans/week, 25 AI rewrites/week, 5 job matches/week, 3 PDF downloads/week, 28 free templates. Pro plan: unlimited everything, 4 additional Pro templates (Executive Pro, Electric Lilac, Executive Sidebar, Wentworth), 80+ ATS score guarantee, and priority support. Pro costs $5/week (or $14/month, $120/year).",
+      `Free plan: ${summarizeAllowance(quotas.free, ["ats_scans", "ai_rewrites", "job_matches", "pdf_downloads"])}, ${free} free templates. Pro plan: unlimited everything, ${proLabels.length ? `${proLabels.length} additional Pro templates (${proLabels.join(", ")}), ` : ""}80+ ATS score guarantee, and priority support. Pro costs $5/week (or $14/month, $120/year).`,
   },
 ];
 
-const FREE_FEATURES = [
+const freeFeatures = ({ free }: TemplateCounts) => [
   {
     icon: FileText,
     title: "Upload your existing resume or start from scratch",
@@ -78,26 +90,37 @@ const FREE_FEATURES = [
   },
   {
     icon: CheckCircle,
-    title: "28 free professional templates",
-    desc: "Choose from Classic, Sharp, Minimal, Executive, Aurora, Coastal, and 14 more. Every free template is ATS-tested. Switch templates any time without losing content.",
+    title: `${free} free professional templates`,
+    desc: "Choose from Classic, Sharp, Minimal, Executive, Aurora, Coastal, and more. Every free template is ATS-tested. Switch templates any time without losing content.",
   },
 ];
 
-const PLAN_COMPARE = [
-  { feature: "Resumes", free: "3", pro: "Unlimited" },
-  { feature: "ATS scans per week", free: "10", pro: "Unlimited" },
-  { feature: "AI rewrites per week", free: "25", pro: "Unlimited" },
-  { feature: "Job matches per week", free: "5", pro: "Unlimited" },
-  { feature: "Cover letters per week", free: "5", pro: "Unlimited" },
-  { feature: "PDF downloads per week", free: "3", pro: "Unlimited" },
-  { feature: "Templates", free: "28 free", pro: "32 (incl. 4 Pro)" },
+/** A comparison row whose cells come from the live quotas: "3 / 7 days" vs "Unlimited". */
+const quotaRow = (feature: string, key: string, quotas: Quotas) => ({
+  feature,
+  free: formatLimit(quotas.free[key], LIMIT_RESET[key]),
+  pro: formatLimit(quotas.pro[key], LIMIT_RESET[key]),
+});
+
+const planCompare = ({ total, free }: TemplateCounts, quotas: Quotas) => [
+  quotaRow("Resumes", "cvs", quotas),
+  quotaRow("ATS scans", "ats_scans", quotas),
+  quotaRow("AI rewrites", "ai_rewrites", quotas),
+  quotaRow("Job matches", "job_matches", quotas),
+  quotaRow("Cover letters", "cover_letters", quotas),
+  quotaRow("PDF downloads", "pdf_downloads", quotas),
+  { feature: "Templates", free: free === total ? `All ${total}` : `${free} free`, pro: `All ${total}` },
   { feature: "PDF watermark", free: "None", pro: "None" },
   { feature: "80+ score guarantee", free: "–", pro: "✓" },
-  { feature: "Fix All ATS", free: "3/week", pro: "Unlimited" },
-  { feature: "CV Tailor for JD", free: "3/week", pro: "Unlimited" },
+  quotaRow("Fix All ATS", "fix_all", quotas),
+  quotaRow("CV Tailor for JD", "cv_tailor", quotas),
 ];
 
-export default function FreeResumeBuilderPage() {
+export default async function FreeResumeBuilderPage() {
+  const [counts, quotas] = await Promise.all([getTemplateCounts(), getPlanLimits()]);
+  const FAQS = faqs(counts, quotas);
+  const FREE_FEATURES = freeFeatures(counts);
+  const PLAN_COMPARE = planCompare(counts, quotas);
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
       <BreadcrumbJsonLd

@@ -80,7 +80,7 @@ export function getInlineCta(post: BlogPost): InlineCta {
       kind: "resume-check",
       eyebrow: "Try it yourself",
       heading: "See your own ATS score in under 60 seconds",
-      body: "Upload your resume for a free score with specific fixes. No sign-up needed to see it.",
+      body: "Upload your resume for a free score with specific fixes. Sign in free with Google to see it.",
       buttonText: "Check my resume",
       href: "/upload-resume",
     };

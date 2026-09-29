@@ -24,6 +24,7 @@ import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import { getPublicRatingStats } from "@/lib/feedback/stats";
+import { getPlanLimits, getTemplateCounts } from "@/lib/billing/plan-config";
 import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
 import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
@@ -63,7 +64,7 @@ const COMPARISON = [
 export default async function HomePage() {
   // Real post-download ratings. Null until enough exist to display, and the
   // schema below only carries a rating that is visible on this page.
-  const [rating, testimonials] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials()]);
+  const [rating, testimonials, planLimits, templateCounts] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials(), getPlanLimits(), getTemplateCounts()]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -74,7 +75,7 @@ export default async function HomePage() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
-    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", "32 Professional Templates"],
+    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", `${templateCounts.total} Professional Templates`],
     areaServed: [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
@@ -187,7 +188,10 @@ export default async function HomePage() {
                     Professional<br />Templates
                   </h2>
                   <p className="max-w-[380px] text-base sm:text-lg text-white/70 leading-relaxed">
-                    32 ATS-optimized templates, 28 of them free. Every design passes automated filters and looks great on screen.
+                    {templateCounts.free === templateCounts.total
+                      ? `${templateCounts.total} ATS-optimized templates, all of them free.`
+                      : `${templateCounts.total} ATS-optimized templates, ${templateCounts.free} of them free.`}{" "}
+                    Every design passes automated filters and looks great on screen.
                   </p>
                   <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
                     <Link href="/resumes">Browse templates</Link>
@@ -548,7 +552,7 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Common questions</h2>
               <p className="mt-3 text-base text-muted-foreground">Quick answers on pricing, scoring, and your data.</p>
             </div>
-            <FaqSection />
+            <FaqSection freeLimits={planLimits.free} />
           </div>
         </div>
       </section>

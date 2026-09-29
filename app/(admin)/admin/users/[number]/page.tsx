@@ -19,7 +19,7 @@ import { UserResumes, type UserResume } from "./user-resumes";
 import { ActivityTimeline, type ActivityEvent } from "./activity-timeline";
 import { computeYearsOfExperience } from "@/lib/resume/years-of-experience";
 import { aggregateSkills, deriveExperienceLevel, EXPERIENCE_LEVEL_LABEL } from "@/lib/resume/aggregate-skills";
-import { PLAN_LIMITS } from "@/lib/billing/limits";
+import { getPlanLimits } from "@/lib/billing/plan-config";
 import type { ResumeContent } from "@/lib/resume/types";
 
 export const metadata: Metadata = {
@@ -184,7 +184,7 @@ export default async function UserDetailPage({
   const headerLocationLine = signupLocationLine || cvLocationLine || profileLocationLine || null;
 
   const isPro = profile.subscription_status === "active";
-  const planLimits = PLAN_LIMITS[isPro ? "pro" : "free"];
+  const planLimits = (await getPlanLimits())[isPro ? "pro" : "free"];
 
   // Derive counts from existing data — no extra DB queries needed
   const atsCount = latestAtsByCvId.size;

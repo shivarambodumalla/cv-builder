@@ -61,7 +61,7 @@ const PRINCIPLES = [
   },
   {
     title: "Free should be useful",
-    body: "You can check your ATS score, see the full category breakdown and the specific issues found without an account or a card. The free plan includes real usage of the AI features every week. We would rather you find the tool useful and upgrade than hit a wall on the first click.",
+    body: "You can check your ATS score, see the full category breakdown and the specific issues found with a free account and no card. The free plan includes real usage of the AI features every week. We would rather you find the tool useful and upgrade than hit a wall on the first click.",
   },
   {
     title: "Your resume is yours",
@@ -202,7 +202,7 @@ export default function AboutPage() {
           <div>
             <p className="text-sm font-semibold">See where your resume stands</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Free ATS score and the specific issues found. No account needed.
+              Free ATS score and the specific issues found. Sign in with Google, no card.
             </p>
           </div>
           <Button asChild className="shrink-0">

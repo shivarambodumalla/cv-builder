@@ -3,27 +3,38 @@ import { BarChart3, Sparkles, Layout, Target, Download } from "lucide-react";
 import { TemplateShowcase } from "./template-showcase";
 import { ResumesGetStarted } from "./resumes-get-started";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
+import { getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
 
-export const metadata: Metadata = {
-  title: "AI Resume Builder: Free ATS-Friendly Templates",
-  description: "28 free ATS-friendly CV templates. Upload your CV, get an instant ATS score, fix everything with AI. No signup required.",
-  alternates: { canonical: "https://www.thecvedge.com/resumes" },
-  openGraph: {
-    title: "Free ATS-Friendly Resume Templates | CVEdge",
-    description: "28 free ATS-friendly resume templates with AI rewriting, score tracking, and one-click PDF export.",
-    url: "https://www.thecvedge.com/resumes",
-  },
-};
+// Template counts come from the catalogue. force-static keeps the page static
+// (the admin client's no-store fetch would otherwise make it dynamic); it
+// re-reads the counts hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
-const FEATURES = [
+export async function generateMetadata(): Promise<Metadata> {
+  const { free } = await getTemplateCounts();
+  return {
+    title: "AI Resume Builder: Free ATS-Friendly Templates",
+    description: `${free} free ATS-friendly resume templates. Upload your resume, get an instant ATS score, and fix everything with AI. Free account, no credit card.`,
+    alternates: { canonical: "https://www.thecvedge.com/resumes" },
+    openGraph: {
+      title: "Free ATS-Friendly Resume Templates | CVEdge",
+      description: `${free} free ATS-friendly resume templates with AI rewriting, score tracking, and one-click PDF export.`,
+      url: "https://www.thecvedge.com/resumes",
+    },
+  };
+}
+
+const features = ({ total }: TemplateCounts) => [
   { icon: BarChart3, title: "Know your score before recruiters see your resume", desc: "Upload your resume and get an instant ATS score across 6 categories. See exactly what software flags, and fix each issue one by one." },
   { icon: Sparkles, title: "Fix weak bullet points with one click", desc: "Every bullet has a Rewrite button. Pick a mode, get a better version, and insert it instantly. Your experience, stronger words." },
-  { icon: Layout, title: "32 professional templates, each ATS-optimized", desc: "Choose from Classic, Sharp, Minimal, Executive, Sidebar and more. Every template is tested to pass ATS filters and look great on screen." },
+  { icon: Layout, title: `${total} professional templates, each ATS-optimized`, desc: "Choose from Classic, Sharp, Minimal, Executive, Sidebar and more. Every template is tested to pass ATS filters and look great on screen." },
   { icon: Target, title: "See how well you match any job before applying", desc: "Paste a job description and get a match score with missing keywords highlighted. Fix gaps before you hit apply." },
   { icon: Download, title: "Download clean PDFs", desc: "Export your finished resume as a polished PDF ready to send. No branding, no surprises." },
 ];
 
-export default function ResumesPage() {
+export default async function ResumesPage() {
+  const FEATURES = features(await getTemplateCounts());
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
       <BreadcrumbJsonLd

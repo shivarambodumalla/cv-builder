@@ -1,20 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+/**
+ * Fallback only. The live quotas and template tiers are the plan_limits and
+ * template_catalog tables (edited in /admin/plans), read via getPlanLimits()
+ * and getTemplateCatalog() in plan-config.ts. Keep these values in step with
+ * the tables so a DB outage neither shows nor enforces different numbers.
+ */
 export const PLAN_LIMITS = {
   free: {
-    cvs: 3,
-    ats_scans: 10,
-    ai_rewrites: 25,
+    cvs: 1,
+    ats_scans: 3,
+    ai_rewrites: 20,
     job_matches: 5,
     cover_letters: 5,
-    fix_all: 3,
+    fix_all: 5,
     cv_tailor: 3,
     offer_eval: 5,
     portfolio_scan: 3,
     story_summary: 10,
     interview_prep: 5,
-    pdf_downloads: 10,
-    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "bold-accent", "clean-sidebar", "blueprint", "orchid", "coastal", "portrait", "regent", "meridian", "vantage", "linen", "graphite", "sterling", "ember", "canopy"],
+    pdf_downloads: 1,
+    templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait", "regent", "meridian", "vantage", "linen", "graphite", "sterling", "ember", "canopy"],
     watermark: false,
   },
   pro: {

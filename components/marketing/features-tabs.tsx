@@ -93,9 +93,9 @@ const TABS = [
     icon: FileText,
     label: "Export & Design",
     heading: "Beautiful PDFs, total design control",
-    desc: "32 ATS-optimized templates with full design controls. Export clean PDFs ready to send, or customize every detail from fonts to section order.",
+    desc: "ATS-optimized templates with full design controls. Export clean PDFs ready to send, or customize every detail from fonts to section order.",
     points: [
-      "32 professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
+      "Professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
       "Customize font, accent color, spacing, margins, bullet style, and section order",
       "Two-column templates with configurable sidebar sections",
       "PDF export: clean, formatted, ATS-friendly, with no watermark, ever",

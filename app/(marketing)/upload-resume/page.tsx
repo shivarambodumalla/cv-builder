@@ -123,7 +123,7 @@ const ATS_FAQ = [
   {
     question: "Is the ATS check really free?",
     answer:
-      "Yes. Upload a resume or paste its text and you get the full category breakdown and the specific issues found, without an account or a card. Free accounts also include a number of AI rewrites and job matches each week. Unlimited use requires a paid plan.",
+      "Yes. Upload a resume or paste its text, sign in with a free account, and you get the full category breakdown and the specific issues found. No card needed. Free accounts also include a number of AI rewrites and job matches each week. Unlimited use requires a paid plan.",
   },
   {
     question: "What file formats can I upload?",

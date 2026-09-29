@@ -48,24 +48,24 @@ const PREVIEW_VARS: Record<string, string> = Object.fromEntries(
   AVAILABLE_VARS.map((v) => [v.key, v.preview])
 );
 
-function replacePreviewVars(text: string, brand: Brand): string {
+function replacePreviewVars(text: string, brand: Brand, quotaVars: Record<string, string>): string {
   let result = text;
-  const allVars = { ...PREVIEW_VARS, appUrl: brand.app_url, supportEmail: brand.support_email, brandColor: brand.primary_color, logoText: brand.logo_text };
+  const allVars = { ...PREVIEW_VARS, ...quotaVars, appUrl: brand.app_url, supportEmail: brand.support_email, brandColor: brand.primary_color, logoText: brand.logo_text };
   for (const [key, value] of Object.entries(allVars)) {
     result = result.replaceAll(`{{${key}}}`, value);
   }
   return result;
 }
 
-function renderPreviewHtml(t: Template, brand: Brand): string {
+function renderPreviewHtml(t: Template, brand: Brand, quotaVars: Record<string, string>): string {
   // Custom HTML overrides everything
   if (t.custom_html) {
-    return replacePreviewVars(t.custom_html, brand);
+    return replacePreviewVars(t.custom_html, brand, quotaVars);
   }
 
-  const subheading = replacePreviewVars(t.subheading, brand).replace(/\n/g, "<br>");
-  const bodyHtml = replacePreviewVars(t.body_html || "", brand).replace(/\n/g, "<br>");
-  const afterCtaHtml = replacePreviewVars(t.after_cta_html || "", brand).replace(/\n/g, "<br>");
+  const subheading = replacePreviewVars(t.subheading, brand, quotaVars).replace(/\n/g, "<br>");
+  const bodyHtml = replacePreviewVars(t.body_html || "", brand, quotaVars).replace(/\n/g, "<br>");
+  const afterCtaHtml = replacePreviewVars(t.after_cta_html || "", brand, quotaVars).replace(/\n/g, "<br>");
 
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -104,10 +104,10 @@ function renderPreviewHtml(t: Template, brand: Brand): string {
     <img src="/img/cvedge-logo.png" alt="${brand.logo_text}" width="140" height="43">
   </div>
   <div class="card">
-    <h1>${replacePreviewVars(t.heading, brand)}</h1>
+    <h1>${replacePreviewVars(t.heading, brand, quotaVars)}</h1>
     <p class="sub">${subheading}</p>
     ${bodyHtml ? `<div class="body-html">${bodyHtml}</div>` : ""}
-    ${t.cta_text ? `<a href="${replacePreviewVars(t.cta_url || "#", brand)}" class="cta">${replacePreviewVars(t.cta_text, brand)}</a>` : ""}
+    ${t.cta_text ? `<a href="${replacePreviewVars(t.cta_url || "#", brand, quotaVars)}" class="cta">${replacePreviewVars(t.cta_text, brand, quotaVars)}</a>` : ""}
     ${afterCtaHtml ? `<div class="after-cta">${afterCtaHtml}</div>` : ""}
   </div>
   <div class="socials">
@@ -374,7 +374,12 @@ function RichTextEditor({ value, onChange, label, rows = 6 }: { value: string; o
   );
 }
 
-export function EmailEditor({ template: initial, brand }: { template: Template; brand: Brand }) {
+/** `quotaVars`: the live free-plan quota variables ({{freeAtsScans}} → "3 ATS scans") that sendEmail also fills. */
+export function EmailEditor({ template: initial, brand, quotaVars }: { template: Template; brand: Brand; quotaVars: Record<string, string> }) {
+  const availableVars = [
+    ...AVAILABLE_VARS,
+    ...Object.entries(quotaVars).map(([key, preview]) => ({ key, preview, description: `Free plan quota: "${preview}"` })),
+  ];
   const router = useRouter();
   const [template, setTemplate] = useState(initial);
   const [saving, setSaving] = useState(false);
@@ -439,7 +444,7 @@ export function EmailEditor({ template: initial, brand }: { template: Template; 
           </button>
           {showVars && (
             <div className="rounded-md border bg-muted/30 p-2 space-y-1">
-              {AVAILABLE_VARS.map((v) => (
+              {availableVars.map((v) => (
                 <button
                   key={v.key}
                   type="button"
@@ -585,7 +590,7 @@ export function EmailEditor({ template: initial, brand }: { template: Template; 
             }}
           >
             <iframe
-              srcDoc={renderPreviewHtml(template, brand)}
+              srcDoc={renderPreviewHtml(template, brand, quotaVars)}
               className="w-full border-0"
               style={{ minHeight: 600, display: "block" }}
               title="Email preview"

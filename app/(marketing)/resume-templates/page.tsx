@@ -4,22 +4,38 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Zap, Download, BarChart3, Target } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 import { TEMPLATE_CATEGORIES } from "@/lib/resume-templates/data";
+import { getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
 import { TemplateShowcase } from "../resumes/template-showcase";
 
-export const metadata: Metadata = {
-  title: "Free Resume Templates: ATS-Friendly & Professional",
-  description:
-    "28 free ATS-friendly resume templates for every role and industry. Single-column and two-column layouts tested on Greenhouse, Workday, and Lever. Upload your CV and score instantly.",
-  alternates: { canonical: "https://www.thecvedge.com/resume-templates" },
-  openGraph: {
-    title: "Free Resume Templates: ATS-Friendly & Professional | CVEdge",
-    description:
-      "28 free ATS-friendly resume templates. Upload your resume, get an instant ATS score, fix with AI, and download a polished PDF.",
-    url: "https://www.thecvedge.com/resume-templates",
-  },
-};
+// Template counts come from the catalogue. force-static keeps the page static
+// (the admin client's no-store fetch would otherwise make it dynamic); it
+// re-reads the counts hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
-const FAQS = [
+export async function generateMetadata(): Promise<Metadata> {
+  const { free } = await getTemplateCounts();
+  return {
+    title: "Free Resume Templates: ATS-Friendly & Professional",
+    description: `${free} free ATS-friendly resume templates for every role. Single- and two-column layouts tested on Greenhouse, Workday, and Lever. Score yours instantly.`,
+    alternates: { canonical: "https://www.thecvedge.com/resume-templates" },
+    openGraph: {
+      title: "Free Resume Templates: ATS-Friendly & Professional | CVEdge",
+      description: `${free} free ATS-friendly resume templates. Upload your resume, get an instant ATS score, fix with AI, and download a polished PDF.`,
+      url: "https://www.thecvedge.com/resume-templates",
+    },
+  };
+}
+
+function freeTemplatesAnswer({ total, free, proLabels }: TemplateCounts): string {
+  const split =
+    free === total
+      ? `Yes. All ${total} templates are free.`
+      : `${free} of the ${total} templates are free. The other ${proLabels.length} (${proLabels.join(", ")}) need a Pro subscription.`;
+  return `${split} The free plan also includes ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse; building and downloading a resume needs a free account.`;
+}
+
+const faqs = (counts: TemplateCounts) => [
   {
     question: "Which resume template is best for passing ATS?",
     answer:
@@ -27,8 +43,7 @@ const FAQS = [
   },
   {
     question: "Are all CVEdge resume templates free?",
-    answer:
-      "28 out of 32 templates are free. Four Pro-only templates (Executive Pro, Electric Lilac, Executive Sidebar, and Wentworth) require a Pro subscription. All free templates include ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse.",
+    answer: freeTemplatesAnswer(counts),
   },
   {
     question: "What is the difference between a CV and a resume?",
@@ -87,7 +102,9 @@ const WHY_MATTERS = [
   },
 ];
 
-export default function ResumeTemplatesPage() {
+export default async function ResumeTemplatesPage() {
+  const counts = await getTemplateCounts();
+  const FAQS = faqs(counts);
   return (
     <>
       <BreadcrumbJsonLd
@@ -98,7 +115,7 @@ export default function ResumeTemplatesPage() {
       />
       <ServiceJsonLd
         name="Free ATS-Friendly Resume Templates"
-        description="32 professional resume templates tested on Greenhouse, Workday, and Lever. Upload your resume, get an ATS score, fix with AI, download PDF."
+        description={`${counts.total} professional resume templates tested on Greenhouse, Workday, and Lever. Upload your resume, get an ATS score, fix with AI, download PDF.`}
         url="https://www.thecvedge.com/resume-templates"
         serviceType="Resume Builder"
         price="0"
@@ -122,7 +139,7 @@ export default function ResumeTemplatesPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              32 professional templates. Upload your resume, get an instant ATS score, fix
+              {counts.total} professional templates. Upload your resume, get an instant ATS score, fix
               weak bullets with AI, and export a polished PDF. All free to start.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
@@ -173,7 +190,7 @@ export default function ResumeTemplatesPage() {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-10">
-              <h2 className="text-2xl font-bold tracking-tight">All 32 templates</h2>
+              <h2 className="text-2xl font-bold tracking-tight">All {counts.total} templates</h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 Filter by layout type or browse everything. Switch any time without losing your content.
               </p>

@@ -8,6 +8,7 @@ import { ReturnVisitNudge } from "@/components/popups/return-visit-nudge";
 import { UploadCvNudge } from "@/components/popups/upload-cv-nudge";
 import { sendEmail } from "@/lib/email/sender";
 import { CvReviewDashboardBanner } from "@/components/cv-review/dashboard-banner";
+import { getPlanLimits } from "@/lib/billing/plan-config";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -88,13 +89,15 @@ export default async function DashboardPage() {
   const userName = user.user_metadata?.full_name?.split(" ")[0] || user.user_metadata?.name?.split(" ")[0] || "";
   const isPro = profile?.subscription_status === "active";
 
-  // Check if any free limit is reached
+  // Check if any free limit is reached (quotas are admin-editable; -1 = unlimited)
+  const free = (await getPlanLimits()).free;
+  const reached = (used: number | null | undefined, limit: number) => limit >= 0 && (used ?? 0) >= limit;
   const anyLimitReached = !isPro && (
-    (profile?.ats_scans_this_window ?? 0) >= 10 ||
-    (profile?.job_matches_this_window ?? 0) >= 5 ||
-    (profile?.cover_letters_this_window ?? 0) >= 5 ||
-    (profile?.ai_rewrites_this_window ?? 0) >= 25 ||
-    (cvs ?? []).length >= 3
+    reached(profile?.ats_scans_this_window, free.ats_scans) ||
+    reached(profile?.job_matches_this_window, free.job_matches) ||
+    reached(profile?.cover_letters_this_window, free.cover_letters) ||
+    reached(profile?.ai_rewrites_this_window, free.ai_rewrites) ||
+    reached((cvs ?? []).length, free.cvs)
   );
 
   // Return visit nudge data

@@ -187,6 +187,25 @@ export async function getTemplateCatalog(): Promise<TemplateRow[]> {
   return rows;
 }
 
+export interface TemplateCounts {
+  /** Enabled templates. */
+  total: number;
+  /** Enabled templates on the free tier. */
+  free: number;
+  /** Labels of the enabled Pro-only templates, in catalogue order. */
+  proLabels: string[];
+}
+
+/**
+ * Template numbers for marketing copy, read from the catalogue so a page never
+ * quotes a count or tier split that /admin/plans has since changed.
+ */
+export async function getTemplateCounts(): Promise<TemplateCounts> {
+  const enabled = (await getTemplateCatalog()).filter((t) => t.enabled);
+  const pro = enabled.filter((t) => t.tier !== "free");
+  return { total: enabled.length, free: enabled.length - pro.length, proLabels: pro.map((t) => t.label) };
+}
+
 export async function getBillingSettings(): Promise<BillingSettings> {
   const cached = fresh(settingsCache);
   if (cached) return cached;

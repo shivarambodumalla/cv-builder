@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { PLAN_LIMITS } from "@/lib/billing/limits";
+import { getPlanLimits } from "@/lib/billing/plan-config";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   const isPro = profile.subscription_status === "active";
   if (isPro) return NextResponse.json({ limitReached: false });
 
-  const limits = PLAN_LIMITS.free;
+  const limits = (await getPlanLimits()).free;
   const columnMap: Record<string, { used: number; limit: number }> = {
     ats_scan: { used: profile.ats_scans_this_window ?? 0, limit: limits.ats_scans },
     job_match: { used: profile.job_matches_this_window ?? 0, limit: limits.job_matches },
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   };
 
   const entry = columnMap[feature];
-  if (!entry) return NextResponse.json({ limitReached: false });
+  if (!entry || entry.limit < 0) return NextResponse.json({ limitReached: false });
 
   return NextResponse.json({
     limitReached: entry.used >= entry.limit,

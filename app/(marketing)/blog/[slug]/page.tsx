@@ -244,7 +244,7 @@ export default async function BlogPostPage({
           {/* CTA */}
           <div className="mt-16" data-track-placement="bottom-cta">
             <CtaSection
-              label="Free, no sign-up needed"
+              label="Free ATS check"
               heading="Is your CV getting filtered out?"
               subtext="Check your ATS score in 60 seconds and fix issues with AI."
               buttonText="Scan my CV free"

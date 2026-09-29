@@ -3,12 +3,17 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { summarizeAllowance, type PlanQuotas } from "@/lib/billing/format-limits";
+
+/** Built from the live free-plan quotas, which are admin-editable. */
+function freePlanFaq(free: PlanQuotas) {
+  return {
+    q: "Is this really free?",
+    a: `Yes. You can scan your resume and see your ATS score for free. The free plan includes ${summarizeAllowance(free, ["ats_scans", "ai_rewrites", "job_matches"])}. No credit card required.`,
+  };
+}
 
 const FAQS = [
-  {
-    q: "Is this really free?",
-    a: "Yes. You can scan your resume and see your ATS score for free. The free plan includes 3 resumes, 10 ATS scans, 25 AI rewrites, and 5 job matches every 7 days. No credit card required.",
-  },
   {
     q: "How accurate is the ATS score?",
     a: "It is based on real hiring system patterns, role-specific keyword analysis across 130+ roles, and the same filtering rules that ATS software uses. 75% of resumes are rejected by ATS before a human sees them.",
@@ -39,7 +44,8 @@ const FAQS = [
   },
 ];
 
-export function FaqSection() {
+export function FaqSection({ freeLimits }: { freeLimits: PlanQuotas }) {
+  const faqs = [freePlanFaq(freeLimits), ...FAQS];
   const [openSet, setOpenSet] = useState<Set<number>>(new Set());
 
   function toggle(i: number) {
@@ -52,7 +58,7 @@ export function FaqSection() {
 
   return (
     <div>
-      {FAQS.map((faq, i) => (
+      {faqs.map((faq, i) => (
         <div key={i} className="border-b border-[#E0D8CC] dark:border-border">
           <button
             type="button"

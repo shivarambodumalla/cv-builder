@@ -161,7 +161,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ### Templates
 
-32 templates total. Free plan: classic, classic-serif, sharp, minimal, executive, sidebar, sidebar-right, two-column, divide, folio, metro, harvard, ledger, aurora, bold-accent, clean-sidebar, blueprint, coastal, orchid, portrait, regent, meridian, vantage, linen, graphite, sterling, ember, canopy. Pro only: executive-pro, electric-lilac, executive-sidebar, wentworth.
+32 templates total. Tiers live in the `template_catalog` table (edited in /admin/plans); today all 32 are free, including executive-pro, electric-lilac, executive-sidebar and wentworth, which were Pro-only before.
 
 Per-template design defaults (font, alignment, separator, name weight, skills style) live in `DESIGN_DEFAULTS_BY_TEMPLATE` (lib/resume/defaults.ts) and column splits in `COLUMN_DEFAULTS_BY_TEMPLATE`; both apply on template pick and on new-CV creation via normalizeDesignSettings.
 
@@ -181,7 +181,7 @@ Only the 12 templates in `PHOTO_TEMPLATES` (lib/resume/template-thumbnails.ts) r
 | sharp | single-column | Free | Sharp |
 | minimal | single-column | Free | Minimal |
 | executive | single-column | Free | Executive |
-| executive-pro | 2-column (photo + dark bar) | Pro | Executive Pro |
+| executive-pro | 2-column (photo + dark bar) | Free | Executive Pro |
 | sidebar | 2-column (sidebar left) | Free | Slate |
 | sidebar-right | 2-column (sidebar right) | Free | Onyx |
 | two-column | 2-column (header + body) | Free | Horizon |
@@ -191,12 +191,12 @@ Only the 12 templates in `PHOTO_TEMPLATES` (lib/resume/template-thumbnails.ts) r
 | harvard | — | Free | Harvard |
 | ledger | — | Free | Ledger |
 | aurora | 2-column (chips) | Free | Aurora |
-| electric-lilac | 2-column (vibrant sidebar) | Pro | Electric Lilac |
+| electric-lilac | 2-column (vibrant sidebar) | Free | Electric Lilac |
 | bold-accent | single-column (accent chips) | Free | Bold Accent |
-| executive-sidebar | 2-column (dark sidebar) | Pro | Executive Sidebar |
+| executive-sidebar | 2-column (dark sidebar) | Free | Executive Sidebar |
 | clean-sidebar | 2-column (warm sidebar + bars) | Free | Clean Sidebar |
 | blueprint | 2-column (editorial header block) | Free | Blueprint |
-| wentworth | single-column (editorial minimal) | Pro | Wentworth |
+| wentworth | single-column (editorial minimal) | Free | Wentworth |
 | coastal | 2-column (teal header + photo + objective band) | Free | Coastal |
 | orchid | 2-column (warm sidebar + accent headings + navy corner) | Free | Orchid |
 | portrait | 2-column (split-weight name + photo + plus-marker headings on grey canvas) | Free | Portrait |
@@ -289,7 +289,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - Returns: rewritten summary, rewritten bullets per company, skills_to_add, sections_needing_attention, estimated_score_improvement
 - Skips bullets already strong (metric + action verb + outcome)
 - Generates summary if empty
-- Usage gated: free plan gets 3 uses/week (Monday reset), upgrade trigger `fix_all_limit`
+- Usage gated: free plan gets `fix_all` uses/week from `plan_limits` (Monday reset), upgrade trigger `fix_all_limit`
 
 ## JD Red Flag Detector
 
@@ -320,16 +320,23 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 
 ### Plans
 
-- Free (7-day rolling window): 3 CVs, 10 ATS scans, 25 AI rewrites, 5 job matches, 5 cover letters, 3 PDF downloads, all templates
-- Free (weekly Monday reset): 3 Fix All, 3 CV tailors, 5 offer evals, 3 portfolio scans, 10 story summaries, 5 interview preps
-- Pro: unlimited everything, all templates, no watermark, 80+ score guarantee, priority support
+Quotas live in the `plan_limits` table (plan, feature, limit_value, reset_type; -1 = unlimited), edited from /admin/plans and read through `getPlanLimits()` in lib/billing/plan-config.ts (60s cache). Template tiers live in `template_catalog`. `PLAN_LIMITS` in lib/billing/limits.ts is only the fallback for a DB outage: keep it in step with the table.
+
+Never type a quota into copy. Server components call `getPlanLimits()`; client components get the values as props. Phrase them with lib/billing/format-limits.ts (`describeQuota`, `formatLimit`, `summarizeAllowance`). Emails use `{{freeAtsScans}}`-style variables, which `sendEmail` fills from the same table. Static strings (metadata) must not state a free-plan number.
+
+Current values (2026-09-29):
+- Free, total: 1 CV (`cvs`). Not enforced yet: no CV-creation route checks it
+- Free, 7-day rolling window: 3 ATS scans, 20 AI rewrites, 5 job matches, 5 cover letters, 1 PDF download
+- Free, weekly Monday reset: 5 Fix All, 3 CV tailors, 5 offer evals, 3 portfolio scans, 10 story summaries, 5 interview preps
+- Pro: -1 (unlimited) on every quota, 80+ score guarantee, priority support
+- Templates: all 32 are `free` and enabled in `template_catalog` today. No watermark on any plan
 
 ### Usage Windows
 
 Two reset mechanisms coexist:
 - **7-day rolling window** (from usage_window_start): ats_scans, job_matches, cover_letters, ai_rewrites, pdf_downloads
 - **Weekly Monday reset** (from week_reset_at): fix_all, cv_tailor, offer_eval, portfolio_scan, story_summary, interview_prep
-- Source of truth: `lib/billing/limits.ts` (PLAN_LIMITS + COLUMN_MAP)
+- Reset mechanics: `lib/billing/limits.ts` (COLUMN_MAP, `LIMIT_RESET` in format-limits.ts mirrors it). Quota values: `plan_limits` table
 - Auto-reset on window/week expiration via checkLimit()
 
 ### Feature Gate (lib/billing/)
@@ -357,7 +364,7 @@ Two reset mechanisms coexist:
 ## PDF Export
 
 - POST /api/cv/export/pdf -> lib/pdf/html-to-pdf.ts (inline rendering, no child process)
-- Free: 3 PDF downloads per 7-day rolling window, no watermark. Pro: unlimited, no watermark.
+- Free: `pdf_downloads` per 7-day rolling window (see `plan_limits`), no watermark. Pro: unlimited, no watermark.
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
 - Multi-page painting (lib/pdf/html-to-pdf.ts): Chromium clips column backgrounds to content height and never paints the canvas into `@page` margins. The pipeline folds page-spanning flex/grid columns (fills + divider borders) into one gradient, promotes it to the `<html>` canvas, and paints the pages-2+ top margin via a Puppeteer header template (laid out 20px below the page edge, hence the nested offset box). Per-page decorations (Orchid wedge) use `@media print { position: fixed }` and are hoisted to `<body>` so Chromium repeats them on every page.
 - A column row (side-by-side flex/grid) starting at the top of page 1 and at least half a page tall is promoted to the page canvas even when its content ends early, so sidebars run the full page on one-page CVs.
@@ -425,7 +432,7 @@ Two reset mechanisms coexist:
   - Interview prep: match stories to JD via story_match_v1
   - Readiness card: X/8 stories ready (quality >= 7)
   - Search, tag filter, sort, grid/list view toggle
-- Pro gates: story_summary_limit (10 free/week), interview_prep_limit (5 free/week)
+- Pro gates: story_summary_limit, interview_prep_limit (weekly free quotas in `plan_limits`)
 
 ## Feedback & Ratings
 

@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { PricingContent } from "./pricing-content";
 import { PRICING_FAQS } from "./faqs";
 import { BreadcrumbJsonLd, ProductJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
+import { getPlanLimits } from "@/lib/billing/plan-config";
+
+// Plan quotas come from plan_limits. force-static keeps the page static (the
+// admin client's no-store fetch would otherwise make it dynamic); it re-reads
+// the quotas hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Pricing: Free forever, Pro from $2.30/week",
@@ -26,7 +33,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const limits = await getPlanLimits();
+
   return (
     <div className="container mx-auto px-4 py-16 sm:py-20">
       <BreadcrumbJsonLd
@@ -58,7 +67,7 @@ export default function PricingPage() {
         </p>
       </header>
 
-      <PricingContent />
+      <PricingContent limits={limits} />
     </div>
   );
 }

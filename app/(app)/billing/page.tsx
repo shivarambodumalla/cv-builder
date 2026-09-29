@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { BillingPageContent } from "./billing-page-content";
+import { getPlanLimits } from "@/lib/billing/plan-config";
 
 export const dynamic = "force-dynamic";
 
@@ -63,10 +64,13 @@ export default async function BillingPage() {
     .order("started_at", { ascending: false })
     .limit(10);
 
+  const limits = await getPlanLimits();
+
   return (
     <div className="container mx-auto max-w-3xl px-4 py-12">
       <BillingPageContent
         profile={profile ?? {}}
+        limits={limits}
         stats={{
           totalCvs: totalCvs ?? 0,
           totalReports,

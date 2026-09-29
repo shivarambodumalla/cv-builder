@@ -2,6 +2,8 @@ import { Resend } from "resend";
 import { render } from "@react-email/render";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BaseEmail } from "@/components/emails/base-email";
+import { getPlanLimits } from "@/lib/billing/plan-config";
+import { quotaTemplateVars } from "@/lib/billing/format-limits";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -79,8 +81,9 @@ export async function sendEmail({ to, templateName, variables = {}, userId, atta
       return;
     }
 
-    // Fetch brand
-    const brand = await getBrandSettings();
+    // Fetch brand, plus the live free-plan quotas so templates can say
+    // {{freeAtsScans}} instead of a number that /admin/plans may have changed.
+    const [brand, limits] = await Promise.all([getBrandSettings(), getPlanLimits()]);
 
     // Merge brand vars with provided vars
     const allVars: Record<string, string> = {
@@ -88,6 +91,7 @@ export async function sendEmail({ to, templateName, variables = {}, userId, atta
       supportEmail: brand.support_email,
       brandColor: brand.primary_color,
       logoText: brand.logo_text,
+      ...quotaTemplateVars(limits.free),
       ...variables,
     };
 

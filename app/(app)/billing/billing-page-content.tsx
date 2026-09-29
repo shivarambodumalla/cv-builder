@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getPlan } from "@/lib/billing/limits";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
+import { describeQuota, type PlanQuotas } from "@/lib/billing/format-limits";
 import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt, AlertTriangle, Trash2, DatabaseBackup } from "lucide-react";
 
 interface ProfileData {
@@ -48,8 +49,9 @@ function StatCard({ icon: Icon, label, value }: { icon: React.ElementType; label
   );
 }
 
-export function BillingPageContent({ profile, stats, history }: { profile: ProfileData; stats: Stats; history: HistoryEntry[] }) {
+export function BillingPageContent({ profile, limits, stats, history }: { profile: ProfileData; limits: { free: PlanQuotas; pro: PlanQuotas }; stats: Stats; history: HistoryEntry[] }) {
   const plan = getPlan(profile);
+  const quotas = limits[plan];
   const { openUpgradeModal } = useUpgradeModal();
   const [cancelLoading, setCancelLoading] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -255,22 +257,22 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           <h3 className="font-semibold">Free plan includes</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <FileText className="h-4 w-4" /> 3 CVs
+              <FileText className="h-4 w-4" /> {describeQuota(quotas, "cvs")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <BarChart3 className="h-4 w-4" /> 10 ATS scans/week
+              <BarChart3 className="h-4 w-4" /> {describeQuota(quotas, "ats_scans")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Briefcase className="h-4 w-4" /> 5 job matches/week
+              <Briefcase className="h-4 w-4" /> {describeQuota(quotas, "job_matches")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Mail className="h-4 w-4" /> 5 cover letters/week
+              <Mail className="h-4 w-4" /> {describeQuota(quotas, "cover_letters")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Sparkles className="h-4 w-4" /> 25 AI rewrites/week
+              <Sparkles className="h-4 w-4" /> {describeQuota(quotas, "ai_rewrites")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Download className="h-4 w-4" /> Unlimited clean PDF downloads (no watermark)
+              <Download className="h-4 w-4" /> {describeQuota(quotas, "pdf_downloads")}, no watermark
             </div>
           </div>
           <Button variant="outline" className="w-full" onClick={() => openUpgradeModal("generic")}>
@@ -284,19 +286,19 @@ export function BillingPageContent({ profile, stats, history }: { profile: Profi
           <h3 className="font-semibold">Pro plan includes</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-primary" /> Unlimited CVs
+              <FileText className="h-4 w-4 text-primary" /> {describeQuota(quotas, "cvs")}
             </div>
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-primary" /> Unlimited ATS scans
+              <BarChart3 className="h-4 w-4 text-primary" /> {describeQuota(quotas, "ats_scans")}
             </div>
             <div className="flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-primary" /> Unlimited job matches
+              <Briefcase className="h-4 w-4 text-primary" /> {describeQuota(quotas, "job_matches")}
             </div>
             <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary" /> Unlimited cover letters
+              <Mail className="h-4 w-4 text-primary" /> {describeQuota(quotas, "cover_letters")}
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" /> Unlimited AI rewrites
+              <Sparkles className="h-4 w-4 text-primary" /> {describeQuota(quotas, "ai_rewrites")}
             </div>
             <div className="flex items-center gap-2">
               <Download className="h-4 w-4 text-primary" /> Clean PDF exports (no watermark)

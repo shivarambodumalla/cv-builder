@@ -28,13 +28,13 @@ const LIMITS: {
   free: number;
   pro: number;
 }[] = [
-  { feature: "cvs",            label: "CVs",                  reset: "total",   free: 3,  pro: -1 },
-  { feature: "ats_scans",      label: "ATS scans",            reset: "window7", free: 5,  pro: -1 },
-  { feature: "ai_rewrites",    label: "AI rewrites",          reset: "window7", free: 25, pro: -1 },
+  { feature: "cvs",            label: "CVs",                  reset: "total",   free: 1,  pro: -1 },
+  { feature: "ats_scans",      label: "ATS scans",            reset: "window7", free: 3,  pro: -1 },
+  { feature: "ai_rewrites",    label: "AI rewrites",          reset: "window7", free: 20, pro: -1 },
   { feature: "job_matches",    label: "Job matches",          reset: "window7", free: 5,  pro: -1 },
   { feature: "cover_letters",  label: "Cover letters",        reset: "window7", free: 5,  pro: -1 },
-  { feature: "pdf_downloads",  label: "PDF downloads",        reset: "window7", free: 3,  pro: -1 },
-  { feature: "fix_all",        label: "Fix All ATS",          reset: "weekly",  free: 3,  pro: -1 },
+  { feature: "pdf_downloads",  label: "PDF downloads",        reset: "window7", free: 1,  pro: -1 },
+  { feature: "fix_all",        label: "Fix All ATS",          reset: "weekly",  free: 5,  pro: -1 },
   { feature: "cv_tailor",      label: "CV tailor for JD",     reset: "weekly",  free: 3,  pro: -1 },
   { feature: "offer_eval",     label: "Offer evaluations",    reset: "weekly",  free: 5,  pro: -1 },
   { feature: "portfolio_scan", label: "Portfolio scans",      reset: "weekly",  free: 3,  pro: -1 },

@@ -3,12 +3,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
+import { getTemplateCounts } from "@/lib/billing/plan-config";
 import { TemplateShowcase } from "../resumes/template-showcase";
+
+// The template count comes from the catalogue. force-static keeps the page
+// static (the admin client's no-store fetch would otherwise make it dynamic).
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Free CV Templates: ATS-Friendly for UK & Australia",
   description:
-    "Free CV templates for UK, Australian, and international job applications. ATS-safe formats with instant score, AI rewriting, and clean PDF download. No sign-up required.",
+    "Free CV templates for UK, Australian and international jobs. ATS-safe formats with instant score, AI rewriting and clean PDF download. Free account, no card.",
   alternates: { canonical: "https://www.thecvedge.com/cv-templates" },
   openGraph: {
     title: "Free CV Templates: ATS-Friendly for UK & Australia | CVEdge",
@@ -74,7 +80,8 @@ const TEMPLATE_TIPS = [
   },
 ];
 
-export default function CvTemplatesPage() {
+export default async function CvTemplatesPage() {
+  const { total } = await getTemplateCounts();
   return (
     <>
       <BreadcrumbJsonLd
@@ -101,7 +108,7 @@ export default function CvTemplatesPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              32 professional CV templates for UK, Australian, and international job
+              {total} professional CV templates for UK, Australian, and international job
               applications. Upload your existing CV for a free ATS score, or start fresh.
               No credit card required.
             </p>
@@ -153,7 +160,7 @@ export default function CvTemplatesPage() {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold tracking-tight">All 32 CV templates</h2>
+              <h2 className="text-2xl font-bold tracking-tight">All {total} CV templates</h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 Switch templates any time. Your content transfers in one click.
               </p>

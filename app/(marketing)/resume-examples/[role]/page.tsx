@@ -345,7 +345,7 @@ export default async function RoleResumeExamplePage({
           </div>
           <div className="mt-4 text-center">
             <Link href="/resume-templates" className="text-sm text-primary hover:underline">
-              View all 32 templates
+              View all templates
             </Link>
           </div>
         </div>

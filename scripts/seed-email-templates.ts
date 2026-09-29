@@ -16,13 +16,13 @@ const TEMPLATES = [
     cta_text: "Continue job hunting \u2192",
     cta_url: "{{appUrl}}/dashboard",
     body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:20px;">
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 10 ATS scans</td></tr>
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 25 AI rewrites</td></tr>
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 5 job matches</td></tr>
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 5 cover letters</td></tr>
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 3 Fix All with AI</td></tr>
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 3 CV tailors</td></tr>
-  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 5 interview prep sessions</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeAtsScans}}</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeAiRewrites}}</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeJobMatches}}</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeCoverLetters}}</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeFixAll}} with AI</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeCvTailor}}</td></tr>
+  <tr><td style="padding:6px 0;color:#065F46;font-size:14px;">\u2713 {{freeInterviewPrep}}</td></tr>
 </table>
 <p style="margin:0 0 8px;font-size:14px;color:#3D3830;">Your CV from last week is waiting. Pick up where you left off.</p>`,
   },
@@ -34,12 +34,12 @@ const TEMPLATES = [
     cta_text: "Get back to job hunting",
     cta_url: "{{appUrl}}/dashboard",
     body_html: `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:16px;">
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 10 ATS scans</td></tr>
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 25 AI rewrites</td></tr>
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 5 job matches</td></tr>
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 5 cover letters</td></tr>
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 3 Fix All</td></tr>
-  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 3 CV tailors</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 {{freeAtsScans}}</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 {{freeAiRewrites}}</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 {{freeJobMatches}}</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 {{freeCoverLetters}}</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 {{freeFixAll}}</td></tr>
+  <tr><td style="padding:4px 0;color:#1a1a1a;font-size:14px;">\u2022 {{freeCvTailor}}</td></tr>
 </table>
 <p style="margin:0;font-size:12px;color:#9CA3AF;">Your free limits reset every Monday. We\u2019re here when you\u2019re ready.</p>`,
   },
@@ -62,7 +62,7 @@ const TEMPLATES = [
 </table>
 <p style="margin:0 0 12px;font-size:15px;color:#1a1a1a;line-height:1.6;">Think of this like a cart you left behind &mdash; except it&rsquo;s your career. Your resume is scored, formatted, and waiting for you to hit send.</p>
 <p style="margin:0;font-size:14px;color:#6B7280;line-height:1.6;">Most people spend hours perfecting their CV but never download it. Don&rsquo;t be that person.</p>`,
-    after_cta_html: `<p style="margin:16px 0 0;font-size:12px;color:#9CA3AF;text-align:center;">Free plan: 3 downloads per week &nbsp;&bull;&nbsp; <a href="{{appUrl}}/pricing" style="color:#1a7a6d;text-decoration:none;">Upgrade to Pro</a> for unlimited</p>`,
+    after_cta_html: `<p style="margin:16px 0 0;font-size:12px;color:#9CA3AF;text-align:center;">Free plan: {{freePdfDownloads}} every 7 days &nbsp;&bull;&nbsp; <a href="{{appUrl}}/pricing" style="color:#1a7a6d;text-decoration:none;">Upgrade to Pro</a> for unlimited</p>`,
   },
 
   {

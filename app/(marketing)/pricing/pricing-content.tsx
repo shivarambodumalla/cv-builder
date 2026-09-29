@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, ChevronDown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRICING_FAQS } from "./faqs";
+import { describeQuota, type PlanQuotas } from "@/lib/billing/format-limits";
 
 type BillingPeriod = "weekly" | "monthly" | "yearly";
 
@@ -23,27 +24,19 @@ const OPTIONS: PlanOption[] = [
   { period: "yearly", label: "Yearly", price: 120, per: "/year", perWeek: "$2.30", savePercent: 71 },
 ];
 
-const FREE_FEATURES = [
-  "3 resumes",
-  "10 ATS scans / 7 days",
-  "25 AI rewrites / 7 days",
-  "5 job matches / 7 days",
-  "5 cover letters / 7 days",
-  "All templates",
-  "Unlimited PDF downloads",
-];
+const QUOTA_FEATURES = ["cvs", "ats_scans", "ai_rewrites", "job_matches", "cover_letters", "pdf_downloads"];
 
-const PRO_FEATURES = [
-  "Unlimited resumes + ATS scans",
-  "Unlimited AI rewrites",
-  "Unlimited job matches",
-  "Unlimited cover letters",
-  "Interview Coach",
-  "80+ ATS score guarantee",
-  "Priority support",
-];
-
-export function PricingContent() {
+export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: PlanQuotas } }) {
+  const freeFeatures = [
+    ...QUOTA_FEATURES.map((f) => describeQuota(limits.free, f)),
+    "All templates",
+  ];
+  const proFeatures = [
+    ...QUOTA_FEATURES.map((f) => describeQuota(limits.pro, f)),
+    "Interview Coach",
+    "80+ ATS score guarantee",
+    "Priority support",
+  ];
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
   const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set());
   const selected = OPTIONS.find((o) => o.period === billing)!;
@@ -69,7 +62,7 @@ export function PricingContent() {
           <p className="text-sm text-muted-foreground mb-8">No credit card required</p>
 
           <ul className="mb-8 flex-1 space-y-3">
-            {FREE_FEATURES.map((f) => (
+            {freeFeatures.map((f) => (
               <li key={f} className="flex items-start gap-3 text-sm">
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#C8F0D6]">
                   <Check className="h-3 w-3 text-[#065F46]" />
@@ -134,7 +127,7 @@ export function PricingContent() {
           <p className="text-sm text-white/80 mb-6">{selected.perWeek}/week · less than your morning coffee</p>
 
           <ul className="mb-8 flex-1 space-y-3">
-            {PRO_FEATURES.map((f) => (
+            {proFeatures.map((f) => (
               <li key={f} className="flex items-start gap-3 text-sm">
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#34D399]/20">
                   <Check className="h-3 w-3 text-[#34D399]" />
