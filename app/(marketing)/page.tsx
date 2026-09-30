@@ -6,6 +6,7 @@ import {
   Briefcase,
   Brain,
   Check,
+  Compass,
   DollarSign,
   Search,
   Sparkles,
@@ -75,7 +76,7 @@ export default async function HomePage() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
-    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Cover Letter Generation", "Interview Coach", `${templateCounts.total} Professional Templates`],
+    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Career Path Generator", "Cover Letter Generation", "Interview Coach", `${templateCounts.total} Professional Templates`],
     areaServed: [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
@@ -228,8 +229,8 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Row 2 — Job Search + Interview Coach (side by side) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Row 2 — Job Search + Interview Coach + Career Path */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Job Search */}
               <div className="rounded-[2rem] bg-[#065F46] border border-[#065F46]/20 p-8 sm:p-10 flex flex-col gap-5">
                 <div className="flex items-center gap-3">
@@ -294,6 +295,40 @@ export default async function HomePage() {
                 <div className="mt-auto pt-3">
                   <Button className="h-11 px-7 text-sm font-medium bg-white text-[#1E3A5F] hover:bg-white/90" asChild>
                     <Link href="/interview-prep">Start interview prep</Link>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Career Path */}
+              <div className="rounded-[2rem] bg-primary border border-primary p-8 sm:p-10 flex flex-col gap-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                    <Compass className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">Career Path Generator</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+                  See where your job leads, and what it pays
+                </h3>
+                <p className="text-sm text-white/70 leading-relaxed">
+                  Enter your job title and get 3 to 5 next roles with live job counts and advertised pay. Then tailor your resume for the one you pick.
+                </p>
+                <ul className="space-y-2 mt-1">
+                  {[
+                    "Step ups, sideways moves and career changes, ranked by fit",
+                    "Open jobs and pay from live US listings",
+                    "Free to see your roles, no sign-in",
+                    "Guides for 28 common roles",
+                  ].map((p) => (
+                    <li key={p} className="flex items-start gap-2.5">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
+                      <span className="text-sm text-white/90 leading-relaxed">{p}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto pt-3">
+                  <Button className="h-11 px-7 text-sm font-medium bg-white text-primary hover:bg-white/90" asChild>
+                    <Link href="/career-path">Find my next role</Link>
                   </Button>
                 </div>
               </div>
