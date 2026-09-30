@@ -188,7 +188,16 @@ export function CareerPathLoader({
         focusable="false"
       >
         <defs>
-          <linearGradient id="cp-branch" x1="0" y1="0" x2="1" y2="0">
+          {/* userSpaceOnUse: the middle branch is a straight line whose bounding box has no
+                height, and a bounding-box gradient makes its stroke vanish. */}
+          <linearGradient
+            id="cp-branch"
+            gradientUnits="userSpaceOnUse"
+            x1="106"
+            y1="0"
+            x2="396"
+            y2="0"
+          >
             <stop offset="0" stopColor="#065F46" />
             <stop offset="1" stopColor="#8FD3B5" />
           </linearGradient>
