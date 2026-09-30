@@ -1,9 +1,19 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { article, hasCareerPathPage, roleLabel } from "@/lib/roles/career-moves/pages";
+import {
+  article,
+  hasCareerPathPage,
+  roleLabel,
+} from "@/lib/roles/career-moves/pages";
 
 /** One-line link from another role page to /career-path/<slug>. Renders nothing when that page doesn't exist. */
-export function CareerPathCrossLink({ slug, className }: { slug: string; className?: string }) {
+export function CareerPathCrossLink({
+  slug,
+  className,
+}: {
+  slug: string;
+  className?: string;
+}) {
   const label = roleLabel(slug);
   if (!label || !hasCareerPathPage(slug)) return null;
 

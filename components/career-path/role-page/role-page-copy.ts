@@ -25,12 +25,18 @@ export function plural(title: string): string {
 
 /** Anchor id for a move's section on the page. */
 export function moveAnchor(move: CareerMove): string {
-  return `move-${move.toRole.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+  return `move-${move.toRole
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}`;
 }
 
 /** The part of typicalTiming before the first comma or full stop: "After 1-3 years". */
 export function timingShort(move: CareerMove): string {
-  return move.typicalTiming.split(/,|\.\s/)[0].replace(/\.$/, "").trim();
+  return move.typicalTiming
+    .split(/,|\.\s/)[0]
+    .replace(/\.$/, "")
+    .trim();
 }
 
 /** Timing as the end of a sentence: "usually after 1-3 years", "and you can make it any time after 2 years". */
@@ -38,9 +44,14 @@ function timingClause(move: CareerMove, brief = false): string {
   const full = timingShort(move);
   // "After 2-3 years as a senior PM with an AI product surface that..." -> "After 2-3 years".
   const n = "(?:\\d+|a|one|two|three|four|five|six|seven|eight|nine|ten)";
-  const years = new RegExp(`^(?:any time after |after |usually )?(?:about )?${n}(?:(?:-| to | or )${n})?(?: or more)? years?(?: in\\b)?`, "i").exec(full)?.[0];
+  const years = new RegExp(
+    `^(?:any time after |after |usually )?(?:about )?${n}(?:(?:-| to | or )${n})?(?: or more)? years?(?: in\\b)?`,
+    "i",
+  ).exec(full)?.[0];
   // Only trim when the rest still reads as a point in time ("after 5 years", "5 years in").
-  const complete = years !== undefined && /^(any time after|after)\b|\bin$/i.test(years.replace(/^usually /i, ""));
+  const complete =
+    years !== undefined &&
+    /^(any time after|after)\b|\bin$/i.test(years.replace(/^usually /i, ""));
   const short = brief && complete ? years : full;
   const lower = short.charAt(0).toLowerCase() + short.slice(1);
   if (/^any time/i.test(short)) return `and you can make it ${lower}`;
@@ -74,9 +85,11 @@ export function shortAnswer(label: string, path: RoleCareerPath): string[] {
   const opening = (brief: boolean) =>
     `A common next step for ${a} ${roleNoun(label)} is ${roleNoun(lead.toRole)}, ${timingClause(lead, brief)}.`;
   // The quotable sentence: keep it near 20 words by trimming the timing detail.
-  const first = wordCount(opening(false)) <= 20 ? opening(false) : opening(true);
+  const first =
+    wordCount(opening(false)) <= 20 ? opening(false) : opening(true);
 
-  const byType = (type: MoveType) => rest.filter((m) => m.moveType === type).map((m) => roleNoun(m.toRole));
+  const byType = (type: MoveType) =>
+    rest.filter((m) => m.moveType === type).map((m) => roleNoun(m.toRole));
   const up = byType("step_up");
   const side = byType("lateral");
   const change = byType("pivot");
@@ -97,9 +110,13 @@ export function shortAnswer(label: string, path: RoleCareerPath): string[] {
   const moves = [upText, sideText].filter((p): p is string => p !== null);
   const both = `You can also ${moves.join(", or ")}.`;
   const split = [
-    ...(wordCount(both) <= MAX_WORDS ? [both] : moves.map((m) => `You can also ${m}.`)),
+    ...(wordCount(both) <= MAX_WORDS
+      ? [both]
+      : moves.map((m) => `You can also ${m}.`)),
     ...(change.length > 0
-      ? [`Some change careers and become ${orList(change.map((r) => `${article(r)} ${r}`))}.`]
+      ? [
+          `Some change careers and become ${orList(change.map((r) => `${article(r)} ${r}`))}.`,
+        ]
       : []),
   ];
   return [first, ...split];

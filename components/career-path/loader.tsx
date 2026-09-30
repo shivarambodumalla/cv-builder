@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CP_CARD } from "./path-meta";
+import { CP, type Hue } from "./palette";
 
 // The wait is about 20 seconds, so the loader shows the work: the current role
 // in the middle, three branches drawing out to result cards that fill in, a
@@ -40,11 +41,23 @@ const STEP_TITLES: Record<LoaderStep, string> = {
 const ROTATE_MS = 2600;
 const EXPECTED_SECONDS = 20;
 
-// Three branches from the role to three result slots, drawn left to right.
-const BRANCHES = [
-  { d: "M106 100 C 250 100, 250 40, 396 40", y: 40, delay: 0.2 },
-  { d: "M106 100 C 250 100, 250 100, 396 100", y: 100, delay: 0.7 },
-  { d: "M106 100 C 250 100, 250 160, 396 160", y: 160, delay: 1.2 },
+// Three branches from the role to three result slots, drawn left to right, one
+// per move type in the palette's order: step up (green), sideways (navy),
+// career change (amber).
+const BRANCHES: { d: string; y: number; delay: number; hue: Hue }[] = [
+  { d: "M106 100 C 250 100, 250 40, 396 40", y: 40, delay: 0.2, hue: "green" },
+  {
+    d: "M106 100 C 250 100, 250 100, 396 100",
+    y: 100,
+    delay: 0.7,
+    hue: "navy",
+  },
+  {
+    d: "M106 100 C 250 100, 250 160, 396 160",
+    y: 160,
+    delay: 1.2,
+    hue: "amber",
+  },
 ];
 
 /** Up to two lines of at most `max` characters, split on words; a long tail is cut with an ellipsis. */
@@ -127,7 +140,7 @@ export function CareerPathLoader({
       {/* What is happening */}
       <div className="flex flex-col gap-4">
         <div>
-          <p className="font-cp-display text-[28px] leading-tight">
+          <p className="font-cp-display tracking-[-0.02em] font-bold text-[28px] leading-tight">
             {STEP_TITLES[step]}
           </p>
           <p
@@ -161,7 +174,11 @@ export function CareerPathLoader({
                 <span
                   className={cn(
                     "h-1.5 w-1.5 rounded-full",
-                    done || active ? "bg-[#065F46]" : "border border-[#A8A097]",
+                    active
+                      ? "bg-[#065F46]"
+                      : done
+                        ? "bg-[#1E3A5F]"
+                        : "border border-[#A8A097]",
                     active && "cp-pulse",
                   )}
                   aria-hidden="true"
@@ -184,17 +201,20 @@ export function CareerPathLoader({
         <defs>
           {/* userSpaceOnUse: the middle branch is a straight line whose bounding box has no
                 height, and a bounding-box gradient makes its stroke vanish. */}
-          <linearGradient
-            id="cp-branch"
-            gradientUnits="userSpaceOnUse"
-            x1="106"
-            y1="0"
-            x2="396"
-            y2="0"
-          >
-            <stop offset="0" stopColor="#065F46" />
-            <stop offset="1" stopColor="#8FD3B5" />
-          </linearGradient>
+          {BRANCHES.map((b) => (
+            <linearGradient
+              key={b.hue}
+              id={`cp-branch-${b.hue}`}
+              gradientUnits="userSpaceOnUse"
+              x1="106"
+              y1="0"
+              x2="396"
+              y2="0"
+            >
+              <stop offset="0" stopColor={CP[b.hue].text} />
+              <stop offset="1" stopColor={CP[b.hue].soft} />
+            </linearGradient>
+          ))}
         </defs>
 
         {/* Result slots (skeleton cards) */}
@@ -243,7 +263,7 @@ export function CareerPathLoader({
               width="20"
               height="8"
               rx="4"
-              fill="#E6F2EC"
+              fill={CP[b.hue].tint}
             />
           </g>
         ))}
@@ -254,13 +274,13 @@ export function CareerPathLoader({
             <path
               d={b.d}
               fill="none"
-              stroke="url(#cp-branch)"
+              stroke={`url(#cp-branch-${b.hue})`}
               strokeWidth="2"
               strokeLinecap="round"
               className="cp-draw"
               style={{ animationDelay: `${b.delay}s` }}
             />
-            <circle r="3.5" fill="#065F46" className="cp-motion">
+            <circle r="3.5" fill={CP[b.hue].text} className="cp-motion">
               <animateMotion
                 dur="2.6s"
                 begin={`${b.delay + 1.2}s`}
@@ -273,7 +293,7 @@ export function CareerPathLoader({
               cy={b.y}
               r="4"
               fill="#FFFFFF"
-              stroke="#065F46"
+              stroke={CP[b.hue].text}
               strokeWidth="2"
             />
           </g>

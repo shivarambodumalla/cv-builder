@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { CP_BUTTON, CP_CARD, CP_EYEBROW } from "@/components/career-path/path-meta";
+import {
+  CP_BUTTON,
+  CP_CARD,
+  CP_EYEBROW,
+} from "@/components/career-path/path-meta";
 import { cn } from "@/lib/utils";
 import { trackCareerPathEvent } from "@/components/career-path/track";
 
@@ -40,12 +44,21 @@ async function applyRole(careerPathId: string, cvId: string, role: string) {
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "We couldn't update your resume. The save didn't go through. Try again in a minute.");
+    throw new Error(
+      data.error ||
+        "We couldn't update your resume. The save didn't go through. Try again in a minute.",
+    );
   }
 }
 
 /** The single product step after sign-in: point a resume at the chosen role. */
-export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: TailorCtaProps) {
+export function TailorCta({
+  careerPathId,
+  role,
+  cvId,
+  cvs,
+  cvLimitReached,
+}: TailorCtaProps) {
   const router = useRouter();
   const [chosen, setChosen] = useState(cvs[0]?.id ?? "");
   const [busy, setBusy] = useState<"tailor" | "scratch" | null>(null);
@@ -61,7 +74,11 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       router.push(`/resume/${chosen}`);
     } catch (err) {
       console.error("[career-path] apply failed:", err);
-      setError(err instanceof Error ? err.message : "We couldn't update your resume. The save didn't go through. Try again in a minute.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "We couldn't update your resume. The save didn't go through. Try again in a minute.",
+      );
       setBusy(null);
     }
   }
@@ -78,13 +95,19 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.cv_id) {
-        throw new Error("We couldn't create a blank resume. The save didn't go through. Try again in a minute.");
+        throw new Error(
+          "We couldn't create a blank resume. The save didn't go through. Try again in a minute.",
+        );
       }
       await applyRole(careerPathId, data.cv_id, role);
       router.push(`/resume/${data.cv_id}/pick-template`);
     } catch (err) {
       console.error("[career-path] start from scratch failed:", err);
-      setError(err instanceof Error ? err.message : "We couldn't create a blank resume. The save didn't go through. Try again in a minute.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "We couldn't create a blank resume. The save didn't go through. Try again in a minute.",
+      );
       setBusy(null);
     }
   }
@@ -97,7 +120,11 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
     title = `Your resume now targets ${role}`;
     body = `We set ${role} as the target role on the resume you uploaded. Its ATS check and keyword tips now measure it against this job.`;
     actions = (
-      <Link href={`/resume/${cvId}`} className={CP_BUTTON.dark} onClick={() => trackCareerPathEvent("tailor_clicked")}>
+      <Link
+        href={`/resume/${cvId}`}
+        className={CP_BUTTON.green}
+        onClick={() => trackCareerPathEvent("tailor_clicked")}
+      >
         Open my resume
       </Link>
     );
@@ -108,7 +135,10 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end">
         {cvs.length > 1 && (
           <div className="flex-1 space-y-1.5">
-            <label htmlFor="cp-tailor-cv" className="text-[13px] font-semibold text-[#3F3A35]">
+            <label
+              htmlFor="cp-tailor-cv"
+              className="text-[13px] font-semibold text-[#3F3A35]"
+            >
               Which resume?
             </label>
             <select
@@ -132,11 +162,13 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
         )}
         <button
           type="button"
-          className={cn(CP_BUTTON.dark, "disabled:opacity-60")}
+          className={cn(CP_BUTTON.green, "disabled:opacity-60")}
           onClick={tailorExisting}
           disabled={busy !== null || !chosen}
         >
-          {busy === "tailor" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+          {busy === "tailor" && (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          )}
           Tailor my resume
         </button>
       </div>
@@ -148,7 +180,7 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
           href={`/upload-resume?role=${encodeURIComponent(role)}`}
-          className={CP_BUTTON.dark}
+          className={CP_BUTTON.green}
           onClick={() => trackCareerPathEvent("tailor_clicked")}
         >
           Upload my resume
@@ -159,7 +191,9 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
           onClick={startFromScratch}
           disabled={busy !== null}
         >
-          {busy === "scratch" && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+          {busy === "scratch" && (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          )}
           Start from scratch
         </button>
       </div>
@@ -167,18 +201,26 @@ export function TailorCta({ careerPathId, role, cvId, cvs, cvLimitReached }: Tai
   }
 
   return (
-    <section aria-labelledby="cp-tailor-title" className={cn(CP_CARD, "p-5 md:p-7")}>
+    <section
+      aria-labelledby="cp-tailor-title"
+      className={cn(CP_CARD, "border-[#CFE5D9] p-5 md:p-7")}
+    >
       <div>
         <p className={CP_EYEBROW}>Next step</p>
         <div className="mt-2 min-w-0 space-y-2">
-          <h2 id="cp-tailor-title" className="font-cp-display text-[28px] font-normal leading-[1.1] sm:text-[32px]">
+          <h2
+            id="cp-tailor-title"
+            className="font-cp-display tracking-[-0.02em] text-[28px] font-bold leading-[1.1] sm:text-[32px]"
+          >
             {title}
           </h2>
-          <p className="max-w-prose text-[15px] leading-[1.55] text-[#4A443E]">{body}</p>
+          <p className="max-w-prose text-[15px] leading-[1.55] text-[#4A443E]">
+            {body}
+          </p>
           {!cvId && cvLimitReached && cvs.length > 0 && (
             <p className="text-sm leading-relaxed text-[#5F5852]">
-              You already have a saved resume, so the one you uploaded here wasn&apos;t added. This updates your saved
-              resume instead.
+              You already have a saved resume, so the one you uploaded here
+              wasn&apos;t added. This updates your saved resume instead.
             </p>
           )}
         </div>

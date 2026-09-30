@@ -14,7 +14,9 @@ export function careerPathTitle(label: string): string {
     `${label} Career Path and Next Roles`,
     `${label} Career Path`,
   ];
-  return patterns.find((t) => t.length <= MAX_TITLE) ?? patterns[patterns.length - 1];
+  return (
+    patterns.find((t) => t.length <= MAX_TITLE) ?? patterns[patterns.length - 1]
+  );
 }
 
 function orList(items: string[]): string {
@@ -23,7 +25,10 @@ function orList(items: string[]): string {
 }
 
 /** Role-specific meta description naming as many destination roles (in order, up to 4) as fit in MAX_DESCRIPTION. */
-export function careerPathDescription(label: string, path: RoleCareerPath): string {
+export function careerPathDescription(
+  label: string,
+  path: RoleCareerPath,
+): string {
   const text = (roles: string[]) =>
     `Where ${label}s go next: ${orList(roles)}. Skills to add, timing and live US pay for each move.`;
   const picked: string[] = [];

@@ -64,14 +64,23 @@ export function formatOpenJobs(market: RoleMarket): string {
 export function formatCheckedOn(market: RoleMarket): string | null {
   const d = new Date(market.fetchedAt);
   if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 export function planPath(id: string, role: string): string {
   return `/career-path/plan/${id}?role=${encodeURIComponent(role)}`;
 }
 
-export function unlockHref(id: string, role: string, signedIn: boolean): string {
+export function unlockHref(
+  id: string,
+  role: string,
+  signedIn: boolean,
+): string {
   const plan = planPath(id, role);
   return signedIn ? plan : `/login?returnUrl=${encodeURIComponent(plan)}`;
 }
