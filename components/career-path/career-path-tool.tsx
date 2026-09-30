@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { BriefcaseBusiness, Check, Info, Loader2, SlidersHorizontal, Sparkle, Upload } from "lucide-react";
+import { BriefcaseBusiness, Check, Info, SlidersHorizontal, Sparkle, Upload } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import {
@@ -16,6 +16,7 @@ import {
 import { trackCareerPathEvent } from "./track";
 import { countryName, unlockHref } from "./format";
 import { CP_BUTTON, CP_CARD, CP_EYEBROW, FitBar, FitNumber, MarketStats, MoveTypeEyebrow, SkillChips } from "./path-meta";
+import { CareerPathLoader } from "./loader";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MAX_ROLE_LENGTH = 80;
@@ -363,7 +364,7 @@ export function CareerPathTool({ initialRole, hero }: { initialRole?: string; he
 
   const status =
     phase === "loading" ? (
-      <Loading steps={shownSteps} current={step} />
+      <CareerPathLoader steps={shownSteps} step={step} roleLabel={resumeActive ? "Your resume" : role} />
     ) : phase === "error" && error ? (
       <ErrorCard error={error} headingRef={errorHeadingRef} onRetry={run} onEdit={editAnswers} />
     ) : null;
@@ -830,42 +831,6 @@ function RefinePanel({
         </button>
       </div>
     </form>
-  );
-}
-
-function Loading({ steps, current }: { steps: StepKey[]; current: StepKey }) {
-  const currentIndex = steps.indexOf(current);
-  return (
-    <div className={cn(CP_CARD, "p-6 sm:p-7")}>
-      <p className="font-cp-display text-[28px] leading-tight">Finding your next roles</p>
-      <p className="mt-1 text-sm text-[#5F5852]">This usually takes about 20 seconds. Keep this tab open.</p>
-      <ol className="mt-6 flex flex-col gap-4 border-t border-[#EDE8DF] pt-5">
-        {steps.map((key, i) => {
-          const state = i < currentIndex ? "done" : i === currentIndex ? "active" : "pending";
-          const def = STEP_DEFS[key];
-          return (
-            <li key={key} className={cn("flex gap-3", state === "pending" && "text-[#78716C]")}>
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center pt-0.5" aria-hidden="true">
-                {state === "active" ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-[#065F46] motion-reduce:animate-none" />
-                ) : state === "done" ? (
-                  <Check className="h-4 w-4 text-[#065F46]" strokeWidth={2.5} />
-                ) : (
-                  <span className="h-2 w-2 rounded-full border border-[#A8A097]" />
-                )}
-              </span>
-              <div>
-                <p className={cn("text-sm", state === "active" ? "font-semibold" : "font-medium")}>
-                  {def.label}
-                  {state === "done" && <span className="sr-only"> (done)</span>}
-                </p>
-                <p className="text-xs text-[#5F5852]">{def.sub}</p>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
-    </div>
   );
 }
 
