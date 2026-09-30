@@ -20,6 +20,10 @@ import {
 } from "@/components/shared/structured-data";
 import { CareerPathTool } from "@/components/career-path/career-path-tool";
 import {
+  CP_TOP_EDGE,
+  moveTopEdgeStyle,
+} from "@/components/career-path/path-meta";
+import {
   formatJobCount,
   formatSalaryRange,
 } from "@/components/career-path/format";
@@ -27,7 +31,6 @@ import {
   CP,
   FIELD_HUE,
   HUE_CLASSES,
-  MOVE_HEX,
   type Hue,
 } from "@/components/career-path/palette";
 import { ROLE_CATEGORIES } from "@/lib/jobs/role-categories";
@@ -424,9 +427,10 @@ function MoveSection({
       id={moveAnchor(move)}
       className={cn(
         CARD,
-        "flex scroll-mt-24 flex-col gap-6 border-t-[3px] p-6 sm:p-8",
+        CP_TOP_EDGE,
+        "flex scroll-mt-24 flex-col gap-6 p-6 sm:p-8",
       )}
-      style={{ borderTopColor: MOVE_HEX[move.moveType].fill }}
+      style={moveTopEdgeStyle(move.moveType)}
     >
       <div className="flex flex-col gap-1.5">
         <MoveTypeEyebrow moveType={move.moveType} />

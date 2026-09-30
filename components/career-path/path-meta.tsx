@@ -43,9 +43,14 @@ export const CP_CARD =
  * A 3px top edge on a CP_CARD in one hue. The colour is an inline style: a
  * `border-[hex]` class would replace the card's warm border on every side.
  */
-export const CP_TOP_EDGE = "border-t-[3px]";
+// A 3px bar drawn inside the card (not a thick top border, which bends around
+// the rounded corners). Colour comes from the --cp-edge variable set by topEdgeStyle.
+export const CP_TOP_EDGE =
+  "relative overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[3px] before:bg-[var(--cp-edge)] before:content-['']";
 export function topEdgeStyle(hue: Hue): CSSProperties {
-  return { borderTopColor: hue === "amber" ? CP.amber.fill : CP[hue].text };
+  return {
+    "--cp-edge": hue === "amber" ? CP.amber.fill : CP[hue].text,
+  } as CSSProperties;
 }
 export function moveTopEdgeStyle(moveType: MoveType): CSSProperties {
   return topEdgeStyle(MOVE_HUE[moveType]);

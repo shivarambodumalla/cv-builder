@@ -108,7 +108,9 @@ export function RolePlan({
                   className={cn(card, CP_TOP_EDGE, "flex flex-col gap-3")}
                   style={topEdgeStyle(hue)}
                 >
-                  <div>
+                  {/* Reserve two lines for the focus so the dividers and
+                      checklists line up across the three cards. */}
+                  <div className={top ? "md:min-h-[4.75rem]" : undefined}>
                     <p className={cn(LABEL, HUE_CLASSES[hue].text)}>
                       {phase.label}
                     </p>

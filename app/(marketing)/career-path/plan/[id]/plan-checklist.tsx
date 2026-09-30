@@ -58,7 +58,7 @@ export function PlanChecklist({
                 type="checkbox"
                 checked={checked}
                 onChange={() => toggle(i)}
-                className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-border accent-[#065F46]"
+                className="mt-[5px] h-4 w-4 shrink-0 cursor-pointer rounded border-border accent-[#065F46]"
               />
               <span
                 className={cn(
