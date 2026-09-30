@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, Info } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { alertAdmin } from "@/lib/email/alert";
 import { CareerPathNotFoundError, claimCareerPath, getCareerPathRecord } from "@/lib/career-path/server";
 import type { CareerPathOption, ClaimResult } from "@/lib/career-path/types";
 import { planPath } from "@/components/career-path/format";
 import { MarketLine } from "@/components/career-path/market-line";
-import { FitMeter, MarketStats, MoveTypeBadge, SkillChips } from "@/components/career-path/path-meta";
+import {
+  CP_BUTTON,
+  CP_CARD,
+  CP_EYEBROW,
+  FitBar,
+  FitNumber,
+  MarketStats,
+  MoveTypeEyebrow,
+  SkillChips,
+} from "@/components/career-path/path-meta";
 import { CareerPathEventOnMount } from "@/components/career-path/track";
 import { RolePlan } from "./role-plan";
 import { TailorCta, type TailorCvOption } from "./tailor-cta";
@@ -87,39 +96,43 @@ export default async function CareerPlanPage({
   const others = paths.filter((p) => p !== selected);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
+    <div className="container mx-auto max-w-4xl px-4 py-10 md:py-14">
       <CareerPathEventOnMount event="plan_viewed" />
 
       <Link
         href="/career-path"
-        className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground sm:min-h-0"
+        className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-[#5F5852] transition-colors duration-150 hover:text-[#065F46] sm:min-h-0"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to the career path generator
       </Link>
 
       {/* Selected role */}
-      <header className="mt-8">
-        <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-          Your 90-day plan · From {record.currentRole}
-        </p>
-        <h1 className="mt-2 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">{selected.title}</h1>
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-          <MoveTypeBadge moveType={selected.moveType} />
-          <FitMeter fit={selected.fit} />
+      <header className="mt-8 flex flex-col gap-3">
+        <p className={CP_EYEBROW}>Your 90-day plan · From {record.currentRole}</p>
+        <h1 className="font-cp-display text-[40px] font-normal leading-[1.05] tracking-[-0.01em] sm:text-[52px]">
+          {selected.title}
+        </h1>
+      </header>
+
+      <section aria-label={`About ${selected.title}`} className={`${CP_CARD} mt-6 flex flex-col gap-[18px] p-5 md:p-7`}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-2">
+            <MoveTypeEyebrow moveType={selected.moveType} />
+            <p className="max-w-prose text-[15px] leading-[1.55] text-[#4A443E]">{selected.why}</p>
+          </div>
+          <FitNumber fit={selected.fit} />
         </div>
-        <p className="mt-5 max-w-prose text-base leading-relaxed">{selected.why}</p>
-        {selected.market && <MarketStats market={selected.market} className="mt-6 max-w-md border-t pt-4" />}
+        <FitBar fit={selected.fit} />
         {selected.transferableSkills.length > 0 && (
-          <div className="mt-6 border-t pt-4">
-            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-              Skills you already have
-            </p>
+          <div className="flex flex-col gap-2">
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#5F5852]">You already have</p>
             <SkillChips skills={selected.transferableSkills} label="Skills you already have" />
           </div>
         )}
-      </header>
+        {selected.market && <MarketStats market={selected.market} />}
+      </section>
 
-      <div className="mt-12 border-t pt-10">
+      <div className="mt-12">
         <RolePlan planId={id} path={selected} heading="h2" />
       </div>
 
@@ -135,29 +148,29 @@ export default async function CareerPlanPage({
       </div>
 
       {others.length > 0 && (
-        <section className="mt-14 border-t pt-10" aria-labelledby="cp-other-roles">
-          <h2 id="cp-other-roles" className="text-2xl font-bold tracking-tight">
+        <section className="mt-14" aria-labelledby="cp-other-roles">
+          <h2 id="cp-other-roles" className="font-cp-display text-[30px] font-normal leading-[1.1] sm:text-4xl">
             Your other roles
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">Open one to see its plan, or make it your target.</p>
-          <div className="mt-5 border-t">
+          <p className="mt-1.5 text-[15px] text-[#5F5852]">Open one to see its plan, or make it your target.</p>
+          <div className="mt-5 flex flex-col gap-3.5">
             {others.map((path) => (
-              <details key={path.title} className="group border-b">
-                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 py-4 [&::-webkit-details-marker]:hidden">
-                  <div className="min-w-0 space-y-1.5">
-                    <h3 className="text-lg font-semibold leading-snug">{path.title}</h3>
-                    <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-                      <MoveTypeBadge moveType={path.moveType} />
-                      <FitMeter fit={path.fit} />
-                    </div>
+              <details key={path.title} className={`group ${CP_CARD}`}>
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-5 md:px-7 [&::-webkit-details-marker]:hidden">
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <MoveTypeEyebrow moveType={path.moveType} />
+                    <h3 className="text-[21px] font-semibold leading-[1.2] tracking-[-0.01em]">{path.title}</h3>
                   </div>
-                  <ChevronDown
-                    className="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-150 group-open:rotate-180 motion-reduce:transition-none"
-                    aria-hidden="true"
-                  />
+                  <div className="flex items-center gap-4">
+                    <FitNumber fit={path.fit} size="md" />
+                    <ChevronDown
+                      className="h-5 w-5 shrink-0 text-[#5F5852] transition-transform duration-150 group-open:rotate-180 motion-reduce:transition-none"
+                      aria-hidden="true"
+                    />
+                  </div>
                 </summary>
-                <div className="space-y-8 pb-8 pt-2">
-                  <p className="max-w-prose text-[15px] leading-relaxed">{path.why}</p>
+                <div className="flex flex-col gap-8 border-t border-[#EDE8DF] px-5 pb-7 pt-5 md:px-7">
+                  <p className="max-w-prose text-[15px] leading-[1.55] text-[#4A443E]">{path.why}</p>
                   {path.transferableSkills.length > 0 && (
                     <SkillChips skills={path.transferableSkills} label={`Skills you already have for ${path.title}`} />
                   )}
@@ -166,7 +179,7 @@ export default async function CareerPlanPage({
                   <Link
                     href={planPath(id, path.title)}
                     aria-label={`Make ${path.title} my target role`}
-                    className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-opacity duration-150 hover:opacity-90"
+                    className={`${CP_BUTTON.dark} self-start`}
                   >
                     Make this my target
                   </Link>
@@ -177,7 +190,8 @@ export default async function CareerPlanPage({
         </section>
       )}
 
-      <p className="mt-12 max-w-prose text-xs leading-relaxed text-muted-foreground">
+      <p className="mt-12 flex max-w-prose items-start gap-2 text-[13px] leading-relaxed text-[#78716C]">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         Roles and plans are AI suggestions based on what you shared. Job counts and pay come from live job ads and change
         daily. Check them against real postings before you commit.
       </p>

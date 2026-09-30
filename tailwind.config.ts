@@ -12,6 +12,8 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-geist-sans)", "Outfit", "sans-serif"],
         mono: ["var(--font-geist-mono)", "Fira Code", "monospace"],
+        // Career path section only (app/(marketing)/career-path/layout.tsx).
+        "cp-display": ["var(--font-cp-display)", "Georgia", "serif"],
       },
       colors: {
         border: "var(--border)",

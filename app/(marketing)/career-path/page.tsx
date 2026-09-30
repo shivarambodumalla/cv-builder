@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { MoveTypeBadge, SkillChips } from "@/components/career-path/path-meta";
+import { Minus, Plus, Search, Sparkle } from "lucide-react";
+import { CareerPathPlanCta } from "@/components/career-path/career-path-tool";
+import { CP_BUTTON, FitBar, FitNumber, MoveTypeEyebrow, SkillChips } from "@/components/career-path/path-meta";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
-import type { MoveType } from "@/lib/career-path/types";
-import { ROLE_CATEGORIES } from "@/lib/jobs/role-categories";
-import { getCareerPath } from "@/lib/roles/career-moves";
 import { careerPathPageSlugs, roleLabel } from "@/lib/roles/career-moves/pages";
+import { cn } from "@/lib/utils";
 import { CareerPathToolFromQuery } from "./tool-from-query";
 
 const PAGE_URL = "https://www.thecvedge.com/career-path";
@@ -42,40 +41,6 @@ const WEB_APP_JSON_LD = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
-// A real run from late September 2026, shown as an example of the output.
-const EXAMPLE: { title: string; moveType: MoveType; fit: number; jobs: string; pay: string }[] = [
-  { title: "Senior QA Engineer", moveType: "step_up", fit: 85, jobs: "195", pay: "$118K-$161K" },
-  { title: "QA Automation Engineer", moveType: "lateral", fit: 75, jobs: "373", pay: "$93K-$114K" },
-  { title: "QA Lead", moveType: "step_up", fit: 70, jobs: "272", pay: "$103K-$131K" },
-];
-const EXAMPLE_SKILLS = ["Test Case Design", "Defect Management", "Automated Testing", "Regression Testing"];
-
-const STEPS = [
-  {
-    title: "We read what you gave us.",
-    body: "That's your job title, or your resume if you added one. From a resume we pick up past titles, tools and time in each job. Your years and priorities narrow the field.",
-  },
-  {
-    title: "An AI model suggests 3 to 5 moves.",
-    body: "Usually one step up in your own track, one sideways move into a nearby role, and one bigger change. It also estimates fit: how much of the new job your experience already covers. These are AI suggestions, so treat them as a shortlist to check.",
-  },
-  {
-    title: "We count real job ads for each role.",
-    body: "For every role we search live job listings in your country by title. We count the open ones and read the pay employers advertise. If fewer than 5 ads list a salary, we leave pay out rather than guess.",
-  },
-];
-
-const ACCESS_ROWS: { item: string; free: string; signedIn: string }[] = [
-  { item: "3 to 5 roles that fit you, and why", free: "Yes", signedIn: "Yes" },
-  { item: "A fit estimate for each role", free: "Yes", signedIn: "Yes" },
-  { item: "Open jobs and advertised pay", free: "Yes", signedIn: "Yes" },
-  { item: "Skills you already have", free: "Yes", signedIn: "Yes" },
-  { item: "Skills you still need", free: "How many", signedIn: "Named, in the order to learn them" },
-  { item: "A 90-day plan in three phases", free: "No", signedIn: "Yes, with a checklist" },
-  { item: "A project that proves you can do the job", free: "No", signedIn: "Yes" },
-  { item: "Job titles to search", free: "No", signedIn: "Yes, linked to live listings" },
-];
-
 const FAQ = [
   {
     question: "How does the career path generator pick my next roles?",
@@ -109,25 +74,105 @@ const FAQ = [
   },
 ];
 
-function roleGuideGroups() {
-  const published = new Set(careerPathPageSlugs());
-  return ROLE_CATEGORIES.map((category) => ({
-    name: category.name,
-    roles: category.roles
-      .filter((r) => published.has(r.slug))
-      .map((r) => ({
-        slug: r.slug,
-        label: roleLabel(r.slug) ?? r.label,
-        leadsTo: (getCareerPath(r.slug)?.moves ?? []).slice(0, 2).map((m) => m.toRole),
-      })),
-  })).filter((g) => g.roles.length > 0);
+// A real run from September 30, 2026 (data analyst, 4 years, wants to go deeper), shown as an example.
+const EXAMPLE = {
+  title: "Data Scientist",
+  moveType: "lateral" as const,
+  fit: 70,
+  jobs: "6,224",
+  pay: "$125K-$131K",
+  skills: ["Data cleaning", "Exploratory data analysis", "Data visualization", "Business understanding"],
+};
+
+const PLAN_ITEMS = [
+  {
+    title: "The skills to build",
+    body: "The skills you still need for the role, in the order to learn them.",
+  },
+  {
+    title: "A three-phase timeline",
+    body: "90 days in three phases, so you know what to do this month, with a checklist to tick off.",
+  },
+  {
+    title: "A proof project",
+    body: "One project idea that shows you can do the new role. Build it and add it to your resume.",
+  },
+  {
+    title: "Job titles to search",
+    body: "Other titles employers use for the role, linked to live listings. Your plan stays saved.",
+  },
+];
+
+const TRUST_NOTES = [
+  {
+    icon: Search,
+    title: "Job counts and pay come from live listings",
+    body: "Large job boards in your country, checked when you search and refreshed daily. Pay is the range employers advertise, shown only when at least 5 ads list a salary.",
+  },
+  {
+    icon: Sparkle,
+    title: "Role suggestions and fit scores are AI-generated",
+    body: "Built from what you share. Treat them as a starting point to check against real postings, people in the role, and your own judgment.",
+  },
+];
+
+// Same container as the site header, so the page lines up with the logo.
+const CONTAINER = "container mx-auto px-4";
+const SECTION_H2 = "font-cp-display text-[30px] font-normal leading-[1.1] sm:text-4xl";
+
+function roleGuides() {
+  return careerPathPageSlugs()
+    .map((slug) => ({ slug, label: roleLabel(slug) ?? slug }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 }
 
-const monoLabel = "font-mono text-[11px] uppercase tracking-wider text-muted-foreground";
+/** The hero's example card: a real result, with two tilted cards behind it. */
+function ExampleCard() {
+  return (
+    <figure className="relative flex h-[560px] flex-col items-center justify-center">
+      <div
+        className="absolute h-[300px] w-[400px] -translate-x-10 translate-y-10 -rotate-[4deg] rounded-[20px] border border-[#E0D8CC] bg-white opacity-70"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute h-[300px] w-[400px] translate-x-9 translate-y-6 rotate-[3deg] rounded-[20px] border border-[#E0D8CC] bg-white opacity-[0.85]"
+        aria-hidden="true"
+      />
+      <div className="relative flex w-[440px] flex-col gap-[18px] rounded-[20px] border border-[#E0D8CC] bg-white p-7 shadow-[0_24px_48px_-24px_rgba(12,26,14,0.25)]">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-1.5">
+            <MoveTypeEyebrow moveType={EXAMPLE.moveType} />
+            <p className="text-2xl font-semibold leading-[1.2] tracking-[-0.01em]">{EXAMPLE.title}</p>
+          </div>
+          <FitNumber fit={EXAMPLE.fit} />
+        </div>
+        <FitBar fit={EXAMPLE.fit} />
+        <SkillChips skills={EXAMPLE.skills} label={`Skills that carry over to ${EXAMPLE.title}`} />
+        <dl className="grid grid-cols-2 gap-3 border-t border-[#EDE8DF] pt-4">
+          <div className="flex flex-col-reverse gap-0.5">
+            <dt className="text-xs text-[#5F5852]">open jobs, US</dt>
+            <dd className="text-xl font-semibold tabular-nums">{EXAMPLE.jobs}</dd>
+          </div>
+          <div className="flex flex-col-reverse gap-0.5">
+            <dt className="text-xs text-[#5F5852]">advertised pay</dt>
+            <dd className="text-xl font-semibold tabular-nums">{EXAMPLE.pay}</dd>
+          </div>
+        </dl>
+        <a href="#cp-plan" className={CP_BUTTON.dark}>
+          See the 90-day plan
+        </a>
+      </div>
+      <figcaption className="absolute bottom-2 text-center text-xs leading-relaxed text-[#78716C]">
+        Example result for a data analyst, 4 years, who wants to go deeper.
+        <br />
+        US job ads, Sep 30, 2026. Pay is the advertised range.
+      </figcaption>
+    </figure>
+  );
+}
 
 export default function CareerPathPage() {
-  const groups = roleGuideGroups();
-  const guideCount = groups.reduce((n, g) => n + g.roles.length, 0);
+  const guides = roleGuides();
 
   return (
     <>
@@ -140,213 +185,130 @@ export default function CareerPathPage() {
       <FaqJsonLd items={FAQ} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEB_APP_JSON_LD) }} />
 
-      <div className="mx-auto max-w-[1120px] px-4 sm:px-6">
-        {/* Hero: headline + tool on the left, a real example on the right */}
-        <section className="grid grid-cols-1 gap-x-14 pb-16 pt-10 md:pt-14 lg:grid-cols-12" aria-labelledby="cp-title">
-          <div className="min-w-0 lg:col-span-7">
-            <p className={monoLabel}>Career path generator · Free</p>
-            <h1 id="cp-title" className="mt-3 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl">
-              Where your job leads, and what it pays
-            </h1>
-            <p className="mt-5 max-w-[60ch] text-lg leading-relaxed text-muted-foreground">
-              Enter your job title or add your resume. You&apos;ll get 3 to 5 roles you could move into. Each one shows
-              how close you already are and what employers pay for it right now.
+      {/* Hero, replaced by the results once a search finishes */}
+      <div id="tool" className={cn(CONTAINER, "scroll-mt-24 pb-14 pt-8 sm:pt-12 lg:pb-16 lg:pt-20")}>
+        <CareerPathToolFromQuery aside={<ExampleCard />} />
+      </div>
+
+      {/* What the free sign-in adds */}
+      <div className={CONTAINER}>
+        <section
+          id="cp-plan"
+          aria-labelledby="cp-plan-title"
+          className="grid scroll-mt-24 gap-8 rounded-[20px] bg-[#065F46] px-[22px] py-7 text-[#F7F5F0] sm:p-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:rounded-[28px] lg:p-16"
+        >
+          <div className="flex flex-col gap-3.5 lg:gap-5">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#8FD3B5] sm:text-xs">
+              The 90-day plan
+            </span>
+            <h2 id="cp-plan-title" className="font-cp-display text-[28px] font-normal leading-[1.1] sm:text-[44px] sm:leading-[1.08]">
+              <span className="sm:hidden">The roles are free. The plan is a sign-in away.</span>
+              <span className="hidden sm:inline">The roles are free. The plan to get one is a Google sign-in away.</span>
+            </h2>
+            <p className="max-w-[480px] text-sm leading-[1.55] text-[#CFE5D9] sm:text-base">
+              <span className="sm:hidden">
+                The skills to build, a three-phase timeline, a proof project and the job titles to search.
+              </span>
+              <span className="hidden sm:inline">
+                Your roles, fit scores and job numbers stay free with no account. Sign in with Google and each role
+                gets a 90-day plan, written by AI from what you shared and saved to your account.
+              </span>
             </p>
-            <div id="tool" className="mt-8 scroll-mt-24">
-              <CareerPathToolFromQuery />
-            </div>
+            <CareerPathPlanCta className="mt-1.5 w-full sm:mt-2 sm:w-auto sm:self-start" />
           </div>
-
-          <aside className="hidden lg:col-span-5 lg:block" aria-labelledby="cp-example-title">
-            <figure className="mt-9 border-t-2 border-foreground pt-4">
-              <figcaption>
-                <p className={monoLabel}>Example result</p>
-                <p id="cp-example-title" className="mt-1.5 text-lg font-semibold tracking-tight">
-                  QA engineer, 5 years, wants higher pay
-                </p>
-              </figcaption>
-              <table className="mt-5 w-full border-collapse text-left text-sm">
-                <caption className="sr-only">Three roles suggested for a QA engineer with 5 years of experience</caption>
-                <thead>
-                  <tr className="border-b">
-                    <th scope="col" className={`${monoLabel} pb-2 font-normal`}>
-                      Role
-                    </th>
-                    <th scope="col" className={`${monoLabel} pb-2 pr-3 text-right font-normal`}>
-                      Fit
-                    </th>
-                    <th scope="col" className={`${monoLabel} whitespace-nowrap pb-2 text-right font-normal`}>
-                      Open jobs
-                    </th>
-                    <th scope="col" className={`${monoLabel} pb-2 pl-4 text-right font-normal`}>
-                      Pay
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {EXAMPLE.map((r) => (
-                    <tr key={r.title} className="border-b align-top">
-                      <th scope="row" className="py-3.5 pr-3 font-normal">
-                        <span className="block font-semibold">{r.title}</span>
-                        <MoveTypeBadge moveType={r.moveType} className="mt-1 text-xs text-muted-foreground" />
-                      </th>
-                      <td className="py-3.5 pr-3 text-right font-mono tabular-nums">{r.fit}%</td>
-                      <td className="py-3.5 text-right font-mono tabular-nums">{r.jobs}</td>
-                      <td className="whitespace-nowrap py-3.5 pl-4 text-right font-mono tabular-nums">{r.pay}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <p className="mt-5 text-sm font-medium">Skills that carry over to Senior QA Engineer</p>
-              <div className="mt-2">
-                <SkillChips skills={EXAMPLE_SKILLS} label="Skills that carry over to Senior QA Engineer" />
-              </div>
-              <p className={`${monoLabel} mt-6 leading-relaxed`}>
-                US job ads, late Sep 2026. Pay is the advertised range.
-              </p>
-            </figure>
-          </aside>
-        </section>
-
-        <Section id="cp-how" title="What happens in those 20 seconds">
-          <ol className="space-y-7">
-            {STEPS.map((s, i) => (
-              <li key={s.title} className="grid grid-cols-[2rem_1fr] gap-x-3">
-                <span className="font-mono text-sm text-muted-foreground" aria-hidden="true">
+          <ol className="hidden gap-4 sm:grid sm:grid-cols-2">
+            {PLAN_ITEMS.map((item, i) => (
+              <li
+                key={item.title}
+                className="flex flex-col gap-2.5 rounded-2xl border border-[rgba(247,245,240,0.16)] bg-[rgba(247,245,240,0.08)] p-[22px]"
+              >
+                <span className="font-cp-display text-[26px] leading-none text-[#8FD3B5]" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="max-w-[65ch] text-base leading-relaxed">
-                  <strong className="font-semibold">{s.title}</strong> <span className="text-muted-foreground">{s.body}</span>
-                </p>
+                <span className="text-[15px] font-semibold">{item.title}</span>
+                <span className="text-[13px] leading-normal text-[#CFE5D9]">{item.body}</span>
               </li>
             ))}
           </ol>
-        </Section>
+        </section>
+      </div>
 
-        <Section id="cp-access" title="You see your roles before we ask for anything">
-          <p className="max-w-[65ch] text-base leading-relaxed text-muted-foreground">
-            Roles, fit scores and job numbers are free, with no account. The plan for each role needs a free Google
-            sign-in, so it&apos;s saved for when you come back. We never ask for a card.
-          </p>
-          <div className="mt-6 overflow-x-auto">
-            <table className="w-full border-collapse text-left text-[13px] sm:text-sm">
-              <caption className="sr-only">What&apos;s free without an account, and what a free sign-in adds</caption>
-              <thead>
-                <tr className="border-b-2 border-foreground">
-                  <th scope="col" className={`${monoLabel} py-2 pr-4 font-normal`}>
-                    What you get
-                  </th>
-                  <th scope="col" className={`${monoLabel} py-2 pr-4 font-normal`}>
-                    No account
-                  </th>
-                  <th scope="col" className={`${monoLabel} py-2 font-normal`}>
-                    Free Google sign-in
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ACCESS_ROWS.map((r) => (
-                  <tr key={r.item} className="border-b">
-                    <th scope="row" className="py-3 pr-4 font-medium">
-                      {r.item}
-                    </th>
-                    <td className={`py-3 pr-4 ${r.free === "No" ? "text-muted-foreground" : ""}`}>{r.free}</td>
-                    <td className="py-3">{r.signedIn}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-4 max-w-[65ch] text-sm leading-relaxed text-muted-foreground">
-            If you added a resume, signing in saves it to your account. You can edit or delete it there.
-          </p>
-        </Section>
-
-        {groups.length > 0 && (
-          <Section id="cp-roles" title={`Where ${guideCount} common jobs usually lead`}>
-            <p className="max-w-[65ch] text-base leading-relaxed text-muted-foreground">
-              We wrote a guide for each of these roles. It covers the usual next moves, when people make them, and what
-              to have on your resume first.
-            </p>
-            <div className="mt-6 overflow-x-auto">
-              <table className="w-full border-collapse text-left text-sm">
-                <caption className="sr-only">Career path guides by field</caption>
-                <thead>
-                  <tr className="border-b-2 border-foreground">
-                    <th scope="col" className={`${monoLabel} w-[44%] py-2 pr-4 font-normal`}>
-                      Role
-                    </th>
-                    <th scope="col" className={`${monoLabel} py-2 font-normal`}>
-                      Usually leads to
-                    </th>
-                  </tr>
-                </thead>
-                {groups.map((g) => (
-                  <tbody key={g.name}>
-                    <tr>
-                      <th scope="colgroup" colSpan={2} className={`${monoLabel} pb-1 pt-6 font-normal text-foreground`}>
-                        {g.name}
-                      </th>
-                    </tr>
-                    {g.roles.map((r) => (
-                      <tr key={r.slug} className="border-b">
-                        <th scope="row" className="py-0 pr-4 font-normal">
-                          <Link
-                            href={`/career-path/${r.slug}`}
-                            className="flex min-h-11 items-center font-medium text-primary underline-offset-4 transition-colors duration-150 hover:underline sm:min-h-9"
-                          >
-                            {r.label}
-                            <span className="sr-only"> career path</span>
-                          </Link>
-                        </th>
-                        <td className="py-2 text-muted-foreground">{r.leadsTo.join(", ")}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                ))}
-              </table>
+      {/* Where the numbers come from */}
+      <div className={cn(CONTAINER, "grid gap-4 py-12 md:grid-cols-2 md:gap-6 lg:py-16")}>
+        {TRUST_NOTES.map(({ icon: Icon, title, body }) => (
+          <div key={title} className="flex items-start gap-[18px] rounded-2xl border border-[#E0D8CC] bg-white p-5 sm:p-6">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#E6F2EC]" aria-hidden="true">
+              <Icon className="h-5 w-5 text-[#065F46]" />
+            </span>
+            <div className="flex flex-col gap-1">
+              <p className="text-base font-semibold">{title}</p>
+              <p className="text-sm leading-normal text-[#5F5852]">{body}</p>
             </div>
-          </Section>
-        )}
+          </div>
+        ))}
+      </div>
 
-        <Section id="cp-faq" title="What to know before you trust it">
-          <div className="space-y-8">
-            {FAQ.map((f) => (
-              <div key={f.question}>
-                <h3 className="text-base font-semibold">{f.question}</h3>
-                <p className="mt-2 max-w-[65ch] text-base leading-relaxed text-muted-foreground">{f.answer}</p>
-              </div>
+      {/* Role guides */}
+      {guides.length > 0 && (
+        <section aria-labelledby="cp-roles" className={cn(CONTAINER, "flex flex-col gap-6 pb-12 lg:pb-16")}>
+          <div className="flex flex-col gap-1.5">
+            <h2 id="cp-roles" className={SECTION_H2}>
+              Browse career paths by role
+            </h2>
+            <p className="text-[15px] text-[#5F5852]">
+              {guides.length} guides to where each role usually leads next, when people make the move, and what to have
+              on your resume first.
+            </p>
+          </div>
+          <ul className="grid grid-cols-2 gap-x-5 sm:grid-cols-3 sm:gap-x-8 lg:grid-cols-4">
+            {guides.map((g) => (
+              <li key={g.slug} className="flex">
+                <Link
+                  href={`/career-path/${g.slug}`}
+                  className="flex min-h-11 w-full items-center border-b border-[#E0D8CC] py-2 text-sm text-[#0C1A0E] transition-colors duration-150 hover:text-[#065F46]"
+                >
+                  {g.label}
+                  <span className="sr-only"> career path</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* FAQ, the visible mirror of the JSON-LD */}
+      <section
+        aria-labelledby="cp-faq"
+        className={cn(CONTAINER, "grid gap-6 pb-16 lg:grid-cols-[1fr_1.6fr] lg:gap-16 lg:pb-20")}
+      >
+        <div className="flex flex-col gap-2.5">
+          <h2 id="cp-faq" className={SECTION_H2}>
+            Questions
+          </h2>
+          <p className="text-[15px] text-[#5F5852]">About how the generator works and what happens to your resume.</p>
+        </div>
+        <div>
+          <div className="border-b border-[#E0D8CC]">
+            {FAQ.map((f, i) => (
+              <details key={f.question} open={i === 0} className="group border-t border-[#E0D8CC]">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-[18px] text-base font-semibold [&::-webkit-details-marker]:hidden">
+                  <h3>{f.question}</h3>
+                  <Plus className="h-[18px] w-[18px] shrink-0 text-[#5F5852] group-open:hidden" aria-hidden="true" />
+                  <Minus className="hidden h-[18px] w-[18px] shrink-0 text-[#5F5852] group-open:block" aria-hidden="true" />
+                </summary>
+                <p className="max-w-[620px] pb-[18px] text-[15px] leading-[1.55] text-[#4A443E]">{f.answer}</p>
+              </details>
             ))}
           </div>
-          <p className="mt-8 text-sm text-muted-foreground">
+          <p className="mt-6 text-sm text-[#5F5852]">
             More on how we handle your data in our{" "}
-            <Link href="/privacy" className="text-primary underline underline-offset-4">
+            <Link href="/privacy" className="font-semibold text-[#065F46] underline underline-offset-4 hover:text-[#044536]">
               privacy policy
             </Link>
             .
           </p>
-        </Section>
-
-        <div className="flex flex-col gap-4 border-t py-12 sm:flex-row sm:items-center sm:justify-between lg:py-14">
-          <p className="text-lg font-medium tracking-tight">
-            All it needs is your job title. It takes about 20 seconds.
-          </p>
-          <Button asChild size="lg" className="h-11 self-start sm:self-auto">
-            <a href="#tool">Enter my job title</a>
-          </Button>
         </div>
-      </div>
+      </section>
     </>
-  );
-}
-
-function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
-  return (
-    <section className="grid grid-cols-1 gap-x-14 gap-y-6 border-t py-12 lg:grid-cols-12 lg:py-16" aria-labelledby={id}>
-      <h2 id={id} className="text-2xl font-bold leading-tight tracking-tight lg:col-span-4">
-        {title}
-      </h2>
-      <div className="min-w-0 lg:col-span-8">{children}</div>
-    </section>
   );
 }

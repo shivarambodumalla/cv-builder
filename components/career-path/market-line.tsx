@@ -6,18 +6,16 @@ export function MarketLine({ market }: { market: RoleMarket | null }) {
   if (!market) return null;
   const salary = formatSalary(market);
   return (
-    <p className="text-sm">
-      <span className="font-mono font-medium tabular-nums">{formatOpenJobs(market)}</span>
+    <p className="text-[15px]">
+      <span className="font-semibold tabular-nums">{formatOpenJobs(market)}</span>
       {salary && (
         <>
-          <span className="text-muted-foreground" aria-hidden="true"> · </span>
+          <span className="text-[#78716C]" aria-hidden="true"> · </span>
           <span className="sr-only">, </span>
-          <span className="font-mono font-medium tabular-nums">{salary}</span>
+          <span className="font-semibold tabular-nums">{salary}</span>
         </>
       )}
-      <span className="mt-0.5 block text-xs text-muted-foreground">
-        From live job ads in {countryName(market.country)}
-      </span>
+      <span className="mt-0.5 block text-xs text-[#5F5852]">From live job ads in {countryName(market.country)}</span>
     </p>
   );
 }

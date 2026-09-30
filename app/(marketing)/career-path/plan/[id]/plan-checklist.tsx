@@ -46,9 +46,9 @@ export function PlanChecklist({ storageKey, actions }: { storageKey: string; act
                 type="checkbox"
                 checked={checked}
                 onChange={() => toggle(i)}
-                className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-border accent-[var(--primary)]"
+                className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-border accent-[#065F46]"
               />
-              <span className={cn("text-sm leading-relaxed", checked && "text-muted-foreground line-through")}>
+              <span className={cn("text-sm leading-relaxed", checked && "text-[#78716C] line-through")}>
                 {action}
               </span>
             </label>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { ArrowDown, ArrowRight } from "lucide-react";
+import { Suspense, type ReactNode } from "react";
+import { ArrowDown, Info, Minus, Plus, Search, Star, type LucideIcon } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { CareerPathTool } from "@/components/career-path/career-path-tool";
 import { formatJobCount, formatSalaryRange } from "@/components/career-path/format";
@@ -20,8 +20,17 @@ import {
   shortAnswer,
   timingShort,
 } from "@/components/career-path/role-page/role-page-copy";
+import {
+  CARD,
+  EYEBROW,
+  LABEL,
+  LINK,
+  MoveTypeEyebrow,
+  SECTION_HEADING,
+  SkillChips,
+} from "@/components/career-path/role-page/role-page-ui";
 import { getRoleMarket } from "@/lib/career-path/market";
-import { MOVE_TYPE_LABELS, type MoveType, type RoleMarket } from "@/lib/career-path/types";
+import type { RoleMarket } from "@/lib/career-path/types";
 import { getCareerPath, type CareerMove } from "@/lib/roles/career-moves";
 import { getRoleContent } from "@/lib/roles/role-content";
 import { cn } from "@/lib/utils";
@@ -116,62 +125,45 @@ function otherPaths(slug: string, count: number): { slug: string; label: string 
     .map((s) => ({ slug: s, label: roleLabel(s) ?? s }));
 }
 
-// Small uppercase mono label used for data headings throughout the report.
-const LABEL = "font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground";
-const LINK = "font-medium text-primary underline underline-offset-4 transition-colors duration-150 hover:text-foreground";
 
-// Step up is teal, sideways is navy, career change is an outline.
-const MARKER: Record<MoveType, string> = {
-  step_up: "bg-primary",
-  lateral: "bg-[#1E3A5F]",
-  pivot: "border border-foreground",
-};
-
-function MoveTypeLabel({ moveType }: { moveType: MoveType }) {
-  return (
-    <span className="inline-flex items-center gap-2 whitespace-nowrap">
-      <span aria-hidden className={cn("h-2 w-2 shrink-0", MARKER[moveType])} />
-      {MOVE_TYPE_LABELS[moveType]}
-    </span>
-  );
-}
-
-/** Big numbers for the role itself. Missing values are said out loud, never shown as zero. */
+/** Big serif figures for the role itself. Missing values are said out loud, never shown as zero. */
 function KeyNumbers({ label, market }: { label: string; market: RoleMarket | null }) {
   const jobs = market && formatJobCount(market);
   const hasPay = market !== null && market.salaryLow !== null && market.salaryHigh !== null;
   return (
-    <section aria-labelledby="numbers-heading" className="border-t-2 border-foreground pt-4">
-      <h2 id="numbers-heading" className={LABEL}>
+    <section aria-labelledby="numbers-heading" className={cn(CARD, "p-6 sm:p-7")}>
+      <h2 id="numbers-heading" className={EYEBROW}>
         {sentenceCase(label)} jobs in the US
       </h2>
       {market && (jobs || hasPay) ? (
         <>
-          <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-5">
+          <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5">
             <div className="col-span-2">
-              <dt className={LABEL}>Advertised pay</dt>
-              <dd className="mt-1 text-4xl font-bold tabular-nums tracking-tight">
+              <dd className="font-cp-display text-[44px] leading-none tabular-nums text-[#065F46] sm:text-[48px]">
                 {hasPay ? (
                   `${money(market.salaryLow!, market.currency)}-${money(market.salaryHigh!, market.currency)}`
                 ) : (
-                  <span className="text-base font-normal text-muted-foreground">Too few listings state pay</span>
+                  <span className="font-sans text-base text-[#5F5852]">Too few listings state pay</span>
                 )}
               </dd>
+              <dt className="mt-2 text-[13px] text-[#5F5852]">Advertised pay</dt>
             </div>
-            <div>
-              <dt className={LABEL}>Open jobs</dt>
-              <dd className="mt-1 text-2xl font-bold tabular-nums">
-                {jobs ?? <span className="text-base font-normal text-muted-foreground">Not counted</span>}
+            <div className="border-t border-[#EDE8DF] pt-4">
+              <dd className="font-cp-display text-[32px] leading-none tabular-nums">
+                {jobs ?? <span className="font-sans text-base text-[#5F5852]">Not counted</span>}
               </dd>
+              <dt className="mt-1.5 text-[13px] text-[#5F5852]">Open jobs</dt>
             </div>
             {hasPay && market.salaryMedian !== null && (
-              <div>
-                <dt className={LABEL}>Median</dt>
-                <dd className="mt-1 text-2xl font-bold tabular-nums">{money(market.salaryMedian, market.currency)}</dd>
+              <div className="border-t border-[#EDE8DF] pt-4">
+                <dd className="font-cp-display text-[32px] leading-none tabular-nums">
+                  {money(market.salaryMedian, market.currency)}
+                </dd>
+                <dt className="mt-1.5 text-[13px] text-[#5F5852]">Median</dt>
               </div>
             )}
           </dl>
-          <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-5 text-[13px] leading-relaxed text-[#5F5852]">
             Jobs are counted by title on US job boards.
             {hasPay && (
               <>
@@ -183,7 +175,7 @@ function KeyNumbers({ label, market }: { label: string; market: RoleMarket | nul
           </p>
         </>
       ) : (
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-4 text-sm leading-relaxed text-[#5F5852]">
           We couldn&apos;t load live job numbers. The listing feed may be busy. Check back tomorrow.
         </p>
       )}
@@ -204,62 +196,71 @@ function MovesTable({
 }) {
   // Phones get stacked rows: each cell shows its column name from data-label.
   const cell =
-    "px-3 py-3 align-top sm:first:pl-0 max-sm:flex max-sm:justify-between max-sm:gap-4 max-sm:px-0 max-sm:py-1 max-sm:text-right max-sm:before:content-[attr(data-label)] max-sm:before:text-left max-sm:before:font-mono max-sm:before:text-[11px] max-sm:before:uppercase max-sm:before:tracking-[0.08em] max-sm:before:text-muted-foreground";
-  const empty = <span className="text-muted-foreground">No data</span>;
+    "px-4 py-4 align-middle max-sm:flex max-sm:items-baseline max-sm:justify-between max-sm:gap-4 max-sm:px-0 max-sm:py-1 max-sm:text-right max-sm:before:content-[attr(data-label)] max-sm:before:text-left max-sm:before:text-[11px] max-sm:before:font-bold max-sm:before:uppercase max-sm:before:tracking-[0.1em] max-sm:before:text-[#5F5852] max-sm:before:shrink-0 max-sm:before:whitespace-nowrap";
+  const empty = <span className="font-normal text-[#5F5852]">No data</span>;
   return (
     <>
-      <table className="w-full border-collapse text-left text-[15px] max-sm:block">
-        <caption className="sr-only">
-          Next moves from {roleNoun(label)}, with open US jobs and advertised pay for each
-        </caption>
-        <thead className="max-sm:sr-only">
-          <tr className="border-b-2 border-foreground">
-            {["Move to", "Type", "Usually when", "Open US jobs", "Advertised pay"].map((h, i) => (
-              <th
-                key={h}
-                scope="col"
-                className={cn(LABEL, "whitespace-nowrap px-3 pb-2 font-medium first:pl-0", i >= 3 && "text-right")}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="max-sm:block">
-          {moves.map((move, i) => {
-            const market = markets[i];
-            const page = move.toSlug && hasCareerPathPage(move.toSlug) ? `/career-path/${move.toSlug}` : null;
-            return (
-              <tr key={move.toRole} className="border-b max-sm:block max-sm:py-3">
-                <th scope="row" className="py-3 pr-3 align-top font-semibold max-sm:block max-sm:pb-1">
-                  <a href={`#${moveAnchor(move)}`} className="underline-offset-4 transition-colors duration-150 hover:text-primary hover:underline">
-                    {sentenceCase(move.toRole)}
-                  </a>
-                  {page && (
-                    <Link href={page} className={cn(LINK, "mt-1 flex w-fit items-center text-xs font-normal max-sm:min-h-11 max-sm:mt-0")}>
-                      Its career path
-                      <span className="sr-only">: {roleNoun(move.toRole)}</span>
-                    </Link>
-                  )}
+      <div className={cn(CARD, "px-5 sm:px-7")}>
+        <table className="w-full border-collapse text-left text-[15px] max-sm:block">
+          <caption className="sr-only">
+            Next moves from {roleNoun(label)}, with open US jobs and advertised pay for each
+          </caption>
+          <thead className="max-sm:sr-only">
+            <tr className="border-b border-[#E0D8CC]">
+              {["Move to", "Type", "Usually when", "Open US jobs", "Advertised pay"].map((h, i) => (
+                <th
+                  key={h}
+                  scope="col"
+                  className={cn(LABEL, "whitespace-nowrap px-4 pb-3 pt-5 first:pl-0 last:pr-0", i >= 3 && "text-right")}
+                >
+                  {h}
                 </th>
-                <td data-label="Type" className={cell}>
-                  <MoveTypeLabel moveType={move.moveType} />
-                </td>
-                <td data-label="Usually when" className={cn(cell, "text-muted-foreground sm:min-w-[11rem]")}>
-                  {timingShort(move)}
-                </td>
-                <td data-label="Open US jobs" className={cn(cell, "font-mono tabular-nums sm:text-right")}>
-                  {(market && formatJobCount(market)) ?? empty}
-                </td>
-                <td data-label="Advertised pay" className={cn(cell, "whitespace-nowrap font-mono tabular-nums sm:text-right sm:pr-0")}>
-                  {(market && formatSalaryRange(market)) ?? empty}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <p className="mt-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+              ))}
+            </tr>
+          </thead>
+          <tbody className="max-sm:block">
+            {moves.map((move, i) => {
+              const market = markets[i];
+              const page = move.toSlug && hasCareerPathPage(move.toSlug) ? `/career-path/${move.toSlug}` : null;
+              return (
+                <tr key={move.toRole} className="border-b border-[#EDE8DF] last:border-b-0 max-sm:block max-sm:py-4">
+                  <th scope="row" className="py-4 pr-4 align-middle font-semibold max-sm:block max-sm:pb-1">
+                    <a
+                      href={`#${moveAnchor(move)}`}
+                      className="text-[16px] underline-offset-4 transition-colors duration-150 hover:text-[#065F46] hover:underline"
+                    >
+                      {sentenceCase(move.toRole)}
+                    </a>
+                    {page && (
+                      <Link href={page} className={cn(LINK, "mt-0.5 flex w-fit items-center text-xs max-sm:mt-0 max-sm:min-h-11")}>
+                        Its career path
+                        <span className="sr-only">: {roleNoun(move.toRole)}</span>
+                      </Link>
+                    )}
+                  </th>
+                  <td data-label="Type" className={cell}>
+                    <MoveTypeEyebrow moveType={move.moveType} />
+                  </td>
+                  <td data-label="Usually when" className={cn(cell, "text-[#4A443E] sm:min-w-[11rem]")}>
+                    {timingShort(move)}
+                  </td>
+                  <td data-label="Open US jobs" className={cn(cell, "font-semibold tabular-nums sm:text-right")}>
+                    {(market && formatJobCount(market)) ?? empty}
+                  </td>
+                  <td
+                    data-label="Advertised pay"
+                    className={cn(cell, "whitespace-nowrap font-semibold tabular-nums sm:pr-0 sm:text-right")}
+                  >
+                    {(market && formatSalaryRange(market)) ?? empty}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-4 flex items-start gap-2 text-[13px] leading-relaxed text-[#5F5852]">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
         Job counts and pay from US listings, {updated}. Pay shows only where at least five listings state it.
       </p>
     </>
@@ -271,37 +272,73 @@ function MoveSection({ move, market }: { move: CareerMove; market: RoleMarket | 
   const jobs = market && formatJobCount(market);
   const pay = market && formatSalaryRange(market);
   return (
-    <article id={moveAnchor(move)} className="scroll-mt-24 border-t py-10 first:border-t-0 first:pt-2">
-      <h3 className="text-2xl font-bold tracking-tight">{sentenceCase(move.toRole)}</h3>
-      <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
-        <MoveTypeLabel moveType={move.moveType} />
-        {jobs && <span>{jobs} open US jobs</span>}
-        {pay && <span>{pay} advertised</span>}
-      </p>
-      <p className="mt-5 max-w-[65ch] text-base leading-relaxed">{move.why}</p>
-      <dl className="mt-6 grid max-w-[65ch] gap-x-6 gap-y-5 sm:grid-cols-[9.5rem_1fr]">
+    <article id={moveAnchor(move)} className={cn(CARD, "flex scroll-mt-24 flex-col gap-6 p-6 sm:p-8")}>
+      <div className="flex flex-col gap-1.5">
+        <MoveTypeEyebrow moveType={move.moveType} />
+        <h3 className="text-[22px] font-semibold leading-tight tracking-[-0.01em] sm:text-2xl">
+          {sentenceCase(move.toRole)}
+        </h3>
+      </div>
+      <p className="max-w-[65ch] text-[15px] leading-[1.6] text-[#4A443E]">{move.why}</p>
+      <dl className="grid gap-x-8 gap-y-2 sm:grid-cols-[10rem_1fr] sm:gap-y-5">
         <dt className={cn(LABEL, "sm:pt-1")}>Usually when</dt>
         <dd className="text-[15px] leading-relaxed">{move.typicalTiming}</dd>
-        <dt className={cn(LABEL, "sm:pt-1")}>Skills to add</dt>
+        <dt className={cn(LABEL, "max-sm:mt-3 sm:pt-1.5")}>Skills to add</dt>
         <dd>
-          <ul className="list-disc space-y-1 pl-5 text-[15px] leading-relaxed marker:text-muted-foreground">
-            {move.skillsToAdd.map((s) => (
-              <li key={s}>{s}</li>
-            ))}
-          </ul>
+          <SkillChips skills={move.skillsToAdd} label={`Skills to add for ${roleNoun(move.toRole)}`} />
         </dd>
-        <dt className={cn(LABEL, "sm:pt-1")}>Have this on your resume first</dt>
-        <dd className="text-[15px] leading-relaxed">{move.proof}</dd>
+        <dt className={cn(LABEL, "max-sm:mt-3 sm:pt-4")}>Have this on your resume first</dt>
+        <dd className="rounded-[14px] border border-[#CFE5D9] bg-[#E6F2EC] px-4 py-3 text-[15px] leading-relaxed text-[#0C3B2A]">
+          {move.proof}
+        </dd>
       </dl>
-      {link && (
-        <p className="mt-6 text-sm">
-          <Link href={link.href} className={cn(LINK, "inline-flex min-h-11 items-center gap-1 sm:min-h-0")}>
-            {link.text}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-          </Link>
-        </p>
+      {(jobs || pay || link) && (
+        <div className="flex flex-col gap-4 border-t border-[#EDE8DF] pt-5 sm:flex-row sm:items-end sm:justify-between">
+          {(jobs || pay) && (
+            <dl className="grid grid-cols-2 gap-x-8 gap-y-2">
+              {jobs && (
+                <div>
+                  <dd className="text-[22px] font-semibold tabular-nums">{jobs}</dd>
+                  <dt className="text-xs text-[#5F5852]">open US jobs</dt>
+                </div>
+              )}
+              {pay && (
+                <div>
+                  <dd className="whitespace-nowrap text-[22px] font-semibold tabular-nums">{pay}</dd>
+                  <dt className="text-xs text-[#5F5852]">advertised</dt>
+                </div>
+              )}
+            </dl>
+          )}
+          {link && (
+            <Link href={link.href} className={cn(LINK, "inline-flex min-h-11 items-center gap-1.5 text-sm")}>
+              {link.text}
+            </Link>
+          )}
+        </div>
       )}
     </article>
+  );
+}
+
+// What the embedded tool gives back. Roles and fit are AI; jobs and pay are live listings.
+const TOOL_STEPS = [
+  { title: "3 to 5 next roles", text: "Each with a fit score, from your job title or your resume." },
+  { title: "Live jobs and pay", text: "Open jobs and advertised pay, taken from current job listings." },
+  { title: "A 90-day plan", text: "Skills to build, a timeline and a proof project. Free with Google sign-in." },
+];
+
+function TrustNote({ icon: Icon, title, children }: { icon: LucideIcon; title: string; children: ReactNode }) {
+  return (
+    <div className="flex items-start gap-4 rounded-2xl border border-[#E0D8CC] bg-white p-5 sm:gap-[18px] sm:p-6">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#E6F2EC]">
+        <Icon className="h-5 w-5 text-[#065F46]" aria-hidden />
+      </span>
+      <div className="flex flex-col gap-1">
+        <p className="text-base font-semibold">{title}</p>
+        <p className="text-sm leading-relaxed text-[#5F5852]">{children}</p>
+      </div>
+    </div>
   );
 }
 
@@ -321,6 +358,7 @@ export default async function CareerPathRolePage({ params }: Params) {
   const updated = longDate(updatedIso);
   const answer = shortAnswer(label, path);
   const others = otherPaths(slug, 12);
+  const guideCount = careerPathPageSlugs().length;
   const name = roleNoun(label);
   const people = plural(label);
 
@@ -353,62 +391,73 @@ export default async function CareerPathRolePage({ params }: Params) {
       <FaqJsonLd items={path.faqs.map((f) => ({ question: f.question, answer: f.answer }))} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
 
-      <article className="mx-auto w-full max-w-[1120px] px-4 pb-20 pt-10 sm:px-6 md:pt-14">
-        {/* Masthead: the report's title, standfirst and short answer, with the role's numbers alongside */}
-        <header className="grid gap-x-16 gap-y-10 lg:grid-cols-12">
-          <div className="lg:col-span-8">
-            <nav aria-label="Breadcrumb" className="font-mono text-xs text-muted-foreground">
-              <ol className="flex flex-wrap items-center gap-2">
-                <li>
-                  <Link href="/career-path" className="transition-colors duration-150 hover:text-primary">
-                    Career paths
-                  </Link>
-                </li>
-                <li aria-hidden>/</li>
-                <li aria-current="page" className="text-foreground">
-                  {sentenceCase(label)}
-                </li>
-              </ol>
-            </nav>
-            <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">{sentenceCase(label)} career path</h1>
-            <p className="mt-6 max-w-[65ch] text-lg leading-relaxed">{path.overview}</p>
-            <p className="mt-6 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
-              <span>
-                Updated <time dateTime={updatedIso.slice(0, 10)}>{updated}</time>
-              </span>
-              <span aria-hidden>·</span>
-              <span>Pay and job counts from live US job listings</span>
-            </p>
-
-            {answer.length > 0 && (
-              <section aria-labelledby="short-answer" className="mt-12">
-                <h2 id="short-answer" className="text-xl font-bold tracking-tight">
-                  What comes after {name}?
-                </h2>
-                <p className="mt-3 max-w-[65ch] border-l-2 border-primary pl-5 text-base leading-relaxed">
-                  {answer.join(" ")}
-                </p>
-              </section>
-            )}
-            <p className="mt-8">
-              <a href="#find-your-path" className={cn(LINK, "inline-flex min-h-11 items-center gap-1.5 text-sm sm:min-h-0")}>
-                Check your own resume
-                <ArrowDown className="h-3.5 w-3.5" aria-hidden />
-              </a>
-            </p>
-          </div>
-          <div className="lg:col-span-4 lg:pt-[4.5rem]">
+      <article className="mx-auto w-full max-w-[1280px] px-4 pb-24 pt-8 sm:px-8 md:pt-14">
+        {/* Masthead: title, standfirst and the role's own numbers, then the short answer */}
+        <header>
+          <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end">
+            <div>
+              <nav aria-label="Breadcrumb" className="text-[13px] text-[#5F5852]">
+                <ol className="flex flex-wrap items-center gap-2">
+                  <li>
+                    <Link
+                      href="/career-path"
+                      className="inline-flex min-h-11 items-center transition-colors duration-150 hover:text-[#065F46] sm:min-h-0"
+                    >
+                      Career paths
+                    </Link>
+                  </li>
+                  <li aria-hidden>/</li>
+                  <li aria-current="page" className="text-[#0C1A0E]">
+                    {sentenceCase(label)}
+                  </li>
+                </ol>
+              </nav>
+              <p className={cn(EYEBROW, "mt-4 sm:mt-6")}>Career path guide</p>
+              <h1 className="mt-3 font-cp-display text-[44px] font-normal leading-[1.04] tracking-[-0.01em] sm:text-[60px]">
+                <em className="text-[#065F46]">{sentenceCase(label)}</em> career path
+              </h1>
+              <p className="mt-5 max-w-[62ch] text-[17px] leading-[1.6] text-[#4A443E] sm:text-lg">{path.overview}</p>
+              <p className="mt-5 flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-[#5F5852]">
+                <span>
+                  Updated <time dateTime={updatedIso.slice(0, 10)}>{updated}</time>
+                </span>
+                <span aria-hidden>·</span>
+                <span>Pay and job counts from live US job listings</span>
+              </p>
+            </div>
             <KeyNumbers label={label} market={market} />
           </div>
+
+          {answer.length > 0 && (
+            <section
+              aria-labelledby="short-answer"
+              className="mt-10 flex gap-4 rounded-2xl border border-[#CFE5D9] bg-[#E6F2EC] px-5 py-5 sm:gap-5 sm:px-[26px] sm:py-[22px]"
+            >
+              <Star className="mt-0.5 h-[22px] w-[22px] shrink-0 text-[#065F46]" aria-hidden />
+              <div className="text-[#0C3B2A]">
+                <h2 id="short-answer" className="text-base font-semibold sm:text-[17px]">
+                  What comes after {name}?
+                </h2>
+                <p className="mt-1.5 max-w-[80ch] text-base leading-[1.55]">{answer.join(" ")}</p>
+                <a href="#find-your-path" className={cn(LINK, "mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm")}>
+                  Check your own resume
+                  <ArrowDown className="h-3.5 w-3.5" aria-hidden />
+                </a>
+              </div>
+            </section>
+          )}
         </header>
 
         {/* The moves at a glance */}
-        <section aria-labelledby="moves-heading" className="mt-16 border-t pt-10">
-          <div className="grid gap-x-16 gap-y-3 lg:grid-cols-12">
-            <h2 id="moves-heading" className="text-3xl font-bold tracking-tight lg:col-span-4">
-              Where {people} go next
-            </h2>
-            <p className="max-w-[65ch] leading-relaxed text-muted-foreground lg:col-span-8">
+        <section aria-labelledby="moves-heading" className="mt-20 sm:mt-24">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+            <div>
+              <p className={EYEBROW}>Next moves</p>
+              <h2 id="moves-heading" className={cn(SECTION_HEADING, "mt-2.5")}>
+                Where {people} go next
+              </h2>
+            </div>
+            <p className="max-w-[56ch] text-[15px] leading-relaxed text-[#5F5852]">
               {path.moves.length} moves people make from this role. The job counts and pay are for each destination
               role, so you can see what the market wants right now.
             </p>
@@ -419,83 +468,127 @@ export default async function CareerPathRolePage({ params }: Params) {
         </section>
 
         {/* Move-by-move detail, with the in-role ladder alongside */}
-        <div className="mt-16 grid gap-x-16 gap-y-12 border-t pt-10 lg:grid-cols-12">
-          <aside aria-labelledby="ladder-heading" className="lg:order-last lg:col-span-4">
-            <div className="lg:sticky lg:top-24">
-              <h2 id="ladder-heading" className="text-xl font-bold tracking-tight">
+        <div className="mt-20 grid gap-x-12 gap-y-12 sm:mt-24 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <section aria-labelledby="detail-heading">
+            <p className={EYEBROW}>Move by move</p>
+            <h2 id="detail-heading" className={cn(SECTION_HEADING, "mt-2.5")}>
+              What each move takes
+            </h2>
+            <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-[#5F5852]">
+              Why each move fits, the skills hiring managers look for, and the proof to have on your resume before you
+              apply.
+            </p>
+            <div className="mt-8 flex flex-col gap-5">
+              {path.moves.map((move, i) => (
+                <MoveSection key={move.toRole} move={move} market={moveMarkets[i]} />
+              ))}
+            </div>
+          </section>
+
+          <aside aria-labelledby="ladder-heading">
+            <div className={cn(CARD, "p-6 sm:p-7 lg:sticky lg:top-24")}>
+              <p className={EYEBROW}>Within the role</p>
+              <h2 id="ladder-heading" className="mt-2.5 font-cp-display text-[28px] font-normal leading-[1.1]">
                 The {name} ladder
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-2 text-sm leading-relaxed text-[#5F5852]">
                 What each level is expected to own. Many people climb this before they change roles.
               </p>
-              <ol className="mt-5 border-t-2 border-foreground">
+              <ol className="mt-5">
                 {content.seniority.map((step, i) => (
-                  <li key={step.level} className="grid grid-cols-[2rem_1fr] gap-x-2 border-b py-4">
-                    <span className="font-mono text-xs tabular-nums text-muted-foreground pt-0.5">
+                  <li
+                    key={step.level}
+                    className="grid grid-cols-[2.5rem_1fr] gap-x-2 border-t border-[#EDE8DF] py-4 last:pb-0"
+                  >
+                    <span className="font-cp-display text-[26px] leading-none tabular-nums text-[#065F46]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div>
                       <p className="font-semibold">{step.level}</p>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.expectation}</p>
+                      <p className="mt-1 text-sm leading-relaxed text-[#5F5852]">{step.expectation}</p>
                     </div>
                   </li>
                 ))}
               </ol>
             </div>
           </aside>
-
-          <section aria-labelledby="detail-heading" className="lg:col-span-8">
-            <h2 id="detail-heading" className="text-3xl font-bold tracking-tight">
-              What each move takes
-            </h2>
-            <p className="mt-3 max-w-[65ch] leading-relaxed text-muted-foreground">
-              Why each move fits, the skills hiring managers look for, and the proof to have on your resume before you
-              apply.
-            </p>
-            <div className="mt-8">
-              {path.moves.map((move, i) => (
-                <MoveSection key={move.toRole} move={move} market={moveMarkets[i]} />
-              ))}
-            </div>
-          </section>
         </div>
 
-        {/* The tool, pre-filled with this role */}
+        {/* The tool, pre-filled with this role, on the green band */}
         <section
           id="find-your-path"
           aria-labelledby="tool-heading"
-          className="mt-6 grid scroll-mt-24 gap-x-16 gap-y-6 border-t pt-10 lg:grid-cols-12"
+          className="mt-20 grid scroll-mt-24 gap-x-14 gap-y-8 rounded-[20px] bg-[#065F46] p-5 text-[#F7F5F0] sm:mt-24 sm:rounded-[28px] sm:p-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:p-16"
         >
-          <div className="lg:col-span-4">
-            <h2 id="tool-heading" className="text-3xl font-bold tracking-tight">
+          <div className="flex flex-col gap-4 px-1 pt-3 sm:px-0 sm:pt-0">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#A7E0C6]">Your own path</p>
+            <h2 id="tool-heading" className="font-cp-display text-[34px] font-normal leading-[1.08] sm:text-[44px]">
               Now check your own resume
             </h2>
-            <p className="mt-3 leading-relaxed">
+            <p className="max-w-[46ch] text-base leading-[1.6] text-[#CFE5D9]">
               Your own resume will give you a sharper answer than this page. Your years, tools and wins change which
               move fits.
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              The suggested roles and fit scores come from AI. The job counts and pay come from live listings.
-            </p>
+            <ol className="mt-4 hidden flex-col gap-3 lg:flex">
+              {TOOL_STEPS.map((step, i) => (
+                <li
+                  key={step.title}
+                  className="grid grid-cols-[2.5rem_1fr] gap-x-2 rounded-2xl border border-[#2F7A63] bg-[#0A684E] px-4 py-4 sm:px-5"
+                >
+                  <span className="font-cp-display text-[26px] leading-none text-[#A7E0C6]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <p className="text-[15px] font-semibold">{step.title}</p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-[#CFE5D9]">{step.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
-          <div className="lg:col-span-8">
+          <div className="min-w-0 self-start rounded-[20px] bg-[#F7F5F0] p-5 text-[#0C1A0E] sm:p-7 lg:self-center">
             <Suspense fallback={null}>
               <CareerPathTool initialRole={label} />
             </Suspense>
           </div>
         </section>
 
+        <div className="mt-6 grid gap-4 md:grid-cols-2 md:gap-6">
+          <TrustNote icon={Search} title="Job counts and pay come from live listings">
+            Counted by title on US job boards and checked daily. Pay is the range employers advertise, shown only where
+            enough listings state it.
+          </TrustNote>
+          <TrustNote icon={Star} title="Suggested roles and fit scores come from AI">
+            The tool builds them from what you share. Treat them as a starting point to check against real postings and
+            your own judgment.
+          </TrustNote>
+        </div>
+
         {/* FAQ, the visible mirror of the JSON-LD */}
-        <section aria-labelledby="faq-heading" className="mt-16 grid gap-x-16 gap-y-6 border-t pt-10 lg:grid-cols-12">
-          <h2 id="faq-heading" className="text-3xl font-bold tracking-tight lg:col-span-4">
-            Questions {people} ask
-          </h2>
-          <div className="lg:col-span-8">
-            {path.faqs.map((f) => (
-              <div key={f.question} className="border-b py-6 first:pt-0">
-                <h3 className="text-lg font-semibold tracking-tight">{f.question}</h3>
-                <p className="mt-2 max-w-[65ch] leading-relaxed">{f.answer}</p>
-              </div>
+        <section
+          aria-labelledby="faq-heading"
+          className="mt-20 grid gap-x-16 gap-y-6 sm:mt-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]"
+        >
+          <div>
+            <p className={EYEBROW}>Questions</p>
+            <h2 id="faq-heading" className={cn(SECTION_HEADING, "mt-2.5")}>
+              Questions {people} ask
+            </h2>
+          </div>
+          <div>
+            {path.faqs.map((f, i) => (
+              <details
+                key={f.question}
+                open={i === 0}
+                className="group border-t border-[#E0D8CC] last:border-b"
+              >
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-[18px] [&::-webkit-details-marker]:hidden">
+                  <h3 className="text-base font-semibold leading-snug">{f.question}</h3>
+                  <Plus className="h-[18px] w-[18px] shrink-0 text-[#5F5852] group-open:hidden" aria-hidden />
+                  <Minus className="hidden h-[18px] w-[18px] shrink-0 text-[#5F5852] group-open:block" aria-hidden />
+                </summary>
+                <p className="-mt-1.5 max-w-[62ch] pb-5 text-[15px] leading-[1.6] text-[#4A443E]">{f.answer}</p>
+              </details>
             ))}
           </div>
         </section>
@@ -503,17 +596,20 @@ export default async function CareerPathRolePage({ params }: Params) {
         {/* Related pages. Every career path page has role content, so its resume
             example and interview prep pages are indexable too. Other career paths:
             internal links between real pages only. */}
-        <nav aria-label="Related pages" className="mt-16 grid gap-x-16 gap-y-10 border-t pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
-            <h2 className={LABEL}>More for {people}</h2>
-            <ul className="mt-3 space-y-1">
+        <nav aria-label="Related pages" className="mt-20 flex flex-col gap-16 sm:mt-24">
+          <div>
+            <h2 className={SECTION_HEADING}>More for {people}</h2>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-4">
               {[
                 { href: `/resume-examples/${slug}`, text: `${sentenceCase(label)} resume examples` },
                 { href: `/interview-prep/${slug}`, text: `${sentenceCase(label)} interview questions` },
                 { href: `/jobs/${slug}`, text: `Open ${name} jobs` },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className={cn(LINK, "inline-flex min-h-11 items-center sm:min-h-8")}>
+                  <Link
+                    href={l.href}
+                    className="group flex min-h-14 items-center justify-between gap-3 rounded-2xl border border-[#E0D8CC] bg-white px-5 py-4 text-[15px] font-semibold transition-colors duration-150 hover:border-[#065F46] hover:text-[#065F46]"
+                  >
                     {l.text}
                   </Link>
                 </li>
@@ -521,14 +617,27 @@ export default async function CareerPathRolePage({ params }: Params) {
             </ul>
           </div>
           {others.length > 0 && (
-            <div className="lg:col-span-8">
-              <h2 className={LABEL}>Other career paths</h2>
-              <ul className="mt-3 columns-2 gap-x-8 sm:columns-3">
+            <div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+                <div>
+                  <h2 className={SECTION_HEADING}>Other career paths</h2>
+                  <p className="mt-2 text-[15px] text-[#5F5852]">
+                    Where each role usually leads next, what the move pays, and what to have on your resume first.
+                  </p>
+                </div>
+                <Link
+                  href="/career-path"
+                  className={cn(LINK, "inline-flex min-h-11 shrink-0 items-center gap-1.5 text-sm")}
+                >
+                  All {guideCount} career paths
+                </Link>
+              </div>
+              <ul className="mt-6 grid grid-cols-1 gap-x-8 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {others.map((r) => (
-                  <li key={r.slug} className="break-inside-avoid">
+                  <li key={r.slug}>
                     <Link
                       href={`/career-path/${r.slug}`}
-                      className="inline-flex min-h-11 items-center text-[15px] underline-offset-4 transition-colors duration-150 hover:text-primary hover:underline sm:min-h-8"
+                      className="flex min-h-11 items-center border-b border-[#E0D8CC] py-2.5 text-[15px] transition-colors duration-150 hover:text-[#065F46]"
                     >
                       {sentenceCase(r.label)}
                     </Link>

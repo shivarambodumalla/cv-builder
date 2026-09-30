@@ -1,11 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Loader2, Lock, Upload } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { BriefcaseBusiness, Check, Info, Loader2, SlidersHorizontal, Sparkle, Upload } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import {
@@ -17,15 +14,14 @@ import {
   type PreferenceId,
 } from "@/lib/career-path/types";
 import { trackCareerPathEvent } from "./track";
-import { formatCheckedOn, unlockHref } from "./format";
-import { FitMeter, MarketStats, MoveTypeBadge, SkillChips } from "./path-meta";
+import { countryName, unlockHref } from "./format";
+import { CP_BUTTON, CP_CARD, CP_EYEBROW, FitBar, FitNumber, MarketStats, MoveTypeEyebrow, SkillChips } from "./path-meta";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MAX_ROLE_LENGTH = 80;
 const MAX_YEARS = 50;
 /** The server finds roles first, then checks listings; we can't see that split, so move on after a typical wait. */
 const LISTINGS_STEP_DELAY_MS = 9000;
-const QUICK_ROLES = ["Software Engineer", "Data Analyst", "Product Manager", "UX Designer", "Business Analyst"];
 
 type Phase = "input" | "loading" | "results" | "error";
 type StepKey = "reading" | "finding" | "checking";
@@ -35,6 +31,12 @@ const STEP_DEFS: Record<StepKey, { label: string; sub: string }> = {
   finding: { label: "Picking roles that fit", sub: "Step ups, sideways moves and bigger changes" },
   checking: { label: "Counting live job ads", sub: "Open jobs and advertised pay for each role" },
 };
+
+const TRUST_NOTES = ["Free, no sign-in", "Pay from live job ads", "Results in about 20 seconds"];
+
+const LABEL = "text-[13px] font-semibold text-[#3F3A35]";
+const SMALL_LABEL = "text-[11px] font-bold uppercase tracking-[0.1em] text-[#5F5852]";
+const ERROR_TEXT = "text-sm text-[#B42318]";
 
 class ToolError extends Error {
   constructor(message: string, readonly status: number | null) {
@@ -60,7 +62,89 @@ function validateFile(f: File): string | null {
   return null;
 }
 
-export function CareerPathTool({ initialRole }: { initialRole?: string }) {
+// ---------------------------------------------------------------------------
+// The first result's plan link, shared with the "90-day plan" band on
+// /career-path, which sits outside the tool.
+
+interface PlanCtaState {
+  href: string | null;
+  title: string | null;
+  signedIn: boolean;
+}
+
+const NO_PLAN_CTA: PlanCtaState = { href: null, title: null, signedIn: false };
+let planCta: PlanCtaState = NO_PLAN_CTA;
+const planCtaListeners = new Set<() => void>();
+
+function publishPlanCta(next: PlanCtaState) {
+  if (next.href === planCta.href && next.title === planCta.title && next.signedIn === planCta.signedIn) return;
+  planCta = next;
+  planCtaListeners.forEach((fn) => fn());
+}
+
+function subscribePlanCta(fn: () => void) {
+  planCtaListeners.add(fn);
+  return () => {
+    planCtaListeners.delete(fn);
+  };
+}
+
+/**
+ * The band's call to action. With results it opens the first role's plan
+ * (Google sign-in first when signed out); before that there is nothing to
+ * open yet, so it takes the visitor to the tool.
+ */
+export function CareerPathPlanCta({ className }: { className?: string }) {
+  const { href, title, signedIn } = useSyncExternalStore(subscribePlanCta, () => planCta, () => NO_PLAN_CTA);
+  const base = cn(
+    "inline-flex min-h-12 items-center justify-center gap-2.5 rounded-[10px] bg-[#F7F5F0] px-[22px] text-[15px] font-semibold text-[#065F46] transition-colors duration-150 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F7F5F0] focus-visible:ring-offset-2 focus-visible:ring-offset-[#065F46]",
+    className
+  );
+
+  if (href && title) {
+    return (
+      <Link
+        href={href}
+        className={base}
+        aria-label={`${signedIn ? "Open" : "Get"} my 90-day plan for ${title}`}
+        onClick={() => trackCareerPathEvent("unlock_clicked")}
+      >
+        {signedIn ? "Open my 90-day plan" : "Continue with Google"}
+      </Link>
+    );
+  }
+
+  return (
+    <a
+      href="#tool"
+      className={base}
+      onClick={(e) => {
+        const input = document.getElementById("cp-role");
+        if (!input) return;
+        e.preventDefault();
+        input.scrollIntoView({ block: "center" });
+        input.focus({ preventScroll: true });
+      }}
+    >
+      Find my next roles
+    </a>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+export interface CareerPathToolHero {
+  /** Shown beside the form on large screens (the example card). */
+  aside?: React.ReactNode;
+}
+
+/**
+ * The career path generator. With `hero` it renders the whole /career-path
+ * hero (headline, form, example) and swaps it for the results; without it,
+ * it's a compact form for embedding on role pages.
+ */
+export function CareerPathTool({ initialRole, hero }: { initialRole?: string; hero?: CareerPathToolHero }) {
+  const isHero = !!hero;
   const [role, setRole] = useState((initialRole ?? "").slice(0, MAX_ROLE_LENGTH));
   const [years, setYears] = useState("");
   const [prefs, setPrefs] = useState<PreferenceId[]>([]);
@@ -68,6 +152,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [redirectToken, setRedirectToken] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [refineOpen, setRefineOpen] = useState(false);
 
   const [roleError, setRoleError] = useState("");
   const [yearsError, setYearsError] = useState("");
@@ -78,6 +163,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
   const [shownSteps, setShownSteps] = useState<StepKey[]>(["finding", "checking"]);
   const [error, setError] = useState<ToolError | null>(null);
   const [result, setResult] = useState<CreateCareerPathResponse | null>(null);
+  const [searchedRole, setSearchedRole] = useState<string | null>(null);
   const [signedIn, setSignedIn] = useState(false);
 
   const roleInputRef = useRef<HTMLInputElement>(null);
@@ -102,6 +188,21 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
     if (phase === "results") resultsHeadingRef.current?.focus();
     if (phase === "error") errorHeadingRef.current?.focus();
   }, [phase]);
+
+  useEffect(() => {
+    if (!isHero) return;
+    const first = result?.preview.paths[0];
+    publishPlanCta(
+      result && first
+        ? { href: unlockHref(result.id, first.title, signedIn), title: first.title, signedIn }
+        : NO_PLAN_CTA
+    );
+  }, [isHero, result, signedIn]);
+
+  useEffect(() => {
+    if (!isHero) return;
+    return () => publishPlanCta(NO_PLAN_CTA);
+  }, [isHero]);
 
   const selectFile = useCallback((f: File) => {
     const problem = validateFile(f);
@@ -148,6 +249,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
       const n = Number(years);
       if (!Number.isInteger(n) || n < 0 || n > MAX_YEARS) {
         setYearsError(`Enter years as a whole number from 0 to ${MAX_YEARS}, or leave it blank.`);
+        setRefineOpen(true);
         ok = false;
       } else {
         yearsExperience = n;
@@ -159,7 +261,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
 
     if (!ok) {
       if (!withResume && currentRole.length < 2) roleInputRef.current?.focus();
-      else yearsInputRef.current?.focus();
+      else setTimeout(() => yearsInputRef.current?.focus(), 0);
       return null;
     }
     return { currentRole, yearsExperience };
@@ -209,6 +311,8 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
       }
 
       setResult(data as CreateCareerPathResponse);
+      setSearchedRole(valid.currentRole || null);
+      setRefineOpen(false);
       setPhase("results");
       trackCareerPathEvent("results_shown");
     } catch (err) {
@@ -233,7 +337,9 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
     clearFile();
     setRoleError("");
     setYearsError("");
+    setRefineOpen(false);
     setResult(null);
+    setSearchedRole(null);
     setError(null);
     setPhase("input");
     setTimeout(() => roleInputRef.current?.focus(), 0);
@@ -241,7 +347,7 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
 
   function editAnswers() {
     setError(null);
-    setPhase("input");
+    setPhase(result ? "results" : "input");
     setTimeout(() => roleInputRef.current?.focus(), 0);
   }
 
@@ -253,309 +359,507 @@ export function CareerPathTool({ initialRole }: { initialRole?: string }) {
         : "";
 
   const resumeActive = useResume && !!file;
+  const loading = phase === "loading";
 
-  return (
-    <section aria-label="Career path generator" className="w-full">
-      <p className="sr-only" aria-live="polite" aria-atomic="true">
-        {statusText}
-      </p>
+  const status =
+    phase === "loading" ? (
+      <Loading steps={shownSteps} current={step} />
+    ) : phase === "error" && error ? (
+      <ErrorCard error={error} headingRef={errorHeadingRef} onRetry={run} onEdit={editAnswers} />
+    ) : null;
 
-      {phase === "loading" && <Loading steps={shownSteps} current={step} />}
+  const roleInput = (compact: boolean) => (
+    <input
+      id="cp-role"
+      ref={roleInputRef}
+      type="text"
+      value={role}
+      maxLength={MAX_ROLE_LENGTH}
+      onChange={(e) => {
+        setRole(e.target.value);
+        if (roleError) setRoleError("");
+      }}
+      placeholder={compact ? "Your current role" : "e.g. UX Designer, Data Analyst"}
+      autoComplete="organization-title"
+      aria-label={compact ? "Your current role" : undefined}
+      aria-invalid={!!roleError}
+      aria-describedby={
+        [roleError && "cp-role-error", !compact && useResume && "cp-role-help"].filter(Boolean).join(" ") ||
+        undefined
+      }
+      className={cn(
+        "min-w-0 flex-1 border-0 bg-transparent text-[#0C1A0E] outline-none placeholder:text-[#78716C]",
+        compact ? "py-2 text-[15px]" : "py-3 text-base sm:py-2.5 sm:text-[17px]"
+      )}
+    />
+  );
 
-      {phase === "error" && error && (
-        <div className="rounded-lg border bg-card p-5 sm:p-7" role="alert">
-          <h2 ref={errorHeadingRef} tabIndex={-1} className="text-xl font-semibold tracking-tight outline-none">
-            We couldn&apos;t get your results
-          </h2>
-          <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-muted-foreground">{error.message}</p>
-          <p className="mt-1 text-sm text-muted-foreground">Your answers are still here.</p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button className="h-11" onClick={run}>
-              Try again
-            </Button>
-            <Button variant="outline" className="h-11 bg-background" onClick={editAnswers}>
-              Edit my answers
-            </Button>
+  const roleErrorLine = roleError ? (
+    <p id="cp-role-error" className={ERROR_TEXT}>
+      {roleError}
+    </p>
+  ) : null;
+
+  const form = (
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        run();
+      }}
+      className="flex flex-col gap-2.5 text-left"
+    >
+      {useResume && (
+        <div className="mb-2 flex flex-col gap-2">
+          <p className={LABEL} id="cp-resume-label">
+            Your resume
+          </p>
+          <label
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              const f = e.dataTransfer.files[0];
+              if (f) selectFile(f);
+            }}
+            className={cn(
+              "flex min-h-[112px] cursor-pointer flex-col items-center justify-center gap-1.5 rounded-[14px] border-[1.5px] border-dashed bg-white p-5 text-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-[#065F46]",
+              dragOver || file ? "border-[#065F46]" : "border-[#C9BEAD] hover:border-[#065F46]",
+              file && "border-solid"
+            )}
+          >
+            <input
+              type="file"
+              accept=".pdf,application/pdf"
+              className="sr-only"
+              aria-labelledby="cp-resume-label"
+              aria-describedby="cp-resume-help"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) selectFile(f);
+                e.target.value = "";
+              }}
+            />
+            {file ? (
+              <>
+                <span className="break-all text-sm font-semibold">{file.name}</span>
+                <span className="text-xs text-[#5F5852]">Ready. Click to choose a different file.</span>
+              </>
+            ) : (
+              <>
+                <Upload className="h-5 w-5 text-[#065F46]" aria-hidden="true" />
+                <span className="text-sm font-semibold">Drop your resume here, or click to choose it</span>
+              </>
+            )}
+          </label>
+          <div className="flex items-start justify-between gap-3">
+            <p id="cp-resume-help" className="text-xs leading-relaxed text-[#5F5852]">
+              PDF, up to 5 MB. We read your past titles and skills to pick roles.
+            </p>
+            {file && (
+              <button
+                type="button"
+                onClick={clearFile}
+                className="inline-flex min-h-11 shrink-0 items-center text-xs font-semibold text-[#5F5852] underline underline-offset-4 hover:text-[#0C1A0E] sm:min-h-0"
+              >
+                Remove file
+              </button>
+            )}
           </div>
+          {fileError && (
+            <p className={ERROR_TEXT} role="alert">
+              {fileError}
+            </p>
+          )}
         </div>
       )}
 
-      {phase === "results" && result && (
-        <Results result={result} signedIn={signedIn} headingRef={resultsHeadingRef} onStartOver={startOver} />
+      <label htmlFor="cp-role" className={LABEL}>
+        {useResume ? "Current job title" : "Your current role"}
+        {resumeActive && <span className="font-normal text-[#5F5852]"> (optional)</span>}
+      </label>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:rounded-[14px] sm:border-[1.5px] sm:border-[#E0D8CC] sm:bg-white sm:py-1.5 sm:pl-[18px] sm:pr-1.5 sm:shadow-[0_1px_0_rgba(12,26,14,0.03)] sm:focus-within:border-[#065F46]">
+        <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[14px] border-[1.5px] border-[#E0D8CC] bg-white px-4 focus-within:border-[#065F46] sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0">
+          <BriefcaseBusiness className="h-5 w-5 shrink-0 text-[#78716C]" aria-hidden="true" />
+          {roleInput(false)}
+        </div>
+        <button type="submit" className={cn(CP_BUTTON.green, "w-full shrink-0 sm:w-auto")}>
+          Show my next roles
+        </button>
+      </div>
+      {roleErrorLine}
+      {useResume && (
+        <p id="cp-role-help" className="text-xs leading-relaxed text-[#5F5852]">
+          Add it if the top job on your resume isn&apos;t the one you do now.
+        </p>
       )}
-
-      {phase === "input" && (
-        <form
-          noValidate
-          onSubmit={(e) => {
-            e.preventDefault();
-            run();
-          }}
-          className="rounded-lg border bg-card text-left"
+      <p className="flex flex-wrap items-center gap-x-3 text-sm text-[#5F5852]">
+        <span>or</span>
+        <button
+          type="button"
+          onClick={() => chooseSource(!useResume)}
+          className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-[#065F46] underline-offset-4 hover:text-[#044536] hover:underline sm:min-h-8"
         >
-          <div className="space-y-5 p-5 sm:p-6">
-            <fieldset>
-              <legend className="mb-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                Start with
-              </legend>
-              <div className="grid grid-cols-2 rounded-md border bg-background p-1">
-                {[
-                  { resume: false, label: "My job title" },
-                  { resume: true, label: "My resume (PDF)" },
-                ].map((opt) => {
-                  const checked = useResume === opt.resume;
-                  return (
-                    <label
-                      key={opt.label}
-                      className={cn(
-                        "flex min-h-11 cursor-pointer items-center justify-center rounded-[5px] px-3 text-sm font-medium transition-colors duration-150 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring sm:min-h-10",
-                        checked ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name="cp-source"
-                        className="sr-only"
-                        checked={checked}
-                        onChange={() => chooseSource(opt.resume)}
-                      />
-                      {opt.label}
-                    </label>
-                  );
-                })}
-              </div>
-            </fieldset>
+          {useResume ? (
+            <>
+              <BriefcaseBusiness className="h-4 w-4" aria-hidden="true" />
+              use just your job title
+            </>
+          ) : (
+            <>
+              <Upload className="h-4 w-4" aria-hidden="true" />
+              upload your resume for sharper matches
+            </>
+          )}
+        </button>
+      </p>
+      <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-[#5F5852]">
+        {TRUST_NOTES.map((note) => (
+          <li key={note} className="flex items-center gap-1.5">
+            <Check className="h-3.5 w-3.5 text-[#065F46]" strokeWidth={2.5} aria-hidden="true" />
+            {note}
+          </li>
+        ))}
+      </ul>
+    </form>
+  );
 
-            {useResume && (
-              <div className="space-y-2">
-                <p className="text-sm font-medium" id="cp-resume-label">
-                  Your resume
-                </p>
-                <label
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragOver(true);
-                  }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragOver(false);
-                    const f = e.dataTransfer.files[0];
-                    if (f) selectFile(f);
-                  }}
-                  className={cn(
-                    "flex min-h-[104px] cursor-pointer flex-col items-center justify-center gap-1.5 rounded-md border border-dashed bg-background p-5 text-center transition-colors duration-150 focus-within:ring-2 focus-within:ring-ring",
-                    dragOver ? "border-primary" : "border-[#b9ab96] hover:border-primary",
-                    file && "border-solid border-primary"
-                  )}
-                >
-                  <input
-                    type="file"
-                    accept=".pdf,application/pdf"
-                    className="sr-only"
-                    aria-labelledby="cp-resume-label"
-                    aria-describedby="cp-resume-help"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) selectFile(f);
-                      e.target.value = "";
-                    }}
-                  />
-                  {file ? (
-                    <>
-                      <span className="break-all text-sm font-semibold">{file.name}</span>
-                      <span className="text-xs text-muted-foreground">Ready. Click to choose a different file.</span>
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                      <span className="text-sm font-medium">Drop your resume here, or click to choose it</span>
-                    </>
-                  )}
-                </label>
-                <div className="flex items-start justify-between gap-3">
-                  <p id="cp-resume-help" className="text-xs leading-relaxed text-muted-foreground">
-                    PDF, up to 5 MB. We read your past titles and skills to pick roles.
-                  </p>
-                  {file && (
-                    <button
-                      type="button"
-                      onClick={clearFile}
-                      className="inline-flex min-h-11 shrink-0 items-center text-xs font-medium text-muted-foreground underline underline-offset-4 hover:text-foreground sm:min-h-0"
-                    >
-                      Remove file
-                    </button>
-                  )}
-                </div>
-                {fileError && (
-                  <p className="text-sm text-error" role="alert">
-                    {fileError}
-                  </p>
-                )}
-              </div>
-            )}
+  const liveRegion = (
+    <p className="sr-only" aria-live="polite" aria-atomic="true">
+      {statusText}
+    </p>
+  );
 
-            <div className="space-y-2">
-              <Label htmlFor="cp-role">
-                {useResume ? "Current job title" : "Your current job title"}
-                {resumeActive && <span className="font-normal text-muted-foreground"> (optional)</span>}
-              </Label>
-              <Input
-                id="cp-role"
-                ref={roleInputRef}
-                value={role}
-                maxLength={MAX_ROLE_LENGTH}
-                onChange={(e) => {
-                  setRole(e.target.value);
-                  if (roleError) setRoleError("");
-                }}
-                placeholder="e.g. Data Analyst"
-                autoComplete="organization-title"
-                aria-invalid={!!roleError}
-                aria-describedby={[roleError && "cp-role-error", useResume && "cp-role-help"].filter(Boolean).join(" ") || undefined}
-                className="h-12 text-base"
-              />
-              {roleError && (
-                <p id="cp-role-error" className="text-sm text-error">
-                  {roleError}
-                </p>
-              )}
-              {useResume ? (
-                <p id="cp-role-help" className="text-xs leading-relaxed text-muted-foreground">
-                  Add it if the top job on your resume isn&apos;t the one you do now.
-                </p>
-              ) : (
-                <div className="flex flex-wrap items-center gap-1.5 pt-1" role="group" aria-label="Common job titles">
-                  <span className="mr-1 text-xs text-muted-foreground">Or pick one:</span>
-                  {QUICK_ROLES.map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => {
-                        setRole(r);
-                        setRoleError("");
-                      }}
-                      aria-pressed={role.trim().toLowerCase() === r.toLowerCase()}
-                      className={cn(
-                        "inline-flex min-h-11 items-center rounded-[5px] border px-2.5 text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8",
-                        role.trim().toLowerCase() === r.toLowerCase()
-                          ? "border-foreground bg-background text-foreground"
-                          : "border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground"
-                      )}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="grid gap-5 border-t px-5 py-5 sm:grid-cols-[8.5rem_1fr] sm:px-6">
-            <div className="space-y-1.5">
-              <Label htmlFor="cp-years" className="text-[13px]">
-                Years in this work
-              </Label>
-              <Input
-                id="cp-years"
-                ref={yearsInputRef}
-                type="number"
-                inputMode="numeric"
-                min={0}
-                max={MAX_YEARS}
-                step={1}
-                value={years}
-                onChange={(e) => {
-                  setYears(e.target.value);
-                  if (yearsError) setYearsError("");
-                }}
-                placeholder="e.g. 4"
-                aria-invalid={!!yearsError}
-                aria-describedby={yearsError ? "cp-years-error" : "cp-optional-help"}
-                className="h-10 w-28 text-base sm:w-full"
-              />
-            </div>
-            <fieldset className="space-y-1.5" aria-describedby="cp-optional-help">
-              <legend className="text-[13px] font-medium">
-                What matters to you <span className="font-normal text-muted-foreground">(up to {MAX_PREFERENCES})</span>
-              </legend>
-              <div className="flex flex-wrap gap-1.5 pt-1.5">
-                {PREFERENCES.map((p) => {
-                  const selected = prefs.includes(p.id);
-                  const full = !selected && prefs.length >= MAX_PREFERENCES;
-                  return (
-                    <button
-                      key={p.id}
-                      type="button"
-                      aria-pressed={selected}
-                      disabled={full}
-                      onClick={() => togglePref(p.id)}
-                      className={cn(
-                        "inline-flex min-h-11 items-center rounded-[5px] border px-2.5 text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8",
-                        selected
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-background text-foreground hover:border-foreground",
-                        full && "cursor-not-allowed opacity-50"
-                      )}
-                    >
-                      {p.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
-            {yearsError ? (
-              <p id="cp-years-error" className="text-sm text-error sm:col-span-2">
-                {yearsError}
+  if (result) {
+    return (
+      <section aria-label="Career path generator" className="w-full text-left">
+        {liveRegion}
+        <ResultsHeader
+          isHero={isHero}
+          headingRef={resultsHeadingRef}
+          searchedRole={searchedRole}
+          paths={result.preview.paths}
+          summary={result.preview.summary}
+          onSubmit={run}
+          roleInput={roleInput(true)}
+          roleErrorLine={roleErrorLine}
+          busy={loading}
+          refineOpen={refineOpen}
+          onToggleRefine={() => setRefineOpen((o) => !o)}
+          onStartOver={startOver}
+          refine={
+            <RefinePanel
+              years={years}
+              onYears={(v) => {
+                setYears(v);
+                if (yearsError) setYearsError("");
+              }}
+              yearsError={yearsError}
+              yearsInputRef={yearsInputRef}
+              prefs={prefs}
+              onTogglePref={togglePref}
+              onSubmit={run}
+              busy={loading}
+            />
+          }
+        />
+        <div className="mt-6">
+          {status ?? (
+            <>
+              <ol className={cn("grid gap-3.5", isHero ? "md:grid-cols-2 lg:grid-cols-3 lg:gap-6" : "md:grid-cols-2 md:gap-5")}>
+                {result.preview.paths.map((path, i, all) => (
+                  <li key={path.title} className="flex">
+                    <PathCard id={result.id} index={i} path={path} all={all} signedIn={signedIn} />
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-6 flex items-start gap-2 text-[13px] leading-relaxed text-[#78716C]">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                Role suggestions and fit scores are AI-generated and worth checking against your own judgment. Job
+                counts and pay come from live job ads and change daily.
               </p>
-            ) : (
-              <p id="cp-optional-help" className="-mt-1 text-xs text-muted-foreground sm:col-span-2">
-                Both optional. They help us judge which moves are realistic for you.
-              </p>
-            )}
-          </div>
+            </>
+          )}
+        </div>
+      </section>
+    );
+  }
 
-          <div className="border-t px-5 py-5 sm:px-6">
-            <Button type="submit" size="lg" className="h-12 w-full text-base font-semibold">
-              Show my next roles
-            </Button>
-            <p className="mt-3 text-center text-sm text-muted-foreground">
-              Free. No sign-up needed to see your results.
-            </p>
-          </div>
-        </form>
-      )}
+  const panel = status ?? form;
+
+  if (!isHero) {
+    return (
+      <section aria-label="Career path generator" className="w-full">
+        {liveRegion}
+        {panel}
+      </section>
+    );
+  }
+
+  return (
+    <section aria-label="Career path generator" className="w-full">
+      {liveRegion}
+      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="flex min-w-0 max-w-[560px] flex-col gap-5 sm:gap-7">
+          <span className={CP_EYEBROW}>Career path generator</span>
+          <h1
+            id="cp-title"
+            className="font-cp-display text-[44px] font-normal leading-[1.02] tracking-[-0.01em] sm:text-[56px] lg:text-[68px]"
+          >
+            Find your next role, and what it pays.
+          </h1>
+          <p className="text-[17px] leading-normal text-[#4A443E] sm:text-[19px]">
+            Enter your current role and see 3 to 5 next moves you could make, with live job counts and the pay
+            employers advertise for each.
+          </p>
+          <div className="mt-2">{panel}</div>
+        </div>
+        {hero.aside && <div className="hidden lg:block">{hero.aside}</div>}
+      </div>
     </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+function ResultsHeader({
+  isHero,
+  headingRef,
+  searchedRole,
+  paths,
+  summary,
+  onSubmit,
+  roleInput,
+  roleErrorLine,
+  busy,
+  refineOpen,
+  onToggleRefine,
+  onStartOver,
+  refine,
+}: {
+  isHero: boolean;
+  headingRef: React.RefObject<HTMLHeadingElement>;
+  searchedRole: string | null;
+  paths: CareerPathPreviewOption[];
+  summary: string;
+  onSubmit: () => void;
+  roleInput: React.ReactNode;
+  roleErrorLine: React.ReactNode;
+  busy: boolean;
+  refineOpen: boolean;
+  onToggleRefine: () => void;
+  onStartOver: () => void;
+  refine: React.ReactNode;
+}) {
+  const Heading = isHero ? "h1" : "h2";
+  const country = paths.find((p) => p.market)?.market?.country;
+  const n = paths.length;
+  return (
+    <div className="flex flex-col gap-5 lg:gap-6">
+      <div className={cn("flex flex-col gap-5", isHero && "lg:flex-row lg:items-end lg:justify-between lg:gap-10")}>
+        <div className="flex min-w-0 flex-col gap-2.5">
+          {isHero && <span className={cn(CP_EYEBROW, "text-[11px] sm:text-xs")}>Career path generator</span>}
+          <Heading
+            ref={headingRef}
+            tabIndex={-1}
+            className={cn(
+              "font-cp-display font-normal tracking-[-0.01em] outline-none",
+              isHero ? "text-[38px] sm:text-[44px] lg:text-[52px]" : "text-[34px] sm:text-[40px]",
+              "leading-[1.05]"
+            )}
+          >
+            Your next roles, from{" "}
+            <em className="italic text-[#065F46]">{searchedRole ?? "your resume"}</em>
+          </Heading>
+          <p className="text-[15px] leading-normal text-[#5F5852] sm:text-base">
+            {n} {n === 1 ? "move" : "moves"}, with how well your experience already fits each.
+            {country && ` Job counts and advertised pay come from live listings in ${countryName(country)}, refreshed daily.`}
+          </p>
+        </div>
+
+        <div className={cn("flex w-full shrink-0 flex-col gap-1.5", isHero ? "lg:w-[420px]" : "max-w-[520px]")}>
+          <form
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+            className="flex items-center gap-1.5 rounded-xl border-[1.5px] border-[#E0D8CC] bg-white py-[5px] pl-3.5 pr-[5px] focus-within:border-[#065F46] sm:gap-2 sm:pl-4"
+          >
+            <BriefcaseBusiness className="hidden h-[18px] w-[18px] shrink-0 text-[#78716C] sm:block" aria-hidden="true" />
+            {roleInput}
+            <button
+              type="submit"
+              disabled={busy}
+              className="inline-flex h-11 shrink-0 items-center rounded-lg bg-[#F0EDE6] px-3.5 text-sm font-semibold text-[#0C1A0E] transition-colors duration-150 hover:bg-[#E6E0D4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#065F46] disabled:opacity-60 sm:h-10 sm:px-4"
+            >
+              <span className="sm:hidden">Change</span>
+              <span className="hidden sm:inline">Change role</span>
+            </button>
+          </form>
+          {roleErrorLine}
+          <div className="flex items-center gap-5 text-sm">
+            <button
+              type="button"
+              onClick={onToggleRefine}
+              aria-expanded={refineOpen}
+              aria-controls="cp-refine"
+              className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-[#065F46] hover:text-[#044536] sm:min-h-9"
+            >
+              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+              Refine by years and goals
+            </button>
+            <button
+              type="button"
+              onClick={onStartOver}
+              className="inline-flex min-h-11 items-center font-medium text-[#5F5852] underline-offset-4 hover:text-[#0C1A0E] hover:underline sm:min-h-9"
+            >
+              Start over
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {refineOpen && refine}
+
+      {summary && (
+        <div className="flex items-start gap-5 rounded-xl border border-[#CFE5D9] bg-[#E6F2EC] px-4 py-3.5 sm:rounded-2xl sm:px-[26px] sm:py-[22px]">
+          <Sparkle className="mt-0.5 hidden h-[22px] w-[22px] shrink-0 text-[#065F46] sm:block" aria-hidden="true" />
+          <p className="text-sm leading-[1.55] text-[#0C3B2A] sm:text-base">
+            <strong className="font-semibold">Where you stand.</strong> {summary}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RefinePanel({
+  years,
+  onYears,
+  yearsError,
+  yearsInputRef,
+  prefs,
+  onTogglePref,
+  onSubmit,
+  busy,
+}: {
+  years: string;
+  onYears: (v: string) => void;
+  yearsError: string;
+  yearsInputRef: React.RefObject<HTMLInputElement>;
+  prefs: PreferenceId[];
+  onTogglePref: (id: PreferenceId) => void;
+  onSubmit: () => void;
+  busy: boolean;
+}) {
+  return (
+    <form
+      id="cp-refine"
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+      className="grid gap-5 rounded-2xl border border-[#E0D8CC] bg-white p-5 sm:grid-cols-[9rem_1fr] sm:p-6"
+    >
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="cp-years" className={LABEL}>
+          Years in this work
+        </label>
+        <input
+          id="cp-years"
+          ref={yearsInputRef}
+          type="number"
+          inputMode="numeric"
+          min={0}
+          max={MAX_YEARS}
+          step={1}
+          value={years}
+          onChange={(e) => onYears(e.target.value)}
+          placeholder="e.g. 4"
+          aria-invalid={!!yearsError}
+          aria-describedby={yearsError ? "cp-years-error" : "cp-refine-help"}
+          className="h-11 w-28 rounded-[10px] border-[1.5px] border-[#E0D8CC] bg-white px-3 text-base outline-none placeholder:text-[#78716C] focus:border-[#065F46] sm:w-full"
+        />
+      </div>
+      <fieldset className="flex flex-col gap-1.5" aria-describedby="cp-refine-help">
+        <legend className={cn(LABEL, "mb-1.5")}>
+          What matters to you <span className="font-normal text-[#5F5852]">(up to {MAX_PREFERENCES})</span>
+        </legend>
+        <div className="flex flex-wrap gap-1.5">
+          {PREFERENCES.map((p) => {
+            const selected = prefs.includes(p.id);
+            const full = !selected && prefs.length >= MAX_PREFERENCES;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                aria-pressed={selected}
+                disabled={full}
+                onClick={() => onTogglePref(p.id)}
+                className={cn(
+                  "inline-flex min-h-11 items-center rounded-full px-3.5 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#065F46] focus-visible:ring-offset-1 sm:min-h-9",
+                  selected ? "bg-[#065F46] text-[#F7F5F0]" : "bg-[#F0EDE6] text-[#3F3A35] hover:bg-[#E6E0D4]",
+                  full && "cursor-not-allowed opacity-50"
+                )}
+              >
+                {selected && <Check className="mr-1 h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />}
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+      <div className="flex flex-col gap-3 border-t border-[#EDE8DF] pt-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+        {yearsError ? (
+          <p id="cp-years-error" className={ERROR_TEXT}>
+            {yearsError}
+          </p>
+        ) : (
+          <p id="cp-refine-help" className="text-[13px] text-[#5F5852]">
+            Both optional. They help judge which moves are realistic for you.
+          </p>
+        )}
+        <button type="submit" disabled={busy} className={cn(CP_BUTTON.dark, "shrink-0 disabled:opacity-60")}>
+          Update my results
+        </button>
+      </div>
+    </form>
   );
 }
 
 function Loading({ steps, current }: { steps: StepKey[]; current: StepKey }) {
   const currentIndex = steps.indexOf(current);
   return (
-    <div className="rounded-lg border bg-card p-5 sm:p-7">
-      <p className="text-lg font-semibold tracking-tight">Finding your next roles</p>
-      <p className="mt-1 text-sm text-muted-foreground">This usually takes about 20 seconds. Keep this tab open.</p>
-      <ol className="mt-6 space-y-4">
+    <div className={cn(CP_CARD, "p-6 sm:p-7")}>
+      <p className="font-cp-display text-[28px] leading-tight">Finding your next roles</p>
+      <p className="mt-1 text-sm text-[#5F5852]">This usually takes about 20 seconds. Keep this tab open.</p>
+      <ol className="mt-6 flex flex-col gap-4 border-t border-[#EDE8DF] pt-5">
         {steps.map((key, i) => {
           const state = i < currentIndex ? "done" : i === currentIndex ? "active" : "pending";
           const def = STEP_DEFS[key];
           return (
-            <li key={key} className={cn("flex gap-3", state === "pending" && "text-muted-foreground")}>
+            <li key={key} className={cn("flex gap-3", state === "pending" && "text-[#78716C]")}>
               <span className="flex h-5 w-5 shrink-0 items-center justify-center pt-0.5" aria-hidden="true">
                 {state === "active" ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-primary motion-reduce:animate-none" />
+                  <Loader2 className="h-4 w-4 animate-spin text-[#065F46] motion-reduce:animate-none" />
+                ) : state === "done" ? (
+                  <Check className="h-4 w-4 text-[#065F46]" strokeWidth={2.5} />
                 ) : (
-                  <span className={cn("h-2 w-2", state === "done" ? "bg-primary" : "border border-muted-foreground")} />
+                  <span className="h-2 w-2 rounded-full border border-[#A8A097]" />
                 )}
               </span>
               <div>
                 <p className={cn("text-sm", state === "active" ? "font-semibold" : "font-medium")}>
                   {def.label}
-                  {state === "done" && (
-                    <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-primary">Done</span>
-                  )}
+                  {state === "done" && <span className="sr-only"> (done)</span>}
                 </p>
-                <p className="text-xs text-muted-foreground">{def.sub}</p>
+                <p className="text-xs text-[#5F5852]">{def.sub}</p>
               </div>
             </li>
           );
@@ -565,225 +869,101 @@ function Loading({ steps, current }: { steps: StepKey[]; current: StepKey }) {
   );
 }
 
-function Results({
-  result,
-  signedIn,
+function ErrorCard({
+  error,
   headingRef,
-  onStartOver,
+  onRetry,
+  onEdit,
 }: {
-  result: CreateCareerPathResponse;
-  signedIn: boolean;
+  error: ToolError;
   headingRef: React.RefObject<HTMLHeadingElement>;
-  onStartOver: () => void;
+  onRetry: () => void;
+  onEdit: () => void;
 }) {
-  const { id, preview } = result;
   return (
-    <div className="text-left">
-      <div className="flex items-end justify-between gap-4 border-b pb-4">
-        <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Your results</p>
-          <h2 ref={headingRef} tabIndex={-1} className="mt-1 text-2xl font-bold tracking-tight outline-none">
-            {preview.paths.length} roles you could move into
-          </h2>
-        </div>
-        <button
-          type="button"
-          onClick={onStartOver}
-          className="min-h-11 shrink-0 text-sm font-medium text-primary underline-offset-4 hover:underline sm:min-h-0"
-        >
-          Start over
+    <div className={cn(CP_CARD, "p-6 sm:p-7")} role="alert">
+      <h2 ref={headingRef} tabIndex={-1} className="font-cp-display text-[28px] font-normal leading-tight outline-none">
+        We couldn&apos;t get your results
+      </h2>
+      <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-[#4A443E]">{error.message}</p>
+      <p className="mt-1 text-sm text-[#5F5852]">Your answers are still here.</p>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <button type="button" className={CP_BUTTON.dark} onClick={onRetry}>
+          Try again
+        </button>
+        <button type="button" className={CP_BUTTON.outline} onClick={onEdit}>
+          Edit my answers
         </button>
       </div>
-      {preview.summary && <p className="mt-4 max-w-prose text-[15px] leading-relaxed">{preview.summary}</p>}
-
-      <ol className="mt-6 space-y-5">
-        {preview.paths.map((path, i) => (
-          <li key={path.title}>
-            <PathBlock id={id} index={i} path={path} signedIn={signedIn} />
-          </li>
-        ))}
-      </ol>
-
-      <p className="mt-5 max-w-prose text-xs leading-relaxed text-muted-foreground">
-        Roles and fit scores are AI suggestions based on what you entered. Job counts and pay come from live job ads and
-        change daily.
-      </p>
     </div>
   );
 }
 
-// Placeholder widths for the hidden plan. Fixed so the layout never jumps.
-const SKILL_BARS = ["72%", "58%", "80%", "64%"];
-const PHASE_BARS = [
-  ["90%", "65%"],
-  ["75%", "85%"],
-  ["85%", "55%"],
-];
-const PHASES = ["Days 1-30", "Days 31-60", "Days 61-90"];
-
-function HiddenBar({ width }: { width: string }) {
-  return <span className="block h-2 rounded-sm bg-[#cbbfad] blur-[2px]" style={{ width }} />;
-}
-
-function PathBlock({
+function PathCard({
   id,
   index,
   path,
+  all,
   signedIn,
 }: {
   id: string;
   index: number;
   path: CareerPathPreviewOption;
+  all: CareerPathPreviewOption[];
   signedIn: boolean;
 }) {
   const headingId = `cp-path-${slugify(path.title)}`;
+  const bestFit = Math.max(...all.map((p) => p.fit));
+  const isBest = all.findIndex((p) => p.fit === bestFit) === index;
   const count = path.skillsToBuildCount;
-  const checked = path.market ? formatCheckedOn(path.market) : null;
+  const planMeta = count > 0 ? `${count} ${count === 1 ? "skill" : "skills"} · a proof project` : "A proof project";
+  const primary = index === 0;
+
   return (
-    <article className="rounded-lg border bg-card" aria-labelledby={headingId}>
-      <div className="p-5 sm:p-6">
-        <div className="flex gap-4">
-          <span className="pt-1.5 font-mono text-sm text-muted-foreground" aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <div className="min-w-0 flex-1">
-            <h3 id={headingId} className="text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
-              {path.title}
-            </h3>
-            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
-              <MoveTypeBadge moveType={path.moveType} />
-              <FitMeter fit={path.fit} />
-            </div>
-            <p className="mt-4 max-w-prose text-[15px] leading-relaxed">{path.why}</p>
-
-            {path.market && (
-              <div className="mt-5 border-t pt-4">
-                <MarketStats market={path.market} />
-                {checked && (
-                  <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                    Live job ads, checked {checked}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {path.transferableSkills.length > 0 && (
-              <div className="mt-5 border-t pt-4">
-                <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                  Skills you already have
-                </p>
-                <SkillChips skills={path.transferableSkills} label={`Skills you already have for ${path.title}`} />
-              </div>
-            )}
-          </div>
+    <article
+      aria-labelledby={headingId}
+      className={cn(CP_CARD, "flex w-full flex-col gap-3.5 rounded-[18px] p-5 md:gap-[18px] md:rounded-[20px] md:p-7")}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1 md:gap-1.5">
+          <MoveTypeEyebrow moveType={path.moveType} extra={isBest ? "Best fit" : null} />
+          <h3 id={headingId} className="text-[21px] font-semibold leading-[1.2] tracking-[-0.01em] md:text-2xl">
+            {path.title}
+          </h3>
         </div>
+        <FitNumber fit={path.fit} />
       </div>
-
-      <LockedPlan
-        href={unlockHref(id, path.title, signedIn)}
-        title={path.title}
-        count={count}
-        signedIn={signedIn}
-        full={index === 0}
-      />
-    </article>
-  );
-}
-
-/**
- * The signed-in half, shown as its real structure with the content hidden.
- * The first role gets the full outline; the rest get one line, so the page
- * doesn't repeat the same block four times. Only placeholder bars are blurred.
- */
-function LockedPlan({
-  href,
-  title,
-  count,
-  signedIn,
-  full,
-}: {
-  href: string;
-  title: string;
-  count: number;
-  signedIn: boolean;
-  full: boolean;
-}) {
-  const skills = count > 0 ? `${count} ${count === 1 ? "skill" : "skills"} to learn, in order` : "The skills to learn, in order";
-  const cta = (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <Button asChild className="h-11 px-5">
+      <FitBar fit={path.fit} />
+      <p className="text-sm leading-[1.55] text-[#4A443E]">{path.why}</p>
+      {path.transferableSkills.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className={SMALL_LABEL}>You already have</span>
+          <SkillChips
+            skills={path.transferableSkills}
+            label={`Skills you already have for ${path.title}`}
+            max={4}
+            mobileMax={2}
+          />
+        </div>
+      )}
+      <div className="mt-auto flex flex-col gap-[18px]">
+        <MarketStats market={path.market} />
         <Link
-          href={href}
-          aria-label={`${signedIn ? "Open" : "Get"} my 90-day plan for ${title}`}
+          href={unlockHref(id, path.title, signedIn)}
+          aria-label={`${signedIn ? "Open" : "Get"} my 90-day plan for ${path.title}`}
           onClick={() => trackCareerPathEvent("unlock_clicked")}
+          className={cn(primary ? CP_BUTTON.dark : CP_BUTTON.outline, "md:justify-between md:px-4")}
         >
-          {signedIn ? "Open my 90-day plan" : "Get my 90-day plan"}
-        </Link>
-      </Button>
-      {!signedIn && <p className="text-sm text-muted-foreground">Free with Google. No card.</p>}
-    </div>
-  );
-
-  if (!full) {
-    return (
-      <div className="rounded-b-lg border-t bg-background p-5 sm:p-6">
-        <p className="flex items-center gap-2 text-sm">
-          <Lock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <span>
-            <span className="font-medium">{skills}</span>
-            <span className="text-muted-foreground">, a 90-day plan and a proof project.</span>
+          <span>{signedIn ? "Open my 90-day plan" : "Get my 90-day plan"}</span>
+          <span
+            className={cn("hidden text-xs font-medium md:inline", primary ? "text-[#B7C7BC]" : "text-[#5F5852]")}
+            aria-hidden="true"
+          >
+            {planMeta}
           </span>
-        </p>
-        <div className="mt-4">{cta}</div>
+        </Link>
       </div>
-    );
-  }
-
-  return (
-    <div className="rounded-b-lg border-t bg-background p-5 sm:p-6">
-      <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-        <Lock className="h-3 w-3" aria-hidden="true" />
-        In your 90-day plan
-      </p>
-      <div className="mt-4 grid gap-6 sm:grid-cols-[1fr_1.35fr]">
-        <div>
-          <p className="text-sm font-medium">{skills}</p>
-          <ol className="mt-3 space-y-2.5" aria-hidden="true">
-            {SKILL_BARS.slice(0, Math.max(2, Math.min(count || 3, SKILL_BARS.length))).map((w, i) => (
-              <li key={i} className="flex items-center gap-2.5">
-                <span className="w-4 font-mono text-[11px] text-muted-foreground">{i + 1}</span>
-                <HiddenBar width={w} />
-              </li>
-            ))}
-          </ol>
-        </div>
-        <div>
-          <p className="text-sm font-medium">What to do each month</p>
-          <div className="mt-3 grid grid-cols-3 gap-3">
-            {PHASES.map((label, i) => (
-              <div key={label}>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:text-[11px]">
-                  {label}
-                </p>
-                <div className="mt-2 space-y-2" aria-hidden="true">
-                  {PHASE_BARS[i].map((w, j) => (
-                    <HiddenBar key={j} width={w} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="mt-5">
-        <p className="text-sm font-medium">A project that proves you can do the job</p>
-        <div className="mt-2.5 space-y-2" aria-hidden="true">
-          <HiddenBar width="92%" />
-          <HiddenBar width="60%" />
-        </div>
-      </div>
-      <div className="mt-6">{cta}</div>
-    </div>
+    </article>
   );
 }
 
