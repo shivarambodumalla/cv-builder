@@ -39,11 +39,13 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: PAGE_URL,
     type: "website",
+    images: [{ url: "https://www.thecvedge.com/og-image.png", width: 1200, height: 630, alt: "CVEdge career path generator" }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${TITLE} | CVEdge`,
     description: DESCRIPTION,
+    images: ["https://www.thecvedge.com/og-image.png"],
   },
 };
 
