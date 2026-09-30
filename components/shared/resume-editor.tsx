@@ -31,6 +31,7 @@ import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { getPreviewContent } from "@/lib/resume/placeholder";
 import { StepLoader } from "@/components/shared/step-loader";
 import { DownloadNudge } from "@/components/popups/download-nudge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AtsScanNudge } from "@/components/popups/ats-scan-nudge";
 import { FeedbackPrompt, shouldAskForFeedback } from "@/components/popups/feedback-prompt";
 import {
@@ -580,15 +581,23 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           >
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
-          <Button
-            variant="link"
-            size="sm"
-            className="h-11 px-2 text-xs sm:h-8"
-            onClick={() => router.push(`/my-jobs?cvId=${cv.id}`)}
-            title="Find live jobs matched to this resume"
-          >
-            Explore jobs
-          </Button>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="h-11 px-2 text-xs sm:h-8"
+                  onClick={() => router.push(`/my-jobs?cvId=${cv.id}`)}
+                >
+                  Explore jobs
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                See live jobs that match this resume, with a match score for each one.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div className="flex items-center gap-1.5">
             <Button
               size="sm"
