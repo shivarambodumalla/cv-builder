@@ -483,20 +483,35 @@ export function CareerPathTool({ initialRole, hero }: { initialRole?: string; he
         {useResume ? "Current job title" : "Your current role"}
         {resumeActive && <span className="font-normal text-[#5F5852]"> (optional)</span>}
       </label>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:rounded-[14px] sm:border-[1.5px] sm:border-[#E0D8CC] sm:bg-white sm:py-1.5 sm:pl-[18px] sm:pr-1.5 sm:shadow-[0_1px_0_rgba(12,26,14,0.03)] sm:focus-within:border-[#065F46]">
-        <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[14px] border-[1.5px] border-[#E0D8CC] bg-white px-4 focus-within:border-[#065F46] sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0">
-          <BriefcaseBusiness className="h-5 w-5 shrink-0 text-[#78716C]" aria-hidden="true" />
-          {roleInput(false)}
-        </div>
-        <button type="submit" className={cn(CP_BUTTON.green, "w-full shrink-0 sm:w-auto")}>
-          Show my next roles
-        </button>
-      </div>
-      {roleErrorLine}
-      {useResume && (
-        <p id="cp-role-help" className="text-xs leading-relaxed text-[#5F5852]">
-          Add it if the top job on your resume isn&apos;t the one you do now.
-        </p>
+      {useResume ? (
+        // With a resume the title is optional, so the button stands on its own
+        // below the field instead of sitting inside it.
+        <>
+          <div className="flex items-center gap-3 rounded-[14px] border-[1.5px] border-[#E0D8CC] bg-white px-4 py-1.5 focus-within:border-[#065F46]">
+            <BriefcaseBusiness className="h-5 w-5 shrink-0 text-[#78716C]" aria-hidden="true" />
+            {roleInput(false)}
+          </div>
+          {roleErrorLine}
+          <p id="cp-role-help" className="text-xs leading-relaxed text-[#5F5852]">
+            Add it if the top job on your resume isn&apos;t the one you do now.
+          </p>
+          <button type="submit" className={cn(CP_BUTTON.green, "mt-1 w-full sm:w-auto sm:self-start")}>
+            Show my next roles
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:rounded-[14px] sm:border-[1.5px] sm:border-[#E0D8CC] sm:bg-white sm:py-1.5 sm:pl-[18px] sm:pr-1.5 sm:shadow-[0_1px_0_rgba(12,26,14,0.03)] sm:focus-within:border-[#065F46]">
+            <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[14px] border-[1.5px] border-[#E0D8CC] bg-white px-4 focus-within:border-[#065F46] sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0">
+              <BriefcaseBusiness className="h-5 w-5 shrink-0 text-[#78716C]" aria-hidden="true" />
+              {roleInput(false)}
+            </div>
+            <button type="submit" className={cn(CP_BUTTON.green, "w-full shrink-0 sm:w-auto")}>
+              Show my next roles
+            </button>
+          </div>
+          {roleErrorLine}
+        </>
       )}
       <p className="flex flex-wrap items-center gap-x-3 text-sm text-[#5F5852]">
         <span>or</span>
