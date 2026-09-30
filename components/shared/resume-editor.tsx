@@ -48,7 +48,6 @@ import {
   FileText,
   Search,
   Brain,
-  Sparkles,
   MessageSquare,
 } from "lucide-react";
 import { ExpertReviewPanel } from "@/components/cv-review/expert-review-panel";
@@ -581,17 +580,15 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           >
             {mobilePreview ? <PenLine className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
-          <button
-            type="button"
+          <Button
+            variant="link"
+            size="sm"
+            className="h-11 px-2 text-xs sm:h-8"
             onClick={() => router.push(`/my-jobs?cvId=${cv.id}`)}
             title="Find live jobs matched to this resume"
-            className="group relative inline-flex h-8 items-center gap-1.5 overflow-hidden rounded-md bg-gradient-to-r from-[#1E3A5F] to-[#2A4F7A] px-3 text-xs font-medium text-white shadow-sm ring-1 ring-white/10 transition-all hover:shadow-md hover:from-[#1A3354] hover:to-[#244670] focus:outline-none focus:ring-2 focus:ring-[#2A4F7A]/60"
           >
-            <span aria-hidden className="pointer-events-none absolute inset-y-0 -inset-x-1/2 motion-safe:animate-shimmer-sweep bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-            <Sparkles className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Find Jobs for this resume</span>
-            <span className="sm:hidden">Find Jobs</span>
-          </button>
+            Explore jobs
+          </Button>
           <div className="flex items-center gap-1.5">
             <Button
               size="sm"
