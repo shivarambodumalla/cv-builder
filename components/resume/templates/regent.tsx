@@ -3,7 +3,6 @@ import { SkillsItems } from "./skills-renderer";
 
 // Fixed serif stack for the name, the italic summary and the section headings.
 // These carry the template's editorial identity whichever body font is chosen.
-const SERIF = '"EB Garamond", Georgia, "Times New Roman", serif';
 
 export function Regent({
   content,
@@ -84,7 +83,7 @@ export function Regent({
     <div
       data-resume-section-title=""
       style={{
-        fontFamily: SERIF,
+        fontFamily: "var(--resume-font)",
         fontSize: headingSize,
         fontWeight: "var(--resume-heading-weight)" as unknown as number,
         textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
@@ -171,7 +170,7 @@ export function Regent({
       summary.content ? (
         <p
           style={{
-            fontFamily: SERIF,
+            fontFamily: "var(--resume-font)",
             fontStyle: "italic",
             fontSize: summarySize,
             lineHeight: "calc(var(--resume-line-spacing) + 0.15)",
@@ -362,7 +361,7 @@ export function Regent({
         <div style={{ textAlign: headerAlign, marginBottom: 6 }}>
           <div
             style={{
-              fontFamily: SERIF,
+              fontFamily: "var(--resume-font)",
               fontSize: nameSize,
               fontWeight: "var(--resume-name-weight)" as unknown as number,
               color: ink,

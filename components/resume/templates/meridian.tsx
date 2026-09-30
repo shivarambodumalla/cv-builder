@@ -274,8 +274,8 @@ export function Meridian({
   const TILE_FILL = `color-mix(in srgb, ${accent} 25%, white)`;
 
   const paperHeight = design.paperSize === "letter" ? "11in" : "297mm";
-  const padX = `${Math.max(marginX, 0.4)}in`;
-  const padY = `${Math.max(marginY, 0.4)}in`;
+  const padX = `${Math.max(marginX, 0.3)}in`;
+  const padY = `${Math.max(marginY, 0.3)}in`;
 
   const avatarMode = design.avatarMode ?? "photo";
   const avatarShape = design.avatarShape ?? "circle";
@@ -465,8 +465,7 @@ export function Meridian({
             style={{
               fontFamily: "var(--resume-font)",
               fontSize: "calc(var(--resume-name-size) + 8pt)",
-              // Meridian's name is set light; halve the chosen weight so Bold reads as 350.
-              fontWeight: "calc(var(--resume-name-weight) * 0.5)" as unknown as number,
+              fontWeight: "var(--resume-name-weight)" as unknown as number,
               textTransform: "uppercase",
               letterSpacing: "0.06em",
               color: DARK_TEXT,

@@ -1,10 +1,10 @@
 import type { TemplateProps } from "./classic";
+import { FONT_STACKS } from "@/lib/resume/types";
 import { SkillsItems } from "./skills-renderer";
 
 // Fixed sans stack for the name, target title and section headings. The
 // reference pairs a sans header with a Times-like serif body, whichever body
 // font the Design tab picks.
-const SANS = "Inter, Helvetica, Arial, sans-serif";
 
 export function Sterling({
   content,
@@ -33,6 +33,11 @@ export function Sterling({
   } = content;
 
   const ink = "#111111";
+  // Sterling pairs a serif body with a sans display face (or the reverse when
+  // a sans body is picked), so the font picker restyles the whole page while
+  // the name and headings keep contrasting with the body.
+  const displayFont =
+    design.font === "clean" || design.font === "strong" ? FONT_STACKS.classic : FONT_STACKS.clean;
   const rule = "color-mix(in srgb, var(--resume-accent) 60%, #111)";
 
   const headerAlign = design.headerAlignment ?? "left";
@@ -49,9 +54,8 @@ export function Sterling({
   // Dash, arrow and none from the bullet-style picker are honoured as given.
   const bulletMarker = bulletChar === "•" ? "♦" : bulletChar;
 
-  // The small square stands in for the default pipe; other separators pass through.
   const noSep = design.contactSeparator === "none";
-  const sep = contactSeparator === " | " ? "▪" : contactSeparator.trim();
+  const sep = contactSeparator.trim();
 
   const contactLines = [
     [contact.location, contact.phone],
@@ -71,7 +75,7 @@ export function Sterling({
     <div
       data-resume-section-title=""
       style={{
-        fontFamily: SANS,
+        fontFamily: displayFont,
         fontSize: headingSize,
         fontWeight: "var(--resume-heading-weight)" as unknown as number,
         textTransform: "var(--resume-heading-case)" as unknown as "uppercase",
@@ -178,10 +182,12 @@ export function Sterling({
       skills.categories.length > 0 ? (
         <>
           {sectionHeading("Technical Proficiencies")}
-          {design.skillsStyle === "chips" || design.skillsStyle === "bullets" ? (
+          {/* The label:value table is this template's "grouped" style; the
+              other three styles use the shared renderer. */}
+          {(design.skillsStyle ?? "grouped") !== "grouped" ? (
             <SkillsItems
               categories={skills.categories}
-              skillsStyle={design.skillsStyle}
+              skillsStyle={design.skillsStyle ?? "grouped"}
               bulletChar={bulletMarker}
               accentColor={design.accentColor as string}
               labelColor={ink}
@@ -298,7 +304,7 @@ export function Sterling({
             <span key={j}>
               {item}
               {!noSep && j < line.length - 1 && (
-                <span style={{ margin: "0 7px", fontSize: sep === "▪" ? "0.7em" : undefined }}>{sep}</span>
+                <span style={{ margin: "0 7px" }}>{sep}</span>
               )}
             </span>
           ))}
@@ -334,7 +340,7 @@ export function Sterling({
           <div style={{ textAlign: headerAlign, minWidth: 0 }}>
             <div
               style={{
-                fontFamily: SANS,
+                fontFamily: displayFont,
                 fontSize: nameSize,
                 fontWeight: "var(--resume-name-weight)" as unknown as number,
                 color: ink,
@@ -344,7 +350,7 @@ export function Sterling({
               {contact.name}
             </div>
             {showTitle && (
-              <div style={{ fontFamily: SANS, fontSize: titleSize, color: ink, lineHeight: 1.3, marginTop: 4 }}>
+              <div style={{ fontFamily: displayFont, fontSize: titleSize, color: ink, lineHeight: 1.3, marginTop: 4 }}>
                 {targetTitle.title}
               </div>
             )}

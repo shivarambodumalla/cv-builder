@@ -373,7 +373,7 @@ export function CleanSidebar({
               <div
                 style={{
                   fontFamily: "var(--resume-font)",
-                  fontSize: 10.5,
+                  fontSize: "calc(var(--resume-body-size) - 2pt)",
                   color: BODY_TEXT,
                   marginBottom: 3,
                 }}
@@ -423,7 +423,7 @@ export function CleanSidebar({
               key={i}
               style={{
                 fontFamily: "var(--resume-font)",
-                fontSize: 10.5,
+                fontSize: "calc(var(--resume-body-size) - 2pt)",
                 color: BODY_TEXT,
                 paddingLeft: bulletChar ? 12 : 0,
                 textIndent: bulletChar ? -12 : 0,
@@ -441,7 +441,7 @@ export function CleanSidebar({
     reference && (reference.name || reference.company || reference.email || reference.phone) ? (
       <div>
         {leftLabel("Reference")}
-        <div style={{ fontFamily: "var(--resume-font)", fontSize: 10.5, color: BODY_TEXT, lineHeight: 1.6 }}>
+        <div style={{ fontFamily: "var(--resume-font)", fontSize: "calc(var(--resume-body-size) - 2pt)", color: BODY_TEXT, lineHeight: 1.6 }}>
           {reference.name && <div style={{ fontWeight: 700, color: DARK_TEXT }}>{reference.name}</div>}
           {reference.company && <div style={{ color: MUTED_TEXT }}>{reference.company}</div>}
           {reference.email && <div style={{ wordBreak: "break-word" }}>{reference.email}</div>}

@@ -112,7 +112,8 @@ export const DESIGN_DEFAULTS_BY_TEMPLATE: Record<string, Partial<ResumeDesignSet
   regent: { font: "elegant", headerAlignment: "center", contactSeparator: "dot", nameWeight: "regular" },
   linen: { headerAlignment: "center", nameWeight: "regular" },
   vantage: { skillsStyle: "chips" },
-  sterling: { font: "classic", nameWeight: "regular", sectionHeadingWeight: "regular", sectionHeadingCase: "as-written" },
+  meridian: { nameWeight: "light" },
+  sterling: { font: "classic", nameWeight: "regular", sectionHeadingWeight: "regular", sectionHeadingCase: "as-written", skillsStyle: "grouped" },
   ember: { nameWeight: "regular", sectionHeadingWeight: "regular", sectionHeadingCase: "as-written" },
   canopy: { nameWeight: "light", sectionHeadingWeight: "light", sectionHeadingCase: "as-written", contactSeparator: "dot" },
 };
