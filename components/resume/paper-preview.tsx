@@ -66,6 +66,11 @@ export function PaperPreview({
   const contentRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [breaks, setBreaks] = useState<PageBreak[]>([]);
+  // The template root's background, painted across the whole sheet: like the
+  // PDF pipeline promoting the canvas to the page, it keeps the sheet from
+  // showing white where the root ends short (a trailing margin that collapses
+  // out of the root, or a canvas that stops at the content).
+  const [canvas, setCanvas] = useState<string | null>(null);
 
   const dims = PAPER_DIMENSIONS[paperSize];
   const widthPx = parseFloat(dims.width) * MM_TO_PX;
@@ -77,6 +82,13 @@ export function PaperPreview({
 
     const containerRect = el.getBoundingClientRect();
     const contentH = el.scrollHeight;
+
+    // TemplateRenderer wraps the template root in a CSS-variable div with a
+    // <style> before it.
+    const wrapper = el.firstElementChild;
+    const root = wrapper && Array.from(wrapper.children).find((c) => c.tagName !== "STYLE");
+    const bg = root ? getComputedStyle(root).backgroundColor : "";
+    setCanvas(bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent" ? bg : null);
 
     if (contentH <= pageHeight) {
       setBreaks([]);
@@ -263,7 +275,7 @@ export function PaperPreview({
         <div
           ref={contentRef}
           className="flow-root bg-white shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.06)] rounded-sm"
-          style={{ minHeight: pageHeight }}
+          style={{ minHeight: pageHeight, backgroundColor: canvas ?? undefined }}
         >
           {children}
         </div>
