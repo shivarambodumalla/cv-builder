@@ -142,7 +142,10 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
 
   // Auto-land on ATS tab when CV is freshly uploaded (has content, no scan yet)
   const isFirstScan = !!cv.raw_text && (!rawReports || rawReports.length === 0);
-  const initialTab = isFirstScan ? "analyser" : "editor";
+  // Arriving from the career path tool (target role just set): open on the ATS
+  // tab so the first screen is the resume against that role.
+  const fromCareerPath = searchParams.from === "career-path";
+  const initialTab = isFirstScan || fromCareerPath ? "analyser" : "editor";
 
   // Fetch CV review data if review_id is present in query params
   let reviewData: { id: string; target_role: string | null; status: string; messages: unknown[] } | null = null;

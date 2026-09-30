@@ -15,6 +15,7 @@ Disallow: /interview-coach
 Disallow: /interview-coach/
 # Signed-in career plans (per-user, noindex)
 Disallow: /career-path/plan/
+Disallow: /career-path/continue/
 
 # Admin + API
 Disallow: /admin

@@ -520,8 +520,8 @@ const TOOL_STEPS = [
     text: "Open jobs and advertised pay, taken from current job listings.",
   },
   {
-    title: "A 90-day plan",
-    text: "Skills to build, a timeline and a proof project. Free with Google sign-in.",
+    title: "Tailor your resume for the role",
+    text: "Sign in with Google and we set the role as your resume's target: an ATS score, missing keywords and rewrites. A 90-day plan comes with it.",
   },
 ];
 
@@ -637,8 +637,10 @@ export default async function CareerPathRolePage({ params }: Params) {
               </nav>
               <p className={cn(EYEBROW, "mt-4 sm:mt-6")}>Career path guide</p>
               <h1 className="mt-3 font-cp-display text-[40px] font-bold leading-[1.04] tracking-[-0.02em] sm:text-[54px]">
-                <em className="not-italic text-[#065F46]">{sentenceCase(label)}</em> career
-                path
+                <em className="not-italic text-[#065F46]">
+                  {sentenceCase(label)}
+                </em>{" "}
+                career path
               </h1>
               <p className="mt-5 max-w-[62ch] text-[17px] leading-[1.6] text-[#4A443E] sm:text-lg">
                 {path.overview}
@@ -827,7 +829,7 @@ export default async function CareerPathRolePage({ params }: Params) {
           </div>
           <div className="min-w-0 self-start rounded-[20px] bg-[#F7F5F0] p-5 text-[#0C1A0E] sm:p-7 lg:self-center">
             <Suspense fallback={null}>
-              <CareerPathTool initialRole={label} />
+              <CareerPathTool initialRole={label} handOffTo="/career-path" />
             </Suspense>
           </div>
         </section>

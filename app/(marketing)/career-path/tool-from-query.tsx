@@ -5,8 +5,20 @@ import { useSearchParams } from "next/navigation";
 import { CareerPathTool } from "@/components/career-path/career-path-tool";
 
 function ToolWithRole({ aside }: { aside: React.ReactNode }) {
-  const role = useSearchParams().get("role")?.trim().slice(0, 80) || undefined;
-  return <CareerPathTool initialRole={role} hero={{ aside }} />;
+  const params = useSearchParams();
+  const role = params.get("role")?.trim().slice(0, 80) || undefined;
+  // Hand-off from a role page: it collected the answers (and uploaded the
+  // resume), so this page starts the search and shows the loader itself.
+  const token = params.get("token")?.trim() || undefined;
+  const autoRun = params.get("run") === "1" && (!!role || !!token);
+  return (
+    <CareerPathTool
+      initialRole={role}
+      initialRedirectToken={token}
+      autoRun={autoRun}
+      hero={{ aside }}
+    />
+  );
 }
 
 /**

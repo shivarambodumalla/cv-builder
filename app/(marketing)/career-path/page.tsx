@@ -77,7 +77,7 @@ const FAQ = [
   {
     question: "Is it free? Do I need an account?",
     answer:
-      "You can see your roles, fit scores and job numbers without an account. The full plan for a role needs a free Google sign-in. That plan names the skills to learn, lays out 90 days, suggests a proof project and lists job titles to search. We never ask for a card.",
+      "You can see your roles, fit scores and job numbers without an account. Tailoring your resume for a role needs a free Google sign-in: we set the role as your resume's target and score it against that job, show the keywords you're missing and rewrite weak bullets. Each role also gets a 90-day plan. We never ask for a card.",
   },
   {
     question: "What happens to my resume if I upload it?",
@@ -106,22 +106,23 @@ const EXAMPLE = {
   ],
 };
 
+// What tailoring the resume for a role gives you, in the editor. All of it exists today.
 const PLAN_ITEMS = [
   {
-    title: "The skills to build",
-    body: "The skills you still need for the role, in the order to learn them.",
+    title: "An ATS score for the role",
+    body: "Your resume checked against what employers ask for in that role, not a generic scan.",
   },
   {
-    title: "A three-phase timeline",
-    body: "90 days in three phases, so you know what to do this month, with a checklist to tick off.",
+    title: "The keywords you're missing",
+    body: "The skills and terms hiring managers look for that your resume doesn't show yet. Add them in one click.",
   },
   {
-    title: "A proof project",
-    body: "One project idea that shows you can do the new role. Build it and add it to your resume.",
+    title: "AI rewrites for weak bullets",
+    body: "Each bullet rewritten for the target role. Your facts stay yours; nothing is invented.",
   },
   {
-    title: "Job titles to search",
-    body: "Other titles employers use for the role, linked to live listings. Your plan stays saved.",
+    title: "A resume ready to send",
+    body: "Export a clean PDF. Your 90-day plan for the role stays saved in your account too.",
   },
 ];
 
@@ -236,9 +237,23 @@ function ExampleCard() {
             </dd>
           </div>
         </dl>
-        <a href="#cp-plan" className={CP_BUTTON.green}>
-          See the 90-day plan
+        <a href="#tool" className={CP_BUTTON.green}>
+          Tailor my resume for this role
         </a>
+        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <Link
+            href="/jobs/data-scientist"
+            className="font-semibold text-[#1E3A5F] underline-offset-4 hover:underline"
+          >
+            View {EXAMPLE.jobs} jobs
+          </Link>
+          <a
+            href="#tool"
+            className="text-[#5F5852] underline-offset-4 hover:text-[#0C1A0E] hover:underline"
+          >
+            See the 90-day plan
+          </a>
+        </p>
       </div>
       <figcaption className="absolute bottom-2 text-center text-xs leading-relaxed text-[#78716C]">
         Example result for a data analyst, 4 years, who wants to go deeper.
@@ -286,29 +301,33 @@ export default function CareerPathPage() {
         >
           <div className="flex flex-col gap-3.5 lg:gap-5">
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#8FD3B5] sm:text-xs">
-              The 90-day plan
+              Tailor your resume
             </span>
             <h2
               id="cp-plan-title"
               className="font-cp-display tracking-[-0.02em] text-[28px] font-bold leading-[1.1] sm:text-[40px] sm:leading-[1.08]"
             >
               <span className="sm:hidden">
-                The roles are free. The plan is a sign-in away.
+                The roles are free. Tailoring your resume for one is a sign-in
+                away.
               </span>
               <span className="hidden sm:inline">
-                The roles are free. The plan to get one is a Google sign-in
-                away.
+                The roles are free. Tailoring your resume for one is a Google
+                sign-in away.
               </span>
             </h2>
             <p className="max-w-[480px] text-sm leading-[1.55] text-[#CFE5D9] sm:text-base">
               <span className="sm:hidden">
-                The skills to build, a three-phase timeline, a proof project and
-                the job titles to search.
+                Pick a role, sign in with Google, and we set it as your
+                resume&apos;s target: an ATS score, missing keywords and AI
+                rewrites for that job.
               </span>
               <span className="hidden sm:inline">
                 Your roles, fit scores and job numbers stay free with no
-                account. Sign in with Google and each role gets a 90-day plan,
-                written by AI from what you shared and saved to your account.
+                account. Pick a role and sign in with Google, and we set it as
+                your resume&apos;s target: an ATS score for that job, the
+                keywords you&apos;re missing and AI rewrites of weak bullets.
+                The 90-day plan comes with it.
               </span>
             </p>
             <CareerPathPlanCta className="mt-1.5 w-full sm:mt-2 sm:w-auto sm:self-start" />

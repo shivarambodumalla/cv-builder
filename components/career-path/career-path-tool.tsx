@@ -8,6 +8,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   BriefcaseBusiness,
   Check,
@@ -27,7 +28,13 @@ import {
   type PreferenceId,
 } from "@/lib/career-path/types";
 import { trackCareerPathEvent } from "./track";
-import { countryName, unlockHref } from "./format";
+import {
+  countryName,
+  formatJobCount,
+  jobsHref,
+  tailorHref,
+  unlockHref,
+} from "./format";
 import {
   CP_BUTTON,
   CP_CARD,
@@ -107,7 +114,7 @@ function validateFile(f: File): string | null {
 }
 
 // ---------------------------------------------------------------------------
-// The first result's plan link, shared with the "90-day plan" band on
+// The first result's tailoring link, shared with the sign-in band on
 // /career-path, which sits outside the tool.
 
 interface PlanCtaState {
@@ -139,9 +146,9 @@ function subscribePlanCta(fn: () => void) {
 }
 
 /**
- * The band's call to action. With results it opens the first role's plan
- * (Google sign-in first when signed out); before that there is nothing to
- * open yet, so it takes the visitor to the tool.
+ * The band's call to action. With results it starts tailoring the resume for
+ * the first role (Google sign-in first when signed out); before that there is
+ * no role yet, so it takes the visitor to the tool.
  */
 export function CareerPathPlanCta({ className }: { className?: string }) {
   const { href, title, signedIn } = useSyncExternalStore(
@@ -159,10 +166,10 @@ export function CareerPathPlanCta({ className }: { className?: string }) {
       <Link
         href={href}
         className={base}
-        aria-label={`${signedIn ? "Open" : "Get"} my 90-day plan for ${title}`}
-        onClick={() => trackCareerPathEvent("unlock_clicked")}
+        aria-label={`Tailor my resume for ${title}`}
+        onClick={() => trackCareerPathEvent("tailor_clicked")}
       >
-        {signedIn ? "Open my 90-day plan" : "Continue with Google"}
+        {signedIn ? "Tailor my resume" : "Continue with Google"}
       </Link>
     );
   }
@@ -198,12 +205,26 @@ export interface CareerPathToolHero {
  */
 export function CareerPathTool({
   initialRole,
+  initialRedirectToken,
+  autoRun = false,
+  handOffTo,
   hero,
 }: {
   initialRole?: string;
+  /** A resume already uploaded (redirect_token from /api/cv/upload-public), e.g. handed over from a role page. */
+  initialRedirectToken?: string;
+  /** Start the search on mount with the initial values (the hand-off target does this). */
+  autoRun?: boolean;
+  /**
+   * Embedded copies (role pages) don't show results in place: on submit they
+   * upload the resume if there is one, then send the visitor to this page,
+   * which shows the loader and the results. E.g. "/career-path".
+   */
+  handOffTo?: string;
   hero?: CareerPathToolHero;
 }) {
   const isHero = !!hero;
+  const router = useRouter();
   const [role, setRole] = useState(
     (initialRole ?? "").slice(0, MAX_ROLE_LENGTH),
   );
@@ -211,7 +232,9 @@ export function CareerPathTool({
   const [prefs, setPrefs] = useState<PreferenceId[]>([]);
   const [useResume, setUseResume] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [redirectToken, setRedirectToken] = useState<string | null>(null);
+  const [redirectToken, setRedirectToken] = useState<string | null>(
+    initialRedirectToken ?? null,
+  );
   const [dragOver, setDragOver] = useState(false);
   const [refineOpen, setRefineOpen] = useState(false);
 
@@ -259,7 +282,7 @@ export function CareerPathTool({
     publishPlanCta(
       result && first
         ? {
-            href: unlockHref(result.id, first.title, signedIn),
+            href: tailorHref(result.id, first.title, signedIn),
             title: first.title,
             signedIn,
           }
@@ -309,7 +332,7 @@ export function CareerPathTool({
     yearsExperience: number | null;
   } | null {
     const currentRole = role.trim();
-    const withResume = useResume && !!file;
+    const withResume = (useResume && !!file) || !!redirectToken;
     let ok = true;
 
     if (!withResume && currentRole.length < 2) {
@@ -348,17 +371,28 @@ export function CareerPathTool({
     return { currentRole, yearsExperience };
   }
 
+  // Hand-off target: the role page already collected the answers, so start
+  // straight away and show the loader here.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (!autoRun || autoRan.current) return;
+    autoRan.current = true;
+    void run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRun]);
+
   async function run() {
     const valid = validate();
     if (!valid) return;
     const resumeFile = useResume ? file : null;
+    const hasResume = !!resumeFile || !!redirectToken;
 
-    trackCareerPathEvent(resumeFile ? "started_resume" : "started_role");
+    trackCareerPathEvent(hasResume ? "started_resume" : "started_role");
     setError(null);
     setPhase("loading");
 
     try {
-      let token = resumeFile ? redirectToken : null;
+      let token = redirectToken;
       const needsUpload = !!resumeFile && !token;
       setShownSteps(
         needsUpload
@@ -382,6 +416,14 @@ export function CareerPathTool({
         }
         token = upData.redirect_token as string;
         setRedirectToken(token);
+      }
+
+      if (handOffTo) {
+        const q = new URLSearchParams({ run: "1" });
+        if (valid.currentRole) q.set("role", valid.currentRole);
+        if (token) q.set("token", token);
+        router.push(`${handOffTo}?${q.toString()}#tool`);
+        return;
       }
 
       setStep("finding");
@@ -452,7 +494,7 @@ export function CareerPathTool({
         ? `Found ${result.preview.paths.length} roles.`
         : "";
 
-  const resumeActive = useResume && !!file;
+  const resumeActive = (useResume && !!file) || !!redirectToken;
   const loading = phase === "loading";
 
   const status =
@@ -1119,12 +1161,8 @@ function PathCard({
   const headingId = `cp-path-${slugify(path.title)}`;
   const bestFit = Math.max(...all.map((p) => p.fit));
   const isBest = all.findIndex((p) => p.fit === bestFit) === index;
-  const count = path.skillsToBuildCount;
-  const planMeta =
-    count > 0
-      ? `${count} ${count === 1 ? "skill" : "skills"} · a proof project`
-      : "A proof project";
   const primary = index === 0;
+  const jobs = path.market ? formatJobCount(path.market) : null;
 
   return (
     <article
@@ -1167,25 +1205,33 @@ function PathCard({
       <div className="mt-auto flex flex-col gap-[18px]">
         <MarketStats market={path.market} />
         <Link
-          href={unlockHref(id, path.title, signedIn)}
-          aria-label={`${signedIn ? "Open" : "Get"} my 90-day plan for ${path.title}`}
-          onClick={() => trackCareerPathEvent("unlock_clicked")}
+          href={tailorHref(id, path.title, signedIn)}
+          aria-label={`Tailor my resume for ${path.title}`}
+          onClick={() => trackCareerPathEvent("tailor_clicked")}
           className={cn(
             primary ? CP_BUTTON.green : CP_BUTTON.navyOutline,
-            "text-sm md:justify-between md:px-4",
+            "text-sm",
           )}
         >
-          <span>{signedIn ? "Open my 90-day plan" : "Get my 90-day plan"}</span>
-          <span
-            className={cn(
-              "hidden text-xs font-medium md:inline",
-              primary ? "text-[#CFE5D9]" : "text-[#5F5852]",
-            )}
-            aria-hidden="true"
-          >
-            {planMeta}
-          </span>
+          Tailor my resume for this role
         </Link>
+        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <Link
+            href={jobsHref(path.title)}
+            className="inline-flex min-h-11 items-center font-semibold text-[#1E3A5F] underline-offset-4 hover:underline sm:min-h-0"
+            aria-label={`View ${jobs ? `${jobs} ` : ""}${path.title} jobs`}
+          >
+            {jobs ? `View ${jobs} jobs` : "View jobs"}
+          </Link>
+          <Link
+            href={unlockHref(id, path.title, signedIn)}
+            onClick={() => trackCareerPathEvent("unlock_clicked")}
+            className="inline-flex min-h-11 items-center text-[#5F5852] underline-offset-4 hover:text-[#0C1A0E] hover:underline sm:min-h-0"
+            aria-label={`See the 90-day plan for ${path.title}`}
+          >
+            See the 90-day plan
+          </Link>
+        </p>
       </div>
     </article>
   );

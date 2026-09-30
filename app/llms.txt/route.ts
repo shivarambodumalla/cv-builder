@@ -139,7 +139,7 @@ CVEdge (${SITE}) helps job seekers get past applicant tracking systems (ATS). It
 - Tailor a resume to one job description
 - Cover letters in three tones: professional, conversational, confident
 - Interview prep: turns your resume into STAR answers and matches them to a job description: ${SITE}/interview-prep
-- Career path generator: enter a job title or upload a resume and get 3 to 5 next roles (step up, sideways move or career change) with a fit score, transferable skills, and open-job counts and advertised salaries from current job listings. Free; signing in with Google adds a 90-day plan for each role: ${SITE}/career-path
+- Career path generator: enter a job title or upload a resume and get 3 to 5 next roles (step up, sideways move or career change) with a fit score, transferable skills, and open-job counts and advertised salaries from current job listings. Free; signing in with Google lets you tailor your resume for a chosen role (ATS score, missing keywords, AI rewrites) and view its 90-day plan: ${SITE}/career-path
 - Job search with a match score on each listing: ${SITE}/jobs
 - CV review and rewrite by a hiring specialist, focused on the UAE, Saudi Arabia and the wider Gulf. One-time payment: ${SITE}/cv-review`,
 
