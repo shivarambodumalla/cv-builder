@@ -91,8 +91,10 @@ export function normalizeDesignSettings(
   merged.sectionOrder = mergeOrder(merged.sectionOrder);
   // The column split is per template: only fall back to DEFAULT_DESIGN's
   // list when the stored settings carry one, otherwise use the template's.
+  // Deduped: a stored list with repeats renders a section twice and breaks
+  // drag sorting (duplicate sortable ids).
   merged.sidebarSections = Array.isArray(raw?.sidebarSections)
-    ? raw.sidebarSections.filter((k) => CANONICAL_SET.has(k))
+    ? Array.from(new Set(raw.sidebarSections.filter((k) => CANONICAL_SET.has(k))))
     : defaultSidebarSections(merged.template);
   return merged;
 }

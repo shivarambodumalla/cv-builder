@@ -513,7 +513,13 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
   let displayLeft: string[] = [], displayRight: string[] = [];
   let labelLeft = "", labelRight = "";
 
-  if (isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid" || design.template === "meridian" || design.template === "linen") {
+  // Templates whose `sidebarSections` IS the left column (the other column
+  // follows `sectionOrder`). The display below and the move/drag handlers
+  // must agree on this, or moving a left item appends it instead of
+  // removing it and the column shows duplicates.
+  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid" || design.template === "meridian" || design.template === "linen";
+
+  if (leftIsSecondary) {
     // sidebarSections = left column sections. Templates that pin the identity
     // block (name, title, contact) to the sidebar never render those keys in
     // the other column, so they are not offered as movable.
@@ -531,24 +537,17 @@ export function DesignerPanel({ design, onChange, photoUrl, contactName, onPhoto
     labelRight = "Right";
   }
 
-  // For sidebar/divide/folio: sidebarSections IS the left column, so "left→right" = remove from it
-  // For horizon: sidebarSections IS the right column, so "left→right" = add to it
-  const leftIsSecondary = isSidebar || design.template === "divide" || design.template === "folio" || design.template === "electric-lilac" || design.template === "executive-sidebar" || design.template === "clean-sidebar" || design.template === "orchid";
+  // For leftIsSecondary templates "left→right" removes from sidebarSections;
+  // for header-on-top templates (sidebarSections IS the right column) it adds.
+  const withoutSection = (id: string) => secondarySections.filter((k) => k !== id);
+  const withSection = (id: string) => [...withoutSection(id), id];
 
   function moveLeftToRight(id: string) {
-    if (leftIsSecondary) {
-      onChange({ ...design, sidebarSections: secondarySections.filter((k) => k !== id) });
-    } else {
-      onChange({ ...design, sidebarSections: [...secondarySections, id] });
-    }
+    onChange({ ...design, sidebarSections: leftIsSecondary ? withoutSection(id) : withSection(id) });
   }
 
   function moveRightToLeft(id: string) {
-    if (leftIsSecondary) {
-      onChange({ ...design, sidebarSections: [...secondarySections, id] });
-    } else {
-      onChange({ ...design, sidebarSections: secondarySections.filter((k) => k !== id) });
-    }
+    onChange({ ...design, sidebarSections: leftIsSecondary ? withSection(id) : withoutSection(id) });
   }
 
   function handleLeftColDragEnd(event: DragEndEvent) {
