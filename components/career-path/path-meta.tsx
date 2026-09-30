@@ -61,16 +61,17 @@ export function FitNumber({ fit, size = "lg", className }: { fit: number; size?:
   const value = clampFit(fit);
   return (
     <span className={cn("flex shrink-0 flex-col items-end", className)}>
+      {/* Body font, bold: the display serif has one light weight and reads thin at this size. */}
       <span
         className={cn(
-          "font-cp-display text-[#065F46]",
-          size === "lg" ? "text-[34px] md:text-[40px]" : "text-[30px]",
+          "font-bold tabular-nums tracking-[-0.02em] text-[#065F46]",
+          size === "lg" ? "text-[30px] md:text-[34px]" : "text-[26px]",
           // After the size: tailwind-merge drops a leading-* that comes before a text-size.
           "leading-none"
         )}
       >
         {value}
-        <span className={size === "lg" ? "text-[18px] md:text-[22px]" : "text-[17px]"}>%</span>
+        <span className={cn("font-semibold", size === "lg" ? "text-[15px] md:text-[17px]" : "text-[14px]")}>%</span>
       </span>
       <span className="text-[11px] text-[#5F5852] md:text-xs">fit</span>
     </span>
