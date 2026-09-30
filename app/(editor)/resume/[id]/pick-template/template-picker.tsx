@@ -238,6 +238,7 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
                   <div className={`${THUMBNAIL_ASPECT} bg-muted overflow-hidden relative`}>
                     <TemplateThumbnailImage
                       template={t.slug}
+                      sizes="(min-width: 1024px) 330px, 50vw"
                       className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
                     />
                     <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent" />

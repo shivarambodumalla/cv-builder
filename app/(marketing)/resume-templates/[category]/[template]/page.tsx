@@ -369,7 +369,7 @@ export default async function TemplateLeafPage({
                     <div className={`${THUMBNAIL_ASPECT} bg-muted overflow-hidden`}>
                       <TemplateThumbnailImage
                         template={t.templateSlug}
-                        sizes="(min-width: 640px) 33vw, 100vw"
+                        sizes="(min-width: 1024px) 330px, (min-width: 640px) 33vw, 100vw"
                         className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
                       />
                     </div>

@@ -3,7 +3,10 @@ import Link from "next/link";
 import { Clock, FileText } from "lucide-react";
 import { type BlogPost, formatDate } from "@/lib/blog/posts";
 
-export function PostCard({ post }: { post: BlogPost }) {
+/** Card width in the /blog grid: three across a 992px container, two from 640px, one below. */
+const GRID_SIZES = "(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw";
+
+export function PostCard({ post, sizes = GRID_SIZES }: { post: BlogPost; sizes?: string }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
@@ -18,7 +21,7 @@ export function PostCard({ post }: { post: BlogPost }) {
             title={post.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes={sizes}
           />
         ) : (
           <div className="flex h-full items-center justify-center">

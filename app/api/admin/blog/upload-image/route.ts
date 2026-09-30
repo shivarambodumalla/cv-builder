@@ -23,6 +23,8 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // The path is reused when a cover is replaced, and the image optimizer caches
+  // by URL for 31 days (images.minimumCacheTTL), so each upload gets a new URL.
   const { data } = db.storage.from("blog-images").getPublicUrl(path);
-  return NextResponse.json({ url: data.publicUrl });
+  return NextResponse.json({ url: `${data.publicUrl}?v=${Date.now()}` });
 }

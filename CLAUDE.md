@@ -175,6 +175,12 @@ Only the 12 templates in `PHOTO_TEMPLATES` (lib/resume/template-thumbnails.ts) r
 - Sample content: 15 fictional US personas in `lib/resume/sample-personas.ts` (555-01xx phones, example.com emails, invented employers, real universities). `TEMPLATE_PERSONA` maps each template to one so category pages, the homepage grid, the features tabs and the hero never repeat a face and /resumes never repeats one within five cards. Check those surfaces before reassigning. Headshots are AI-generated, in `scripts/assets/personas/`.
 - Every surface reads path + alt text from `templateThumbnail()` (lib/resume/template-thumbnails.ts) via `<TemplateThumbnailImage>` (components/shared/template-thumbnail.tsx). Grids use next/image; a template page's main preview uses `canonical` so the indexed URL matches og:image, the `ImageObjectJsonLd` and `/image-sitemap.xml` (listed in robots.txt). Harvard is the top SEO page: keep its alt naming the format.
 
+### Image Optimizer (Vercel quota)
+
+- Vercel Hobby allows 5,000 transformations a month and bills every optimizer cache miss. `images.minimumCacheTTL` is 31 days and `deviceSizes` stops at 1920 (next.config.mjs).
+- Remote images (blog covers in Supabase) are cached by URL, so a replaced image needs a new URL: /api/admin/blog/upload-image appends `?v=<timestamp>`. Local images in public/ are keyed by content, so regenerated thumbnails update on deploy.
+- Give every next/image a `sizes` with a px cap at the container's max width (not a bare `33vw`), so wide screens don't request widths the slot never reaches.
+
 | Template | Type | Tier | Display Name |
 |----------|------|------|-------------|
 | classic | single-column | Free | Classic |

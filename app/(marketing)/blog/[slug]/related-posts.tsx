@@ -22,7 +22,7 @@ export function RelatedPosts({ posts }: { posts: BlogPost[] }) {
       </div>
       <div className="grid gap-5 md:grid-cols-3">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} sizes="(min-width: 768px) 280px, 100vw" />
         ))}
       </div>
     </section>

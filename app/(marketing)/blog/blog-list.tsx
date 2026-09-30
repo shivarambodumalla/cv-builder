@@ -48,7 +48,7 @@ export function BlogList({ initialPosts, initialHasMore, initialCursor, featured
               title={featured.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              sizes="(max-width: 640px) 100vw, 45vw"
+              sizes="(min-width: 1024px) 450px, (min-width: 640px) 45vw, 100vw"
               priority
             />
           </div>

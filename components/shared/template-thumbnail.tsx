@@ -5,6 +5,13 @@ import type { TemplateName } from "@/lib/resume/types";
 /** Frame for a thumbnail card. Lives here (not lib/) so Tailwind's scanner sees it. */
 export const THUMBNAIL_ASPECT = "aspect-[1275/1650]";
 
+/**
+ * Default `sizes`: the three-across grid inside a max-w-5xl (1024px) container,
+ * two across from 640px, one below. A px cap keeps wide screens from asking the
+ * optimizer for a width the card never reaches.
+ */
+const GRID_SIZES = "(min-width: 1024px) 330px, (min-width: 640px) 50vw, 100vw";
+
 interface Props {
   template: TemplateName;
   className?: string;
@@ -44,7 +51,7 @@ export function TemplateThumbnailImage({ template, className, sizes, priority, c
       title={thumb.title}
       width={thumb.width}
       height={thumb.height}
-      sizes={sizes ?? "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
+      sizes={sizes ?? GRID_SIZES}
       className={className}
       priority={priority}
     />

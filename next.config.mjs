@@ -55,6 +55,14 @@ const oldBlogRedirects = [
 const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
+    // Vercel bills every optimizer cache miss. Supabase serves blog covers
+    // with `no-cache`, so without this they were re-transformed hourly. A
+    // replaced cover must get a new URL (the upload route adds `?v=`).
+    minimumCacheTTL: 2678400, // 31 days
+    // No slot on the site is wider than the 864px blog header, so the 2048
+    // and 3840 defaults only ever served crawlers walking the srcset. 640
+    // must stay: the homepage hero requests it by hand.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     remotePatterns: [
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
       { protocol: "https", hostname: "*.supabase.co" },

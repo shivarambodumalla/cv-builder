@@ -323,6 +323,7 @@ export default async function RoleResumeExamplePage({
                     {leaf ? (
                       <TemplateThumbnailImage
                         template={leaf.templateSlug}
+                        sizes="(min-width: 768px) 250px, (min-width: 640px) 33vw, 100vw"
                         className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
                       />
                     ) : (
