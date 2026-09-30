@@ -111,7 +111,6 @@ export function CareerPathLoader({
   roleLabel: string;
   className?: string;
 }) {
-  const seconds = useTicker(true, 1000);
   const tick = useTicker(true, ROTATE_MS);
   const lines = STATUS_LINES[step];
   const line = lines[tick % lines.length];
@@ -144,12 +143,7 @@ export function CareerPathLoader({
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#EDE8DF]">
             <div className="cp-progress h-full rounded-full bg-[#065F46]" />
           </div>
-          <div className="mt-2 flex items-center justify-between text-xs text-[#5F5852]">
-            <span>
-              {seconds}s of about {EXPECTED_SECONDS}s
-            </span>
-            <span>Keep this tab open</span>
-          </div>
+          <p className="mt-2 text-xs text-[#5F5852]">Keep this tab open.</p>
         </div>
 
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#5F5852]">
