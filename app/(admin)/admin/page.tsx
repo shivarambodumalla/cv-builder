@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Users, FileText, CreditCard, BarChart3, Activity, ArrowRight, TrendingUp } from "lucide-react";
 import { ActivityChart } from "./activity-chart";
 import { RegistrationsChart } from "./registrations-chart";
+import { PaymentWallChart } from "./payment-wall-chart";
+import { summarizePaymentWall } from "@/lib/admin/payment-wall";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
@@ -45,8 +47,10 @@ export default async function AdminDashboardPage() {
     { data: visitorViewRows },
     { data: cvsCreatedRows },
     { data: pdfDownloadRows },
+    { data: wallEventRows },
+    { data: paidRows },
   ] = await Promise.all([
-    supabase.from("profiles").select("plan, created_at, email, full_name"),
+    supabase.from("profiles").select("id, plan, created_at, email, full_name"),
     supabase.from("cvs").select("*", { count: "exact", head: true }),
     supabase.from("ats_reports").select("*", { count: "exact", head: true }),
     supabase.from("user_activity_metrics").select("dau, wau, mau, stickiness_pct"),
@@ -54,6 +58,18 @@ export default async function AdminDashboardPage() {
     supabase.from("visitor_page_views").select("view_date, visitor_id").gte("view_date", thirtyDaysAgoDate).limit(20000),
     supabase.from("cvs").select("created_at").gte("created_at", thirtyDaysAgoISO),
     supabase.from("user_activity").select("created_at").eq("event", "Downloaded PDF").gte("created_at", thirtyDaysAgoISO),
+    supabase
+      .from("user_activity")
+      .select("user_id, event, created_at")
+      .in("event", ["Saw upgrade modal", "Dismissed upgrade modal"])
+      .gte("created_at", thirtyDaysAgoISO)
+      .limit(10000),
+    supabase
+      .from("subscription_history")
+      .select("user_id")
+      .neq("status", "mock")
+      .gt("amount", 0)
+      .gte("started_at", thirtyDaysAgoISO),
   ]);
 
   const engagement = engagementRows?.[0] ?? { dau: 0, wau: 0, mau: 0, stickiness_pct: 0 };
@@ -141,6 +157,15 @@ export default async function AdminDashboardPage() {
   const regThisMonth = nonAdminProfiles.filter((p) => p.created_at >= monthISO).length;
   const signupSeries = buildSeries(signupsByDay);
   const signupTotal30 = signupSeries.reduce((s, d) => s + d.value, 0);
+
+  const nonAdminIds = new Set(nonAdminProfiles.map((p) => p.id));
+  const paymentWall = summarizePaymentWall(
+    (wallEventRows ?? []).filter((e) => nonAdminIds.has(e.user_id)),
+    days30
+  );
+  const wallPaidUsers = new Set(
+    (paidRows ?? []).map((r) => r.user_id).filter((id) => paymentWall.userIds.has(id))
+  ).size;
 
   // Recent signups (last 6, excluding admins)
   const recentSignups = [...nonAdminProfiles]
@@ -306,6 +331,14 @@ export default async function AdminDashboardPage() {
         newThisWeek={regThisWeek}
         newThisMonth={regThisMonth}
         total={signupTotal30}
+      />
+
+      <PaymentWallChart
+        series={paymentWall.series}
+        totalOpens={paymentWall.totalOpens}
+        totalSkipped={paymentWall.totalSkipped}
+        totalUsers={paymentWall.totalUsers}
+        paidUsers={wallPaidUsers}
       />
 
       {/* Engagement — engaged active users (excludes passive popover events) */}
