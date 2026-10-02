@@ -1,16 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { markIntentConverted } from "@/lib/billing/intents";
+import { findEntitledSubscription, inferPeriod } from "@/lib/billing/reconcile";
 import { alertAdmin } from "@/lib/email/alert";
 
 /**
- * Lemon Squeezy redirects here after successful checkout.
- * In test mode, the webhook may not reach localhost, so we
- * verify the user's subscription via the LS API and activate pro.
- * In production, the webhook handles activation — this is a safety net.
+ * Lemon Squeezy redirects here after checkout. The webhook is what activates
+ * Pro; this is the safety net for when the redirect beats it (or, in test
+ * mode, the webhook never reaches localhost).
+ *
+ * Reaching this URL proves nothing — anyone signed in can open it — so Pro is
+ * granted only when Lemon Squeezy reports a live subscription for the
+ * signed-in user's email.
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   try {
@@ -35,21 +39,23 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${appUrl}/dashboard`);
     }
 
-    // Webhook hasn't fired yet (common in test mode / localhost).
-    // Activate pro directly as payment was confirmed by Lemon Squeezy redirect.
-    const period = request.nextUrl.searchParams.get("period") || "monthly";
+    const subscription = user.email ? await findEntitledSubscription(user.email) : null;
 
-    const periodDays: Record<string, number> = { weekly: 7, monthly: 30, yearly: 365 };
-    const days = periodDays[period] || 30;
-    const periodEnd = new Date();
-    periodEnd.setDate(periodEnd.getDate() + days);
-    periodEnd.setUTCHours(23, 59, 59, 999);
+    if (!subscription) {
+      // Nothing paid under this email (yet). A buyer who changed the email at
+      // checkout is still activated by the webhook, which carries the user id.
+      console.warn(`[billing/success] no live subscription for ${user.id}, not activating`);
+      return NextResponse.redirect(`${appUrl}/dashboard`);
+    }
+
+    const period = inferPeriod(subscription.attributes.variant_name);
 
     await admin.from("profiles").update({
       plan: "pro",
       subscription_status: "active",
+      subscription_id: subscription.id,
       subscription_period: period,
-      current_period_end: periodEnd.toISOString(),
+      current_period_end: subscription.attributes.renews_at,
     }).eq("id", user.id);
 
     // Record in subscription history
@@ -60,8 +66,9 @@ export async function GET(request: NextRequest) {
       period,
       status: "active",
       amount: priceMap[period] || 14,
-      started_at: new Date().toISOString(),
-      ended_at: periodEnd.toISOString(),
+      subscription_id: subscription.id,
+      started_at: subscription.attributes.created_at,
+      ended_at: subscription.attributes.renews_at,
     });
 
     if (historyError) {
@@ -69,10 +76,11 @@ export async function GET(request: NextRequest) {
       alertAdmin("Subscription History", historyError.message, { userId: user.id, period });
     }
 
-    await markIntentConverted({ userId: user.id });
+    await markIntentConverted({ userId: user.id, subscriptionId: subscription.id });
 
     return NextResponse.redirect(`${appUrl}/dashboard`);
-  } catch {
+  } catch (err) {
+    console.error("[billing/success] activation check failed:", err);
     return NextResponse.redirect(`${appUrl}/dashboard`);
   }
 }

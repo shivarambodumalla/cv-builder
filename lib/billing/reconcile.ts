@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { listSubscriptions } from "@lemonsqueezy/lemonsqueezy.js";
 import { configureLemonSqueezy } from "@/lib/lemonsqueezy";
 
 /**
@@ -30,16 +31,38 @@ type LsSubscription = {
   };
 };
 
-function inferPeriod(variantName?: string): string {
+export function inferPeriod(variantName?: string): string {
   const lower = (variantName || "").toLowerCase();
   if (lower.includes("week")) return "weekly";
   if (lower.includes("year") || lower.includes("annual")) return "yearly";
   return "monthly";
 }
 
+// "active" and "on_trial" are entitled; "past_due" still has access upstream.
+const ENTITLED_STATUSES = ["active", "on_trial", "past_due"];
+
+/**
+ * The live subscription Lemon Squeezy holds for this email, if any. Used where
+ * Pro is about to be granted outside the webhook, so the grant rests on what
+ * was actually paid rather than on the caller's say-so.
+ */
+export async function findEntitledSubscription(email: string): Promise<LsSubscription | null> {
+  configureLemonSqueezy();
+
+  const { data, error } = await listSubscriptions({
+    filter: { storeId: process.env.LEMONSQUEEZY_STORE_ID, userEmail: email },
+  });
+  if (error) throw new Error(error.message);
+
+  const entitled = ((data?.data ?? []) as unknown as LsSubscription[])
+    .filter((s) => ENTITLED_STATUSES.includes(s.attributes.status))
+    .sort((a, b) => b.attributes.created_at.localeCompare(a.attributes.created_at));
+
+  return entitled[0] ?? null;
+}
+
 async function fetchActiveSubscriptions(): Promise<LsSubscription[]> {
   configureLemonSqueezy();
-  const { listSubscriptions } = await import("@lemonsqueezy/lemonsqueezy.js");
 
   const all: LsSubscription[] = [];
   let page = 1;
@@ -61,8 +84,7 @@ async function fetchActiveSubscriptions(): Promise<LsSubscription[]> {
     page++;
   }
 
-  // "active" and "on_trial" are entitled; "past_due" still has access upstream.
-  return all.filter((s) => ["active", "on_trial", "past_due"].includes(s.attributes.status));
+  return all.filter((s) => ENTITLED_STATUSES.includes(s.attributes.status));
 }
 
 export async function reconcileSubscriptions(): Promise<{
