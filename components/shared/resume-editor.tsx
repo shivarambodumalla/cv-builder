@@ -26,7 +26,7 @@ import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/compon
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
 import { calculateClientScore, type ClientScoreResult, type KeywordList } from "@/lib/ats/client-scorer";
 import type { ResumeContent, ResumeDesignSettings } from "@/lib/resume/types";
-import { DEFAULT_CONTENT } from "@/lib/resume/defaults";
+import { withContentDefaults } from "@/lib/resume/defaults";
 import { normalizeDesignSettings } from "@/lib/resume/normalize";
 import { getPreviewContent } from "@/lib/resume/placeholder";
 import { StepLoader } from "@/components/shared/step-loader";
@@ -145,24 +145,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
 
-  const initialContent: ResumeContent = cv.parsed_json
-    ? {
-        ...DEFAULT_CONTENT,
-        ...cv.parsed_json,
-        sections: { ...DEFAULT_CONTENT.sections, ...((cv.parsed_json as ResumeContent).sections || {}) },
-        contact: { ...DEFAULT_CONTENT.contact, ...((cv.parsed_json as ResumeContent).contact || {}) },
-        targetTitle: { ...DEFAULT_CONTENT.targetTitle, ...((cv.parsed_json as ResumeContent).targetTitle || {}) },
-        summary: { ...DEFAULT_CONTENT.summary, ...((cv.parsed_json as ResumeContent).summary || {}) },
-        experience: { items: (cv.parsed_json as ResumeContent).experience?.items ?? [] },
-        education: { items: (cv.parsed_json as ResumeContent).education?.items ?? [] },
-        skills: { categories: (cv.parsed_json as ResumeContent).skills?.categories ?? [] },
-        certifications: { items: (cv.parsed_json as ResumeContent).certifications?.items ?? [] },
-        awards: { items: (cv.parsed_json as ResumeContent).awards?.items ?? [] },
-        projects: { items: (cv.parsed_json as ResumeContent).projects?.items ?? [] },
-        volunteering: { items: (cv.parsed_json as ResumeContent).volunteering?.items ?? [] },
-        publications: { items: (cv.parsed_json as ResumeContent).publications?.items ?? [] },
-      }
-    : DEFAULT_CONTENT;
+  const initialContent = withContentDefaults(cv.parsed_json);
 
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [design, setDesign] = useState<ResumeDesignSettings>(() =>

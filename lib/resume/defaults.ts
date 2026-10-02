@@ -70,6 +70,31 @@ export const DEFAULT_CONTENT: ResumeContent = {
 };
 
 /**
+ * Stored content with every section present. Parsed uploads and older CVs can
+ * miss keys the renderer reads, so anything that renders a CV outside the
+ * editor form (PDF export from the dashboard) must go through this first.
+ */
+export function withContentDefaults(parsed: ResumeContent | null | undefined): ResumeContent {
+  if (!parsed) return DEFAULT_CONTENT;
+  return {
+    ...DEFAULT_CONTENT,
+    ...parsed,
+    sections: { ...DEFAULT_CONTENT.sections, ...(parsed.sections || {}) },
+    contact: { ...DEFAULT_CONTENT.contact, ...(parsed.contact || {}) },
+    targetTitle: { ...DEFAULT_CONTENT.targetTitle, ...(parsed.targetTitle || {}) },
+    summary: { ...DEFAULT_CONTENT.summary, ...(parsed.summary || {}) },
+    experience: { items: parsed.experience?.items ?? [] },
+    education: { items: parsed.education?.items ?? [] },
+    skills: { categories: parsed.skills?.categories ?? [] },
+    certifications: { items: parsed.certifications?.items ?? [] },
+    awards: { items: parsed.awards?.items ?? [] },
+    projects: { items: parsed.projects?.items ?? [] },
+    volunteering: { items: parsed.volunteering?.items ?? [] },
+    publications: { items: parsed.publications?.items ?? [] },
+  };
+}
+
+/**
  * Default secondary-column sections per two-column template. For sidebar
  * layouts (sidebar, sidebar-right, divide, folio, electric-lilac,
  * executive-sidebar, clean-sidebar, orchid) this is the LEFT column; for

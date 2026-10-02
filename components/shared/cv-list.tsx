@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
+import { withContentDefaults } from "@/lib/resume/defaults";
 import {
   Plus,
   Trash2,
@@ -174,16 +175,44 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
     if (downloadingId) return;
     setDownloadingId(cvId);
     try {
-      const res = await fetch(`/api/cv/export/pdf?cv_id=${cvId}`);
-      if (!res.ok) return;
+      // Read the saved CV rather than the list's copy, which can lag an edit
+      // made moments ago in the editor.
+      const { data: cv } = await createClient()
+        .from("cvs")
+        .select("title, parsed_json, design_settings")
+        .eq("id", cvId)
+        .single();
+      if (!cv?.parsed_json) {
+        // Nothing structured to export yet: the editor is where it gets filled in.
+        router.push(`/resume/${cvId}`);
+        return;
+      }
+      const res = await fetch("/api/cv/export/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: withContentDefaults(cv.parsed_json),
+          design: cv.design_settings,
+          title: cv.title,
+          cv_id: cvId,
+        }),
+      });
+      if (res.status === 403) {
+        const errData = await res.json();
+        openUpgradeModal("download", errData.daysUntilReset);
+        return;
+      }
+      if (!res.ok) throw new Error("PDF export failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "resume.pdf";
+      a.download = `${(cv.title || "resume").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch { /* ignore */ } finally {
+    } catch (err) {
+      console.error("[cv-list] download failed:", err);
+    } finally {
       setDownloadingId(null);
     }
   }
