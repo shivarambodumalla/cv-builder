@@ -67,14 +67,12 @@ import { getCareerPath, type CareerMove } from "@/lib/roles/career-moves";
 import { getRoleContent } from "@/lib/roles/role-content";
 import { cn } from "@/lib/utils";
 
-// Rendered on first visit and cached for a day. generateStaticParams returns no
-// paths, so the job providers behind getRoleMarket are never called at build
-// time; leaving it out would render the page on every request instead.
-export const revalidate = 86400;
-
-export async function generateStaticParams() {
-  return [];
-}
+// Rendered per request on purpose (no generateStaticParams, so the job
+// providers are never called at build). The market lookups are cached for a
+// day in lib/career-path/market.ts, so a render is cheap and a slow provider
+// costs only the visitor who hit it. As a cached page, one lookup past the 6s
+// timeout (a cold Adzuna query can take 5s) would hide the market data for
+// everyone until the page next regenerated.
 
 const SITE = "https://www.thecvedge.com";
 
