@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
   Activity,
-  Briefcase,
   Brain,
   Check,
   Compass,
@@ -21,13 +20,11 @@ import { CtaSection } from "@/components/shared/cta-section";
 import { FeaturesTabs } from "@/components/marketing/features-tabs";
 import { HeroAnimation } from "@/components/marketing/hero-animation";
 import { TemplateThumbnailImage } from "@/components/shared/template-thumbnail";
-import { LiveJobsBand } from "@/components/marketing/live-jobs-band";
 import { LogoCarousel } from "@/components/marketing/logo-carousel";
 import { TestimonialsCarousel } from "@/components/marketing/testimonials-carousel";
 import { getPublicRatingStats } from "@/lib/feedback/stats";
 import { getPlanLimits, getProTemplateSlugs, getTemplateCounts } from "@/lib/billing/plan-config";
 import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
-import { TRENDING_ROLES } from "@/lib/jobs/role-categories";
 
 export const metadata: Metadata = {
   title: "Free ATS Resume Scanner: Check Your ATS Score",
@@ -59,7 +56,6 @@ const COMPARISON = [
   { feature: "AI bullet rewrite", us: "4 modes", them: "Not available" },
   { feature: "Real-time score updates", us: "As you type", them: "Not available" },
   { feature: "Job description matching", us: "Yes", them: "Not available" },
-  { feature: "AI job search with match scores", us: "Free", them: "Not available" },
   { feature: "Cover letter generation", us: "Yes", them: "Not available" },
   { feature: "Watermark-free PDFs", us: "Free plan", them: "Paid only" },
   { feature: "Price to start", us: "Free", them: "$20-30/month" },
@@ -79,7 +75,7 @@ export default async function HomePage() {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
-    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Free AI Job Search", "Career Path Generator", "Cover Letter Generation", "Interview Coach", `${templateCounts.total} Professional Templates`],
+    featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Career Path Generator", "Cover Letter Generation", "Interview Coach", `${templateCounts.total} Professional Templates`],
     areaServed: [
       { "@type": "Country", "name": "United States" },
       { "@type": "Country", "name": "United Kingdom" },
@@ -113,7 +109,6 @@ export default async function HomePage() {
       { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software is used by employers to automatically screen and filter job applications before a recruiter reads them. It parses resumes, scores them against job requirements, and ranks candidates. An estimated 75% of resumes are filtered out by ATS before a human sees them." } },
       { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for core features including ATS score checking, AI bullet rewrites, job matching, and resume templates. No credit card is required to start." } },
       { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge Pro users are guaranteed an 80+ ATS score after using Fix All. If your score does not reach 80+, contact us within 14 days of signing up and we will personally review your resume. If we still cannot reach 80+, we refund you in full." } },
-      { "@type": "Question", name: "Does CVEdge have a job search?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge includes a free AI job search across 1 million+ live listings. Every job shows a match score against your resume so you can prioritize the roles you are most qualified for." } },
       { "@type": "Question", name: "Does CVEdge work for jobs in the UAE, Saudi Arabia, and the Middle East?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is used by job seekers across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. ATS screening is standard among large GCC employers and multinationals in the region. CVEdge scores your CV against the same criteria, helps you match keywords from local job descriptions, and generates cover letters for GCC-specific applications. The cv-review service also includes a Middle East specialist." } },
       { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimization in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology alongside 'resume', supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
     ],
@@ -145,15 +140,6 @@ export default async function HomePage() {
                 <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
                   <Link href="/upload-resume">Scan my resume free</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="h-12 gap-2 px-8 text-[0.9375rem] font-medium bg-transparent" asChild>
-                  <Link href="/jobs">
-                    <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
-                    </span>
-                    Browse 1M+ live jobs
-                  </Link>
-                </Button>
               </div>
 
               {/* Trust line */}
@@ -170,16 +156,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── LIVE JOBS BAND ─── */}
-      <LiveJobsBand />
-
       {/* ─── LOGO CAROUSEL ─── */}
       <LogoCarousel />
 
       {/* ─── FEATURES (tabbed) ─── */}
       <FeaturesTabs />
 
-      {/* ─── TEMPLATES + JOB SEARCH + INTERVIEW COACH ─── */}
+      {/* ─── TEMPLATES + INTERVIEW COACH + CAREER PATH ─── */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="mx-auto max-w-[1200px] space-y-6">
@@ -232,42 +215,8 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Row 2 — Job Search + Interview Coach + Career Path */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Job Search */}
-              <div className="rounded-[2rem] bg-[#065F46] border border-[#065F46]/20 p-8 sm:p-10 flex flex-col gap-5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
-                    <Briefcase className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">Free AI Job Search</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
-                  Find jobs that match your CV
-                </h3>
-                <p className="text-sm text-white/70 leading-relaxed">
-                  Stop scrolling irrelevant listings. CVEdge matches jobs to your resume and shows a match score for every role.
-                </p>
-                <ul className="space-y-2 mt-1">
-                  {[
-                    "AI match score for every listing",
-                    "Filter by location, type, salary, remote",
-                    "Save jobs and track applications",
-                    "Up to 5 preferred locations",
-                  ].map((p) => (
-                    <li key={p} className="flex items-start gap-2.5">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
-                      <span className="text-sm text-white/90 leading-relaxed">{p}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-auto pt-3">
-                  <Button className="h-11 px-7 text-sm font-medium bg-white text-[#065F46] hover:bg-white/90" asChild>
-                    <Link href="/jobs">Search jobs free</Link>
-                  </Button>
-                </div>
-              </div>
-
+            {/* Row 2: Interview Coach + Career Path */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Interview Coach */}
               <div className="rounded-[2rem] bg-[#1E3A5F] dark:bg-[#0f2340] border border-[#2A4F7A]/40 p-8 sm:p-10 flex flex-col gap-5">
                 <div className="flex items-center gap-3">
@@ -552,35 +501,6 @@ export default async function HomePage() {
       {/* Real testimonials and ratings only; hidden until there are some.
           The rating line must stay visible whenever AggregateRating is emitted. */}
       {(testimonials.length > 0 || rating) && <TestimonialsCarousel testimonials={testimonials} rating={rating} />}
-
-      {/* ─── POPULAR ROLES (SEO internal linking) ─── */}
-      <section className="py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-5xl text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Browse jobs by role</h2>
-            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
-              Explore open roles with match scores tailored to your resume. New listings daily.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-2">
-              {TRENDING_ROLES.map((r) => (
-                <Link
-                  key={r.slug}
-                  href={`/jobs/${r.slug}`}
-                  className="rounded-full border border-border/60 bg-background px-4 py-1.5 text-sm font-medium text-foreground hover:border-primary/40 hover:bg-primary/5 transition-colors"
-                >
-                  {r.label}
-                </Link>
-              ))}
-            </div>
-            <Link
-              href="/jobs"
-              className="mt-8 inline-block text-sm font-medium text-primary hover:underline"
-            >
-              See all 130+ roles
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ─── FAQ ─── */}
       <section className="py-20 md:py-28">

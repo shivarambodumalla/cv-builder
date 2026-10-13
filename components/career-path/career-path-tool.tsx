@@ -30,8 +30,6 @@ import {
 import { trackCareerPathEvent } from "./track";
 import {
   countryName,
-  formatJobCount,
-  jobsHref,
   tailorHref,
   unlockHref,
 } from "./format";
@@ -1162,7 +1160,6 @@ function PathCard({
   const bestFit = Math.max(...all.map((p) => p.fit));
   const isBest = all.findIndex((p) => p.fit === bestFit) === index;
   const primary = index === 0;
-  const jobs = path.market ? formatJobCount(path.market) : null;
 
   return (
     <article
@@ -1216,13 +1213,6 @@ function PathCard({
           Tailor my resume for this role
         </Link>
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-          <Link
-            href={jobsHref(path.title)}
-            className="inline-flex min-h-11 items-center font-semibold text-[#1E3A5F] underline-offset-4 hover:underline sm:min-h-0"
-            aria-label={`View ${jobs ? `${jobs} ` : ""}${path.title} jobs`}
-          >
-            {jobs ? `View ${jobs} jobs` : "View jobs"}
-          </Link>
           <Link
             href={unlockHref(id, path.title, signedIn)}
             onClick={() => trackCareerPathEvent("unlock_clicked")}

@@ -1,15 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { Trophy } from "lucide-react";
 
 interface JobMatchNudgeProps {
   hasReport: boolean;
   score: number;
-  cvId: string;
 }
 
-export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
+export function JobMatchNudge({ hasReport, score }: JobMatchNudgeProps) {
   if (!hasReport) return null;
   if (score < 60) return null;
 
@@ -31,10 +29,10 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
                 Interview-ready
               </p>
               <h3 className="text-base sm:text-lg font-semibold leading-tight text-white">
-                Your resume could win these jobs
+                Your resume is ready for real roles
               </h3>
               <p className="text-xs sm:text-sm text-white/75 mt-1">
-                Live roles matching your profile right now
+                Match it against a job description before you apply
               </p>
             </div>
           </div>
@@ -45,12 +43,6 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
         </div>
 
         <div className="relative flex flex-wrap items-center gap-2">
-          <Link
-            href={`/my-jobs?cvId=${encodeURIComponent(cvId)}`}
-            className="inline-flex items-center justify-center rounded-md bg-white text-[#1E3A5F] hover:bg-white/95 px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
-          >
-            Find jobs for this resume
-          </Link>
           <button
             type="button"
             onClick={() => {
@@ -62,9 +54,9 @@ export function JobMatchNudge({ hasReport, score, cvId }: JobMatchNudgeProps) {
                 jdTextarea?.focus();
               }, 300);
             }}
-            className="inline-flex items-center justify-center rounded-md bg-white/10 text-white hover:bg-white/15 ring-1 ring-white/20 px-4 py-2 text-sm font-medium transition-colors"
+            className="inline-flex items-center justify-center rounded-md bg-white text-[#1E3A5F] hover:bg-white/95 px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
           >
-            Match against a specific JD
+            Match a job description
           </button>
         </div>
       </div>

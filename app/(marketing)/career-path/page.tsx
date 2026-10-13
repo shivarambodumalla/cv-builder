@@ -243,12 +243,6 @@ function ExampleCard() {
           Tailor my resume for this role
         </a>
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-          <Link
-            href="/jobs/data-scientist"
-            className="font-semibold text-[#1E3A5F] underline-offset-4 hover:underline"
-          >
-            View {EXAMPLE.jobs} jobs
-          </Link>
           <a
             href="#tool"
             className="text-[#5F5852] underline-offset-4 hover:text-[#0C1A0E] hover:underline"

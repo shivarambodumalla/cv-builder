@@ -35,7 +35,6 @@ import { ConfidenceChip } from "@/components/shared/confidence-chip";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
 import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
 import { useActivity } from "@/lib/analytics/useActivity";
-import { JobsWidget } from "@/components/jobs/jobs-widget";
 import { JobMatchNudge } from "@/components/popups/job-match-nudge";
 
 type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
@@ -843,11 +842,8 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
             </div>
           )}
 
-          {/* Job match nudge — score-aware: strong → find jobs + match-JD, mid → run match, weak → hidden */}
-          <JobMatchNudge hasReport={!!report} score={displayScore} cvId={cvId} />
-
-          {/* Matching jobs widget */}
-          <JobsWidget cvId={cvId} cvTitle={content?.targetTitle?.title || content?.experience?.items?.[0]?.role || undefined} />
+          {/* Job match nudge, score-aware: strong and mid nudge to match a JD, weak is hidden */}
+          <JobMatchNudge hasReport={!!report} score={displayScore} />
         </>
       )}
 

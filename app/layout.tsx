@@ -15,7 +15,6 @@ import { GAScripts } from "@/components/shared/ga-scripts";
 import { HotjarScripts } from "@/components/shared/hotjar-scripts";
 import { AdSenseScript } from "@/components/shared/adsense-script";
 import { CookieConsent } from "@/components/shared/cookie-consent";
-import { JobsDiscovery } from "@/components/popups/jobs-discovery";
 import { SignupModalProvider, SignupTimedTrigger, SignupExitIntent } from "@/components/popups/signup-modal";
 import "./globals.css";
 
@@ -115,14 +114,6 @@ const WEBSITE_JSONLD = {
   name: "CVEdge",
   url: "https://www.thecvedge.com",
   description: "Free AI-powered ATS resume checker and CV builder. Check your ATS score, fix issues with AI, and match your CV to job descriptions.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: "https://www.thecvedge.com/jobs?q={search_term_string}",
-    },
-    "query-input": "required name=search_term_string",
-  },
 };
 
 export default function RootLayout({
@@ -200,7 +191,6 @@ export default function RootLayout({
             <SignupExitIntent />
             {children}
             <UpgradeModal />
-            <JobsDiscovery />
             <CookieConsent />
           </UpgradeModalProvider>
           </SignupModalProvider>

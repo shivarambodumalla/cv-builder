@@ -58,7 +58,9 @@ async function dismissModalIfPresent(page: import("@playwright/test").Page) {
   }
 }
 
-test.describe("Jobs Feature", () => {
+// The Jobs feature is hidden (next.config.mjs redirects /jobs and /my-jobs),
+// so its UI suites are skipped until it returns.
+test.describe.skip("Jobs Feature", () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
   test.beforeEach(async ({ page }) => {
@@ -139,7 +141,7 @@ test.describe("Jobs Feature", () => {
   });
 });
 
-test.describe("Jobs SEO", () => {
+test.describe.skip("Jobs SEO", () => {
   test("public /jobs page loads", async ({ browser }) => {
     const ctx = await browser.newContext({ storageState: undefined as any });
     const page = await ctx.newPage();
@@ -159,7 +161,7 @@ test.describe("Jobs SEO", () => {
   });
 });
 
-test.describe("Jobs Widget", () => {
+test.describe.skip("Jobs Widget", () => {
   test("widget in match panel", async ({ page }) => {
     await page.goto(`/resume/${TEST_CV_ID}`);
     await page.waitForSelector('[data-testid="tab-match"]', { timeout: 15000 });

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import {
   ArrowDown,
-  Briefcase,
   FileText,
   Info,
   MessageSquare,
@@ -152,18 +151,13 @@ function longDate(iso: string): string {
   });
 }
 
-/** The destination's own career path page, or failing that its jobs page. */
+/** The destination's own career path page, when it has one. */
 function moveLink(move: CareerMove): { href: string; text: string } | null {
-  if (!move.toSlug) return null;
-  const name = roleNoun(move.toRole);
-  if (hasCareerPathPage(move.toSlug))
-    return {
-      href: `/career-path/${move.toSlug}`,
-      text: `See the ${name} career path`,
-    };
-  if (roleLabel(move.toSlug))
-    return { href: `/jobs/${move.toSlug}`, text: `Browse ${name} jobs` };
-  return null;
+  if (!move.toSlug || !hasCareerPathPage(move.toSlug)) return null;
+  return {
+    href: `/career-path/${move.toSlug}`,
+    text: `See the ${roleNoun(move.toRole)} career path`,
+  };
 }
 
 // The field each role belongs to, for the coloured dot beside it in the role index.
@@ -917,7 +911,7 @@ export default async function CareerPathRolePage({ params }: Params) {
         >
           <div>
             <h2 className={SECTION_HEADING}>More for {people}</h2>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-4">
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4">
               {[
                 {
                   href: `/resume-examples/${slug}`,
@@ -930,12 +924,6 @@ export default async function CareerPathRolePage({ params }: Params) {
                   text: `${sentenceCase(label)} interview questions`,
                   icon: MessageSquare,
                   hue: "navy" as Hue,
-                },
-                {
-                  href: `/jobs/${slug}`,
-                  text: `Open ${name} jobs`,
-                  icon: Briefcase,
-                  hue: "amber" as Hue,
                 },
               ].map((l) => (
                 <li key={l.href}>

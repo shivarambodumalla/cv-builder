@@ -59,7 +59,7 @@ If the answer is no to all — do not implement.
 
 ## Route Groups
 
-- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /jobs, /career-path, /privacy, /terms
+- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /career-path, /privacy, /terms (/jobs is hidden, see Jobs)
 - (auth) — /login, /register (Google OAuth only)
 - (app) — authenticated: /dashboard, /billing, /interview-coach (renamed from /stories)
 - (editor) — /resume/[id] (two-panel resume editor)
@@ -79,7 +79,9 @@ If the answer is no to all — do not implement.
 - CTA: shown in ATS panel when Pro user has score < 80 after Fix All
 - DB table: guarantee_claims (id, user_id, cv_id, current_score, status, created_at, resolved_at, resolution)
 
-### Jobs (Live)
+### Jobs (hidden since 2026-10-13)
+- Hidden for lack of traction, not removed. Every entry point is gone (nav, footer, menus, homepage, jobs popover, editor widget and buttons, settings location prefs and digest toggle, career-path and resume-example links, llms.txt, sitemap, WebSite SearchAction). `/jobs*` and `/my-jobs*` 307 to / and /dashboard in next.config.mjs, so no function runs; the jobs-welcome and jobs-weekly crons are out of vercel.json; the jobs-flow E2E suites are skipped. Code, API routes and tables are untouched. To bring it back, revert the commit that hid it.
+- Job Match (paste a JD in the editor) is a separate feature and stays live. Career Path market data still uses lib/jobs providers.
 - Marketing page: /jobs — search form, sign-in modal, browse by role
 - Role pages: /jobs/[role] — role-specific listings with fuzzy search + location fallback
 - Providers: Adzuna + Jooble + Careerjet (via lib/jobs/search.ts → searchAllProviders)
@@ -87,7 +89,7 @@ If the answer is no to all — do not implement.
 - Click tracking: /api/jobs/track-click → job_clicks table
 - Saved jobs: /api/jobs/save → saved_jobs table
 - User prefs: /api/user/preferred-locations → preferred_locations table
-- Legacy job_waitlist table/route removed (jobs page is live — no waitlist flow)
+- Legacy job_waitlist table/route removed (no waitlist flow)
 
 ---
 
@@ -143,7 +145,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 - Google OAuth only (no email/password)
 - Supabase Auth with SSR cookies
 - Middleware checks: /dashboard, /resume, /billing require login; /admin, /api/admin require ADMIN_EMAIL match
-- Middleware runs only where it acts (each run costs Vercel Active CPU). /, /login, /register and /jobs match only when the Supabase session cookie is present (`has` conditions; the cookie name spells out the project ref, so update it if NEXT_PUBLIC_SUPABASE_URL ever changes). API routes other than /api/admin skip middleware: they check the user and refresh an expired session themselves (verified: the route handler returns the refreshed cookie)
+- Middleware runs only where it acts (each run costs Vercel Active CPU). /, /login and /register match only when the Supabase session cookie is present (`has` conditions; the cookie name spells out the project ref, so update it if NEXT_PUBLIC_SUPABASE_URL ever changes). API routes other than /api/admin skip middleware: they check the user and refresh an expired session themselves (verified: the route handler returns the refreshed cookie)
 - Admin: lib/admin-auth.ts requireAdmin() for API routes
 - ADMIN_EMAIL supports comma-separated list
 

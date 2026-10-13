@@ -28,8 +28,7 @@ import { JdRedFlagDetector } from "@/components/resume/jd-red-flag-detector";
 import { OfferEvaluation } from "@/components/resume/offer-evaluation";
 import { SalaryInsights } from "@/components/resume/salary-insights";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
-import { Wand2, BookOpen, Briefcase } from "lucide-react";
-import Link from "next/link";
+import { Wand2, BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 /* ── Types ─────────────────────────────────────────── */
@@ -668,64 +667,7 @@ export function JobMatchRightPanel({
       <div className="mt-6 space-y-3">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Next steps</p>
 
-        {/* Hero: Find Matching Jobs */}
-        <Link
-          href={`/my-jobs?cvId=${encodeURIComponent(cvId)}`}
-          className="group relative block overflow-hidden rounded-2xl p-5 text-white shadow-md transition-all hover:shadow-xl hover:shadow-[#065F46]/20"
-          style={{ backgroundColor: "#065F46" }}
-        >
-          {/* Decorative rings */}
-          <div className="pointer-events-none absolute -right-10 -top-14 h-36 w-36 rounded-full bg-[#34D399]/20 blur-3xl" aria-hidden />
-          <div className="pointer-events-none absolute -bottom-16 -left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl" aria-hidden />
-          <div className="pointer-events-none absolute right-6 top-6 h-16 w-16 rounded-full border border-white/10" aria-hidden />
-          <div className="pointer-events-none absolute right-12 top-12 h-8 w-8 rounded-full border border-white/10" aria-hidden />
-          {/* Subtle dot grid */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.08]"
-            style={{
-              backgroundImage: "radial-gradient(white 1px, transparent 1px)",
-              backgroundSize: "14px 14px",
-            }}
-            aria-hidden
-          />
-
-          <div className="relative flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/20 backdrop-blur-sm">
-              <Briefcase size={20} />
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="text-base font-semibold tracking-tight text-white">Find Matching Jobs</p>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#34D399]/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#34D399] ring-1 ring-[#34D399]/30">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#34D399] opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#34D399]" />
-                  </span>
-                  Live
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-white/80">See live roles your resume fits, ranked by match score</p>
-              <div className="mt-2 flex items-center gap-3 text-[11px] text-white/60">
-                <span className="inline-flex items-center gap-1">
-                  <Sparkles size={11} className="text-[#34D399]" />
-                  Personalized
-                </span>
-                <span className="h-3 w-px bg-white/20" aria-hidden />
-                <span>Updated hourly</span>
-              </div>
-            </div>
-
-            <Button
-              size="sm"
-              className="shrink-0 bg-white px-4 font-semibold text-[#065F46] shadow-sm hover:bg-white/90"
-            >
-              Browse
-            </Button>
-          </div>
-        </Link>
-
-        {/* Secondary actions */}
+        {/* Next-step actions */}
         <div className="grid gap-2 sm:grid-cols-2">
           {jdText && (
             <button

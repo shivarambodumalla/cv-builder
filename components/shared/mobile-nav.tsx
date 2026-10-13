@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, X, FileText, LogOut, Heart, Settings } from "lucide-react";
+import { Menu, X, FileText, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
@@ -66,17 +66,11 @@ export function MobileNav() {
               </Link>
             </>
           )}
-          <Link href={loggedIn ? "/my-jobs" : "/jobs"} onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-            Jobs
-          </Link>
           <Link href="/blog" onClick={() => setOpen(false)} className="block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
             Blog
           </Link>
           {loggedIn ? (
             <div className="pt-2 border-t space-y-1">
-              <Link href="/my-jobs/saved" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-                <Heart className="h-4 w-4" /> Saved Jobs
-              </Link>
               <Link href="/settings" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
                 <Settings className="h-4 w-4" /> Preferences
               </Link>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Target } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getRoleExampleData, generateGenericExampleData } from "@/lib/resume-examples/data";
@@ -352,25 +352,6 @@ export default async function RoleResumeExamplePage({
           </div>
         </div>
       )}
-
-      {/* Job match cross-link */}
-      <div className="mx-auto max-w-3xl mb-14">
-        <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold flex items-center gap-2">
-              <Target className="h-4 w-4 text-primary" />
-              Looking for {role.label.toLowerCase()} jobs?
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Browse live {role.label.toLowerCase()} roles and match your resume against
-              specific job descriptions before applying.
-            </p>
-          </div>
-          <Button variant="outline" size="sm" asChild className="shrink-0">
-            <Link href={`/jobs/${role.slug}`}>Browse {role.label} jobs</Link>
-          </Button>
-        </div>
-      </div>
 
       <CareerPathCrossLink slug={role.slug} className="mx-auto max-w-3xl mb-14" />
 

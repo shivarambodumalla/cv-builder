@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { SettingsContent } from "./settings-content";
 
 export const metadata: Metadata = {
   title: "Preferences",
-  description: "Manage your profile, location preferences, and account settings.",
+  description: "Manage your profile, email preferences, and account settings.",
 };
 
 export const dynamic = "force-dynamic";
@@ -19,20 +18,11 @@ export default async function SettingsPage() {
 
   if (!user) redirect("/login?returnUrl=%2Fsettings");
 
-  const admin = createAdminClient();
-
-  const [{ data: profile }, { data: prefLocs }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("full_name, subscription_status, subscription_period, open_to_remote, signup_city, signup_country, created_at, email_jobs_weekly, email_product_updates, email_tips")
-      .eq("id", user.id)
-      .single(),
-    admin
-      .from("preferred_locations")
-      .select("id, location, location_type, priority")
-      .eq("user_id", user.id)
-      .order("priority", { ascending: false }),
-  ]);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, subscription_status, subscription_period, signup_city, signup_country, created_at, email_product_updates, email_tips")
+    .eq("id", user.id)
+    .single();
 
   return (
     <SettingsContent
@@ -41,13 +31,10 @@ export default async function SettingsPage() {
       avatarUrl={user.user_metadata?.avatar_url ?? null}
       isPro={profile?.subscription_status === "active"}
       period={profile?.subscription_period ?? null}
-      openToRemote={profile?.open_to_remote ?? false}
-      locations={(prefLocs ?? []).map((l) => ({ id: l.id, location: l.location, type: l.location_type }))}
       signupCity={profile?.signup_city ?? null}
       signupCountry={profile?.signup_country ?? null}
       memberSince={profile?.created_at ?? user.created_at}
       emailPreferences={{
-        jobs_weekly: profile?.email_jobs_weekly ?? true,
         product_updates: profile?.email_product_updates ?? true,
         tips: profile?.email_tips ?? true,
       }}

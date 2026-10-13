@@ -75,6 +75,12 @@ const nextConfig = {
       ...oldThumbnailRedirects,
       { source: "/stories", destination: "/interview-coach", permanent: true },
       { source: "/stories/:path*", destination: "/interview-coach", permanent: true },
+      // The Jobs feature is hidden, not removed. Temporary redirects keep its
+      // pages out of reach (no function runs) until it returns.
+      { source: "/jobs", destination: "/", permanent: false },
+      { source: "/jobs/:path*", destination: "/", permanent: false },
+      { source: "/my-jobs", destination: "/dashboard", permanent: false },
+      { source: "/my-jobs/:path*", destination: "/dashboard", permanent: false },
       // Retired as a near-duplicate of the surviving PM guide. Redirect rather
       // than 404 so the indexed URL passes its equity to the kept article.
       {

@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   LogOut,
-  Heart,
   CreditCard,
   Shield,
   Settings,
@@ -101,10 +100,6 @@ export function AppHeader({ user }: AppHeaderProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/my-jobs/saved")}>
-                <Heart className="mr-2 h-4 w-4" />
-                Saved Jobs
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/billing")}>
                 <CreditCard className="mr-2 h-4 w-4" />
                 Billing

@@ -1,5 +1,4 @@
 import type { RoleMarket } from "@/lib/career-path/types";
-import { ALL_ROLES } from "@/lib/jobs/role-categories";
 
 const COUNTRY_NAMES: Record<string, string> = {
   us: "the US",
@@ -86,13 +85,6 @@ export function tailorHref(
 ): string {
   const next = continuePath(id, role);
   return signedIn ? next : `/login?returnUrl=${encodeURIComponent(next)}`;
-}
-
-/** Live listings for a role: its own jobs page when we have one, else a title search. No sign-in needed. */
-export function jobsHref(title: string, searchTitles: string[] = []): string {
-  const wanted = [title, ...searchTitles].map((t) => t.trim().toLowerCase());
-  const match = ALL_ROLES.find((r) => wanted.includes(r.label.toLowerCase()));
-  return match ? `/jobs/${match.slug}` : `/jobs?q=${encodeURIComponent(title)}`;
 }
 
 export function planPath(id: string, role: string): string {

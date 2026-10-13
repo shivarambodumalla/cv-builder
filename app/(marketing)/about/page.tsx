@@ -33,8 +33,8 @@ const WHAT_WE_BUILD = [
   {
     title: "Job matching",
     body: "Paste a job description and we identify which keywords are missing, which are already covered, and which would move your match score most, so tailoring is driven by evidence rather than guesswork.",
-    href: "/jobs",
-    linkLabel: "Browse jobs",
+    href: "/upload-resume",
+    linkLabel: "Try job matching",
   },
   {
     title: "Interview preparation",

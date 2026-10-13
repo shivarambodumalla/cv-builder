@@ -18,9 +18,8 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // /jobs/[role] pages render third-party listings that rotate constantly. They
-  // are noindex while the site is under AdSense review, so they stay out of the
-  // sitemap — advertising URLs we tell Google not to index is a mixed signal.
+  // The Jobs feature is hidden (next.config.mjs redirects /jobs and /my-jobs),
+  // so no jobs pages are listed.
 
   // Interview-prep and resume-examples pages are only listed once they have
   // genuine role-specific content behind them (see lib/roles/role-content.ts).
@@ -149,7 +148,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "https://www.thecvedge.com/upload-resume", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
     { url: "https://www.thecvedge.com/resumes", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.7 },
     { url: "https://www.thecvedge.com/interview-prep", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.8 },
-    { url: "https://www.thecvedge.com/jobs", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "daily", priority: 0.8 },
     { url: "https://www.thecvedge.com/blog", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     ...mentorshipPages,
     ...seoMoneyPages,

@@ -1,6 +1,4 @@
-import Link from "next/link";
 import type { CareerPathOption } from "@/lib/career-path/types";
-import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { cn } from "@/lib/utils";
 import {
   CP_CARD,
@@ -15,16 +13,6 @@ const PRIORITY_LABELS: Record<1 | 2 | 3, string> = {
   2: "Next",
   3: "After that",
 };
-
-const ROLE_SLUG_BY_LABEL = new Map(
-  ALL_ROLES.map((r) => [r.label.toLowerCase(), r.slug]),
-);
-
-/** The role's own jobs page when we have one, otherwise a keyword search. */
-function jobsHref(title: string): string {
-  const slug = ROLE_SLUG_BY_LABEL.get(title.trim().toLowerCase());
-  return slug ? `/jobs/${slug}` : `/jobs?q=${encodeURIComponent(title)}`;
-}
 
 const LABEL =
   "text-[11px] font-bold uppercase tracking-[0.12em] text-[#065F46]";
@@ -148,16 +136,11 @@ export function RolePlan({
           </p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {path.searchTitles.map((t) => (
-              <li key={t}>
-                <Link
-                  href={jobsHref(t)}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#E0D8CC] bg-white px-4 text-sm font-semibold text-[#065F46] transition-colors duration-150 hover:border-[#065F46] hover:text-[#044536]"
-                >
-                  <span>
-                    {t}
-                    <span className="sr-only"> jobs</span>
-                  </span>
-                </Link>
+              <li
+                key={t}
+                className="inline-flex min-h-11 items-center rounded-full border border-[#E0D8CC] bg-white px-4 text-sm font-semibold text-[#065F46]"
+              >
+                {t}
               </li>
             ))}
           </ul>

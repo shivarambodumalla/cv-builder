@@ -25,13 +25,6 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Redirect /jobs to /my-jobs for authenticated users (marketing → app)
-  if (user && request.nextUrl.pathname === "/jobs") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/my-jobs";
-    return NextResponse.redirect(url);
-  }
-
   const isAdminRoute =
     request.nextUrl.pathname.startsWith("/admin") ||
     request.nextUrl.pathname.startsWith("/api/admin");
@@ -52,9 +45,9 @@ export async function middleware(request: NextRequest) {
 // Every middleware run costs Vercel Active CPU, so it runs only where it acts.
 export const config = {
   matcher: [
-    // /, /login, /register and /jobs only redirect signed-in users, so they
-    // run only when the Supabase session cookie is present: anonymous visitors,
-    // crawlers and link prefetches skip middleware. The cookie is
+    // /, /login and /register only redirect signed-in users, so they run only
+    // when the Supabase session cookie is present: anonymous visitors, crawlers
+    // and link prefetches skip middleware. The cookie is
     // sb-<project ref>-auth-token, or .0, .1… once chunked; matchers must be
     // literals, so the ref (the NEXT_PUBLIC_SUPABASE_URL subdomain) is spelled
     // out.
@@ -64,12 +57,9 @@ export const config = {
     { source: "/login", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
     { source: "/register", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token" }] },
     { source: "/register", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
-    { source: "/jobs", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token" }] },
-    { source: "/jobs", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
     "/dashboard/:path*",
     "/resume/:path*",
     "/billing/:path*",
-    "/my-jobs/:path*",
     "/settings/:path*",
     "/admin/:path*",
     // Other API routes check the user and refresh the session themselves

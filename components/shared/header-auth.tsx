@@ -18,7 +18,6 @@ interface UserData {
 // Map marketing pages to their auth equivalents for post-login redirect
 const RETURN_MAP: Record<string, string> = {
   "/resumes": "/upload-resume",
-  "/jobs": "/my-jobs",
   "/interview-prep": "/interview-coach",
   "/pricing": "/pricing",
   "/cv-review": "/cv-review",
@@ -26,7 +25,7 @@ const RETURN_MAP: Record<string, string> = {
 
 function getLoginHref(pathname: string | null): string {
   if (!pathname) return "/login";
-  const returnUrl = RETURN_MAP[pathname] ?? (pathname.startsWith("/jobs/") ? "/my-jobs" : null);
+  const returnUrl = RETURN_MAP[pathname];
   return returnUrl ? `/login?returnUrl=${encodeURIComponent(returnUrl)}` : "/login";
 }
 
@@ -107,12 +106,6 @@ export function HeaderAuth() {
       cvReviewAuth.textContent = "Review by Experts";
       nav.appendChild(cvReviewAuth);
 
-      const jobs = document.createElement("a");
-      jobs.href = "/my-jobs";
-      jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
-      jobs.textContent = "Jobs";
-      nav.appendChild(jobs);
-
       const blogAuth = document.createElement("a");
       blogAuth.href = "/blog";
       blogAuth.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
@@ -138,12 +131,6 @@ export function HeaderAuth() {
       cvReviewMarketing.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
       cvReviewMarketing.textContent = "Review by Experts";
       nav.appendChild(cvReviewMarketing);
-
-      const jobs = document.createElement("a");
-      jobs.href = "/jobs";
-      jobs.className = "text-sm text-muted-foreground hover:text-foreground transition-colors";
-      jobs.textContent = "Jobs";
-      nav.appendChild(jobs);
 
       const blog = document.createElement("a");
       blog.href = "/blog";
