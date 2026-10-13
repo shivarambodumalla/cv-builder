@@ -49,18 +49,31 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+// Every middleware run costs Vercel Active CPU, so it runs only where it acts.
 export const config = {
   matcher: [
-    "/",
-    "/login",
-    "/register",
+    // /, /login, /register and /jobs only redirect signed-in users, so they
+    // run only when the Supabase session cookie is present: anonymous visitors,
+    // crawlers and link prefetches skip middleware. The cookie is
+    // sb-<project ref>-auth-token, or .0, .1… once chunked; matchers must be
+    // literals, so the ref (the NEXT_PUBLIC_SUPABASE_URL subdomain) is spelled
+    // out.
+    { source: "/", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token" }] },
+    { source: "/", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
+    { source: "/login", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token" }] },
+    { source: "/login", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
+    { source: "/register", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token" }] },
+    { source: "/register", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
+    { source: "/jobs", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token" }] },
+    { source: "/jobs", has: [{ type: "cookie", key: "sb-pqyixgfxyeytvpjizwlz-auth-token.0" }] },
     "/dashboard/:path*",
     "/resume/:path*",
     "/billing/:path*",
-    "/jobs",
     "/my-jobs/:path*",
     "/settings/:path*",
     "/admin/:path*",
-    "/api/((?!cron/|telemetry/|activity/|gdpr/consent).)*",
+    // Other API routes check the user and refresh the session themselves
+    // (route handlers can write cookies); only the admin gate needs middleware.
+    "/api/admin/:path*",
   ],
 };

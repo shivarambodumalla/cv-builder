@@ -143,6 +143,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 - Google OAuth only (no email/password)
 - Supabase Auth with SSR cookies
 - Middleware checks: /dashboard, /resume, /billing require login; /admin, /api/admin require ADMIN_EMAIL match
+- Middleware runs only where it acts (each run costs Vercel Active CPU). /, /login, /register and /jobs match only when the Supabase session cookie is present (`has` conditions; the cookie name spells out the project ref, so update it if NEXT_PUBLIC_SUPABASE_URL ever changes). API routes other than /api/admin skip middleware: they check the user and refresh an expired session themselves (verified: the route handler returns the refreshed cookie)
 - Admin: lib/admin-auth.ts requireAdmin() for API routes
 - ADMIN_EMAIL supports comma-separated list
 
