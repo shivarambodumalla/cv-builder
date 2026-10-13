@@ -47,7 +47,10 @@ export const metadata: Metadata = {
   },
 };
 
-// Revalidate every hour — homepage stats don't need to be real-time
+// Ratings, testimonials, quotas and template counts come from the DB.
+// force-static keeps the page static (the admin client's no-store fetch would
+// otherwise make it dynamic); it re-reads them hourly.
+export const dynamic = "force-static";
 export const revalidate = 3600;
 
 

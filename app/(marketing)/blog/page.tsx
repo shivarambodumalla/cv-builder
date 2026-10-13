@@ -3,6 +3,10 @@ import { getPosts } from "@/lib/blog/posts";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { BlogList } from "./blog-list";
 
+// Posts come from the DB. force-static keeps the page static (the admin
+// client's no-store fetch would otherwise make it dynamic); it re-reads them
+// hourly, and publishing a post revalidates it at once.
+export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {

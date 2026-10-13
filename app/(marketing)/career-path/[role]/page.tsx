@@ -68,9 +68,14 @@ import { getCareerPath, type CareerMove } from "@/lib/roles/career-moves";
 import { getRoleContent } from "@/lib/roles/role-content";
 import { cn } from "@/lib/utils";
 
-// Rendered on demand and cached for a day: no generateStaticParams, so the job
-// providers behind getRoleMarket are never called at build time.
+// Rendered on first visit and cached for a day. generateStaticParams returns no
+// paths, so the job providers behind getRoleMarket are never called at build
+// time; leaving it out would render the page on every request instead.
 export const revalidate = 86400;
+
+export async function generateStaticParams() {
+  return [];
+}
 
 const SITE = "https://www.thecvedge.com";
 

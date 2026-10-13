@@ -11,6 +11,12 @@ import { careerPathPageSlugs } from "@/lib/roles/career-moves/pages";
 // Avoids `new Date()` triggering a re-crawl on every build with no real update.
 const STABLE_LAST_MODIFIED = new Date("2026-04-30T00:00:00Z");
 
+// Blog posts come from the DB. force-static keeps the sitemap static (the
+// admin client's no-store fetch would otherwise make it dynamic); it re-reads
+// them hourly.
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // /jobs/[role] pages render third-party listings that rotate constantly. They
   // are noindex while the site is under AdSense review, so they stay out of the
