@@ -7,9 +7,14 @@ import { hasRoleContent } from "@/lib/roles/role-content";
 import { getRoleExampleData } from "@/lib/resume-examples/data";
 import { careerPathPageSlugs } from "@/lib/roles/career-moves/pages";
 
-// Stable baseline timestamp — bump manually when content materially changes.
+// Stable baseline timestamp: bump it by hand when content materially changes.
 // Avoids `new Date()` triggering a re-crawl on every build with no real update.
-const STABLE_LAST_MODIFIED = new Date("2026-04-30T00:00:00Z");
+// Bumped 2026-10-20 to the last site-wide copy pass (2026-09-28/29): the GSC
+// Coverage export of 2026-10-20 showed 33 sitemap pages stuck in "Crawled -
+// currently not indexed" on crawls from April-September, i.e. judged on the
+// pre-rewrite versions, while the sitemap still told Google nothing had changed
+// since April.
+const STABLE_LAST_MODIFIED = new Date("2026-09-29T00:00:00Z");
 
 // Blog posts come from the DB. force-static keeps the sitemap static (the
 // admin client's no-store fetch would otherwise make it dynamic); it re-reads
