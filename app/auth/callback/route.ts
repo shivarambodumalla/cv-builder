@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
       // template flow and hijack an unrelated sign-in (e.g. /career-path/plan).
       const templateCookie = request.headers.get("cookie")?.match(/cvedge_template=([^;]+)/)?.[1];
       if (templateCookie && !explicitNext) {
-        const res = redirectTo(appendAuthEvent(`${origin}/upload-resume?template=${templateCookie}`));
+        const res = redirectTo(appendAuthEvent(`${origin}/resume-checker?template=${templateCookie}`));
         res.cookies.delete("cvedge_template");
         return res;
       }

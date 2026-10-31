@@ -21,19 +21,19 @@ const WHAT_WE_BUILD = [
   {
     title: "ATS analysis",
     body: "We parse your resume the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. You get more than a number: the specific list of what is costing you points and why.",
-    href: "/upload-resume",
+    href: "/resume-checker",
     linkLabel: "Check your resume free",
   },
   {
     title: "AI rewriting that will not invent",
     body: "Our rewriter restructures the bullets you already wrote into result-led ones. Where a metric is missing it inserts an [X] placeholder for you to fill rather than fabricating a figure, because a number you cannot defend is worse in an interview than no number at all.",
-    href: "/upload-resume",
+    href: "/resume-checker",
     linkLabel: "Try the rewriter",
   },
   {
     title: "Job matching",
     body: "Paste a job description and we identify which keywords are missing, which are already covered, and which would move your match score most, so tailoring is driven by evidence rather than guesswork.",
-    href: "/upload-resume",
+    href: "/resume-checker",
     linkLabel: "Try job matching",
   },
   {
@@ -206,7 +206,7 @@ export default function AboutPage() {
             </p>
           </div>
           <Button asChild className="shrink-0">
-            <Link href="/upload-resume">Check my resume free</Link>
+            <Link href="/resume-checker">Check my resume free</Link>
           </Button>
         </div>
       </div>

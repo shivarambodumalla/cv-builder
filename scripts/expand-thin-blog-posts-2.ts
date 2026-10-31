@@ -79,7 +79,7 @@ const POSTS: PostUpdate[] = [
 <p>Open your CV as a PDF, select all, copy, and paste into a plain text editor. What you see is close to the raw text stream a parser starts from. Read it in that order. If your name and contact details are absent, they are sitting in a document header that many parsers never read. If lines from your left and right columns alternate mid-sentence, your two-column layout is being read across rather than down. If a whole section is missing, it was an image.</p>
 <p>This test takes thirty seconds and catches the majority of serious parsing damage.</p>
 <h3>2. Upload it to a parser and read the fields back</h3>
-<p>The paste test shows you the text stream but not the field assignment. To see that, put the file through a tool that shows you the structured output — which employer it assigned to which title, which dates it attached to which role. <a href="https://www.thecvedge.com/upload-resume">CVEdge's checker</a> does this free and without an account, and any tool that shows extracted fields rather than only a score will do the same job.</p>
+<p>The paste test shows you the text stream but not the field assignment. To see that, put the file through a tool that shows you the structured output — which employer it assigned to which title, which dates it attached to which role. <a href="https://www.thecvedge.com/resume-checker">CVEdge's checker</a> does this free and without an account, and any tool that shows extracted fields rather than only a score will do the same job.</p>
 <p>What you are looking for is not the score. It is whether the fields are right.</p>
 <h3>3. Save as plain text and read the result</h3>
 <p>Export or save your CV as .txt from your editor. This forces every visual element to resolve to text or disappear. Anything that vanishes — a skills rating bar, an icon standing in for "email", a logo carrying your name — was never text, and was never going to be extracted.</p>
@@ -102,7 +102,7 @@ const POSTS: PostUpdate[] = [
 <h2>The order to fix things in</h2>
 <p>If the paste test reveals problems, fix them before you touch anything else about your CV. There is no point rewriting bullets for impact when the bullets are being shuffled into the wrong job. Move contact details into the body, collapse a broken two-column layout into a single column or rebuild it without tables, replace image-based elements with text, and normalise the headings and dates.</p>
 <p>Then re-run the paste test. When the plain text version reads correctly top to bottom, the structural problem is solved and the ordinary work of making the content compelling can begin — which is where the rest of the effort belongs.</p>
-<p>You can check the extracted fields for your own CV in about a minute with the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a>, no account required.</p>`,
+<p>You can check the extracted fields for your own CV in about a minute with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a>, no account required.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -153,7 +153,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>Where to start</h2>
 <p>Fix them in order. The parse first, because everything else depends on it. Then relevance and ordering, because that is what the six-second scan sees. Then the bullets themselves, which is the slowest work and the one most people start with.</p>
-<p>If you want the specific list for your own CV rather than the general one, the <a href="https://www.thecvedge.com/upload-resume">free checker</a> reports which of these are present in your document and where.</p>`,
+<p>If you want the specific list for your own CV rather than the general one, the <a href="https://www.thecvedge.com/resume-checker">free checker</a> reports which of these are present in your document and where.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -216,7 +216,7 @@ const POSTS: PostUpdate[] = [
 <li><strong>Want detailed line-level critique:</strong> Resume Worded.</li>
 </ul>
 <p>Whichever you use, the honest summary is that a tool can fix presentation, parsing and vocabulary. It cannot make a weak application competitive, and any tool promising otherwise is selling you something. If your CV accurately represents strong, relevant experience and still gets no responses, the problem is usually one of the first three — which is at least the good news, because those are the fixable ones.</p>
-<p>You can check where yours stands with the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a> without creating an account.</p>`,
+<p>You can check where yours stands with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> without creating an account.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -267,7 +267,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The honest summary</h2>
 <p>If your CV is well written and simply needs a good-looking container, Zety does that well and the fee is not unreasonable. If your CV is not getting responses, no builder in this category will fix that by making it prettier, and the useful question is which tool tells you <em>why</em> — parsing, keyword coverage, or content — so you know what to change.</p>
-<p>That diagnosis is free here: the <a href="https://www.thecvedge.com/upload-resume">ATS checker</a> reports your score, the extracted fields and the specific issues found without an account or a card.</p>`,
+<p>That diagnosis is free here: the <a href="https://www.thecvedge.com/resume-checker">ATS checker</a> reports your score, the extracted fields and the specific issues found without an account or a card.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -325,7 +325,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>One document per market</h2>
 <p>If you are applying to both Gulf and Western roles, keep two versions. The UAE version carries nationality, visa status and notice period, and possibly a photo. The US or UK version carries none of them — in those markets the same details are at best noise and at worst a legal complication for the employer. Maintaining both takes minutes and prevents sending the wrong one.</p>
-<p>For a deeper regional read, see our <a href="https://www.thecvedge.com/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV guide</a>, which covers the Saudization considerations specific to KSA, or check your current CV against ATS parsing with the <a href="https://www.thecvedge.com/upload-resume">free checker</a>.</p>`,
+<p>For a deeper regional read, see our <a href="https://www.thecvedge.com/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV guide</a>, which covers the Saudization considerations specific to KSA, or check your current CV against ATS parsing with the <a href="https://www.thecvedge.com/resume-checker">free checker</a>.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -379,7 +379,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The mechanics still apply</h2>
 <p>UAE employers and the regional portals run applicant tracking systems. Single column, standard headings, real text rather than images, contact details in the body of the page rather than a document header, and consistent month-and-year dates. Check by pasting your PDF into a plain text editor — if it reads correctly in order, it will parse.</p>
-<p>You can check the extracted fields and ATS score for your CV free at <a href="https://www.thecvedge.com/upload-resume">CVEdge</a>, no account needed.</p>`,
+<p>You can check the extracted fields and ATS score for your CV free at <a href="https://www.thecvedge.com/resume-checker">CVEdge</a>, no account needed.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -442,7 +442,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The parsing mechanics are the same</h2>
 <p>Large Saudi employers and the regional portals run applicant tracking systems. Single column, conventional English section headings even where the role is Arabic-speaking, real text rather than images, and consistent month-and-year dates. If you submit an Arabic version, submit it as a separate document rather than mixing scripts in one file, which parsers handle poorly.</p>
-<p>Check yours by pasting the PDF into a plain text editor, or run it through the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a> to see the extracted fields.</p>`,
+<p>Check yours by pasting the PDF into a plain text editor, or run it through the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> to see the extracted fields.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -500,7 +500,7 @@ const POSTS: PostUpdate[] = [
 <h2>Format and parsing</h2>
 <p>Design CVs suffer more parsing damage than any other profession's, for the obvious reason: designers design them. Multi-column layouts, contact details in a styled header, skill rating bars, and portfolio links embedded in an image are all common and all break extraction.</p>
 <p>Your CV is a work sample, so it should look considered — but a well-set single-column document with clear typography, generous spacing and one accent colour looks better than most two-column CVs anyway, and it parses. Keep the visual ambition in the portfolio, where it belongs and where it is actually assessed.</p>
-<p>Paste your PDF into a plain text editor to check the reading order, or run it through the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a>. For role-specific interview preparation, see our <a href="https://www.thecvedge.com/interview-prep/ux-designer">UX designer interview guide</a>.</p>`,
+<p>Paste your PDF into a plain text editor to check the reading order, or run it through the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a>. For role-specific interview preparation, see our <a href="https://www.thecvedge.com/interview-prep/ux-designer">UX designer interview guide</a>.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -565,7 +565,7 @@ const POSTS: PostUpdate[] = [
 <h2>Formatting</h2>
 <p>One page under about ten years, two beyond it. Single column, standard headings, contact details in the body rather than a document header, real text rather than images, and a GitHub link only if the profile there is worth opening.</p>
 <p>Skip the skill rating bars. Claiming "Python: 4/5" invites a question about what the missing fifth is, and it is not text a parser can read anyway.</p>
-<p>Check the parse by pasting your PDF into a plain text editor, or use the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a> to see the extracted fields. For interview preparation, our <a href="https://www.thecvedge.com/interview-prep/backend-developer">back-end developer interview guide</a> covers the questions these CVs get tested against.</p>`,
+<p>Check the parse by pasting your PDF into a plain text editor, or use the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> to see the extracted fields. For interview preparation, our <a href="https://www.thecvedge.com/interview-prep/backend-developer">back-end developer interview guide</a> covers the questions these CVs get tested against.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -622,7 +622,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>Format</h2>
 <p>One page for under about ten years, two beyond. Single column, standard headings, contact details in the body rather than a document header, real text rather than images. Investment banking and some investment management screens have their own strong formatting conventions, so if you are targeting those specifically, follow the format your target firms expect.</p>
-<p>Check the parse with the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a>, which shows the extracted fields as well as a score.</p>`,
+<p>Check the parse with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a>, which shows the extracted fields as well as a score.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -673,7 +673,7 @@ const POSTS: PostUpdate[] = [
 <h2>The document is being read as a work sample</h2>
 <p>More than in most professions, an HR manager's CV is assessed as evidence of professional judgment about CVs. Typos, inconsistent formatting, three pages of undifferentiated duties, an objective statement, or a photograph on a UK or US application all read as an HR professional who does not follow their own guidance.</p>
 <p>Two pages maximum, one if you are earlier in your career. Standard headings. Contact details in the body of the page, not a document header — and yes, HR CVs get parsed by applicant tracking systems too, which is a detail worth getting right when you administer one.</p>
-<p>Check yours against the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a> to see what the extraction actually produces.</p>`,
+<p>Check yours against the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> to see what the extraction actually produces.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -737,7 +737,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>Format</h2>
 <p>One page under about ten years, two beyond it. Single column, standard headings, contact details in the body of the page rather than a document header, consistent month-and-year dates. Certifications high on the page, outcomes in the experience section, and the framework vocabulary present but not doing the heavy lifting.</p>
-<p>You can check how yours parses and scores with the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a>.</p>`,
+<p>You can check how yours parses and scores with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a>.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   // Full replacement. The original was the weakest article on the site — it
@@ -800,7 +800,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The honest summary</h2>
 <p>If Jobscan is working for you and the cost is manageable, there is no strong reason to move. If the scan cap is the friction, an uncapped alternative removes it. And if you have optimised your match rate and are still not hearing back, that is genuinely useful information: it means keyword coverage was not your bottleneck, and the effort belongs on parsing, on what your bullets actually say, or on whether the roles you are applying to are the right ones.</p>
-<p>You can check parsing, extracted fields and an ATS score for your CV free at <a href="https://www.thecvedge.com/upload-resume">CVEdge</a>, without an account.</p>`,
+<p>You can check parsing, extracted fields and an ATS score for your CV free at <a href="https://www.thecvedge.com/resume-checker">CVEdge</a>, without an account.</p>`,
   },
 ];
 

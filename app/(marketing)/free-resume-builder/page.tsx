@@ -154,7 +154,7 @@ export default async function FreeResumeBuilderPage() {
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Get my free ATS score</Link>
+            <Link href="/resume-checker">Get my free ATS score</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch free</Link>
@@ -325,7 +325,7 @@ export default async function FreeResumeBuilderPage() {
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Get my free ATS score</Link>
+            <Link href="/resume-checker">Get my free ATS score</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch free</Link>

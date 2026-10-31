@@ -17,7 +17,7 @@ interface UserData {
 
 // Map marketing pages to their auth equivalents for post-login redirect
 const RETURN_MAP: Record<string, string> = {
-  "/resumes": "/upload-resume",
+  "/resumes": "/resume-checker",
   "/interview-prep": "/interview-coach",
   "/pricing": "/pricing",
   "/cv-review": "/cv-review",
@@ -174,7 +174,7 @@ export function HeaderAuth() {
         Sign in
       </Link>
       <Link
-        href="/upload-resume"
+        href="/resume-checker"
         className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
       >
         Get started free

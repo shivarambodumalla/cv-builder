@@ -78,7 +78,7 @@ export function GccFormatSection({ market }: { market: "uae" | "saudi-arabia" | 
               </a>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/upload-resume">Score my current CV free</Link>
+              <Link href="/resume-checker">Score my current CV free</Link>
             </Button>
           </div>
           <p className="mt-3 text-xs text-muted-foreground">

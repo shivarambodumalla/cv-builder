@@ -127,7 +127,7 @@ CVEdge (${SITE}) helps job seekers get past applicant tracking systems (ATS). It
 
     `## Start here
 
-- ATS resume checker: upload a PDF or Word resume and see the parsed fields, the score and the specific issues. Free; sign in with Google or LinkedIn to see the full report: ${SITE}/upload-resume
+- Resume checker: upload a PDF resume (or paste the text) and see the parsed fields, the score and the specific issues. Free; sign in with Google or LinkedIn to see the full report: ${SITE}/resume-checker
 - Free resume builder: ${templates.length} ATS-friendly templates, PDF export with no watermark: ${SITE}/free-resume-builder
 - Harvard resume template, free Word and PDF: ${SITE}/resume-templates/ats-friendly/harvard-cv`,
 

@@ -57,7 +57,7 @@ If the same fields are wrong every time, the layout is the cause. Fix the file a
 
 ## Test Before You Apply
 
-You can see roughly what Workday will extract by running the file through a free [ATS resume checker](/upload-resume), which shows the parsed fields as well as a score. If the checker reads your dates and titles correctly, Workday almost certainly will. If it does not, fix the layout first.
+You can see roughly what Workday will extract by running the file through a free [ATS resume checker](/resume-checker), which shows the parsed fields as well as a score. If the checker reads your dates and titles correctly, Workday almost certainly will. If it does not, fix the layout first.
 
 ## Fields Workday Cares About That Resumes Often Omit
 

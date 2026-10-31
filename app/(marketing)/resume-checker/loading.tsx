@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function UploadLoading() {
+export default function ResumeCheckerLoading() {
   return (
     <div className="container mx-auto px-4 py-16 max-w-2xl space-y-8">
       <div className="text-center space-y-3">

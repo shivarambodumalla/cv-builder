@@ -550,7 +550,7 @@ Many agencies use automated systems to route and sort applications before human 
 
 ## Next Step
 
-Check that the plain-text version of your federal resume parses cleanly with the free [ATS resume checker](/upload-resume), then compare each duty paragraph against the announcement's specialized experience statement before you submit.
+Check that the plain-text version of your federal resume parses cleanly with the free [ATS resume checker](/resume-checker), then compare each duty paragraph against the announcement's specialized experience statement before you submit.
 `,
   },
 ];

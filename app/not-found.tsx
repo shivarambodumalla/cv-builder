@@ -55,7 +55,7 @@ export default function NotFound() {
       {/* CTAs */}
       <div className="mt-8 flex flex-col sm:flex-row gap-3">
         <Button size="lg" className="h-12 px-6 bg-[#065F46] hover:bg-[#064E3B]" asChild>
-          <Link href="/upload-resume">
+          <Link href="/resume-checker">
             Analyse my CV <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -72,7 +72,7 @@ export default function NotFound() {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
           {[
             { href: "/", label: "Home" },
-            { href: "/upload-resume", label: "ATS checker" },
+            { href: "/resume-checker", label: "ATS checker" },
             { href: "/resumes", label: "Resume templates" },
             { href: "/interview-prep", label: "Interview coach" },
             { href: "/pricing", label: "Pricing" },

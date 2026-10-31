@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
     pvHomepage,
     pvPricing,
     pvUpload,
+    pvChecker,
     pvLogin,
     pvResumes,
     // Unique anonymous visitors (across all public pages)
@@ -61,7 +62,10 @@ export async function GET(request: NextRequest) {
     // Anonymous page views
     pvRpc("/"),
     pvRpc("/pricing"),
+    // The checker moved from /upload-resume on 2026-10-31; count both so the
+    // step keeps its history.
     pvRpc("/upload-resume"),
+    pvRpc("/resume-checker"),
     pvRpc("/login"),
     pvRpc("/resumes"),
     // Unique anonymous visitors
@@ -99,7 +103,7 @@ export async function GET(request: NextRequest) {
     { key: "pv_homepage", label: "Homepage", count: Number(pvHomepage.data?.total ?? 0), icon: "home" },
     { key: "pv_resumes", label: "Templates", count: Number(pvResumes.data?.total ?? 0), icon: "file-text" },
     { key: "pv_pricing", label: "Pricing", count: Number(pvPricing.data?.total ?? 0), icon: "credit-card" },
-    { key: "pv_upload", label: "Upload Page", count: Number(pvUpload.data?.total ?? 0), icon: "upload" },
+    { key: "pv_upload", label: "Resume Checker", count: Number(pvUpload.data?.total ?? 0) + Number(pvChecker.data?.total ?? 0), icon: "upload" },
     { key: "pv_login", label: "Login Page", count: Number(pvLogin.data?.total ?? 0), icon: "log-in" },
   ];
 
@@ -185,7 +189,7 @@ export async function GET(request: NextRequest) {
   // ── Page-level visits (public + private) ──
   // Public pages (anonymous aggregate counts from page_views table)
   const publicPaths = [
-    "/", "/pricing", "/upload-resume", "/login", "/register", "/resumes",
+    "/", "/pricing", "/resume-checker", "/upload-resume", "/login", "/register", "/resumes",
     "/interview-prep", "/jobs", "/cv-review",
     "/ats-friendly-resume", "/cv-templates", "/free-resume-builder", "/resume-templates",
   ];

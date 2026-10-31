@@ -113,16 +113,16 @@ function getReturnUrl(ctx: SignupTriggerContext, pathname: string | null): strin
     case "role_page":
       return "/my-jobs";
     case "resumes_cta":
-      return "/upload-resume";
+      return "/resume-checker";
     case "jobs_cta":
       return "/my-jobs";
     case "ats_score":
-      return "/upload-resume";
+      return "/resume-checker";
     case "timed":
     case "exit_intent": {
       // Map marketing pages to their authenticated equivalents
       if (pathname === "/jobs" || pathname?.startsWith("/jobs/")) return "/my-jobs";
-      if (pathname === "/resumes") return "/upload-resume";
+      if (pathname === "/resumes") return "/resume-checker";
       if (pathname === "/interview-prep") return "/interview-coach";
       return null; // default → /dashboard via callback
     }

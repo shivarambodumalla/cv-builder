@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
-import { Upload, BarChart3, Search, Lightbulb, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, Sparkles, Shield, Zap, PenLine, ClipboardPaste } from "lucide-react";
+import { Upload, BarChart3, Search, Lightbulb, AlertCircle, RotateCcw, FileText, Brain, CheckCircle2, Shield, Zap, PenLine, ClipboardPaste } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ const OPTIONS: { key: UploadMode; icon: React.ElementType; title: string; desc: 
   { key: "scratch", icon: PenLine, title: "Start from scratch", desc: "Build your resume from a blank template" },
 ];
 
-export function UploadResumeContent() {
+export function ResumeCheckerContent() {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
   const searchParams = useSearchParams();
@@ -240,21 +240,8 @@ export function UploadResumeContent() {
 
   // ─── MAIN FORM ───
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-12 md:py-20">
+    <div className="container mx-auto max-w-2xl px-4 pt-10 pb-12 md:pb-20">
       <div className="space-y-10">
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-            <Sparkles className="h-4 w-4" /> Free ATS Analysis
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Get your ATS score
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            Upload your resume and see exactly what&apos;s holding you back. Takes under 60 seconds.
-          </p>
-        </div>
-
         {/* 3 option cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {OPTIONS.map((opt) => (

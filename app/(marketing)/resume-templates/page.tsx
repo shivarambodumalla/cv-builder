@@ -145,7 +145,7 @@ export default async function ResumeTemplatesPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Get my free ATS score</Link>
+                <Link href="/resume-checker">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Start from scratch free</Link>
@@ -330,7 +330,7 @@ export default async function ResumeTemplatesPage() {
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" asChild>
-                <Link href="/upload-resume">Upload & score my resume free</Link>
+                <Link href="/resume-checker">Upload & score my resume free</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="/login">Start from scratch</Link>

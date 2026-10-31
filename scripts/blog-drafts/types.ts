@@ -24,5 +24,5 @@ export const TEMPLATES_MD = `
 export const NEXT_STEP_MD = `
 ## Next Step
 
-Upload your resume to the free [ATS resume checker](/upload-resume) to see what an employer's system extracts from it, then fix the gaps before you apply.
+Upload your resume to the free [ATS resume checker](/resume-checker) to see what an employer's system extracts from it, then fix the gaps before you apply.
 `;

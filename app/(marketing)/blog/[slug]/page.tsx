@@ -248,7 +248,7 @@ export default async function BlogPostPage({
               heading="Is your CV getting filtered out?"
               subtext="Check your ATS score in 60 seconds and fix issues with AI."
               buttonText="Scan my CV free"
-              buttonHref="/upload-resume"
+              buttonHref="/resume-checker"
               trustItems={["Free to start", "No credit card", "80+ score guaranteed"]}
             />
           </div>

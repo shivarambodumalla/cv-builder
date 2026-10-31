@@ -73,7 +73,7 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
           </ul>
 
           <Link
-            href="/upload-resume"
+            href="/resume-checker"
             className="block w-full rounded-xl border border-[#065F46]/30 bg-background px-6 py-3 text-center text-sm font-semibold text-[#065F46] hover:bg-[#065F46]/5 transition-colors"
           >
             Start free
@@ -218,7 +218,7 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
         <h2 className="text-2xl font-bold text-white">Still thinking about it?</h2>
         <p className="mt-2 text-sm text-green-200">Start free. No credit card needed. Upgrade when you&apos;re ready.</p>
         <Link
-          href="/upload-resume"
+          href="/resume-checker"
           className="mt-6 inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-base font-semibold text-[#065F46] hover:bg-white/90 transition-colors"
         >
           Analyze my resume free

@@ -138,7 +138,7 @@ export default function CvFormatIndexPage() {
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/upload-resume">Score my current CV</Link>
+                <Link href="/resume-checker">Score my current CV</Link>
               </Button>
             </div>
           </div>

@@ -59,7 +59,7 @@ If the answer is no to all — do not implement.
 
 ## Route Groups
 
-- (marketing) — public: /, /pricing, /upload-resume, /resumes, /interview-coach, /career-path, /privacy, /terms (/jobs is hidden, see Jobs)
+- (marketing) — public: /, /pricing, /resume-checker (was /upload-resume, 301s), /resumes, /interview-coach, /career-path, /privacy, /terms (/jobs is hidden, see Jobs)
 - (auth) — /login, /register (Google OAuth only)
 - (app) — authenticated: /dashboard, /billing, /interview-coach (renamed from /stories)
 - (editor) — /resume/[id] (two-panel resume editor)

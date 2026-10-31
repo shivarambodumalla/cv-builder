@@ -162,7 +162,7 @@ const FAQS: Record<string, QA[]> = {
     ["Is there a free alternative to Resume.io?", "Yes. CVEdge builds and exports resumes free with no watermark, and adds an ATS score, AI bullet rewrites and job-description matching that Resume.io does not include. Canva (design-first) and Google Docs templates are other free options."],
     ["Can I export a resume from Resume.io for free?", "Resume.io's free tier limits downloads; PDF export is part of the paid plan. Copying your content into a free builder takes a few minutes and avoids the renewal."],
     ["Does Resume.io pass ATS?", "Its simpler templates parse fine; the two-column and graphic ones can lose section order. Whatever builder you use, run the exported PDF through a free ATS check before applying."],
-    ["How do I move my resume from Resume.io to CVEdge?", "Export or copy the text, upload the PDF at thecvedge.com/upload-resume, and the parser rebuilds it into an editable resume with a score in under a minute."],
+    ["How do I move my resume from Resume.io to CVEdge?", "Export or copy the text, upload the PDF at thecvedge.com/resume-checker, and the parser rebuilds it into an editable resume with a score in under a minute."],
   ],
   "ai-resume-builder-vs-manual": [
     ["Can recruiters tell if a resume was written by AI?", "Often, when it is generic: inflated verbs, no specific numbers, and summaries that could describe anyone. They cannot tell when AI restructured bullets that already contained your real work and metrics."],
@@ -219,7 +219,7 @@ const FAQS: Record<string, QA[]> = {
     ["Is it worth applying without fixing my resume first?", "No. Every submission of a broken file is a wasted application; fixing the format once improves every application that follows."],
   ],
   "free-ats-checker-how-to-check-your-cv-score-in-2026": [
-    ["How can I check my resume's ATS score for free?", "Upload the PDF or Word file at thecvedge.com/upload-resume. It shows the parsed fields, a score across six categories and the specific issues, without an account or card."],
+    ["How can I check my resume's ATS score for free?", "Upload the PDF or Word file at thecvedge.com/resume-checker. It shows the parsed fields, a score across six categories and the specific issues, without an account or card."],
     ["What is a good ATS score?", "80 and above is interview-ready; 60 to 79 needs work, usually keywords or measurable results; under 60 almost always means a formatting problem that breaks parsing."],
     ["Is a free ATS checker as good as a paid one?", "For diagnosing parsing, structure, keywords and bullet quality, yes. Paid tools mostly add volume (more scans) and job-description matching, which CVEdge also includes on its free tier."],
     ["Will the checker share my resume?", "CVEdge processes the file to score it and does not sell or share resume content. You can delete the resume from your account at any time."],
@@ -321,7 +321,7 @@ const NEW_POSTS: NewPost[] = [
     read_time_minutes: 7,
     content_html: `<h1>US Resume Format 2026</h1>
 <p>American employers do not read CVs. They read resumes, and the difference is not only the word. A US resume is shorter, carries less personal information, leads with results rather than duties, and is printed on a different paper size from the document most of the world calls a CV. Candidates applying from the UK, India, the Gulf or Europe fail on these conventions far more often than they fail on qualifications.</p>
-<p>This guide sets out the format American recruiters expect in 2026, section by section. If you are converting an existing CV, read this first and then the <a href="/blog/convert-cv-to-us-resume">step-by-step conversion guide</a>. Check whatever you have now with the free <a href="/upload-resume">ATS resume checker</a>.</p>
+<p>This guide sets out the format American recruiters expect in 2026, section by section. If you are converting an existing CV, read this first and then the <a href="/blog/convert-cv-to-us-resume">step-by-step conversion guide</a>. Check whatever you have now with the free <a href="/resume-checker">ATS resume checker</a>.</p>
 
 <h2>One Page, Sometimes Two</h2>
 <p>One page is the rule for anyone with up to roughly ten years of experience. Two pages is accepted for senior managers, directors and specialists with long project histories. Three pages is never right outside academia and federal hiring. A US recruiter spends seconds on a first pass, and a long document reads as an inability to prioritise, not as depth.</p>
@@ -407,7 +407,7 @@ ${TEMPLATES_BLOCK}
 <p>No. In the US a CV is a long academic document listing publications, grants and teaching, used in academia, research and medicine. For every other job, the employer wants a resume, even if the posting says CV.</p>
 
 <h2>Next Step</h2>
-<p>Upload your current document to the free <a href="/upload-resume">ATS resume checker</a> to see what a US employer's system will extract from it, then fix the gaps before you apply.</p>`,
+<p>Upload your current document to the free <a href="/resume-checker">ATS resume checker</a> to see what a US employer's system will extract from it, then fix the gaps before you apply.</p>`,
   },
   {
     slug: "convert-cv-to-us-resume",
@@ -455,7 +455,7 @@ ${TEMPLATES_BLOCK}
 <p>US resumes usually say nothing about visa status; the application form asks. State it on the resume only when it removes friction: "US citizen" or "Green card holder, no sponsorship required" if you are applying from overseas, or "F-1 OPT, work-authorised through May 2027, STEM extension eligible" if you are a recent graduate. Never write that you need sponsorship in the header; answer that question honestly on the form. The <a href="/blog/us-resume-international-candidates-h1b-opt">international candidates guide</a> covers the detail.</p>
 
 <h2>Step 10: Check That It Parses</h2>
-<p>Upload the finished PDF to the free <a href="/upload-resume">ATS resume checker</a>. It shows the fields a Workday or Greenhouse parser would extract, a score across six categories, and the specific bullets that still lack results. Fix anything that comes out garbled before you send it.</p>
+<p>Upload the finished PDF to the free <a href="/resume-checker">ATS resume checker</a>. It shows the fields a Workday or Greenhouse parser would extract, a score across six categories, and the specific bullets that still lack results. Fix anything that comes out garbled before you send it.</p>
 
 <h2>A Conversion Checklist</h2>
 <ul>
@@ -490,7 +490,7 @@ ${TEMPLATES_BLOCK}
 <p>Yes. Keep a master document with everything, then produce a one-page US resume and a two-page CV from it as needed. Applying across markets with the wrong document is one of the most common reasons strong candidates hear nothing back.</p>
 
 <h2>Next Step</h2>
-<p>Build the converted version in the free <a href="/free-resume-builder">resume builder</a> on a Letter-size template, then check it with the <a href="/upload-resume">ATS checker</a> before your first US application.</p>`,
+<p>Build the converted version in the free <a href="/free-resume-builder">resume builder</a> on a Letter-size template, then check it with the <a href="/resume-checker">ATS checker</a> before your first US application.</p>`,
   },
   {
     slug: "us-resume-international-candidates-h1b-opt",
@@ -567,7 +567,7 @@ ${TEMPLATES_BLOCK}
 <p>Only if the employer configured the sponsorship question as a knockout, in which case nothing on the resume changes it. Where it is not a knockout, a precise, results-led resume that matches the posting is what gets you through.</p>
 
 <h2>Next Step</h2>
-<p>Check that your resume parses cleanly and that every role carries a result with the free <a href="/upload-resume">ATS resume checker</a>. Then apply to employers who can actually say yes.</p>`,
+<p>Check that your resume parses cleanly and that every role carries a result with the free <a href="/resume-checker">ATS resume checker</a>. Then apply to employers who can actually say yes.</p>`,
   },
 ];
 

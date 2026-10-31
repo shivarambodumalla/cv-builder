@@ -10,6 +10,7 @@ import { getLeafData } from "@/lib/resume-templates/data";
 import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
 import { getRoleContent } from "@/lib/roles/role-content";
 import { CareerPathCrossLink } from "@/components/career-path/role-page/career-path-cross-link";
+import { relatedRoles } from "@/lib/roles/related";
 
 /**
  * A page is only worth indexing when there is hand-written material behind it —
@@ -87,6 +88,7 @@ export default async function RoleResumeExamplePage({
 
   const data = getRoleExampleData(slug) ?? generateGenericExampleData(role.label);
   const content = getRoleContent(slug);
+  const otherExamples = relatedRoles(slug, ALL_ROLES.filter((r) => hasRealContent(r.slug)));
   // Prefer the hand-written role FAQ; fall back to the generic set only for
   // roles that do not have one yet.
   const faqs = content ? content.faq : buildFaqs(role.label);
@@ -126,7 +128,7 @@ export default async function RoleResumeExamplePage({
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Get my free ATS score</Link>
+                <Link href="/resume-checker">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Build {role.label} resume free</Link>
@@ -502,6 +504,24 @@ export default async function RoleResumeExamplePage({
         </>
       )}
 
+      {/* Other published examples — internal linking between real pages only */}
+      {otherExamples.length > 0 && (
+        <section className="mx-auto max-w-3xl mb-14">
+          <h2 className="text-sm font-semibold mb-3">Other resume examples</h2>
+          <div className="flex flex-wrap gap-2">
+            {otherExamples.map((r) => (
+              <Link
+                key={r.slug}
+                href={`/resume-examples/${r.slug}`}
+                className="rounded-full border bg-card px-3 py-1.5 text-xs hover:bg-accent transition-colors"
+              >
+                {r.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* FAQ */}
       <div className="mx-auto max-w-3xl mb-14">
         <h2 className="text-xl font-bold tracking-tight mb-6">
@@ -533,7 +553,7 @@ export default async function RoleResumeExamplePage({
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>
-            <Link href="/upload-resume">Upload my resume free</Link>
+            <Link href="/resume-checker">Upload my resume free</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/login">Start from scratch</Link>

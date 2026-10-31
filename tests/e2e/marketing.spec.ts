@@ -17,7 +17,7 @@ test.describe("Marketing Pages", () => {
   });
 
   test("Upload resume page loads", async ({ page }) => {
-    await page.goto("/upload-resume", { waitUntil: "domcontentloaded" });
+    await page.goto("/resume-checker", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).toBeVisible({ timeout: 15000 });
     const text = await page.textContent("body");
     expect(text).toMatch(/upload|cv|resume/i);

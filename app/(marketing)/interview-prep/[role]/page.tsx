@@ -6,6 +6,7 @@ import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getRoleContent, rolesWithContent } from "@/lib/roles/role-content";
 import { CareerPathCrossLink } from "@/components/career-path/role-page/career-path-cross-link";
+import { relatedRoles } from "@/lib/roles/related";
 
 export const revalidate = 3600;
 
@@ -84,11 +85,12 @@ export default async function RoleInterviewPrepPage({
     );
   }
 
-  const otherGuides = rolesWithContent()
-    .filter((s) => s !== slug)
-    .map((s) => ROLE_MAP.get(s))
-    .filter((r): r is { label: string; slug: string } => Boolean(r))
-    .slice(0, 8);
+  const otherGuides = relatedRoles(
+    slug,
+    rolesWithContent()
+      .map((s) => ROLE_MAP.get(s))
+      .filter((r): r is { label: string; slug: string } => Boolean(r))
+  );
 
   return (
     <>

@@ -67,7 +67,7 @@ export async function updateSession(request: NextRequest) {
     // Check for template selection cookie — redirect to upload instead of dashboard
     const templateCookie = request.cookies.get("cvedge_template")?.value;
     if (templateCookie) {
-      url.pathname = "/upload-resume";
+      url.pathname = "/resume-checker";
       url.searchParams.set("template", templateCookie);
       const res = NextResponse.redirect(url);
       res.cookies.delete("cvedge_template");

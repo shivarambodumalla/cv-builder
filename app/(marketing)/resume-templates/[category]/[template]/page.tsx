@@ -194,7 +194,7 @@ export default async function TemplateLeafPage({
                 <p className="text-base text-muted-foreground mb-6 leading-relaxed">{leaf.headline}</p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button size="lg" className="h-12 px-8 shadow-md shadow-primary/20" asChild>
-                    <Link href="/upload-resume">Upload my resume and use this template</Link>
+                    <Link href="/resume-checker">Upload my resume and use this template</Link>
                   </Button>
                   <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                     <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>
@@ -244,7 +244,7 @@ export default async function TemplateLeafPage({
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button asChild>
-                      <Link href="/upload-resume">Upload my resume</Link>
+                      <Link href="/resume-checker">Upload my resume</Link>
                     </Button>
                     <Button variant="outline" asChild>
                       <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>
@@ -397,7 +397,7 @@ export default async function TemplateLeafPage({
             </p>
             <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" asChild>
-                <Link href="/upload-resume">Upload my resume free</Link>
+                <Link href="/resume-checker">Upload my resume free</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>

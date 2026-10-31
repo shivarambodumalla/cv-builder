@@ -114,7 +114,7 @@ export default async function CvFormatPage({
                     </a>
                   </Button>
                   <Button size="lg" variant="outline" className="h-12 px-8" asChild>
-                    <Link href="/upload-resume">Score my current CV</Link>
+                    <Link href="/resume-checker">Score my current CV</Link>
                   </Button>
                 </div>
                 <p className="mt-4 text-sm text-muted-foreground">

@@ -303,7 +303,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
             <Link href="/interview-coach" className="bg-white/10 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-white/20 transition-colors flex items-center gap-1.5">
               <BookOpen className="h-4 w-4" /> Interview Coach
             </Link>
-            <Link href="/upload-resume" data-testid="btn-create-resume" className="bg-success text-white font-semibold rounded-lg px-4 py-2 text-sm hover:bg-success/90 transition-colors flex items-center gap-1.5">
+            <Link href="/resume-checker" data-testid="btn-create-resume" className="bg-success text-white font-semibold rounded-lg px-4 py-2 text-sm hover:bg-success/90 transition-colors flex items-center gap-1.5">
               <Plus className="h-4 w-4" /> New Resume
             </Link>
           </div>
@@ -514,7 +514,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
                   </div>
 
                   <Link
-                    href="/upload-resume"
+                    href="/resume-checker"
                     data-testid="btn-create-resume"
                     className="inline-flex items-center justify-center rounded-lg bg-[#065F46] px-7 py-2.5 text-sm font-semibold text-white hover:bg-[#065F46]/90 transition-all hover:shadow-lg gap-2"
                   >

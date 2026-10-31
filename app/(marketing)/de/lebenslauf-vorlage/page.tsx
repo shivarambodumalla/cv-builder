@@ -137,7 +137,7 @@ export default function LebenslaufVorlagePage() {
                 </a>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
-                <Link href="/upload-resume">Lebenslauf online erstellen</Link>
+                <Link href="/resume-checker">Lebenslauf online erstellen</Link>
               </Button>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
@@ -245,7 +245,7 @@ export default function LebenslaufVorlagePage() {
                 </a>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/upload-resume">Lebenslauf kostenlos prüfen lassen</Link>
+                <Link href="/resume-checker">Lebenslauf kostenlos prüfen lassen</Link>
               </Button>
             </div>
           </div>

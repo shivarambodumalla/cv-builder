@@ -73,6 +73,9 @@ const nextConfig = {
     return [
       ...oldBlogRedirects,
       ...oldThumbnailRedirects,
+      // The checker's URL now matches what people search for ("resume checker").
+      // Query strings (?template=, ?role=) carry through the redirect.
+      { source: "/upload-resume", destination: "/resume-checker", permanent: true },
       { source: "/stories", destination: "/interview-coach", permanent: true },
       { source: "/stories/:path*", destination: "/interview-coach", permanent: true },
       // The Jobs feature is hidden, not removed. Temporary redirects keep its

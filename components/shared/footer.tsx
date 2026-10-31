@@ -39,10 +39,11 @@ const socialLinks = [
 const productLinks: { label: string; href: string; external?: boolean }[] = [
   { label: "Review by Experts", href: "/cv-review" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Upload Resume", href: "/upload-resume" },
+  { label: "Resume Checker", href: "/resume-checker" },
   { label: "Resume Templates", href: "/resume-templates" },
   // High-priority SEO pages that previously had no inbound internal links.
   { label: "CV Templates", href: "/cv-templates" },
+  { label: "CV Formats", href: "/cv-format" },
   { label: "Free Resume Builder", href: "/free-resume-builder" },
   { label: "Interview Coach", href: "/interview-prep" },
   { label: "Career Path Generator", href: "/career-path" },
@@ -159,7 +160,7 @@ export function Footer() {
             </a>
             <div className="mt-6">
               <Link
-                href="/upload-resume"
+                href="/resume-checker"
                 className="inline-flex items-center gap-2 rounded-lg bg-[#1a7a6d] px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-[#1f8f80] hover:shadow-[0_0_24px_rgba(26,122,109,0.35)] hover:scale-[1.02] active:scale-[0.98]"
               >
                 Upload Resume

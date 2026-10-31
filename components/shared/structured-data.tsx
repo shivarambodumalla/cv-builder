@@ -116,7 +116,7 @@ interface ServiceJsonLdProps {
 }
 
 /**
- * Service JSON-LD — for tool/feature landing pages like /upload-resume, /interview-coach.
+ * Service JSON-LD — for tool/feature landing pages like /resume-checker, /interview-coach.
  */
 export function ServiceJsonLd({
   name,

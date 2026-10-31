@@ -136,7 +136,7 @@ export function makeBuilders(spec: FormatSpec) {
       spacing: { before: 60 },
       children: [
         new TextRun({
-          text: "Want it scored before you apply? Upload it at thecvedge.com/upload-resume for a free ATS check.",
+          text: "Want it scored before you apply? Upload it at thecvedge.com/resume-checker for a free ATS check.",
           size: 16,
           italics: true,
           color: MUTED,

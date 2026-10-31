@@ -179,7 +179,7 @@ export function TailorCta({
     actions = (
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link
-          href={`/upload-resume?role=${encodeURIComponent(role)}`}
+          href={`/resume-checker?role=${encodeURIComponent(role)}`}
           className={CP_BUTTON.green}
           onClick={() => trackCareerPathEvent("tailor_clicked")}
         >

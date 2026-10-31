@@ -29,7 +29,7 @@ export function UploadCvNudge() {
       title="Upload your resume. Takes 30 seconds"
       subtitle="Get your ATS score and start improving."
       ctaText="Upload now"
-      onAction={() => router.push("/upload-resume")}
+      onAction={() => router.push("/resume-checker")}
       cooldownDays={7}
       enabled={eligible}
       icon={

@@ -472,7 +472,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
             <p className="text-sm font-medium text-[#065F46]">Upload your CV for personalised job matches</p>
             <p className="text-xs text-[#065F46]/60">Get better recommendations based on your skills and experience</p>
           </div>
-          <Link href="/upload-resume">
+          <Link href="/resume-checker">
             <Button size="sm" className="bg-[#065F46] hover:bg-[#065F46]/90 text-white text-xs">
               Upload CV
             </Button>
@@ -636,7 +636,7 @@ export function JobsContent({ cvs, preferredLocationsSet, defaultCvId, defaultKe
                   <p className="mt-1 text-sm text-[#065F46]/70 max-w-sm mx-auto">
                     We analyse your skills, experience, and preferences to find the best jobs for you. You can still search manually above.
                   </p>
-                  <Link href="/upload-resume">
+                  <Link href="/resume-checker">
                     <Button className="mt-5 bg-[#065F46] hover:bg-[#065F46]/90 text-white px-8">Upload CV</Button>
                   </Link>
                 </div>

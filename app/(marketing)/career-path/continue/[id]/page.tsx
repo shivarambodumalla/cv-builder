@@ -79,7 +79,7 @@ export default async function CareerPathContinuePage({
       console.error("[career-path/continue] cvs lookup failed:", error.message);
 
     if (!cvs || cvs.length === 0) {
-      redirect(`/upload-resume?role=${encodeURIComponent(selected.title)}`);
+      redirect(`/resume-checker?role=${encodeURIComponent(selected.title)}`);
     }
     if (cvs.length === 1) {
       try {

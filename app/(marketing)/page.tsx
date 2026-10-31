@@ -138,7 +138,7 @@ export default async function HomePage() {
               </p>
               <div className="flex w-full flex-col sm:w-auto sm:flex-row items-stretch sm:items-center gap-3 mt-1">
                 <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                  <Link href="/upload-resume">Scan my resume free</Link>
+                  <Link href="/resume-checker">Scan my resume free</Link>
                 </Button>
               </div>
 
@@ -293,7 +293,7 @@ export default async function HomePage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Land your next role faster</h2>
                 <p className="mt-1.5 text-white/70 text-sm">AI-powered resume builder and ATS scorer</p>
                 <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-[#34D399] hover:bg-[#2fc48d] text-[#065F46] shadow-md" asChild>
-                  <Link href="/upload-resume">Get my free ATS score</Link>
+                  <Link href="/resume-checker">Get my free ATS score</Link>
                 </Button>
               </div>
               {/* Stat cards */}

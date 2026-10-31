@@ -96,7 +96,7 @@ const POSTS: PostUpdate[] = [
 <p>Treat the score as a floor to clear rather than a number to maximise. Once you are consistently above 85, further effort is better spent on the strength of your bullets than on chasing the last few points.</p>
 
 <h2>Check where you actually stand</h2>
-<p>Guessing which of the four problems applies to you is slower than measuring it. <a href="/upload-resume">Upload your CV for a free ATS score</a> and you will see the category-level breakdown — which area is costing you points and the specific issues inside it — so you can start with whichever fix moves you the furthest.</p>`,
+<p>Guessing which of the four problems applies to you is slower than measuring it. <a href="/resume-checker">Upload your CV for a free ATS score</a> and you will see the category-level breakdown — which area is costing you points and the specific issues inside it — so you can start with whichever fix moves you the furthest.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -167,7 +167,7 @@ const POSTS: PostUpdate[] = [
 <p>Tailoring per application is genuinely effective and does not require starting over. In practice it means adjusting three things: the summary's opening line to match the target role, the ordering of your skills so the relevant ones appear first, and two or three bullets reworded toward the posting's emphasis. That takes about ten minutes and captures most of the benefit.</p>
 
 <h2>Find your gaps automatically</h2>
-<p>Comparing your CV against a posting by hand is slow and easy to get wrong. Paste any job description into <a href="/upload-resume">CVEdge's Job Match</a> and it identifies which keywords are missing, which are already covered, and which would raise your match score most — so you can tailor from evidence rather than guesswork.</p>`,
+<p>Comparing your CV against a posting by hand is slow and easy to get wrong. Paste any job description into <a href="/resume-checker">CVEdge's Job Match</a> and it identifies which keywords are missing, which are already covered, and which would raise your match score most — so you can tailor from evidence rather than guesswork.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -228,7 +228,7 @@ const POSTS: PostUpdate[] = [
 <p>Those two things together handle everything an ATS genuinely does, and they leave you with a CV that also works when it reaches a person — which is where the actual decision gets made.</p>
 
 <h2>See what the parser sees</h2>
-<p>The fastest way to find parsing problems is to look at the extracted output rather than the design. <a href="/upload-resume">Upload your CV to CVEdge</a> for a free breakdown of how it parses, which sections are recognised, and what a recruiter's search would find.</p>`,
+<p>The fastest way to find parsing problems is to look at the extracted output rather than the design. <a href="/resume-checker">Upload your CV to CVEdge</a> for a free breakdown of how it parses, which sections are recognised, and what a recruiter's search would find.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -298,7 +298,7 @@ const POSTS: PostUpdate[] = [
 <p>Open your CV, select all, copy, and paste into a plain text editor. What appears is roughly what a parser extracts. Check three things: are your contact details present, is the reading order sensible, and did every section survive? If any answer is no, that is a format problem worth fixing before you apply anywhere else.</p>
 
 <h2>Start from a format that already parses</h2>
-<p>Rebuilding a layout to be parser-safe is fiddly. Every CVEdge template is single-column-safe by construction, with contact details in the body and no tables or image-based text — and you can <a href="/upload-resume">check any CV's parsing for free</a> to see exactly how it extracts before you send it.</p>`,
+<p>Rebuilding a layout to be parser-safe is fiddly. Every CVEdge template is single-column-safe by construction, with contact details in the body and no tables or image-based text — and you can <a href="/resume-checker">check any CV's parsing for free</a> to see exactly how it extracts before you send it.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -374,7 +374,7 @@ const POSTS: PostUpdate[] = [
 </ul>
 
 <h2>Next steps</h2>
-<p>See the full breakdown of <a href="/resume-examples/frontend-developer">front-end developer CV examples</a>, or prepare for the loop with <a href="/interview-prep/frontend-developer">front-end interview questions</a> and what each round is scored on. You can also <a href="/upload-resume">check your CV's ATS score free</a> to see which sections are costing you points.</p>`,
+<p>See the full breakdown of <a href="/resume-examples/frontend-developer">front-end developer CV examples</a>, or prepare for the loop with <a href="/interview-prep/frontend-developer">front-end interview questions</a> and what each round is scored on. You can also <a href="/resume-checker">check your CV's ATS score free</a> to see which sections are costing you points.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -444,7 +444,7 @@ const POSTS: PostUpdate[] = [
 <p>It is worth knowing that the highest compensation bands cluster at companies that hire by discipline. A full stack engineer with genuine depth in one area typically interviews successfully for the specialist role too — which is often the more reliable route to those bands.</p>
 
 <h2>Next steps</h2>
-<p>See <a href="/resume-examples/full-stack-developer">full stack developer CV examples</a> with level-by-level positioning, or work through <a href="/interview-prep/full-stack-developer">full stack interview questions</a> covering the seam rounds candidates most often fail. You can also <a href="/upload-resume">check your CV's ATS score free</a>.</p>`,
+<p>See <a href="/resume-examples/full-stack-developer">full stack developer CV examples</a> with level-by-level positioning, or work through <a href="/interview-prep/full-stack-developer">full stack interview questions</a> covering the seam rounds candidates most often fail. You can also <a href="/resume-checker">check your CV's ATS score free</a>.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -514,7 +514,7 @@ const POSTS: PostUpdate[] = [
 <p>Most CVs are written entirely for the second pass and lose at the first. Fixing the top third is usually the highest-return edit available.</p>
 
 <h2>See how yours scans</h2>
-<p><a href="/upload-resume">Upload your CV to CVEdge free</a> for a breakdown of how it parses, whether your summary and titles are doing their job, and which sections are costing you attention in that first pass.</p>`,
+<p><a href="/resume-checker">Upload your CV to CVEdge free</a> for a breakdown of how it parses, whether your summary and titles are doing their job, and which sections are costing you attention in that first pass.</p>`,
   },
 
   // ── Second pass ─────────────────────────────────────────────────────────────
@@ -576,7 +576,7 @@ const POSTS: PostUpdate[] = [
 <p>They overlap but weight differently. DevOps centres on delivery — pipelines, infrastructure as code, developer experience — measured on how fast and safely teams ship. SRE centres on reliability of running systems, formalised through SLOs and error budgets, with more software engineering and more on-call. Loops reflect this: SRE includes more coding, DevOps more tooling and pipeline design. Position your CV for whichever you are applying to.</p>
 
 <h2>Next steps</h2>
-<p>See <a href="/resume-examples/devops-engineer">DevOps engineer CV examples</a> with level-by-level positioning, or work through <a href="/interview-prep/devops-engineer">DevOps interview questions</a> — including the live troubleshooting round that carries the most weight. You can also <a href="/upload-resume">check your CV's ATS score free</a>.</p>`,
+<p>See <a href="/resume-examples/devops-engineer">DevOps engineer CV examples</a> with level-by-level positioning, or work through <a href="/interview-prep/devops-engineer">DevOps interview questions</a> — including the live troubleshooting round that carries the most weight. You can also <a href="/resume-checker">check your CV's ATS score free</a>.</p>`,
   },
 
   {
@@ -628,7 +628,7 @@ const POSTS: PostUpdate[] = [
 <p>Aim for a result on most bullets rather than all of them. Some genuinely have none, and forcing one produces obviously manufactured figures — which does more damage than the missing number would have.</p>
 
 <h2>Rewrite yours automatically</h2>
-<p>If you are staring at a bullet and cannot see the version with the result in it, <a href="/upload-resume">upload your CV to CVEdge</a>. The AI rewriter converts duty-shaped bullets into outcome-shaped ones and flags where a number is missing, using <code>[X]</code> placeholders rather than inventing figures.</p>`,
+<p>If you are staring at a bullet and cannot see the version with the result in it, <a href="/resume-checker">upload your CV to CVEdge</a>. The AI rewriter converts duty-shaped bullets into outcome-shaped ones and flags where a number is missing, using <code>[X]</code> placeholders rather than inventing figures.</p>`,
   },
 
   {
@@ -694,7 +694,7 @@ const POSTS: PostUpdate[] = [
 </ul>
 
 <h2>Next steps</h2>
-<p>See <a href="/resume-examples/security-analyst">security analyst CV examples</a>, or <a href="/upload-resume">check your CV's ATS score free</a> to find which sections are costing you points before you apply.</p>`,
+<p>See <a href="/resume-examples/security-analyst">security analyst CV examples</a>, or <a href="/resume-checker">check your CV's ATS score free</a> to find which sections are costing you points before you apply.</p>`,
   },
 
   {
@@ -755,7 +755,7 @@ const POSTS: PostUpdate[] = [
 <p>Judge a resume tool by whether it refuses to invent. Ours uses <code>[X]</code> placeholders where a metric is missing rather than filling in a plausible figure, because a blank you fill in honestly is worth more than a number you have to defend. That constraint is the difference between a tool that helps and one that hands you a problem.</p>
 
 <h2>Try the middle path</h2>
-<p><a href="/upload-resume">Upload your CV to CVEdge</a> for a free ATS score and bullet-level rewrite suggestions — you keep the underlying claims, the tool handles structure and keyword alignment, and nothing gets fabricated on your behalf.</p>`,
+<p><a href="/resume-checker">Upload your CV to CVEdge</a> for a free ATS score and bullet-level rewrite suggestions — you keep the underlying claims, the tool handles structure and keyword alignment, and nothing gets fabricated on your behalf.</p>`,
   },
 
   {
@@ -802,7 +802,7 @@ const POSTS: PostUpdate[] = [
 <p>Get the substance right once, then adjust the regional presentation per application. That is a ten-minute change, not a rewrite.</p>
 
 <h2>Build both versions</h2>
-<p>CVEdge lets you keep multiple versions of the same underlying content, so you can maintain a photo-free two-page version for UK and US applications and a fuller version for the Gulf without rewriting anything. <a href="/upload-resume">Start free</a>, or read our region-specific guides on <a href="/blog/uae-resume-format-2026">UAE resume format</a> and <a href="/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV format</a>.</p>`,
+<p>CVEdge lets you keep multiple versions of the same underlying content, so you can maintain a photo-free two-page version for UK and US applications and a fuller version for the Gulf without rewriting anything. <a href="/resume-checker">Start free</a>, or read our region-specific guides on <a href="/blog/uae-resume-format-2026">UAE resume format</a> and <a href="/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV format</a>.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────

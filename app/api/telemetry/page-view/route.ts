@@ -6,7 +6,7 @@ import { careerPathPageSlugs } from "@/lib/roles/career-moves/pages";
 // GDPR-safe: no personal data stored, just path + daily aggregate count
 
 const ALLOWED_EXACT = new Set([
-  "/", "/pricing", "/upload-resume", "/login", "/register", "/resumes",
+  "/", "/pricing", "/resume-checker", "/login", "/register", "/resumes",
   "/interview-prep", "/jobs", "/cv-review", "/cv-review/new",
   "/ats-friendly-resume", "/cv-templates", "/free-resume-builder",
   "/resume-templates", "/privacy", "/terms", "/unsubscribe", "/career-path",

@@ -60,7 +60,7 @@ const EXTENSIONS: Extension[] = [
 
 <h2>Format</h2>
 <p>One page under about ten years, two beyond it. Single column, standard headings, contact details in the body rather than a document header — the same parsing rules apply to you as to everyone else, and the irony of an automation specialist submitting an unparseable document is not lost on reviewers.</p>
-<p>Check yours with the <a href="https://www.thecvedge.com/upload-resume">free ATS checker</a>, which shows the extracted fields as well as a score.</p>`,
+<p>Check yours with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a>, which shows the extracted fields as well as a score.</p>`,
   },
   // ──────────────────────────────────────────────────────────────────────────
   {

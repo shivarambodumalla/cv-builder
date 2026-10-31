@@ -131,7 +131,7 @@ export default function AtsFriendlyResumePage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
-                <Link href="/upload-resume">Get my free ATS score</Link>
+                <Link href="/resume-checker">Get my free ATS score</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8" asChild>
                 <Link href="/login">Build ATS resume from scratch</Link>
@@ -325,7 +325,7 @@ export default function AtsFriendlyResumePage() {
               Upload your resume now for a free ATS score. Understand exactly what to fix, then fix it with AI.
             </p>
             <Button size="lg" className="mt-6" asChild>
-              <Link href="/upload-resume">Get my free ATS score</Link>
+              <Link href="/resume-checker">Get my free ATS score</Link>
             </Button>
           </div>
         </div>

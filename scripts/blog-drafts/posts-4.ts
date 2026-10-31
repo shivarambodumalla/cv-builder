@@ -490,7 +490,7 @@ If you take contract work during the search, list it as a role with dates and re
 3. Rewrite the summary to describe you, not the old job.
 4. Add a scope line and result-led bullets to the most recent role.
 5. Update LinkedIn to match: headline, about section, end date. Recruiters cross-check.
-6. Run the resume through an [ATS checker](/upload-resume) and fix anything that parses badly. If your old employer's template was a two-column design, this is the moment to move to a single column; the [ATS format guide](/blog/best-resume-format-for-ats-templates-that-actually-work) explains why.
+6. Run the resume through an [ATS checker](/resume-checker) and fix anything that parses badly. If your old employer's template was a two-column design, this is the moment to move to a single column; the [ATS format guide](/blog/best-resume-format-for-ats-templates-that-actually-work) explains why.
 7. Build a tailored version for the first posting you apply to, then reuse it. The [tailoring guide](/blog/how-to-tailor-your-cv-for-a-job-description) covers the five-minute version.
 
 ## What Not to Do

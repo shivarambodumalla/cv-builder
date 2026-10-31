@@ -89,7 +89,7 @@ export function MobileNav() {
               <Link href="/login" onClick={() => setOpen(false)} className="flex-1">
                 <Button variant="outline" size="sm" className="w-full">Sign in</Button>
               </Link>
-              <Link href="/upload-resume" onClick={() => setOpen(false)} className="flex-1">
+              <Link href="/resume-checker" onClick={() => setOpen(false)} className="flex-1">
                 <Button size="sm" className="w-full">Get started</Button>
               </Link>
             </div>

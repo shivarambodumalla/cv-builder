@@ -42,7 +42,7 @@ const TABS = [
       "80+ score guarantee for Pro users, or your money back",
     ],
     cta: "Get started free",
-    ctaLink: "/upload-resume",
+    ctaLink: "/resume-checker",
   },
   {
     id: "rewrite",
@@ -58,7 +58,7 @@ const TABS = [
       "CV Tailor: rewrite your entire CV specifically for a job description",
     ],
     cta: "Get started free",
-    ctaLink: "/upload-resume",
+    ctaLink: "/resume-checker",
   },
   {
     id: "scoring",
@@ -68,7 +68,7 @@ const TABS = [
     desc: "Six weighted categories, each with specific rules. You can see where every point comes from and fix issues one by one.",
     points: [],
     cta: "Get started free",
-    ctaLink: "/upload-resume",
+    ctaLink: "/resume-checker",
     isScoring: true,
   },
   {
@@ -86,7 +86,7 @@ const TABS = [
       "Salary Insights: market benchmarks for supported roles",
     ],
     cta: "Get started free",
-    ctaLink: "/upload-resume",
+    ctaLink: "/resume-checker",
   },
   {
     id: "export",

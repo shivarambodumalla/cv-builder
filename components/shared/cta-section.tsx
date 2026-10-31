@@ -14,7 +14,7 @@ export function CtaSection({
   heading = "Ready to see your ATS score?",
   subtext = "Under 60 seconds. Sign in free with Google.",
   buttonText = "Get started free",
-  buttonHref = "/upload-resume",
+  buttonHref = "/resume-checker",
   trustItems = ["Free to start", "No credit card", "Cancel anytime"],
 }: CtaSectionProps) {
   return (
