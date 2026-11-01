@@ -1165,6 +1165,294 @@ export const LEAF_GUIDANCE: Record<string, LeafGuidance> = {
     ],
   },
 
+  "creative/meridian-cv": {
+    bestFor:
+      "Meridian is built for candidates whose pitch is momentum: founders, early employees and growth or product leads applying to startups. The photo, pill title band and Key Achievements block in the sidebar let a reader take in who you are and what you have shipped before they reach your first role. Startup hiring is usually a founder or hiring manager reading a PDF someone forwarded, and that is the setting Meridian is designed for.",
+    sectionOrder: {
+      order: ["Sidebar: photo, contacts, key achievements, skills, training", "Main: name, title band, summary, experience, education"],
+      why: "Put Key Achievements high in the sidebar. A founder skimming your resume wants the three numbers that prove you can build, and the sidebar is read alongside the header. Education goes last in the main column unless you graduated in the last two years.",
+    },
+    sectionAdvice: [
+      { section: "Title band", advice: "Name the job you want, not the one you have. 'Head of Growth' or 'Founding Product Engineer' tells a startup reader where you fit in their team in four words." },
+      { section: "Key Achievements", advice: "Three wins with numbers: revenue grown, users gained, a round you helped raise, a product you took from zero to launch. These come from your Awards section, so add them there in the Content tab." },
+      { section: "Summary", advice: "Two sentences. What you build and the stage you do it best at, such as 'zero to one' or 'Series A to C scale-up'. Startups hire for stage fit as much as for skill." },
+      { section: "Experience", advice: "Lead each role with scope: team size, budget, what stage the company was at when you joined and when you left. Then the bullets, each with an outcome." },
+    ],
+    mistakes: [
+      "Sending Meridian through a large-company job portal. The icons and two columns are built for a person reading the PDF, not a parser. Keep a single-column version for portals.",
+      "Filling Key Achievements with duties instead of results. If a line has no number or named outcome, it belongs in Experience, not the sidebar.",
+      "Using a casual or cropped photo. The blob frame already adds personality, so the photo itself should be a clear, well-lit headshot.",
+      "Listing every tool you have touched in Skills. Pick the eight that matter for the role and let the rest go.",
+    ],
+    notFor: {
+      who: "Applicants going through large-company or government application portals",
+      instead: "the Sterling single-column layout",
+      insteadHref: "/resume-templates/ats-friendly/sterling-cv",
+    },
+    faqs: [
+      {
+        q: "What should a founder put on a resume after their startup?",
+        a: "Treat the company as a role: 'Co-founder and CEO, [Company], 2022 to 2025'. Then show what you built with numbers: revenue, users, team size, money raised. Be direct about how it ended, whether that was an acquisition, a wind-down or a pivot. Hiring managers respect a clear account of a failure far more than vague wording that makes them guess.",
+      },
+      {
+        q: "How many achievements should go in the Key Achievements block?",
+        a: "Three is the right number, four at most. Each should fit on one or two lines and carry a number or a named result. More than four turns the block into a second experience section and weakens every item in it.",
+      },
+    ],
+  },
+
+  "creative/linen-cv": {
+    bestFor:
+      "Linen suits candidates whose taste is part of what they are hired for: event and wedding planners, coordinators, interior and graphic designers, and anyone applying to a boutique studio or agency. Its only decorations are grey header blocks, a thin divider and small diamond markers, so the resume reads as considered rather than decorated. It shows you know when to stop, which is exactly the judgment these roles test.",
+    sectionOrder: {
+      order: ["Header: name and title", "Left: contact, education, skills", "Right: personal statement, work experience"],
+      why: "The right column is wider, so it holds the sections a reader judges you on: your statement and your experience. Contact, education and skills are reference material and sit on the left, where the diamond markers separate them cleanly.",
+    },
+    sectionAdvice: [
+      { section: "Personal statement", advice: "Three sentences. The kind of work you do, the clients or settings you do it for, and one result. Linen gives this block space, so a weak statement is very visible." },
+      { section: "Work experience", advice: "Use short paragraphs for roles where the story matters, such as a project you ran end to end, and bullets for roles with several separate wins. Keep it to one style per role." },
+      { section: "Skills", advice: "Six to ten items, one per line. Mix tools with practical skills, for example 'Vendor negotiation' next to 'Adobe InDesign'." },
+      { section: "Contact", advice: "Phone, email and a website or portfolio link. For creative roles the portfolio link is the most important line on the page." },
+    ],
+    mistakes: [
+      "Adding color to 'liven it up'. Linen works because it is restrained. If you want color, pick a template built for it.",
+      "Leaving the portfolio link out. The design implies you have work to show, so the reader will look for it.",
+      "Writing long paragraphs in every role. White space is part of the design, and dense text breaks it.",
+      "Using Linen for a high-volume portal application. It reads well in most systems, but a single-column layout removes the risk.",
+    ],
+    notFor: {
+      who: "Candidates applying mainly through corporate job portals",
+      instead: "the Classic single-column layout",
+      insteadHref: "/resume-templates/ats-friendly/classic-cv",
+    },
+    faqs: [
+      {
+        q: "Is a minimalist resume better than a creative one?",
+        a: "For most roles, yes. A minimalist resume puts the reader's attention on your content and parses more reliably. A colorful design only helps when the design itself is part of what you are being judged on, as in brand or art direction roles, and even then the portfolio usually does that job better.",
+      },
+      {
+        q: "Should a planner or coordinator include a portfolio?",
+        a: "If you can, yes. A one-page PDF or simple website with photos of events you ran, the budget and the guest count is strong evidence. Put the link in the contact block and mention one standout event in your personal statement.",
+      },
+    ],
+  },
+
+  "creative/graphite-cv": {
+    bestFor:
+      "Graphite is for people who want a resume that looks designed without using any color: UX and product designers, engineers and analysts at design-aware companies. The white card on a grey canvas and the pill headings give the page a clear structure, and the body stays single column, so it parses as cleanly as Classic. It signals care and judgment without asking the reader to forgive a busy layout.",
+    sectionOrder: {
+      order: ["Header: name, title, contact", "Summary", "Experience", "Projects", "Skills", "Education"],
+      why: "Experience comes straight after a short summary because that is what a hiring manager reads first. Designers and engineers should add Projects before Skills: a shipped project is stronger proof than a list of tools.",
+    },
+    sectionAdvice: [
+      { section: "Summary", advice: "Graphite justifies the summary text, so keep it to two or three full lines. A short summary leaves gaps that the justification makes more obvious." },
+      { section: "Experience", advice: "Role and company in bold, dates aligned to the right. For each role, lead with the product or system you worked on, then the results you drove." },
+      { section: "Projects", advice: "Two or three, each with the problem, what you did and the outcome. For designers, link the case study. For engineers, link the repo or the live product." },
+      { section: "Skills", advice: "The three-column grid fits about twelve items in four lines. Group by type, such as tools, methods and languages, and drop anything you would not want to be asked about." },
+    ],
+    mistakes: [
+      "Adding a strong accent color. The pills take a faint tint, which is enough. A saturated accent fights the monochrome design.",
+      "Writing a one-line summary. Justified text looks unfinished when it is that short.",
+      "Listing more than twelve skills. The grid gets crowded and the strongest items get lost.",
+      "Using Graphite in place of a portfolio for design roles. It shows judgment, but reviewers still need to see your work.",
+    ],
+    notFor: {
+      who: "Designers whose application is judged mainly on visual style, such as brand and art direction",
+      instead: "the Portrait layout",
+      insteadHref: "/resume-templates/creative/portrait-cv",
+    },
+    faqs: [
+      {
+        q: "Is a black and white resume a good idea?",
+        a: "Yes. It prints well, reads well on any screen and never clashes with the company's own brand. Recruiters judge the content, so a monochrome layout keeps their attention there. Graphite adds structure with grey shapes, so the page still looks considered.",
+      },
+      {
+        q: "What should a UX designer put on a one-page resume?",
+        a: "A two-line summary, three or four roles with the products you worked on and the results, two or three projects linked to case studies, and a short skills grid. Leave out process diagrams and long tool lists. The portfolio shows the process. The resume shows the impact.",
+      },
+    ],
+  },
+
+  "ats-friendly/sterling-cv": {
+    bestFor:
+      "Sterling is the safest choice when software reads your resume first: large-company portals, government applications and any role that gets hundreds of applicants. It is a single column of black text with standard headings, so nothing is lost when a parser reads it. The Technical Proficiencies table gives your skills a clear structure for the human who reads it next, without adding any risk for the system.",
+    sectionOrder: {
+      order: ["Header: name, contact", "Summary", "Technical proficiencies", "Experience", "Education", "Certifications"],
+      why: "Placing the skills table near the top puts your keywords where both a parser and a skimming recruiter find them first. If you have more than ten years of experience, move Experience above the table so your most recent role leads.",
+    },
+    sectionAdvice: [
+      { section: "Technical proficiencies", advice: "Three to five rows, each a clear category such as 'Analysis', 'Tools' or 'Languages', with four to eight items. Use the exact terms from the job postings you are targeting." },
+      { section: "Summary", advice: "Two or three lines with your title, years of experience and the area you specialize in. Include one or two keywords from the posting, written naturally." },
+      { section: "Experience", advice: "Company and location on the first line, the role below. Every bullet should start with a verb and end with a result. Portals rank on keywords, but a person still makes the call." },
+      { section: "Certifications", advice: "Full name plus the common abbreviation, for example 'Project Management Professional (PMP)'. Parsers may search for either form." },
+    ],
+    mistakes: [
+      "Putting skills in a table you made in Word before uploading. Sterling's table is plain text underneath. A real table in a document can scramble the parse.",
+      "Stuffing the proficiencies table with every keyword from the posting. Recruiters notice, and so will the interviewer who asks about them.",
+      "Changing the heading names to something creative. 'Experience' and 'Education' are what parsers look for.",
+      "Exporting a scanned or image-based PDF. Always download straight from the editor so the text stays selectable.",
+    ],
+    notFor: {
+      who: "Senior candidates applying through recruiters, where a human reads the PDF first",
+      instead: "the Regent layout",
+      insteadHref: "/resume-templates/experienced/regent-cv",
+    },
+    faqs: [
+      {
+        q: "What is the best resume format for government jobs?",
+        a: "A single-column, reverse-chronological resume with standard headings, like Sterling. Government portals often parse strictly and screen on keywords from the job announcement. Some agencies, such as US federal jobs, also expect more detail: hours per week, supervisor names and a fuller description of duties. Check the announcement and add what it asks for.",
+      },
+      {
+        q: "Do ATS systems read serif fonts?",
+        a: "Yes. Parsers read the text itself, not the font's shape, so a serif body is as safe as a sans-serif one. What causes problems is text inside images, headers or footers and complex tables, none of which Sterling uses.",
+      },
+    ],
+  },
+
+  "ats-friendly/ember-cv": {
+    bestFor:
+      "Ember gives you two columns without the usual ATS risk. There are no icons, boxes or background fills, just text in a wide main column and a plain-text rail on the right. That makes it a good fit for teachers, nurses, administrators and public-sector applicants who often list many skills and certifications but still apply through portals.",
+    sectionOrder: {
+      order: ["Header: name, title", "Main: summary, experience, education", "Rail: contact, skills, certifications, languages"],
+      why: "Keep the sections a reader judges you on in the main column and the reference material in the rail. Graduates should move Education into the main column, above Experience. Experienced candidates can move it to the rail.",
+    },
+    sectionAdvice: [
+      { section: "Contact rail", advice: "Use the labeled fields: address (city and state is enough), email and phone. Labels help both people and parsers find the right line." },
+      { section: "Skills rail", advice: "One skill per line, eight to twelve items. For licensed roles, list licenses and certifications in their own section so they are easy to spot." },
+      { section: "Experience", advice: "Role, employer and location on one line, dates below. For teachers and nurses, include the setting: grade level, ward type, caseload or class size." },
+      { section: "Summary", advice: "Two lines. Your role, years of experience and specialty, such as 'ICU nurse with 7 years in cardiac care'." },
+    ],
+    mistakes: [
+      "Putting your most important experience in the rail. Parsers usually read the main column first, and the rail is narrow.",
+      "Writing long skill phrases. One short item per line keeps the rail readable and the keywords clean.",
+      "Leaving license numbers out of licensed roles. Many employers screen for them before anything else.",
+      "Using a pale accent color. Ember's headings carry the only color on the page, so choose one with enough contrast to read on a phone.",
+    ],
+    notFor: {
+      who: "Candidates with a short work history who want a classic one-column look",
+      instead: "the Harvard layout",
+      insteadHref: "/resume-templates/ats-friendly/harvard-cv",
+    },
+    faqs: [
+      {
+        q: "Do two-column resumes pass ATS?",
+        a: "Simple ones usually do. The problems come from icons, text boxes, tables and background shapes, which can scramble the reading order. Ember avoids all of them, so most systems read the main column and then the rail. For portals known to be strict, check the parse in the resume checker before you apply.",
+      },
+      {
+        q: "What skills should a teacher put on a resume?",
+        a: "Mix classroom skills with tools: curriculum design, differentiated instruction, classroom management, assessment, and the platforms you use, such as Google Classroom or Canvas. Add your certification and the subjects and grade levels it covers. Mirror the words in the job posting where they are true for you.",
+      },
+    ],
+  },
+
+  "ats-friendly/canopy-cv": {
+    bestFor:
+      "Canopy is for candidates whose case is results: sales and customer-success professionals, bookkeepers and accountants with clean audits, anyone with awards or records to show. Its dedicated Achievements section gives those wins a heading as large as Career Experience, so they are not buried in bullets. The body is single column, so it stays safe for portals while looking friendlier than a plain layout.",
+    sectionOrder: {
+      order: ["Header band: name, contact", "Target title and summary", "Achievements", "Career experience", "Skills", "Education"],
+      why: "Placing Achievements before Career Experience makes your best results the first thing a reader sees after the summary. If your wins are spread evenly across many roles, put Experience first and keep Achievements to the top three.",
+    },
+    sectionAdvice: [
+      { section: "Achievements", advice: "Three to five items, each with a number: quota attainment, revenue, retention rate, an award with its scope ('Top 3 of 120 reps'). Add them in the Awards section of the Content tab." },
+      { section: "Summary", advice: "Two lines naming your role and your strongest proof, such as 'Account executive who closed 132% of quota across three years in B2B SaaS'." },
+      { section: "Career experience", advice: "Four or five bullets per recent role. Do not repeat the wins already in Achievements. Use the space for how you got them." },
+      { section: "Skills", advice: "The CRM, accounting or support tools you use daily, plus methods such as consultative selling or month-end close." },
+    ],
+    mistakes: [
+      "Listing duties in Achievements. 'Managed key accounts' is a duty. 'Grew key accounts 40% in 12 months' is an achievement.",
+      "Repeating the same win in Achievements and Experience. It wastes space and looks padded.",
+      "Picking a dark accent. The header band is tinted from the accent, and a very dark one makes the name and contact hard to read.",
+      "Including achievements you cannot back up in an interview. Every number will be asked about.",
+    ],
+    notFor: {
+      who: "Senior executives in conservative industries who want a formal look",
+      instead: "the Executive layout",
+      insteadHref: "/resume-templates/experienced/executive-cv",
+    },
+    faqs: [
+      {
+        q: "Should I have a separate achievements section on my resume?",
+        a: "Yes, if you have three or more results worth showing on their own: awards, records or rankings. It gives a skimming recruiter your best proof in seconds. If your wins are all tied to one role, keep them in that role's bullets instead.",
+      },
+      {
+        q: "What counts as an achievement for a bookkeeper or accountant?",
+        a: "Clean audits, a faster month-end close ('cut close from 10 days to 6'), errors caught, savings found, systems you moved the team to, and certifications earned. Use numbers wherever you can: days saved, accounts handled, or dollar amounts recovered.",
+      },
+    ],
+  },
+
+  "experienced/regent-cv": {
+    bestFor:
+      "Regent is for senior professionals in law, finance, consulting and other conservative fields, where the resume itself is read as a sign of judgment. The cream page, centered serif header and hairline rules give it the feel of firm letterhead. Underneath, it is a single column, so it works in portals as well as on a partner's desk.",
+    sectionOrder: {
+      order: ["Header: name, title, contact", "Summary", "Experience", "Board and advisory roles", "Education", "Admissions and certifications"],
+      why: "At this level your recent roles carry the case, so Experience follows a short summary. Board seats, advisory roles and bar admissions come after it, and Education moves to the end unless the institution itself is a selling point.",
+    },
+    sectionAdvice: [
+      { section: "Summary", advice: "Two sentences in the italic block: your level, your practice area or function, and the scale you work at, such as deal size, team size or revenue." },
+      { section: "Experience", advice: "For each role, one line of scope (team, budget, region) and then three to five bullets that read as decisions and their outcomes, not tasks." },
+      { section: "Board and advisory", advice: "Organization, role and years. One line on what you contributed if it is relevant to the job you want." },
+      { section: "Admissions and certifications", advice: "Bar admissions with state and year, or professional qualifications such as CFA or CPA. Keep it to a few lines." },
+    ],
+    mistakes: [
+      "Going past two pages. Senior resumes need focus, not a full history. Summarize roles from more than 15 years ago in one line each.",
+      "Writing bullets as responsibilities. At this level, readers want to know what you decided and what happened.",
+      "Swapping the serif fonts for something trendy. The typography is a large part of what makes Regent work.",
+      "Adding a photo. Regent is designed without one, and most US firms prefer that.",
+    ],
+    notFor: {
+      who: "Candidates at startups or in tech, where a traditional look can read as out of step",
+      instead: "the Vantage layout",
+      insteadHref: "/resume-templates/experienced/vantage-cv",
+    },
+    faqs: [
+      {
+        q: "How long should a senior executive resume be?",
+        a: "Two pages is the norm. Put your last 10 to 15 years in detail and summarize earlier roles in a short 'Earlier career' list. A partner or board chair reads the first page closely and skims the second, so your strongest results belong on page one.",
+      },
+      {
+        q: "Is a serif font professional on a resume?",
+        a: "Yes, and in law, finance and academia it is often the expected choice. Serif fonts like Garamond read as traditional and polished. They also parse without issue, because applicant tracking systems read the text, not the typeface.",
+      },
+    ],
+  },
+
+  "experienced/vantage-cv": {
+    bestFor:
+      "Vantage is for experienced candidates whose employers tell the story: people who have worked at well-known companies or studied at known schools. A logo next to each role lets a reader see your career path at a glance. It suits consulting, banking and product leaders applying through recruiters or direct referrals, where a person reads the PDF before any system does.",
+    sectionOrder: {
+      order: ["Header: name, title, contact", "Main: summary, experience", "Right: strengths, skills, education, certifications"],
+      why: "The wide left column carries the summary and experience, where the logos do their work. The right column holds your Strengths (from Awards), skills and education. Keep Strengths at the top of that column so your best results sit next to your first role.",
+    },
+    sectionAdvice: [
+      { section: "Logos", advice: "Upload one per employer and school in the Content tab. Use clean, square versions on a white or transparent background so the tiles look even." },
+      { section: "Experience", advice: "Show progression inside each company: list promotions as separate lines with their own dates. A reader should see your career go up, not just across." },
+      { section: "Strengths", advice: "Three short items that sum up why you get hired, each backed by a result. This is the first thing in the right column, so make it count." },
+      { section: "Skills", advice: "Eight to twelve items in the chip list. At a senior level, include leadership skills such as P&L ownership or team building, not just tools." },
+    ],
+    mistakes: [
+      "Mixing logo styles: some in color, some in black and white, some with backgrounds. Uneven tiles make the page look messy.",
+      "Using Vantage for portal applications. Keep a single-column version such as Sterling for large company portals.",
+      "Relying on logos instead of results. A famous brand gets attention, but the bullets still have to show what you did there.",
+      "Uploading logos you do not have the right to use in a public portfolio. A resume sent privately is fine, but do not publish it with them.",
+    ],
+    notFor: {
+      who: "Applicants going through high-volume job portals",
+      instead: "the Sterling single-column layout",
+      insteadHref: "/resume-templates/ats-friendly/sterling-cv",
+    },
+    faqs: [
+      {
+        q: "Is it okay to put company logos on a resume?",
+        a: "Yes, for resumes a person will read, such as recruiter submissions and referrals. Logos help a reader recognize your employers quickly. For portal applications, use a version without them, since images do not add anything for a parser.",
+      },
+      {
+        q: "How do I show a promotion on my resume?",
+        a: "List the company once, then each title under it with its own dates, most recent first. Give each title one or two bullets that show what changed when you were promoted, such as a bigger team, budget or scope. This makes the progression easy to see.",
+      },
+    ],
+  },
+
 };
 
 /** Guidance for a leaf page, or null when none has been written yet. */

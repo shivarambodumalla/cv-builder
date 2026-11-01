@@ -16,6 +16,17 @@ import { careerPathPageSlugs } from "@/lib/roles/career-moves/pages";
 // since April.
 const STABLE_LAST_MODIFIED = new Date("2026-09-29T00:00:00Z");
 
+// Pages rewritten after that pass: the resume checker (moved from
+// /upload-resume) and the eight template leaves that gained guidance. Dated on
+// their own so Google recrawls them without being told everything changed.
+const CONTENT_PASS_2026_10_31 = new Date("2026-10-31T00:00:00Z");
+const REWRITTEN_LEAVES = new Set([
+  "/resume-templates/experienced/regent-cv", "/resume-templates/experienced/vantage-cv",
+  "/resume-templates/ats-friendly/sterling-cv", "/resume-templates/ats-friendly/ember-cv",
+  "/resume-templates/ats-friendly/canopy-cv", "/resume-templates/creative/meridian-cv",
+  "/resume-templates/creative/linen-cv", "/resume-templates/creative/graphite-cv",
+]);
+
 // Blog posts come from the DB. force-static keeps the sitemap static (the
 // admin client's no-store fetch would otherwise make it dynamic); it re-reads
 // them hourly.
@@ -113,7 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   const templateLeafPages: MetadataRoute.Sitemap = [...canonicalLeafUrls].map((path) => ({
     url: `https://www.thecvedge.com${path}`,
-    lastModified: STABLE_LAST_MODIFIED,
+    lastModified: REWRITTEN_LEAVES.has(path) ? CONTENT_PASS_2026_10_31 : STABLE_LAST_MODIFIED,
     changeFrequency: "monthly" as const,
     priority: 0.75,
   }));
@@ -150,7 +161,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: "https://www.thecvedge.com/cv-review/saudi-arabia", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.85 },
     { url: "https://www.thecvedge.com/cv-review/gcc", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.85 },
     { url: "https://www.thecvedge.com/pricing", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
-    { url: "https://www.thecvedge.com/resume-checker", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "monthly", priority: 0.9 },
+    { url: "https://www.thecvedge.com/resume-checker", lastModified: CONTENT_PASS_2026_10_31, changeFrequency: "monthly", priority: 0.9 },
     { url: "https://www.thecvedge.com/resumes", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.7 },
     { url: "https://www.thecvedge.com/interview-prep", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "weekly", priority: 0.8 },
     { url: "https://www.thecvedge.com/blog", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
