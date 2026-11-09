@@ -56,6 +56,29 @@ export async function matchJob(
   return result as JobMatchResult;
 }
 
+/**
+ * The parse prompt returns `sections` visibility flags and sometimes switches
+ * off a section it has just filled (seen 2026-11-09: summary and experience
+ * false with 4 roles extracted), which makes the editor look empty and drags
+ * the live score down. Any section the model gave content gets switched on;
+ * sections it left empty keep whatever it said.
+ */
+function enableSectionsWithContent(parsed: Record<string, unknown>) {
+  const sections = (parsed.sections && typeof parsed.sections === "object" ? parsed.sections : {}) as Record<string, boolean>;
+  const listSections = ["experience", "education", "skills", "certifications", "awards", "projects", "volunteering", "publications"];
+  for (const key of listSections) {
+    const value = parsed[key] as { items?: unknown[]; categories?: unknown[] } | undefined;
+    const items = value?.items ?? value?.categories;
+    if (Array.isArray(items) && items.length > 0) sections[key] = true;
+  }
+  const summary = (parsed.summary as { content?: string } | undefined)?.content;
+  if (typeof summary === "string" && summary.trim()) sections.summary = true;
+  const title = (parsed.targetTitle as { title?: string } | undefined)?.title;
+  if (typeof title === "string" && title.trim()) sections.targetTitle = true;
+  sections.contact = true;
+  parsed.sections = sections;
+}
+
 export async function structureCvText(
   rawText: string,
   caller?: AICaller
@@ -68,6 +91,7 @@ export async function structureCvText(
     ip: caller?.ip,
   });
   const parsed = result as Record<string, unknown>;
+  enableSectionsWithContent(parsed);
   // The parse prompt's contact shape predates the github field, so a GitHub
   // profile often lands in website. Move it so templates show it as GitHub.
   const contact = parsed.contact as Record<string, unknown> | undefined;
