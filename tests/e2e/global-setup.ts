@@ -3,7 +3,7 @@ import { mkdirSync } from "fs";
 
 async function globalSetup() {
   mkdirSync("tests/e2e/.auth", { recursive: true });
-  const baseURL = "http://localhost:3000";
+  const baseURL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 
   const browser = await chromium.launch();
   const context = await browser.newContext();

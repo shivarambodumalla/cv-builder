@@ -48,3 +48,6 @@ supabase/.temp/
 blog-backup-*.json
 blog-metadata-backup-*.json
 blog-extend-backup-*.json
+
+# isolated production build used by the local e2e run (NEXT_DIST_DIR)
+.next-e2e/

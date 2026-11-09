@@ -9,6 +9,9 @@ import { createServerClient } from "@supabase/ssr";
  *
  * Only works when ENABLE_TEST_AUTH=true and NOT in production.
  */
+// Evaluated per request: a static GET would bake in whatever ENABLE_TEST_AUTH was at build time.
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   // Only available when ENABLE_TEST_AUTH is explicitly set to "true"
   // In production deployments, this env var is never set

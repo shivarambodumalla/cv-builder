@@ -41,7 +41,8 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
 
   // If Gemini failed during upload, parsed_json will be null but raw_text exists.
   // Retry parsing transparently so the editor loads with content.
-  if (!cv.parsed_json && cv.raw_text) {
+  const parsedEmpty = !cv.parsed_json || Object.keys(cv.parsed_json as object).length === 0;
+  if (parsedEmpty && cv.raw_text) {
     try {
       const parsed = await structureCvText(cv.raw_text, { userId: user.id });
       const admin = createAdminClient();

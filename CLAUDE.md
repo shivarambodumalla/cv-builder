@@ -299,7 +299,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - Returns: rewritten summary, rewritten bullets per company, skills_to_add, sections_needing_attention, estimated_score_improvement
 - Skips bullets already strong (metric + action verb + outcome)
 - Generates summary if empty
-- Gated like every AI route: `checkFeatureAccess(user.id, "fix_all")` → 403 `{ error, code: "fix_all_limit", used, limit, daysUntilReset, proOnly }` → `incrementUsage` after success. Counter `fix_all_this_week` (Monday reset), quota from `plan_limits` (free 0 = Pro only). Tailor CV is gated the same way under `cv_tailor` / `cv_tailor_this_week`. Both stamp `profiles.fix_all_used_at` (migration 00081) for the 80+ guarantee. The old hardcoded `fix_all_count_week` gate (columns that never existed) is gone
+- Gated like every AI route: `checkFeatureAccess(user.id, "fix_all")` → 403 `{ error, code: "fix_all_limit", used, limit, daysUntilReset, proOnly }` → `incrementUsage` after success. Counter `fix_all_this_week` (Monday reset), quota from `plan_limits` (free 0 = Pro only). Tailor CV is gated the same way under `cv_tailor` / `cv_tailor_this_week`. Both stamp `profiles.fix_all_used_at` (migration 00081; the ats_reports grant change is 00082 and runs after the deploy) for the 80+ guarantee. The old hardcoded `fix_all_count_week` gate (columns that never existed) is gone
 
 ## JD Red Flag Detector
 

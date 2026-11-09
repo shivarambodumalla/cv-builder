@@ -143,7 +143,8 @@ export async function POST(request: NextRequest) {
         user_id: null,
         title: sanitizeDbString(title),
         raw_text: sanitizeDbString(rawText),
-        parsed_json: sanitizeDbJson(parsedJson),
+        // null, not {}, when the parse failed: the editor re-parses a CV whose parsed_json is null.
+        parsed_json: parsedJson ? sanitizeDbJson(parsedJson) : null,
         target_role: sanitizeDbString(targetRole),
         target_domain: domain?.trim() || null,
         redirect_token: redirectToken,

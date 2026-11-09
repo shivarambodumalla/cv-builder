@@ -53,6 +53,8 @@ const oldBlogRedirects = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Build into another folder with NEXT_DIST_DIR (e.g. .next-e2e) so a test build never collides with a running dev server.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
     formats: ["image/avif", "image/webp"],
     // Vercel bills every optimizer cache miss. Supabase serves blog covers
