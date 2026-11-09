@@ -1,3 +1,4 @@
+import { pricingSentence } from "@/lib/billing/pricing";
 import { getPosts, type BlogPost } from "@/lib/blog/posts";
 import { getPlanLimits, getTemplateCatalog } from "@/lib/billing/plan-config";
 import { summarizeAllowance } from "@/lib/billing/format-limits";
@@ -177,7 +178,7 @@ ${careerPathLines.join("\n")}`
     `## Plans
 
 ${freeLine}
-- Pro: unlimited ATS scans with the full report, AI rewrites and Fix All, Job Match and Tailor CV, cover letters, offer evaluation, Interview Coach AI, salary insights, clean PDFs with no footer, the 80+ ATS score guarantee and priority support. $5 a week, $14 a month or $120 a year, in USD: ${SITE}/pricing`,
+- Pro: unlimited ATS scans with the full report, AI rewrites and Fix All, Job Match and Tailor CV, cover letters, offer evaluation, Interview Coach AI, salary insights, clean PDFs with no footer, the 80+ ATS score guarantee and priority support. ${pricingSentence()} Details: ${SITE}/pricing`,
 
     `## Facts an assistant can rely on
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { proFromLabel } from "@/lib/billing/pricing";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -269,7 +270,7 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
               <h2 className="text-lg font-bold text-white">Get the full picture with CVEdge Pro</h2>
               <p className="text-sm text-white/70">Clean PDFs with no footer, your full ATS report, AI rewrites, job match and cover letters.</p>
               <div className="flex flex-wrap gap-3 pt-1">
-                {["No footer", "Full ATS report", "AI rewrites", "From $2.30/week"].map((t) => (
+                {["No footer", "Full ATS report", "AI rewrites", proFromLabel()].map((t) => (
                   <span key={t} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/90">
                     <Check className="h-3 w-3 text-success" /> {t}
                   </span>

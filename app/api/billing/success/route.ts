@@ -1,3 +1,4 @@
+import { firstPaymentUsd, PRO_PLANS, BILLING_PERIODS, type BillingPeriod } from "@/lib/billing/pricing";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -59,13 +60,12 @@ export async function GET() {
     }).eq("id", user.id);
 
     // Record in subscription history
-    const priceMap: Record<string, number> = { weekly: 5, monthly: 14, yearly: 120 };
     const { error: historyError } = await admin.from("subscription_history").insert({
       user_id: user.id,
       plan: "pro",
       period,
       status: "active",
-      amount: priceMap[period] || 14,
+      amount: isBillingPeriod(period) ? firstPaymentUsd(period) : PRO_PLANS.monthly.listPrice,
       subscription_id: subscription.id,
       started_at: subscription.attributes.created_at,
       ended_at: subscription.attributes.renews_at,
@@ -83,4 +83,8 @@ export async function GET() {
     console.error("[billing/success] activation check failed:", err);
     return NextResponse.redirect(`${appUrl}/dashboard`);
   }
+}
+
+function isBillingPeriod(value: unknown): value is BillingPeriod {
+  return typeof value === "string" && (BILLING_PERIODS as string[]).includes(value);
 }

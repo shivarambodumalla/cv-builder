@@ -1,5 +1,6 @@
 "use client";
 
+import { proFromLabel } from "@/lib/billing/pricing";
 import { BarChart3, Target, FileText, BookOpen } from "lucide-react";
 
 const CONFIGS = {
@@ -102,7 +103,7 @@ export function UpgradeBanner({ trigger, onUpgrade }: Props) {
       {/* Price row */}
       <div className="flex items-center justify-center gap-2">
         <span className="h-[3px] w-[3px] rounded-full bg-white/30" />
-        <span className="text-[11px] text-white/50">From $2.30/week</span>
+        <span className="text-[11px] text-white/50">{proFromLabel()}</span>
         <span className="h-[3px] w-[3px] rounded-full bg-white/30" />
         <span className="text-[11px] text-white/50">Cancel anytime</span>
         <span className="h-[3px] w-[3px] rounded-full bg-white/30" />

@@ -15,7 +15,8 @@ export async function createCheckout(
   userId: string,
   email: string,
   variantId: string,
-  period?: string
+  period?: string,
+  discountCode?: string
 ) {
   configureLemonSqueezy();
 
@@ -23,15 +24,26 @@ export async function createCheckout(
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://www.thecvedge.com");
   const redirectUrl = `${appUrl}/api/billing/success${period ? `?period=${period}` : ""}`;
 
-  const { data, error } = await lsCreateCheckout(storeId, variantId, {
-    checkoutData: {
-      email,
-      custom: { user_id: userId },
-    },
-    productOptions: {
-      redirectUrl,
-    },
-  });
+  const build = (code?: string) =>
+    lsCreateCheckout(storeId, variantId, {
+      checkoutData: {
+        email,
+        custom: { user_id: userId },
+        // Pre-applies the promo so the checkout opens on the discounted total.
+        ...(code ? { discountCode: code } : {}),
+      },
+      productOptions: {
+        redirectUrl,
+      },
+    });
+
+  let { data, error } = await build(discountCode);
+
+  // A deleted or expired code must never block a payment: fall back to the list price.
+  if (error && discountCode) {
+    console.warn(`[lemonsqueezy] checkout with code ${discountCode} failed (${error.message}); retrying without it`);
+    ({ data, error } = await build());
+  }
 
   if (error) throw new Error(error.message);
 

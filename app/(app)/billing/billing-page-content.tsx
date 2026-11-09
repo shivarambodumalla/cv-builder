@@ -1,5 +1,6 @@
 "use client";
 
+import { proFromLabel } from "@/lib/billing/pricing";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -110,7 +111,7 @@ export function BillingPageContent({ profile, limits, stats, history }: { profil
             <p className="text-sm text-muted-foreground mt-1">
               Clean PDFs, your full ATS report and every AI tool.
               <br />
-              <span className="font-medium text-foreground">From $2.30/week</span>
+              <span className="font-medium text-foreground">{proFromLabel()}</span>
             </p>
           </div>
           <Button onClick={() => openUpgradeModal("generic")} className="shrink-0">

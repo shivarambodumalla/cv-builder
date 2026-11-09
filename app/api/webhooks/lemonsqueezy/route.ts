@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { firstPaymentUsd, PRO_PLANS, BILLING_PERIODS, type BillingPeriod } from "@/lib/billing/pricing";
 import crypto from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { REVIEW_TIERS, ReviewTier } from "@/lib/cv-review/config";
@@ -102,13 +103,12 @@ export async function POST(request: NextRequest) {
         subscriptionId: String(payload.data?.id),
       });
 
-      const priceMap: Record<string, number> = { weekly: 5, monthly: 14, yearly: 120 };
-      const { error: historyError } = await supabase.from("subscription_history").insert({
+        const { error: historyError } = await supabase.from("subscription_history").insert({
         user_id: userId,
         plan: "pro",
         period,
         status: "active",
-        amount: priceMap[period] || 14,
+        amount: isBillingPeriod(period) ? firstPaymentUsd(period) : PRO_PLANS.monthly.listPrice,
         currency: "USD",
         subscription_id: String(payload.data?.id),
         started_at: attrs?.created_at || new Date().toISOString(),
@@ -315,4 +315,8 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ ok: true });
+}
+
+function isBillingPeriod(value: unknown): value is BillingPeriod {
+  return typeof value === "string" && (BILLING_PERIODS as string[]).includes(value);
 }

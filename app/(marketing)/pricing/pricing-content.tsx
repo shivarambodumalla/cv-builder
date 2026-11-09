@@ -6,26 +6,15 @@ import { Check, ChevronDown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRICING_FAQS } from "./faqs";
 import { describeQuota, isProOnly, type PlanQuotas } from "@/lib/billing/format-limits";
+import { BILLING_PERIODS, PRO_PLANS, firstPaymentUsd, formatInr, formatUsd, promoFor, type BillingPeriod } from "@/lib/billing/pricing";
+import { useIsIndia } from "@/lib/billing/use-is-india";
 
-type BillingPeriod = "weekly" | "monthly" | "yearly";
-
-interface PlanOption {
-  period: BillingPeriod;
-  label: string;
-  price: number;
-  /** The struck-through list price the "Save X%" is measured against. */
-  anchor: number;
-  per: string;
-  /** Price per week over 52 weeks: $14 x 12 / 52, $120 / 52. */
-  perWeek: string;
-  savePercent: number;
-}
-
-const OPTIONS: PlanOption[] = [
-  { period: "weekly", label: "Weekly", price: 5, anchor: 10, per: "/week", perWeek: "$5.00", savePercent: 50 },
-  { period: "monthly", label: "Monthly", price: 14, anchor: 35, per: "/month", perWeek: "$3.23", savePercent: 60 },
-  { period: "yearly", label: "Yearly", price: 120, anchor: 420, per: "/year", perWeek: "$2.30", savePercent: 71 },
-];
+/** One row per billing period: list price, the promo on it (if any) and what the first payment costs. */
+const OPTIONS = BILLING_PERIODS.map((period) => ({
+  ...PRO_PLANS[period],
+  promo: promoFor(period),
+  first: firstPaymentUsd(period),
+}));
 
 /** Free-plan quotas worth a line on the card; features the plan does not include are skipped. */
 const FREE_QUOTA_FEATURES = ["cvs", "ats_scans", "pdf_downloads"];
@@ -55,6 +44,7 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
   const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set());
   const selected = OPTIONS.find((o) => o.period === billing)!;
+  const isIndia = useIsIndia();
 
   return (
     <>
@@ -125,23 +115,41 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
                     {opt.label}
                   </div>
                   <div className={cn("text-xl sm:text-2xl font-bold", isSelected ? "text-[#34D399]" : "text-white")}>
-                    <span className="mr-1.5 text-xs font-medium text-white/50 line-through">${opt.anchor}</span>
-                    ${opt.price}
+                    {opt.promo && (
+                      <span className="mr-1.5 text-xs font-medium text-white/50 line-through">{formatUsd(opt.listPrice)}</span>
+                    )}
+                    {formatUsd(opt.first)}
                   </div>
-                  {isSelected && (
+                  {opt.promo && isSelected && (
                     <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F59E0B] px-2.5 py-0.5 text-[10px] font-bold text-white">
-                      Save {opt.savePercent}%
+                      {opt.promo.percent}% OFF
                     </span>
                   )}
-                  {!isSelected && (
-                    <div className="text-[11px] text-white/60">Save {opt.savePercent}%</div>
+                  {opt.promo && !isSelected && (
+                    <div className="text-[11px] text-white/60">{opt.promo.percent}% off</div>
                   )}
                 </button>
               );
             })}
           </div>
 
-          <p className="text-sm text-white/80 mb-6">{selected.perWeek}/week · less than your morning coffee</p>
+          <div className="mb-6 space-y-1 text-sm text-white/80">
+            {selected.promo ? (
+              <p>
+                Code <span className="font-semibold text-white">{selected.promo.code}</span> is applied at checkout.
+                Then {formatUsd(selected.listPrice)}/{selected.per}. Cancel anytime.
+              </p>
+            ) : (
+              <p>{formatUsd(selected.listPrice)}/{selected.per}. Cancel anytime.</p>
+            )}
+            {isIndia && (
+              <p className="text-white/70">
+                {selected.promo
+                  ? `≈ ${formatInr(selected.first)} for your first ${selected.per}, then ≈ ${formatInr(selected.listPrice)}/${selected.per}`
+                  : `≈ ${formatInr(selected.listPrice)}/${selected.per}`}
+              </p>
+            )}
+          </div>
 
           <ul className="mb-8 flex-1 space-y-3">
             {proFeatures.map((f) => (

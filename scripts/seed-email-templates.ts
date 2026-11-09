@@ -94,6 +94,19 @@ const TEMPLATES = [
   },
 
   {
+    // Sent by cron/reactivation to users who have gone quiet. Free users have one
+    // lifetime ATS scan, so this must not ask them to "run a fresh analysis".
+    name: "inactive_user",
+    subject: "Your next role might be one fix away",
+    heading: "Your resume is waiting",
+    subheading: "Small changes make the biggest difference. Open your resume, tighten a few bullets, and download a fresh PDF.",
+    cta_text: "Open my resume",
+    cta_url: "{{appUrl}}/dashboard",
+    body_html: `<p style="margin:0 0 12px;font-size:14px;color:#3D3830;line-height:1.6;">Hi {{name}},</p><p style="margin:0 0 12px;font-size:14px;color:#3D3830;line-height:1.6;">Your next role might be closer than you think. Your resume and its ATS score are still saved. Pick up where you left off, fix what you can, and send it out.</p><p style="margin:0;font-size:13px;color:#6B7280;">${PRO_PITCH}</p>`,
+    after_cta_html: SIGN_OFF,
+  },
+
+  {
     name: "feedback_request",
     subject: "{{name}}, quick one — how did CVEdge do?",
     heading: "How did your resume turn out?",

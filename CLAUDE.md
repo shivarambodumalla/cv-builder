@@ -361,12 +361,12 @@ Three mechanisms coexist:
 
 ### Pricing
 
-- Weekly: ~~$10~~ $5 (save 50%)
-- Monthly: ~~$35~~ $14 (save 60%)
-- Yearly: ~~$420~~ $120 (save 71%)
-- Per week: monthly ≈ $3.23/week, yearly ≈ $2.30/week
-- Prices are hardcoded in the upgrade modal `OPTIONS` (components/shared/upgrade-modal.tsx) and in app/(marketing)/pricing/pricing-content.tsx; `pricing_config` only supplies the Lemon Squeezy variant IDs. Change a price in both files and the table's price column together
-- Prices exclude GST/VAT
+- List prices: Weekly $5, Monthly $14, Yearly $120 (USD, excl. GST/VAT). Renewals are always at list price
+- Promo (since 2026-11-09): Lemon Squeezy discount codes PROWEEK 75%, PROMONTH 80%, PROYEAR 90%, duration "once" (first payment only) → first payment $1.25 / $2.80 / $12. The code is sent with the API checkout (`checkoutData.discountCode`, lib/lemonsqueezy.ts) so it arrives pre-applied; if Lemon Squeezy rejects the code the checkout is retried without it, so a dead code never blocks a payment
+- Single source of truth: lib/billing/pricing.ts (`PRO_PLANS`, `PROMO`, `firstPaymentUsd`, `proFromLabel`, `pricingSentence`). The pricing page, upgrade modal, banners, billing page, llms.txt and FAQs read from it. Set `PROMO = null` to end the promo everywhere in one edit. `pricing_config` only supplies the Lemon Squeezy variant IDs; `subscription_history.amount` records `firstPaymentUsd`
+- Before deploying a pricing change run `npx tsx scripts/check-promo-codes.ts` (read-only): it fails if a code, percentage, duration or variant price in Lemon Squeezy differs from pricing.ts
+- Visitors in India (browser time zone or `-IN` language, lib/billing/use-is-india.ts) also see an approximate ₹ price from `USD_TO_INR`. Display only: Lemon Squeezy charges USD
+- Copy must say the discount is for the first payment ("then $5/week"). Never show "Save X%" against the retired $10/$35/$420 anchors; the only discount shown is the promo code's
 
 ### Upgrade Modal
 

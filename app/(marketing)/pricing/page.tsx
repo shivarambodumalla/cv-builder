@@ -3,6 +3,7 @@ import { PricingContent } from "./pricing-content";
 import { PRICING_FAQS } from "./faqs";
 import { BreadcrumbJsonLd, ProductJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { getPlanLimits } from "@/lib/billing/plan-config";
+import { proFromPhrase } from "@/lib/billing/pricing";
 
 // Plan quotas come from plan_limits. force-static keeps the page static (the
 // admin client's no-store fetch would otherwise make it dynamic); it re-reads
@@ -11,9 +12,9 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Pricing: Free forever, Pro from $2.30/week",
+  title: `Pricing: Free plan, ${proFromPhrase()}`,
   description:
-    "Free ATS score, resume builder and templates for job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. Pro from $2.30/week: full ATS report, AI rewrites, Job Match, clean PDFs. 80+ score guarantee.",
+    `Free ATS score, resume builder and templates for job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. ${proFromPhrase()}: full ATS report, AI rewrites, Job Match, clean PDFs. 80+ score guarantee.`,
   alternates: {
     canonical: "https://www.thecvedge.com/pricing",
     languages: {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "CVEdge Pricing: Free forever, Pro from $2.30/week",
+    title: `CVEdge Pricing: Free plan, ${proFromPhrase()}`,
     description: "Full ATS report, AI rewrites, Job Match and clean PDFs with no footer. For job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. 80+ ATS score guarantee.",
     url: "https://www.thecvedge.com/pricing",
     images: ["/og-pricing.png"],
@@ -60,7 +61,7 @@ export default async function PricingPage() {
       {/* Header */}
       <header className="mx-auto mb-10 max-w-2xl text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Free forever. Pro from $2.30/week.
+          Free plan. {proFromPhrase()}.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
           Simple, transparent pricing: one Pro plan, full access, cancel anytime.

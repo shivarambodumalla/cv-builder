@@ -1,3 +1,4 @@
+import { pricingSentence, proFromLabel } from "@/lib/billing/pricing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ const faqs = ({ total, free, proLabels }: TemplateCounts, quotas: Quotas) => [
   {
     question: "Is CVEdge's resume builder really free?",
     answer:
-      `Yes. The free plan includes ${summarizeAllowance(quotas.free, WINDOW_QUOTAS)}, your top ATS issues, and access to ${free === total ? `all ${total}` : `all ${free} free`} templates. No credit card required. Pro (unlimited scans with the full report, AI rewrites, Job Match, clean PDFs with no footer${proLabels.length ? `, plus ${proLabels.length} Pro templates` : ""}) costs $5/week.`,
+      `Yes. The free plan includes ${summarizeAllowance(quotas.free, WINDOW_QUOTAS)}, your top ATS issues, and access to ${free === total ? `all ${total}` : `all ${free} free`} templates. No credit card required. Pro (unlimited scans with the full report, AI rewrites, Job Match, clean PDFs with no footer${proLabels.length ? `, plus ${proLabels.length} Pro templates` : ""}). ${pricingSentence()}`,
   },
   {
     question: "How long does it take to build a resume on CVEdge?",
@@ -58,7 +59,7 @@ const faqs = ({ total, free, proLabels }: TemplateCounts, quotas: Quotas) => [
   {
     question: "What is the difference between free and Pro on CVEdge?",
     answer:
-      `Free plan: ${summarizeAllowance(quotas.free, ["ats_scans", "ai_rewrites", "job_matches", "pdf_downloads"])}, your top ATS issues, and ${free} free templates. Free PDFs carry a small CVEdge footer. Pro plan: unlimited scans with the full ATS report, AI rewrites and Fix All, Job Match and Tailor CV, cover letters, clean PDFs with no footer, ${proLabels.length ? `${proLabels.length} additional Pro templates (${proLabels.join(", ")}), ` : ""}the 80+ ATS score guarantee, and priority support. Pro costs $5/week (or $14/month, $120/year).`,
+      `Free plan: ${summarizeAllowance(quotas.free, ["ats_scans", "ai_rewrites", "job_matches", "pdf_downloads"])}, your top ATS issues, and ${free} free templates. Free PDFs carry a small CVEdge footer. Pro plan: unlimited scans with the full ATS report, AI rewrites and Fix All, Job Match and Tailor CV, cover letters, clean PDFs with no footer, ${proLabels.length ? `${proLabels.length} additional Pro templates (${proLabels.join(", ")}), ` : ""}the 80+ ATS score guarantee, and priority support. ${pricingSentence()}`,
   },
 ];
 
@@ -222,7 +223,7 @@ export default async function FreeResumeBuilderPage() {
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">With Pro</h2>
           <p className="mt-3 text-muted-foreground">
-            From $5 a week. The full report, AI fixes, Job Match and clean PDFs.
+            {proFromLabel()}. The full report, AI fixes, Job Match and clean PDFs.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">

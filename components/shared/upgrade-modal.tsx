@@ -6,14 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Check, Crown, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
+import { BILLING_PERIODS, PRO_PLANS, PROMO, firstPaymentUsd, formatInr, formatUsd, promoFor, type BillingPeriod } from "@/lib/billing/pricing";
+import { useIsIndia } from "@/lib/billing/use-is-india";
 
-type BillingPeriod = "weekly" | "monthly" | "yearly";
-
-const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: number; per: string; perWeek: string; savePercent: number; popular?: boolean }[] = [
-  { period: "weekly", label: "Weekly", original: 10, sale: 5, per: "week", perWeek: "$5.00", savePercent: 50 },
-  { period: "monthly", label: "Monthly", original: 35, sale: 14, per: "month", perWeek: "$3.23", savePercent: 60 },
-  { period: "yearly", label: "Yearly", original: 420, sale: 120, per: "year", perWeek: "$2.30", savePercent: 71, popular: true },
-];
+/** One row per billing period, from the shared pricing module; yearly is the headline deal. */
+const OPTIONS = BILLING_PERIODS.map((period) => ({
+  ...PRO_PLANS[period],
+  promo: promoFor(period),
+  first: firstPaymentUsd(period),
+  popular: period === "yearly",
+}));
 
 // Free quotas are either lifetime (one ATS scan) or Pro-only, so no headline
 // promises a reset: the way forward is always Pro.
@@ -57,6 +59,7 @@ export function UpgradeModal() {
 
   const headline = HEADLINES[trigger];
   const selected = OPTIONS.find((o) => o.period === billing)!;
+  const isIndia = useIsIndia();
   const HeadlineIcon = headline.icon === "crown" ? Crown : headline.icon === "zap" ? Zap : Sparkles;
 
   async function handleCheckout() {
@@ -140,18 +143,31 @@ export function UpgradeModal() {
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">{opt.perWeek}/week</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        {opt.promo
+                          ? `Code ${opt.promo.code} applied at checkout · then ${formatUsd(opt.listPrice)}/${opt.per}`
+                          : `${formatUsd(opt.listPrice)}/${opt.per}`}
+                      </p>
+                      {isIndia && (
+                        <p className="text-[11px] text-muted-foreground">
+                          ≈ {formatInr(opt.first)} {opt.promo ? `for your first ${opt.per}` : `/${opt.per}`}
+                        </p>
+                      )}
                     </div>
 
                     {/* Price */}
                     <div className="text-right shrink-0">
                       <div className="flex items-baseline gap-1.5">
-                        <span className="text-xs text-muted-foreground/50 line-through">${opt.original}</span>
-                        <span className="text-xl font-bold">${opt.sale}</span>
+                        {opt.promo && (
+                          <span className="text-xs text-muted-foreground/50 line-through">{formatUsd(opt.listPrice)}</span>
+                        )}
+                        <span className="text-xl font-bold">{formatUsd(opt.first)}</span>
                       </div>
-                      <span className="inline-block rounded bg-success/20 px-1.5 py-0.5 text-[10px] font-bold text-success leading-none mt-0.5">
-                        SAVE {opt.savePercent}%
-                      </span>
+                      {opt.promo && (
+                        <span className="inline-block rounded bg-success/20 px-1.5 py-0.5 text-[10px] font-bold text-success leading-none mt-0.5">
+                          {opt.promo.percent}% OFF
+                        </span>
+                      )}
                     </div>
                   </button>
                 );
@@ -161,6 +177,7 @@ export function UpgradeModal() {
             {/* Tax note */}
             <p className="text-[10px] text-muted-foreground/60 text-center">
               Prices exclude sales tax, GST or VAT, which is calculated at checkout.
+              {PROMO && " Discount codes apply to your first payment; renewals are at the regular price."}
             </p>
 
             {/* Features */}
@@ -182,7 +199,11 @@ export function UpgradeModal() {
               onClick={handleCheckout}
               disabled={checkoutLoading}
             >
-              {checkoutLoading ? "Processing..." : `Get Pro: $${selected.sale}/${selected.per}`}
+              {checkoutLoading
+                ? "Processing..."
+                : selected.promo
+                  ? `Get Pro: ${formatUsd(selected.first)} for your first ${selected.per}`
+                  : `Get Pro: ${formatUsd(selected.listPrice)}/${selected.per}`}
             </Button>
 
             <p className="text-center text-[11px] text-muted-foreground">
