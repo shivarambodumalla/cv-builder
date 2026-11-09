@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { getPlan } from "@/lib/billing/limits";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { describeQuota, type PlanQuotas } from "@/lib/billing/format-limits";
-import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt, AlertTriangle, Trash2, DatabaseBackup } from "lucide-react";
+import { Crown, FileText, BarChart3, Briefcase, Mail, Sparkles, Download, Calendar, Receipt, AlertTriangle, Trash2, DatabaseBackup, LayoutTemplate, Compass, PenLine, Scale, BookOpen, TrendingUp, ShieldCheck, LifeBuoy } from "lucide-react";
 
 interface ProfileData {
   plan?: string;
@@ -108,9 +108,9 @@ export function BillingPageContent({ profile, limits, stats, history }: { profil
           <div>
             <h2 className="text-lg font-bold">Upgrade to CVEdge Pro</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Unlimited ATS scans, job matching, all templates, and more.
+              Clean PDFs, your full ATS report and every AI tool.
               <br />
-              <span className="font-medium text-foreground">Starting at $2.30/week</span>
+              <span className="font-medium text-foreground">From $2.30/week</span>
             </p>
           </div>
           <Button onClick={() => openUpgradeModal("generic")} className="shrink-0">
@@ -257,24 +257,25 @@ export function BillingPageContent({ profile, limits, stats, history }: { profil
           <h3 className="font-semibold">Free plan includes</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <FileText className="h-4 w-4" /> {describeQuota(quotas, "cvs")}
+              <FileText className="h-4 w-4 shrink-0" /> {describeQuota(quotas, "cvs")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <BarChart3 className="h-4 w-4" /> {describeQuota(quotas, "ats_scans")}
+              <BarChart3 className="h-4 w-4 shrink-0" /> {describeQuota(quotas, "ats_scans")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Briefcase className="h-4 w-4" /> {describeQuota(quotas, "job_matches")}
+              <Download className="h-4 w-4 shrink-0" /> {describeQuota(quotas, "pdf_downloads")}
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Mail className="h-4 w-4" /> {describeQuota(quotas, "cover_letters")}
+              <LayoutTemplate className="h-4 w-4 shrink-0" /> All templates
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Sparkles className="h-4 w-4" /> {describeQuota(quotas, "ai_rewrites")}
+              <Compass className="h-4 w-4 shrink-0" /> Career Path
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Download className="h-4 w-4" /> {describeQuota(quotas, "pdf_downloads")}, no watermark
+              <PenLine className="h-4 w-4 shrink-0" /> Write your own interview answers
             </div>
           </div>
+          <p className="text-xs text-muted-foreground">PDF downloads include a small CVEdge footer.</p>
           <Button variant="outline" className="w-full" onClick={() => openUpgradeModal("generic")}>
             Compare with Pro
           </Button>
@@ -286,22 +287,34 @@ export function BillingPageContent({ profile, limits, stats, history }: { profil
           <h3 className="font-semibold">Pro plan includes</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-primary" /> {describeQuota(quotas, "cvs")}
+              <Download className="h-4 w-4 shrink-0 text-primary" /> Clean PDF exports (no footer)
             </div>
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-primary" /> {describeQuota(quotas, "ats_scans")}
+              <BarChart3 className="h-4 w-4 shrink-0 text-primary" /> {describeQuota(quotas, "ats_scans")} and the full report
             </div>
             <div className="flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-primary" /> {describeQuota(quotas, "job_matches")}
+              <Sparkles className="h-4 w-4 shrink-0 text-primary" /> {describeQuota(quotas, "ai_rewrites")} and Fix All
             </div>
             <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary" /> {describeQuota(quotas, "cover_letters")}
+              <Briefcase className="h-4 w-4 shrink-0 text-primary" /> {describeQuota(quotas, "job_matches")} and Tailor CV
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" /> {describeQuota(quotas, "ai_rewrites")}
+              <Mail className="h-4 w-4 shrink-0 text-primary" /> {describeQuota(quotas, "cover_letters")}
             </div>
             <div className="flex items-center gap-2">
-              <Download className="h-4 w-4 text-primary" /> Clean PDF exports (no watermark)
+              <Scale className="h-4 w-4 shrink-0 text-primary" /> Offer evaluation
+            </div>
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 shrink-0 text-primary" /> Interview Coach AI
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 shrink-0 text-primary" /> Salary insights
+            </div>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 shrink-0 text-primary" /> 80+ ATS score guarantee
+            </div>
+            <div className="flex items-center gap-2">
+              <LifeBuoy className="h-4 w-4 shrink-0 text-primary" /> Priority support
             </div>
           </div>
         </div>
@@ -384,7 +397,7 @@ export function BillingPageContent({ profile, limits, stats, history }: { profil
               <div>
                 <p className="text-sm font-medium">Permanently delete your account?</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  This will permanently delete all your resumes, ATS reports, job matches, cover letters, interview stories, and account data. This action cannot be undone.
+                  This will permanently delete all your resumes, ATS reports, job matches, cover letters, interview answers, and account data. This action cannot be undone.
                 </p>
               </div>
             </div>

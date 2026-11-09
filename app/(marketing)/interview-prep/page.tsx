@@ -9,11 +9,11 @@ import { hasRoleContent } from "@/lib/roles/role-content";
 const ROLE_GUIDES = ALL_ROLES.filter((r) => hasRoleContent(r.slug));
 
 export const metadata = {
-  title: "Interview Coach: Prepare STAR Stories from Your CV",
-  description: "Build a bank of interview stories from your CV, GitHub, and portfolio. Get AI-powered STAR frameworks, quality scoring, and job-specific prep, free.",
+  title: "Interview Coach: Prepare STAR Answers from Your Experience",
+  description: "Write STAR interview answers from your experience, free. Pro drafts them from your CV, GitHub and portfolio, scores each answer, and preps you for a specific job.",
   openGraph: {
     title: "Interview Coach | CVEdge",
-    description: "Build interview stories from your resume. Get AI-powered STAR frameworks and job-specific prep.",
+    description: "Write STAR answers from your experience. Pro adds AI extraction, quality scores and job-specific prep.",
     url: "https://www.thecvedge.com/interview-prep",
     images: ["/og-interview-coach.png"],
   },
@@ -23,47 +23,51 @@ export const metadata = {
 const STEPS = [
   {
     icon: Search,
-    title: "Scan your sources",
-    body: "Add your resume, portfolio link, or GitHub. CVEdge finds your best experiences and structures them automatically.",
-    proofLabel: "Parsed in seconds",
+    title: "Add your experience",
+    body: "Write your own answers free. Or add your resume, portfolio link or GitHub and let Pro find your best experiences for you.",
+    proofLabel: "Parsed in seconds (Pro)",
     proofText: "14 experiences found",
   },
   {
     icon: Sparkles,
-    title: "Build your stories",
-    body: "AI pre-fills each story in STAR format. You review, fill gaps, and save the ones that represent you best.",
-    proofLabel: "Answer quality score",
+    title: "Build your answers",
+    body: "Each answer follows the STAR format. Write it yourself, or let Pro pre-fill it and score it. You review, fill gaps, and save the ones that represent you best.",
+    proofLabel: "Answer quality score (Pro)",
     proofText: "8/10",
   },
   {
     icon: Target,
     title: "Prep for each interview",
-    body: "Paste a job description before any interview. CVEdge surfaces your most relevant stories with talking points.",
-    proofLabel: "Top match for this role",
+    body: "Paste a job description before any interview. Pro surfaces your most relevant answers with talking points.",
+    proofLabel: "Top match for this role (Pro)",
     proofText: "94% match",
   },
 ];
 
+/** `pro` marks what the free plan does not include. */
 const FEATURES = [
   {
     icon: CheckCircle,
     title: "STAR framework built in",
-    desc: "Every story follows Situation, Task, Action, Result, so your answers stay clear and on point.",
+    desc: "Every answer follows Situation, Task, Action, Result, so your answers stay clear and on point. Write your own, free.",
   },
   {
     icon: Brain,
     title: "AI extraction from your resume",
-    desc: "CVEdge reads your experience and suggests stories you might have forgotten. You just confirm and refine.",
+    desc: "CVEdge reads your experience and suggests answers you might have forgotten. You just confirm and refine.",
+    pro: true,
   },
   {
     icon: BarChart3,
-    title: "Quality scoring for every story",
-    desc: "Each story gets a score based on clarity, impact, and detail. See which ones need more work before your interview.",
+    title: "Quality scoring for every answer",
+    desc: "Each answer gets a score based on clarity, impact, and detail. See which ones need more work before your interview.",
+    pro: true,
   },
   {
     icon: Briefcase,
     title: "Job-matched interview prep",
-    desc: "Paste any job description and get a shortlist of your best stories for that specific role, with talking points.",
+    desc: "Paste any job description and get a shortlist of your best answers for that specific role, with talking points.",
+    pro: true,
   },
 ];
 
@@ -78,7 +82,7 @@ const PAIN_POINTS = [
   },
   {
     quote: "\u201cI give the same stories for every role even when they\u2019re not the best fit.\u201d",
-    resolve: "Role-matched story shortlist",
+    resolve: "Role-matched answer shortlist (Pro)",
   },
 ];
 
@@ -93,7 +97,7 @@ export default function InterviewStoriesPage() {
       />
       <HowToJsonLd
         name="How to prepare for interviews with CVEdge"
-        description="Build a library of STAR-format stories from your resume, then get job-matched prep before every interview."
+        description="Write STAR-format answers from your experience, then get job-matched prep before every interview."
         image="https://www.thecvedge.com/og-interview-coach.png"
         totalTime="PT15M"
         steps={STEPS.map((s) => ({ name: s.title, text: s.body }))}
@@ -102,7 +106,7 @@ export default function InterviewStoriesPage() {
       <div className="mx-auto max-w-2xl text-center mb-16">
         <p className="text-[10px] tracking-widest text-muted-foreground uppercase">Interview Coach</p>
         <h1 className="text-3xl font-bold tracking-tight mt-2">Walk into every interview prepared</h1>
-        <p className="text-muted-foreground mt-3">Build a personal library of your best career stories. CVEdge tells you which ones to tell, and how.</p>
+        <p className="text-muted-foreground mt-3">Build a library of your best career answers, free. Pro tells you which ones to tell, and how.</p>
         <Button className="mt-6" asChild>
           <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>
         </Button>
@@ -138,7 +142,14 @@ export default function InterviewStoriesPage() {
           {FEATURES.map((f) => (
             <div key={f.title} className="rounded-xl border bg-background p-5 space-y-2">
               <f.icon className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold text-sm">{f.title}</h3>
+              <h3 className="font-semibold text-sm">
+                {f.title}
+                {f.pro && (
+                  <span className="ml-2 inline-block rounded-full bg-primary/10 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wider text-primary">
+                    Pro
+                  </span>
+                )}
+              </h3>
               <p className="text-sm text-muted-foreground">{f.desc}</p>
             </div>
           ))}
@@ -191,7 +202,7 @@ export default function InterviewStoriesPage() {
         <h2 className="text-2xl font-bold tracking-tight">Ready to stop winging your interviews?</h2>
         <p className="mt-3 text-muted-foreground">Prepare for your interviews in minutes. Free to start, no credit card needed.</p>
         <Button className="mt-6" asChild>
-          <Link href="/login?returnUrl=%2Finterview-coach">Build my story bank free</Link>
+          <Link href="/login?returnUrl=%2Finterview-coach">Open Interview Coach free</Link>
         </Button>
       </div>
     </div>

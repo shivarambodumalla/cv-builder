@@ -8,20 +8,20 @@ export default async function ExtractPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?returnUrl=%2Finterview-coach%2Fextract");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("subscription_status, current_period_end")
-    .eq("id", user.id)
-    .single();
+  const [{ data: profile }, { data: cvs }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("plan, subscription_status, current_period_end")
+      .eq("id", user.id)
+      .single(),
+    supabase
+      .from("cvs")
+      .select("id, title, target_role")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false }),
+  ]);
 
-  // Extract is Pro only
-  if (getPlan(profile) !== "pro") redirect("/interview-coach");
-
-  const { data: cvs } = await supabase
-    .from("cvs")
-    .select("id, title, target_role")
-    .eq("user_id", user.id)
-    .order("updated_at", { ascending: false });
-
-  return <ExtractContent cvs={cvs ?? []} />;
+  // Extraction is Pro-only. Free users land on the page and see what Pro
+  // does here instead of being bounced back without a word.
+  return <ExtractContent cvs={cvs ?? []} isPro={getPlan(profile) === "pro"} />;
 }

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { getTestUserPlan, TEST_CV_ID } from "./helpers/auth";
 
 test.describe("Billing Gate Flow", () => {
   test("Upgrade modal shows for ATS limit", async ({ page }) => {
@@ -29,5 +30,16 @@ test.describe("Billing Gate Flow", () => {
       await reanalyseBtn.click();
       await expect(page.getByTestId("upgrade-modal")).toBeVisible({ timeout: 5000 });
     }
+  });
+
+  test("Fix All returns 403 fix_all_limit for the free plan", async ({ page }) => {
+    const plan = await getTestUserPlan(page);
+    test.skip(plan !== "free", `Fix All is gated for the free plan only; the test user is ${plan}`);
+
+    // Real request, no mock: the route must refuse before any AI call.
+    const res = await page.request.post("/api/cv/fix-all", { data: { cv_id: TEST_CV_ID } });
+    expect(res.status()).toBe(403);
+    const body = (await res.json()) as { code?: string; proOnly?: boolean };
+    expect(body.code).toBe("fix_all_limit");
   });
 });

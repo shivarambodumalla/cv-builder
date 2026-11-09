@@ -42,10 +42,11 @@ export async function POST(request: NextRequest) {
       limit: access.limit,
     });
     return NextResponse.json({
-      error: "You've used all free story extractions. Upgrade for unlimited.",
+      error: "Extracting experiences is a Pro feature. Upgrade to scan your resume, portfolio or GitHub.",
       code: access.reason,
       used: access.used,
       limit: access.limit,
+      proOnly: access.proOnly,
       daysUntilReset: access.daysUntilReset,
     }, { status: 403 });
   }

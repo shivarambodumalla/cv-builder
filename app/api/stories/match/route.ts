@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
       limit: access.limit,
     });
     return NextResponse.json({
-      error: "You've used all free interview prep matches. Upgrade for unlimited.",
+      error: "Interview prep is a Pro feature. Upgrade to match your experiences to any job description.",
       code: access.reason,
       used: access.used,
       limit: access.limit,
+      proOnly: access.proOnly,
       daysUntilReset: access.daysUntilReset,
     }, { status: 403 });
   }

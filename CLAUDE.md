@@ -59,8 +59,8 @@ If the answer is no to all — do not implement.
 
 ## Route Groups
 
-- (marketing) — public: /, /pricing, /resume-checker (was /upload-resume, 301s), /resumes, /interview-coach, /career-path, /privacy, /terms (/jobs is hidden, see Jobs)
-- (auth) — /login, /register (Google OAuth only)
+- (marketing) — public: /, /pricing, /resume-checker (was /upload-resume, 301s), /resumes, /interview-prep, /career-path, /privacy, /terms (/jobs is hidden, see Jobs)
+- (auth) — /login, /register (Google or LinkedIn sign-in)
 - (app) — authenticated: /dashboard, /billing, /interview-coach (renamed from /stories)
 - (editor) — /resume/[id] (two-panel resume editor)
 - (admin) — /admin/** (admin panel)
@@ -142,7 +142,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ## Auth
 
-- Google OAuth only (no email/password)
+- Google OAuth and LinkedIn (`linkedin_oidc` provider, `<LinkedInButton>` in components/shared/linkedin-button.tsx); no email/password
 - Supabase Auth with SSR cookies
 - Middleware checks: /dashboard, /resume, /billing require login; /admin, /api/admin require ADMIN_EMAIL match
 - Middleware runs only where it acts (each run costs Vercel Active CPU). /, /login and /register match only when the Supabase session cookie is present (`has` conditions; the cookie name spells out the project ref, so update it if NEXT_PUBLIC_SUPABASE_URL ever changes). API routes other than /api/admin skip middleware: they check the user and refresh an expired session themselves (verified: the route handler returns the refreshed cookie)
@@ -165,7 +165,7 @@ These are intentional brand colors — do NOT replace with semantic tokens:
 
 ### Templates
 
-32 templates total. Tiers live in the `template_catalog` table (edited in /admin/plans); today all 32 are free, including executive-pro, electric-lilac, executive-sidebar and wentworth, which were Pro-only before.
+32 templates total. Tiers live in the `template_catalog` table (edited in /admin/plans); today all 32 are free, including executive-pro, electric-lilac, executive-sidebar and wentworth, which were Pro-only before. `scripts/seed-plan-config.ts` seeds every template as free, so a re-seed keeps them free; no template tier is hardcoded in the UI.
 
 Per-template design defaults (font, alignment, separator, name weight, skills style) live in `DESIGN_DEFAULTS_BY_TEMPLATE` (lib/resume/defaults.ts) and column splits in `COLUMN_DEFAULTS_BY_TEMPLATE`; both apply on template pick and on new-CV creation via normalizeDesignSettings.
 
@@ -299,7 +299,7 @@ All settings wired via CSS variables: `--resume-font`, `--resume-accent`, `--res
 - Returns: rewritten summary, rewritten bullets per company, skills_to_add, sections_needing_attention, estimated_score_improvement
 - Skips bullets already strong (metric + action verb + outcome)
 - Generates summary if empty
-- Usage gated: free plan gets `fix_all` uses/week from `plan_limits` (Monday reset), upgrade trigger `fix_all_limit`
+- Gated like every AI route: `checkFeatureAccess(user.id, "fix_all")` → 403 `{ error, code: "fix_all_limit", used, limit, daysUntilReset, proOnly }` → `incrementUsage` after success. Counter `fix_all_this_week` (Monday reset), quota from `plan_limits` (free 0 = Pro only). Tailor CV is gated the same way under `cv_tailor` / `cv_tailor_this_week`. Both stamp `profiles.fix_all_used_at` (migration 00081) for the 80+ guarantee. The old hardcoded `fix_all_count_week` gate (columns that never existed) is gone
 
 ## JD Red Flag Detector
 
@@ -334,34 +334,38 @@ Quotas live in the `plan_limits` table (plan, feature, limit_value, reset_type; 
 
 Never type a quota into copy. Server components call `getPlanLimits()`; client components get the values as props. Phrase them with lib/billing/format-limits.ts (`describeQuota`, `formatLimit`, `summarizeAllowance`). Emails use `{{freeAtsScans}}`-style variables, which `sendEmail` fills from the same table. Static strings (metadata) must not state a free-plan number.
 
-Current values (2026-09-29):
+Current values (2026-11-09):
 - Free, total: 1 CV (`cvs`). Enforced by `checkCvLimit()` (lib/billing/limits.ts) in /api/cv/create-blank, /api/cv/upload and /api/cv/claim (403 + `upgradeTrigger: "cv_limit"`). The OAuth callback's anonymous-upload claim is not gated, so a first-time signup never loses the resume they just uploaded
-- Free, 7-day rolling window: 3 ATS scans, 20 AI rewrites, 5 job matches, 5 cover letters, 1 PDF download
-- Free, weekly Monday reset: 5 Fix All, 3 CV tailors, 5 offer evals, 3 portfolio scans, 10 story summaries, 5 interview preps
-- Pro: -1 (unlimited) on every quota, 80+ score guarantee, priority support
-- Templates: all 32 are `free` and enabled in `template_catalog` today. No watermark on any plan
+- Free, lifetime: 1 ATS scan (`ats_scans` → `profiles.total_ats_scans`, never resets; migration 00081 backfilled it to 1 for everyone who already had a report)
+- Free, unlimited: PDF downloads (`pdf_downloads` = -1), every page carrying the CVEdge footer line (`PLAN_LIMITS.free.watermark: true`)
+- Free, Pro only (limit 0): AI rewrites, job matches, cover letters, Fix All, CV tailor, offer evals, portfolio scans, story summaries, interview preps. `checkLimit` blocks the first use with `proOnly: true`; the format helpers render 0 as "Pro only". Career Path, CV parsing on upload and writing Interview Coach stories by hand stay free
+- Pro: -1 (unlimited) on every quota, no footer, 80+ score guarantee, priority support
+- Templates: all 32 are `free` and enabled in `template_catalog` (scripts/seed-plan-config.ts seeds them free too)
 
 ### Usage Windows
 
-Two reset mechanisms coexist:
-- **7-day rolling window** (from usage_window_start): ats_scans, job_matches, cover_letters, ai_rewrites, pdf_downloads
+Three mechanisms coexist:
+- **Lifetime** (never resets): ats_scans → `total_ats_scans` (`TOTAL_COLUMNS` in limits.ts). checkLimit() skips both reset passes for it and returns no `daysUntilReset`; nothing may ever zero it. `ats_scans_this_window` still exists but is no longer written
+- **7-day rolling window** (from usage_window_start): job_matches, cover_letters, ai_rewrites, pdf_downloads
 - **Weekly Monday reset** (from week_reset_at): fix_all, cv_tailor, offer_eval, portfolio_scan, story_summary, interview_prep
 - Reset mechanics: `lib/billing/limits.ts` (COLUMN_MAP, `LIMIT_RESET` in format-limits.ts mirrors it). Quota values: `plan_limits` table
-- Auto-reset on window/week expiration via checkLimit()
+- Auto-reset on window/week expiration via checkLimit(). /api/cron/weekly-reset is out of vercel.json (redundant with that, and it emailed every profile); it stays as a manual counter reset that sends no email
 
 ### Feature Gate (lib/billing/)
 
-- checkLimit(): check-only (does NOT increment counter), handles window/week resets
+- checkLimit(): check-only (does NOT increment counter), handles window/week resets. -1 = unlimited; 0 = Pro only, blocked on first use with `reason: "<feature>_limit"` and `proOnly: true`
 - consumeLimit(): atomic increment with .lt() to prevent race conditions (call after successful AI response)
 - checkAndConsumeLimit(): backward-compat alias → calls checkLimit() only
-- Plan expiry: checked on every feature access, auto-downgrades if current_period_end passed
+- Plan expiry: checked on every feature access, auto-downgrades if current_period_end passed. Any profile select feeding `getPlan()` must include `current_period_end` with `subscription_status`, or a cancelled-but-still-paid subscriber is treated as free
+- Route pattern: check → 403 `{ error, code: access.reason, used, limit, daysUntilReset, proOnly }` → work → `incrementUsage(...).catch(() => {})`. Every AI route is gated: rewrite-debate under `ai_rewrite`; jd-red-flags check-only under `job_match` (never consumes, so a Pro user's match count doesn't move); stories save/PUT skip the `story_quality_v1` call when `story_summary` is blocked and save unscored (`quality_score` null / unchanged) instead of failing. Career Path, /api/cv/upload and /api/cv/upload-public are deliberately ungated
 
 ### Pricing
 
 - Weekly: ~~$10~~ $5 (save 50%)
 - Monthly: ~~$35~~ $14 (save 60%)
 - Yearly: ~~$420~~ $120 (save 71%)
-- pricing_config table with Lemon Squeezy variant IDs
+- Per week: monthly ≈ $3.23/week, yearly ≈ $2.30/week
+- Prices are hardcoded in the upgrade modal `OPTIONS` (components/shared/upgrade-modal.tsx) and in app/(marketing)/pricing/pricing-content.tsx; `pricing_config` only supplies the Lemon Squeezy variant IDs. Change a price in both files and the table's price column together
 - Prices exclude GST/VAT
 
 ### Upgrade Modal
@@ -374,7 +378,7 @@ Two reset mechanisms coexist:
 ## PDF Export
 
 - POST /api/cv/export/pdf -> lib/pdf/html-to-pdf.ts (inline rendering, no child process)
-- Free: `pdf_downloads` per 7-day rolling window (see `plan_limits`), no watermark. Pro: unlimited, no watermark.
+- Free: unlimited downloads (`pdf_downloads` = -1), every page with the footer line "Made with CVEdge · thecvedge.com" (9px, #8a8a8a, centred in a 24px reserved bottom margin; `WATERMARK_*` constants in html-to-pdf.ts). Pro: unlimited, no footer. The flag is `PLAN_LIMITS[plan].watermark` from the export route; `renderHtmlToPdf`/`buildResumeDocument` default it to false so template thumbnails and /api/admin/cv/[cvId]/pdf print clean. The editor shows "Downloaded with a CVEdge footer line / Remove with Pro" (→ upgrade modal `download`) after a free download. Cover letter PDFs follow the same rule: the export route passes `showWatermark: getPlan(profile) === "free"` to cover-letter-worker.js.
 - Cover letter: /api/cv/cover-letter/export -> cover-letter-worker.js
 - Multi-page painting (lib/pdf/html-to-pdf.ts): Chromium clips column backgrounds to content height and never paints the canvas into `@page` margins. The pipeline folds page-spanning flex/grid columns (fills + divider borders) into one gradient, promotes it to the `<html>` canvas, and paints the pages-2+ top margin via a Puppeteer header template (laid out 20px below the page edge, hence the nested offset box). Per-page decorations (Orchid wedge) use `@media print { position: fixed }` and are hoisted to `<body>` so Chromium repeats them on every page.
 - A column row (side-by-side flex/grid) starting at the top of page 1 and at least half a page tall is promoted to the page canvas even when its content ends early, so sidebars run the full page on one-page CVs.
@@ -419,7 +423,7 @@ Two reset mechanisms coexist:
 
 - POST /api/cv/tailor-for-jd → callAI("cv_tailor_per_jd_v1")
 - Rewrites CV to maximize match score for a specific job description
-- Shares fix_all_count_week usage counter with Fix All
+- Gated under `cv_tailor` via `checkFeatureAccess` (own counter `cv_tailor_this_week`, 403 code `cv_tailor_limit`, free 0 = Pro only); stamps `fix_all_used_at` like Fix All
 - Opens FixAllDrawer with mode="tailor" and JD panel (two-column: 45% JD / 55% diff)
 - Auto re-matches after applying changes
 - Button: "Tailor CV" in Job Match header next to Re-match
@@ -441,7 +445,7 @@ Two reset mechanisms coexist:
 
 ## Interview Coach (formerly Story Bank)
 
-- Route: /stories (app), /interview-coach (marketing)
+- Route: /interview-coach (app), /interview-prep (marketing)
 - API routes: /api/stories/*, /api/story-sources/*
 - DB tables: stories (STAR fields + tags + quality_score + framework + reflection + summary + seniority_context), story_sources
 - Features:
@@ -466,23 +470,32 @@ Two reset mechanisms coexist:
 - Public rating: `lib/feedback/stats.ts` getPublicRatingStats() returns null below `MIN_PUBLIC_RATINGS` (10). Homepage shows the line under the testimonials heading AND emits AggregateRating only from that value. Never hardcode a rating in JSON-LD — Google treats self-declared ratings as spam.
 - Seed the email template: `npx tsx scripts/seed-email-templates.ts`.
 
+## Blog (content lives in the DB)
+
+- Posts are rows in `blog_posts` (content_md and content_html; the page renders content_html, and the FAQPage JSON-LD is extracted from its FAQ block by lib/blog/posts.ts). Once a post is published nothing in the repo is its source of truth: scripts/blog-*.ts and scripts/expand-thin-blog-posts*.ts only insert or patch, and several posts have rewritten HTML with older markdown, so never re-render HTML from markdown in bulk.
+- Plan and feature claims inside posts (quotas, watermark, template count, guarantee, Jobs links) are fixed with `npx tsx scripts/fix-blog-plan-claims.ts` (dry run: prints slug · field · before → after plus an audit of leftovers) and written with `--apply`. When copy changes again, add a rule there and patch the seed script that would re-insert the old text.
+
 ## E2E Testing (Playwright)
 
 - Config: playwright.config.ts
 - Test dir: tests/e2e/
 - Auth: /api/test-auth route creates real Supabase session via signInWithPassword
 - Global setup: tests/e2e/global-setup.ts — visits /api/test-auth, saves cookies to .auth/user.json
-- Suites (17 spec files):
+- Suites (20 spec files):
   - Core: auth, dashboard, cv-editor, billing, billing-gate, pdf-export
   - Features: ats-flow, job-match-flow, cover-letter, interview-coach
-  - Marketing: marketing (homepage, pricing, upload, privacy, terms, sitemap, robots)
+  - Marketing: marketing (homepage, pricing, /resume-checker, privacy, terms, sitemap, robots), cv-formats (format pages, blank .docx downloads, template URL consolidation)
   - Admin: admin (dashboard, tests, users, prompts, pricing, emails)
   - Journeys: journey-ats, journey-job-match, journey-cv-lifecycle, journey-cover-letter, journey-error-handling
+  - Hidden feature: jobs-flow, jobs-api (kept but skipped, see Jobs; not in the registry)
+- Plan-dependent tests (free PDF footer, locked ATS report, Fix All 403) read the test user's plan with `getTestUserPlan()` (tests/e2e/helpers/auth.ts, via /api/billing/check-limit) and skip on Pro. scripts/seed-test-data.sql seeds the test user as Pro, so they only run against a free test account
 - CI: .github/workflows/e2e-tests.yml — build → test → parse → upload to DB → email on failure
 - Admin: /admin/tests — test cases registry + run history + run detail
-- Seed: npx tsx scripts/seed-test-cases.ts (89 test case records)
+- Seed: npx tsx scripts/seed-test-cases.ts (62 test case records)
 
 ## Database Tables
+
+The core tables; supabase/migrations holds the full set (blog_posts, plan_limits, template_catalog, cv_reviews, testimonials, user_activity and others are not listed here).
 
 1. profiles — user data, plan, subscription, usage counters, timezone
 2. cvs — parsed_json (content), design_settings, raw_text, target_role, job description cache
@@ -553,6 +566,7 @@ Two reset mechanisms coexist:
 - Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
 - Webhook: HMAC SHA256 signature verification
 - RLS: all tables have row-level security policies
+- `ats_reports` hides the report body from the browser (migration 00081): table-level SELECT is revoked from anon and authenticated, and authenticated gets column-level SELECT on `id, cv_id, score, overall_score, confidence, created_at` only. `report_data`, `issues` and `suggestions` are readable solely through the admin client; a user-client `select("*")` or select of a hidden column on that table fails with "permission denied". INSERT/UPDATE/DELETE grants are unchanged (the editor's `update({ overall_score }).eq("id", …)` keeps working). Remember a column-level REVOKE does nothing while a table-level grant exists
 - Never write a "service role" policy as `FOR ALL USING (true)` without `TO service_role`: a policy with no role applies to `anon` too, whose key ships in the browser. The service role bypasses RLS, so admin-client code needs no policy at all (migration 00078 removed 14 of these). Public reads must be deliberate (`FOR SELECT`, published rows only); user policies should be `FOR SELECT TO authenticated` unless the browser genuinely writes
 - Never expose secrets in client code
 - Validate all inputs at system boundaries

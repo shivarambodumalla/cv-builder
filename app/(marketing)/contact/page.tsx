@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "Contact CVEdge",
+  title: "Contact Us",
   description:
     "How to reach CVEdge for support, billing, privacy and data requests, and press. We reply to every email, usually within one business day.",
   alternates: { canonical: "https://www.thecvedge.com/contact" },
@@ -31,7 +31,7 @@ const REASONS = [
   },
   {
     title: "The 80+ score guarantee",
-    body: "If you are on Pro, have run a full ATS analysis and Fix All, and are still under 80, email us and we will look at your CV directly.",
+    body: "If you are on Pro, have run a full ATS analysis and Fix All, and are still under 80, email us within 14 days of signing up and we will look at your CV directly.",
   },
   {
     title: "Feedback, bugs and press",
@@ -101,7 +101,7 @@ export default function ContactPage() {
           <li className="text-sm text-muted-foreground leading-relaxed flex items-start gap-2.5">
             <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
             <span>
-              If your ATS score seems low, the category breakdown on the report names the specific issues. That is
+              If your ATS score seems low, the report names your top issues, and every issue on Pro. That is
               usually a faster answer than we can give by email.
             </span>
           </li>

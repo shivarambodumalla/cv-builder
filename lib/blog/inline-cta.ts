@@ -69,7 +69,7 @@ export function getInlineCta(post: BlogPost): InlineCta {
       kind: "resume-check",
       eyebrow: "Free ATS check",
       heading: `Applying in ${market.place}? Check your ${market.doc} first.`,
-      body: `Get a free ATS score and fix formatting and keyword gaps before your ${market.doc} reaches a recruiter.`,
+      body: `Get a free ATS score and see your formatting and keyword gaps before your ${market.doc} reaches a recruiter.`,
       buttonText: `Check my ${market.doc}`,
       href: "/resume-checker",
     };
@@ -80,7 +80,7 @@ export function getInlineCta(post: BlogPost): InlineCta {
       kind: "resume-check",
       eyebrow: "Try it yourself",
       heading: "See your own ATS score in under 60 seconds",
-      body: "Upload your resume for a free score with specific fixes. Sign in free with Google to see it.",
+      body: "Upload your resume for a free score and your top issues. Sign in free with Google or LinkedIn to see it.",
       buttonText: "Check my resume",
       href: "/resume-checker",
     };
@@ -90,7 +90,7 @@ export function getInlineCta(post: BlogPost): InlineCta {
     kind: "resume-check",
     eyebrow: "Free ATS check",
     heading: "Put this into practice on your own resume",
-    body: "Upload it for a free ATS score and a prioritised list of fixes in under 60 seconds.",
+    body: "Upload it for a free ATS score and your top issues in under 60 seconds.",
     buttonText: "Check my resume",
     href: "/resume-checker",
   };

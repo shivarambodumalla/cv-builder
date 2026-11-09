@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       used: access.used,
       limit: access.limit,
     });
-    return NextResponse.json({ error: "You've used all free cover letters. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
+    return NextResponse.json({ error: "Cover letters are a Pro feature. Upgrade to generate one for any job.", code: access.reason, used: access.used, limit: access.limit, proOnly: access.proOnly, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 
   const { data: cv } = await supabase

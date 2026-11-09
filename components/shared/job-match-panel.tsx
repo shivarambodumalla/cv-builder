@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,6 +97,7 @@ export function JobMatchPanel({
   initialJobDescription,
   initialCompany,
   initialJobTitle,
+  plan,
   content: _content,
   result,
   onResult,
@@ -104,6 +105,7 @@ export function JobMatchPanel({
   onAnalysing,
 }: JobMatchPanelProps) {
   const { openUpgradeModal } = useUpgradeModal();
+  const isPro = plan === "pro";
   const [jobDescription, setJobDescription] = useState(initialJobDescription);
   const [company, setCompany] = useState(initialCompany);
   const [jobTitle, setJobTitle] = useState(initialJobTitle);
@@ -169,6 +171,30 @@ export function JobMatchPanel({
       setLoading(false);
       onAnalysing?.(false);
     }
+  }
+
+  // Job Match is Pro-only. Free users see the paywall in place of the form,
+  // decided from the plan prop so nothing flashes while a request resolves.
+  // When an earlier match exists the results pane already carries the full
+  // banner, so this side keeps to a short note.
+  if (!isPro) {
+    return (
+      <div data-panel="job-match" className="space-y-4">
+        {result ? (
+          <div className="rounded-lg border bg-muted/30 px-4 py-3 space-y-2">
+            <p className="text-sm font-medium">Job Match is a Pro feature</p>
+            <p className="text-xs text-muted-foreground">
+              Your last match is still here. Upgrade to match against a new job description.
+            </p>
+            <Button variant="outline" size="sm" onClick={() => openUpgradeModal("job_match_limit")}>
+              Upgrade to Pro
+            </Button>
+          </div>
+        ) : (
+          <UpgradeBanner trigger="job_match" onUpgrade={() => openUpgradeModal("job_match_limit")} />
+        )}
+      </div>
+    );
   }
 
   return (
@@ -247,26 +273,16 @@ export function JobMatchRightPanel({
 }) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
-  const [limitReached, setLimitReached] = useState(false);
   const [tailorLoading, setTailorLoading] = useState(false);
   const [tailorStep, setTailorStep] = useState(0);
   const [tailorResult, setTailorResult] = useState<FixAllResult | null>(null);
   const [tailorOpen, setTailorOpen] = useState(false);
   const categories = result.categories ?? {};
 
-  // Check limit on mount for free plan
-  useEffect(() => {
-    if (plan !== "free") return;
-    fetch("/api/billing/check-limit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feature: "job_match" }),
-    }).then((r) => r.json()).then((data) => {
-      if (data.limitReached) setLimitReached(true);
-    }).catch(() => {});
-  }, [plan]);
-
-  const isPaidContent = plan === "pro" || (!limitReached && !forcePaywall);
+  // Job Match is Pro-only, so the plan prop alone decides what the free user
+  // sees (score card + paywall). forcePaywall covers a 403 mid-session.
+  const isPro = plan === "pro";
+  const isPaidContent = isPro && !forcePaywall;
 
   // Build full text from current content for fix checking
   const currentText = useMemo(() => {
@@ -372,7 +388,7 @@ export function JobMatchRightPanel({
         body: JSON.stringify({ cv_id: cvId }),
       });
       if (res.status === 403) {
-        openUpgradeModal("fix_all_limit");
+        openUpgradeModal("cv_tailor_limit");
         setTailorLoading(false);
         return;
       }
@@ -654,14 +670,11 @@ export function JobMatchRightPanel({
         <p className="text-sm text-muted-foreground border-t pt-4" style={{ marginBottom: "14px" }}>{result.summary}</p>
       )}
 
-      {/* Offer Evaluation */}
-      {jdText && <div data-testid="offer-evaluation"><OfferEvaluation jdText={jdText} enabled={true} /></div>}
-
-      {/* JD Red Flags */}
-      {jdText && <div data-testid="red-flags-section"><JdRedFlagDetector jdText={jdText} enabled={true} /></div>}
-
-      {/* Salary Insights */}
-      {jobTitle && <SalaryInsights targetRole={jobTitle} isPro={plan === "pro"} />}
+      {/* Offer Evaluation, JD Red Flags, Salary Insights: Pro extras, so the
+          components never call their APIs for free users */}
+      {jdText && <div data-testid="offer-evaluation"><OfferEvaluation jdText={jdText} enabled={isPro} /></div>}
+      {jdText && <div data-testid="red-flags-section"><JdRedFlagDetector jdText={jdText} enabled={isPro} /></div>}
+      {jobTitle && <SalaryInsights targetRole={jobTitle} isPro={isPro} />}
 
       {/* Action cards */}
       <div className="mt-6 space-y-3">

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { checkFeatureAccess } from "@/lib/billing/feature-gate";
+import { logServerActivity } from "@/lib/analytics/server-log";
 
 interface RedFlag {
   severity: "red" | "yellow";
@@ -27,6 +29,27 @@ export async function POST(request: NextRequest) {
 
   const rl = checkRateLimit(ip, true);
   if (!rl.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
+
+  // Part of Job Match: check that quota, but never consume it. The panel fires
+  // this automatically, so a Pro user's match count must not move; a free
+  // user (job_matches 0 = Pro only) is blocked.
+  const access = await checkFeatureAccess(user.id, "job_match");
+  if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "jd_red_flag",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
+    return NextResponse.json({
+      error: "Red flag detection is part of Job Match, a Pro feature.",
+      code: access.reason,
+      used: access.used,
+      limit: access.limit,
+      daysUntilReset: access.daysUntilReset,
+      proOnly: access.proOnly,
+    }, { status: 403 });
+  }
 
   const { jd_text } = await request.json();
   if (!jd_text || jd_text.trim().length < 50) {

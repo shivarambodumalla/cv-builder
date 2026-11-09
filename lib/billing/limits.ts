@@ -7,21 +7,22 @@
  * the tables so a DB outage neither shows nor enforces different numbers.
  */
 export const PLAN_LIMITS = {
+  // 0 = Pro only (blocked for free, `proOnly: true` on the result). -1 = unlimited.
   free: {
     cvs: 1,
-    ats_scans: 3,
-    ai_rewrites: 20,
-    job_matches: 5,
-    cover_letters: 5,
-    fix_all: 5,
-    cv_tailor: 3,
-    offer_eval: 5,
-    portfolio_scan: 3,
-    story_summary: 10,
-    interview_prep: 5,
-    pdf_downloads: 1,
+    ats_scans: 1, // lifetime, never resets
+    ai_rewrites: 0,
+    job_matches: 0,
+    cover_letters: 0,
+    fix_all: 0,
+    cv_tailor: 0,
+    offer_eval: 0,
+    portfolio_scan: 0,
+    story_summary: 0,
+    interview_prep: 0,
+    pdf_downloads: -1, // unlimited, every page carries the CVEdge footer line
     templates: ["classic", "classic-serif", "sharp", "minimal", "executive", "executive-pro", "sidebar", "sidebar-right", "two-column", "divide", "folio", "metro", "harvard", "ledger", "aurora", "electric-lilac", "bold-accent", "executive-sidebar", "clean-sidebar", "blueprint", "wentworth", "orchid", "coastal", "portrait", "regent", "meridian", "vantage", "linen", "graphite", "sterling", "ember", "canopy"],
-    watermark: false,
+    watermark: true,
   },
   pro: {
     cvs: -1,
@@ -168,16 +169,22 @@ const WEEKLY_COLUMNS = [
 ];
 
 const WINDOW_COLUMNS = [
-  "ats_scans_this_window",
   "job_matches_this_window",
   "cover_letters_this_window",
   "ai_rewrites_this_window",
   "pdf_downloads_this_window",
 ];
 
+/**
+ * Lifetime counters: never reset by checkLimit() or cron/weekly-reset, and a
+ * blocked result carries no daysUntilReset. (`ats_scans_this_window` still
+ * exists in the table but is no longer written.)
+ */
+export const TOTAL_COLUMNS = ["total_ats_scans"];
+
 const COLUMN_MAP: Record<string, { column: string; limitKey: string }> = {
-  ats_scan: { column: "ats_scans_this_window", limitKey: "ats_scans" },
-  ats_scans: { column: "ats_scans_this_window", limitKey: "ats_scans" },
+  ats_scan: { column: "total_ats_scans", limitKey: "ats_scans" },
+  ats_scans: { column: "total_ats_scans", limitKey: "ats_scans" },
   job_match: { column: "job_matches_this_window", limitKey: "job_matches" },
   job_matches: { column: "job_matches_this_window", limitKey: "job_matches" },
   cover_letter: { column: "cover_letters_this_window", limitKey: "cover_letters" },
@@ -196,17 +203,22 @@ const COLUMN_MAP: Record<string, { column: string; limitKey: string }> = {
 
 // --- Check-only (does NOT increment counter) ---
 
-export async function checkLimit(
-  supabase: any,
-  userId: string,
-  feature: string
-): Promise<{
+export interface LimitCheck {
   allowed: boolean;
   used: number;
   limit: number;
   reason?: string;
+  /** Undefined for lifetime counters (TOTAL_COLUMNS): nothing is coming back. */
   daysUntilReset?: number;
-}> {
+  /** The plan's limit is 0: the feature is Pro-only, not a used-up quota. */
+  proOnly?: boolean;
+}
+
+export async function checkLimit(
+  supabase: any,
+  userId: string,
+  feature: string
+): Promise<LimitCheck> {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
@@ -226,9 +238,11 @@ export async function checkLimit(
 
   const column = mapping.column;
   const isWeeklyColumn = WEEKLY_COLUMNS.includes(column);
+  const isTotalColumn = TOTAL_COLUMNS.includes(column);
 
+  // Lifetime counters never reset, so skip both reset passes for them.
   // --- Reset weekly counters if it's a new week (Monday) ---
-  if (isNewWeek(profile.week_reset_at)) {
+  if (!isTotalColumn && isNewWeek(profile.week_reset_at)) {
     const weeklyReset: Record<string, any> = { week_reset_at: new Date().toISOString() };
     for (const col of WEEKLY_COLUMNS) {
       weeklyReset[col] = 0;
@@ -243,7 +257,7 @@ export async function checkLimit(
   }
 
   // --- Reset 7-day window counters if window expired ---
-  if (isWindowExpired(profile.usage_window_start)) {
+  if (!isTotalColumn && isWindowExpired(profile.usage_window_start)) {
     const windowReset: Record<string, any> = {
       usage_window_start: new Date().toISOString(),
     };
@@ -260,12 +274,15 @@ export async function checkLimit(
   }
 
   const used = profile[column] ?? 0;
-  const daysUntilReset = isWeeklyColumn
-    ? getDaysUntilMonday()
-    : getDaysUntilReset(profile.usage_window_start);
+  const daysUntilReset = isTotalColumn
+    ? undefined
+    : isWeeklyColumn
+      ? getDaysUntilMonday()
+      : getDaysUntilReset(profile.usage_window_start);
 
+  // A limit of 0 blocks on the first use: the feature is Pro-only on this plan.
   if (used >= limit) {
-    return { allowed: false, used, limit, reason: `${feature}_limit`, daysUntilReset };
+    return { allowed: false, used, limit, reason: `${feature}_limit`, daysUntilReset, proOnly: limit === 0 };
   }
 
   return { allowed: true, used, limit };

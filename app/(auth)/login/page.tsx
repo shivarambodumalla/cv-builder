@@ -69,7 +69,7 @@ function LoginContent() {
                   Your resume<br />has been analysed
                 </h1>
                 <p className="text-[13px] text-white/70 mt-1.5 leading-relaxed">
-                  Sign in to unlock your full ATS score and fixes.
+                  Sign in to see your ATS score and top issues.
                 </p>
               </>
             ) : (
@@ -78,7 +78,7 @@ function LoginContent() {
                   Check your resume score<br />in 30 seconds
                 </h1>
                 <p className="text-[13px] text-white/70 mt-1.5 leading-relaxed">
-                  See why your resume gets rejected and fix it instantly
+                  See why your resume gets filtered out, and what to fix first
                 </p>
               </>
             )}
@@ -93,9 +93,9 @@ function LoginContent() {
               </p>
               {[
                 "Your ATS score",
-                "Missing keywords recruiters expect",
-                "Weak bullet points rewritten by AI",
-                "Exact fixes to improve your chances",
+                "Your top issues, ranked by impact",
+                "Every template, free",
+                "Your resume as a PDF",
               ].map((text) => (
                 <div key={text} className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 shrink-0 text-[#065F46]" strokeWidth={3} />

@@ -7,12 +7,12 @@ import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/
 export const metadata: Metadata = {
   title: "ATS-Friendly Resume Builder: Score 80+ Before You Apply",
   description:
-    "Build an ATS-friendly resume that passes Greenhouse, Workday, and Lever automatically. Get an instant ATS score across 6 categories, fix issues with AI, and download a polished PDF.",
+    "Build an ATS-friendly resume that passes Greenhouse, Workday, and Lever. Get an instant ATS score across 6 categories, see what to fix, and download a polished PDF. Pro fixes it with AI.",
   alternates: { canonical: "https://www.thecvedge.com/ats-friendly-resume" },
   openGraph: {
     title: "ATS-Friendly Resume Builder: Score 80+ Before You Apply | CVEdge",
     description:
-      "75% of resumes are rejected by ATS before a human sees them. CVEdge gives you an instant score and fixes every issue before you apply.",
+      "75% of resumes are rejected by ATS before a human sees them. CVEdge gives you an instant score and shows what to fix before you apply.",
     url: "https://www.thecvedge.com/ats-friendly-resume",
   },
 };
@@ -101,7 +101,7 @@ export default function AtsFriendlyResumePage() {
       />
       <ServiceJsonLd
         name="ATS Resume Score & Fixer"
-        description="Instant ATS score across 6 categories. AI-powered rewriting to fix every issue before you apply."
+        description="Instant ATS score across 6 categories. Pro adds AI rewriting to fix every issue before you apply."
         url="https://www.thecvedge.com/ats-friendly-resume"
         serviceType="ATS Resume Optimizer"
         price="0"
@@ -126,8 +126,8 @@ export default function AtsFriendlyResumePage() {
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
               75% of resumes are rejected by ATS before a recruiter sees them. CVEdge gives
-              you an instant score across 6 categories and fixes every issue with AI in
-              minutes, not hours.
+              you an instant score across 6 categories and shows what to fix. Pro fixes it
+              with AI in minutes, not hours.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
@@ -169,7 +169,7 @@ export default function AtsFriendlyResumePage() {
             <div className="text-center mb-10">
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">The 6 categories CVEdge scores</h2>
               <p className="mt-3 text-muted-foreground">
-                Every CVEdge ATS report breaks down exactly which category is dragging your score, and what to fix.
+                Every ATS report shows which category is dragging your score. The free scan lists your top issues; Pro lists every one.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -242,8 +242,8 @@ export default function AtsFriendlyResumePage() {
             <div className="space-y-4">
               {[
                 { icon: BarChart3, step: "1", title: "Upload your resume and get an instant score", desc: "CVEdge analyzes your resume across all 6 ATS categories in seconds. You see exactly which category is dragging your score, plus specific issues within each one." },
-                { icon: Zap, step: "2", title: "Fix everything with AI in one pass", desc: "Fix All ATS rewrites your summary and all experience bullets to ATS-optimized standards simultaneously. Review every change, accept what you like, and adjust what doesn't fit your voice." },
-                { icon: Target, step: "3", title: "Match your score to the specific job", desc: "Paste the job description to see your keyword match score. CVEdge shows which missing terms would increase your match the most. Add them in two clicks." },
+                { icon: Zap, step: "2", title: "Fix everything with AI in one pass (Pro)", desc: "Fix All ATS rewrites your summary and all experience bullets to ATS-optimized standards simultaneously. Review every change, accept what you like, and adjust what doesn't fit your voice." },
+                { icon: Target, step: "3", title: "Match your score to the specific job (Pro)", desc: "Paste the job description to see your keyword match score. CVEdge shows which missing terms would increase your match the most. Add them in two clicks." },
               ].map((step) => (
                 <div key={step.title} className="flex gap-4 rounded-xl border bg-card p-5">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">{step.step}</div>
@@ -322,7 +322,7 @@ export default function AtsFriendlyResumePage() {
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-2xl font-bold tracking-tight">Stop getting filtered before a human sees you</h2>
             <p className="mt-3 text-muted-foreground">
-              Upload your resume now for a free ATS score. Understand exactly what to fix, then fix it with AI.
+              Upload your resume now for a free ATS score. See what to fix, then fix it in the editor or let Pro fix it with AI.
             </p>
             <Button size="lg" className="mt-6" asChild>
               <Link href="/resume-checker">Get my free ATS score</Link>

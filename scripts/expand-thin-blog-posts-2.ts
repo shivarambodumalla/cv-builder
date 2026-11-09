@@ -62,7 +62,7 @@ const POSTS: PostUpdate[] = [
     title: "Your CV Is Failing Before a Human Sees It — How to See What the Parser Sees",
     brief:
       "Parsing failures are invisible from your side: the CV looks perfect on screen while the record behind it is missing your phone number. Three ways to see the extracted version, and what to fix when it is wrong.",
-    seo_title: "See What the ATS Extracted From Your CV | CVEdge",
+    seo_title: "See What the ATS Extracted From Your CV",
     seo_description:
       "Your CV can look perfect and still parse badly. How to inspect the structured record an ATS builds from your file, and the formatting choices that corrupt it.",
     read_time_minutes: 8,
@@ -79,7 +79,7 @@ const POSTS: PostUpdate[] = [
 <p>Open your CV as a PDF, select all, copy, and paste into a plain text editor. What you see is close to the raw text stream a parser starts from. Read it in that order. If your name and contact details are absent, they are sitting in a document header that many parsers never read. If lines from your left and right columns alternate mid-sentence, your two-column layout is being read across rather than down. If a whole section is missing, it was an image.</p>
 <p>This test takes thirty seconds and catches the majority of serious parsing damage.</p>
 <h3>2. Upload it to a parser and read the fields back</h3>
-<p>The paste test shows you the text stream but not the field assignment. To see that, put the file through a tool that shows you the structured output — which employer it assigned to which title, which dates it attached to which role. <a href="https://www.thecvedge.com/resume-checker">CVEdge's checker</a> does this free and without an account, and any tool that shows extracted fields rather than only a score will do the same job.</p>
+<p>The paste test shows you the text stream but not the field assignment. To see that, put the file through a tool that shows you the structured output — which employer it assigned to which title, which dates it attached to which role. <a href="https://www.thecvedge.com/resume-checker">CVEdge's checker</a> does this free with a Google or LinkedIn sign-in, and any tool that shows extracted fields rather than only a score will do the same job.</p>
 <p>What you are looking for is not the score. It is whether the fields are right.</p>
 <h3>3. Save as plain text and read the result</h3>
 <p>Export or save your CV as .txt from your editor. This forces every visual element to resolve to text or disappear. Anything that vanishes — a skills rating bar, an icon standing in for "email", a logo carrying your name — was never text, and was never going to be extracted.</p>
@@ -102,7 +102,7 @@ const POSTS: PostUpdate[] = [
 <h2>The order to fix things in</h2>
 <p>If the paste test reveals problems, fix them before you touch anything else about your CV. There is no point rewriting bullets for impact when the bullets are being shuffled into the wrong job. Move contact details into the body, collapse a broken two-column layout into a single column or rebuild it without tables, replace image-based elements with text, and normalise the headings and dates.</p>
 <p>Then re-run the paste test. When the plain text version reads correctly top to bottom, the structural problem is solved and the ordinary work of making the content compelling can begin — which is where the rest of the effort belongs.</p>
-<p>You can check the extracted fields for your own CV in about a minute with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a>, no account required.</p>`,
+<p>You can check the extracted fields for your own CV in about a minute with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> with a free sign-in.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -110,7 +110,7 @@ const POSTS: PostUpdate[] = [
     title: "Common Resume Mistakes That Cost You Interviews (And How to Fix Them)",
     brief:
       "The recurring faults that cost interviews are duller than most advice suggests: unmeasured bullets, buried relevance, and formatting that breaks parsing. Each one, what it costs, and the fix.",
-    seo_title: "Resume Mistakes That Get You Rejected — With Fixes | CVEdge",
+    seo_title: "Resume Mistakes That Get You Rejected — With Fixes",
     seo_description:
       "The resume mistakes that actually cost interviews, ordered by how much damage they do — and the specific fix for each one.",
     read_time_minutes: 9,
@@ -161,7 +161,7 @@ const POSTS: PostUpdate[] = [
     title: "Best Resume Builder for 2026: 7 Tools Compared",
     brief:
       "Seven resume builders compared on the thing that decides interviews — whether the tool improves what your CV says, not how it looks. Includes where each one puts its paywall.",
-    seo_title: "Best Resume Builder 2026 — 7 Tools Compared Honestly | CVEdge",
+    seo_title: "Best Resume Builder 2026 — 7 Tools Compared Honestly",
     seo_description:
       "An honest comparison of seven resume builders in 2026: what each one actually does, where the paywall sits, and which type of tool fits which problem.",
     read_time_minutes: 9,
@@ -176,7 +176,7 @@ const POSTS: PostUpdate[] = [
 <h2>The comparison</h2>
 
 <h3>CVEdge</h3>
-<p><em>Analysis-first, with a builder attached.</em> Scores your CV across six categories, shows the specific issues behind the score, and rewrites bullets from what you actually wrote rather than generating claims from your job title. Free tier includes ATS scoring, the full issue breakdown, twenty-four templates and PDF export without a watermark.</p>
+<p><em>Analysis-first, with a builder attached.</em> Scores your CV across six categories, shows the specific issues behind the score, and rewrites bullets from what you actually wrote rather than generating claims from your job title. The free plan includes an ATS score, thirty-two templates and PDF export with a small CVEdge footer; Pro adds the full issue breakdown, the AI tools and clean PDFs.</p>
 <p><strong>Where it is weaker:</strong> the template library is smaller than the design-led tools, and if what you want is a visually distinctive creative CV, several tools below do that better. The AI rewriter deliberately inserts <code>[X]</code> placeholders instead of inventing metrics, which is the right behaviour but means more work for you.</p>
 
 <h3>Zety</h3>
@@ -216,7 +216,7 @@ const POSTS: PostUpdate[] = [
 <li><strong>Want detailed line-level critique:</strong> Resume Worded.</li>
 </ul>
 <p>Whichever you use, the honest summary is that a tool can fix presentation, parsing and vocabulary. It cannot make a weak application competitive, and any tool promising otherwise is selling you something. If your CV accurately represents strong, relevant experience and still gets no responses, the problem is usually one of the first three — which is at least the good news, because those are the fixable ones.</p>
-<p>You can check where yours stands with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> without creating an account.</p>`,
+<p>You can check where yours stands with the <a href="https://www.thecvedge.com/resume-checker">free ATS checker</a> with a free sign-in.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -224,7 +224,7 @@ const POSTS: PostUpdate[] = [
     title: "Zety Alternative: What Changes If You Switch",
     brief:
       "Zety lets you build free and charges to download. What a genuinely free alternative changes about the workflow, where the real trade-offs sit, and how to move an existing CV across.",
-    seo_title: "Zety Alternative 2026 — Free Resume Builder With ATS Scoring | CVEdge",
+    seo_title: "Zety Alternative 2026 — Free Resume Builder With ATS Scoring",
     seo_description:
       "Considering a Zety alternative? What you gain and give up moving to a free builder with real ATS scoring, and how to migrate a CV you already built.",
     read_time_minutes: 8,
@@ -267,7 +267,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The honest summary</h2>
 <p>If your CV is well written and simply needs a good-looking container, Zety does that well and the fee is not unreasonable. If your CV is not getting responses, no builder in this category will fix that by making it prettier, and the useful question is which tool tells you <em>why</em> — parsing, keyword coverage, or content — so you know what to change.</p>
-<p>That diagnosis is free here: the <a href="https://www.thecvedge.com/resume-checker">ATS checker</a> reports your score, the extracted fields and the specific issues found without an account or a card.</p>`,
+<p>That diagnosis is free here: the <a href="https://www.thecvedge.com/resume-checker">ATS checker</a> reports your score, the extracted fields and the specific issues found. It needs a free sign-in, not a card.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -275,7 +275,7 @@ const POSTS: PostUpdate[] = [
     title: "UAE Resume Format 2026: What Gulf Recruiters Expect",
     brief:
       "A UAE CV follows different conventions to a US or UK one — on photos, personal details and visa status. What to include, what to leave out, and why the norms differ.",
-    seo_title: "UAE Resume Format 2026 — What Gulf Recruiters Expect | CVEdge",
+    seo_title: "UAE Resume Format 2026 — What Gulf Recruiters Expect",
     seo_description:
       "How a UAE CV differs from a Western one: photo and personal details conventions, visa status, notice period, and the structure Gulf recruiters expect in 2026.",
     read_time_minutes: 9,
@@ -333,7 +333,7 @@ const POSTS: PostUpdate[] = [
     title: "Dubai CV Format for Indian Professionals: What Actually Changes",
     brief:
       "Indian CV conventions and Dubai expectations differ in specific ways — length, salary history, personal details and how experience is framed. What to change when you apply to the UAE.",
-    seo_title: "Dubai CV Format for Indian Professionals 2026 | CVEdge",
+    seo_title: "Dubai CV Format for Indian Professionals 2026",
     seo_description:
       "The specific differences between an Indian CV and a Dubai one: length, salary expectations, notice period, attestation, and how to frame Indian experience for UAE recruiters.",
     read_time_minutes: 9,
@@ -379,7 +379,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The mechanics still apply</h2>
 <p>UAE employers and the regional portals run applicant tracking systems. Single column, standard headings, real text rather than images, contact details in the body of the page rather than a document header, and consistent month-and-year dates. Check by pasting your PDF into a plain text editor — if it reads correctly in order, it will parse.</p>
-<p>You can check the extracted fields and ATS score for your CV free at <a href="https://www.thecvedge.com/resume-checker">CVEdge</a>, no account needed.</p>`,
+<p>You can check the extracted fields and ATS score for your CV free at <a href="https://www.thecvedge.com/resume-checker">CVEdge</a> with a free sign-in and no card.</p>`,
   },
   // ────────────────────────────────────────────────────────────────────────────
   {
@@ -387,7 +387,7 @@ const POSTS: PostUpdate[] = [
     title: "Saudi Arabia CV Format Guide 2026: Writing for the KSA Market",
     brief:
       "A Saudi CV is screened against different pressures to a UAE one — Saudization quotas, Vision 2030 sector growth, and Arabic capability. What that changes about what you put on the page.",
-    seo_title: "Saudi Arabia CV Format 2026 — Writing for the KSA Market | CVEdge",
+    seo_title: "Saudi Arabia CV Format 2026 — Writing for the KSA Market",
     seo_description:
       "How a KSA CV differs from a UAE or Western one: Saudization considerations, Vision 2030 sectors, Arabic language, iqama status, and the structure Saudi recruiters expect.",
     read_time_minutes: 9,
@@ -450,7 +450,7 @@ const POSTS: PostUpdate[] = [
     title: "UX Designer Resume Guide 2026: The CV Next to the Portfolio",
     brief:
       "A UX CV is screened alongside your portfolio, which changes what belongs on it. What hiring managers actually read the CV for, and the framing that separates shortlisted candidates.",
-    seo_title: "UX Designer Resume Guide 2026 — What Gets You Shortlisted | CVEdge",
+    seo_title: "UX Designer Resume Guide 2026 — What Gets You Shortlisted",
     seo_description:
       "A UX designer CV is read next to the portfolio, not instead of it. What that changes about what to include, how to frame outcomes, and what hiring managers screen for.",
     read_time_minutes: 9,
@@ -508,7 +508,7 @@ const POSTS: PostUpdate[] = [
     title: "Back-End Developer Resume Guide 2026: Showing Scale and Ownership",
     brief:
       "Back-end CVs under-communicate the two things that actually get them shortlisted: the scale the systems ran at, and what the author owned when things broke.",
-    seo_title: "Back-End Developer Resume Guide 2026 — Scale and Ownership | CVEdge",
+    seo_title: "Back-End Developer Resume Guide 2026 — Scale and Ownership",
     seo_description:
       "What separates a shortlisted back-end CV: system scale, production ownership and failure handling, stated concretely. Bullet rewrites and the keywords that matter.",
     read_time_minutes: 9,
@@ -573,7 +573,7 @@ const POSTS: PostUpdate[] = [
     title: "Financial Analyst Resume Guide 2026: Showing Judgment, Not Just Models",
     brief:
       "Financial analyst CVs list the models built and omit the decisions they informed. What hiring managers screen for across FP&A, corporate finance and investment roles.",
-    seo_title: "Financial Analyst Resume Guide 2026 — What Gets Shortlisted | CVEdge",
+    seo_title: "Financial Analyst Resume Guide 2026 — What Gets Shortlisted",
     seo_description:
       "How to write a financial analyst CV that shows judgment rather than tool proficiency: bullet rewrites, keywords by specialism, and what differs across FP&A and investment roles.",
     read_time_minutes: 9,
@@ -630,7 +630,7 @@ const POSTS: PostUpdate[] = [
     title: "HR Manager Resume Guide 2026: Writing for the People Who Screen CVs",
     brief:
       "HR managers are screened by other HR professionals, which raises the bar on the document itself. What separates a shortlisted HR CV — and why generic people-person language fails hardest here.",
-    seo_title: "HR Manager Resume Guide 2026 — What HR Screeners Look For | CVEdge",
+    seo_title: "HR Manager Resume Guide 2026 — What HR Screeners Look For",
     seo_description:
       "How to write an HR manager CV that survives screening by other HR professionals: scope, employee relations evidence, systems, and the metrics that actually land.",
     read_time_minutes: 9,
@@ -681,7 +681,7 @@ const POSTS: PostUpdate[] = [
     title: "Scrum Master Resume Guide 2026: Evidence Over Ceremony",
     brief:
       "Scrum Master CVs list ceremonies facilitated and certifications held. Hiring managers are screening for whether teams got measurably better. What to show instead.",
-    seo_title: "Scrum Master Resume Guide 2026 — Evidence Over Ceremony | CVEdge",
+    seo_title: "Scrum Master Resume Guide 2026 — Evidence Over Ceremony",
     seo_description:
       "How to write a Scrum Master CV that shows team outcomes rather than ceremonies run: the metrics that land, what certifications are worth, and bullet rewrites.",
     read_time_minutes: 9,
@@ -749,7 +749,7 @@ const POSTS: PostUpdate[] = [
     title: "Jobscan Alternative: What You Gain and Give Up",
     brief:
       "Jobscan's match rate is genuinely useful and genuinely metered. An honest look at what changes if you move to a free ATS checker — including what Jobscan does better.",
-    seo_title: "Jobscan Alternative 2026 — An Honest Comparison | CVEdge",
+    seo_title: "Jobscan Alternative 2026 — An Honest Comparison",
     seo_description:
       "Looking for a Jobscan alternative? What the free options do well, what Jobscan still does better, and how to decide which one fits your search.",
     read_time_minutes: 9,
@@ -800,7 +800,7 @@ const POSTS: PostUpdate[] = [
 
 <h2>The honest summary</h2>
 <p>If Jobscan is working for you and the cost is manageable, there is no strong reason to move. If the scan cap is the friction, an uncapped alternative removes it. And if you have optimised your match rate and are still not hearing back, that is genuinely useful information: it means keyword coverage was not your bottleneck, and the effort belongs on parsing, on what your bullets actually say, or on whether the roles you are applying to are the right ones.</p>
-<p>You can check parsing, extracted fields and an ATS score for your CV free at <a href="https://www.thecvedge.com/resume-checker">CVEdge</a>, without an account.</p>`,
+<p>You can check parsing, extracted fields and an ATS score for your CV free at <a href="https://www.thecvedge.com/resume-checker">CVEdge</a> with a free sign-in and no card.</p>`,
   },
 ];
 

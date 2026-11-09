@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
-import { getPlan } from "@/lib/billing/limits";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { logServerActivity } from "@/lib/analytics/server-log";
 import type { ResumeContent } from "@/lib/resume/types";
 import { alertAdmin } from "@/lib/email/alert";
@@ -23,32 +23,24 @@ export async function POST(request: NextRequest) {
 
   const { cv_id } = await request.json();
 
-  // Check usage limit — columns may not exist yet, so use * select
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  const plan = getPlan(profile);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const profileAny = profile as any;
-  const countThisWeek = profileAny?.fix_all_count_week ?? 0;
-  const windowStart = profileAny?.fix_all_window_start;
-  const windowExpired = !windowStart || (Date.now() - new Date(windowStart).getTime()) > 7 * 24 * 60 * 60 * 1000;
-
-  const effectiveCount = windowExpired ? 0 : countThisWeek;
-
-  if (plan === "free" && effectiveCount >= 1) {
+  // Quota from plan_limits (free 0 = Pro only, pro -1), counter fix_all_this_week (Monday reset).
+  const access = await checkFeatureAccess(user.id, "fix_all");
+  if (!access.allowed) {
     logServerActivity(supabase, user.id, "feature_blocked", {
       feature: "fix_all",
-      reason: "fix_all_limit",
-      used: effectiveCount,
-      limit: 1,
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
     });
     return NextResponse.json({
-      error: "Free tier limit reached. Upgrade for unlimited Fix All.",
-      code: "fix_all_limit",
+      error: access.proOnly
+        ? "Fix All is a Pro feature. Upgrade for unlimited one-click fixes."
+        : "You've used all your Fix All runs this week. Upgrade for unlimited.",
+      code: access.reason,
+      used: access.used,
+      limit: access.limit,
+      daysUntilReset: access.daysUntilReset,
+      proOnly: access.proOnly,
     }, { status: 403 });
   }
   if (!cv_id) return NextResponse.json({ error: "cv_id required" }, { status: 400 });
@@ -96,8 +88,6 @@ export async function POST(request: NextRequest) {
       education: content.education,
     };
 
-    console.log("[fix-all] Starting for", targetRole, "missing:", missingKeywords.length, "issues:", atsIssues.length);
-
     const result = await callAI({
       promptName: "fix_all_ats_v1",
       variables: {
@@ -111,15 +101,12 @@ export async function POST(request: NextRequest) {
       ip,
     });
 
-    // Increment usage — columns may not exist yet, silently ignore errors
-    try {
-      const updates: Record<string, unknown> = {
-        fix_all_used_at: new Date().toISOString(),
-        fix_all_count_week: windowExpired ? 1 : effectiveCount + 1,
-      };
-      if (windowExpired) updates.fix_all_window_start = new Date().toISOString();
-      await admin.from("profiles").update(updates).eq("id", user.id);
-    } catch { /* columns may not exist yet */ }
+    // Awaited so Vercel doesn't freeze the function before the writes land.
+    await Promise.all([
+      incrementUsage(user.id, "fix_all").catch(() => {}),
+      // Read by lib/guarantee/check.ts: the 80+ guarantee needs one Fix All run.
+      admin.from("profiles").update({ fix_all_used_at: new Date().toISOString() }).eq("id", user.id),
+    ]);
 
     return NextResponse.json(result);
   } catch (err) {

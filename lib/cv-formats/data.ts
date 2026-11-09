@@ -317,7 +317,7 @@ export const CV_FORMATS: CvFormat[] = [
     latex: {
       path: "/downloads/jakes-resume.tex",
       builderPitch:
-        "CVEdge's Classic template is a similar one-page, single-column layout. You fill it in through a form instead of editing markup, get an ATS score, and export a PDF. Free to start with a Google sign-in, no card needed.",
+        "CVEdge's Classic template is a similar one-page, single-column layout. You fill it in through a form instead of editing markup, get an ATS score, and export a PDF. Free to start with a Google or LinkedIn sign-in, no card needed.",
     },
   },
 ];

@@ -21,6 +21,7 @@ import { TemplateRenderer } from "@/components/resume/template-renderer";
 import { PaperPreview } from "@/components/resume/paper-preview";
 import { DesignerPanel } from "@/components/resume/designer-panel";
 import { AtsPanel } from "@/components/shared/ats-panel";
+import { Chip } from "@/components/ui/chip";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
 import { JobMatchPanel, JobMatchRightPanel, type JobMatchResult } from "@/components/shared/job-match-panel";
 import { CoverLetterPanel } from "@/components/shared/cover-letter-panel";
@@ -124,7 +125,6 @@ interface ResumeEditorProps {
   lastFeedbackRating?: number | null;
   initialTab?: string;
   autoScan?: boolean;
-  pdfDownloadsThisWindow?: number;
 }
 
 function formatSavedTime(date: Date): string {
@@ -140,7 +140,7 @@ function formatSavedTime(date: Date): string {
   return `${date.toLocaleDateString([], { month: "short", day: "numeric" })}, ${time}`;
 }
 
-export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData, initialTab = "editor", autoScan = false, pdfDownloadsThisWindow = 0, lastFeedbackRating = null }: ResumeEditorProps) {
+export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywordList, credits, user, plan, reviewData, initialTab = "editor", autoScan = false, lastFeedbackRating = null }: ResumeEditorProps) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
 
@@ -165,6 +165,8 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [downloading, setDownloading] = useState(false);
+  // Free downloads carry the CVEdge footer line; this says so once per download.
+  const [pdfToast, setPdfToast] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState<number | null>(lastFeedbackRating);
   const [title, setTitle] = useState(cv.title || "Untitled CV");
@@ -217,6 +219,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
       const data = await res.json();
       if (res.ok) {
         setJobMatchResult(data as JobMatchResult);
+      } else if (res.status === 403) {
+        // Job Match is Pro-only on the free plan (or the quota is used up).
+        openUpgradeModal("job_match_limit", data?.daysUntilReset);
       }
     } catch { /* ignore */ }
     setRematching(false);
@@ -510,6 +515,10 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
       a.download = `${(title || "resume").replace(/[^a-zA-Z0-9-_ ]/g, "")}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+      if (plan !== "pro") {
+        setPdfToast(true);
+        setTimeout(() => setPdfToast(false), 8000);
+      }
       // Ask once, after the file is on its way so the prompt never competes with the save dialog.
       if (shouldAskForFeedback(feedbackRating)) setTimeout(() => setFeedbackOpen(true), 1500);
     } catch { /* ignore */ } finally {
@@ -650,13 +659,17 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 </TabsTrigger>
                 <TabsTrigger value="job-match" data-testid="tab-match" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5" onClick={() => setJobMatchEditing(false)}>
                   Match
+                  {plan === "free" && <Chip variant="outline" className="h-4 px-1.5 py-0 text-[10px] font-semibold leading-none">Pro</Chip>}
                   {jobMatchResult?.match_score != null && (
                     <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${jobMatchResult.match_score >= 70 ? "bg-success" : jobMatchResult.match_score >= 40 ? "bg-warning" : "bg-error"}`}>
                       {jobMatchResult.match_score}
                     </span>
                   )}
                 </TabsTrigger>
-                <TabsTrigger value="cover-letter" data-testid="tab-cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap">Cover Letter</TabsTrigger>
+                <TabsTrigger value="cover-letter" data-testid="tab-cover-letter" className="flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1.5">
+                  Cover Letter
+                  {plan === "free" && <Chip variant="outline" className="h-4 px-1.5 py-0 text-[10px] font-semibold leading-none">Pro</Chip>}
+                </TabsTrigger>
                 {reviewData && (
                   <TabsTrigger value="expert-review" className="lg:hidden flex-1 px-2 sm:px-3 text-[11px] sm:text-sm whitespace-nowrap gap-1">
                     <MessageSquare className="h-3 w-3 shrink-0" />
@@ -679,8 +692,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                   <ContentEditor cvId={cv.id} initialData={content} onChange={setContent} onSaveStatusChange={handleSaveStatus} showLogos={design.template === "vantage"} />
                 </div>
                 <div className="lg:hidden">
+                  {/* No autoScan here: the desktop AtsPanel is mounted at the same time (only hidden by CSS), so passing it to both would fire two AI scans. */}
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} autoScan={autoScan} onDownload={handlePdfDownload} />
+                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} onDownload={handlePdfDownload} />
                 </div>
               </>
             )}
@@ -901,7 +915,9 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <div className="space-y-6">
                   <div className="rounded-lg border bg-background p-6">
                     <p className="text-sm text-muted-foreground text-center">
-                      Paste a job description and click Analyze Match.
+                      {plan === "pro"
+                        ? "Paste a job description and click Analyze Match."
+                        : "Your match score, missing keywords and top fixes appear here with Pro."}
                     </p>
                   </div>
                 </div>
@@ -973,6 +989,16 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           missingKeywords={[]}
           onAccept={handleRewriteAccept}
         />
+      )}
+
+      {/* Free download notice. Top-centre so it never sits under the feedback prompt (bottom-right). */}
+      {pdfToast && (
+        <div role="status" className="fixed left-1/2 top-16 z-50 flex max-w-[calc(100vw-32px)] -translate-x-1/2 items-center gap-3 rounded-lg border bg-background px-4 py-2 shadow-lg animate-in slide-in-from-top-2">
+          <p className="text-sm font-medium">Downloaded with a CVEdge footer line.</p>
+          <Button variant="link" size="sm" className="shrink-0 px-0 text-xs" onClick={() => { setPdfToast(false); openUpgradeModal("download"); }}>
+            Remove with Pro
+          </Button>
+        </div>
       )}
 
       {/* Download nudge — exit intent when ATS score exists but no download */}

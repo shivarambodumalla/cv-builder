@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
     subscription_period: period,
     subscription_id: subId,
     current_period_end: periodEnd.toISOString(),
-    ats_scans_this_window: 0,
     job_matches_this_window: 0,
     cover_letters_this_window: 0,
     ai_rewrites_this_window: 0,

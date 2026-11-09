@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       used: access.used,
       limit: access.limit,
     });
-    return NextResponse.json({ error: "You've used all free job matches. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
+    return NextResponse.json({ error: "Job Match is a Pro feature. Upgrade to score your resume against any job description.", code: access.reason, used: access.used, limit: access.limit, proOnly: access.proOnly, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 
   const { data: cv } = await supabase

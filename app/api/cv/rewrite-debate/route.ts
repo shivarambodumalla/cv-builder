@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { logServerActivity } from "@/lib/analytics/server-log";
 
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
@@ -11,6 +13,27 @@ export async function POST(request: NextRequest) {
 
   const rl = checkRateLimit(ip, true);
   if (!rl.allowed) return NextResponse.json({ error: "Too many requests. Try again later.", retry_after: rl.retryAfter }, { status: 429 });
+
+  // A refinement is another rewrite: same quota as /api/cv/rewrite.
+  const access = await checkFeatureAccess(user.id, "ai_rewrite");
+  if (!access.allowed) {
+    logServerActivity(supabase, user.id, "feature_blocked", {
+      feature: "ai_rewrite",
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
+    });
+    return NextResponse.json({
+      error: access.proOnly
+        ? "AI rewrites are a Pro feature. Upgrade for unlimited rewrites."
+        : "You've used all free AI rewrites. Upgrade for unlimited.",
+      code: access.reason,
+      used: access.used,
+      limit: access.limit,
+      daysUntilReset: access.daysUntilReset,
+      proOnly: access.proOnly,
+    }, { status: 403 });
+  }
 
   const { originalText, currentSuggestion, userInstruction, mode, sectionType, targetRole, isCurrent } = await request.json();
 
@@ -36,6 +59,7 @@ export async function POST(request: NextRequest) {
       ip,
     });
 
+    incrementUsage(user.id, "ai_rewrite").catch(() => {});
     return NextResponse.json({ rewritten: (result as string).trim() });
   } catch {
     return NextResponse.json({ error: "AI refinement failed. Please try again." }, { status: 502 });

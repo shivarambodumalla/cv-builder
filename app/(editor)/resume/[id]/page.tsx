@@ -4,6 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { ResumeEditor } from "@/components/shared/resume-editor";
 import { structureCvText } from "@/lib/ai/gemini";
 import { sanitizeDbJson } from "@/lib/resume/sanitize";
+import { getPlan } from "@/lib/billing/limits";
+import { redactAtsReport } from "@/lib/ats/redact";
 import type { ResumeContent } from "@/lib/resume/types";
 
 export const dynamic = "force-dynamic";
@@ -57,7 +59,17 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
     redirect(`/resume/${params.id}/pick-template`);
   }
 
-  const { data: rawReports } = await supabase
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("credits_job_match, credits_cover_letter, full_name, avatar_url, plan, subscription_status, current_period_end, pdf_downloads_this_window")
+    .eq("id", user.id)
+    .single();
+
+  const plan = getPlan(profile);
+
+  // report_data is not readable by the browser role (free users only get the
+  // redacted view), so read it server-side. Ownership is the CV lookup above.
+  const { data: rawReports } = await createAdminClient()
     .from("ats_reports")
     .select("id, score, overall_score, confidence, report_data, issues, created_at")
     .eq("cv_id", cv.id)
@@ -79,9 +91,6 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
       r.confidence ??
       (data as any).confidence ??
       "medium";
-
-    console.log("[resume-page] full report row:", JSON.stringify(r, null, 2));
-    console.log("[resume-page] resolved score:", score, "confidence:", confidence);
 
     return {
       id: r.id,
@@ -109,11 +118,9 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
   });
   /* eslint-enable @typescript-eslint/no-explicit-any */
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits_job_match, credits_cover_letter, full_name, avatar_url, plan, pdf_downloads_this_window")
-    .eq("id", user.id)
-    .single();
+  // Free plan: only the score, category numbers and a two-issue teaser reach the browser.
+  const fullReport = reports?.[0] ?? null;
+  const latestReport = fullReport && plan !== "pro" ? redactAtsReport(fullReport) : fullReport;
 
   const { data: jobMatches } = await supabase
     .from("job_matches")
@@ -127,10 +134,11 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
     .eq("cv_id", cv.id)
     .order("version", { ascending: false });
 
-  // Fetch keyword list for target role (for real-time client-side scoring)
+  // Keyword list for real-time client-side scoring. Pro only: the browser would
+  // rebuild the full missing-keyword list from it, which the free plan hides.
   const targetRole = cv.target_role || (cv.parsed_json as ResumeContent)?.targetTitle?.title || "";
   let keywordList = null;
-  if (targetRole) {
+  if (plan === "pro" && targetRole) {
     const { data: kwl } = await supabase
       .from("keyword_lists")
       .select("required, important, nice_to_have, synonym_map")
@@ -181,7 +189,7 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
     <ResumeEditor
       cv={cv}
       lastFeedbackRating={lastFeedback?.rating ?? null}
-      latestReport={reports?.[0] ?? null}
+      latestReport={latestReport}
       jobMatches={jobMatches ?? []}
       coverLetters={coverLetters ?? []}
       keywordList={keywordList}
@@ -194,11 +202,10 @@ export default async function ResumePage({ params: paramsPromise, searchParams: 
         full_name: profile?.full_name,
         avatar_url: profile?.avatar_url,
       }}
-      plan={(profile?.plan as "free" | "starter" | "pro") || "free"}
+      plan={plan}
       reviewData={reviewData}
       initialTab={initialTab}
       autoScan={isFirstScan}
-      pdfDownloadsThisWindow={profile?.pdf_downloads_this_window ?? 0}
     />
   );
 }

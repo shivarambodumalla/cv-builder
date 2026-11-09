@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "UX mentorship is feedback on your actual work from someone who has done the job. Here is what real mentorship looks like, what it is not, and who gets the most from it.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "UX Mentorship: What It Is, How It Works, Who It Is For",
+    title: "UX Mentorship: What It Is, How It Works, Who It Is For | CVEdge",
     description:
       "What real UX mentorship looks like, what it is not, and who gets the most from it.",
     url: PAGE_URL,

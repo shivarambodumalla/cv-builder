@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Download } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ImageObjectJsonLd } from "@/components/shared/structured-data";
 import { CATEGORY_MAP, getAllLeafParams, getCanonicalLeafPath, getLeafData, type TemplateLeafData } from "@/lib/resume-templates/data";
+import { TEMPLATE_TRUST_LINE } from "@/lib/resume-templates/trust-line";
 import { getLeafGuidance } from "@/lib/resume-templates/guidance";
 import { templateThumbnail } from "@/lib/resume/template-thumbnails";
 import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
@@ -200,9 +201,7 @@ export default async function TemplateLeafPage({
                     <Link href={`/login?template=${leaf.templateSlug}`}>Start from scratch</Link>
                   </Button>
                 </div>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  No credit card · No watermarks · Switch templates any time
-                </p>
+                <p className="mt-3 text-sm text-muted-foreground">{TEMPLATE_TRUST_LINE}</p>
               </div>
             </div>
           </div>

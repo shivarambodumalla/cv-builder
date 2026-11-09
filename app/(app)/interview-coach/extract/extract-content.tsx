@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
+import { UpgradeBanner } from "@/components/shared/upgrade-banner";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import {
   ArrowLeft, Sparkles, Loader2, Save, CheckCircle2,
   FileText, FileSearch, GitBranch, FileUp, Link2,
@@ -18,8 +20,8 @@ interface ExtractedCandidate { title: string; situation: string; task: string; a
 
 const EXTRACT_STEPS: LoaderStep[] = [
   { label: "Reading source", sub: "Parsing content", icon: FileSearch },
-  { label: "Identifying stories", sub: "Finding STAR-worthy achievements", icon: Sparkles },
-  { label: "Structuring stories", sub: "Building Situation-Task-Action-Result", icon: BookOpen },
+  { label: "Identifying experiences", sub: "Finding STAR-worthy achievements", icon: Sparkles },
+  { label: "Structuring answers", sub: "Building Situation-Task-Action-Result", icon: BookOpen },
 ];
 
 const SOURCE_OPTIONS = [
@@ -34,9 +36,10 @@ function truncate(text: string | null, max: number): string {
   return text.length > max ? text.slice(0, max) + "..." : text;
 }
 
-export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
+export function ExtractContent({ cvs, isPro }: { cvs: CvOption[]; isPro: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { openUpgradeModal } = useUpgradeModal();
   const initialSource = (searchParams.get("source") as "cv" | "url" | "github" | "pdf") || null;
 
   const [step, setStep] = useState<"source" | "input" | "extracting" | "review">(initialSource ? "input" : "source");
@@ -49,6 +52,7 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [saving, setSaving] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
+  const [error, setError] = useState("");
 
   function selectSource(s: "cv" | "url" | "github" | "pdf") {
     setSourceType(s);
@@ -56,11 +60,13 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
     setCandidates([]);
     setInputUrl("");
     setPdfText("");
+    setError("");
   }
 
   async function handleExtract() {
     setStep("extracting");
     setExtractStep(0);
+    setError("");
     const timer = setInterval(() => setExtractStep((p) => Math.min(p + 1, 2)), 2500);
 
     try {
@@ -75,17 +81,35 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
         body: JSON.stringify(body),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const stories: ExtractedCandidate[] = data?.stories || [];
-        setCandidates(stories);
-        // Auto-select non-overlapping stories, deselect high-overlap ones
-        setSelected(new Set(stories.filter((s: ExtractedCandidate) => !s.overlap || s.overlap.similarity < 60).map((_: ExtractedCandidate, i: number) => i)));
-        setStep("review");
-      } else {
+      if (res.status === 403) {
+        // Pro-only: the modal explains, the form stays where it was
         setStep("input");
+        openUpgradeModal("portfolio_scan_limit");
+        return;
       }
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Extraction failed. Please try again.");
+        setStep("input");
+        return;
+      }
+
+      const data = await res.json();
+      const stories: ExtractedCandidate[] = data?.stories || [];
+      if (stories.length === 0) {
+        // The API answers 200 with an empty list when the AI call fails or
+        // the source holds nothing usable: say so instead of an empty review.
+        setError("No experiences found in this source. Try another source or add more detail.");
+        setStep("input");
+        return;
+      }
+      setCandidates(stories);
+      // Auto-select non-overlapping candidates, deselect high-overlap ones
+      setSelected(new Set(stories.filter((s: ExtractedCandidate) => !s.overlap || s.overlap.similarity < 60).map((_: ExtractedCandidate, i: number) => i)));
+      setStep("review");
     } catch {
+      setError("Extraction failed. Please try again.");
       setStep("input");
     } finally {
       clearInterval(timer);
@@ -126,11 +150,16 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
         <ArrowLeft size={16} /> Back to Interview Coach
       </button>
 
-      <h1 className="text-2xl font-bold text-foreground mb-2">Extract Stories</h1>
-      <p className="text-sm text-muted-foreground mb-8">Scan a source to automatically find STAR interview stories.</p>
+      <h1 className="text-2xl font-bold text-foreground mb-2">Extract experiences</h1>
+      <p className="text-sm text-muted-foreground mb-8">Scan a source and AI drafts STAR answers from your achievements.</p>
+
+      {/* ── Pro-only: free users see what Pro does here ── */}
+      {!isPro && (
+        <UpgradeBanner trigger="interview_coach" onUpgrade={() => openUpgradeModal("portfolio_scan_limit")} />
+      )}
 
       {/* ── STEP 1: Choose source ── */}
-      {step === "source" && (
+      {isPro && step === "source" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {SOURCE_OPTIONS.map((opt) => (
             <button
@@ -151,7 +180,7 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
       )}
 
       {/* ── STEP 2: Source input ── */}
-      {step === "input" && (
+      {isPro && step === "input" && (
         <div className="space-y-4">
           {/* Source switcher tabs */}
           <div className="flex border border-input rounded-lg overflow-hidden bg-background">
@@ -203,32 +232,33 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => setStep("source")}>Back</Button>
             <Button onClick={handleExtract} disabled={!canExtract} className="flex-1 bg-primary hover:bg-primary/90 text-white">
-              <Sparkles className="mr-1.5 h-4 w-4" /> Extract Stories
+              <Sparkles className="mr-1.5 h-4 w-4" /> Extract experiences
             </Button>
           </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
           </div>
         </div>
       )}
 
       {/* ── STEP 3: Extracting ── */}
-      {step === "extracting" && (
+      {isPro && step === "extracting" && (
         <StepLoader steps={EXTRACT_STEPS} currentStep={extractStep} centerIcon={BookOpen} footerText="This usually takes 15–30 seconds" />
       )}
 
       {/* ── STEP 4: Review & Select ── */}
-      {step === "review" && (
+      {isPro && step === "review" && (
         <div className="space-y-4">
           {savedCount > 0 ? (
             <div className="bg-success/10 border border-success/20 rounded-xl p-6 text-center">
               <CheckCircle2 className="mx-auto h-10 w-10 text-success mb-3" />
-              <p className="text-base font-semibold text-foreground">{savedCount} {savedCount === 1 ? "story" : "stories"} saved!</p>
+              <p className="text-base font-semibold text-foreground">{savedCount} {savedCount === 1 ? "experience" : "experiences"} saved!</p>
               <p className="text-sm text-muted-foreground mt-1">Redirecting to your Interview Coach...</p>
             </div>
           ) : (
             <>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-base font-semibold text-foreground">Found {candidates.length} {candidates.length === 1 ? "story" : "stories"}</p>
+                  <p className="text-base font-semibold text-foreground">Found {candidates.length} {candidates.length === 1 ? "experience" : "experiences"}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">Select the ones you want to save. You can edit them later.</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -285,7 +315,7 @@ export function ExtractContent({ cvs }: { cvs: CvOption[] }) {
                   <Button variant="outline" onClick={() => setStep("input")}>Back</Button>
                   <Button onClick={handleSaveSelected} disabled={selected.size === 0 || saving} className="bg-primary hover:bg-primary/90 text-white">
                     {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
-                    Save {selected.size} {selected.size === 1 ? "Story" : "Stories"}
+                    Save {selected.size} {selected.size === 1 ? "experience" : "experiences"}
                   </Button>
                 </div>
               </div>

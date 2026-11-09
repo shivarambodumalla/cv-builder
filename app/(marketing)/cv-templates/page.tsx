@@ -5,6 +5,7 @@ import { CheckCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { getProTemplateSlugs, getTemplateCounts } from "@/lib/billing/plan-config";
 import { TemplateShowcase } from "../resumes/template-showcase";
+import { TEMPLATE_TRUST_LINE } from "@/lib/resume-templates/trust-line";
 
 // The template count comes from the catalogue. force-static keeps the page
 // static (the admin client's no-store fetch would otherwise make it dynamic).
@@ -14,12 +15,12 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Free CV Templates: ATS-Friendly for UK & Australia",
   description:
-    "Free CV templates for UK, Australian and international jobs. ATS-safe formats with instant score, AI rewriting and clean PDF download. Free account, no card.",
+    "Free CV templates for UK, Australian and international jobs. ATS-safe formats with an instant score and PDF download. Free account, no card.",
   alternates: { canonical: "https://www.thecvedge.com/cv-templates" },
   openGraph: {
     title: "Free CV Templates: ATS-Friendly for UK & Australia | CVEdge",
     description:
-      "Free CV templates tested on UK and Australian ATS systems. Upload your CV, get an instant score, fix with AI, and download a polished PDF.",
+      "Free CV templates tested on UK and Australian ATS systems. Upload your CV, get an instant score, pick a template and download a PDF.",
     url: "https://www.thecvedge.com/cv-templates",
   },
 };
@@ -38,7 +39,7 @@ const FAQS = [
   {
     question: "Should I include a photo on my UK CV?",
     answer:
-      "In the UK, a photo is optional and not universally expected. Many recruiters and employers are neutral on it. CVEdge lets you add or remove a photo on any template. For international applications or creative industries, a professional photo is more common and acceptable.",
+      "In the UK, a photo is optional and not universally expected. Many recruiters and employers are neutral on it. CVEdge's photo templates let you add or remove a photo; the single-column templates leave it out. For international applications or creative industries, a professional photo is more common and acceptable.",
   },
   {
     question: "How long should a CV be for UK job applications?",
@@ -53,7 +54,7 @@ const FAQS = [
   {
     question: "What should I include in a UK CV personal profile?",
     answer:
-      "A UK CV personal profile is 3–4 sentences: your job title/specialism, years of experience, key strengths, and what you're looking for. Keep it under 80 words. Avoid clichés like 'results-driven professional'. Be specific. CVEdge's AI can write your summary from your existing experience if you're stuck.",
+      "A UK CV personal profile is 3–4 sentences: your job title/specialism, years of experience, key strengths, and what you're looking for. Keep it under 80 words. Avoid clichés like 'results-driven professional'. Be specific. With Pro, CVEdge's AI can write your summary from your existing experience if you're stuck.",
   },
 ];
 
@@ -76,7 +77,7 @@ const TEMPLATE_TIPS = [
   },
   {
     title: "Include a personal profile on your UK CV",
-    desc: "UK employers expect a 3–4 sentence profile at the top of your CV. CVEdge's AI can generate one from your experience in 20 seconds.",
+    desc: "UK employers expect a 3–4 sentence profile at the top of your CV. With Pro, CVEdge's AI can generate one from your experience in 20 seconds.",
   },
 ];
 
@@ -121,9 +122,7 @@ export default async function CvTemplatesPage() {
                 <Link href="/login">Start from scratch free</Link>
               </Button>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              No credit card · No watermarks · ATS-tested for UK employers
-            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{TEMPLATE_TRUST_LINE}</p>
           </div>
         </div>
       </section>
@@ -236,7 +235,7 @@ export default async function CvTemplatesPage() {
               Build a CV that passes ATS and impresses hiring managers
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Free to start. No credit card. Upload your existing CV or start fresh in under 5 minutes.
+              Free to start. No credit card. Upload your existing CV or start fresh in about 10 minutes.
             </p>
             <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" asChild>

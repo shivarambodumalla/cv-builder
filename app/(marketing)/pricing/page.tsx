@@ -13,7 +13,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Pricing: Free forever, Pro from $2.30/week",
   description:
-    "CVEdge is free forever for job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. Upgrade to Pro from $2.30/week for unlimited ATS scans, AI rewrites, job matching, and cover letters. 80+ ATS score guaranteed or your money back.",
+    "Free ATS score, resume builder and templates for job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. Pro from $2.30/week: full ATS report, AI rewrites, Job Match, clean PDFs. 80+ score guarantee.",
   alternates: {
     canonical: "https://www.thecvedge.com/pricing",
     languages: {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "CVEdge Pricing: Free forever, Pro from $2.30/week",
-    description: "Unlimited ATS scans, AI rewrites, and job matching. Available for job seekers in the US, Canada, UK, UAE, and Europe. 80+ ATS score guaranteed or money back.",
+    description: "Full ATS report, AI rewrites, Job Match and clean PDFs with no footer. For job seekers in the US, Canada, UK, UAE, Saudi Arabia, and Europe. 80+ ATS score guarantee.",
     url: "https://www.thecvedge.com/pricing",
     images: ["/og-pricing.png"],
   },
@@ -46,7 +46,7 @@ export default async function PricingPage() {
       />
       <ProductJsonLd
         name="CVEdge Pro"
-        description="AI-powered resume optimization with unlimited ATS scans, AI rewrites, job matching, cover letters, and interview coaching. 80+ ATS score guaranteed or money back."
+        description="CVEdge Pro: unlimited ATS scans with the full report, AI rewrites and Fix All, Job Match and Tailor CV, cover letters, Interview Coach AI and clean PDFs with no footer. 80+ ATS score guarantee."
         image="https://www.thecvedge.com/og-pricing.png"
         offers={[
           { name: "Free", price: "0", priceCurrency: "USD" },

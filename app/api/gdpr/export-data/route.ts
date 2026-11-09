@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getPlan } from "@/lib/billing/limits";
+import { redactAtsReport } from "@/lib/ats/redact";
+import type { AtsReportData } from "@/lib/ai/ats-analyser";
 
 export async function GET() {
   const supabase = await createClient();
@@ -44,7 +47,13 @@ export async function GET() {
       admin.from("job_matches").select("cv_id, match_score, job_title, job_description, report_data, created_at").in("cv_id", cvIds),
       admin.from("cover_letters").select("cv_id, content, tone, version, created_at").in("cv_id", cvIds),
     ]);
-    atsReports = ats.data ?? [];
+    // Free plan: the export holds the same view the product shows (score + teaser), never the full text.
+    const isPro = getPlan(profile) === "pro";
+    atsReports = (ats.data ?? []).map((row) =>
+      isPro || !row.report_data
+        ? row
+        : { ...row, report_data: redactAtsReport(row.report_data as unknown as AtsReportData) }
+    );
     jobMatches = jm.data ?? [];
     coverLetters = cl.data ?? [];
   }

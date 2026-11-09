@@ -77,7 +77,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
           "Passes all ATS filters including Greenhouse, Workday, and Lever",
           "Single-column layout puts Experience above the fold",
           "Standard headings (Experience, Education, Skills) ATS parsers expect",
-          "Works perfectly with CVEdge's AI bullet rewriter",
+          "Works perfectly with CVEdge's AI bullet rewriter (Pro)",
           "Clean PDF export, no formatting surprises",
         ],        faqs: [
           {
@@ -442,7 +442,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         ],        faqs: [
           {
             q: "Does Minimal look too empty for fresher resumes?",
-            a: "Only if you have fewer than 3 substantial experiences or projects. With 3+ well-written entries, the whitespace reads as confident curation. Use CVEdge's AI rewriter to strengthen each bullet first.",
+            a: "Only if you have fewer than 3 substantial experiences or projects. With 3+ well-written entries, the whitespace reads as confident curation. Use CVEdge's AI rewriter (Pro) to strengthen each bullet first.",
           },
           {
             q: "Is Minimal better than Classic for graduate applications?",
@@ -557,12 +557,12 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "executive-cv",
         templateSlug: "executive",
         displayName: "Executive Resume Template",
-        metaTitle: "Executive Resume Template: Free Word & PDF, ATS-Safe",
+        metaTitle: "Executive Resume Template: Free Word Download, ATS-Safe",
         metaDescription:
-          "Free executive resume template for C-suite, VP and director roles. Premium spacing on an ATS-safe single column. Download as Word or PDF, or edit online with an instant ATS score.",
+          "Free executive resume template for C-suite, VP and director roles. Premium spacing on an ATS-safe single column. Download as Word, or edit online with an instant ATS score and a PDF from the builder.",
         offerDocx: true,
         headline:
-          "Built for twenty years of career on two pages, with premium spacing and a summary that leads, on a single ATS-safe column. Free to edit online, or download as Word or PDF.",
+          "Built for twenty years of career on two pages, with premium spacing and a summary that leads, on a single ATS-safe column. Free to edit online, or download as a blank Word file.",
         description:
           "The executive resume template solves a problem junior formats do not have: you have more career than the page has room for. Twenty-five years, eight roles and three industries have to resolve into something a reader can scan in seconds and still come away knowing your level. Executive does that with generous line spacing, a clear typographic hierarchy, and a Professional Summary placed above the experience detail so your narrative leads rather than your last job title.\n\nSenior candidates often assume a polished template means giving up ATS safety. It does not. Executive is a single column with standard heading names and no tables, sidebars or graphics. It scores 93–96 on CVEdge's ATS analyzer, within a couple of points of the plainest format on the site. The premium feel comes from spacing and type, which are CSS properties, not images.\n\nThat matters more than most senior candidates expect. Below C-suite, director and VP applications still route through corporate portals and are parsed exactly like everyone else's. Executive search adds a human reader on top; it rarely replaces the machine underneath.\n\nThe layout is designed for curation. Recent roles expand into detailed impact statements, older roles compress into company, title and dates without the page looking uneven. For a C-suite resume the same structure carries board appointments, P&L scope and transformation mandates without crowding.\n\nDownload it as a blank Word document and fill it in offline, or open it in CVEdge, paste your existing resume, and get a scored version to export as a PDF in a couple of minutes. Both free, neither needs a card.",
         whoFor: [
@@ -599,10 +599,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         templateSlug: "executive-pro",
         displayName: "Executive Pro Resume Template",
         metaTitle: "Executive Pro Resume Template: Photo Header & Dark Bar",
-        freeAlternative: {
-          href: "/resume-templates/experienced/executive-cv",
-          label: "the free Executive template",
-        },
         headline: "Bold photo header with dark contact bar. Leadership presence from the first line.",
         description:
           "Executive Pro is the premium two-column template for senior executives who want immediate visual authority. The dark contact bar beneath a prominent header photo creates a powerful personal brand statement before a recruiter reads your summary, you've established presence.\n\nFor C-suite roles, board appointments, and senior leadership searches, where the hiring committee reviews a shortlist rather than scanning hundreds of applications, visual distinction matters. Executive Pro delivers it.\n\nThe two-column body pairs a detailed experience column with a sidebar carrying key credentials, skills, and board memberships. Senior leaders often have diverse credentials, Executive Pro organizes them into a hierarchy that reads logically.\n\nFor senior leadership shortlists, where a close-call hiring decision can turn on small signals, that polish earns its place.",
@@ -634,10 +630,6 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         templateSlug: "executive-sidebar",
         displayName: "Executive Sidebar Resume Template",
         metaTitle: "Executive Sidebar Resume Template: Two-Column, Dark Sidebar",
-        freeAlternative: {
-          href: "/resume-templates/experienced/executive-cv",
-          label: "the free Executive template",
-        },
         headline: "Dark sidebar with photo. Corporate and legal feel for senior roles.",
         description:
           "Executive Sidebar pairs a dark left sidebar (carrying your photo, contact details, and key skills) with a clean white main column for your career narrative. The result is a resume that communicates gravitas and organization simultaneously.\n\nFor senior professionals in corporate law, finance, management consulting, and large enterprise leadership, Executive Sidebar matches the professional aesthetic those environments expect. The dark sidebar signals structure and precision; the white main column provides detailed, scannable experience.\n\nThe sidebar accommodates professional photo, contact details, core competencies, and professional memberships, keeping the main column clean for achievement-led experience bullets without credential clutter.\n\nThe design is pitched at the seniority level it targets: the extra polish signals that you take the application seriously, which is exactly the message senior roles require.",
@@ -895,12 +887,12 @@ export const TEMPLATE_CATEGORIES: TemplateCategoryData[] = [
         leafSlug: "harvard-cv",
         templateSlug: "harvard",
         displayName: "Harvard Resume Template",
-        metaTitle: "Harvard Resume Template: Free Word & PDF, ATS-Friendly",
+        metaTitle: "Harvard Resume Template: Free Word Download, ATS-Friendly",
         metaDescription:
-          "Free Harvard resume template, the single-column academic format from Harvard's career-services guidance. Download as Word or PDF, or edit online and get an instant ATS score.",
+          "Free Harvard resume template, the single-column academic format from Harvard's career-services guidance. Download as Word, or edit online for an instant ATS score and a PDF from the builder.",
         offerDocx: true,
         headline:
-          "The single-column academic format Harvard's career-services guidance describes, rebuilt to parse cleanly through every major ATS. Free to edit online, or download as Word or PDF.",
+          "The single-column academic format Harvard's career-services guidance describes, rebuilt to parse cleanly through every major ATS. Free to edit online, or download as a blank Word file.",
         description:
           "The Harvard resume template is the plainest widely used resume format: one column, plain section headings, dates aligned right, no tables, no sidebars, no graphics. It takes its name from the conventions published in Harvard's career-services guidance, which generations of applicants have copied because the structure is unambiguous and travels everywhere.\n\nThat plainness is the reason it performs. An applicant tracking system reads a single column of text in exactly the order you wrote it, so nothing is dropped, reordered or garbled between your file and the recruiter's screen. Harvard scores 92–94 on CVEdge's ATS analyser, and the ceiling is your content rather than the format, which is how it should be.\n\nIt is worth being clear about a question people ask constantly: an ATS-friendly resume and a Harvard-style resume are not competing choices. Harvard is one of the formats that happens to be ATS-safe. The distinction that matters is single-column and text-only versus multi-column and graphical, and Harvard sits firmly on the safe side of it.\n\nThe format is strongest where credentials are read closely: MBA and PhD applications, management consulting at MBB and Tier 2, finance, law, policy and academia. Campus recruiting teams at those firms see this layout constantly from target schools, so it reads as convention rather than as a choice. It is equally reliable for any corporate portal application where you simply want formatting removed as a variable.\n\nDownload it as a blank Word document and fill it in offline, or open it in CVEdge, paste your existing CV, and get a scored, tailored version to export as a PDF in a couple of minutes. Both are free and neither needs a card.",
         whoFor: [

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { TEMPLATE_TRUST_LINE } from "@/lib/resume-templates/trust-line";
 import { CheckCircle, XCircle } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
@@ -64,7 +65,7 @@ function buildFaqs(label: string) {
     },
     {
       question: `What are the most important ATS keywords for ${label} roles?`,
-      answer: `ATS keywords for ${label} roles include: role-specific tools and technologies, methodologies, certifications, and skills listed explicitly in the job description. Use CVEdge's Job Match tool. Paste any ${label} job description and it identifies which keywords are missing from your resume and which would increase your match score most.`,
+      answer: `ATS keywords for ${label} roles include: role-specific tools and technologies, methodologies, certifications, and skills listed explicitly in the job description. Use CVEdge's Job Match tool (included in Pro). Paste any ${label} job description and it identifies which keywords are missing from your resume and which would increase your match score most.`,
     },
     {
       question: `How do I make my ${label} resume ATS-friendly?`,
@@ -72,7 +73,7 @@ function buildFaqs(label: string) {
     },
     {
       question: `How do I write strong bullet points for a ${label} resume?`,
-      answer: `Strong bullets follow this formula: [strong action verb] + [what you did or built] + [measurable result]. Example: "Led migration of X, reducing latency by 40% for 2M users." Avoid: "Responsible for X" or "Helped with Y." Every bullet should have a result. Use [X] placeholders where you don't have a specific number. CVEdge's AI rewriter converts weak bullets to strong ones automatically.`,
+      answer: `Strong bullets follow this formula: [strong action verb] + [what you did or built] + [measurable result]. Example: "Led migration of X, reducing latency by 40% for 2M users." Avoid: "Responsible for X" or "Helped with Y." Every bullet should have a result. Use [X] placeholders where you don't have a specific number. CVEdge's AI rewriter (Pro) converts weak bullets to strong ones automatically.`,
     },
   ];
 }
@@ -98,7 +99,7 @@ export default async function RoleResumeExamplePage({
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "https://www.thecvedge.com" },
-          { name: "Resume Examples", url: "https://www.thecvedge.com/resume-templates" },
+          { name: "Resume Templates", url: "https://www.thecvedge.com/resume-templates" },
           {
             name: `${role.label} Resume Example`,
             url: `https://www.thecvedge.com/resume-examples/${role.slug}`,
@@ -134,9 +135,7 @@ export default async function RoleResumeExamplePage({
                 <Link href="/login">Build {role.label} resume free</Link>
               </Button>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              No credit card · No watermarks · ATS score included
-            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{TEMPLATE_TRUST_LINE}</p>
           </div>
         </div>
       </section>
@@ -176,11 +175,11 @@ export default async function RoleResumeExamplePage({
         <div className="mt-5 rounded-xl bg-[rgba(6,95,70,0.04)] border border-[rgba(6,95,70,0.10)] p-4">
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Struggling with your own bullets?</span>{" "}
-            CVEdge&apos;s AI rewriter converts weak bullets like &ldquo;Responsible for X&rdquo; into strong,
+            CVEdge&apos;s AI rewriter (Pro) converts weak bullets like &ldquo;Responsible for X&rdquo; into strong,
             metric-led statements in one click. Paste your bullet, pick a mode, and get a
             better version instantly.{" "}
-            <Link href="/login" className="underline hover:text-foreground">
-              Try it free
+            <Link href="/pricing" className="underline hover:text-foreground">
+              See Pro plans
             </Link>
           </p>
         </div>
@@ -209,10 +208,10 @@ export default async function RoleResumeExamplePage({
         <div className="rounded-xl border bg-[rgba(6,95,70,0.04)] border-[rgba(6,95,70,0.10)] p-4">
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Get role-specific keywords for your exact job description.</span>{" "}
-            CVEdge&apos;s Job Match tool compares your resume against any {role.label.toLowerCase()} job description
+            CVEdge&apos;s Job Match tool (Pro) compares your resume against any {role.label.toLowerCase()} job description
             and shows which keywords are missing, with one-click add.{" "}
-            <Link href="/login" className="underline hover:text-foreground">
-              Try it free
+            <Link href="/pricing" className="underline hover:text-foreground">
+              See Pro plans
             </Link>
           </p>
         </div>
@@ -548,8 +547,8 @@ export default async function RoleResumeExamplePage({
           Build your {role.label.toLowerCase()} resume for free
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Upload your existing resume or start fresh. Get an ATS score in seconds and fix
-          every issue before you apply.
+          Upload your existing resume or start fresh. Get an ATS score in seconds and see
+          what to fix before you apply.
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild>

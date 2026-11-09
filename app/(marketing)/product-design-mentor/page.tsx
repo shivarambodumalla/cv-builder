@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "The questions to ask a prospective product design mentor, the red flags that predict a bad engagement, and what a serious mentorship should include.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "How to Find a Product Design Mentor Worth Paying For",
+    title: "How to Find a Product Design Mentor Worth Paying For | CVEdge",
     description:
       "Questions to ask a prospective mentor, red flags to watch for, and what serious mentorship includes.",
     url: PAGE_URL,

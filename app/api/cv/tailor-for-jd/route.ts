@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callAI } from "@/lib/ai/client";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
-import { getPlan } from "@/lib/billing/limits";
+import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
 import { logServerActivity } from "@/lib/analytics/server-log";
 import type { ResumeContent } from "@/lib/resume/types";
 import { alertAdmin } from "@/lib/email/alert";
@@ -23,32 +23,24 @@ export async function POST(request: NextRequest) {
 
   const { cv_id } = await request.json();
 
-  // Check usage limit — shares fix_all_count_week counter
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  const plan = getPlan(profile);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const profileAny = profile as any;
-  const countThisWeek = profileAny?.fix_all_count_week ?? 0;
-  const windowStart = profileAny?.fix_all_window_start;
-  const windowExpired = !windowStart || (Date.now() - new Date(windowStart).getTime()) > 7 * 24 * 60 * 60 * 1000;
-
-  const effectiveCount = windowExpired ? 0 : countThisWeek;
-
-  if (plan === "free" && effectiveCount >= 1) {
+  // Quota from plan_limits (free 0 = Pro only, pro -1), counter cv_tailor_this_week (Monday reset).
+  const access = await checkFeatureAccess(user.id, "cv_tailor");
+  if (!access.allowed) {
     logServerActivity(supabase, user.id, "feature_blocked", {
       feature: "cv_tailor",
-      reason: "fix_all_limit",
-      used: effectiveCount,
-      limit: 1,
+      reason: access.reason,
+      used: access.used,
+      limit: access.limit,
     });
     return NextResponse.json({
-      error: "Free tier limit reached. Upgrade for unlimited Tailor for JD.",
-      code: "fix_all_limit",
+      error: access.proOnly
+        ? "Tailor CV is a Pro feature. Upgrade for unlimited tailoring."
+        : "You've used all your CV tailors this week. Upgrade for unlimited.",
+      code: access.reason,
+      used: access.used,
+      limit: access.limit,
+      daysUntilReset: access.daysUntilReset,
+      proOnly: access.proOnly,
     }, { status: 403 });
   }
   if (!cv_id) return NextResponse.json({ error: "cv_id required" }, { status: 400 });
@@ -111,8 +103,6 @@ export async function POST(request: NextRequest) {
       education: content.education,
     };
 
-    console.log("[tailor-for-jd] Starting for", targetRole, "missing keywords:", missingKeywords.length, "gaps:", matchGaps.length);
-
     const result = await callAI({
       promptName: "cv_tailor_per_jd_v1",
       variables: {
@@ -128,15 +118,12 @@ export async function POST(request: NextRequest) {
       ip,
     });
 
-    // Increment usage — shares fix_all_count_week counter
-    try {
-      const updates: Record<string, unknown> = {
-        fix_all_used_at: new Date().toISOString(),
-        fix_all_count_week: windowExpired ? 1 : effectiveCount + 1,
-      };
-      if (windowExpired) updates.fix_all_window_start = new Date().toISOString();
-      await admin.from("profiles").update(updates).eq("id", user.id);
-    } catch { /* columns may not exist yet */ }
+    // Awaited so Vercel doesn't freeze the function before the writes land.
+    await Promise.all([
+      incrementUsage(user.id, "cv_tailor").catch(() => {}),
+      // Tailoring rewrites the CV like Fix All does, so it counts for the 80+ guarantee too.
+      admin.from("profiles").update({ fix_all_used_at: new Date().toISOString() }).eq("id", user.id),
+    ]);
 
     return NextResponse.json(result);
   } catch (err) {

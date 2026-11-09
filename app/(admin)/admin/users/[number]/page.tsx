@@ -30,15 +30,16 @@ export const dynamic = "force-dynamic";
 
 function UsageBar({ label, used, limit }: { label: string; used: number; limit: number }) {
   const isUnlimited = limit === -1;
+  const isProOnly = limit === 0;
   const pct = isUnlimited ? 100 : Math.min(100, (used / Math.max(limit, 1)) * 100);
-  const over = !isUnlimited && used >= limit;
+  const over = !isUnlimited && !isProOnly && used >= limit;
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-xs">
         <span className="text-muted-foreground">{label}</span>
         <span className="font-medium">
-          {used}
-          {isUnlimited ? "" : ` / ${limit}`}
+          {isProOnly ? "Pro only" : used}
+          {isUnlimited || isProOnly ? "" : ` / ${limit}`}
         </span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -62,7 +63,7 @@ export default async function UserDetailPage({
   // Fetch profile by user_number first to get UUID for subsequent queries
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, total_pdf_downloads, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
+    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, total_pdf_downloads, total_ats_scans, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
     .eq("user_number", Number(number))
     .single();
 
@@ -597,9 +598,9 @@ export default async function UserDetailPage({
               </div>
             </dl>
             <Separator className="my-4" />
-            <p className="text-xs font-medium text-muted-foreground mb-3">This week (rolling 7-day window)</p>
+            <p className="text-xs font-medium text-muted-foreground mb-3">Plan usage (ATS scans count for life; AI tools are Pro-only on the free plan)</p>
             <div className="grid gap-3 sm:grid-cols-2">
-              <UsageBar label="ATS scans" used={profile.ats_scans_this_window ?? 0} limit={planLimits.ats_scans} />
+              <UsageBar label="ATS scans" used={profile.total_ats_scans ?? 0} limit={planLimits.ats_scans} />
               <UsageBar label="AI rewrites" used={profile.ai_rewrites_this_window ?? 0} limit={planLimits.ai_rewrites} />
               <UsageBar label="Job matches" used={profile.job_matches_this_window ?? 0} limit={planLimits.job_matches} />
               <UsageBar label="Cover letters" used={profile.cover_letters_this_window ?? 0} limit={planLimits.cover_letters} />

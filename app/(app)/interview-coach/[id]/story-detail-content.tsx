@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import {
-  ArrowLeft, Save, Loader2, Wand2, CheckCircle2,
+  ArrowLeft, Save, Loader2, Lightbulb, CheckCircle2,
   Sparkles, X,
 } from "lucide-react";
 
@@ -19,7 +20,8 @@ interface Story {
   action: string | null;
   result: string | null;
   tags: string[];
-  quality_score: number;
+  /** Null when the server skipped AI scoring (free plan). */
+  quality_score: number | null;
   source_type: string;
   created_at: string;
   framework?: string;
@@ -27,7 +29,7 @@ interface Story {
   summary?: string;
 }
 
-interface AiSuggestion {
+interface Suggestion {
   section: string;
   suggestion: string;
 }
@@ -51,8 +53,9 @@ function qualityBg(score: number): string {
   return "bg-error/15 text-error";
 }
 
-export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boolean }) {
+export function StoryDetailContent({ story, isNew, isPro }: { story: Story; isNew?: boolean; isPro: boolean }) {
   const router = useRouter();
+  const { openUpgradeModal } = useUpgradeModal();
 
   const [title, setTitle] = useState(story.title);
   const [situation, setSituation] = useState(story.situation ?? "");
@@ -62,7 +65,7 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
   const [tags, setTags] = useState<string[]>(story.tags ?? []);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [qualityScore, setQualityScore] = useState(story.quality_score);
+  const [qualityScore, setQualityScore] = useState<number | null>(story.quality_score);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const storyAny = story as Record<string, any>;
   const [framework, setFramework] = useState(storyAny?.framework ?? "star");
@@ -70,13 +73,15 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
   const [summary, setSummary] = useState(storyAny?.summary ?? "");
   const [summaryLoading, setSummaryLoading] = useState(false);
 
-  // AI suggestions
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[]>([]);
+  // Rule-based suggestions (no AI call): what's missing from each section
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
   const filledCount = [situation, task, action, result].filter(starComplete).length;
   const reflectionBonus = reflection && reflection.trim().length > 10 ? 1 : 0;
   const estimatedQuality = title ? Math.min(10, filledCount * 2 + (result && /\d/.test(result) ? 2 : 0) + reflectionBonus) : 0;
+  // The saved AI score when there is one; otherwise the live estimate above,
+  // which is also the free plan's score (the server skips AI scoring there).
+  const displayScore = qualityScore || estimatedQuality;
 
   function toggleTag(tag: string) {
     setTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
@@ -107,27 +112,19 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
     setSaving(false);
   }
 
-  async function handleAiImprove() {
-    setAiLoading(true);
-    setAiSuggestions([]);
-    try {
-      await fetch("/api/stories/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ _quality_check: true, title, situation, task, action, result }),
-      });
-      // For now generate suggestions client-side based on what's missing
-      const suggestions: AiSuggestion[] = [];
-      if (!starComplete(situation)) suggestions.push({ section: "Situation", suggestion: "Add the team size, timeline, and what was at stake. E.g., 'In a team of 8, facing a 3-month deadline to migrate...' " });
-      if (!starComplete(task)) suggestions.push({ section: "Task", suggestion: "Specify what YOU were responsible for. Start with 'I was tasked with...' or 'My role was to...' " });
-      if (!starComplete(action)) suggestions.push({ section: "Action", suggestion: "List 2-3 concrete steps you took. Mention specific tools, frameworks, or methods." });
-      if (!result || !/\d/.test(result)) suggestions.push({ section: "Result", suggestion: "Add a specific metric: percentage improvement, revenue impact, time saved, or users affected." });
-      if (starComplete(situation) && starComplete(task) && starComplete(action) && starComplete(result) && /\d/.test(result)) {
-        suggestions.push({ section: "Overall", suggestion: "Your story looks strong! Consider adding a 'So what': why this achievement mattered to the business." });
-      }
-      setAiSuggestions(suggestions);
-    } catch { /* ignore */ }
-    setAiLoading(false);
+  // Purely client-side. (An earlier version also POSTed to /api/stories/save
+  // with a `_quality_check` flag, which inserted a duplicate experience on
+  // every click.)
+  function showSuggestions() {
+    const next: Suggestion[] = [];
+    if (!starComplete(situation)) next.push({ section: "Situation", suggestion: "Add the team size, timeline, and what was at stake. E.g., 'In a team of 8, facing a 3-month deadline to migrate...' " });
+    if (!starComplete(task)) next.push({ section: "Task", suggestion: "Specify what YOU were responsible for. Start with 'I was tasked with...' or 'My role was to...' " });
+    if (!starComplete(action)) next.push({ section: "Action", suggestion: "List 2-3 concrete steps you took. Mention specific tools, frameworks, or methods." });
+    if (!result || !/\d/.test(result)) next.push({ section: "Result", suggestion: "Add a specific metric: percentage improvement, revenue impact, time saved, or users affected." });
+    if (starComplete(situation) && starComplete(task) && starComplete(action) && starComplete(result) && /\d/.test(result)) {
+      next.push({ section: "Overall", suggestion: "Your answer looks strong! Consider adding a 'So what': why this achievement mattered to the business." });
+    }
+    setSuggestions(next);
   }
 
   async function handleGenerateSummary() {
@@ -146,7 +143,9 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
           challenge: framework === "car" ? situation : null,
         }),
       });
-      if (res.ok) {
+      if (res.status === 403) {
+        openUpgradeModal("story_summary_limit");
+      } else if (res.ok) {
         const data = await res.json();
         setSummary(data.summary || "");
       }
@@ -259,6 +258,10 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
                     <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={handleGenerateSummary} disabled={summaryLoading}>
                       {summaryLoading ? <Loader2 size={12} className="mr-1 animate-spin" /> : <Sparkles size={12} className="mr-1" />}
                       {summary ? "Regenerate" : "Generate"}
+                      {/* AI summaries are Pro: say so before the click, not after */}
+                      {!isPro && (
+                        <span className="ml-1.5 rounded-full bg-[#1E3A5F] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">Pro</span>
+                      )}
                     </Button>
                   )}
                 </div>
@@ -300,10 +303,10 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
                 <Badge className="rounded-full px-2 py-0.5 text-xs font-medium border-0 bg-primary/10 text-primary">
                   {framework === "star_r" ? "STAR+R" : framework === "car" ? "CAR" : "STAR"}
                 </Badge>
-                <h2 className="text-lg font-bold text-foreground">{title || "Untitled Story"}</h2>
+                <h2 className="text-lg font-bold text-foreground">{title || "Untitled experience"}</h2>
               </div>
-              <Badge className={`rounded-full px-2.5 py-0.5 text-xs font-bold border-0 ${qualityBg(qualityScore || estimatedQuality)}`}>
-                {qualityScore || estimatedQuality}/10
+              <Badge className={`rounded-full px-2.5 py-0.5 text-xs font-bold border-0 ${qualityBg(displayScore)}`}>
+                {displayScore}/10
               </Badge>
             </div>
 
@@ -361,27 +364,27 @@ export function StoryDetailContent({ story, isNew }: { story: Story; isNew?: boo
             {/* Readiness bar */}
             <div className="mt-4 flex items-center gap-2">
               <div className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden">
-                <div className={`h-full rounded-full transition-all ${(qualityScore || estimatedQuality) >= 7 ? "bg-success" : (qualityScore || estimatedQuality) >= 4 ? "bg-warning" : "bg-error"}`} style={{ width: `${(qualityScore || estimatedQuality) * 10}%` }} />
+                <div className={`h-full rounded-full transition-all ${displayScore >= 7 ? "bg-success" : displayScore >= 4 ? "bg-warning" : "bg-error"}`} style={{ width: `${displayScore * 10}%` }} />
               </div>
-              {(qualityScore || estimatedQuality) >= 7
+              {displayScore >= 7
                 ? <span className="text-xs font-medium text-success flex items-center gap-1"><CheckCircle2 size={12} /> Interview Ready</span>
                 : <span className="text-xs text-muted-foreground">{4 - filledCount > 0 ? `${4 - filledCount} sections to fill` : "Add metrics"}</span>
               }
             </div>
 
-            {/* AI Suggestions */}
-            <Button onClick={handleAiImprove} disabled={aiLoading} variant="outline" className="w-full mt-4 border-primary/20 text-primary">
-              {aiLoading ? <Loader2 size={14} className="mr-1.5 animate-spin" /> : <Wand2 size={14} className="mr-1.5" />}
-              Get AI suggestions to improve score
+            {/* Suggestions (rule-based, free on every plan) */}
+            <Button onClick={showSuggestions} variant="outline" className="w-full mt-4 border-primary/20 text-primary">
+              <Lightbulb size={14} className="mr-1.5" />
+              Suggestions to improve your score
             </Button>
 
-            {aiSuggestions.length > 0 && (
+            {suggestions.length > 0 && (
               <div className="mt-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-foreground">AI Suggestions</span>
-                  <button onClick={() => setAiSuggestions([])} className="text-muted-foreground hover:text-foreground"><X size={14} /></button>
+                  <span className="text-xs font-semibold text-foreground">Suggestions</span>
+                  <button onClick={() => setSuggestions([])} className="text-muted-foreground hover:text-foreground"><X size={14} /></button>
                 </div>
-                {aiSuggestions.map((s, i) => (
+                {suggestions.map((s, i) => (
                   <div key={i} className="rounded-lg border border-primary/15 bg-primary/5 p-3">
                     <p className="text-xs font-bold text-primary mb-1">{s.section}</p>
                     <p className="text-xs text-foreground leading-relaxed">{s.suggestion}</p>

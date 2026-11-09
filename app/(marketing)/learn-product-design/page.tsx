@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "A five-phase roadmap for learning product design in the AI era: think, understand, design, build, launch. What to learn at each stage, which tools matter, and the mistakes that cost beginners months.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "How to Learn Product Design: A Realistic Roadmap",
+    title: "How to Learn Product Design: A Realistic Roadmap | CVEdge",
     description:
       "A five-phase roadmap for learning product design in the AI era, with the tools that matter and the mistakes that cost beginners months.",
     url: PAGE_URL,

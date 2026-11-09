@@ -26,7 +26,20 @@ const SCORE_CATEGORIES = [
   { name: "Formatting", desc: "Parseable structure, no tables or columns", weight: 10 },
 ];
 
-const TABS = [
+/** A feature line; `pro` marks what the free plan does not include. */
+type Point = { text: string; pro?: boolean };
+
+const TABS: {
+  id: string;
+  icon: typeof Search;
+  label: string;
+  heading: string;
+  desc: string;
+  points: Point[];
+  cta: string;
+  ctaLink: string;
+  isScoring?: boolean;
+}[] = [
   {
     id: "ats",
     icon: Search,
@@ -34,12 +47,13 @@ const TABS = [
     heading: "Find out why your resume gets rejected",
     desc: "CVEdge runs the same filters recruiters use, across 6 categories and 2,400+ role-specific keywords, so you fix problems before they cost you the interview.",
     points: [
-      "Score breakdown across 6 categories with per-issue impact points",
-      "2,400+ role-specific keywords across 130+ job roles",
-      "Real-time estimated score updates as you edit",
-      "One-click keyword add: tap a missing keyword to add it to your skills",
-      "Fix All with AI: bulk-rewrite your entire resume in one pass",
-      "80+ score guarantee for Pro users, or your money back",
+      { text: "Your ATS score and top issues, free" },
+      { text: "Full report: every issue with impact points, plus missing keywords", pro: true },
+      { text: "2,400+ role-specific keywords across 130+ job roles" },
+      { text: "Real-time estimated score updates as you edit" },
+      { text: "One-click keyword add: tap a missing keyword to add it to your skills", pro: true },
+      { text: "Fix All with AI: bulk-rewrite your entire resume in one pass", pro: true },
+      { text: "80+ score guarantee for Pro users, or your money back" },
     ],
     cta: "Get started free",
     ctaLink: "/resume-checker",
@@ -49,16 +63,16 @@ const TABS = [
     icon: PenTool,
     label: "AI Rewrite",
     heading: "Make every line of your resume count",
-    desc: "Every bullet point has a Rewrite button. Pick a mode, refine with plain English, and insert the result with one click. AI never fabricates metrics.",
+    desc: "Every bullet point has a Rewrite button. Pick a mode, refine with plain English, and insert the result with one click. AI never fabricates metrics. Included in Pro.",
     points: [
-      "4 rewrite modes: ATS keywords, measurable impact, concise phrasing, grammar fix",
-      "Refine with natural language: \"make it shorter\", \"add React\", \"more confident\"",
-      "Uses [X] placeholders for numbers you fill in and never fabricates",
-      "Fix All: rewrites summary + every bullet in one pass to maximize your ATS score",
-      "CV Tailor: rewrite your entire CV specifically for a job description",
+      { text: "4 rewrite modes: ATS keywords, measurable impact, concise phrasing, grammar fix", pro: true },
+      { text: "Refine with natural language: \"make it shorter\", \"add React\", \"more confident\"", pro: true },
+      { text: "Uses [X] placeholders for numbers you fill in and never fabricates" },
+      { text: "Fix All: rewrites summary + every bullet in one pass to maximize your ATS score", pro: true },
+      { text: "Tailor CV: rewrite your entire CV specifically for a job description", pro: true },
     ],
-    cta: "Get started free",
-    ctaLink: "/resume-checker",
+    cta: "See Pro plans",
+    ctaLink: "/pricing",
   },
   {
     id: "scoring",
@@ -76,31 +90,32 @@ const TABS = [
     icon: Target,
     label: "Job Match",
     heading: "See how well you match before you apply",
-    desc: "Paste a job description to see a match score, missing keywords, and exactly what to fix. Then tailor your resume or generate a cover letter, all from one screen.",
+    desc: "Paste a job description to see a match score, missing keywords, and exactly what to fix. Then tailor your resume or generate a cover letter, all from one screen. Included in Pro.",
     points: [
-      "Match score with missing vs matched keywords highlighted",
-      "CV Tailor: AI rewrites your CV specifically for the job description",
-      "Cover letter generation in 3 tones: Professional, Conversational, Confident",
-      "JD Red Flag Detector: AI flags unreasonable demands and vague responsibilities",
-      "Offer Evaluation: grade job offers across seniority fit, growth, and work-life balance",
-      "Salary Insights: market benchmarks for supported roles",
+      { text: "Job Match: score with missing vs matched keywords highlighted", pro: true },
+      { text: "Tailor CV: AI rewrites your CV specifically for the job description", pro: true },
+      { text: "Cover letters in 3 tones: Professional, Conversational, Confident", pro: true },
+      { text: "JD Red Flag Detector: AI flags unreasonable demands and vague responsibilities" },
+      { text: "Offer Evaluation: grade job offers across seniority fit, growth, and work-life balance", pro: true },
+      { text: "Salary Insights: market benchmarks for supported roles", pro: true },
     ],
-    cta: "Get started free",
-    ctaLink: "/resume-checker",
+    cta: "See Pro plans",
+    ctaLink: "/pricing",
   },
   {
     id: "export",
     icon: FileText,
     label: "Export & Design",
     heading: "Beautiful PDFs, total design control",
-    desc: "ATS-optimized templates with full design controls. Export clean PDFs ready to send, or customize every detail from fonts to section order.",
+    desc: "ATS-optimized templates with full design controls. Export PDFs any time; Pro removes the CVEdge footer. Customize every detail from fonts to section order.",
     points: [
-      "Professional templates: Classic, Sharp, Minimal, Executive, Slate, and more",
-      "Customize font, accent color, spacing, margins, bullet style, and section order",
-      "Two-column templates with configurable sidebar sections",
-      "PDF export: clean, formatted, ATS-friendly, with no watermark, ever",
-      "Cover letter export: PDF, TXT, or copy to clipboard",
-      "Paper size: A4 and US Letter supported",
+      { text: "Professional templates: Classic, Sharp, Minimal, Executive, Slate, and more. All free" },
+      { text: "Customize font, accent color, spacing, margins, bullet style, and section order" },
+      { text: "Two-column templates with configurable sidebar sections" },
+      { text: "PDF export: clean, formatted and ATS-friendly. Free PDFs carry a small CVEdge footer line" },
+      { text: "Clean PDFs with no footer", pro: true },
+      { text: "Cover letter export: PDF, TXT, or copy to clipboard", pro: true },
+      { text: "Paper size: A4 and US Letter supported" },
     ],
     cta: "Browse templates",
     ctaLink: "/resumes",
@@ -172,9 +187,16 @@ export function FeaturesTabs() {
               ) : (
                 <ul className="mt-6 space-y-3">
                   {tab.points.map((p) => (
-                    <li key={p} className="flex items-start gap-3">
+                    <li key={p.text} className="flex items-start gap-3">
                       <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                      <span className="text-sm leading-relaxed">{p}</span>
+                      <span className="text-sm leading-relaxed">
+                        {p.text}
+                        {p.pro && (
+                          <span className="ml-2 inline-block rounded-full bg-primary/10 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wider text-primary">
+                            Pro
+                          </span>
+                        )}
+                      </span>
                     </li>
                   ))}
                 </ul>

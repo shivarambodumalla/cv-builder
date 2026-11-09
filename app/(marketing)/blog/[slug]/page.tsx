@@ -42,7 +42,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical: `https://www.thecvedge.com/blog/${slug}` },
     openGraph: {
-      title,
+      title: `${title} | CVEdge`,
       description,
       url: `https://www.thecvedge.com/blog/${slug}`,
       type: "article",
@@ -52,7 +52,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: `${title} | CVEdge`,
       description,
       ...(image ? { images: [image] } : {}),
     },
@@ -246,10 +246,10 @@ export default async function BlogPostPage({
             <CtaSection
               label="Free ATS check"
               heading="Is your CV getting filtered out?"
-              subtext="Check your ATS score in 60 seconds and fix issues with AI."
+              subtext="Check your ATS score in 60 seconds and see what to fix. Pro fixes it with AI."
               buttonText="Scan my CV free"
               buttonHref="/resume-checker"
-              trustItems={["Free to start", "No credit card", "80+ score guaranteed"]}
+              trustItems={["Free to start", "No credit card", "Google or LinkedIn sign-in"]}
             />
           </div>
         </div>

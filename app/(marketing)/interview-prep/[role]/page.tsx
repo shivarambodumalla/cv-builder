@@ -31,7 +31,7 @@ export async function generateMetadata({
   const title = `${role.label} Interview Questions & How to Answer Them`;
   const description = content
     ? `${content.technicalQuestions.length + content.behaviouralQuestions.length} real ${role.label} interview questions, what each round is scored on, and how to structure your answers.`
-    : `Prepare for ${role.label} interviews with structured STAR stories and job-matched practice.`;
+    : `Prepare for ${role.label} interviews with structured STAR answers and job-matched practice.`;
 
   return {
     title,
@@ -70,7 +70,8 @@ export default async function RoleInterviewPrepPage({
           <h1 className="text-3xl font-bold tracking-tight mt-2">{role.label} Interview Prep</h1>
           <p className="text-muted-foreground mt-3">
             We haven&apos;t published our {lower} interview guide yet. In the meantime, CVEdge&apos;s Interview Coach
-            builds a STAR story bank from your own resume and matches it to any {lower} job description.
+            lets you write STAR answers from your own experience. Pro drafts them from your resume and matches them
+            to any {lower} job description.
           </p>
           <Button className="mt-6" asChild>
             <Link href="/login?returnUrl=%2Finterview-coach">Start prepping free</Link>
@@ -110,7 +111,7 @@ export default async function RoleInterviewPrepPage({
           <h1 className="text-3xl font-bold tracking-tight mt-2">{role.label} Interview Questions</h1>
           <p className="text-muted-foreground mt-4 leading-relaxed">{content.intro}</p>
           <Button className="mt-6" asChild>
-            <Link href="/login?returnUrl=%2Finterview-coach">Build your story bank free</Link>
+            <Link href="/login?returnUrl=%2Finterview-coach">Open Interview Coach free</Link>
           </Button>
         </div>
 
@@ -244,8 +245,8 @@ export default async function RoleInterviewPrepPage({
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-2xl font-bold tracking-tight">Turn your experience into answers</h2>
           <p className="mt-3 text-muted-foreground">
-            CVEdge reads your resume, drafts STAR stories from what you actually did, and matches them to the {lower} job
-            you&apos;re interviewing for.
+            Write STAR answers from what you actually did. With Pro, CVEdge drafts them from your resume and matches
+            them to the {lower} job you&apos;re interviewing for.
           </p>
           <Button className="mt-6" asChild>
             <Link href="/login?returnUrl=%2Finterview-coach">Start building free</Link>

@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
       limit: access.limit,
     });
     return NextResponse.json({
-      error: "You've used all free offer evaluations. Upgrade for unlimited.",
+      error: "Offer evaluation is a Pro feature.",
       code: access.reason,
       used: access.used,
       limit: access.limit,
+      proOnly: access.proOnly,
       daysUntilReset: access.daysUntilReset,
     }, { status: 403 });
   }

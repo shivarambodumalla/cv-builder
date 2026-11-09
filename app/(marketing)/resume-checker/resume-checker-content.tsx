@@ -340,9 +340,9 @@ export function ResumeCheckerContent() {
 
         {/* Trust indicators */}
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
-          <span className="flex items-center gap-2"><BarChart3 className="h-4 w-4 text-primary" /> ATS score breakdown</span>
-          <span className="flex items-center gap-2"><Search className="h-4 w-4 text-primary" /> Missing keywords</span>
-          <span className="flex items-center gap-2"><Lightbulb className="h-4 w-4 text-primary" /> Actionable fixes</span>
+          <span className="flex items-center gap-2"><BarChart3 className="h-4 w-4 text-primary" /> ATS score across 6 categories</span>
+          <span className="flex items-center gap-2"><Search className="h-4 w-4 text-primary" /> Your top issues</span>
+          <span className="flex items-center gap-2"><Lightbulb className="h-4 w-4 text-primary" /> Full report with Pro</span>
         </div>
 
         <div className="flex justify-center gap-6 text-xs text-muted-foreground/60">

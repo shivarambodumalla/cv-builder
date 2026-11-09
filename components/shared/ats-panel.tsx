@@ -23,9 +23,11 @@ import {
   Wand2,
   Shield,
   Download,
+  Lock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
+import { isLockedReport, type LockedAtsReport } from "@/lib/ats/redact";
 import type { ClientScoreResult } from "@/lib/ats/client-scorer";
 import type { ResumeContent } from "@/lib/resume/types";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
@@ -37,7 +39,9 @@ import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
 import { useActivity } from "@/lib/analytics/useActivity";
 import { JobMatchNudge } from "@/components/popups/job-match-nudge";
 
-type AtsPanelReport = Partial<AtsReportData> & { id: string; score: number; created_at: string };
+type ReportMeta = { id: string; score: number; created_at: string };
+/** Pro gets the full report; the free plan gets the server-redacted view (see lib/ats/redact.ts). */
+type AtsPanelReport = (Partial<AtsReportData> | LockedAtsReport) & ReportMeta;
 
 const REWRITABLE_SECTIONS = new Set(["experience", "summary", "projects", "volunteering"]);
 
@@ -214,6 +218,108 @@ function CategoryRow({
   );
 }
 
+/* "3 more issues", null when there is nothing to count. */
+function countOf(n: number, singular: string, plural: string): string | null {
+  if (n <= 0) return null;
+  return `${n} ${n === 1 ? singular : plural}`;
+}
+
+/* "a, b, and c" */
+function joinList(parts: string[]): string {
+  if (parts.length <= 1) return parts.join("");
+  if (parts.length === 2) return `${parts[0]} and ${parts[1]}`;
+  return `${parts.slice(0, -1).join(", ")}, and ${parts[parts.length - 1]}`;
+}
+
+/* Shapes only: stands in for the hidden rows without carrying any text. */
+const PLACEHOLDER_ROWS = [
+  { title: "78%", fix: "52%" },
+  { title: "64%", fix: "70%" },
+  { title: "85%", fix: "44%" },
+];
+
+/* ── Free plan: top fixes in full, then what the full report holds ── */
+function LockedReportBody({
+  report,
+  onFix,
+  onUpgrade,
+}: {
+  report: LockedAtsReport;
+  onFix: (issue: { description: string; field_ref?: FieldRef }) => void;
+  onUpgrade: () => void;
+}) {
+  const hiddenParts = [
+    countOf(report.hidden.issues, "more issue", "more issues"),
+    countOf(report.hidden.missing_keywords, "missing keyword", "missing keywords"),
+    countOf(report.hidden.suggestions, "suggestion", "suggestions"),
+  ].filter((p): p is string => p !== null);
+
+  return (
+    <>
+      {report.teaser_issues.length > 0 ? (
+        <div className="rounded-lg border" style={{ marginBottom: "12px" }} data-testid="ats-teaser">
+          <div className="border-b px-4 py-3">
+            <h4 className="text-sm font-semibold">Top fixes</h4>
+            <p className="text-xs text-muted-foreground">The changes that add the most points.</p>
+          </div>
+          <div className="space-y-3 px-4 py-3">
+            {report.teaser_issues.map((issue, i) => (
+              <div key={i} className="flex items-start gap-2 text-sm">
+                <div className="flex-1 space-y-0.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {CATEGORY_LABELS[issue.category] || issue.category}
+                  </p>
+                  <p>{issue.description}</p>
+                  {issue.fix && <p className="text-xs text-muted-foreground">{issue.fix}</p>}
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span
+                    className="text-xs font-medium text-success"
+                    title="Estimated score lift after re-analysis. Click Re-analyze to verify."
+                  >
+                    ~+{issue.impact} pts
+                  </span>
+                  {issue.field_ref && (issue.field_ref.field || issue.field_ref.bulletText) && (
+                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onFix(issue)}>
+                      <Crosshair className="mr-1 h-3 w-3" />Fix
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground" style={{ marginBottom: "12px" }}>No issues found.</p>
+      )}
+
+      {hiddenParts.length > 0 && (
+        <div className="overflow-hidden rounded-lg border" style={{ marginBottom: "12px" }} data-testid="ats-locked">
+          <div className="flex items-start gap-3 border-b bg-muted/40 px-4 py-3">
+            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <p className="text-sm font-semibold">Your full report has {joinList(hiddenParts)}.</p>
+          </div>
+          <div aria-hidden="true" className="pointer-events-none select-none space-y-3 px-4 py-3 blur-sm">
+            {PLACEHOLDER_ROWS.map((row, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-2.5 rounded-full bg-muted" style={{ width: row.title }} />
+                  <div className="h-2 rounded-full bg-muted" style={{ width: row.fix }} />
+                </div>
+                <div className="h-5 w-12 shrink-0 rounded bg-success/20" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginBottom: "12px" }}>
+        <UpgradeBanner trigger="ats" onUpgrade={onUpgrade} />
+      </div>
+    </>
+  );
+}
+
 export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free", autoScan = false, onDownload }: AtsPanelProps) {
   const router = useRouter();
   const { log } = useActivity();
@@ -231,7 +337,6 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
   const [rewriteOriginal, setRewriteOriginal] = useState("");
   const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
   const [addressedIssues, setAddressedIssues] = useState<Set<string>>(new Set());
-  const [limitReached, setLimitReached] = useState(false);
   const [fixAllLoading, setFixAllLoading] = useState(false);
   const [fixAllStep, setFixAllStep] = useState(0);
   const [fixAllResult, setFixAllResult] = useState<FixAllResult | null>(null);
@@ -239,17 +344,6 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
   const [guaranteeOpen, setGuaranteeOpen] = useState(false);
   const [guaranteeClaiming, setGuaranteeClaiming] = useState(false);
   const [guaranteeResult, setGuaranteeResult] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (plan !== "free") return;
-    fetch("/api/billing/check-limit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feature: "ats_scan" }),
-    }).then((r) => r.json()).then((data) => {
-      if (data.limitReached) setLimitReached(true);
-    }).catch(() => {});
-  }, [plan]);
 
   // Auto-trigger scan on first landing when CV was just uploaded
   useEffect(() => {
@@ -259,7 +353,10 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isPaidContent = plan === "pro" || !limitReached;
+  // The server decides what the browser gets: a locked report never carries
+  // the hidden text, so the panel only has to pick which view to draw.
+  const lockedReport = report && isLockedReport(report) ? report : null;
+  const fullReport = report && !isLockedReport(report) ? report : null;
 
   const hasEstimate = !!estimatedScore;
   const verifiedScore = report?.score ?? 0;
@@ -269,24 +366,24 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
   useEffect(() => { setAddedKeywords(new Set()); setAddressedIssues(new Set()); }, [report]);
 
   const effectiveKeywords = useMemo(() => {
-    if (!report?.keywords) return null;
+    if (!fullReport?.keywords) return null;
     if (estimatedScore?.keywords_matched || estimatedScore?.keywords_missing) {
       const matched = estimatedScore.keywords_matched ?? [];
       const missing = estimatedScore.keywords_missing ?? [];
-      return { ...report.keywords, found: matched, missing };
+      return { ...fullReport.keywords, found: matched, missing };
     }
     const skillsLower = new Set((currentSkills ?? []).map((s) => s.toLowerCase()));
-    const found = [...(report.keywords.found ?? [])];
+    const found = [...(fullReport.keywords.found ?? [])];
     const missing: string[] = [];
-    for (const kw of report.keywords.missing ?? []) {
+    for (const kw of fullReport.keywords.missing ?? []) {
       if (skillsLower.has(kw.toLowerCase())) {
         if (!found.some((f) => f.toLowerCase() === kw.toLowerCase())) found.push(kw);
       } else {
         missing.push(kw);
       }
     }
-    return { ...report.keywords, found, missing };
-  }, [report?.keywords, currentSkills, estimatedScore?.keywords_matched, estimatedScore?.keywords_missing]);
+    return { ...fullReport.keywords, found, missing };
+  }, [fullReport?.keywords, currentSkills, estimatedScore?.keywords_matched, estimatedScore?.keywords_missing]);
 
   useEffect(() => {
     if (!loading) return;
@@ -368,7 +465,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
       if (res.status === 403) {
         const data = await res.json();
         if (data.code === "fix_all_limit") {
-          openUpgradeModal("generic");
+          openUpgradeModal("fix_all_limit");
         }
         setFixAllLoading(false);
         return;
@@ -466,7 +563,6 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
       if (!res.ok) {
         if (res.status === 403 && data.code?.includes("limit")) {
           log("Hit ATS scan limit");
-          setLimitReached(true);
           openUpgradeModal("ats_limit");
           setLoading(false);
           return;
@@ -563,7 +659,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
         {report && (
           <div style={{ display: "flex", gap: 6 }}>
             <button
-              onClick={handleFixAll}
+              onClick={lockedReport ? () => openUpgradeModal("fix_all_limit") : handleFixAll}
               disabled={fixAllLoading || loading || displayScore >= 95}
               data-testid="btn-fix-all"
               style={{
@@ -716,20 +812,22 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
             </div>
           )}
 
-          {/* Paywall */}
-          {!isPaidContent && (
-            <div style={{ marginBottom: "12px" }}>
-              <UpgradeBanner trigger="ats" onUpgrade={() => openUpgradeModal("ats_limit")} />
-            </div>
+          {/* Free plan: two top fixes, the hidden counts, then the upgrade banner */}
+          {lockedReport && (
+            <LockedReportBody
+              report={lockedReport}
+              onFix={handleFix}
+              onUpgrade={() => openUpgradeModal("ats_limit")}
+            />
           )}
 
           {/* Fix All Skeleton Loader is rendered as full-screen overlay below */}
 
           {/* PART 3: Category Bars */}
-          {isPaidContent && report.category_scores && (
+          {fullReport?.category_scores && (
             <div className="space-y-2" style={{ marginBottom: "14px" }}>
               <h4 className="text-sm font-semibold">Score Breakdown</h4>
-              {Object.entries(report.category_scores).map(([name, data]) => {
+              {Object.entries(fullReport.category_scores).map(([name, data]) => {
                 const estCat = estimatedScore?.category_scores?.[name];
                 const changed = estimatedScore?.changed_categories?.includes(name) ?? false;
                 return (
@@ -749,7 +847,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           )}
 
           {/* Keywords */}
-          {isPaidContent && effectiveKeywords && (
+          {effectiveKeywords && (
             <div style={{ marginBottom: "14px" }} className="space-y-3">
               {effectiveKeywords.missing.length > 0 && (
                 <div>
@@ -793,7 +891,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           )}
 
           {/* Enhancements */}
-          {isPaidContent && report.enhancements && report.enhancements.length > 0 && (
+          {fullReport?.enhancements && fullReport.enhancements.length > 0 && (
             <div style={{ marginBottom: "14px" }}>
               <button
                 type="button"
@@ -801,12 +899,12 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
                 onClick={() => setEnhancementsOpen(!enhancementsOpen)}
               >
                 <Lightbulb className="h-4 w-4" />
-                Suggestions ({report.enhancements.length})
+                Suggestions ({fullReport.enhancements.length})
                 <ChevronDown className={`h-3 w-3 transition-transform ${enhancementsOpen ? "rotate-180" : ""}`} />
               </button>
               {enhancementsOpen && (
                 <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-                  {report.enhancements.map((s, i) => (
+                  {fullReport.enhancements.map((s, i) => (
                     <li key={i} className="flex gap-2">
                       <span>•</span>
                       {typeof s === "string" ? s : (s as { description?: string })?.description || JSON.stringify(s)}
@@ -818,7 +916,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           )}
 
           {/* PART 4: Footer */}
-          {isPaidContent && (
+          {fullReport && (
             <>
               <div style={{ height: "0.5px", background: "#E0D8CC", margin: "14px 0" }} />
               <div style={{ fontSize: "9.5px", color: "#9CA3AF", textAlign: "center" }}>
@@ -831,7 +929,7 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           )}
 
           {/* Guarantee CTA */}
-          {isPaidContent && report && displayScore < 80 && plan === "pro" && (
+          {fullReport && displayScore < 80 && plan === "pro" && (
             <div className="text-center mt-3">
               <button
                 onClick={() => setGuaranteeOpen(true)}

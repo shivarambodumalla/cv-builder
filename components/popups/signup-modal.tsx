@@ -10,10 +10,10 @@ import { createClient } from "@/lib/supabase/client";
 export type SignupTrigger =
   | "timed"              // #1 — time + scroll + idle on marketing pages
   | "template_click"     // #2 — clicked a template card
-  | "job_search"         // #3 — searched jobs on /jobs
-  | "role_page"          // #4 — viewing /jobs/[role]
+  | "job_search"         // #3 — Jobs is hidden; kept so app/(marketing)/jobs/** still type-checks
+  | "role_page"          // #4 — same
   | "resumes_cta"        // #5 — "Get started free" on /resumes
-  | "jobs_cta"           // #6 — "Get started free" on /jobs
+  | "jobs_cta"           // #6 — same as #3
   | "exit_intent"        // #7 — mouse leaving on desktop
   | "ats_score"          // #8 — ATS score animation after scroll
   | "template_hover"     // #9 — hovered template 2s
@@ -36,14 +36,8 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
       return { title: "Get your ATS score free", subtitle: "30 seconds. No credit card." };
     case "template_click":
       return { title: `Use ${ctx.templateName || "this template"} free. Sign in to start`, subtitle: "All templates are free. No credit card." };
-    case "job_search":
-      return { title: "Sign in to see your match score for these jobs", subtitle: ctx.searchQuery ? `You searched "${ctx.searchQuery}". Sign in to see your scores.` : "Every listing shows how well your resume matches." };
-    case "role_page":
-      return { title: `See your match score for ${ctx.roleName || "these"} roles`, subtitle: "Sign in free to see match scores based on your resume." };
     case "resumes_cta":
       return { title: "Pick your template and build your resume free", subtitle: "All templates. ATS-optimized. No credit card." };
-    case "jobs_cta":
-      return { title: "Find jobs matching your resume. Sign in free", subtitle: "Every listing shows your ATS match score." };
     case "exit_intent":
       return { title: "Before you go, check your ATS score free", subtitle: "75% of resumes are rejected before anyone reads them." };
     case "ats_score":
@@ -56,10 +50,9 @@ function getHeadline(ctx: SignupTriggerContext): { title: string; subtitle: stri
 }
 
 const BENEFITS = [
-  "ATS score in under 30 seconds",
-  "AI fixes your weak bullets",
-  "Match resume to any job",
+  "Your ATS score in under a minute",
   "All templates free",
+  "Download as PDF",
 ];
 
 // ─── Frequency control ───────────────────────────────────────────────────────
@@ -108,20 +101,13 @@ function getReturnUrl(ctx: SignupTriggerContext, pathname: string | null): strin
     case "template_click":
     case "template_hover":
       return null; // handled via cvedge_template cookie
-    case "job_search":
-      return `/my-jobs${ctx.searchQuery ? `?keyword=${encodeURIComponent(ctx.searchQuery)}` : ""}`;
-    case "role_page":
-      return "/my-jobs";
     case "resumes_cta":
       return "/resume-checker";
-    case "jobs_cta":
-      return "/my-jobs";
     case "ats_score":
       return "/resume-checker";
     case "timed":
     case "exit_intent": {
       // Map marketing pages to their authenticated equivalents
-      if (pathname === "/jobs" || pathname?.startsWith("/jobs/")) return "/my-jobs";
       if (pathname === "/resumes") return "/resume-checker";
       if (pathname === "/interview-prep") return "/interview-coach";
       return null; // default → /dashboard via callback
@@ -244,7 +230,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
 
                 {/* Trust chips */}
                 <div className="flex items-center justify-center gap-2 mt-6">
-                  {["Free forever", "No credit card", "30 seconds"].map((t) => (
+                  {["Free to start", "No credit card", "30 seconds"].map((t) => (
                     <span key={t} className="rounded-full border border-border bg-white dark:bg-background px-4 py-1.5 text-xs font-medium text-muted-foreground">
                       {t}
                     </span>
@@ -309,7 +295,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
                 </div>
 
                 <div className="flex items-center justify-center gap-2 mt-5">
-                  {["Free forever", "No credit card", "30 seconds"].map((t) => (
+                  {["Free to start", "No credit card", "30 seconds"].map((t) => (
                     <span key={t} className="rounded-full border border-border bg-white dark:bg-background px-3 py-1 text-[11px] font-medium text-muted-foreground">
                       {t}
                     </span>
@@ -330,7 +316,7 @@ export function SignupModalProvider({ children }: { children: React.ReactNode })
 
 // ─── Timed Trigger (#1) — renders nothing, just fires showSignupModal ────────
 
-const TIMED_PAGES = ["/", "/resumes", "/jobs", "/pricing", "/interview-prep"];
+const TIMED_PAGES = ["/", "/resumes", "/pricing", "/interview-prep"];
 
 export function SignupTimedTrigger() {
   const pathname = usePathname();
@@ -414,7 +400,7 @@ export function SignupExitIntent() {
     supabase.auth.getUser().then(({ data: { user } }) => setIsAnon(!user));
   }, []);
 
-  const onMarketing = TIMED_PAGES.some(p => pathname === p || pathname?.startsWith("/jobs/"));
+  const onMarketing = TIMED_PAGES.some(p => pathname === p);
 
   useEffect(() => {
     if (!isAnon || !onMarketing || firedRef.current || isDismissedRecently()) return;

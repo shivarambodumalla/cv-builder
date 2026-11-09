@@ -16,6 +16,7 @@ import {
 
 
 import { FaqSection } from "./faq-section";
+import { homeFaqs } from "./home-faqs";
 import { CtaSection } from "@/components/shared/cta-section";
 import { FeaturesTabs } from "@/components/marketing/features-tabs";
 import { HeroAnimation } from "@/components/marketing/hero-animation";
@@ -28,7 +29,7 @@ import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
 
 export const metadata: Metadata = {
   title: "Free ATS Resume Scanner: Check Your ATS Score",
-  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score, fixes issues with AI, and gets you more interviews. Free. 1,200+ resumes scanned.",
+  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score and top issues free. Pro fixes them with AI. 1,200+ resumes scanned.",
   alternates: {
     canonical: "https://www.thecvedge.com",
     languages: {
@@ -57,7 +58,7 @@ const COMPARISON = [
   { feature: "Real-time score updates", us: "As you type", them: "Not available" },
   { feature: "Job description matching", us: "Yes", them: "Not available" },
   { feature: "Cover letter generation", us: "Yes", them: "Not available" },
-  { feature: "Watermark-free PDFs", us: "Free plan", them: "Paid only" },
+  { feature: "Free ATS score", us: "Yes", them: "Paid only" },
   { feature: "Price to start", us: "Free", them: "$20-30/month" },
 ];
 
@@ -71,10 +72,10 @@ export default async function HomePage() {
     "@type": "SoftwareApplication",
     name: "CVEdge",
     url: "https://www.thecvedge.com",
-    description: "Free ATS resume scanner. Check your ATS score, fix critical issues with AI, and start getting interview calls. 1,200+ resumes scanned.",
+    description: "Free ATS resume scanner and builder. Check your ATS score, see your top issues, and fix them in the editor. Pro adds AI fixes. 1,200+ resumes scanned.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free forever for job seekers" },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free plan; Pro from $5/week" },
     featureList: ["ATS Score Analysis", "AI resume Rewriting", "Job Match Scoring", "Career Path Generator", "Cover Letter Generation", "Interview Coach", `${templateCounts.total} Professional Templates`],
     areaServed: [
       { "@type": "Country", "name": "United States" },
@@ -97,21 +98,12 @@ export default async function HomePage() {
       : {}),
   };
 
+  // Same list as the visible FAQ below, so the markup matches the page.
+  const faqs = homeFaqs(planLimits.free);
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      { "@type": "Question", name: "What is CVEdge?", acceptedAnswer: { "@type": "Answer", text: "CVEdge is a free AI-powered resume builder and ATS checker. It analyzes your resume against applicant tracking system criteria, gives you a real ATS score, rewrites bullet points with AI, matches your resume to job descriptions, and generates cover letters, all in one tool." } },
-      { "@type": "Question", name: "What is an ATS score?", acceptedAnswer: { "@type": "Answer", text: "An ATS score measures how well your resume passes through applicant tracking system software used by employers to filter applications. Scores are rated across categories like keyword match, formatting, measurable results, and section completeness. A score of 80+ is considered interview-ready. CVEdge scores your resume instantly across 6 categories." } },
-      { "@type": "Question", name: "What causes CVs to fail ATS screening?", acceptedAnswer: { "@type": "Answer", text: "The most common ATS failures are: missing role-specific keywords, non-standard section headings, complex formatting (tables, columns, graphics) that parsers cannot read, lack of measurable results in bullet points, and missing contact information. CVEdge identifies all of these and provides specific fixes." } },
-      { "@type": "Question", name: "How do I improve my ATS score?", acceptedAnswer: { "@type": "Answer", text: "To improve your ATS score: add role-specific keywords from the job description, use standard section headings (Experience, Education, Skills), remove tables and graphics, quantify your achievements with numbers, and ensure your contact details are complete. CVEdge's Fix All feature rewrites your summary and bullet points automatically to address all of these." } },
-      { "@type": "Question", name: "How do I tailor my CV to a job description?", acceptedAnswer: { "@type": "Answer", text: "Paste the job description into CVEdge's Job Match tab. CVEdge analyzes keyword overlap, experience fit, and missing skills, then shows you exactly what to add or change. The Tailor CV feature rewrites your resume automatically to maximize your match score for that specific role." } },
-      { "@type": "Question", name: "What is ATS software?", acceptedAnswer: { "@type": "Answer", text: "ATS (Applicant Tracking System) software is used by employers to automatically screen and filter job applications before a recruiter reads them. It parses resumes, scores them against job requirements, and ranks candidates. An estimated 75% of resumes are filtered out by ATS before a human sees them." } },
-      { "@type": "Question", name: "Is CVEdge really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is free forever for core features including ATS score checking, AI bullet rewrites, job matching, and resume templates. No credit card is required to start." } },
-      { "@type": "Question", name: "What is the ATS score guarantee?", acceptedAnswer: { "@type": "Answer", text: "CVEdge Pro users are guaranteed an 80+ ATS score after using Fix All. If your score does not reach 80+, contact us within 14 days of signing up and we will personally review your resume. If we still cannot reach 80+, we refund you in full." } },
-      { "@type": "Question", name: "Does CVEdge work for jobs in the UAE, Saudi Arabia, and the Middle East?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge is used by job seekers across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, and Oman. ATS screening is standard among large GCC employers and multinationals in the region. CVEdge scores your CV against the same criteria, helps you match keywords from local job descriptions, and generates cover letters for GCC-specific applications. The cv-review service also includes a Middle East specialist." } },
-      { "@type": "Question", name: "Does CVEdge work for UK and European job applications?", acceptedAnswer: { "@type": "Answer", text: "Yes. CVEdge works for CV optimization in the UK, Ireland, Germany, France, the Netherlands, and across Europe. The tool uses 'CV' terminology alongside 'resume', supports standard European CV formats, and scores against ATS criteria used by UK and European employers. Role-specific keyword sets cover common UK and European job titles." } },
-    ],
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
 
   return (
@@ -134,7 +126,7 @@ export default async function HomePage() {
                 <span className="bg-gradient-to-r from-primary to-[#1E3A5F] bg-clip-text text-transparent">It&apos;s getting filtered out.</span>
               </h1>
               <p className="max-w-[580px] text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Get a real ATS score, fix critical issues, and start getting interview calls in under 10 minutes.
+                Get a real ATS score and your top issues free. Fix them in the editor, or let Pro fix them with AI.
               </p>
               <div className="flex w-full flex-col sm:w-auto sm:flex-row items-stretch sm:items-center gap-3 mt-1">
                 <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
@@ -229,18 +221,21 @@ export default async function HomePage() {
                   Walk into every interview prepared
                 </h3>
                 <p className="text-sm text-white/70 leading-relaxed">
-                  Build a library of STAR stories from your career. Before any interview, get a ranked shortlist matched to the job.
+                  Write STAR answers from your own experience. With Pro, CVEdge drafts them from your resume and shortlists the best ones for each job.
                 </p>
                 <ul className="space-y-2 mt-1">
                   {[
-                    "AI extracts stories from resume, portfolio, GitHub",
-                    "STAR framework pre-filled by AI",
-                    "Quality scoring (0–10) per story",
-                    "Job-matched prep with talking points",
+                    { text: "Write your own STAR answers free" },
+                    { text: "AI extracts experiences from your resume, portfolio and GitHub", pro: true },
+                    { text: "Quality score (0–10) per answer", pro: true },
+                    { text: "Job-matched prep with talking points", pro: true },
                   ].map((p) => (
-                    <li key={p} className="flex items-start gap-2.5">
+                    <li key={p.text} className="flex items-start gap-2.5">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#34D399]" />
-                      <span className="text-sm text-white/90 leading-relaxed">{p}</span>
+                      <span className="text-sm text-white/90 leading-relaxed">
+                        {p.text}
+                        {p.pro && <span className="ml-2 inline-block rounded-full bg-white/15 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wider text-white/80">Pro</span>}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -291,7 +286,7 @@ export default async function HomePage() {
               {/* CTA banner */}
               <div className="bg-[#065F46] px-6 py-8 sm:py-10 text-center">
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Land your next role faster</h2>
-                <p className="mt-1.5 text-white/70 text-sm">AI-powered resume builder and ATS scorer</p>
+                <p className="mt-1.5 text-white/70 text-sm">Free ATS score and resume builder. AI fixes with Pro.</p>
                 <Button size="default" className="mt-4 h-10 px-7 text-sm font-medium bg-[#34D399] hover:bg-[#2fc48d] text-[#065F46] shadow-md" asChild>
                   <Link href="/resume-checker">Get my free ATS score</Link>
                 </Button>
@@ -343,18 +338,18 @@ export default async function HomePage() {
                   title: "Upload your resume",
                   body: "Drop your PDF or paste text. AI parses every section in seconds. No manual entry needed.",
                   proofLabel: "Parsed in seconds",
-                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded-md px-2.5 py-1 text-xs font-medium">14 experiences found</span>,
+                  proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded-md px-2.5 py-1 text-xs font-medium">4 roles, 18 bullets found</span>,
                 },
                 {
                   step: "02",
                   icon: Sparkles,
                   title: "Get your ATS analysis",
-                  body: "See your score, missing keywords, formatting errors, and exactly what to fix, ranked by impact.",
-                  proofLabel: "Answer quality score",
+                  body: "See your score and your top issues, ranked by impact. Pro shows every issue and the missing keywords.",
+                  proofLabel: "ATS score",
                   proof: (
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2 rounded-full bg-primary/10"><div className="h-2 rounded-full bg-primary" style={{ width: "80%" }} /></div>
-                      <span className="text-sm font-semibold text-primary">8/10</span>
+                      <div className="flex-1 h-2 rounded-full bg-primary/10"><div className="h-2 rounded-full bg-primary" style={{ width: "61%" }} /></div>
+                      <span className="text-sm font-semibold text-primary">61/100</span>
                     </div>
                   ),
                 },
@@ -362,9 +357,9 @@ export default async function HomePage() {
                   step: "03",
                   icon: Target,
                   title: "Fix and optimize",
-                  body: "Apply AI suggestions with one click. Rewrite bullets, add keywords, and watch your score climb.",
-                  proofLabel: "Top match for this role",
-                  proof: <p className="text-xs text-[#065F46] font-semibold truncate">#1 Improving Engagement Metrics: 94%</p>,
+                  body: "Fix issues in the editor and watch your estimated score move. With Pro, AI rewrites bullets and adds keywords for you.",
+                  proofLabel: "After fixes",
+                  proof: <p className="text-xs text-[#065F46] font-semibold truncate">ATS score 61 → 84 · Missing keywords 6 → 0</p>,
                 },
               ].map((s) => (
                 <div key={s.title} className="bg-background border border-border/60 rounded-2xl p-6 sm:p-7 flex flex-col items-start gap-3 relative z-10 shadow-sm hover:shadow-md transition-shadow">
@@ -385,9 +380,9 @@ export default async function HomePage() {
           {/* Pain quote row */}
           <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {[
-              { quote: "\u201cI know I did good work but I can never remember specifics in the moment.\u201d", resolve: "Every achievement, structured and saved" },
-              { quote: "\u201cI prep for hours then get asked something different and freeze.\u201d", resolve: "8 themes covered, always ready" },
-              { quote: "\u201cI give the same stories for every role even when they\u2019re not the best fit.\u201d", resolve: "Role-matched story shortlist" },
+              { quote: "\u201cI apply to 30 jobs and hear nothing back.\u201d", resolve: "See the score the software gives you" },
+              { quote: "\u201cI don\u2019t know which keywords the job actually wants.\u201d", resolve: "Missing keywords, listed per role" },
+              { quote: "\u201cMy bullets just list what I was responsible for.\u201d", resolve: "Weak bullets flagged, with Pro rewrites" },
             ].map((p) => (
               <div key={p.resolve} className="bg-primary/[0.04] border border-primary/10 rounded-xl p-5">
                 <p className="text-sm text-muted-foreground italic leading-relaxed mb-3">{p.quote}</p>
@@ -510,7 +505,7 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Common questions</h2>
               <p className="mt-3 text-base text-muted-foreground">Quick answers on pricing, scoring, and your data.</p>
             </div>
-            <FaqSection freeLimits={planLimits.free} />
+            <FaqSection faqs={faqs} />
           </div>
         </div>
       </section>

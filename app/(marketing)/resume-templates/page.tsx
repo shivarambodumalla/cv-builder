@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Zap, Download, BarChart3, Target } from "lucide-react";
 import { BreadcrumbJsonLd, FaqJsonLd, ServiceJsonLd } from "@/components/shared/structured-data";
 import { TEMPLATE_CATEGORIES } from "@/lib/resume-templates/data";
+import { TEMPLATE_TRUST_LINE } from "@/lib/resume-templates/trust-line";
 import { getProTemplateSlugs, getTemplateCounts, type TemplateCounts } from "@/lib/billing/plan-config";
 import { TemplateShowcase } from "../resumes/template-showcase";
 
@@ -21,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: "https://www.thecvedge.com/resume-templates" },
     openGraph: {
       title: "Free Resume Templates: ATS-Friendly & Professional | CVEdge",
-      description: `${free} free ATS-friendly resume templates. Upload your resume, get an instant ATS score, fix with AI, and download a polished PDF.`,
+      description: `${free} free ATS-friendly resume templates. Upload your resume, get an instant ATS score, and download a polished PDF.`,
       url: "https://www.thecvedge.com/resume-templates",
     },
   };
@@ -32,7 +33,7 @@ function freeTemplatesAnswer({ total, free, proLabels }: TemplateCounts): string
     free === total
       ? `Yes. All ${total} templates are free.`
       : `${free} of the ${total} templates are free. The other ${proLabels.length} (${proLabels.join(", ")}) need a Pro subscription.`;
-  return `${split} The free plan also includes ATS analysis, AI bullet rewriting, job match scoring, and PDF download. No sign-up required to browse; building and downloading a resume needs a free account.`;
+  return `${split} The free plan also includes an ATS score with your top issues and PDF download. AI bullet rewriting and Job Match are in Pro. No sign-up required to browse; building and downloading a resume needs a free account.`;
 }
 
 const faqs = (counts: TemplateCounts) => [
@@ -63,7 +64,7 @@ const faqs = (counts: TemplateCounts) => [
   {
     question: "Do CVEdge templates work with ATS systems like Greenhouse and Workday?",
     answer:
-      "Yes. CVEdge templates are tested against Greenhouse, Workday, Lever, iCIMS, Taleo, and SmartRecruiters. Single-column templates pass all major systems. Two-column templates score 88–94 on CVEdge's ATS analyzer. The analyzer gives you a real-time score as you edit.",
+      "Yes. CVEdge templates are tested against Greenhouse, Workday, Lever, iCIMS, Taleo, and SmartRecruiters. Single-column templates pass all major systems. Two-column templates score 85–93 on CVEdge's ATS analyzer. The analyzer gives you a real-time score as you edit.",
   },
 ];
 
@@ -87,18 +88,18 @@ const WHY_MATTERS = [
   },
   {
     icon: Zap,
-    title: "AI rewrites every weak bullet in one pass",
-    desc: "Fix All ATS rewrites your entire resume summary and all experience bullets to ATS-optimized standards in a single click.",
+    title: "Pro: AI rewrites every weak bullet in one pass",
+    desc: "Fix All rewrites your resume summary and all experience bullets to ATS-optimized standards in a single click. Included in Pro.",
   },
   {
     icon: Target,
-    title: "See your match score against any job before you apply",
-    desc: "Paste a job description to see your keyword match score, missing terms, and skills gaps. Increase your match before you hit submit.",
+    title: "Pro: see your match score against any job before you apply",
+    desc: "Paste a job description to see your keyword match score, missing terms, and skills gaps. Job Match is included in Pro.",
   },
   {
     icon: Download,
     title: "Download a polished PDF ready to send",
-    desc: "Clean, print-ready PDF export with zero CVEdge branding.",
+    desc: "Clean, print-ready PDF export. Free PDFs carry a small CVEdge footer line; Pro removes it.",
   },
 ];
 
@@ -116,7 +117,7 @@ export default async function ResumeTemplatesPage() {
       />
       <ServiceJsonLd
         name="Free ATS-Friendly Resume Templates"
-        description={`${counts.total} professional resume templates tested on Greenhouse, Workday, and Lever. Upload your resume, get an ATS score, fix with AI, download PDF.`}
+        description={`${counts.total} professional resume templates tested on Greenhouse, Workday, and Lever. Upload your resume, get an ATS score, pick a template, download a PDF.`}
         url="https://www.thecvedge.com/resume-templates"
         serviceType="Resume Builder"
         price="0"
@@ -140,8 +141,8 @@ export default async function ResumeTemplatesPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              {counts.total} professional templates. Upload your resume, get an instant ATS score, fix
-              weak bullets with AI, and export a polished PDF. All free to start.
+              {counts.total} professional templates. Upload your resume, get an instant ATS score, pick
+              a template, and download your PDF. All free to start.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <Button size="lg" className="h-12 px-8 text-[0.9375rem] font-medium shadow-md shadow-primary/20" asChild>
@@ -151,9 +152,7 @@ export default async function ResumeTemplatesPage() {
                 <Link href="/login">Start from scratch free</Link>
               </Button>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              No credit card · No watermarks · Switch templates any time
-            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{TEMPLATE_TRUST_LINE}</p>
           </div>
         </div>
       </section>

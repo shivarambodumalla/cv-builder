@@ -11,33 +11,37 @@ type BillingPeriod = "weekly" | "monthly" | "yearly";
 
 const OPTIONS: { period: BillingPeriod; label: string; original: number; sale: number; per: string; perWeek: string; savePercent: number; popular?: boolean }[] = [
   { period: "weekly", label: "Weekly", original: 10, sale: 5, per: "week", perWeek: "$5.00", savePercent: 50 },
-  { period: "monthly", label: "Monthly", original: 35, sale: 14, per: "month", perWeek: "$3.50", savePercent: 60 },
+  { period: "monthly", label: "Monthly", original: 35, sale: 14, per: "month", perWeek: "$3.23", savePercent: 60 },
   { period: "yearly", label: "Yearly", original: 420, sale: 120, per: "year", perWeek: "$2.30", savePercent: 71, popular: true },
 ];
 
+// Free quotas are either lifetime (one ATS scan) or Pro-only, so no headline
+// promises a reset: the way forward is always Pro.
 const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
   cv_limit: { title: "Resume limit reached", subtitle: "Upgrade to create unlimited resumes tailored for different roles.", icon: "crown" },
-  ats_limit: { title: "ATS scans used up", subtitle: "Resets in 7 days, or upgrade for unlimited ATS analysis.", icon: "zap" },
-  rewrite_limit: { title: "AI rewrites used up", subtitle: "Resets in 7 days, or upgrade for unlimited rewrites.", icon: "sparkles" },
-  job_match_limit: { title: "Job matches used up", subtitle: "Resets in 7 days, or upgrade for unlimited matching.", icon: "sparkles" },
-  cover_letter_limit: { title: "Cover letters used up", subtitle: "Resets in 7 days, or upgrade for unlimited letters.", icon: "sparkles" },
-  fix_all_limit: { title: "Fix All uses reached", subtitle: "Resets Monday, or upgrade for unlimited AI fixes.", icon: "sparkles" },
-  cv_tailor_limit: { title: "CV tailoring used this week", subtitle: "Resets Monday, or upgrade for unlimited tailoring.", icon: "sparkles" },
-  offer_eval_limit: { title: "Offer evaluations used", subtitle: "Resets Monday, or upgrade for unlimited evaluations.", icon: "sparkles" },
-  portfolio_scan_limit: { title: "Portfolio scanning limited", subtitle: "Upgrade to scan unlimited portfolios and GitHub profiles.", icon: "sparkles" },
-  story_summary_limit: { title: "Story summaries used", subtitle: "Resets Monday, or upgrade for unlimited AI summaries.", icon: "sparkles" },
-  interview_prep_limit: { title: "Interview prep sessions used", subtitle: "Resets Monday, or upgrade for unlimited prep.", icon: "sparkles" },
-  template_locked: { title: "This template is Pro", subtitle: "Pro includes every template plus unlimited ATS scans, rewrites and downloads.", icon: "crown" },
-  download: { title: "Download your resume", subtitle: "Your PDF is always clean. Upgrade for unlimited everything else.", icon: "zap" },
-  generic: { title: "Upgrade to Pro", subtitle: "Unlimited everything for serious job seekers.", icon: "crown" },
+  ats_limit: { title: "You've used your free ATS scan", subtitle: "Pro gives you unlimited scans and the full report: every issue, missing keywords and suggestions.", icon: "zap" },
+  rewrite_limit: { title: "AI rewrites are a Pro feature", subtitle: "Rewrite any bullet or summary, as often as you like.", icon: "sparkles" },
+  job_match_limit: { title: "Job Match is a Pro feature", subtitle: "Score your resume against any job description and see what to fix.", icon: "sparkles" },
+  cover_letter_limit: { title: "Cover letters are a Pro feature", subtitle: "Generate a letter for any job in three tones, then edit and export it.", icon: "sparkles" },
+  fix_all_limit: { title: "Fix All is a Pro feature", subtitle: "Rewrite your summary and every bullet in one pass.", icon: "sparkles" },
+  cv_tailor_limit: { title: "Tailor CV is a Pro feature", subtitle: "Rewrite your resume for one job description in a single pass.", icon: "sparkles" },
+  offer_eval_limit: { title: "Offer evaluation is a Pro feature", subtitle: "Grade any job description on seniority, clarity, growth and balance.", icon: "sparkles" },
+  portfolio_scan_limit: { title: "Extracting answers from your resume is a Pro feature", subtitle: "Turn your resume, portfolio or GitHub into STAR answers you can review and save.", icon: "sparkles" },
+  story_summary_limit: { title: "Answer summaries are a Pro feature", subtitle: "Turn any experience into a short answer you can say out loud.", icon: "sparkles" },
+  interview_prep_limit: { title: "Interview prep is a Pro feature", subtitle: "Paste a job description to see which experiences to lead with.", icon: "sparkles" },
+  template_locked: { title: "This template is Pro", subtitle: "Pro includes clean PDFs, unlimited scans and every AI tool.", icon: "crown" },
+  download: { title: "Remove the CVEdge footer", subtitle: "Free downloads include a small footer line. Pro exports clean PDFs and unlocks every AI tool.", icon: "zap" },
+  generic: { title: "Upgrade to Pro", subtitle: "Clean PDFs, the full ATS report and every AI tool.", icon: "crown" },
 };
 
 const FEATURES = [
-  "Unlimited ATS scans",
-  "Unlimited AI rewrites",
-  "Unlimited job matches",
-  "Unlimited cover letters",
-  "All templates",
+  "Clean PDFs, no footer",
+  "Unlimited ATS scans and the full report",
+  "AI rewrites and Fix All",
+  "Job Match and Tailor CV",
+  "Cover letters",
+  "Interview Coach AI",
+  "80+ ATS score guarantee",
   "Priority support",
 ];
 

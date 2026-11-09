@@ -11,7 +11,9 @@ export function JobMatchNudge({ hasReport, score }: JobMatchNudgeProps) {
   if (!hasReport) return null;
   if (score < 60) return null;
 
+  // Product score labels: 90+ Interview Ready, 75-89 Strong Profile
   const isStrong = score >= 75;
+  const label = score >= 90 ? "Interview Ready" : "Strong Profile";
 
   if (isStrong) {
     return (
@@ -26,7 +28,7 @@ export function JobMatchNudge({ hasReport, score }: JobMatchNudgeProps) {
             </div>
             <div className="min-w-0">
               <p className="text-[10px] uppercase tracking-[0.12em] font-semibold text-white/70 mb-1">
-                Interview-ready
+                {label}
               </p>
               <h3 className="text-base sm:text-lg font-semibold leading-tight text-white">
                 Your resume is ready for real roles

@@ -74,7 +74,7 @@ export default function NotFound() {
             { href: "/", label: "Home" },
             { href: "/resume-checker", label: "ATS checker" },
             { href: "/resumes", label: "Resume templates" },
-            { href: "/interview-prep", label: "Interview coach" },
+            { href: "/interview-prep", label: "Interview Coach" },
             { href: "/pricing", label: "Pricing" },
           ].map((l) => (
             <Link

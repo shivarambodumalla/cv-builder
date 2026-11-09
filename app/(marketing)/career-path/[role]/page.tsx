@@ -522,7 +522,7 @@ const TOOL_STEPS = [
   },
   {
     title: "Tailor your resume for the role",
-    text: "Sign in with Google and we set the role as your resume's target: an ATS score, missing keywords and rewrites. A 90-day plan comes with it.",
+    text: "Sign in with Google and we set the role as your resume's target and score it for that job. A 90-day plan comes with it.",
   },
 ];
 

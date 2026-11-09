@@ -31,7 +31,7 @@ export async function generateMetadata({
     description: cat.metaDescription,
     alternates: { canonical: `https://www.thecvedge.com/resume-templates/${cat.slug}` },
     openGraph: {
-      title: cat.metaTitle,
+      title: `${cat.metaTitle} | CVEdge`,
       description: cat.metaDescription,
       url: `https://www.thecvedge.com/resume-templates/${cat.slug}`,
     },
@@ -55,7 +55,7 @@ export default async function TemplateCategoryPage({
     },
     {
       question: `How do I tailor my resume for ${cat.label.toLowerCase()} jobs?`,
-      answer: `Paste the job description into CVEdge's Job Match tool. It compares your resume against the JD and highlights missing keywords, skills gaps, and ATS score for that specific role. The Match score shows exactly how aligned your current resume is, and which fixes would increase it most.`,
+      answer: `Paste the job description into CVEdge's Job Match tool (included in Pro). It compares your resume against the JD and highlights missing keywords, skills gaps, and ATS score for that specific role. The Match score shows exactly how aligned your current resume is, and which fixes would increase it most.`,
     },
     {
       question: `Do these templates work for ${cat.label.toLowerCase()} jobs at large companies?`,
@@ -197,11 +197,11 @@ export default async function TemplateCategoryPage({
               <div className="rounded-xl border bg-card p-5">
                 <p className="font-semibold text-sm mb-3 flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-primary" />
-                  Job match score for every application
+                  Job match score for every application (Pro)
                 </p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Paste a job description and see your match score instantly. CVEdge
-                  highlights missing keywords so you can fix them before you apply.
+                  highlights missing keywords so you can fix them before you apply. Included in Pro.
                 </p>
               </div>
             </div>

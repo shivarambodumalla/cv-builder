@@ -266,10 +266,10 @@ export function CvList({ cvs, isPro, readyStories = 0, userName = "", limitReach
               <Crown className="h-7 w-7 text-white" />
             </div>
             <div className="flex-1 space-y-2">
-              <h2 className="text-lg font-bold text-white">Remove every limit with CVEdge Pro</h2>
-              <p className="text-sm text-white/70">Unlimited ATS scans, AI rewrites, job matching, cover letters, and all templates.</p>
+              <h2 className="text-lg font-bold text-white">Get the full picture with CVEdge Pro</h2>
+              <p className="text-sm text-white/70">Clean PDFs with no footer, your full ATS report, AI rewrites, job match and cover letters.</p>
               <div className="flex flex-wrap gap-3 pt-1">
-                {["Unlimited scans", "AI rewrites", "All templates", "From $2.30/week"].map((t) => (
+                {["No footer", "Full ATS report", "AI rewrites", "From $2.30/week"].map((t) => (
                   <span key={t} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/90">
                     <Check className="h-3 w-3 text-success" /> {t}
                   </span>

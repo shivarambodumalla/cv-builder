@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+// Registry of E2E test cases for /admin/tests: one row per Playwright test in
+// tests/e2e, grouped by suite. Re-run after adding or renaming a test:
+// npx tsx scripts/seed-test-cases.ts
 require("dotenv").config({ path: ".env.local" });
 const { createClient } = require("@supabase/supabase-js");
 
@@ -11,40 +14,40 @@ const TEST_CASES = [
   // ATS Analysis Flow
   { suite: "ATS Analysis Flow", name: "ATS tab loads", description: "Verify ATS tab renders with score or analyse button", spec_file: "tests/e2e/ats-flow.spec.ts" },
   { suite: "ATS Analysis Flow", name: "Fix All button visibility check", description: "Check Fix All button state based on ATS score", spec_file: "tests/e2e/ats-flow.spec.ts" },
+  { suite: "ATS Analysis Flow", name: "Free plan receives a locked ATS report", description: "For a free test user, /api/cv/analyse answers locked:true with teaser issues only and no keywords or enhancements; skips on Pro", spec_file: "tests/e2e/ats-flow.spec.ts" },
   // Job Match Flow
   { suite: "Job Match Flow", name: "Job match tab loads", description: "Verify Job Match tab renders with JD input or results", spec_file: "tests/e2e/job-match-flow.spec.ts" },
   // Billing Gate Flow
   { suite: "Billing Gate Flow", name: "Upgrade modal shows for ATS limit", description: "Verify upgrade modal shows when ATS scan limit is reached", spec_file: "tests/e2e/billing-gate.spec.ts" },
+  { suite: "Billing Gate Flow", name: "Fix All returns 403 fix_all_limit for the free plan", description: "POST /api/cv/fix-all as a free user is refused with code fix_all_limit before any AI call; skips on Pro", spec_file: "tests/e2e/billing-gate.spec.ts" },
   // Dashboard Flow
   { suite: "Dashboard Flow", name: "Dashboard loads", description: "Verify dashboard renders with create button or content", spec_file: "tests/e2e/dashboard.spec.ts" },
   { suite: "Dashboard Flow", name: "Dashboard shows test resume", description: "Verify seeded test resume card is visible", spec_file: "tests/e2e/dashboard.spec.ts" },
-  // Interview Coach (Story Bank)
-  { suite: "Interview Coach", name: "Story bank page loads", description: "Verify interview coach page renders with readiness banner", spec_file: "tests/e2e/interview-coach.spec.ts" },
-  { suite: "Interview Coach", name: "Add story navigates to new page", description: "Click Add Story navigates to /stories/new", spec_file: "tests/e2e/interview-coach.spec.ts" },
-  { suite: "Interview Coach", name: "Story detail page loads", description: "Verify split-pane story editor renders", spec_file: "tests/e2e/interview-coach.spec.ts" },
-  { suite: "Interview Coach", name: "Extract from CV flow", description: "Verify extraction wizard opens and processes CV", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  // Interview Coach
+  { suite: "Interview Coach", name: "Page loads without crash", description: "Verify /interview-coach renders (or redirects to login when unauthenticated)", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  { suite: "Interview Coach", name: "Add story button works when visible", description: "Click Add Story stays within /interview-coach", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  { suite: "Interview Coach", name: "Story card navigates to detail when exists", description: "Click a story card opens its detail page under /interview-coach/", spec_file: "tests/e2e/interview-coach.spec.ts" },
+  { suite: "Interview Coach", name: "Extract page loads or redirects", description: "Verify /interview-coach/extract renders (or redirects to login)", spec_file: "tests/e2e/interview-coach.spec.ts" },
   // CV Tailor
   { suite: "CV Tailor", name: "Tailor button visible in job match", description: "Verify Tailor CV button appears next to Re-match", spec_file: "tests/e2e/job-match-flow.spec.ts" },
   // Offer Evaluation
   { suite: "Offer Evaluation", name: "Evaluation appears after match", description: "Verify offer evaluation section renders after job match analysis", spec_file: "tests/e2e/job-match-flow.spec.ts" },
-  // Templates
-  { suite: "Templates", name: "Template selector renders all", description: "Verify all templates appear in design panel", spec_file: "tests/e2e/templates.spec.ts" },
   // PDF Export
   { suite: "PDF Export", name: "PDF download works", description: "Verify PDF download triggers and completes", spec_file: "tests/e2e/pdf-export.spec.ts" },
+  { suite: "PDF Export", name: "Download button exists", description: "Verify download button is present in editor", spec_file: "tests/e2e/pdf-export.spec.ts" },
+  { suite: "PDF Export", name: "Free download carries the CVEdge footer", description: "POST /api/cv/export/pdf as a free user, parse the PDF and assert the 'Made with CVEdge' footer; skips on Pro", spec_file: "tests/e2e/pdf-export.spec.ts" },
   // Billing
   { suite: "Billing", name: "Billing page loads", description: "Verify billing page renders with plan info", spec_file: "tests/e2e/billing.spec.ts" },
   { suite: "Billing", name: "Upgrade modal shows pricing", description: "Verify upgrade modal opens with pricing options", spec_file: "tests/e2e/billing.spec.ts" },
   { suite: "Billing", name: "Cancel subscription button exists", description: "Verify cancel button for pro users", spec_file: "tests/e2e/billing.spec.ts" },
   // CV Editor
-  { suite: "CV Editor", name: "Editor loads with tabs", description: "Verify editor renders all 4 tabs", spec_file: "tests/e2e/cv-editor.spec.ts" },
+  { suite: "CV Editor", name: "Editor loads with tabs", description: "Verify editor renders all 5 tabs (Content, Design, ATS, Match, Cover Letter)", spec_file: "tests/e2e/cv-editor.spec.ts" },
   { suite: "CV Editor", name: "Content tab shows form fields", description: "Verify content editor has input fields", spec_file: "tests/e2e/cv-editor.spec.ts" },
   { suite: "CV Editor", name: "Design tab shows templates", description: "Verify design tab opens with template selector", spec_file: "tests/e2e/cv-editor.spec.ts" },
   { suite: "CV Editor", name: "ATS tab shows content", description: "Verify ATS tab renders score or analyse", spec_file: "tests/e2e/cv-editor.spec.ts" },
   { suite: "CV Editor", name: "Match tab shows JD input", description: "Verify match tab renders JD form or results", spec_file: "tests/e2e/cv-editor.spec.ts" },
   // Cover Letter
   { suite: "Cover Letter", name: "Cover letter tab loads", description: "Verify cover letter tab renders", spec_file: "tests/e2e/cover-letter.spec.ts" },
-  // PDF Export
-  { suite: "PDF Export", name: "Download button exists", description: "Verify download button is present in editor", spec_file: "tests/e2e/pdf-export.spec.ts" },
   // Auth
   { suite: "Auth", name: "Dashboard redirects unauthenticated", description: "Verify /dashboard redirects to /login", spec_file: "tests/e2e/auth.spec.ts" },
   { suite: "Auth", name: "Editor redirects unauthenticated", description: "Verify /resume/id redirects to /login", spec_file: "tests/e2e/auth.spec.ts" },
@@ -60,11 +63,15 @@ const TEST_CASES = [
   // Marketing Pages
   { suite: "Marketing", name: "Homepage loads with H1", description: "Verify homepage renders with main heading", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Pricing page loads", description: "Verify pricing page renders", spec_file: "tests/e2e/marketing.spec.ts" },
-  { suite: "Marketing", name: "Upload resume page loads", description: "Verify upload page renders", spec_file: "tests/e2e/marketing.spec.ts" },
+  { suite: "Marketing", name: "Upload resume page loads", description: "Verify /resume-checker renders", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Privacy page loads", description: "Verify privacy policy renders", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Terms page loads", description: "Verify terms of service renders", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Sitemap returns XML", description: "Verify sitemap.xml is accessible", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Robots.txt is accessible", description: "Verify robots.txt serves correctly", spec_file: "tests/e2e/marketing.spec.ts" },
+  // CV Formats (named formats + blank template downloads)
+  { suite: "CV Formats", name: "Format pages render with content", description: "Each /cv-format/[slug] page renders its content and a self-canonical", spec_file: "tests/e2e/cv-formats.spec.ts" },
+  { suite: "CV Formats", name: "Blank template downloads", description: "GET /api/templates/[template]/docx serves a .docx without an account; unknown slugs 404", spec_file: "tests/e2e/cv-formats.spec.ts" },
+  { suite: "CV Formats", name: "Template URL consolidation", description: "Retired template URLs redirect to their canonical page", spec_file: "tests/e2e/cv-formats.spec.ts" },
   // Journey: ATS
   { suite: "Journey: ATS", name: "Full ATS scan with results", description: "Mock ATS API, verify score and categories render", spec_file: "tests/e2e/journey-ats.spec.ts" },
   { suite: "Journey: ATS", name: "Fix All opens drawer with diff", description: "Mock Fix All API, verify drawer renders changes", spec_file: "tests/e2e/journey-ats.spec.ts" },
@@ -86,26 +93,8 @@ const TEST_CASES = [
   { suite: "Journey: Errors", name: "API 502 shows error not blank", description: "Mock 502 on ATS, verify error state", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
   { suite: "Journey: Errors", name: "Network error doesn't crash", description: "Abort job match request, verify no crash", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
   { suite: "Journey: Errors", name: "Fix All error recovers", description: "Mock Fix All 502, verify recovery", spec_file: "tests/e2e/journey-error-handling.spec.ts" },
-  // Jobs Feature
-  { suite: "Jobs", name: "Jobs page loads with listings", description: "Auth user visits /jobs, page loads with job cards, CV selector, and filters bar", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Preferred locations modal on first visit", description: "User with preferred_locations_set=false sees modal before listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Job card renders all fields", description: "Job card shows match badge, title, company, location, salary, actions", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Apply button tracks click", description: "Clicking Apply sends POST to /api/jobs/track-click and opens new tab", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Save job toggles correctly", description: "Save fills heart, unsave restores outline", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "CV selector fetches new jobs", description: "Selecting different CV reloads job listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Keyword filter works", description: "Typing keyword filters job cards to matching listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Remote filter works", description: "Selecting Remote type filters to remote listings only", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Saved jobs page shows saved jobs", description: "User visits /jobs/saved and sees previously saved jobs", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs", name: "Jobs visible in app navigation", description: "Jobs nav item present for authenticated users", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  // Jobs SEO
-  { suite: "Jobs SEO", name: "Public /jobs page accessible without login", description: "Logged out user visits /jobs, page loads with listings", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  { suite: "Jobs SEO", name: "Role SEO page loads", description: "Visit /jobs/software-engineer, H1 contains role, jobs visible", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  // Jobs Widget
-  { suite: "Jobs Widget", name: "Top 5 jobs widget in job match panel", description: "Widget shows 5 mini job cards below match section", spec_file: "tests/e2e/jobs-flow.spec.ts" },
-  // Jobs API
-  { suite: "Jobs API", name: "Search returns results", description: "GET /api/jobs/search returns bestMatches and moreJobs arrays", spec_file: "tests/e2e/jobs-api.spec.ts" },
-  { suite: "Jobs API", name: "Track click saves to DB", description: "POST /api/jobs/track-click returns ok:true", spec_file: "tests/e2e/jobs-api.spec.ts" },
-  { suite: "Jobs API", name: "Save and unsave job", description: "POST /api/jobs/save then DELETE /api/jobs/save toggles correctly", spec_file: "tests/e2e/jobs-api.spec.ts" },
+  // Jobs: the feature is hidden (CLAUDE.md "Jobs"); tests/e2e/jobs-flow.spec.ts
+  // and jobs-api.spec.ts are kept but skipped, so they are not registered here.
 ];
 
 async function seed() {

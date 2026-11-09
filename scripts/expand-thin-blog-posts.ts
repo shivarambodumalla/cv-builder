@@ -39,7 +39,7 @@ const POSTS: PostUpdate[] = [
     title: "How to Increase Your ATS Score from 60% to 90%+",
     brief:
       "A 60% ATS score usually fails for four specific, fixable reasons. Here is how to diagnose which one is costing you points and what to change, section by section.",
-    seo_title: "How to Increase Your ATS Score from 60% to 90%+ (2026 Guide) | CVEdge",
+    seo_title: "How to Increase Your ATS Score from 60% to 90%+ (2026 Guide)",
     seo_description:
       "Scoring around 60% on an ATS check? Learn the four issues that cause it — keyword gaps, unmeasured bullets, missing sections and parsing failures — and how to fix each.",
     read_time_minutes: 9,
@@ -105,7 +105,7 @@ const POSTS: PostUpdate[] = [
     title: "Resume Keywords That Get You Hired (And the Ones That Waste Space)",
     brief:
       "Not all keywords are worth including. Here is how keyword matching actually works, which terms carry weight, where to place them, and the filler that costs you space without earning anything.",
-    seo_title: "Resume Keywords That Actually Work in 2026 | CVEdge",
+    seo_title: "Resume Keywords That Actually Work in 2026",
     seo_description:
       "Which resume keywords matter, which are filler, and where to place them. How ATS keyword matching really works, with examples of strong and wasted terms.",
     read_time_minutes: 8,
@@ -167,7 +167,7 @@ const POSTS: PostUpdate[] = [
 <p>Tailoring per application is genuinely effective and does not require starting over. In practice it means adjusting three things: the summary's opening line to match the target role, the ordering of your skills so the relevant ones appear first, and two or three bullets reworded toward the posting's emphasis. That takes about ten minutes and captures most of the benefit.</p>
 
 <h2>Find your gaps automatically</h2>
-<p>Comparing your CV against a posting by hand is slow and easy to get wrong. Paste any job description into <a href="/resume-checker">CVEdge's Job Match</a> and it identifies which keywords are missing, which are already covered, and which would raise your match score most — so you can tailor from evidence rather than guesswork.</p>`,
+<p>Comparing your CV against a posting by hand is slow and easy to get wrong. Paste any job description into <a href="/resume-checker">CVEdge's Job Match</a> (a Pro tool) and it identifies which keywords are missing, which are already covered, and which would raise your match score most — so you can tailor from evidence rather than guesswork.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -176,7 +176,7 @@ const POSTS: PostUpdate[] = [
     title: "How ATS Filters Resumes: What Actually Happens After You Click Apply",
     brief:
       "Applicant tracking systems are widely misunderstood. Here is what they genuinely do, what they do not, and where applications are actually rejected.",
-    seo_title: "How ATS Filters Resumes — What Really Happens in 2026 | CVEdge",
+    seo_title: "How ATS Filters Resumes — What Really Happens in 2026",
     seo_description:
       "What an applicant tracking system actually does with your CV: parsing, search, ranking and knockout questions — and where most rejections really happen.",
     read_time_minutes: 9,
@@ -237,7 +237,7 @@ const POSTS: PostUpdate[] = [
     title: "The Best Resume Format for ATS (And the Ones That Quietly Break It)",
     brief:
       "Chronological, functional or hybrid? Single or two-column? Here is which resume format survives parsing, which section order works, and the design choices that silently destroy your application.",
-    seo_title: "Best Resume Format for ATS in 2026 — What Actually Parses | CVEdge",
+    seo_title: "Best Resume Format for ATS in 2026 — What Actually Parses",
     seo_description:
       "Which resume format works with applicant tracking systems: chronological vs functional vs hybrid, single vs two-column, section order, length and file type — with the choices that break parsing.",
     read_time_minutes: 9,
@@ -298,7 +298,7 @@ const POSTS: PostUpdate[] = [
 <p>Open your CV, select all, copy, and paste into a plain text editor. What appears is roughly what a parser extracts. Check three things: are your contact details present, is the reading order sensible, and did every section survive? If any answer is no, that is a format problem worth fixing before you apply anywhere else.</p>
 
 <h2>Start from a format that already parses</h2>
-<p>Rebuilding a layout to be parser-safe is fiddly. Every CVEdge template is single-column-safe by construction, with contact details in the body and no tables or image-based text — and you can <a href="/resume-checker">check any CV's parsing for free</a> to see exactly how it extracts before you send it.</p>`,
+<p>Rebuilding a layout to be parser-safe is fiddly. Every CVEdge template is single-column-safe by construction, with contact details in the body and no tables or image-based text — and you can <a href="/resume-checker">check any CV's parsing with a free account</a> to see exactly how it extracts before you send it.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -307,7 +307,7 @@ const POSTS: PostUpdate[] = [
     title: "Front-End Developer Resume Guide 2026: What Hiring Managers Look For",
     brief:
       "Framework lists do not differentiate front-end CVs any more. Here is what does: performance numbers, accessibility work, and evidence you understand the platform beneath the framework.",
-    seo_title: "Front-End Developer Resume Guide 2026 — Examples & Metrics | CVEdge",
+    seo_title: "Front-End Developer Resume Guide 2026 — Examples & Metrics",
     seo_description:
       "How to write a front-end developer resume in 2026: the metrics that matter (Core Web Vitals, bundle size), before/after bullet examples, skills to list, and what gets CVs screened out.",
     read_time_minutes: 9,
@@ -383,7 +383,7 @@ const POSTS: PostUpdate[] = [
     title: "Full Stack Developer Resume Guide 2026: How to Show Depth, Not Just Breadth",
     brief:
       "The full stack CV's core problem is reading as a generalist with no depth anywhere. Here is how to declare a centre of gravity and prove range with one feature owned end to end.",
-    seo_title: "Full Stack Developer Resume Guide 2026 — Examples & Tips | CVEdge",
+    seo_title: "Full Stack Developer Resume Guide 2026 — Examples & Tips",
     seo_description:
       "How to write a full stack developer resume that shows real depth: declaring a centre of gravity, end-to-end feature bullets, the metrics that matter, and what gets these CVs rejected.",
     read_time_minutes: 9,
@@ -453,7 +453,7 @@ const POSTS: PostUpdate[] = [
     title: "How Recruiters Really Read Your Resume (What the Research Shows)",
     brief:
       "Eye-tracking research shows the first pass over a CV is fast and pattern-based. Here is where attention actually goes, what the studies do and do not establish, and how to structure a page around it.",
-    seo_title: "How Recruiters Really Read Your Resume — The Research | CVEdge",
+    seo_title: "How Recruiters Really Read Your Resume — The Research",
     seo_description:
       "What eye-tracking studies show about how recruiters scan CVs: the six-second first pass, the F-pattern, where attention concentrates, and how to structure your resume around it.",
     read_time_minutes: 8,
@@ -525,7 +525,7 @@ const POSTS: PostUpdate[] = [
     title: "DevOps Engineer Resume Guide 2026: The Metrics That Get You Hired",
     brief:
       "DevOps is one of the most quantifiable disciplines in tech, and most DevOps CVs contain no numbers. Here are the metrics hiring managers compare, with before/after bullet examples.",
-    seo_title: "DevOps Engineer Resume Guide 2026 — DORA Metrics & Examples | CVEdge",
+    seo_title: "DevOps Engineer Resume Guide 2026 — DORA Metrics & Examples",
     seo_description:
       "How to write a DevOps engineer resume: the DORA metrics that matter, cost and reliability numbers, before/after bullets, and the tool-list mistake that gets CVs rejected.",
     read_time_minutes: 9,
@@ -584,7 +584,7 @@ const POSTS: PostUpdate[] = [
     title: "How to Write Resume Bullet Points That Show Impact (With Examples)",
     brief:
       "Most bullets describe duties. The ones that get interviews state what changed and by how much. Here is the structure, what to do when you have no numbers, and twelve before/after rewrites.",
-    seo_title: "How to Write Resume Bullet Points That Show Impact | CVEdge",
+    seo_title: "How to Write Resume Bullet Points That Show Impact",
     seo_description:
       "The structure behind resume bullets that get interviews: action verb, specific work, measurable result. Includes what to do when you have no metrics and 12 before/after examples.",
     read_time_minutes: 9,
@@ -636,7 +636,7 @@ const POSTS: PostUpdate[] = [
     title: "Cybersecurity Analyst Resume Guide 2026: Proving You Can Actually Defend",
     brief:
       "Security CVs are heavy on certifications and light on evidence. Here is what hiring managers look for, the metrics that make detection work credible, and before/after bullets.",
-    seo_title: "Cybersecurity Analyst Resume Guide 2026 — Skills & Examples | CVEdge",
+    seo_title: "Cybersecurity Analyst Resume Guide 2026 — Skills & Examples",
     seo_description:
       "How to write a cybersecurity analyst resume: the detection and response metrics that matter, certifications worth listing, before/after bullet examples, and common rejections.",
     read_time_minutes: 9,
@@ -702,7 +702,7 @@ const POSTS: PostUpdate[] = [
     title: "AI Resume Builder vs Writing It Yourself: An Honest Comparison",
     brief:
       "AI is genuinely good at some parts of resume writing and bad at others. Here is where each approach wins, where AI-written CVs fail, and how to combine them.",
-    seo_title: "AI Resume Builder vs Manual Writing — Honest Comparison 2026 | CVEdge",
+    seo_title: "AI Resume Builder vs Manual Writing — Honest Comparison 2026",
     seo_description:
       "Should you use an AI resume builder or write it yourself? Where AI genuinely helps, where it fails, how recruiters spot AI-written CVs, and the hybrid approach that works best.",
     read_time_minutes: 8,
@@ -763,7 +763,7 @@ const POSTS: PostUpdate[] = [
     title: "Resume vs CV: What Recruiters Actually Expect in 2026",
     brief:
       "The difference depends entirely on where you are applying. Here is what each term means by region, what each document should contain, and the details that get international applications rejected.",
-    seo_title: "Resume vs CV — What Recruiters Expect by Region in 2026 | CVEdge",
+    seo_title: "Resume vs CV — What Recruiters Expect by Region in 2026",
     seo_description:
       "Resume vs CV: what the terms mean in the US, UK, Europe, Middle East and Asia, what each document should contain, and the regional details that get applications rejected.",
     read_time_minutes: 8,
@@ -802,7 +802,7 @@ const POSTS: PostUpdate[] = [
 <p>Get the substance right once, then adjust the regional presentation per application. That is a ten-minute change, not a rewrite.</p>
 
 <h2>Build both versions</h2>
-<p>CVEdge lets you keep multiple versions of the same underlying content, so you can maintain a photo-free two-page version for UK and US applications and a fuller version for the Gulf without rewriting anything. <a href="/resume-checker">Start free</a>, or read our region-specific guides on <a href="/blog/uae-resume-format-2026">UAE resume format</a> and <a href="/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV format</a>.</p>`,
+<p>CVEdge Pro lets you keep multiple versions of the same underlying content, so you can maintain a photo-free two-page version for UK and US applications and a fuller version for the Gulf without rewriting anything. <a href="/resume-checker">Start free</a>, or read our region-specific guides on <a href="/blog/uae-resume-format-2026">UAE resume format</a> and <a href="/blog/saudi-arabia-cv-format-guide-2026">Saudi Arabia CV format</a>.</p>`,
   },
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -813,7 +813,7 @@ const POSTS: PostUpdate[] = [
   // (only 6% overlap between the two), so only the metadata is corrected.
   {
     slug: "what-is-ats-software-and-how-does-it-work",
-    seo_title: "What Is ATS Software and How Does It Work? (2026 Guide) | CVEdge",
+    seo_title: "What Is ATS Software and How Does It Work? (2026 Guide)",
     seo_description:
       "What an applicant tracking system actually does with your CV — parsing, keyword search, ranking and knockout questions — and what it does not do.",
     brief:

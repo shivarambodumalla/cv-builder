@@ -28,7 +28,7 @@ const sections = [
   {
     title: "2. Data we collect",
     list: [
-      "Name, email address, and profile photo from Google OAuth",
+      "Name, email address, and profile photo from Google or LinkedIn sign-in",
       "CV content you upload, paste, or create within our editor (including personal details, work history, education, and skills)",
       "IP address and approximate location (city, region, country) at the time of signup, used for analytics only",
       "Usage data: pages visited, features used, timestamps, and device information",
@@ -61,6 +61,9 @@ const sections = [
       "Google Gemini (AI processing of CV content): data not retained by provider",
       "Resend (transactional email delivery): processes email address and email content",
       "Google Analytics + Google Ads (website analytics and conversion tracking): loaded only after cookie consent",
+      "Hotjar (session recordings and heatmaps on public pages): loaded only after cookie consent",
+      "Google AdSense (advertising on public pages, not on the career path tool): ad storage stays denied until you accept cookies",
+      "Impact.com (affiliate link tracking tag)",
       "Vercel (hosting, edge functions, analytics): US hosted",
       "Lemon Squeezy (payment processing): PCI-compliant, we do not store card details",
     ],
@@ -69,9 +72,9 @@ const sections = [
     title: "6. Cookies and tracking",
     list: [
       "Essential cookies: Supabase authentication session cookies, required for the service to function",
-      "Analytics cookies: Google Analytics (GA4) and Google Ads, loaded only after you accept cookies via our consent banner",
+      "Analytics cookies: Google Analytics (GA4), Google Ads and Hotjar, loaded only after you accept cookies via our consent banner",
       "You can withdraw cookie consent at any time by clearing your browser cookies for thecvedge.com",
-      "If you decline analytics cookies, no tracking scripts are loaded",
+      "If you decline analytics cookies, Google Analytics and Hotjar are not loaded. AdSense and the Impact tag load with analytics and ad storage denied",
     ],
   },
   {
@@ -102,7 +105,7 @@ const sections = [
     list: [
       "All data transmitted via HTTPS/TLS encryption",
       "Row-level security (RLS) on all database tables, so users can only access their own data",
-      "Google OAuth only. We never store passwords",
+      "Google or LinkedIn sign-in only. We never store passwords",
       "Admin access restricted to authorised email addresses",
       "Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
     ],

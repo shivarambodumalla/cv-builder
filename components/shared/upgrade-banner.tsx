@@ -1,45 +1,56 @@
 "use client";
 
-import { BarChart3, Target, FileText } from "lucide-react";
+import { BarChart3, Target, FileText, BookOpen } from "lucide-react";
 
 const CONFIGS = {
   ats: {
     icon: <BarChart3 className="h-5 w-5 text-[#34D399]" />,
-    label: "Free limit reached",
-    heading: "Get your full ATS report",
+    label: "Pro report",
+    heading: "See your full ATS report",
     features: [
-      "Score breakdown across 6 categories",
-      "Missing keywords with one-click fix",
-      "AI bullet rewrites to raise your score",
-      "Detailed fix suggestions per issue",
+      "Every issue, ranked by impact",
+      "Missing keywords with one-click add",
+      "AI rewrites and Fix All",
+      "Unlimited re-scans as you edit",
     ],
   },
   job_match: {
     icon: <Target className="h-5 w-5 text-[#34D399]" />,
-    label: "Free limit reached",
-    heading: "Get your full match report",
+    label: "Pro feature",
+    heading: "Match your resume to any job",
     features: [
-      "Detailed match score breakdown",
+      "Match score across four categories",
       "Missing keywords and skill gaps",
-      "Fix mode with side-by-side editor",
-      "AI rewrites to improve match score",
+      "Tailor CV for the role in one pass",
+      "Offer evaluation and JD red flags",
     ],
   },
   cover_letter: {
     icon: <FileText className="h-5 w-5 text-[#34D399]" />,
-    label: "Free limit reached",
-    heading: "Generate more cover letters",
+    label: "Pro feature",
+    heading: "Generate cover letters in three tones",
     features: [
-      "Unlimited cover letter generation",
-      "3 tones: Professional, Conversational, Confident",
-      "Tailored to every job you apply for",
-      "Edit and export as PDF",
+      "Professional, conversational or confident",
+      "Built from the job you matched",
+      "Regenerate and keep every version",
+      "Edit, copy and export as PDF",
+    ],
+  },
+  interview_coach: {
+    icon: <BookOpen className="h-5 w-5 text-[#34D399]" />,
+    label: "Pro feature",
+    heading: "Extract experiences from your resume",
+    features: [
+      "Scan your resume, portfolio or GitHub",
+      "STAR answers drafted for you to review",
+      "Answer summaries you can say out loud",
+      "Interview prep for any job description",
     ],
   },
 };
 
 interface Props {
-  trigger: "ats" | "job_match" | "cover_letter";
+  trigger: keyof typeof CONFIGS;
   onUpgrade: () => void;
 }
 

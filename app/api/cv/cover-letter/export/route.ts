@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getPlan } from "@/lib/billing/limits";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -45,12 +46,14 @@ export async function GET(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, plan")
+    .select("full_name, subscription_status, current_period_end")
     .eq("id", user.id)
     .single();
 
   const candidateName = profile?.full_name || "";
-  const _isFree = (profile?.plan || "free") === "free";
+  // Same rule as the resume PDF: free downloads carry the CVEdge footer line,
+  // Pro (including cancelled-but-still-paid) prints clean.
+  const showWatermark = getPlan(profile) === "free";
 
   if (format === "txt") {
     const text = letter.content;
@@ -73,7 +76,7 @@ export async function GET(request: NextRequest) {
         content: letter.content,
         candidateName,
         company: cv.job_company || "",
-        showWatermark: false,
+        showWatermark,
       });
 
       const result = execFileSync("node", [workerPath], {

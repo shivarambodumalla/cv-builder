@@ -5,21 +5,16 @@ import { useRouter } from "next/navigation";
 import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Plus,
   Trash2,
   Pencil,
   BarChart2,
-  X,
   Loader2,
   BookOpen,
   FileSearch,
-  Sparkles,
   Search,
   Target,
-  CheckCircle2,
-  Save,
   ChevronDown,
   LayoutGrid,
   Wand2,
@@ -37,23 +32,22 @@ interface Story {
   action: string | null;
   result: string | null;
   tags: string[];
-  quality_score: number;
+  /** Null when the server skipped AI scoring (free plan). */
+  quality_score: number | null;
   source_type: string;
   source_cv_id: string | null;
   created_at: string;
 }
 
 interface CvOption { id: string; title: string | null; target_role: string | null; }
-interface Props { stories: Story[]; cvs: CvOption[]; isPro: boolean; storiesThisWeek: number; }
+interface Props { stories: Story[]; cvs: CvOption[]; isPro: boolean; }
 
-/* ── Constants ── */
-const COMMON_TAGS = ["Leadership", "Problem Solving", "Teamwork", "Technical", "Communication", "Initiative", "Conflict Resolution", "Growth", "Customer Focus", "Innovation"];
-const STAR_HINTS: Record<string, string> = {
-  situation: "Add specific context: team size, timeline, business impact at stake",
-  task: "Clarify YOUR responsibility. What were you specifically asked to do?",
-  action: "Detail the steps YOU took. Use 'I' not 'we'. Mention tools/methods.",
-  result: "Add numbers: %, $, time saved, users impacted. Quantify the outcome.",
-};
+const EXTRACT_SOURCES = [
+  { key: "cv", label: "From CV" },
+  { key: "url", label: "From URL" },
+  { key: "github", label: "From GitHub" },
+  { key: "pdf", label: "Upload PDF" },
+];
 
 /* ── Helpers ── */
 function truncate(text: string | null, max: number): string {
@@ -65,10 +59,36 @@ function starCompleteness(s: string | null | undefined): boolean {
   return !!s && s.trim().length > 15;
 }
 
+/** Marks a step or control that needs Pro. Same badge as the template picker. */
+function ProTag() {
+  return (
+    <span className="rounded-full bg-[#1E3A5F] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+      Pro
+    </span>
+  );
+}
+
+/** Quality score chip; a null score (no AI scoring on the free plan) reads "Not scored". */
+function ScoreBadge({ score }: { score: number | null }) {
+  if (score == null) {
+    return (
+      <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+        Not scored
+      </span>
+    );
+  }
+  const tone = score >= 8 ? "bg-success/15 text-success" : score >= 5 ? "bg-warning/15 text-warning" : "bg-error/15 text-error";
+  return (
+    <span className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${tone}`}>
+      <BarChart2 size={10} />{score}/10
+    </span>
+  );
+}
+
 /* ══════════════════════════════════════════════════════
    MAIN COMPONENT
    ══════════════════════════════════════════════════════ */
-export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props) {
+export function StoryBankContent({ stories, cvs, isPro }: Props) {
   const router = useRouter();
   const { openUpgradeModal } = useUpgradeModal();
 
@@ -78,36 +98,11 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortAsc, setSortAsc] = useState(false);
   const [filterTag, setFilterTag] = useState<string | null>(null);
-
-  // Builder (split-pane)
-  const [_showBuilder, setShowBuilder] = useState(false);
-  const [editingStory, setEditingStory] = useState<Story | null>(null);
-  const [formTitle, setFormTitle] = useState("");
-  const [formSituation, setFormSituation] = useState("");
-  const [formTask, setFormTask] = useState("");
-  const [formAction, setFormAction] = useState("");
-  const [formResult, setFormResult] = useState("");
-  const [formTags, setFormTags] = useState<string[]>([]);
-  const [saving, setSaving] = useState(false);
-  const [formFramework, setFormFramework] = useState<"star" | "star_r" | "car">("star");
-  const [formReflection, setFormReflection] = useState("");
-  const [formSummary, setFormSummary] = useState("");
-  const [summaryLoading, setSummaryLoading] = useState(false);
-
-
-  // Extract dropdown
   const [showExtractMenu, setShowExtractMenu] = useState(false);
-
-  // Delete
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   /* ── Computed ── */
-  const readyCount = useMemo(() => storyList.filter((s) => s.quality_score >= 7).length, [storyList]);
-  const _coveredThemes = useMemo(() => {
-    const t = new Set<string>();
-    for (const s of storyList) for (const tag of s.tags) t.add(tag);
-    return t.size;
-  }, [storyList]);
+  const readyCount = useMemo(() => storyList.filter((s) => (s.quality_score ?? 0) >= 7).length, [storyList]);
 
   const allTags = useMemo(() => {
     const t = new Set<string>();
@@ -129,77 +124,16 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
     if (filterTag) {
       result = result.filter((s) => s.tags.includes(filterTag));
     }
-    result = [...result].sort((a, b) =>
-      sortAsc ? a.quality_score - b.quality_score : b.quality_score - a.quality_score
-    );
+    // Unscored experiences sort last whichever way the scores run
+    result = [...result].sort((a, b) => {
+      if (a.quality_score == null) return b.quality_score == null ? 0 : 1;
+      if (b.quality_score == null) return -1;
+      return sortAsc ? a.quality_score - b.quality_score : b.quality_score - a.quality_score;
+    });
     return result;
   }, [storyList, searchQuery, filterTag, sortAsc]);
 
   /* ── Handlers ── */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function openBuilder(story?: Story) {
-    setEditingStory(story ?? null);
-    setFormTitle(story?.title ?? "");
-    setFormSituation(story?.situation ?? "");
-    setFormTask(story?.task ?? "");
-    setFormAction(story?.action ?? "");
-    setFormResult(story?.result ?? "");
-    setFormTags(story?.tags ?? []);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const s = story as Record<string, any>;
-    setFormFramework(s?.framework ?? "star");
-    setFormReflection(s?.reflection ?? "");
-    setFormSummary(s?.summary ?? "");
-    setShowBuilder(true);
-  }
-
-  function closeBuilder() { setShowBuilder(false); setEditingStory(null); }
-
-  function toggleTag(tag: string) {
-    setFormTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
-  }
-
-  async function handleSaveStory() {
-    if (!formTitle.trim()) return;
-    setSaving(true);
-    try {
-      const payload = { title: formTitle, situation: formSituation || null, task: formTask || null, action: formAction || null, result: formResult || null, tags: formTags, source_type: "manual", reflection: formReflection || null, summary: formSummary || null, framework: formFramework };
-      if (editingStory) {
-        const res = await fetch(`/api/stories/${editingStory.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        if (res.ok) { const updated: Story = await res.json(); setStoryList((prev) => prev.map((s) => s.id === updated.id ? updated : s)); }
-      } else {
-        const res = await fetch("/api/stories/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        if (res.ok) { const created: Story = await res.json(); setStoryList((prev) => [created, ...prev]); setWeeklyCount((c) => c + 1); }
-      }
-      closeBuilder();
-      router.refresh();
-    } catch { /* ignore */ } finally { setSaving(false); }
-  }
-
-  async function handleGenerateSummary() {
-    setSummaryLoading(true);
-    try {
-      const res = await fetch("/api/stories/summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          situation: formFramework === "car" ? null : formSituation,
-          task: formFramework === "car" ? null : formTask,
-          action: formAction,
-          result: formResult,
-          reflection: formReflection || null,
-          framework: formFramework,
-          challenge: formFramework === "car" ? formSituation : null,
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setFormSummary(data.summary || "");
-      }
-    } catch { /* ignore */ }
-    finally { setSummaryLoading(false); }
-  }
-
   async function handleDelete(storyId: string) {
     setDeletingId(storyId);
     try {
@@ -208,14 +142,9 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
     } catch { /* ignore */ } finally { setDeletingId(null); }
   }
 
-
   /* ══════════════════════════════════════
      RENDER
      ══════════════════════════════════════ */
-  const FREE_STORY_LIMIT = 3;
-  const [weeklyCount, setWeeklyCount] = useState(storiesThisWeek);
-  const freeAtLimit = !isPro && weeklyCount >= FREE_STORY_LIMIT;
-
   return (
     <div className="container mx-auto px-4 py-8 sm:py-12">
       <div className="space-y-6">
@@ -238,28 +167,29 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
             </div>
           </div>
           <div className="flex gap-2">
+            {/* Writing an experience by hand is free on every plan */}
             <Button
               data-testid="add-story-button"
-              onClick={() => freeAtLimit ? openUpgradeModal("generic") : router.push("/interview-coach/new")}
+              onClick={() => router.push("/interview-coach/new")}
               className="bg-primary hover:bg-primary/90 text-white"
             >
               <Plus className="mr-1.5 h-4 w-4" /> Add Experience
             </Button>
-            {isPro && (
+            {/* Extraction is Pro: free users see the button tagged Pro and get the modal */}
             <div className="relative">
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary/10" onClick={() => setShowExtractMenu(!showExtractMenu)}>
-                <FileSearch className="mr-1.5 h-4 w-4" /> Extract <ChevronDown className="ml-1 h-3 w-3" />
+              <Button
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/10"
+                onClick={() => (isPro ? setShowExtractMenu(!showExtractMenu) : openUpgradeModal("portfolio_scan_limit"))}
+              >
+                <FileSearch className="mr-1.5 h-4 w-4" /> Extract
+                {isPro ? <ChevronDown className="ml-1 h-3 w-3" /> : <span className="ml-1.5"><ProTag /></span>}
               </Button>
-              {showExtractMenu && (
+              {isPro && showExtractMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowExtractMenu(false)} />
                   <div className="absolute right-0 top-full mt-1 z-50 w-48 rounded-lg border border-border bg-background shadow-lg py-1">
-                    {[
-                      { key: "cv", label: "From CV" },
-                      { key: "url", label: "From URL" },
-                      { key: "github", label: "From GitHub" },
-                      { key: "pdf", label: "Upload PDF" },
-                    ].map((item) => (
+                    {EXTRACT_SOURCES.map((item) => (
                       <button
                         key={item.key}
                         className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
@@ -272,7 +202,6 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 </>
               )}
             </div>
-            )}
           </div>
         </div>
         {/* Mobile readiness bar */}
@@ -286,16 +215,16 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
           </div>
         </div>
 
-        {/* ── Story extraction nudge ── */}
+        {/* ── First-answer nudge ── */}
         <StoryNudge storyCount={storyList.length} hasCvs={cvs.length > 0} />
 
-        {/* ── Upgrade Banner (free users) ── */}
+        {/* ── Pro notice (free users) ── */}
         {!isPro && (
           <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-foreground">Unlock the full power of Interview Coach</p>
+              <p className="text-sm font-semibold text-foreground">Interview Coach AI is a Pro feature</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Free plan: {FREE_STORY_LIMIT} experiences per week ({weeklyCount}/{FREE_STORY_LIMIT} used). Upgrade for unlimited experiences, AI extraction, and interview prep.
+                Extract experiences from your resume, generate answer summaries and match them to any job description. Writing your own answers is always free.
               </p>
             </div>
             <Button onClick={() => openUpgradeModal("generic")} size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
@@ -349,29 +278,27 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
             <div className="bg-card border border-primary/15 rounded-xl py-10 text-center">
               <BookOpen className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
               <p className="text-sm font-medium text-foreground">No experiences yet</p>
-              <p className="mt-1 text-xs text-muted-foreground">Add your first interview story or extract them from a CV.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Add your first experience in STAR format.</p>
               <button onClick={() => router.push("/interview-coach/new")} className="mt-4 bg-primary text-white text-xs font-medium rounded-lg px-4 py-2 mx-auto flex items-center gap-1.5">
                 <Plus size={14} /> Add Your First Experience
               </button>
             </div>
           ) : filteredStories.length === 0 ? (
             <div className="bg-card border border-primary/15 rounded-xl py-8 text-center">
-              <p className="text-sm text-muted-foreground">No stories match your search.</p>
+              <p className="text-sm text-muted-foreground">No experiences match your search.</p>
             </div>
           ) : viewMode === "grid" ? (
             /* ── GRID VIEW ── */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {filteredStories.map((story) => {
                 const allFilled = [story.situation, story.task, story.action, story.result].every(starCompleteness);
-                const isReady = story.quality_score >= 7 && allFilled;
+                const isReady = (story.quality_score ?? 0) >= 7 && allFilled;
                 return (
                   <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 flex flex-col gap-2.5 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
                     {/* Title + Score */}
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-[13px] font-medium text-[#0C1A0E] truncate flex-1">{story.title}</p>
-                      <span className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${story.quality_score >= 8 ? "bg-success/15 text-success" : story.quality_score >= 5 ? "bg-warning/15 text-warning" : "bg-error/15 text-error"}`}>
-                        <BarChart2 size={10} />{story.quality_score}/10
-                      </span>
+                      <ScoreBadge score={story.quality_score} />
                     </div>
                     {/* STAR + Status */}
                     <div className="flex items-center gap-1.5">
@@ -415,7 +342,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
             <div className="flex flex-col gap-2">
               {filteredStories.map((story) => {
                 const allFilled = [story.situation, story.task, story.action, story.result].every(starCompleteness);
-                const isReady = story.quality_score >= 7 && allFilled;
+                const isReady = (story.quality_score ?? 0) >= 7 && allFilled;
                 return (
                   <div key={story.id} className="bg-[#F7F5F0] border border-[rgba(6,95,70,0.15)] rounded-xl p-4 cursor-pointer hover:border-[rgba(6,95,70,0.35)] transition-colors" data-testid="story-card" onClick={() => router.push(`/interview-coach/${story.id}`)}>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -439,9 +366,7 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                       </div>
                       {/* Right: score + status + actions */}
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${story.quality_score >= 8 ? "bg-success/15 text-success" : story.quality_score >= 5 ? "bg-warning/15 text-warning" : "bg-error/15 text-error"}`}>
-                          <BarChart2 size={10} />{story.quality_score}/10
-                        </span>
+                        <ScoreBadge score={story.quality_score} />
                         <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ${isReady ? "bg-success/15 text-success" : "bg-warning/15 text-warning"}`}>
                           {isReady ? "Ready" : "Draft"}
                         </span>
@@ -466,10 +391,10 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
           <div className="mb-4">
             <p className="text-[10px] tracking-widest text-[#78716C] uppercase text-center">How it works</p>
             <p className="text-lg font-medium text-[#0C1A0E] text-center mt-1">Stop blanking in interviews</p>
-            <p className="text-xs text-[#78716C] text-center mt-1">Three steps to turn your experience into stories you can actually tell.</p>
+            <p className="text-xs text-[#78716C] text-center mt-1">Three steps to turn your experience into answers you can actually give.</p>
           </div>
 
-          {/* Step cards */}
+          {/* Step cards: the AI steps are Pro, writing by hand is free */}
           <div className="relative mb-3">
             <div className="hidden md:block absolute top-[18px] left-[calc(16.67%+10px)] right-[calc(16.67%+10px)] h-px bg-[rgba(6,95,70,0.15)] z-0" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
@@ -477,14 +402,16 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 {
                   icon: Search,
                   title: "Scan your sources",
-                  body: "Add your CV, portfolio or GitHub. AI finds your best achievements.",
+                  pro: true,
+                  body: "Add your resume, portfolio or GitHub. AI finds your best achievements.",
                   proofLabel: "Parsed in seconds",
                   proof: <span className="inline-block bg-[#D1FAE5] text-[#065F46] rounded px-1.5 py-0.5 text-[10px] font-medium">14 experiences found</span>,
                 },
                 {
                   icon: Wand2,
-                  title: "Build your stories",
-                  body: "AI pre-fills each story in STAR format. You review and save the best.",
+                  title: "Build your answers",
+                  pro: false,
+                  body: "Write each one in STAR format. Hints show you what's missing.",
                   proofLabel: "Answer quality score",
                   proof: (
                     <div className="flex items-center gap-2">
@@ -496,7 +423,8 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                 {
                   icon: Target,
                   title: "Ace your interviews",
-                  body: "Paste a JD before any interview. Get your most relevant stories.",
+                  pro: true,
+                  body: "Paste a JD before any interview. Get your most relevant answers.",
                   proofLabel: "Top match for this role",
                   proof: <p className="text-[10px] text-[#065F46] font-medium truncate">#1 Improving Engagement: 94%</p>,
                 },
@@ -505,7 +433,10 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
                   <div className="w-9 h-9 bg-[#065F46] rounded-full flex items-center justify-center shrink-0">
                     <s.icon size={15} className="text-white" />
                   </div>
-                  <p className="text-xs font-medium text-[#0C1A0E] text-center">{s.title}</p>
+                  <p className="text-xs font-medium text-[#0C1A0E] text-center flex items-center gap-1.5">
+                    {s.title}
+                    {s.pro && <ProTag />}
+                  </p>
                   <p className="text-[11px] text-[#78716C] text-center leading-relaxed">{s.body}</p>
                   <div className="bg-white border border-[rgba(6,95,70,0.12)] rounded-lg p-2 w-full mt-1">
                     <p className="text-[9px] text-[#9CA3AF] uppercase tracking-wide mb-1">{s.proofLabel}</p>
@@ -519,9 +450,9 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
           {/* Pain quotes */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
             {[
-              { quote: "\u201cI know I did good work but I can never remember specifics in the moment.\u201d", resolve: "Every achievement, structured and saved" },
-              { quote: "\u201cI prep for hours then get asked something different and freeze.\u201d", resolve: "8 themes covered, always ready" },
-              { quote: "\u201cI give the same stories for every role even when they\u2019re not the best fit.\u201d", resolve: "Role-matched story shortlist" },
+              { quote: "“I know I did good work but I can never remember specifics in the moment.”", resolve: "Every achievement, structured and saved" },
+              { quote: "“I prep for hours then get asked something different and freeze.”", resolve: "8 themes covered, always ready" },
+              { quote: "“I give the same answers for every role even when they’re not the best fit.”", resolve: "Role-matched answer shortlist" },
             ].map((p) => (
               <div key={p.resolve} className="bg-[rgba(6,95,70,0.05)] border border-[rgba(6,95,70,0.10)] rounded-xl p-3">
                 <p className="text-[10px] text-[#78716C] italic leading-relaxed mb-2">{p.quote}</p>
@@ -535,194 +466,6 @@ export function StoryBankContent({ stories, cvs, isPro, storiesThisWeek }: Props
         </div>
 
       </div>
-
-      {/* Builder removed — uses /interview-coach/new page */}
-      {false && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/40" onClick={closeBuilder} />
-          {/* Panel */}
-          <div className="relative w-full max-w-lg bg-background border-l border-border shadow-xl overflow-y-auto">
-            <div className="p-5">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-base font-semibold text-foreground">{editingStory ? "Edit Experience" : "New Experience"}</h3>
-                <div className="flex items-center gap-2">
-                  <Button onClick={handleSaveStory} disabled={saving || !formTitle.trim()} size="sm" className="bg-primary hover:bg-primary/90 text-white">
-                    {saving ? <Loader2 size={14} className="mr-1 animate-spin" /> : <Save size={14} className="mr-1" />}
-                    Save
-                  </Button>
-                  <button onClick={closeBuilder} className="text-muted-foreground hover:text-foreground transition-colors">
-                    <X size={18} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {/* Framework selector */}
-                <div className="mb-4">
-                  <p className="text-xs font-medium text-muted-foreground mb-2">Framework</p>
-                  <div className="flex border border-input rounded-lg overflow-hidden">
-                    {([
-                      { value: "star" as const, label: "STAR" },
-                      { value: "star_r" as const, label: "STAR+R" },
-                      { value: "car" as const, label: "CAR" },
-                    ]).map((fw) => (
-                      <button
-                        key={fw.value}
-                        type="button"
-                        className={`flex-1 py-1.5 text-xs font-medium transition-colors ${formFramework === fw.value ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}
-                        onClick={() => setFormFramework(fw.value)}
-                      >
-                        {fw.label}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed">
-                    {formFramework === "star" && "Situation → Task → Action → Result. The classic framework for most behavioral questions."}
-                    {formFramework === "star_r" && "STAR + Reflection. Best when they ask \"What did you learn?\" This shows self-awareness and growth."}
-                    {formFramework === "car" && "Challenge → Action → Result. Quick and concise, ideal for follow-up answers or time-limited responses."}
-                  </p>
-                </div>
-
-                {/* Title */}
-                <div>
-                  <label className="text-xs font-medium text-foreground">Experience Title</label>
-                  <Input value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="e.g. Led migration to microservices" className="mt-1" />
-                </div>
-
-                {/* Situation / Challenge */}
-                <div>
-                  <label className="text-xs font-medium text-foreground">
-                    {formFramework === "car" ? "Challenge" : "Situation"}
-                  </label>
-                  <Textarea
-                    placeholder={formFramework === "car" ? "What challenge did you face?" : "Describe the context..."}
-                    value={formSituation}
-                    onChange={(e) => setFormSituation(e.target.value)}
-                    rows={3}
-                    className="mt-1"
-                  />
-                  <p className="text-[10px] text-muted-foreground mt-1">{formFramework === "car" ? "What problem or challenge were you facing?" : STAR_HINTS.situation}</p>
-                </div>
-
-                {/* Task (hidden for CAR) */}
-                {formFramework !== "car" && (
-                  <div>
-                    <label className="text-xs font-medium text-foreground">Task</label>
-                    <Textarea
-                      placeholder="What were you responsible for?"
-                      value={formTask}
-                      onChange={(e) => setFormTask(e.target.value)}
-                      rows={2}
-                      className="mt-1"
-                    />
-                    <p className="text-[10px] text-muted-foreground mt-1">{STAR_HINTS.task}</p>
-                  </div>
-                )}
-
-                {/* Action */}
-                <div>
-                  <label className="text-xs font-medium text-foreground">Action</label>
-                  <Textarea
-                    placeholder="What did you do?"
-                    value={formAction}
-                    onChange={(e) => setFormAction(e.target.value)}
-                    rows={4}
-                    className="mt-1"
-                  />
-                  <p className="text-[10px] text-muted-foreground mt-1">{STAR_HINTS.action}</p>
-                </div>
-
-                {/* Result */}
-                <div>
-                  <label className="text-xs font-medium text-foreground">Result</label>
-                  <Textarea
-                    placeholder="What was the outcome?"
-                    value={formResult}
-                    onChange={(e) => setFormResult(e.target.value)}
-                    rows={2}
-                    className="mt-1"
-                  />
-                  <p className="text-[10px] text-muted-foreground mt-1">{STAR_HINTS.result}</p>
-                </div>
-
-                {/* Reflection */}
-                {formFramework !== "car" && (
-                  <div>
-                    <label className="text-xs font-medium text-foreground">
-                      Reflection {formFramework === "star" && <span className="text-muted-foreground">(optional)</span>}
-                    </label>
-                    <Textarea
-                      placeholder="What did you learn? What would you do differently?"
-                      value={formReflection}
-                      onChange={(e) => setFormReflection(e.target.value)}
-                      rows={2}
-                      className="mt-1"
-                    />
-                    <p className="text-[10px] text-muted-foreground mt-1">Adding reflection makes your story more memorable and shows self-awareness</p>
-                  </div>
-                )}
-
-                {/* Reflection bonus hint */}
-                {formReflection && <span className="text-[10px] text-success">+1 reflection bonus</span>}
-
-                {/* Answer Summary */}
-                <div className="border-t border-border pt-4 mt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="text-xs font-medium text-foreground">Answer Summary</p>
-                      <p className="text-[10px] text-muted-foreground">A natural narrative you can read before your interview</p>
-                    </div>
-                    {!formSummary && (formSituation.trim() || formAction.trim() || formResult.trim()) && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs h-7"
-                        onClick={handleGenerateSummary}
-                        disabled={summaryLoading}
-                      >
-                        {summaryLoading ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Sparkles className="mr-1 h-3 w-3" />}
-                        Generate summary
-                      </Button>
-                    )}
-                  </div>
-                  {formSummary ? (
-                    <div className="relative">
-                      <Textarea
-                        value={formSummary}
-                        onChange={(e) => setFormSummary(e.target.value)}
-                        rows={3}
-                        className="bg-primary/5 border-primary/20"
-                      />
-                      <p className="text-[10px] text-muted-foreground mt-1">{formSummary.split(/\s+/).filter(Boolean).length}/60 words</p>
-                    </div>
-                  ) : (
-                    <div className="rounded-lg border border-dashed border-muted-foreground/20 p-4 text-center text-xs text-muted-foreground">
-                      Fill in your story details, then generate a summary
-                    </div>
-                  )}
-                </div>
-
-                {/* Tags */}
-                <div>
-                  <label className="text-xs font-medium text-foreground mb-2 block">Tags</label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {COMMON_TAGS.map((tag) => {
-                      const sel = formTags.includes(tag);
-                      return (
-                        <button key={tag} type="button" onClick={() => toggleTag(tag)} className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${sel ? "bg-primary text-white border-transparent" : "bg-transparent text-primary border-primary/30 hover:border-primary"}`}>
-                          {sel && <CheckCircle2 className="mr-1 h-3 w-3" />}{tag}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

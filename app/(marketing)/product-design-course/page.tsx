@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "Not every product design course leads to a job. Here is what a course must cover in the AI era, how the three formats compare, and what you should walk away with.",
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: "Product Design Course: How to Choose One That Gets You Hired",
+    title: "Product Design Course: How to Choose One That Gets You Hired | CVEdge",
     description:
       "What a product design course must cover in the AI era, how formats compare, and what you should walk away with.",
     url: PAGE_URL,

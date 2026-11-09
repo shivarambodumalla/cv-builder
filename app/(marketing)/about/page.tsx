@@ -5,7 +5,7 @@ import { BreadcrumbJsonLd } from "@/components/shared/structured-data";
 import { AUTHOR, AUTHOR_JSON_LD } from "@/lib/blog/author";
 
 export const metadata: Metadata = {
-  title: "About CVEdge: Who We Are and What We Build",
+  title: "About: Who We Are and What We Build",
   description:
     "CVEdge builds ATS analysis, AI resume rewriting and interview preparation tools for job seekers. What we make, how it works, and the principles behind it.",
   alternates: { canonical: "https://www.thecvedge.com/about" },
@@ -20,31 +20,31 @@ export const metadata: Metadata = {
 const WHAT_WE_BUILD = [
   {
     title: "ATS analysis",
-    body: "We parse your resume the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. You get more than a number: the specific list of what is costing you points and why.",
+    body: "We parse your resume the way an applicant tracking system does, then score it across six categories: contact details, sections, keywords, measurable results, bullet quality and formatting. You get more than a number: your top issues and why they cost points. Pro shows the full list with the missing keywords.",
     href: "/resume-checker",
     linkLabel: "Check your resume free",
   },
   {
     title: "AI rewriting that will not invent",
     body: "Our rewriter restructures the bullets you already wrote into result-led ones. Where a metric is missing it inserts an [X] placeholder for you to fill rather than fabricating a figure, because a number you cannot defend is worse in an interview than no number at all.",
-    href: "/resume-checker",
-    linkLabel: "Try the rewriter",
+    href: "/pricing",
+    linkLabel: "AI rewriting is in Pro",
   },
   {
     title: "Job matching",
     body: "Paste a job description and we identify which keywords are missing, which are already covered, and which would move your match score most, so tailoring is driven by evidence rather than guesswork.",
-    href: "/resume-checker",
-    linkLabel: "Try job matching",
+    href: "/pricing",
+    linkLabel: "Job Match is in Pro",
   },
   {
     title: "Interview preparation",
-    body: "We turn your experience into STAR-structured answers and match them to the role you are interviewing for, so you walk in with prepared stories rather than improvising under pressure.",
+    body: "Interview Coach helps you turn your experience into STAR-structured answers. With Pro, it drafts them from your resume and matches them to the role you are interviewing for, so you walk in prepared rather than improvising under pressure.",
     href: "/interview-prep",
     linkLabel: "Interview guides",
   },
   {
     title: "Templates that actually parse",
-    body: "Every template is built to survive parsing: single-column flows, standard headings, contact details in the body rather than a document header, and real text rather than images. A beautiful resume that a parser cannot read has failed at the only job that matters first.",
+    body: "Every template is parse-tested: standard headings, contact details in the body rather than a document header, real text rather than images, and column layouts that extract in reading order. A beautiful resume that a parser cannot read has failed at the only job that matters first.",
     href: "/resume-templates",
     linkLabel: "See templates",
   },
@@ -61,7 +61,7 @@ const PRINCIPLES = [
   },
   {
     title: "Free should be useful",
-    body: "You can check your ATS score, see the full category breakdown and the specific issues found with a free account and no card. The free plan includes real usage of the AI features every week. We would rather you find the tool useful and upgrade than hit a wall on the first click.",
+    body: "You can check your ATS score and see your top issues with a free account and no card. Every template is free, and so is downloading your PDF. The AI tools are in Pro. We would rather you find the free tool useful and upgrade than hit a wall on the first click.",
   },
   {
     title: "Your resume is yours",
@@ -202,7 +202,7 @@ export default function AboutPage() {
           <div>
             <p className="text-sm font-semibold">See where your resume stands</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Free ATS score and the specific issues found. Sign in with Google, no card.
+              Free ATS score and your top issues. Sign in with Google or LinkedIn, no card.
             </p>
           </div>
           <Button asChild className="shrink-0">

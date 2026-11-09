@@ -11,10 +11,10 @@ LS_CV_REVIEW_PRO_VARIANT_ID=
 
 ## Setup Steps
 
-1. In Lemon Squeezy dashboard, create 3 one-time products:
-   - CV Review Starter — $14
-   - CV Review Standard — $29
-   - CV Review Pro — $49
+1. In Lemon Squeezy dashboard, create 3 one-time products (prices and names come from `REVIEW_TIERS` in lib/cv-review/config.ts; keep them in step):
+   - Resume Review (starter) — $5, list price $15
+   - Professional Rewrite (standard) — $9, list price $29
+   - Executive Package (pro) — $25, list price $75
 
 2. Copy each product's variant ID into the env vars above.
 

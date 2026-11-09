@@ -12,10 +12,10 @@ interface CtaSectionProps {
 export function CtaSection({
   label = "Free analysis",
   heading = "Ready to see your ATS score?",
-  subtext = "Under 60 seconds. Sign in free with Google.",
+  subtext = "Under 60 seconds. Sign in free with Google or LinkedIn.",
   buttonText = "Get started free",
   buttonHref = "/resume-checker",
-  trustItems = ["Free to start", "No credit card", "Cancel anytime"],
+  trustItems = ["Free to start", "No credit card", "Takes 60 seconds"],
 }: CtaSectionProps) {
   return (
     <div className="rounded-2xl bg-[#065F46] p-8 sm:p-12">

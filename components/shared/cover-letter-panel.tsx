@@ -40,6 +40,7 @@ interface CoverLetterPanelProps {
   hasJobDescription: boolean;
   jobTitle: string;
   company: string;
+  /** Legacy credit column; the plan decides access now, so it is not read. */
   credits: number;
   plan: "free" | "starter" | "pro";
 }
@@ -61,22 +62,20 @@ export function CoverLetterPanel({
   hasJobDescription,
   jobTitle,
   company,
-  credits,
   plan,
 }: CoverLetterPanelProps) {
   const { openUpgradeModal } = useUpgradeModal();
+  const isPro = plan === "pro";
   const [selectedMatchId, setSelectedMatchId] = useState(
     jobMatches.length > 0 ? jobMatches[0].id : ""
   );
   const [tone, setTone] = useState<string>("professional");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [limitReached, setLimitReached] = useState(false);
   const [content, setContent] = useState("");
   const [copied, setCopied] = useState(false);
   const [coverLetters, setCoverLetters] = useState(initialCoverLetters);
   const [currentLetterId, setCurrentLetterId] = useState<string | null>(null);
-  const [creditsLeft, setCreditsLeft] = useState(credits);
 
   // Load existing cover letter on mount
   useEffect(() => {
@@ -130,8 +129,10 @@ export function CoverLetterPanel({
       const data = await res.json();
 
       if (!res.ok) {
+        // Cover letters are Pro-only: a 403 always opens the upgrade modal,
+        // whether or not a letter already exists.
         if (res.status === 403) {
-          setLimitReached(true);
+          openUpgradeModal("cover_letter_limit");
           setLoading(false);
           return;
         }
@@ -142,7 +143,6 @@ export function CoverLetterPanel({
 
       setContent(data.content);
       setCurrentLetterId(data.id);
-      setCreditsLeft(data.credits_remaining ?? creditsLeft);
 
       // Add to local list
       setCoverLetters((prev) => [data, ...prev]);
@@ -182,6 +182,12 @@ export function CoverLetterPanel({
     setContent(letter.content);
     setCurrentLetterId(letter.id);
     setTone(letter.tone || "professional");
+  }
+
+  // Pro-only: free users see the paywall instead of the generate form. An
+  // existing letter stays readable below; regenerating it opens the modal.
+  if (!isPro && !content) {
+    return <UpgradeBanner trigger="cover_letter" onUpgrade={() => openUpgradeModal("cover_letter_limit")} />;
   }
 
   // No JD: prompt to go to Job Match
@@ -262,16 +268,10 @@ export function CoverLetterPanel({
         </div>
 
         {/* Generate button */}
-        <div className="flex items-center justify-between">
-          {plan !== "pro" && (
-            <span className="text-xs text-muted-foreground">
-              {creditsLeft} cover letter{creditsLeft !== 1 ? "s" : ""} remaining
-            </span>
-          )}
+        <div className="flex items-center justify-end">
           <Button
             onClick={() => handleGenerate(false)}
-            disabled={loading || (plan !== "pro" && creditsLeft <= 0)}
-            className="ml-auto"
+            disabled={loading}
           >
             {loading ? (
               <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Generating...</>
@@ -290,14 +290,6 @@ export function CoverLetterPanel({
   const versions = coverLetters.filter(
     (cl) => !selectedMatchId || cl.job_match_id === selectedMatchId || cl.job_match_id === null
   );
-
-  if (limitReached) {
-    return (
-      <div className="space-y-4">
-        <UpgradeBanner trigger="cover_letter" onUpgrade={() => openUpgradeModal("cover_letter_limit")} />
-      </div>
-    );
-  }
 
   return (
     <div data-panel="cover-letter" className="space-y-4">

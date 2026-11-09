@@ -15,11 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const { free } = await getTemplateCounts();
   return {
     title: "AI Resume Builder: Free ATS-Friendly Templates",
-    description: `${free} free ATS-friendly resume templates. Upload your resume, get an instant ATS score, and fix everything with AI. Free account, no credit card.`,
+    description: `${free} free ATS-friendly resume templates. Upload your resume, get an instant ATS score, and download your PDF. Free account, no credit card.`,
     alternates: { canonical: "https://www.thecvedge.com/resumes" },
     openGraph: {
       title: "Free ATS-Friendly Resume Templates | CVEdge",
-      description: `${free} free ATS-friendly resume templates with AI rewriting, score tracking, and one-click PDF export.`,
+      description: `${free} free ATS-friendly resume templates with an instant ATS score and one-click PDF export.`,
       url: "https://www.thecvedge.com/resumes",
     },
   };
@@ -27,10 +27,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const features = ({ total }: TemplateCounts) => [
   { icon: BarChart3, title: "Know your score before recruiters see your resume", desc: "Upload your resume and get an instant ATS score across 6 categories. See exactly what software flags, and fix each issue one by one." },
-  { icon: Sparkles, title: "Fix weak bullet points with one click", desc: "Every bullet has a Rewrite button. Pick a mode, get a better version, and insert it instantly. Your experience, stronger words." },
+  { icon: Sparkles, title: "Pro: fix weak bullet points with one click", desc: "Every bullet has a Rewrite button. Pick a mode, get a better version, and insert it instantly. Your experience, stronger words. Included in Pro." },
   { icon: Layout, title: `${total} professional templates, each ATS-optimized`, desc: "Choose from Classic, Sharp, Minimal, Executive, Sidebar and more. Every template is tested to pass ATS filters and look great on screen." },
-  { icon: Target, title: "See how well you match any job before applying", desc: "Paste a job description and get a match score with missing keywords highlighted. Fix gaps before you hit apply." },
-  { icon: Download, title: "Download clean PDFs", desc: "Export your finished resume as a polished PDF ready to send. No branding, no surprises." },
+  { icon: Target, title: "Pro: see how well you match any job before applying", desc: "Paste a job description and get a match score with missing keywords highlighted. Fix gaps before you hit apply. Included in Pro." },
+  { icon: Download, title: "Download your PDF", desc: "Export your finished resume as a polished PDF ready to send. Free PDFs carry a small CVEdge footer line; Pro removes it." },
 ];
 
 export default async function ResumesPage() {

@@ -24,10 +24,11 @@ export async function POST(request: NextRequest) {
       limit: access.limit,
     });
     return NextResponse.json({
-      error: "You've used all free story summaries. Upgrade for unlimited.",
+      error: "Answer summaries are a Pro feature. Upgrade to generate one for any experience.",
       code: access.reason,
       used: access.used,
       limit: access.limit,
+      proOnly: access.proOnly,
       daysUntilReset: access.daysUntilReset,
     }, { status: 403 });
   }

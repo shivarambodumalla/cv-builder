@@ -79,7 +79,7 @@ const FAQ = [
   {
     question: "Is it free? Do I need an account?",
     answer:
-      "You can see your roles, fit scores and job numbers without an account. Tailoring your resume for a role needs a free Google sign-in: we set the role as your resume's target and score it against that job, show the keywords you're missing and rewrite weak bullets. Each role also gets a 90-day plan. We never ask for a card.",
+      "You can see your roles, fit scores and job numbers without an account. Setting up your resume for a role needs a free Google sign-in: we set the role as your resume's target and score it against that job. Each role also gets a 90-day plan. We never ask for a card.",
   },
   {
     question: "What happens to my resume if I upload it?",
@@ -108,23 +108,23 @@ const EXAMPLE = {
   ],
 };
 
-// What tailoring the resume for a role gives you, in the editor. All of it exists today.
+// What setting up the resume for a role gives you, in the editor. All of it exists today.
 const PLAN_ITEMS = [
+  {
+    title: "A resume set up for the role",
+    body: "The role becomes your resume's target. Your content stays as you wrote it; nothing is rewritten.",
+  },
   {
     title: "An ATS score for the role",
     body: "Your resume checked against what employers ask for in that role, not a generic scan.",
   },
   {
-    title: "The keywords you're missing",
-    body: "The skills and terms hiring managers look for that your resume doesn't show yet. Add them in one click.",
-  },
-  {
-    title: "AI rewrites for weak bullets",
-    body: "Each bullet rewritten for the target role. Your facts stay yours; nothing is invented.",
+    title: "A 90-day plan",
+    body: "The skills to close and the proof project to build, saved in your account for the role you picked.",
   },
   {
     title: "A resume ready to send",
-    body: "Export a clean PDF. Your 90-day plan for the role stays saved in your account too.",
+    body: "Download your PDF when you're done.",
   },
 ];
 
@@ -315,15 +315,14 @@ export default function CareerPathPage() {
             <p className="max-w-[480px] text-sm leading-[1.55] text-[#CFE5D9] sm:text-base">
               <span className="sm:hidden">
                 Pick a role, sign in with Google, and we set it as your
-                resume&apos;s target: an ATS score, missing keywords and AI
-                rewrites for that job.
+                resume&apos;s target, with an ATS score for that job and a
+                90-day plan.
               </span>
               <span className="hidden sm:inline">
                 Your roles, fit scores and job numbers stay free with no
                 account. Pick a role and sign in with Google, and we set it as
-                your resume&apos;s target: an ATS score for that job, the
-                keywords you&apos;re missing and AI rewrites of weak bullets.
-                The 90-day plan comes with it.
+                your resume&apos;s target and score it for that job. The
+                90-day plan comes with it.
               </span>
             </p>
             <CareerPathPlanCta className="mt-1.5 w-full sm:mt-2 sm:w-auto sm:self-start" />

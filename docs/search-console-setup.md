@@ -7,13 +7,13 @@
    - Add to Vercel env: GOOGLE_SITE_VERIFICATION=your_code
    - Deploy
 4. Submit sitemap:
-   - Sitemaps → Enter: https://thecvedge.com/sitemap.xml → Submit
+   - Sitemaps → Enter: https://www.thecvedge.com/sitemap.xml → Submit
 5. Request indexing for key pages:
    - URL Inspection → enter URL → Request indexing
-   - Pages: / /pricing /resumes /interview-coach /upload-resume /jobs
+   - Pages: / /pricing /resumes /interview-prep /resume-checker /career-path
 
 # Bing Webmaster Tools
 1. Go to bing.com/webmasters
 2. Add site: thecvedge.com
 3. Import from Google Search Console (easiest)
-4. Submit sitemap: https://thecvedge.com/sitemap.xml
+4. Submit sitemap: https://www.thecvedge.com/sitemap.xml

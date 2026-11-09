@@ -8,7 +8,7 @@ import type { TemplateName } from "@/lib/resume/types";
 import { TemplateThumbnailImage, THUMBNAIL_ASPECT } from "@/components/shared/template-thumbnail";
 import { Loader2, Sparkles, Lock } from "lucide-react";
 import { logActivity } from "@/lib/analytics/log";
-import { useUpgradeModal } from "@/context/upgrade-modal-context";
+import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
 
 type TemplateCategory = "all" | "single" | "two-column" | "minimal" | "professional";
 
@@ -132,9 +132,15 @@ export function TemplatePicker({ cvId, title }: { cvId: string; title: string | 
     });
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Could not save template. Please try again.");
+      const data: { error?: string; upgradeTrigger?: UpgradeTrigger } = await res.json().catch(() => ({}));
       setSelecting(null);
+      // A plan gate (e.g. template tier) names its trigger: open the modal
+      // rather than printing the server's sentence as an error.
+      if (data.upgradeTrigger) {
+        openUpgradeModal(data.upgradeTrigger);
+        return;
+      }
+      setError(data.error ?? "Could not save template. Please try again.");
       return;
     }
 

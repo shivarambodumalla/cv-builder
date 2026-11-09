@@ -28,7 +28,7 @@ const sections = [
   {
     title: "2. Service description",
     content:
-      "CVEdge provides AI-powered CV building, ATS analysis, job matching, and cover letter generation tools.",
+      "CVEdge provides CV building, ATS analysis, AI rewriting, job matching, cover letter generation, Career Path and Interview Coach tools. Some features are included only in the paid Pro plan, as set out on the pricing page.",
   },
   {
     title: "3. Account",
@@ -44,8 +44,9 @@ const sections = [
     list: [
       "Processed securely via Lemon Squeezy",
       "Prices in USD",
-      "7-day money back guarantee",
+      "80+ ATS score guarantee for Pro: if your score stays under 80 after running Fix All, you can claim a full refund within 14 days of signing up",
       "Subscriptions auto-renew until cancelled",
+      "Free-plan PDF downloads include a small CVEdge footer line; Pro removes it",
     ],
   },
   {
@@ -66,7 +67,7 @@ const sections = [
   {
     title: "7. Intellectual property",
     content:
-      "Your CV content belongs to you. CVEdge platform and AI models belong to us.",
+      "Your CV content belongs to you. The CVEdge platform belongs to us. AI features are provided through third-party AI providers, named in our privacy policy.",
   },
   {
     title: "8. Limitation of liability",
@@ -88,7 +89,7 @@ export default function TermsPage() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16 sm:py-24">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Terms of Service</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Last updated: April 2025</p>
+      <p className="mt-2 text-sm text-muted-foreground">Last updated: November 2026</p>
 
       <div className="mt-10 space-y-8">
         {sections.map((s) => (

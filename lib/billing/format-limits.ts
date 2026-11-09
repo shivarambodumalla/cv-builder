@@ -9,17 +9,17 @@
 
 export type ResetType = "window7" | "weekly" | "total";
 
-/** One plan's quotas, keyed by feature. -1 means unlimited. */
+/** One plan's quotas, keyed by feature. -1 means unlimited, 0 means Pro-only. */
 export type PlanQuotas = Record<string, number>;
 
 /**
  * How each quota resets. Mirrors COLUMN_MAP in limits.ts: `_this_window`
  * counters roll over every 7 days, `_this_week` counters reset on Monday, and
- * the CV count never resets.
+ * the CV count and the ATS scan count (`total_ats_scans`) never reset.
  */
 export const LIMIT_RESET: Record<string, ResetType> = {
   cvs: "total",
-  ats_scans: "window7",
+  ats_scans: "total",
   ai_rewrites: "window7",
   job_matches: "window7",
   cover_letters: "window7",
@@ -57,16 +57,24 @@ export function isUnlimited(value: number | undefined): boolean {
   return typeof value !== "number" || value < 0;
 }
 
-/** Count plus reset period, for tables: "3 / 7 days", "5 / week", "1", "Unlimited". */
+/** A quota of 0: the plan does not include the feature at all. */
+export function isProOnly(value: number | undefined): boolean {
+  return value === 0;
+}
+
+const PRO_ONLY = "Pro only";
+
+/** Count plus reset period, for tables: "3 / 7 days", "5 / week", "1", "Unlimited", "Pro only". */
 export function formatLimit(value: number | undefined, reset: ResetType): string {
   if (isUnlimited(value)) return "Unlimited";
+  if (isProOnly(value)) return PRO_ONLY;
   return `${value}${PERIOD[reset]}`;
 }
 
 /**
- * A quota as a phrase: "3 ATS scans / 7 days", "1 resume", "Unlimited ATS scans".
- * `period: false` drops the reset period; `inline: true` lowercases "unlimited"
- * for use mid-sentence.
+ * A quota as a phrase: "3 ATS scans / 7 days", "1 resume", "Unlimited ATS scans",
+ * "Pro only". `period: false` drops the reset period; `inline: true` lowercases
+ * "unlimited" for use mid-sentence.
  */
 export function describeQuota(
   quotas: PlanQuotas,
@@ -76,22 +84,34 @@ export function describeQuota(
   const value = quotas[feature];
   const [one, many] = NOUNS[feature] ?? [feature, feature];
   if (isUnlimited(value)) return `${inline ? "unlimited" : "Unlimited"} ${many}`;
+  if (isProOnly(value)) return PRO_ONLY;
   const suffix = period ? PERIOD[LIMIT_RESET[feature] ?? "total"] : "";
   return `${value} ${value === 1 ? one : many}${suffix}`;
 }
 
 /**
- * The free allowance as prose: "1 resume, plus 3 ATS scans, 20 AI rewrites and
- * 5 job matches every 7 days". `windowFeatures` should be 7-day quotas.
+ * The free allowance as prose. Pro-only features (0) are left out; lifetime and
+ * unlimited quotas come first, and "every 7 days" is said only when a finite
+ * 7-day quota remains: "1 resume, 1 ATS scan and unlimited PDF downloads", or
+ * "1 resume and 1 ATS scan, plus 5 job matches every 7 days".
  */
 export function summarizeAllowance(quotas: PlanQuotas, windowFeatures: string[]): string {
-  const perWindow = windowFeatures.map((f) => describeQuota(quotas, f, { period: false, inline: true }));
-  return `${describeQuota(quotas, "cvs", { inline: true })}, plus ${joinList(perWindow)} every 7 days`;
+  const features = ["cvs", ...windowFeatures.filter((f) => f !== "cvs")].filter(
+    (f) => !isProOnly(quotas[f])
+  );
+  const describe = (f: string) => describeQuota(quotas, f, { period: false, inline: true });
+  const windowed = features.filter((f) => LIMIT_RESET[f] === "window7" && !isUnlimited(quotas[f]));
+  const standing = features.filter((f) => !windowed.includes(f));
+
+  const head = joinList(standing.map(describe));
+  if (windowed.length === 0) return head;
+  return `${head}, plus ${joinList(windowed.map(describe))} every 7 days`;
 }
 
 /**
  * Email template variables for one plan's quotas, e.g. {{freeAtsScans}} →
- * "3 ATS scans", {{freeCvs}} → "1 resume". No reset period: the template says it.
+ * "1 ATS scan", {{freeCvs}} → "1 resume", {{freeAiRewrites}} → "Pro only".
+ * No reset period: the template says it.
  */
 export function quotaTemplateVars(quotas: PlanQuotas, prefix = "free"): Record<string, string> {
   return Object.fromEntries(

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Check, ChevronDown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRICING_FAQS } from "./faqs";
-import { describeQuota, type PlanQuotas } from "@/lib/billing/format-limits";
+import { describeQuota, isProOnly, type PlanQuotas } from "@/lib/billing/format-limits";
 
 type BillingPeriod = "weekly" | "monthly" | "yearly";
 
@@ -13,30 +13,45 @@ interface PlanOption {
   period: BillingPeriod;
   label: string;
   price: number;
+  /** The struck-through list price the "Save X%" is measured against. */
+  anchor: number;
   per: string;
+  /** Price per week over 52 weeks: $14 x 12 / 52, $120 / 52. */
   perWeek: string;
   savePercent: number;
 }
 
 const OPTIONS: PlanOption[] = [
-  { period: "weekly", label: "Weekly", price: 5, per: "/week", perWeek: "$5.00", savePercent: 50 },
-  { period: "monthly", label: "Monthly", price: 14, per: "/month", perWeek: "$3.50", savePercent: 60 },
-  { period: "yearly", label: "Yearly", price: 120, per: "/year", perWeek: "$2.30", savePercent: 71 },
+  { period: "weekly", label: "Weekly", price: 5, anchor: 10, per: "/week", perWeek: "$5.00", savePercent: 50 },
+  { period: "monthly", label: "Monthly", price: 14, anchor: 35, per: "/month", perWeek: "$3.23", savePercent: 60 },
+  { period: "yearly", label: "Yearly", price: 120, anchor: 420, per: "/year", perWeek: "$2.30", savePercent: 71 },
 ];
 
-const QUOTA_FEATURES = ["cvs", "ats_scans", "ai_rewrites", "job_matches", "cover_letters", "pdf_downloads"];
+/** Free-plan quotas worth a line on the card; features the plan does not include are skipped. */
+const FREE_QUOTA_FEATURES = ["cvs", "ats_scans", "pdf_downloads"];
+
+const PRO_FEATURES = [
+  "Clean PDFs, no footer",
+  "Unlimited ATS scans and the full report",
+  "AI rewrites and Fix All",
+  "Job Match and Tailor CV",
+  "Cover letters",
+  "Offer evaluation",
+  "Interview Coach AI",
+  "Salary insights",
+  "80+ ATS score guarantee",
+  "Priority support",
+];
 
 export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: PlanQuotas } }) {
   const freeFeatures = [
-    ...QUOTA_FEATURES.map((f) => describeQuota(limits.free, f)),
+    ...FREE_QUOTA_FEATURES.filter((f) => !isProOnly(limits.free[f])).map((f) => describeQuota(limits.free, f)),
     "All templates",
+    "Career Path",
+    "Blank Word templates",
+    "Interview Coach: write your own answers",
   ];
-  const proFeatures = [
-    ...QUOTA_FEATURES.map((f) => describeQuota(limits.pro, f)),
-    "Interview Coach",
-    "80+ ATS score guarantee",
-    "Priority support",
-  ];
+  const proFeatures = [describeQuota(limits.pro, "cvs"), ...PRO_FEATURES];
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
   const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set());
   const selected = OPTIONS.find((o) => o.period === billing)!;
@@ -47,7 +62,7 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
       <div className="flex justify-center mb-10">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#C8F0D6] px-4 py-2 text-[#065F46]">
           <Check className="h-4 w-4" />
-          <span className="text-sm font-medium">80+ ATS score guaranteed or money back</span>
+          <span className="text-sm font-medium">Pro: 80+ ATS score or a full refund</span>
         </div>
       </div>
 
@@ -71,6 +86,7 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
               </li>
             ))}
           </ul>
+          <p className="mb-6 text-xs text-muted-foreground">PDFs include a small CVEdge footer. Pro removes it.</p>
 
           <Link
             href="/resume-checker"
@@ -109,6 +125,7 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
                     {opt.label}
                   </div>
                   <div className={cn("text-xl sm:text-2xl font-bold", isSelected ? "text-[#34D399]" : "text-white")}>
+                    <span className="mr-1.5 text-xs font-medium text-white/50 line-through">${opt.anchor}</span>
                     ${opt.price}
                   </div>
                   {isSelected && (
@@ -167,13 +184,13 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
       <section className="mx-auto max-w-3xl mb-16 prose prose-sm dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight">
         <h2 className="text-2xl font-bold tracking-tight mb-4 text-center">What you get with CVEdge Pro</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          CVEdge Pro gives job seekers unlimited access to our AI-powered resume optimization suite. Run as many ATS compatibility scans as you need, generate tailored cover letters for every application, match your resume against live job descriptions, and rewrite weak bullets into measurable impact statements, all without the per-feature limits of the free tier.
+          The free plan gives you a resume, an ATS score with your top issues, every template and PDF downloads with a small CVEdge footer. Pro adds the rest: unlimited ATS scans with the full report (every issue, missing keywords and suggestions), AI rewrites and Fix All, Job Match and Tailor CV, cover letters for every application, offer evaluation, Interview Coach AI, salary insights, and clean PDFs with no footer.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-4">
           Every Pro feature works across 130+ job roles and 12 industry domains, from software engineering and product management to finance, marketing, and design. Our ATS scoring engine checks your resume across 6 categories (contact accuracy, section coverage, keyword density, measurable results, bullet quality, and formatting) against 2,400+ role-specific keywords, so recruiters&apos; screening software actually sees your experience.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          If CVEdge doesn&apos;t get your ATS score to 80 or above within 14 days, we refund you in full. No forms, no questions.
+          Pro also comes with the 80+ score guarantee. If your ATS score stays under 80 after Fix All, claim within 14 days of signing up and we refund you in full.
         </p>
       </section>
 
@@ -209,8 +226,8 @@ export function PricingContent({ limits }: { limits: { free: PlanQuotas; pro: Pl
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#C8F0D6]">
           <Shield className="h-6 w-6 text-[#065F46]" />
         </div>
-        <p className="text-base font-semibold">14-day money-back guarantee</p>
-        <p className="text-sm text-muted-foreground mt-2">If CVEdge doesn&apos;t get your resume to an 80+ ATS score, we refund you in full.</p>
+        <p className="text-base font-semibold">80+ score guarantee: full refund within 14 days</p>
+        <p className="text-sm text-muted-foreground mt-2">Pro only. If your score stays under 80 after Fix All, claim within 14 days of signing up and we refund you in full.</p>
       </div>
 
       {/* Bottom CTA */}

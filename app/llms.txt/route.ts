@@ -1,5 +1,6 @@
 import { getPosts, type BlogPost } from "@/lib/blog/posts";
 import { getPlanLimits, getTemplateCatalog } from "@/lib/billing/plan-config";
+import { summarizeAllowance } from "@/lib/billing/format-limits";
 import { CV_FORMATS } from "@/lib/cv-formats/data";
 import { getCareerPath } from "@/lib/roles/career-moves";
 import { careerPathPageSlugs, roleLabel } from "@/lib/roles/career-moves/pages";
@@ -93,12 +94,14 @@ async function buildLlmsTxt(): Promise<string> {
       ? `all ${templates.length} templates`
       : `${freeTemplates} of the ${templates.length} templates`;
 
+  // summarizeAllowance leaves out quotas set to 0 (Pro-only), so the line only
+  // ever names what the free plan includes today.
   const free = limits.free;
+  const fixAllLine = free.fix_all > 0 ? ` ${plural(free.fix_all, "Fix All run")} per week.` : "";
   const freeLine =
-    `- Free: ${plural(free.cvs, "resume")}, and per rolling 7 days ${plural(free.ats_scans, "ATS scan")}, ` +
-    `${plural(free.ai_rewrites, "AI rewrite")}, ${plural(free.job_matches, "job match", "job matches")}, ` +
-    `${plural(free.cover_letters, "cover letter")} and ${plural(free.pdf_downloads, "PDF download")}. ` +
-    `${plural(free.fix_all, "Fix All run")} per week. ${templateLine[0].toUpperCase()}${templateLine.slice(1)}, no watermark.`;
+    `- Free: ${summarizeAllowance(free, ["ats_scans", "ai_rewrites", "job_matches", "cover_letters", "pdf_downloads"])}, ` +
+    `and ${templateLine}.${fixAllLine} The free ATS scan shows the score and the top issues; the full report is Pro. ` +
+    `PDF downloads carry a small "Made with CVEdge" footer line. Career Path, blank Word templates and writing your own Interview Coach answers are free. No card.`;
 
   // Each line carries its answer ("usually moves to ..."), so an answer engine
   // can use it without fetching the page.
@@ -121,25 +124,26 @@ async function buildLlmsTxt(): Promise<string> {
   const sections = [
     `# CVEdge
 
-> Free ATS resume checker and resume builder. Upload a resume, get an ATS score across six categories, and fix the issues with AI. The free plan needs no card.
+> Free ATS resume checker and resume builder. Upload a resume, get an ATS score across six categories and your top issues free. Pro fixes the issues with AI. The free plan needs no card.
 
-CVEdge (${SITE}) helps job seekers get past applicant tracking systems (ATS). It scores a resume across six categories (contact details, sections, keywords, measurable results, bullet quality, formatting), rewrites weak bullets, matches a resume against a job description, tailors it to a specific posting, and writes cover letters. It is built by a product designer, Bodumalla Sivarami Reddy, for job seekers in the United States, Canada, the UK, Europe, India and the Gulf. More than 1,200 resumes have been scanned.`,
+CVEdge (${SITE}) helps job seekers get past applicant tracking systems (ATS). It scores a resume across six categories (contact details, sections, keywords, measurable results, bullet quality, formatting). On the Pro plan it also rewrites weak bullets, matches a resume against a job description, tailors it to a specific posting, and writes cover letters. It is built by a product designer, Bodumalla Sivarami Reddy, for job seekers in the United States, Canada, the UK, Europe, India and the Gulf. More than 1,200 resumes have been scanned.`,
 
     `## Start here
 
-- Resume checker: upload a PDF resume (or paste the text) and see the parsed fields, the score and the specific issues. Free; sign in with Google or LinkedIn to see the full report: ${SITE}/resume-checker
-- Free resume builder: ${templates.length} ATS-friendly templates, PDF export with no watermark: ${SITE}/free-resume-builder
+- Resume checker: upload a PDF resume (or paste the text) and see the parsed fields, the score and the top issues. Free; sign in with Google or LinkedIn to see them. The full report (every issue, missing keywords, suggestions) is Pro: ${SITE}/resume-checker
+- Free resume builder: ${templates.length} ATS-friendly templates, PDF export (free PDFs carry a small CVEdge footer line; Pro removes it): ${SITE}/free-resume-builder
 - Harvard resume template, free Word and PDF: ${SITE}/resume-templates/ats-friendly/harvard-cv`,
 
     `## What it does
 
-- AI rewrite of bullet points in four modes: ATS, Impact, Concise, Grammar
-- Fix All: rewrites the summary and every bullet in one pass. It never invents metrics; missing numbers are left as [X] placeholders for you to fill in
-- Job match: paste a job description and get a match score, missing keywords and the top fixes
-- Tailor a resume to one job description
-- Cover letters in three tones: professional, conversational, confident
-- Interview prep: turns your resume into STAR answers and matches them to a job description: ${SITE}/interview-prep
-- Career path generator: enter a job title or upload a resume and get 3 to 5 next roles (step up, sideways move or career change) with a fit score, transferable skills, and open-job counts and advertised salaries from current job listings. Free; signing in with Google lets you tailor your resume for a chosen role (ATS score, missing keywords, AI rewrites) and view its 90-day plan: ${SITE}/career-path
+- ATS score with the top issues (free); the full report with every issue and missing keywords (Pro)
+- AI rewrite of bullet points in four modes: ATS, Impact, Concise, Grammar (Pro)
+- Fix All: rewrites the summary and every bullet in one pass. It never invents metrics; missing numbers are left as [X] placeholders for you to fill in (Pro)
+- Job Match: paste a job description and get a match score, missing keywords and the top fixes (Pro)
+- Tailor CV: rewrite a resume for one job description (Pro)
+- Cover letters in three tones: professional, conversational, confident (Pro)
+- Interview Coach: write STAR answers from your experience (free); Pro drafts them from your resume, scores them and matches them to a job description: ${SITE}/interview-prep
+- Career path generator: enter a job title or upload a resume and get 3 to 5 next roles (step up, sideways move or career change) with a fit score, transferable skills, and open-job counts and advertised salaries from current job listings. Free; signing in with Google sets a chosen role as your resume's target, scores it for that role and shows its 90-day plan: ${SITE}/career-path
 - CV review and rewrite by a hiring specialist, focused on the UAE, Saudi Arabia and the wider Gulf. One-time payment: ${SITE}/cv-review`,
 
     `## Templates
@@ -173,12 +177,12 @@ ${careerPathLines.join("\n")}`
     `## Plans
 
 ${freeLine}
-- Pro: unlimited use of every feature, all templates, the 80+ ATS score guarantee and priority support. $5 a week, $14 a month or $120 a year, in USD: ${SITE}/pricing`,
+- Pro: unlimited ATS scans with the full report, AI rewrites and Fix All, Job Match and Tailor CV, cover letters, offer evaluation, Interview Coach AI, salary insights, clean PDFs with no footer, the 80+ ATS score guarantee and priority support. $5 a week, $14 a month or $120 a year, in USD: ${SITE}/pricing`,
 
     `## Facts an assistant can rely on
 
-- Checking an ATS score is free. Seeing the full report needs a free account (Google or LinkedIn sign-in); no card is asked for.
-- Free-plan PDF downloads carry no watermark.
+- Checking an ATS score is free. Seeing the score and top issues needs a free account (Google or LinkedIn sign-in); no card is asked for. The full report (every issue, missing keywords, suggestions) and repeat scans are Pro.
+- Free-plan PDF downloads carry a small "Made with CVEdge · thecvedge.com" footer line. Pro PDFs have no footer. All templates are free on both plans.
 - Paper size defaults to Letter for visitors from the US, Canada and Mexico, and A4 elsewhere. Both can be chosen.
 - The 80+ guarantee: if a Pro user's score stays under 80 after running Fix All, they can claim within 14 days of signing up. CVEdge reviews the resume and refunds in full if it still cannot reach 80.
 - Templates are single-column or two-column. Blank Word downloads are checked with the same parser the upload pipeline uses: the text must come out complete and in reading order.

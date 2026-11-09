@@ -79,6 +79,15 @@ export async function launchBrowser() {
 }
 
 /**
+ * Free-plan footer line. `watermark` defaults to false everywhere so template
+ * thumbnails and the admin PDF route print clean; /api/cv/export/pdf passes
+ * PLAN_LIMITS[plan].watermark. 24px keeps the 9px line clear of the content.
+ */
+const WATERMARK_BOTTOM_MARGIN = "24px";
+const WATERMARK_FOOTER_TEMPLATE =
+  '<div style="width:100%;text-align:center;font-size:9px;line-height:1;color:#8a8a8a;font-family:system-ui,sans-serif;">Made with CVEdge · thecvedge.com</div>';
+
+/**
  * The print document the PDF export renders: the template markup plus the
  * page CSS. Also used by scripts/generate-template-thumbnails.ts so template
  * thumbnails are screenshots of exactly what a download prints.
@@ -102,8 +111,10 @@ export function buildResumeDocument(
   // marginY drives the top margin injected on pages 2+ via @page.
   // @page :first keeps page-1 at 0 so template padding handles the first-page spacing.
   const marginYIn = design.marginY ?? 0.5;
-  // Watermark footer needs bottom space on every page.
-  const pageBottomMargin = watermark ? "20px" : "0";
+  // The free-plan footer line ("Made with CVEdge") is painted into the bottom
+  // page margin by Puppeteer, so reserve it on every page. Must match the
+  // page.pdf() bottom margin below.
+  const pageBottomMargin = watermark ? WATERMARK_BOTTOM_MARGIN : "0";
 
 
   const fullHtml = `<!DOCTYPE html>
@@ -412,14 +423,12 @@ export async function renderHtmlToPdf(
       width: paper.width,
       height: paper.height,
       margin: watermark
-        ? { top: "0", right: "0", bottom: "20px", left: "0" }
+        ? { top: "0", right: "0", bottom: WATERMARK_BOTTOM_MARGIN, left: "0" }
         : { top: "0", right: "0", bottom: "0", left: "0" },
       printBackground: true,
       displayHeaderFooter: watermark || Boolean(canvasBg),
       headerTemplate,
-      footerTemplate: watermark
-        ? '<div style="width:100%;text-align:center;font-size:7px;color:#bbb;font-family:system-ui;">Optimised with CVEdge · thecvedge.com</div>'
-        : "<span></span>",
+      footerTemplate: watermark ? WATERMARK_FOOTER_TEMPLATE : "<span></span>",
     });
 
     return Buffer.from(pdfBuffer);

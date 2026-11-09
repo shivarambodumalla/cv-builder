@@ -6,6 +6,8 @@ import { TruncatedResponseError } from "@/lib/ai/client";
 import { getDomainForRole } from "@/lib/resume/roles";
 import { checkRateLimit } from "@/lib/ai/rate-limiter";
 import { checkFeatureAccess, incrementUsage } from "@/lib/billing/feature-gate";
+import { getPlan } from "@/lib/billing/limits";
+import { redactAtsReport } from "@/lib/ats/redact";
 import { logServerActivity } from "@/lib/analytics/server-log";
 import { alertAdmin } from "@/lib/email/alert";
 
@@ -35,7 +37,7 @@ export async function POST(request: NextRequest) {
       used: access.used,
       limit: access.limit,
     });
-    return NextResponse.json({ error: "You've used all free ATS scans. Upgrade for unlimited.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
+    return NextResponse.json({ error: "You've used your free ATS scan. Upgrade to Pro for unlimited scans and the full report.", code: access.reason, used: access.used, limit: access.limit, daysUntilReset: access.daysUntilReset }, { status: 403 });
   }
 
   const { cv_id } = await request.json();
@@ -44,12 +46,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "cv_id is required" }, { status: 400 });
   }
 
-  const { data: cv } = await supabase
-    .from("cvs")
-    .select("id")
-    .eq("id", cv_id)
-    .eq("user_id", user.id)
-    .single();
+  const [{ data: cv }, { data: profile }] = await Promise.all([
+    supabase.from("cvs").select("id").eq("id", cv_id).eq("user_id", user.id).single(),
+    supabase.from("profiles").select("plan, subscription_status, current_period_end").eq("id", user.id).single(),
+  ]);
 
   if (!cv) {
     return NextResponse.json({ error: "CV not found" }, { status: 404 });
@@ -61,7 +61,8 @@ export async function POST(request: NextRequest) {
     // Increment usage after success
     incrementUsage(user.id, "ats_scan").catch(() => {});
 
-    return NextResponse.json(report);
+    // The full report is stored; the free plan only ever receives the redacted view.
+    return NextResponse.json(getPlan(profile) === "pro" ? report : redactAtsReport(report));
   } catch (err: unknown) {
     const error = err as Error & { code?: string; role?: string };
 
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          error: `No keyword list found for role: "${error.role}". We've recorded this request | keywords will be added soon.`,
+          error: `No keyword list found for role: "${error.role}". We've recorded this request and will add keywords soon.`,
           code: "keyword_list_required",
           role: error.role,
         },

@@ -8,7 +8,7 @@ import { ReturnVisitNudge } from "@/components/popups/return-visit-nudge";
 import { UploadCvNudge } from "@/components/popups/upload-cv-nudge";
 import { sendEmail } from "@/lib/email/sender";
 import { CvReviewDashboardBanner } from "@/components/cv-review/dashboard-banner";
-import { getPlanLimits } from "@/lib/billing/plan-config";
+import { getPlan } from "@/lib/billing/limits";
 import { listUserCareerPaths } from "@/lib/career-path/server";
 import { Compass } from "lucide-react";
 
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan, subscription_status, onboarding_shown, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
+    .select("plan, subscription_status, current_period_end, onboarding_shown")
     .eq("id", user.id)
     .single();
 
@@ -99,18 +99,10 @@ export default async function DashboardPage() {
   const readyStories = stories?.filter((s) => (s.quality_score ?? 0) >= 7).length ?? 0;
 
   const userName = user.user_metadata?.full_name?.split(" ")[0] || user.user_metadata?.name?.split(" ")[0] || "";
-  const isPro = profile?.subscription_status === "active";
-
-  // Check if any free limit is reached (quotas are admin-editable; -1 = unlimited)
-  const free = (await getPlanLimits()).free;
-  const reached = (used: number | null | undefined, limit: number) => limit >= 0 && (used ?? 0) >= limit;
-  const anyLimitReached = !isPro && (
-    reached(profile?.ats_scans_this_window, free.ats_scans) ||
-    reached(profile?.job_matches_this_window, free.job_matches) ||
-    reached(profile?.cover_letters_this_window, free.cover_letters) ||
-    reached(profile?.ai_rewrites_this_window, free.ai_rewrites) ||
-    reached((cvs ?? []).length, free.cvs)
-  );
+  // Every AI tool is Pro-only, so the plan alone decides whether the Pro
+  // banner shows; there is no per-counter "limit reached" state any more.
+  const plan = getPlan(profile);
+  const isPro = plan === "pro";
 
   // Return visit nudge data
   const lastCv = (cvs ?? [])[0] ?? null;
@@ -133,7 +125,7 @@ export default async function DashboardPage() {
         storyCount={storyCount}
         readyStories={readyStories}
         userName={userName}
-        limitReached={anyLimitReached}
+        limitReached={!isPro}
       />
       {careerPlan && (
         <Link

@@ -44,16 +44,14 @@ export async function checkGuaranteeEligibility(userId: string): Promise<Guarant
     return { eligible: false, reason: "Your score is already 80+" };
   }
 
-  // Must have used Fix All (check fix_all_used_at or fix_all_count_week)
-  const { data: profileFull } = await supabase
+  // Must have used Fix All (or Tailor CV): both stamp fix_all_used_at (migration 00081)
+  const { data: usage } = await supabase
     .from("profiles")
-    .select("*")
+    .select("fix_all_used_at")
     .eq("id", userId)
     .single();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pf = profileFull as any;
-  if (!pf?.fix_all_used_at) {
+  if (!usage?.fix_all_used_at) {
     return { eligible: false, reason: "Use Fix All at least once before claiming" };
   }
 

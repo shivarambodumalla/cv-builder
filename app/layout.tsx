@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: "CVEdge: Get More Interviews. Fix Your CV in 8 Minutes.",
     template: "%s | CVEdge",
   },
-  description: "CVEdge finds exactly why your CV gets rejected and fixes it instantly with AI. Free forever. 80+ ATS score guaranteed or your money back.",
+  description: "CVEdge shows exactly why your CV gets filtered out. Free ATS score, resume builder and templates. Pro fixes it with AI, with an 80+ ATS score guarantee.",
   authors: [{ name: "CVEdge", url: "https://www.thecvedge.com" }],
   creator: "CVEdge",
   publisher: "CVEdge",
@@ -42,10 +42,10 @@ export const metadata: Metadata = {
     url: "https://www.thecvedge.com",
     siteName: "CVEdge",
     title: "CVEdge: Get More Interviews. Fix Your CV in 8 Minutes.",
-    description: "Free AI-powered resume and CV optimization. Find why your resume gets rejected and fix it instantly. 80+ ATS score guaranteed.",
+    description: "Free ATS resume checker and builder. See why your resume gets filtered out. Pro fixes it with AI and guarantees an 80+ ATS score.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CVEdge: AI-powered resume and CV optimization" }],
   },
-  twitter: { card: "summary_large_image", title: "CVEdge: Get More Interviews", description: "Free AI-powered resume and CV optimization. 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
+  twitter: { card: "summary_large_image", title: "CVEdge: Get More Interviews", description: "Free ATS resume checker and builder. Pro fixes it with AI, 80+ ATS score guaranteed.", images: ["/og-image.png"], creator: "@thecvedge", site: "@thecvedge" },
   icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }], apple: "/img/CV-Edge-Logo-square.svg" },
   // Pinterest website claim — keeps pins attributed to thecvedge.com.
   other: { "p:domain_verify": "20e129163b0f32eba76c007ea3c95db7" },
@@ -98,12 +98,13 @@ const ORGANIZATION_JSONLD = {
     "CV optimisation Europe",
   ],
   sameAs: [
-    "https://twitter.com/thecvedge",
+    "https://x.com/thecvedge",
+    "https://www.linkedin.com/company/cv-edge",
   ],
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
-    email: "support@thecvedge.com",
+    email: "hello@thecvedge.com",
     availableLanguage: ["English"],
   },
 };
@@ -113,7 +114,7 @@ const WEBSITE_JSONLD = {
   "@type": "WebSite",
   name: "CVEdge",
   url: "https://www.thecvedge.com",
-  description: "Free AI-powered ATS resume checker and CV builder. Check your ATS score, fix issues with AI, and match your CV to job descriptions.",
+  description: "Free ATS resume checker and CV builder. Check your ATS score and see your top issues free. Pro fixes them with AI and matches your CV to job descriptions.",
 };
 
 export default function RootLayout({

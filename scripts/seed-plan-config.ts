@@ -20,7 +20,10 @@ const supabase = createClient(
   { auth: { persistSession: false } }
 );
 
-// feature key must match COLUMN_MAP limitKeys in lib/billing/limits.ts
+// feature key must match COLUMN_MAP limitKeys in lib/billing/limits.ts.
+// Values: -1 = unlimited, 0 = Pro only. Keep PLAN_LIMITS (the DB-outage
+// fallback) in step. Free plan since 2026-11-09: 1 resume, 1 lifetime ATS scan,
+// unlimited footered PDF downloads, everything else Pro.
 const LIMITS: {
   feature: string;
   label: string;
@@ -29,34 +32,36 @@ const LIMITS: {
   pro: number;
 }[] = [
   { feature: "cvs",            label: "CVs",                  reset: "total",   free: 1,  pro: -1 },
-  { feature: "ats_scans",      label: "ATS scans",            reset: "window7", free: 3,  pro: -1 },
-  { feature: "ai_rewrites",    label: "AI rewrites",          reset: "window7", free: 20, pro: -1 },
-  { feature: "job_matches",    label: "Job matches",          reset: "window7", free: 5,  pro: -1 },
-  { feature: "cover_letters",  label: "Cover letters",        reset: "window7", free: 5,  pro: -1 },
-  { feature: "pdf_downloads",  label: "PDF downloads",        reset: "window7", free: 1,  pro: -1 },
-  { feature: "fix_all",        label: "Fix All ATS",          reset: "weekly",  free: 5,  pro: -1 },
-  { feature: "cv_tailor",      label: "CV tailor for JD",     reset: "weekly",  free: 3,  pro: -1 },
-  { feature: "offer_eval",     label: "Offer evaluations",    reset: "weekly",  free: 5,  pro: -1 },
-  { feature: "portfolio_scan", label: "Portfolio scans",      reset: "weekly",  free: 3,  pro: -1 },
-  { feature: "story_summary",  label: "Story summaries",      reset: "weekly",  free: 10, pro: -1 },
-  { feature: "interview_prep", label: "Interview preps",      reset: "weekly",  free: 5,  pro: -1 },
+  { feature: "ats_scans",      label: "ATS scans",            reset: "total",   free: 1,  pro: -1 },
+  { feature: "ai_rewrites",    label: "AI rewrites",          reset: "window7", free: 0,  pro: -1 },
+  { feature: "job_matches",    label: "Job matches",          reset: "window7", free: 0,  pro: -1 },
+  { feature: "cover_letters",  label: "Cover letters",        reset: "window7", free: 0,  pro: -1 },
+  { feature: "pdf_downloads",  label: "PDF downloads",        reset: "window7", free: -1, pro: -1 },
+  { feature: "fix_all",        label: "Fix All ATS",          reset: "weekly",  free: 0,  pro: -1 },
+  { feature: "cv_tailor",      label: "CV tailor for JD",     reset: "weekly",  free: 0,  pro: -1 },
+  { feature: "offer_eval",     label: "Offer evaluations",    reset: "weekly",  free: 0,  pro: -1 },
+  { feature: "portfolio_scan", label: "Portfolio scans",      reset: "weekly",  free: 0,  pro: -1 },
+  { feature: "story_summary",  label: "Story summaries",      reset: "weekly",  free: 0,  pro: -1 },
+  { feature: "interview_prep", label: "Interview preps",      reset: "weekly",  free: 0,  pro: -1 },
 ];
 
-// tier: "pro" locks the template behind an upgrade.
+// tier: "pro" locks the template behind an upgrade. All 32 are free (the
+// paywall is the footer line and the AI features, not the design), so a
+// --force re-run must never re-lock any of them.
 const TEMPLATES: { slug: string; label: string; tier: "free" | "pro" }[] = [
-  { slug: "classic",           label: "Classic",           tier: "pro"  },
-  { slug: "orchid",            label: "Orchid",            tier: "pro"  },
-  { slug: "executive",         label: "Executive",         tier: "pro"  },
-  { slug: "aurora",            label: "Aurora",            tier: "pro"  },
-  { slug: "coastal",           label: "Coastal",           tier: "pro"  },
-  { slug: "portrait",          label: "Portrait",          tier: "pro"  },
-  { slug: "wentworth",         label: "Wentworth",         tier: "pro"  },
-  { slug: "bold-accent",       label: "Bold Accent",       tier: "pro"  },
-  { slug: "two-column",        label: "Horizon",           tier: "pro"  },
-  { slug: "executive-sidebar", label: "Executive Sidebar", tier: "pro"  },
-  { slug: "divide",            label: "Divide",            tier: "pro"  },
-  { slug: "executive-pro",     label: "Executive Pro",     tier: "pro"  },
-  { slug: "electric-lilac",    label: "Electric Lilac",    tier: "pro"  },
+  { slug: "classic",           label: "Classic",           tier: "free" },
+  { slug: "orchid",            label: "Orchid",            tier: "free" },
+  { slug: "executive",         label: "Executive",         tier: "free" },
+  { slug: "aurora",            label: "Aurora",            tier: "free" },
+  { slug: "coastal",           label: "Coastal",           tier: "free" },
+  { slug: "portrait",          label: "Portrait",          tier: "free" },
+  { slug: "wentworth",         label: "Wentworth",         tier: "free" },
+  { slug: "bold-accent",       label: "Bold Accent",       tier: "free" },
+  { slug: "two-column",        label: "Horizon",           tier: "free" },
+  { slug: "executive-sidebar", label: "Executive Sidebar", tier: "free" },
+  { slug: "divide",            label: "Divide",            tier: "free" },
+  { slug: "executive-pro",     label: "Executive Pro",     tier: "free" },
+  { slug: "electric-lilac",    label: "Electric Lilac",    tier: "free" },
 
   { slug: "classic-serif",     label: "Classic Serif",     tier: "free" },
   { slug: "sharp",             label: "Sharp",             tier: "free" },

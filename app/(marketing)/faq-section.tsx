@@ -3,49 +3,10 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { summarizeAllowance, type PlanQuotas } from "@/lib/billing/format-limits";
+import type { HomeFaq } from "./home-faqs";
 
-/** Built from the live free-plan quotas, which are admin-editable. */
-function freePlanFaq(free: PlanQuotas) {
-  return {
-    q: "Is this really free?",
-    a: `Yes. You can scan your resume and see your ATS score for free. The free plan includes ${summarizeAllowance(free, ["ats_scans", "ai_rewrites", "job_matches"])}. No credit card required.`,
-  };
-}
-
-const FAQS = [
-  {
-    q: "How accurate is the ATS score?",
-    a: "It is based on real hiring system patterns, role-specific keyword analysis across 130+ roles, and the same filtering rules that ATS software uses. 75% of resumes are rejected by ATS before a human sees them.",
-  },
-  {
-    q: "Will this work for freshers?",
-    a: "Yes. CVEdge helps both freshers and experienced professionals. The AI adapts suggestions to your experience level and uses [X] placeholders when you need to add specific numbers.",
-  },
-  {
-    q: "Is my data safe?",
-    a: "Your data is encrypted and stored securely. We never sell it, share it, or use it to train AI models. You can delete your account and all data at any time.",
-  },
-  {
-    q: "Do I need to start from scratch?",
-    a: "No. Upload your existing resume as a PDF and we parse everything automatically. Improve what you have. No blank templates, no manual entry.",
-  },
-  {
-    q: "How is this different from other resume tools?",
-    a: "CVEdge combines ATS scoring, AI bullet rewrites, job matching, cover letter generation, and interview prep in one tool, at a fraction of the price. Most tools only do one of these.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes. Cancel with one click from your billing page. No emails, no forms. Your access continues until the end of your billing period.",
-  },
-  {
-    q: "What roles do you support?",
-    a: "130+ roles across 12 domains: Engineering, Design, Product, Data, Marketing, Sales, Finance, HR, Operations, Content, Mechanical, and Digital Economy.",
-  },
-];
-
-export function FaqSection({ freeLimits }: { freeLimits: PlanQuotas }) {
-  const faqs = [freePlanFaq(freeLimits), ...FAQS];
+/** The list comes from home-faqs.ts, which also feeds the page's FAQPage JSON-LD. */
+export function FaqSection({ faqs }: { faqs: HomeFaq[] }) {
   const [openSet, setOpenSet] = useState<Set<number>>(new Set());
 
   function toggle(i: number) {

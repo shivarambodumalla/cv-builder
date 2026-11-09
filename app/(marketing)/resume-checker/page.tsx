@@ -5,11 +5,11 @@ import { ResumeCheckerContent } from "./resume-checker-content";
 import { BreadcrumbJsonLd, ServiceJsonLd, FaqJsonLd } from "@/components/shared/structured-data";
 
 export const metadata: Metadata = {
-  title: "Free Resume Checker: Instant ATS Score and Fixes",
-  description: "Check your resume free. Upload a PDF and get an ATS score across six categories, the missing keywords, and the exact fixes. Results in under 60 seconds.",
+  title: "Free Resume Checker: Instant ATS Score and Top Issues",
+  description: "Check your resume free. Upload a PDF and get an ATS score across six categories plus your top issues in under 60 seconds. Pro shows the full report and fixes it with AI.",
   openGraph: {
-    title: "Free Resume Checker: Instant ATS Score and Fixes | CVEdge",
-    description: "Upload your resume and get an ATS score with the exact fixes. Free, in under 60 seconds.",
+    title: "Free Resume Checker: Instant ATS Score and Top Issues | CVEdge",
+    description: "Upload your resume and get an ATS score with your top issues. Free, in under 60 seconds.",
     url: "https://www.thecvedge.com/resume-checker",
     images: ["/og-ats-checker.png"],
   },
@@ -31,17 +31,17 @@ export default function ResumeCheckerPage() {
       />
       <ServiceJsonLd
         name="Free Resume Checker"
-        description="Upload a PDF resume or paste its text to check your ATS score. CVEdge analyzes your resume across 6 categories (keywords, formatting, measurable results, bullet quality, sections, and contact info) and shows you exactly what to fix."
+        description="Upload a PDF resume or paste its text to check your ATS score. CVEdge analyzes your resume across 6 categories (keywords, formatting, measurable results, bullet quality, sections, and contact info) and shows your top issues free. Pro shows the full report."
         url="https://www.thecvedge.com/resume-checker"
         serviceType="ATS Resume Analysis"
       />
       <div className="container mx-auto max-w-2xl px-4 pt-12 md:pt-20 text-center space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-          <Sparkles className="h-4 w-4" /> ATS score + fixes
+          <Sparkles className="h-4 w-4" /> ATS score + top issues
         </div>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Free resume checker</h1>
         <p className="text-lg text-muted-foreground max-w-md mx-auto">
-          Upload your resume to get an ATS score and the exact fixes it needs. Takes under 60 seconds.
+          Upload your resume to get an ATS score and your top issues. Takes under 60 seconds.
         </p>
       </div>
       <Suspense fallback={<div />}>
@@ -129,8 +129,8 @@ function AtsCheckerExplainer() {
 
 const CHECKER_STEPS = [
   { title: "Upload your resume", detail: "Drop in a PDF or paste the text. The checker reads it the way an applicant tracking system does." },
-  { title: "Sign in free", detail: "Sign in with Google or LinkedIn to see your report. No card, and your resume is saved so you can re-check it." },
-  { title: "Fix what it finds", detail: "Each issue links to the line it's about. Fix it in the editor, re-run the check, and watch the score move." },
+  { title: "Sign in free", detail: "Sign in with Google or LinkedIn to see your score and top issues. No card, and your resume is saved in the builder." },
+  { title: "Fix what it finds", detail: "Each issue links to the line it's about. Fix it in the editor and watch the estimated score move as you type. Pro re-runs the full check and rewrites bullets with AI." },
 ];
 
 const ATS_CATEGORIES = [
@@ -153,7 +153,7 @@ const ATS_FAQ = [
   {
     question: "Is the ATS check really free?",
     answer:
-      "Yes. Upload a resume or paste its text, sign in with a free account, and you get the full category breakdown and the specific issues found. No card needed. Free accounts also include a number of AI rewrites and job matches each week. Unlimited use requires a paid plan.",
+      "Yes. Upload a resume or paste its text, sign in with a free account, and you get your ATS score and the top issues found. No card needed. The full report (every issue, missing keywords and suggestions), repeat scans and AI fixes are in Pro.",
   },
   {
     question: "What file formats can I upload?",
@@ -163,7 +163,7 @@ const ATS_FAQ = [
   {
     question: "Can I check my resume against a job description?",
     answer:
-      "Yes. After the first check, open the Match tab in the editor and paste the job posting. It shows which of the posting's keywords your resume covers, which are missing, and the fixes that would raise your match score most.",
+      "Yes, with Pro. Open the Match tab in the editor and paste the job posting. Job Match shows which of the posting's keywords your resume covers, which are missing, and the fixes that would raise your match score most.",
   },
   {
     question: "Does a high ATS score guarantee interviews?",
@@ -178,6 +178,6 @@ const ATS_FAQ = [
   {
     question: "Why does my CV score differently on other tools?",
     answer:
-      "Different checkers weight the categories differently and use different keyword sets, so absolute scores are not comparable between tools. What is comparable is the direction of travel within one tool: fix the issues it names, re-run it, and confirm the categories you targeted actually moved.",
+      "Different checkers weight the categories differently and use different keyword sets, so absolute scores are not comparable between tools. What is comparable is the direction of travel within one tool: fix the issues it names and confirm the categories you targeted actually moved.",
   },
 ];

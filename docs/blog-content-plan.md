@@ -11,9 +11,9 @@ subdomain this plan originally targeted was retired in September 2026 and
 | 2 | What is ATS software and how does it work | what is ATS software | Try CVEdge free |
 | 3 | How to check your ATS score for free in 2026 | free ATS checker | Check now at thecvedge.com |
 | 4 | 10 resume mistakes that get you rejected instantly | resume mistakes | Fix yours free |
-| 5 | How to write resume bullets that pass ATS | resume bullet points ATS | Get AI rewrites free |
+| 5 | How to write resume bullets that pass ATS | resume bullet points ATS | Get AI rewrites with Pro |
 | 6 | Best free resume checker tools in 2026 | free resume checker | Try CVEdge |
-| 7 | How to tailor your CV for each job in 5 minutes | tailor CV for job | Use CV Tailor free |
+| 7 | How to tailor your CV for each job in 5 minutes | tailor CV for job | Use Tailor CV with Pro |
 
 ## Week 2 — How-to Guides
 | Day | Title | Keyword |

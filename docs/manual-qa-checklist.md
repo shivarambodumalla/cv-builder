@@ -1,8 +1,8 @@
 # CVEdge — Manual QA Checklist
 
 **Generated:** 2026-04-11
-**Total Test Cases:** 187
-**Priority Breakdown:** P0: 62 | P1: 78 | P2: 47
+**Total Test Cases:** 188
+**Priority Breakdown:** P0: 63 | P1: 78 | P2: 47
 
 ---
 
@@ -45,7 +45,7 @@
 | 2.14 | Toggle grid/list view | Layout switches, preference saved to localStorage | [ ] |
 | 2.15 | Reload page after view toggle | Persisted view loads from localStorage | [ ] |
 | 2.16 | Sort toggle (newest/oldest) | Order reverses | [ ] |
-| 2.17 | "Create New Resume" CTA | Navigates to /upload-resume | [ ] |
+| 2.17 | "Create New Resume" CTA | Navigates to /resume-checker | [ ] |
 | 2.18 | Pro banner visible for free users | Shows upgrade CTA with features | [ ] |
 | 2.19 | Pro banner hidden for pro users | Banner not rendered | [ ] |
 | 2.20 | Empty state (no CVs) | Shows "No resumes yet" with create prompt | [ ] |
@@ -152,7 +152,7 @@
 | 6.10 | Select Metro | Preview renders metro layout | [ ] |
 | 6.11 | Select Harvard | Preview renders harvard layout | [ ] |
 | 6.12 | Select Ledger | Preview renders ledger layout | [ ] |
-| 6.13 | Free user clicks Pro template | Upgrade modal opens (template_locked) | [ ] |
+| 6.13 | Free user selects any template | All 32 templates are free: no template_locked gate | [ ] |
 | 6.14 | Pro user selects any template | Template applies without gate | [ ] |
 | 6.15 | Template switch preserves content | All sections retain their data after switching | [ ] |
 
@@ -167,9 +167,9 @@
 | 7.1 | Click Download PDF | PDF file downloads with correct content | [ ] |
 | 7.2 | PDF reflects current template | Layout matches preview | [ ] |
 | 7.3 | PDF reflects current design settings | Font, colors, spacing match preview | [ ] |
-| 7.4 | Free user PDF has watermark | "Made with CVEdge" watermark visible | [ ] |
-| 7.5 | Pro user PDF has no watermark | Clean PDF without branding | [ ] |
-| 7.6 | Free user exceeds PDF download limit (1/week) | Upgrade modal shown (download) | [ ] |
+| 7.4 | Free user PDF has the footer | Small "Made with CVEdge · thecvedge.com" line at the bottom of every page | [ ] |
+| 7.5 | Pro user PDF has no footer | Clean PDF without branding | [ ] |
+| 7.6 | Free user downloads repeatedly | No limit: every download succeeds with the footer; upgrade_prompt email sent once after the first | [ ] |
 | 7.7 | Dashboard card download button | PDF downloads without navigating away | [ ] |
 
 ---
@@ -200,8 +200,9 @@
 | 8.18 | "Re-analyse for verified score" footer link | Triggers fresh AI analysis | [ ] |
 | 8.19 | Estimated score prefix | "Estimated score" text shown only when score is estimated | [ ] |
 | 8.20 | Suggestions accordion | Expands to show enhancement suggestions | [ ] |
-| 8.21 | Free user limit reached (3 scans/7d) | Upgrade banner shown, modal opens | [ ] |
+| 8.21 | Free user after the one lifetime scan | Re-analyse blocked: upgrade modal (ats_scan_limit); nothing resets weekly | [ ] |
 | 8.22 | Pro user unlimited scans | No limit gate, analyses work without restriction | [ ] |
+| 8.24 | Free user report is locked | Score, confidence and category bars shown with two teaser issues; remaining issues, keywords and suggestions behind a Pro lock (API answers locked:true) | [ ] |
 | 8.23 | Keyword list missing for role | Yellow warning banner with role name | [ ] |
 
 ---
@@ -228,7 +229,7 @@
 | 9.14 | Edit a suggestion (pencil icon) | Inline editor opens, save/cancel buttons appear | [ ] |
 | 9.15 | Save edited suggestion | Custom text applied instead of AI suggestion | [ ] |
 | 9.16 | Score updates after applying fixes | Real-time estimated score recalculates | [ ] |
-| 9.17 | Free user limit (1/week) | Upgrade modal shown (fix_all_limit) | [ ] |
+| 9.17 | Free user clicks Fix All | Pro-only: upgrade modal (fix_all_limit), API 403 before any AI call | [ ] |
 
 ---
 
@@ -252,7 +253,7 @@
 | 10.12 | "Accept & Insert" button | Rewritten text inserted into CV field | [ ] |
 | 10.13 | Score updates after accept | Real-time estimated score recalculates | [ ] |
 | 10.14 | Inline rewrite (from form button) | Drawer opens without issue context section | [ ] |
-| 10.15 | Free user limit (5 rewrites/7d) | Upgrade modal shown (ai_rewrite_limit) | [ ] |
+| 10.15 | Free user clicks Rewrite | Pro-only: upgrade modal (ai_rewrite_limit) | [ ] |
 | 10.16 | Regenerate button | New suggestion generated for same mode | [ ] |
 | 10.17 | Error state with retry | Error message shown, "Retry" button works | [ ] |
 
@@ -288,7 +289,7 @@
 | 11.22 | "Re-match" button | Triggers fresh analysis with updated CV | [ ] |
 | 11.23 | Company + job title shown in header | Subtitle displays "Company . Job Title" | [ ] |
 | 11.24 | Cover Letter CTA | "Generate Cover Letter" button switches to Cover Letter tab | [ ] |
-| 11.25 | Free user limit (1 match/7d) | Upgrade modal shown (job_match_limit) | [ ] |
+| 11.25 | Free user runs Job Match | Pro-only: upgrade modal (job_match_limit) | [ ] |
 | 11.26 | Enhancements section | Description + suggestion pairs listed | [ ] |
 | 11.27 | Summary section | Overall match summary text displayed | [ ] |
 
@@ -368,18 +369,18 @@
 | 16.6 | Download as TXT | Text file downloads | [ ] |
 | 16.7 | Regenerate | New version generated, old version in history | [ ] |
 | 16.8 | Version history | Previous versions accessible | [ ] |
-| 16.9 | Free user limit (1 cover letter/7d) | Upgrade modal shown (cover_letter_limit) | [ ] |
+| 16.9 | Free user generates a cover letter | Pro-only: upgrade modal (cover_letter_limit) | [ ] |
 | 16.10 | Cover letter from Job Match CTA | Source stored in sessionStorage, tab switches | [ ] |
 
 ---
 
-## 17. Interview Story Bank (P1)
+## 17. Interview Coach (P1)
 
-**Pre-conditions:** Logged in user, navigate to Stories section
+**Pre-conditions:** Logged in user, navigate to /interview-coach
 
 | # | Test Case | Expected | Pass |
 |---|-----------|----------|------|
-| 17.1 | Story bank page loads | Empty state or story list displayed | [ ] |
+| 17.1 | Interview Coach page loads | Empty state or answer list displayed | [ ] |
 | 17.2 | "Extract from CV" button | Stories extracted from CV bullets using STAR format | [ ] |
 | 17.3 | Story builder modal opens | Sheet with STAR form fields visible | [ ] |
 | 17.4 | Fill STAR form and save | Story created with all fields | [ ] |
@@ -389,8 +390,8 @@
 | 17.8 | Tag selection (13 tags) | Tags toggle on/off, saved with story | [ ] |
 | 17.9 | Edit existing story | Story builder opens with pre-filled data | [ ] |
 | 17.10 | Delete story | Story removed from list | [ ] |
-| 17.11 | Free user story count limit | Upgrade modal shown (story_save_limit) | [ ] |
-| 17.12 | Pro gate on portfolio scan | Upgrade modal shown (story_scan_limit) | [ ] |
+| 17.11 | Free user writes and saves own STAR answers | Works without a gate (free plan includes writing your own answers) | [ ] |
+| 17.12 | Free user triggers AI (quality score, summary, extraction, portfolio scan, interview prep) | Pro-only: upgrade modal (story_summary_limit / portfolio_scan_limit / interview_prep_limit) | [ ] |
 | 17.13 | Interview prep mode | Story matching based on question/scenario | [ ] |
 | 17.14 | Story matching works | Relevant stories surfaced for given question | [ ] |
 
@@ -405,20 +406,20 @@
 | 18.1 | Free user sees upgrade CTA in user menu | Crown icon with "Upgrade" text | [ ] |
 | 18.2 | Pro user sees plan badge in user menu | "Pro" badge displayed | [ ] |
 | 18.3 | Upgrade modal — download trigger | Title: "Download your CV", pricing rows visible | [ ] |
-| 18.4 | Upgrade modal — ats_limit trigger | Title: "You need more ATS scans" | [ ] |
-| 18.5 | Upgrade modal — job_match_limit trigger | Title: "Unlock job matching" | [ ] |
-| 18.6 | Upgrade modal — cover_letter_limit trigger | Title: "Generate more cover letters" | [ ] |
-| 18.7 | Upgrade modal — ai_rewrite_limit trigger | Title: "More AI rewrites" | [ ] |
-| 18.8 | Upgrade modal — template_locked trigger | Title: "Unlock all templates" | [ ] |
-| 18.9 | Upgrade modal — cv_limit trigger | Title: "Create more CVs" | [ ] |
-| 18.10 | Upgrade modal — fix_all_limit trigger | Title: "You've used your free AI fix" | [ ] |
+| 18.4 | Upgrade modal — ats_limit trigger | Says the one free scan is used; Pro = unlimited scans + full report | [ ] |
+| 18.5 | Upgrade modal — job_match_limit trigger | Job Match is a Pro feature (no free quota mentioned) | [ ] |
+| 18.6 | Upgrade modal — cover_letter_limit trigger | Cover letters are a Pro feature | [ ] |
+| 18.7 | Upgrade modal — ai_rewrite_limit trigger | AI rewrites are a Pro feature | [ ] |
+| 18.8 | Upgrade modal — template_locked trigger | Not reachable today (all 32 templates free); trigger kept for a future Pro tier | [ ] |
+| 18.9 | Upgrade modal — cv_limit trigger | Free plan is one resume; Pro = unlimited | [ ] |
+| 18.10 | Upgrade modal — fix_all_limit trigger | Fix All is a Pro feature | [ ] |
 | 18.11 | Upgrade modal — generic trigger | Title: "Go Pro" | [ ] |
 | 18.12 | 3 pricing rows visible | Weekly $5, Monthly $14, Yearly $120 with save percentages | [ ] |
 | 18.13 | Select plan and click checkout | Lemon Squeezy checkout opens (or mock upgrade in dev) | [ ] |
 | 18.14 | Mock upgrade (dev only) | Plan switches to Pro, features unlocked | [ ] |
 | 18.15 | /billing page shows plan info | Current plan, status, renewal date, activity stats | [ ] |
 | 18.16 | /billing subscription history | Past subscription events listed with status colors | [ ] |
-| 18.17 | 7-day rolling window resets | After 7 days, usage counters reset to 0 | [ ] |
+| 18.17 | Free quotas never reset | The one ATS scan is lifetime; no weekly or 7-day reset, no limit_reset email | [ ] |
 | 18.18 | Pro plan expiry auto-downgrades | When current_period_end passes, plan reverts to free | [ ] |
 
 ---
@@ -487,7 +488,7 @@
 | 21.9 | Comparison table (free vs pro) | Two columns with checkmarks | [ ] |
 | 21.10 | FAQ accordion | Questions expand/collapse on click | [ ] |
 | 21.11 | CTA section with score ring | Green CTA section renders at bottom | [ ] |
-| 21.12 | "Get Started" CTA navigates | Links to /upload-resume or /login | [ ] |
+| 21.12 | "Get Started" CTA navigates | Links to /resume-checker or /login | [ ] |
 | 21.13 | /pricing page loads | Free/Pro cards with feature lists | [ ] |
 | 21.14 | Pricing billing period selector | Weekly/monthly/yearly toggles with nudge messages | [ ] |
 | 21.15 | Pricing FAQ accordion | Questions expand/collapse | [ ] |
@@ -516,10 +517,10 @@
 
 | Priority | Count | Description |
 |----------|-------|-------------|
-| **P0** | **62** | Must pass before any release — auth, dashboard, upload, editor content, ATS, fix-all, job match, PDF, billing gates |
-| **P1** | **78** | Should pass before release — design controls, templates, AI rewrite, cover letter, story bank, red flags, tailor CV, offer evaluation, navigation |
+| **P0** | **63** | Must pass before any release — auth, dashboard, upload, editor content, ATS, fix-all, job match, PDF, billing gates |
+| **P1** | **78** | Should pass before release — design controls, templates, AI rewrite, cover letter, Interview Coach, red flags, Tailor CV, offer evaluation, navigation |
 | **P2** | **47** | Nice to have — admin panel, marketing pages, salary insights, error edge cases |
-| **Total** | **187** | |
+| **Total** | **188** | |
 
 ---
 

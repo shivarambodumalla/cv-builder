@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getPlan } from "@/lib/billing/limits";
 import { SettingsContent } from "./settings-content";
 
 export const metadata: Metadata = {
@@ -20,7 +21,7 @@ export default async function SettingsPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, subscription_status, subscription_period, signup_city, signup_country, created_at, email_product_updates, email_tips")
+    .select("full_name, plan, subscription_status, current_period_end, subscription_period, signup_city, signup_country, created_at, email_product_updates, email_tips")
     .eq("id", user.id)
     .single();
 
@@ -29,7 +30,7 @@ export default async function SettingsPage() {
       email={user.email ?? ""}
       fullName={user.user_metadata?.full_name ?? profile?.full_name ?? ""}
       avatarUrl={user.user_metadata?.avatar_url ?? null}
-      isPro={profile?.subscription_status === "active"}
+      isPro={getPlan(profile) === "pro"}
       period={profile?.subscription_period ?? null}
       signupCity={profile?.signup_city ?? null}
       signupCountry={profile?.signup_country ?? null}

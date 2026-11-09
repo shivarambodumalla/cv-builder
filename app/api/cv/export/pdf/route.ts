@@ -52,10 +52,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Determine watermark based on plan
+  // Footer line on free downloads. getPlan() needs current_period_end so a
+  // cancelled-but-still-paid subscriber keeps a clean PDF.
   const { data: profile } = await supabase
     .from("profiles")
-    .select("subscription_status, plan")
+    .select("subscription_status, current_period_end, plan")
     .eq("id", user.id)
     .single();
 
