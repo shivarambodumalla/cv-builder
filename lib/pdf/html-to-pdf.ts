@@ -82,10 +82,32 @@ export async function launchBrowser() {
  * Free-plan footer line. `watermark` defaults to false everywhere so template
  * thumbnails and the admin PDF route print clean; /api/cv/export/pdf passes
  * PLAN_LIMITS[plan].watermark. 24px keeps the 9px line clear of the content.
+ *
+ * Chromium lays the footer box out 20px above the margin it belongs to
+ * (measured, the mirror of the header offset below), so the band is pushed
+ * down by that much: without it the line printed over the last 20px of
+ * content and the real margin stayed blank. The band is filled with the page
+ * canvas so a sidebar or tinted page runs to the bottom edge instead of
+ * ending on a white strip; 2px of overdraw covers A4's fractional height.
+ * The text is brand teal (--primary) on every template, printed exact so
+ * Chromium does not darken it.
  */
 const WATERMARK_BOTTOM_MARGIN = "24px";
-const WATERMARK_FOOTER_TEMPLATE =
-  '<div style="width:100%;text-align:center;font-size:9px;line-height:1;color:#8a8a8a;font-family:system-ui,sans-serif;">Made with CVEdge · thecvedge.com</div>';
+const FOOTER_TEMPLATE_OFFSET_PX = 20;
+function watermarkFooterTemplate(canvasBg: { color: string; image: string } | null): string {
+  const exact = "-webkit-print-color-adjust:exact;print-color-adjust:exact";
+  const fill = canvasBg
+    ? `background-color:${canvasBg.color};` +
+      (canvasBg.image !== "none" ? `background-image:${canvasBg.image};` : "")
+    : "";
+  return (
+    `<div style="position:relative;width:100%;height:100%;margin:0;padding:0">` +
+    `<div style="position:absolute;left:0;top:${FOOTER_TEMPLATE_OFFSET_PX}px;width:100%;height:calc(100% + 2px);` +
+    `display:flex;align-items:center;justify-content:center;${fill}${exact}">` +
+    `<span style="font-size:9px;line-height:1;color:#1a7a6d;font-family:system-ui,sans-serif;${exact}">` +
+    `Made with CVEdge · thecvedge.com</span></div></div>`
+  );
+}
 
 /**
  * The print document the PDF export renders: the template markup plus the
@@ -428,7 +450,7 @@ export async function renderHtmlToPdf(
       printBackground: true,
       displayHeaderFooter: watermark || Boolean(canvasBg),
       headerTemplate,
-      footerTemplate: watermark ? WATERMARK_FOOTER_TEMPLATE : "<span></span>",
+      footerTemplate: watermark ? watermarkFooterTemplate(canvasBg) : "<span></span>",
     });
 
     return Buffer.from(pdfBuffer);
