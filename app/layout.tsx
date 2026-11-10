@@ -12,7 +12,6 @@ import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
 import { AuthEventTracker } from "@/components/shared/auth-event-tracker";
 import { UpgradeEventTracker } from "@/components/shared/upgrade-event-tracker";
-import { MsUetScript } from "@/components/shared/ms-uet-script";
 import { GAScripts } from "@/components/shared/ga-scripts";
 import { HotjarScripts } from "@/components/shared/hotjar-scripts";
 import { AdSenseScript } from "@/components/shared/adsense-script";
@@ -146,6 +145,16 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSONLD) }}
         />
+        {/* Microsoft Advertising UET tag 343285143, Microsoft's own snippet, in the
+            raw <head> so Microsoft's tag check finds it in the HTML. Ad storage
+            starts denied; CookieConsent grants it. Conversions come from
+            lib/analytics/events.ts (sign_up, purchase). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.uetq=window.uetq||[];window.uetq.push('consent','default',{'ad_storage':'denied'});(function(w,d,t,u,o){w[u]=w[u]||[],o.ts=(new Date).getTime();var n=d.createElement(t);n.src=\"https://bat.bing.net/bat.js?ti=\"+o.ti+(\"uetq\"!=u?\"&q=\"+u:\"\"),n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&\"loaded\"!==s&&\"complete\"!==s||(o.q=w[u],w[u]=new UET(o),w[u].push(\"pageLoad\"),n.onload=n.onreadystatechange=null)};var i=d.getElementsByTagName(t)[0];i.parentNode.insertBefore(n,i)})(window,document,\"script\",\"uetq\",{ti:\"343285143\",enableAutoSpaTracking:true});",
+          }}
+        />
         {/* Impact.com Universal Tracking Tag. Must sit in the raw <head>: Impact
             verifies a site by fetching the HTML and string-matching this tag, so
             a consent-gated client-side injection is invisible to them and the
@@ -171,12 +180,9 @@ export default function RootLayout({
               ad_user_data: 'denied',
               ad_personalization: 'denied',
             });
-            window.uetq = window.uetq || [];
-            window.uetq.push('consent', 'default', { ad_storage: 'denied' });
           `}
         </Script>
         <GAScripts />
-        <MsUetScript />
         <HotjarScripts />
         {/* AdSense auto ads; skipped on /career-path and /admin (see the component). */}
         <AdSenseScript />

@@ -462,7 +462,7 @@ Three mechanisms coexist:
 
 ## Ad Conversion Tracking
 
-- Google: gtag (GA4 + Ads `AW-18095722375`) in components/shared/ga-scripts.tsx. Microsoft: UET tag `343285143` in components/shared/ms-uet-script.tsx (Microsoft's own snippet). Both start with ad storage denied (root layout) and CookieConsent grants it.
+- Google: gtag (GA4 + Ads `AW-18095722375`) in components/shared/ga-scripts.tsx. Microsoft: UET tag `343285143`, Microsoft's own snippet inline in the raw `<head>` of app/layout.tsx (so Microsoft's checker sees it in the HTML), with the consent default set first in the same script. Both start with ad storage denied (root layout) and CookieConsent grants it.
 - Conversions fire from lib/analytics/events.ts: `sign_up` (AuthEventTracker, `?auth_event=signup` from the OAuth callback) and `purchase` (UpgradeEventTracker, `?upgraded=<period>`, valued at `firstPaymentUsd`). /api/billing/success adds `upgraded` only for a subscription created in the last 6 hours, so reopening that URL never double-counts. Microsoft goals are custom events with action `sign_up` / `purchase`.
 
 ## Feedback & Ratings
