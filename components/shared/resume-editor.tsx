@@ -7,15 +7,8 @@ import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AccountMenuContent } from "@/components/shared/account-menu-content";
 import { ContentEditor } from "@/components/resume/content-editor";
 import { TemplateRenderer } from "@/components/resume/template-renderer";
 import { PaperPreview } from "@/components/resume/paper-preview";
@@ -37,11 +30,9 @@ import { FeedbackPrompt, shouldAskForFeedback } from "@/components/popups/feedba
 import {
   ArrowLeft,
   Download,
-  LogOut,
   LayoutDashboard,
   CreditCard,
   Check,
-  Crown,
   Loader2,
   Eye,
   PenLine,
@@ -602,27 +593,18 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  {user.full_name && <p className="text-sm font-medium leading-none">{user.full_name}</p>}
-                  <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => router.push("/dashboard")}><LayoutDashboard className="mr-2 h-4 w-4" />Dashboard</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push(`/interview-coach?cv_id=${cv.id}`)}><BookOpen className="mr-2 h-4 w-4" />Interview Coach</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/billing")}><CreditCard className="mr-2 h-4 w-4" />Billing</DropdownMenuItem>
-                {plan !== "pro" && (
-                  <DropdownMenuItem onClick={() => openUpgradeModal("generic")}>
-                    <Crown className="mr-2 h-4 w-4 text-[#D97706]" />Upgrade to Pro
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive"><LogOut className="mr-2 h-4 w-4" />Log out</DropdownMenuItem>
-            </DropdownMenuContent>
+            <AccountMenuContent
+              email={user.email}
+              fullName={user.full_name}
+              avatarUrl={user.avatar_url}
+              isPro={plan === "pro"}
+              items={[
+                { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+                { label: "Interview Coach", href: `/interview-coach?cv_id=${cv.id}`, icon: BookOpen },
+                { label: "Billing", href: "/billing", icon: CreditCard },
+              ]}
+              onLogout={handleLogout}
+            />
           </DropdownMenu>
         </div>
       </header>

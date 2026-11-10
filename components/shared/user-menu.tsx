@@ -4,15 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { LogOut, CreditCard, ChevronRight, Settings } from "lucide-react";
-import { useUpgradeModal } from "@/context/upgrade-modal-context";
+import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { CreditCard, Settings } from "lucide-react";
+import { AccountMenuContent, type AccountMenuLink } from "@/components/shared/account-menu-content";
 
 interface UserMenuProps {
   email: string;
@@ -20,11 +14,14 @@ interface UserMenuProps {
   avatarUrl?: string | null;
 }
 
+const ITEMS: AccountMenuLink[] = [
+  { label: "Billing", href: "/billing", icon: CreditCard },
+  { label: "Preferences", href: "/settings", icon: Settings },
+];
+
 export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
   const router = useRouter();
   const [isPro, setIsPro] = useState(false);
-  const [period, setPeriod] = useState("");
-  const { openUpgradeModal } = useUpgradeModal();
 
   const initials = fullName
     ? fullName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -32,13 +29,10 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from("profiles").select("subscription_status, subscription_period").eq("id", "").limit(0);
-    // Fetch plan from auth user
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      supabase.from("profiles").select("subscription_status, subscription_period").eq("id", user.id).single().then(({ data }) => {
+      supabase.from("profiles").select("subscription_status").eq("id", user.id).single().then(({ data }) => {
         setIsPro(data?.subscription_status === "active");
-        setPeriod(data?.subscription_period || "");
       });
     });
   }, []);
@@ -52,69 +46,20 @@ export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
+      <DropdownMenuTrigger className="flex min-h-[44px] min-w-[44px] items-center justify-center outline-none sm:min-h-0 sm:min-w-0">
         <Avatar className="h-9 w-9 cursor-pointer bg-[#065F46]">
           {avatarUrl && <AvatarImage src={avatarUrl} alt={fullName || email} className="object-cover" />}
-          <AvatarFallback className="bg-[#065F46] text-white text-[13px] font-bold">{initials}</AvatarFallback>
+          <AvatarFallback className="bg-[#065F46] text-[13px] font-bold text-white">{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-60 p-0">
-        {/* User info */}
-        <div className="px-4 pt-3.5 pb-3 border-b border-[#F0EDE6] dark:border-border">
-          <div className="flex items-center gap-2.5 mb-3">
-            <Avatar className="h-9 w-9 shrink-0 bg-[#065F46]">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt={fullName || email} className="object-cover" />}
-              <AvatarFallback className="bg-[#065F46] text-white text-[13px] font-bold">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              {fullName && <p className="text-[13px] font-semibold text-[#0C1A0E] dark:text-foreground truncate">{fullName}</p>}
-              <p className="text-[11px] text-[#9CA3AF] truncate">{email}</p>
-            </div>
-          </div>
-
-          {/* Upgrade CTA or Pro badge */}
-          {isPro ? (
-            <div className="flex items-center justify-between rounded-lg bg-[#F7F5F0] dark:bg-muted px-2.5 py-2">
-              <p className="text-[11px] text-[#78716C]">CVEdge Pro &middot; {period || "active"}</p>
-              <span className="rounded-full bg-[#065F46] px-2 py-0.5 text-[9px] font-bold text-white">Active</span>
-            </div>
-          ) : (
-            <button onClick={() => openUpgradeModal("generic")} className="block w-full text-left">
-              <div className="flex items-center justify-between rounded-lg bg-[#065F46] px-3 py-2.5 hover:opacity-90 transition-opacity cursor-pointer">
-                <div>
-                  <p className="text-[11px] font-semibold text-white">Upgrade to Pro</p>
-                  <p className="text-[10px] text-[#6EE7B7] mt-0.5">Unlimited &middot; Cancel anytime</p>
-                </div>
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
-                  <ChevronRight className="h-2.5 w-2.5 text-white" />
-                </div>
-              </div>
-            </button>
-          )}
-        </div>
-
-        {/* Menu items */}
-        <div className="py-1">
-          <DropdownMenuItem onClick={() => router.push("/billing")} className="px-4 py-2 cursor-pointer">
-            <CreditCard className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
-            <span className="text-[13px]">Billing</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/settings")} className="px-4 py-2 cursor-pointer">
-            <Settings className="mr-2 h-3.5 w-3.5 text-[#065F46]" />
-            <span className="text-[13px]">Preferences</span>
-          </DropdownMenuItem>
-        </div>
-
-        <DropdownMenuSeparator className="bg-[#F0EDE6] dark:bg-border" />
-
-        {/* Logout */}
-        <div className="py-1">
-          <DropdownMenuItem onClick={handleLogout} className="px-4 py-2 cursor-pointer text-[#DC2626] focus:text-[#991B1B] focus:bg-[#FEF2F2]">
-            <LogOut className="mr-2 h-3.5 w-3.5" />
-            <span className="text-[13px]">Log out</span>
-          </DropdownMenuItem>
-        </div>
-      </DropdownMenuContent>
+      <AccountMenuContent
+        email={email}
+        fullName={fullName}
+        avatarUrl={avatarUrl}
+        isPro={isPro}
+        items={ITEMS}
+        onLogout={handleLogout}
+      />
     </DropdownMenu>
   );
 }
