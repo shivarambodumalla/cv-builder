@@ -119,28 +119,18 @@ export function UpgradeModal() {
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[110] bg-[#0C1A0E]/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[110] bg-[#0C1A0E]/45 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        {/* Side drawer at every width: 480px from the right, full width on phones. Body scrolls, CTA footer stays put. */}
         <DialogPrimitive.Content
           data-testid="upgrade-modal"
           aria-describedby={success ? undefined : "upgrade-modal-subtitle"}
           className={cn(
-            // Below sm: bottom sheet. Body scrolls, CTA footer stays put.
-            "fixed inset-x-0 bottom-0 z-[110] flex max-h-[calc(100dvh-16px)] flex-col overflow-hidden rounded-t-3xl bg-[#F7F5F0] text-[#0C1A0E] shadow-[0_24px_64px_rgba(12,26,14,0.35)] outline-none",
-            "duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
-            // sm and up: centred 780px modal, plans left, cream unlock column right.
-            "sm:inset-0 sm:m-auto sm:grid sm:h-fit sm:max-h-[calc(100dvh-32px)] sm:w-[calc(100vw-32px)] sm:max-w-[780px] sm:grid-cols-[minmax(0,1fr)_340px] sm:grid-rows-[1fr_auto] sm:overflow-y-auto sm:rounded-[20px] sm:bg-white",
-            "sm:duration-200 sm:data-[state=open]:slide-in-from-bottom-0 sm:data-[state=closed]:slide-out-to-bottom-0 sm:data-[state=open]:fade-in-0 sm:data-[state=closed]:fade-out-0 sm:data-[state=open]:zoom-in-95 sm:data-[state=closed]:zoom-out-95"
+            "fixed inset-y-0 right-0 z-[110] flex w-full flex-col bg-[#F7F5F0] text-[#0C1A0E] shadow-[-24px_0_64px_rgba(12,26,14,0.3)] outline-none sm:w-[480px]",
+            "duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right"
           )}
         >
-          <DialogPrimitive.Close
-            aria-label="Close"
-            className="absolute right-4 top-6 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-[#E0D8CC] bg-white transition-colors hover:bg-[#F7F5F0] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#34D399] sm:top-4 sm:h-9 sm:w-9"
-          >
-            <X className="h-4 w-4" aria-hidden="true" />
-          </DialogPrimitive.Close>
-
           {success ? (
-            <div className="flex flex-col items-center justify-center gap-4 px-6 py-24 sm:col-span-2">
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-24">
               <div className="relative">
                 <div className="absolute inset-0 animate-ping rounded-full bg-success/30" />
                 <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success">
@@ -152,91 +142,94 @@ export function UpgradeModal() {
             </div>
           ) : (
             <>
-              {/* Mobile: one scrolling body. sm+: `contents`, so its children become grid cells. */}
-              <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-5 pb-4 pt-2.5 sm:contents">
-                <span aria-hidden="true" className="mx-auto block h-1 w-10 shrink-0 rounded-sm bg-[#D6CEC1] sm:hidden" />
-
-                <div className="flex flex-col gap-5 sm:row-span-2 sm:gap-6 sm:p-8">
-                  <div className="flex flex-col gap-2 pr-14 sm:pr-10">
+              <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-5 pb-2 pt-6 sm:px-7 sm:pt-7">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-col gap-2">
                     <span className={cn("inline-flex items-center gap-1.5", CAPS)}>
                       <Crown className="h-3.5 w-3.5 shrink-0 text-[#065F46]" aria-hidden="true" />
                       {headline.eyebrow}
                     </span>
-                    <DialogPrimitive.Title className="text-[26px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[30px]">
+                    <DialogPrimitive.Title className="text-[26px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[28px]">
                       {headline.title}
                     </DialogPrimitive.Title>
-                    <DialogPrimitive.Description id="upgrade-modal-subtitle" className={cn("text-[15px] leading-normal", MUTED)}>
+                    <DialogPrimitive.Description id="upgrade-modal-subtitle" className={cn("text-[15px] leading-[1.45]", MUTED)}>
                       {headline.subtitle}
                     </DialogPrimitive.Description>
                   </div>
-
-                  <div className="flex flex-col gap-2">
-                    <div role="radiogroup" aria-label="Billing period" className="flex flex-col gap-2">
-                      {OPTIONS.map((opt) => {
-                        const isSelected = billing === opt.period;
-                        return (
-                          <label
-                            key={opt.period}
-                            className={cn(
-                              "relative flex min-h-[76px] cursor-pointer items-center gap-3 rounded-[14px] border-2 px-4 py-3.5 transition-colors",
-                              "has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#34D399]",
-                              isSelected ? "border-[#065F46] bg-[#EEF6F1]" : "border-[#E0D8CC] bg-white hover:border-[#B9B0A2]"
-                            )}
-                          >
-                            <input
-                              type="radio"
-                              name="upgrade-plan"
-                              value={opt.period}
-                              checked={isSelected}
-                              onChange={() => { setBilling(opt.period); setCheckoutError(false); }}
-                              aria-label={planAriaLabel(opt)}
-                              className="sr-only"
-                            />
-                            {isSelected ? (
-                              <span aria-hidden="true" className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-[#065F46]">
-                                <Check className="h-3 w-3 text-white" strokeWidth={3.5} />
-                              </span>
-                            ) : (
-                              <span aria-hidden="true" className="block h-[22px] w-[22px] shrink-0 rounded-full border-2 border-[#C9C0B2]" />
-                            )}
-                            <span aria-hidden="true" className="flex min-w-0 flex-1 flex-col gap-1">
-                              <span className="flex items-center gap-2">
-                                <span className="text-[16px] font-semibold">{opt.label}</span>
-                                {opt.popular && (
-                                  <span className="rounded-full bg-[#065F46] px-[7px] py-[3px] text-[10px] font-bold uppercase leading-[1.2] tracking-[0.06em] text-white">
-                                    Best value
-                                  </span>
-                                )}
-                              </span>
-                              <span className={cn("text-[13px]", MUTED)}>{planSubline(opt, isIndia)}</span>
-                            </span>
-                            <span aria-hidden="true" className="flex shrink-0 flex-col items-end gap-1">
-                              {opt.promo && (
-                                <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                                  <span className={SMALL_PILL}>{opt.promo.percent}% off</span>
-                                  <s className={cn("text-[14px] font-medium decoration-[#0C1A0E] decoration-2", MUTED)}>
-                                    {formatUsd(opt.listPrice)}/{PER_SHORT[opt.per]}
-                                  </s>
-                                </span>
-                              )}
-                              <span className="text-[24px] font-extrabold leading-none tracking-[-0.02em]">
-                                {formatUsd(opt.first)}
-                                {!opt.promo && <span className={cn("text-[13px] font-medium tracking-normal", MUTED)}>/{PER_SHORT[opt.per]}</span>}
-                              </span>
-                            </span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                    {PROMO && (
-                      <p className={cn("mt-0.5 text-[12px] leading-[1.4]", MUTED)}>
-                        Intro price covers your first payment. Discount applied automatically at checkout.
-                      </p>
-                    )}
-                  </div>
+                  <DialogPrimitive.Close
+                    aria-label="Close"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#E0D8CC] bg-white transition-colors hover:bg-[#F7F5F0] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#34D399] sm:h-9 sm:w-9"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </DialogPrimitive.Close>
                 </div>
 
-                <div className="flex flex-col gap-2.5 sm:border-l sm:border-[#E0D8CC] sm:bg-[#F7F5F0] sm:px-8 sm:pb-6 sm:pt-8">
+                <div className="flex flex-col gap-2">
+                  <div role="radiogroup" aria-label="Billing period" className="flex flex-col gap-2">
+                    {OPTIONS.map((opt) => {
+                      const isSelected = billing === opt.period;
+                      return (
+                        <label
+                          key={opt.period}
+                          className={cn(
+                            "relative flex min-h-[76px] cursor-pointer items-center gap-3 rounded-[14px] border-2 px-4 py-3.5 transition-colors",
+                            "has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#34D399]",
+                            isSelected ? "border-[#065F46] bg-[#EEF6F1]" : "border-[#E0D8CC] bg-white hover:border-[#B9B0A2]"
+                          )}
+                        >
+                          <input
+                            type="radio"
+                            name="upgrade-plan"
+                            value={opt.period}
+                            checked={isSelected}
+                            onChange={() => { setBilling(opt.period); setCheckoutError(false); }}
+                            aria-label={planAriaLabel(opt)}
+                            className="sr-only"
+                          />
+                          {isSelected ? (
+                            <span aria-hidden="true" className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-[#065F46]">
+                              <Check className="h-3 w-3 text-white" strokeWidth={3.5} />
+                            </span>
+                          ) : (
+                            <span aria-hidden="true" className="block h-[22px] w-[22px] shrink-0 rounded-full border-2 border-[#C9C0B2]" />
+                          )}
+                          <span aria-hidden="true" className="flex min-w-0 flex-1 flex-col gap-1">
+                            <span className="flex items-center gap-2">
+                              <span className="text-[16px] font-semibold">{opt.label}</span>
+                              {opt.popular && (
+                                <span className="rounded-full bg-[#065F46] px-[7px] py-[3px] text-[10px] font-bold uppercase leading-[1.2] tracking-[0.06em] text-white">
+                                  Best value
+                                </span>
+                              )}
+                            </span>
+                            <span className={cn("text-[13px]", MUTED)}>{planSubline(opt, isIndia)}</span>
+                          </span>
+                          <span aria-hidden="true" className="flex shrink-0 flex-col items-end gap-1">
+                            {opt.promo && (
+                              <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                                <span className={SMALL_PILL}>{opt.promo.percent}% off</span>
+                                <s className={cn("text-[14px] font-medium decoration-[#0C1A0E] decoration-2", MUTED)}>
+                                  {formatUsd(opt.listPrice)}/{PER_SHORT[opt.per]}
+                                </s>
+                              </span>
+                            )}
+                            <span className="text-[24px] font-extrabold leading-none tracking-[-0.02em]">
+                              {formatUsd(opt.first)}
+                              {!opt.promo && <span className={cn("text-[13px] font-medium tracking-normal", MUTED)}>/{PER_SHORT[opt.per]}</span>}
+                            </span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {PROMO && (
+                    <p className={cn("mt-0.5 text-[12px] leading-[1.4]", MUTED)}>
+                      Intro price covers your first payment. Discount applied automatically at checkout.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-2.5">
                   <span className={CAPS}>What you unlock</span>
                   <ul className="flex flex-col overflow-hidden rounded-[14px] border border-[#E0D8CC] bg-white">
                     {UNLOCKS.map(({ icon: Icon, title, body, pill }, i) => (
@@ -258,7 +251,7 @@ export function UpgradeModal() {
                 </div>
               </div>
 
-              <div className="flex shrink-0 flex-col gap-2.5 border-t border-[#E0D8CC] bg-[#F7F5F0] px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-3.5 sm:border-l sm:border-t-0 sm:px-8 sm:pb-8 sm:pt-0">
+              <div className="flex shrink-0 flex-col gap-2.5 border-t border-[#E0D8CC] bg-[#F7F5F0] px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-4 sm:px-7">
                 <Button
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
