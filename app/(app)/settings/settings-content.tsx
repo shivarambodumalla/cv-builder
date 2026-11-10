@@ -84,7 +84,7 @@ export function SettingsContent({
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
-      <h1 className="text-2xl font-bold tracking-tight mb-8">Preferences</h1>
+      <h1 className="text-2xl font-bold tracking-tight mb-8">Settings</h1>
 
       {/* Profile */}
       <section className="rounded-xl border p-5 sm:p-6 mb-6">

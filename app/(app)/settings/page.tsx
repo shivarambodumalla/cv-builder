@@ -5,7 +5,7 @@ import { getPlan } from "@/lib/billing/limits";
 import { SettingsContent } from "./settings-content";
 
 export const metadata: Metadata = {
-  title: "Preferences",
+  title: "Settings",
   description: "Manage your profile, email preferences, and account settings.",
 };
 

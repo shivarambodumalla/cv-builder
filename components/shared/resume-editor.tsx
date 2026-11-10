@@ -41,6 +41,7 @@ import {
   Search,
   Brain,
   MessageSquare,
+  Settings,
 } from "lucide-react";
 import { ExpertReviewPanel } from "@/components/cv-review/expert-review-panel";
 
@@ -602,6 +603,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
                 { label: "Interview Coach", href: `/interview-coach?cv_id=${cv.id}`, icon: BookOpen },
                 { label: "Billing", href: "/billing", icon: CreditCard },
+                { label: "Settings", href: "/settings", icon: Settings },
               ]}
               onLogout={handleLogout}
             />

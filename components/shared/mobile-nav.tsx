@@ -72,7 +72,7 @@ export function MobileNav() {
           {loggedIn ? (
             <div className="pt-2 border-t space-y-1">
               <Link href="/settings" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium hover:bg-muted transition-colors">
-                <Settings className="h-4 w-4" /> Preferences
+                <Settings className="h-4 w-4" /> Settings
               </Link>
               {!isPro && (
                 <button onClick={() => { setOpen(false); openUpgradeModal("generic"); }} className="flex w-full items-center gap-2 rounded-md bg-[#065F46] px-3 py-2.5 text-sm font-semibold text-white">

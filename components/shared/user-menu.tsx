@@ -16,7 +16,7 @@ interface UserMenuProps {
 
 const ITEMS: AccountMenuLink[] = [
   { label: "Billing", href: "/billing", icon: CreditCard },
-  { label: "Preferences", href: "/settings", icon: Settings },
+  { label: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function UserMenu({ email, fullName, avatarUrl }: UserMenuProps) {
