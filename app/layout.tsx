@@ -11,6 +11,8 @@ import { DevReload } from "./dev-reload";
 import { PageSessionTracker } from "@/components/shared/page-session-tracker";
 import { PageTracker } from "@/components/shared/page-tracker";
 import { AuthEventTracker } from "@/components/shared/auth-event-tracker";
+import { UpgradeEventTracker } from "@/components/shared/upgrade-event-tracker";
+import { MsUetScript } from "@/components/shared/ms-uet-script";
 import { GAScripts } from "@/components/shared/ga-scripts";
 import { HotjarScripts } from "@/components/shared/hotjar-scripts";
 import { AdSenseScript } from "@/components/shared/adsense-script";
@@ -169,9 +171,12 @@ export default function RootLayout({
               ad_user_data: 'denied',
               ad_personalization: 'denied',
             });
+            window.uetq = window.uetq || [];
+            window.uetq.push('consent', 'default', { ad_storage: 'denied' });
           `}
         </Script>
         <GAScripts />
+        <MsUetScript />
         <HotjarScripts />
         {/* AdSense auto ads; skipped on /career-path and /admin (see the component). */}
         <AdSenseScript />
@@ -188,6 +193,7 @@ export default function RootLayout({
             <PageSessionTracker />
             <PageTracker />
             <AuthEventTracker />
+            <UpgradeEventTracker />
             <SignupTimedTrigger />
             <SignupExitIntent />
             {children}

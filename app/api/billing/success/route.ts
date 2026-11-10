@@ -30,17 +30,17 @@ export async function GET() {
     const admin = createAdminClient();
     const { data: profile } = await admin
       .from("profiles")
-      .select("subscription_status")
+      .select("subscription_status, subscription_period")
       .eq("id", user.id)
       .single();
+
+    const subscription = user.email ? await findEntitledSubscription(user.email) : null;
 
     if (profile?.subscription_status === "active") {
       // Already activated by webhook — just redirect
       await markIntentConverted({ userId: user.id });
-      return NextResponse.redirect(`${appUrl}/dashboard`);
+      return NextResponse.redirect(dashboardUrl(appUrl, profile.subscription_period, subscription?.attributes.created_at));
     }
-
-    const subscription = user.email ? await findEntitledSubscription(user.email) : null;
 
     if (!subscription) {
       // Nothing paid under this email (yet). A buyer who changed the email at
@@ -78,7 +78,7 @@ export async function GET() {
 
     await markIntentConverted({ userId: user.id, subscriptionId: subscription.id });
 
-    return NextResponse.redirect(`${appUrl}/dashboard`);
+    return NextResponse.redirect(dashboardUrl(appUrl, period, subscription.attributes.created_at));
   } catch (err) {
     console.error("[billing/success] activation check failed:", err);
     return NextResponse.redirect(`${appUrl}/dashboard`);
@@ -87,4 +87,17 @@ export async function GET() {
 
 function isBillingPeriod(value: unknown): value is BillingPeriod {
   return typeof value === "string" && (BILLING_PERIODS as string[]).includes(value);
+}
+
+/** A subscription this new is the checkout that just redirected here. */
+const FRESH_SUBSCRIPTION_MS = 6 * 60 * 60 * 1000;
+
+/**
+ * /dashboard, plus `?upgraded=<period>` for a subscription that just started so
+ * UpgradeEventTracker fires the purchase conversion once. An old subscriber
+ * reopening this URL gets the plain dashboard, so a revisit never counts twice.
+ */
+function dashboardUrl(appUrl: string, period: unknown, createdAt: string | undefined): string {
+  const fresh = createdAt && Date.now() - Date.parse(createdAt) < FRESH_SUBSCRIPTION_MS;
+  return `${appUrl}/dashboard${fresh && isBillingPeriod(period) ? `?upgraded=${period}` : ""}`;
 }

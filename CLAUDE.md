@@ -460,6 +460,11 @@ Three mechanisms coexist:
   - Search, tag filter, sort, grid/list view toggle
 - Pro gates: story_summary_limit, interview_prep_limit (weekly free quotas in `plan_limits`)
 
+## Ad Conversion Tracking
+
+- Google: gtag (GA4 + Ads `AW-18095722375`) in components/shared/ga-scripts.tsx. Microsoft: UET tag `343285143` in components/shared/ms-uet-script.tsx (Microsoft's own snippet). Both start with ad storage denied (root layout) and CookieConsent grants it.
+- Conversions fire from lib/analytics/events.ts: `sign_up` (AuthEventTracker, `?auth_event=signup` from the OAuth callback) and `purchase` (UpgradeEventTracker, `?upgraded=<period>`, valued at `firstPaymentUsd`). /api/billing/success adds `upgraded` only for a subscription created in the last 6 hours, so reopening that URL never double-counts. Microsoft goals are custom events with action `sign_up` / `purchase`.
+
 ## Feedback & Ratings
 
 - Real 1-5 ratings collected after PDF download, two channels feeding one table:

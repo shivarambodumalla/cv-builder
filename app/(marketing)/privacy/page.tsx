@@ -61,6 +61,7 @@ const sections = [
       "Google Gemini (AI processing of CV content): data not retained by provider",
       "Resend (transactional email delivery): processes email address and email content",
       "Google Analytics + Google Ads (website analytics and conversion tracking): loaded only after cookie consent",
+      "Microsoft Advertising (Bing ads conversion tracking, UET tag): ad storage stays denied until you accept cookies",
       "Hotjar (session recordings and heatmaps on public pages): loaded only after cookie consent",
       "Google AdSense (advertising on public pages, not on the career path tool): ad storage stays denied until you accept cookies",
       "Impact.com (affiliate link tracking tag)",

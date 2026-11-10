@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare global { interface Window { gtag?: (...args: any[]) => void; } }
+declare global { interface Window { gtag?: (...args: any[]) => void; uetq?: { push: (...args: unknown[]) => void } | unknown[]; } }
 
 import { logActivity } from "./log";
 
@@ -7,6 +7,13 @@ function gtag(...args: unknown[]) {
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag(...args);
   }
+}
+
+/** Microsoft UET conversion event. Queues until bat.js loads (components/shared/ms-uet-script.tsx). */
+function uet(event: string, params: Record<string, unknown> = {}) {
+  if (typeof window === "undefined") return;
+  window.uetq = window.uetq || [];
+  (window.uetq as { push: (...args: unknown[]) => void }).push("event", event, params);
 }
 
 export function trackATSScan(score: number) {
@@ -29,8 +36,10 @@ export function trackUpgradeIntent(trigger: string) {
   logActivity("Hit upgrade wall", { metadata: { trigger } });
 }
 
-export function trackUpgrade(value: number = 9) {
+/** `value` is the amount charged (firstPaymentUsd), never a guessed default. */
+export function trackUpgrade(value: number) {
   gtag("event", "purchase", { event_category: "monetisation", value, currency: "USD" });
+  uet("purchase", { revenue_value: value, currency: "USD" });
   logActivity("Upgraded to Pro", { metadata: { value } });
 }
 
@@ -56,6 +65,7 @@ export function trackMentorshipLead(intent: string) {
 
 export function trackSignup(method: string = "google") {
   gtag("event", "sign_up", { method, event_category: "conversion" });
+  uet("sign_up");
 }
 
 export function trackLogin(method: string = "google") {

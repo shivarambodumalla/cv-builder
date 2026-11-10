@@ -31,6 +31,9 @@ function grantConsent() {
       ad_personalization: "granted",
     });
   }
+  // Microsoft UET consent (default denied in layout.tsx); queues if bat.js hasn't loaded.
+  window.uetq = window.uetq || [];
+  (window.uetq as { push: (...args: unknown[]) => void }).push("consent", "update", { ad_storage: "granted" });
   window.dispatchEvent(new CustomEvent("cvedge:consent-granted"));
 }
 
