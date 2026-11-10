@@ -12,6 +12,11 @@ import { LinkTracker } from "./link-tracker";
 import { InlineCta } from "./inline-cta";
 import { RelatedPosts } from "./related-posts";
 
+// Posts come from the DB. force-static keeps the page static (the admin
+// client's no-store fetch would otherwise make it dynamic); it re-reads the
+// post hourly, publishing or editing it revalidates it at once, and a slug
+// published after the build renders on its first request (dynamicParams).
+export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {

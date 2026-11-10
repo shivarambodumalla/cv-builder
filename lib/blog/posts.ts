@@ -137,9 +137,14 @@ export async function getPost(slug: string): Promise<BlogPostFull | null> {
 
   if (error || !data) return null;
   const post = rowToPostFull(data as Record<string, unknown>);
-  post.content.html = await unlinkScheduledPosts(post.content.html);
+  // The page renders the title as its own <h1>; some posts also open their
+  // stored HTML with one. Drop only that leading copy, never a later h1.
+  const html = post.content.html.replace(LEADING_H1_RE, "");
+  post.content.html = await unlinkScheduledPosts(html);
   return post;
 }
+
+const LEADING_H1_RE = /^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i;
 
 const BLOG_LINK_RE = /<a\s[^>]*href="(?:https:\/\/www\.thecvedge\.com)?\/blog\/([a-z0-9-]+)[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
 

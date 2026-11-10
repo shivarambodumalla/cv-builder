@@ -10,6 +10,9 @@
 import * as http from "http";
 import * as url from "url";
 import { OAuth2Client } from "google-auth-library";
+import * as dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
 
 const CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
