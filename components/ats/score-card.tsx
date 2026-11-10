@@ -148,7 +148,7 @@ export function ScoreCard({
     : CONFIDENCE[confidence] ?? CONFIDENCE.medium;
 
   return (
-    <section aria-labelledby="ats-score-title" className="overflow-hidden rounded-2xl border border-[#E0D8CC] bg-white">
+    <section aria-labelledby="ats-score-title" className="overflow-hidden rounded-2xl bg-white">
       {rescanning && (
         <div role="status" className="flex items-center gap-2.5 border-b border-[#E0D8CC] bg-secondary/10 px-5 py-3 text-[13px] font-semibold text-secondary">
           <Spinner className="h-4 w-4 text-secondary" />

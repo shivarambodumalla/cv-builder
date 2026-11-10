@@ -17,7 +17,7 @@ export function Spinner({ className }: { className?: string }) {
 
 export function Card({ children, className, ...rest }: { children: ReactNode; className?: string } & React.HTMLAttributes<HTMLElement>) {
   return (
-    <section className={cn("overflow-hidden rounded-2xl border border-[#E0D8CC] bg-white", className)} {...rest}>
+    <section className={cn("overflow-hidden rounded-2xl bg-white", className)} {...rest}>
       {children}
     </section>
   );

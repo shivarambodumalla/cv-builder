@@ -228,7 +228,7 @@ function Group({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={onToggle}
-        className="flex min-h-11 w-full items-center gap-2.5 border-t border-[#EFE9DF] bg-[#FBFAF7] px-4 py-3 text-left hover:bg-[#F7F5F0] sm:px-6"
+        className="flex min-h-11 w-full items-center gap-2.5 border-t border-[#EFE9DF] px-4 py-3 text-left hover:bg-[#F7F5F0] sm:px-6"
       >
         <span className="text-sm font-semibold text-[#0C1A0E]">{group.title}</span>
         {group.score != null && (
