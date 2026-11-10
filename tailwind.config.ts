@@ -1,5 +1,15 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * A theme colour that accepts Tailwind's opacity modifier. Plain `var(--x)`
+ * cannot take one: Tailwind 3 skips `bg-success/10` entirely when the colour
+ * is a CSS variable it can't parse, so every tint silently rendered nothing.
+ * color-mix keeps the variable (dark mode still adapts) and applies the alpha.
+ */
+function token(name: string): string {
+  return `color-mix(in srgb, var(--${name}) calc(<alpha-value> * 100%), transparent)`;
+}
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -16,47 +26,47 @@ const config: Config = {
         "cp-display": ["var(--font-geist-sans)", "Outfit", "sans-serif"],
       },
       colors: {
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        border: token("border"),
+        input: token("input"),
+        ring: token("ring"),
+        background: token("background"),
+        foreground: token("foreground"),
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: token("primary"),
+          foreground: token("primary-foreground"),
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
+          DEFAULT: token("secondary"),
+          foreground: token("secondary-foreground"),
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: token("destructive"),
+          foreground: token("destructive-foreground"),
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: token("muted"),
+          foreground: token("muted-foreground"),
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
+          DEFAULT: token("accent"),
+          foreground: token("accent-foreground"),
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+          DEFAULT: token("popover"),
+          foreground: token("popover-foreground"),
         },
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          DEFAULT: token("card"),
+          foreground: token("card-foreground"),
         },
         success: {
-          DEFAULT: "var(--success)",
+          DEFAULT: token("success"),
         },
         warning: {
-          DEFAULT: "var(--warning)",
+          DEFAULT: token("warning"),
         },
         error: {
-          DEFAULT: "var(--error)",
+          DEFAULT: token("error"),
         },
       },
       borderRadius: {
