@@ -149,7 +149,9 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange,
   // The ATS panel fires it before re-scanning, because the scan reads the saved CV.
   useEffect(() => {
     function onSaveNow(e: Event) {
-      const done = (e as CustomEvent<{ done?: () => void }>).detail?.done;
+      const detail = (e as CustomEvent<{ handled?: boolean; done?: () => void }>).detail;
+      if (detail) detail.handled = true;
+      const done = detail?.done;
       clearTimeout(debounceRef.current);
       save(getValues()).catch(() => {}).finally(() => done?.());
     }

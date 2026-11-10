@@ -132,8 +132,9 @@ export function switchTab(tab: string) {
 export function flushSave(): Promise<void> {
   return new Promise((resolve) => {
     const timer = setTimeout(resolve, 4000);
-    window.dispatchEvent(
-      new CustomEvent("save-now", { detail: { done: () => { clearTimeout(timer); resolve(); } } })
-    );
+    const detail = { handled: false, done: () => { clearTimeout(timer); resolve(); } };
+    window.dispatchEvent(new CustomEvent("save-now", { detail }));
+    // No editor mounted (e.g. the panel beside the cover letter form): nothing to wait for.
+    if (!detail.handled) detail.done();
   });
 }

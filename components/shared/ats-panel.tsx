@@ -487,7 +487,8 @@ export function AtsPanel({
       <header className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-0.5">
           <h2 className="text-xl font-bold leading-tight tracking-[-0.02em] text-[#0C1A0E] sm:text-[22px]">ATS analysis</h2>
-          <span className={cn("text-[13px]", outOfDate ? "font-semibold text-warning" : "text-[#5F5954]")}>
+          {/* Relative time can tick over between server render and hydration. */}
+          <span suppressHydrationWarning className={cn("text-[13px]", outOfDate ? "font-semibold text-warning" : "text-[#5F5954]")}>
             {outOfDate ? "Out of date, you've edited since" : `Scanned ${formatTimeAgo(report.created_at)}`}
           </span>
         </div>

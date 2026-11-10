@@ -119,13 +119,13 @@ export function UpgradeModal() {
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[#0C1A0E]/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[110] bg-[#0C1A0E]/55 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
           data-testid="upgrade-modal"
           aria-describedby={success ? undefined : "upgrade-modal-subtitle"}
           className={cn(
             // Below sm: bottom sheet. Body scrolls, CTA footer stays put.
-            "fixed inset-x-0 bottom-0 z-50 flex max-h-[calc(100dvh-16px)] flex-col overflow-hidden rounded-t-3xl bg-[#F7F5F0] text-[#0C1A0E] shadow-[0_24px_64px_rgba(12,26,14,0.35)] outline-none",
+            "fixed inset-x-0 bottom-0 z-[110] flex max-h-[calc(100dvh-16px)] flex-col overflow-hidden rounded-t-3xl bg-[#F7F5F0] text-[#0C1A0E] shadow-[0_24px_64px_rgba(12,26,14,0.35)] outline-none",
             "duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
             // sm and up: centred 780px modal, plans left, cream unlock column right.
             "sm:inset-0 sm:m-auto sm:grid sm:h-fit sm:max-h-[calc(100dvh-32px)] sm:w-[calc(100vw-32px)] sm:max-w-[780px] sm:grid-cols-[minmax(0,1fr)_340px] sm:grid-rows-[1fr_auto] sm:overflow-y-auto sm:rounded-[20px] sm:bg-white",
