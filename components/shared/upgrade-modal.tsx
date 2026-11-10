@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { Briefcase, Check, Crown, FileText, Target, X, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Check, Crown, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
-import { BILLING_PERIODS, PRO_PLANS, PROMO, firstPaymentUsd, formatInr, formatUsd, promoFor, type BillingPeriod } from "@/lib/billing/pricing";
+import { BILLING_PERIODS, PRO_PLANS, PROMO, firstPaymentUsd, formatInr, formatUsd, promoFor, type BillingPeriod, type ProPlan } from "@/lib/billing/pricing";
 import { useIsIndia } from "@/lib/billing/use-is-india";
+
+const PER_SHORT: Record<ProPlan["per"], string> = { week: "wk", month: "mo", year: "yr" };
 
 /** One row per billing period, from the shared pricing module; yearly is the headline deal. */
 const OPTIONS = BILLING_PERIODS.map((period) => ({
@@ -17,202 +19,265 @@ const OPTIONS = BILLING_PERIODS.map((period) => ({
   popular: period === "yearly",
 }));
 
+type Option = (typeof OPTIONS)[number];
+
+const LIMIT = "Free limit reached";
+const PRO_FEATURE = "Pro feature";
+
 // Free quotas are either lifetime (one ATS scan) or Pro-only, so no headline
 // promises a reset: the way forward is always Pro.
-const HEADLINES: Record<UpgradeTrigger, { title: string; subtitle: string; icon: "crown" | "zap" | "sparkles" }> = {
-  cv_limit: { title: "Resume limit reached", subtitle: "Upgrade to create unlimited resumes tailored for different roles.", icon: "crown" },
-  ats_limit: { title: "You've used your free ATS scan", subtitle: "Pro gives you unlimited scans and the full report: every issue, missing keywords and suggestions.", icon: "zap" },
-  rewrite_limit: { title: "AI rewrites are a Pro feature", subtitle: "Rewrite any bullet or summary, as often as you like.", icon: "sparkles" },
-  job_match_limit: { title: "Job Match is a Pro feature", subtitle: "Score your resume against any job description and see what to fix.", icon: "sparkles" },
-  cover_letter_limit: { title: "Cover letters are a Pro feature", subtitle: "Generate a letter for any job in three tones, then edit and export it.", icon: "sparkles" },
-  fix_all_limit: { title: "Fix All is a Pro feature", subtitle: "Rewrite your summary and every bullet in one pass.", icon: "sparkles" },
-  cv_tailor_limit: { title: "Tailor CV is a Pro feature", subtitle: "Rewrite your resume for one job description in a single pass.", icon: "sparkles" },
-  offer_eval_limit: { title: "Offer evaluation is a Pro feature", subtitle: "Grade any job description on seniority, clarity, growth and balance.", icon: "sparkles" },
-  portfolio_scan_limit: { title: "Extracting answers from your resume is a Pro feature", subtitle: "Turn your resume, portfolio or GitHub into STAR answers you can review and save.", icon: "sparkles" },
-  story_summary_limit: { title: "Answer summaries are a Pro feature", subtitle: "Turn any experience into a short answer you can say out loud.", icon: "sparkles" },
-  interview_prep_limit: { title: "Interview prep is a Pro feature", subtitle: "Paste a job description to see which experiences to lead with.", icon: "sparkles" },
-  template_locked: { title: "This template is Pro", subtitle: "Pro includes clean PDFs, unlimited scans and every AI tool.", icon: "crown" },
-  download: { title: "Remove the CVEdge footer", subtitle: "Free downloads include a small footer line. Pro exports clean PDFs and unlocks every AI tool.", icon: "zap" },
-  generic: { title: "Upgrade to Pro", subtitle: "Clean PDFs, the full ATS report and every AI tool.", icon: "crown" },
+const HEADLINES: Record<UpgradeTrigger, { eyebrow: string; title: string; subtitle: string }> = {
+  cv_limit: { eyebrow: LIMIT, title: "Resume limit reached", subtitle: "Upgrade to create unlimited resumes tailored for different roles." },
+  ats_limit: { eyebrow: LIMIT, title: "You've used your free ATS scan", subtitle: "Pro gives you unlimited scans and the full report: every issue, missing keywords and suggestions." },
+  rewrite_limit: { eyebrow: PRO_FEATURE, title: "AI rewrites are a Pro feature", subtitle: "Rewrite any bullet or summary, as often as you like." },
+  job_match_limit: { eyebrow: PRO_FEATURE, title: "Job Match is a Pro feature", subtitle: "Score your resume against any job description and see what to fix." },
+  cover_letter_limit: { eyebrow: PRO_FEATURE, title: "Cover letters are a Pro feature", subtitle: "Generate a letter for any job in three tones, then edit and export it." },
+  fix_all_limit: { eyebrow: PRO_FEATURE, title: "Fix All is a Pro feature", subtitle: "Rewrite your summary and every bullet in one pass." },
+  cv_tailor_limit: { eyebrow: PRO_FEATURE, title: "Tailor CV is a Pro feature", subtitle: "Rewrite your resume for one job description in a single pass." },
+  offer_eval_limit: { eyebrow: PRO_FEATURE, title: "Offer evaluation is a Pro feature", subtitle: "Grade any job description on seniority, clarity, growth and balance." },
+  portfolio_scan_limit: { eyebrow: PRO_FEATURE, title: "Extracting answers from your resume is a Pro feature", subtitle: "Turn your resume, portfolio or GitHub into STAR answers you can review and save." },
+  story_summary_limit: { eyebrow: PRO_FEATURE, title: "Answer summaries are a Pro feature", subtitle: "Turn any experience into a short answer you can say out loud." },
+  interview_prep_limit: { eyebrow: PRO_FEATURE, title: "Interview prep is a Pro feature", subtitle: "Paste a job description to see which experiences to lead with." },
+  template_locked: { eyebrow: "Pro template", title: "This template is Pro", subtitle: "Pro includes clean PDFs, unlimited scans and every AI tool." },
+  download: { eyebrow: "CVEdge Pro", title: "Remove the CVEdge footer", subtitle: "Free downloads include a small footer line. Pro exports clean PDFs and unlocks every AI tool." },
+  generic: { eyebrow: "CVEdge Pro", title: "Upgrade to Pro", subtitle: "Clean PDFs, the full ATS report and every AI tool." },
 };
 
-const FEATURES = [
-  "Clean PDFs, no footer",
-  "Unlimited ATS scans and the full report",
-  "AI rewrites and Fix All",
-  "Job Match and Tailor CV",
-  "Cover letters",
-  "Interview Coach AI",
-  "80+ ATS score guarantee",
-  "Priority support",
+const UNLOCKS: { icon: LucideIcon; title: string; body: string; pill?: string }[] = [
+  { icon: FileText, title: "Unlimited resumes", body: "AI rewrites, Fix All and clean PDFs with no footer" },
+  { icon: Target, title: "Beat the ATS", body: "Unlimited scans with the full report", pill: "80+ score guarantee" },
+  { icon: Briefcase, title: "Land the job", body: "Job Match, Tailor CV, cover letters and Interview Coach" },
 ];
+
+const MUTED = "text-[#5F5954]";
+const CAPS = "text-[12px] font-semibold uppercase tracking-[0.08em] text-[#5F5954]";
+const SMALL_PILL = "rounded-md bg-[#D1FAE5] px-1.5 py-[3px] text-[10px] font-bold uppercase leading-[1.2] tracking-[0.04em] text-[#065F46]";
+
+/** Sub line under the plan name. The promo covers the first payment only. */
+function planSubline(opt: Option, isIndia: boolean): string {
+  if (opt.promo) {
+    return isIndia
+      ? `≈ ${formatInr(opt.first)} for your first ${opt.per}`
+      : `then ${formatUsd(opt.listPrice)}/${PER_SHORT[opt.per]}`;
+  }
+  return isIndia ? `≈ ${formatInr(opt.listPrice)} per ${opt.per}` : `Billed every ${opt.per}`;
+}
+
+function planAriaLabel(opt: Option): string {
+  return opt.promo
+    ? `${opt.label} plan, ${formatUsd(opt.first)} for your first ${opt.per}, then ${formatUsd(opt.listPrice)} per ${opt.per}`
+    : `${opt.label} plan, ${formatUsd(opt.listPrice)} per ${opt.per}`;
+}
 
 export function UpgradeModal() {
   const { isOpen, trigger, closeUpgradeModal } = useUpgradeModal();
   const [billing, setBilling] = useState<BillingPeriod>("yearly");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const isIndia = useIsIndia();
 
   useEffect(() => {
-    if (isOpen) { setSuccess(false); setBilling("yearly"); }
+    if (isOpen) { setSuccess(false); setBilling("yearly"); setCheckoutError(false); setCheckoutLoading(false); }
   }, [isOpen]);
+
+  // Coming back from checkout with the browser's back button restores this page
+  // from the back-forward cache; the button must not stay on "Opening checkout".
+  useEffect(() => {
+    function onPageShow(e: PageTransitionEvent) {
+      if (e.persisted) setCheckoutLoading(false);
+    }
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
 
   const headline = HEADLINES[trigger];
   const selected = OPTIONS.find((o) => o.period === billing)!;
-  const isIndia = useIsIndia();
-  const HeadlineIcon = headline.icon === "crown" ? Crown : headline.icon === "zap" ? Zap : Sparkles;
 
   async function handleCheckout() {
     setCheckoutLoading(true);
+    setCheckoutError(false);
     try {
       const res = await fetch("/api/billing/checkout-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ period: billing }),
       });
-      const data = await res.json();
-      if (res.ok && data.url) {
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.url) {
+        // Leave the button in its loading state while the browser navigates away.
         window.location.href = data.url;
+        return;
       }
-    } catch { /* ignore */ }
+    } catch {
+      // Network failure: fall through to the inline error.
+    }
+    setCheckoutError(true);
     setCheckoutLoading(false);
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
-      <SheetContent className="w-full sm:max-w-[440px] overflow-y-auto p-0" aria-describedby={undefined} data-testid="upgrade-modal">
-        <SheetTitle className="sr-only">Upgrade to Pro</SheetTitle>
-        {success ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-24 px-6">
-            <div className="relative">
-              <div className="absolute inset-0 animate-ping rounded-full bg-success/30" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success">
-                <Check className="h-8 w-8 text-white" />
+    <DialogPrimitive.Root open={isOpen} onOpenChange={(v) => { if (!v) closeUpgradeModal(); }}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[110] bg-[#0C1A0E]/45 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        {/* Side drawer at every width: 480px from the right, full width on phones. Body scrolls, CTA footer stays put. */}
+        <DialogPrimitive.Content
+          data-testid="upgrade-modal"
+          aria-describedby={success ? undefined : "upgrade-modal-subtitle"}
+          className={cn(
+            "fixed inset-y-0 right-0 z-[110] flex w-full flex-col bg-[#F7F5F0] text-[#0C1A0E] shadow-[-24px_0_64px_rgba(12,26,14,0.3)] outline-none sm:w-[480px]",
+            "duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right"
+          )}
+        >
+          {success ? (
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-24">
+              <div className="relative">
+                <div className="absolute inset-0 animate-ping rounded-full bg-success/30" />
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success">
+                  <Check className="h-8 w-8 text-white" />
+                </div>
               </div>
+              <DialogPrimitive.Title className="text-2xl font-bold">You&apos;re on Pro!</DialogPrimitive.Title>
+              <p className={cn("text-center text-sm", MUTED)}>Every feature is now available. Refreshing...</p>
             </div>
-            <h2 className="text-2xl font-bold">You&apos;re on Pro!</h2>
-            <p className="text-sm text-muted-foreground text-center">
-              Every feature is now available. Refreshing...
-            </p>
-          </div>
-        ) : (
-        <div className="flex flex-col">
-          {/* Header */}
-          <div className="px-6 pt-8 pb-5">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <HeadlineIcon className="h-5 w-5 text-primary" />
-              </div>
-              <h2 className="text-2xl font-bold tracking-tight">{headline.title}</h2>
-            </div>
-            <p className="text-sm text-muted-foreground">{headline.subtitle}</p>
-          </div>
-
-          <div className="px-6 pb-6 space-y-5">
-            {/* Pricing rows — all with borders */}
-            <div className="space-y-2.5">
-              {OPTIONS.map((opt) => {
-                const isSelected = billing === opt.period;
-                return (
-                  <button
-                    key={opt.period}
-                    type="button"
-                    onClick={() => setBilling(opt.period)}
-                    className={cn(
-                      "relative flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3.5 text-left transition-all",
-                      isSelected
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "border-border hover:border-muted-foreground/40"
-                    )}
-                  >
-                    {/* Radio */}
-                    <div className={cn(
-                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                      isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
-                    )}>
-                      {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
-                    </div>
-
-                    {/* Label */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold">{opt.label}</span>
-                        {opt.popular && (
-                          <span className="rounded-full bg-[#065F46] px-2 py-0.5 text-[10px] font-bold text-white leading-none">
-                            BEST VALUE
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {opt.promo
-                          ? `Code ${opt.promo.code} applied at checkout · then ${formatUsd(opt.listPrice)}/${opt.per}`
-                          : `${formatUsd(opt.listPrice)}/${opt.per}`}
-                      </p>
-                      {isIndia && (
-                        <p className="text-[11px] text-muted-foreground">
-                          ≈ {formatInr(opt.first)} {opt.promo ? `for your first ${opt.per}` : `/${opt.per}`}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Price */}
-                    <div className="text-right shrink-0">
-                      <div className="flex items-baseline gap-1.5">
-                        {opt.promo && (
-                          <span className="text-xs text-muted-foreground/50 line-through">{formatUsd(opt.listPrice)}</span>
-                        )}
-                        <span className="text-xl font-bold">{formatUsd(opt.first)}</span>
-                      </div>
-                      {opt.promo && (
-                        <span className="inline-block rounded bg-success/20 px-1.5 py-0.5 text-[10px] font-bold text-success leading-none mt-0.5">
-                          {opt.promo.percent}% OFF
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Tax note */}
-            <p className="text-[10px] text-muted-foreground/60 text-center">
-              Prices exclude sales tax, GST or VAT, which is calculated at checkout.
-              {PROMO && " Discount codes apply to your first payment; renewals are at the regular price."}
-            </p>
-
-            {/* Features */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Everything included</p>
-              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-                {FEATURES.map((f) => (
-                  <div key={f} className="flex items-center gap-1.5 text-[13px]">
-                    <Check className="h-3.5 w-3.5 shrink-0 text-success" />
-                    <span>{f}</span>
+          ) : (
+            <>
+              <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-5 pb-2 pt-6 sm:px-7 sm:pt-7">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-col gap-2">
+                    <span className={cn("inline-flex items-center gap-1.5", CAPS)}>
+                      <Crown className="h-3.5 w-3.5 shrink-0 text-[#065F46]" aria-hidden="true" />
+                      {headline.eyebrow}
+                    </span>
+                    <DialogPrimitive.Title className="text-[26px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[28px]">
+                      {headline.title}
+                    </DialogPrimitive.Title>
+                    <DialogPrimitive.Description id="upgrade-modal-subtitle" className={cn("text-[15px] leading-[1.45]", MUTED)}>
+                      {headline.subtitle}
+                    </DialogPrimitive.Description>
                   </div>
-                ))}
+                  <DialogPrimitive.Close
+                    aria-label="Close"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#E0D8CC] bg-white transition-colors hover:bg-[#F7F5F0] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#34D399] sm:h-9 sm:w-9"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </DialogPrimitive.Close>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <div role="radiogroup" aria-label="Billing period" className="flex flex-col gap-2">
+                    {OPTIONS.map((opt) => {
+                      const isSelected = billing === opt.period;
+                      return (
+                        <label
+                          key={opt.period}
+                          className={cn(
+                            "relative flex min-h-[76px] cursor-pointer items-center gap-3 rounded-[14px] border-2 px-4 py-3.5 transition-colors",
+                            "has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#34D399]",
+                            isSelected ? "border-[#065F46] bg-[#EEF6F1]" : "border-[#E0D8CC] bg-white hover:border-[#B9B0A2]"
+                          )}
+                        >
+                          <input
+                            type="radio"
+                            name="upgrade-plan"
+                            value={opt.period}
+                            checked={isSelected}
+                            onChange={() => { setBilling(opt.period); setCheckoutError(false); }}
+                            aria-label={planAriaLabel(opt)}
+                            className="sr-only"
+                          />
+                          {isSelected ? (
+                            <span aria-hidden="true" className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full bg-[#065F46]">
+                              <Check className="h-3 w-3 text-white" strokeWidth={3.5} />
+                            </span>
+                          ) : (
+                            <span aria-hidden="true" className="block h-[22px] w-[22px] shrink-0 rounded-full border-2 border-[#C9C0B2]" />
+                          )}
+                          <span aria-hidden="true" className="flex min-w-0 flex-1 flex-col gap-1">
+                            <span className="flex items-center gap-2">
+                              <span className="text-[16px] font-semibold">{opt.label}</span>
+                              {opt.popular && (
+                                <span className="rounded-full bg-[#065F46] px-[7px] py-[3px] text-[10px] font-bold uppercase leading-[1.2] tracking-[0.06em] text-white">
+                                  Best value
+                                </span>
+                              )}
+                            </span>
+                            <span className={cn("text-[13px]", MUTED)}>{planSubline(opt, isIndia)}</span>
+                          </span>
+                          <span aria-hidden="true" className="flex shrink-0 flex-col items-end gap-1">
+                            {opt.promo && (
+                              <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                                <span className={SMALL_PILL}>{opt.promo.percent}% off</span>
+                                <s className={cn("text-[14px] font-medium decoration-[#0C1A0E] decoration-2", MUTED)}>
+                                  {formatUsd(opt.listPrice)}/{PER_SHORT[opt.per]}
+                                </s>
+                              </span>
+                            )}
+                            <span className="text-[24px] font-extrabold leading-none tracking-[-0.02em]">
+                              {formatUsd(opt.first)}
+                              {!opt.promo && <span className={cn("text-[13px] font-medium tracking-normal", MUTED)}>/{PER_SHORT[opt.per]}</span>}
+                            </span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {PROMO && (
+                    <p className={cn("mt-0.5 text-[12px] leading-[1.4]", MUTED)}>
+                      Intro price covers your first payment. Discount applied automatically at checkout.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-2.5">
+                  <span className={CAPS}>What you unlock</span>
+                  <ul className="flex flex-col overflow-hidden rounded-[14px] border border-[#E0D8CC] bg-white">
+                    {UNLOCKS.map(({ icon: Icon, title, body, pill }, i) => (
+                      <li key={title} className={cn("flex items-center gap-3 px-3.5 py-3", i > 0 && "border-t border-[#EFE9DF]")}>
+                        <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#EEF6F1]">
+                          <Icon className="h-[18px] w-[18px] text-[#065F46]" />
+                        </span>
+                        <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
+                          <span className="flex flex-wrap items-center gap-2">
+                            <span className="text-[15px] font-semibold leading-[1.3]">{title}</span>
+                            {pill && <span className={SMALL_PILL}>{pill}</span>}
+                          </span>
+                          <span className={cn("text-[13px] leading-[1.4]", MUTED)}>{body}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <span className={cn("text-[12px] leading-[1.4]", MUTED)}>Plus priority support on every plan.</span>
+                </div>
               </div>
-            </div>
 
-            {/* CTA */}
-            <Button
-              className="w-full h-12 text-base font-semibold shadow-lg shadow-primary/20"
-              onClick={handleCheckout}
-              disabled={checkoutLoading}
-            >
-              {checkoutLoading
-                ? "Processing..."
-                : selected.promo
-                  ? `Get Pro: ${formatUsd(selected.first)} for your first ${selected.per}`
-                  : `Get Pro: ${formatUsd(selected.listPrice)}/${selected.per}`}
-            </Button>
-
-            <p className="text-center text-[11px] text-muted-foreground">
-              &#10003; Cancel anytime &middot; &#10003; Instant access after payment
-            </p>
-          </div>
-        </div>
-        )}
-      </SheetContent>
-    </Sheet>
+              <div className="flex shrink-0 flex-col gap-2.5 border-t border-[#E0D8CC] bg-[#F7F5F0] px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-4 sm:px-7">
+                <Button
+                  onClick={handleCheckout}
+                  disabled={checkoutLoading}
+                  className="h-[52px] w-full rounded-[14px] bg-[#065F46] text-[16px] font-semibold tracking-[-0.01em] text-white hover:bg-[#065F46] hover:brightness-[0.92] focus-visible:ring-[#34D399]"
+                >
+                  {checkoutLoading
+                    ? "Opening checkout..."
+                    : selected.promo
+                      ? `Get Pro · ${formatUsd(selected.first)} first ${selected.per}`
+                      : `Get Pro · ${formatUsd(selected.listPrice)}/${selected.per}`}
+                </Button>
+                {checkoutError && (
+                  <p role="alert" className="text-center text-[12px] font-medium text-error">
+                    Couldn&apos;t open checkout. Try again.
+                  </p>
+                )}
+                <p className={cn("text-center text-[12px] leading-normal", MUTED)}>
+                  {selected.promo
+                    ? `Tax calculated at checkout. Renews at ${formatUsd(selected.listPrice)}/${selected.per}. Cancel anytime.`
+                    : "Tax calculated at checkout. Cancel anytime."}
+                </p>
+              </div>
+            </>
+          )}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }

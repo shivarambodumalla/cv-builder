@@ -145,6 +145,20 @@ export function ContentEditor({ cvId, initialData, onChange, onSaveStatusChange,
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [cvId, getValues]);
 
+  // "save-now": skip the debounce and persist immediately, then call `done`.
+  // The ATS panel fires it before re-scanning, because the scan reads the saved CV.
+  useEffect(() => {
+    function onSaveNow(e: Event) {
+      const detail = (e as CustomEvent<{ handled?: boolean; done?: () => void }>).detail;
+      if (detail) detail.handled = true;
+      const done = detail?.done;
+      clearTimeout(debounceRef.current);
+      save(getValues()).catch(() => {}).finally(() => done?.());
+    }
+    window.addEventListener("save-now", onSaveNow);
+    return () => window.removeEventListener("save-now", onSaveNow);
+  }, [save, getValues]);
+
   function toggleSection(key: SectionKey) {
     const current = getValues(`sections.${key}` as `sections.contact`);
     setValue(`sections.${key}` as `sections.contact`, !current, {
