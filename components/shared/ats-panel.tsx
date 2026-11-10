@@ -1,376 +1,330 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-// score-ring no longer used — score card is inline SVG
-import { Button } from "@/components/ui/button";
-import {
-  RefreshCw,
-  ChevronDown,
-  Lightbulb,
-  Crosshair,
-  Plus,
-  AlertTriangle,
-  Brain,
-  FileText,
-  Search,
-  CheckCircle2,
-  Loader2,
-  RotateCcw,
-  AlertCircle,
-  Check,
-  Sparkles,
-  Wand2,
-  Shield,
-  Download,
-  Lock,
-} from "lucide-react";
+import { RefreshCw, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { FieldRef, AtsReportData, AtsCategoryScore } from "@/lib/ai/ats-analyser";
+import type { AtsReportData, FieldRef } from "@/lib/ai/ats-analyser";
 import { isLockedReport, type LockedAtsReport } from "@/lib/ats/redact";
 import type { ClientScoreResult } from "@/lib/ats/client-scorer";
 import type { ResumeContent } from "@/lib/resume/types";
 import { AiRewriteDrawer } from "@/components/resume/ai-rewrite-drawer";
-import { useUpgradeModal, type UpgradeTrigger } from "@/context/upgrade-modal-context";
-import { UpgradeBanner } from "@/components/shared/upgrade-banner";
-import { ConfidenceChip } from "@/components/shared/confidence-chip";
 import { FixAllDrawer, type FixAllResult } from "@/components/resume/fix-all-drawer";
-import { StepLoader, type LoaderStep } from "@/components/shared/step-loader";
+import { useUpgradeModal } from "@/context/upgrade-modal-context";
 import { useActivity } from "@/lib/analytics/useActivity";
-import { JobMatchNudge } from "@/components/popups/job-match-nudge";
+import { PanelButton } from "@/components/ats/ats-ui";
+import { ScoreCard, type CategoryTile } from "@/components/ats/score-card";
+import { FixList, groupDomId, type FixGroup, type FixItem } from "@/components/ats/fix-list";
+import { LockedReport } from "@/components/ats/locked-report";
+import {
+  AfterFixAll,
+  AllClear,
+  FixAllRunning,
+  FullPanelError,
+  GuaranteeClaim,
+  InlineNotice,
+  PreScan,
+  Scanning,
+  toPanelError,
+  type FixAllComparison,
+  type PanelError,
+  type PrecheckItem,
+  type ScanStep,
+} from "@/components/ats/panel-states";
+import {
+  categoryName,
+  flushSave,
+  formatTimeAgo,
+  isSuggestion,
+  issueKey,
+  jumpToField,
+  overallTone,
+  plural,
+} from "@/components/ats/ats-helpers";
 
 type ReportMeta = { id: string; score: number; created_at: string };
 /** Pro gets the full report; the free plan gets the server-redacted view (see lib/ats/redact.ts). */
 type AtsPanelReport = (Partial<AtsReportData> | LockedAtsReport) & ReportMeta;
 
-const REWRITABLE_SECTIONS = new Set(["experience", "summary", "projects", "volunteering"]);
-
 interface AtsPanelProps {
   cvId: string;
   report: AtsPanelReport | null;
-  cvUpdatedAt?: string;
   estimatedScore?: ClientScoreResult | null;
   currentSkills?: string[];
   content?: ResumeContent;
   onRewriteAccept?: (newText: string, fieldRef: FieldRef) => void;
   plan?: string;
   autoScan?: boolean;
-  onDownload?: () => void;
 }
 
-type AnalysisStep = "reading" | "keywords" | "scoring" | "done";
+const REWRITABLE_SECTIONS = new Set(["experience", "summary", "projects", "volunteering"]);
+/** Tile order on the score card; unknown categories follow. */
+const TILE_ORDER = ["keywords", "bullet_quality", "measurable_results", "formatting", "contact", "sections"];
 
-const ANALYSIS_STEPS: { key: AnalysisStep; label: string; sub: string; icon: React.ElementType }[] = [
-  { key: "reading", label: "Reading your resume", sub: "Parsing sections and content", icon: FileText },
-  { key: "keywords", label: "Checking keywords", sub: "Matching against role-specific lists", icon: Search },
-  { key: "scoring", label: "AI is scoring", sub: "Evaluating bullets, formatting, impact", icon: Brain },
-  { key: "done", label: "Analysis complete!", sub: "Your ATS report is ready", icon: CheckCircle2 },
-];
+/* ── Reading the CV for rewrite context ── */
 
-const CATEGORY_LABELS: Record<string, string> = {
-  contact: "Contact Info",
-  sections: "Required Sections",
-  keywords: "Keywords",
-  measurable_results: "Measurable Results",
-  bullet_quality: "Bullet Quality",
-  formatting: "Formatting",
-};
-
-function getCategoryColor(score: number): string {
-  if (score >= 90) return "var(--success)";
-  if (score >= 70) return "var(--success)";
-  if (score >= 50) return "var(--warning)";
-  return "var(--error)";
+function findOriginalText(content: ResumeContent | undefined, ref: FieldRef): string {
+  if (!content) return "";
+  if (ref.section === "summary") return content.summary?.content ?? "";
+  const bullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []);
+  if (ref.section === "experience" && ref.bulletText) {
+    const needle = ref.bulletText.toLowerCase().slice(0, 40);
+    const hit = bullets.find((b) => b.toLowerCase().includes(needle));
+    if (hit) return hit;
+  }
+  if (ref.section === "experience" && ref.index != null && bullets[ref.index]) return bullets[ref.index];
+  // The AI didn't quote a bullet (or it was edited since): offer the first one
+  // so Rewrite still opens with something to work on.
+  if (ref.section === "experience") return bullets[0] ?? "";
+  return "";
 }
 
-function getScoreLabel(score: number): string {
-  if (score >= 90) return "Interview Ready";
-  if (score >= 75) return "Strong Profile";
-  if (score >= 60) return "Needs Improvement";
-  return "At Risk";
+function findSectionLabel(content: ResumeContent | undefined, ref: FieldRef): string {
+  if (ref.section === "summary") return "Summary";
+  if (ref.section === "experience" && ref.bulletText && content) {
+    const needle = ref.bulletText.toLowerCase().slice(0, 40);
+    for (const item of content.experience?.items ?? []) {
+      if ((item.bullets ?? []).some((b) => b.toLowerCase().includes(needle))) {
+        return `Work Experience · ${[item.role, item.company].filter(Boolean).join(" at ")}`;
+      }
+    }
+  }
+  return ref.section;
 }
 
-function getScoreDescription(score: number): string {
-  if (score >= 90) return "Your resume passes most ATS systems";
-  if (score >= 75) return "Good score with a few areas to improve";
-  if (score >= 60) return "Several issues may cause ATS rejection";
-  return "High risk of ATS rejection";
-}
-
-function jumpToField(ref: FieldRef) {
-  window.dispatchEvent(new CustomEvent("jump-to-field", { detail: ref }));
-}
-
-function formatTimeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days}d ago`;
-}
-
-/* Stable identity for an issue so we can mark it addressed across re-renders. */
-function issueKey(category: string, issue: { description: string }): string {
-  return `${category}::${issue.description}`;
-}
-
-/* ── Category accordion row ── */
-function CategoryRow({
-  name,
-  data,
-  onFix,
-  onRewrite,
-  estimatedCatScore,
-  changed,
-  addressedIssues,
-}: {
-  name: string;
-  data: AtsCategoryScore;
-  onFix: (issue: { description: string; field_ref?: FieldRef }) => void;
-  onRewrite?: (issue: { description: string; fix: string; field_ref?: FieldRef }, category: string) => void;
-  estimatedCatScore?: number;
-  changed?: boolean;
-  addressedIssues?: Set<string>;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const activeIssues = data.issues;
-  const shownScore = estimatedCatScore ?? data.score;
-  const color = getCategoryColor(shownScore);
-
-  return (
-    <div className={cn("rounded-lg border", changed && "border-success/50 animate-[pulse_0.6s_ease]")}>
-      <button
-        type="button"
-        className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-muted/40 transition-colors"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <span className="flex-1 text-left font-medium">
-          {CATEGORY_LABELS[name] || name}
-          {activeIssues.length > 0 && (
-            <span className="ml-2 text-xs text-muted-foreground">
-              ({activeIssues.length} issue{activeIssues.length !== 1 ? "s" : ""})
-            </span>
-          )}
-        </span>
-        <div className="flex items-center gap-2">
-          <div style={{ width: "80px", height: "5px", background: "#EDE8E0", borderRadius: "100px", overflow: "hidden" }}>
-            <div style={{ width: `${shownScore}%`, height: "100%", borderRadius: "100px", background: color, transition: "width 0.4s ease" }} />
-          </div>
-          <span style={{ fontSize: "12px", fontWeight: 700, color, width: "28px", textAlign: "right" }}>
-            {shownScore}
-          </span>
-          <ChevronDown
-            className={`h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
-          />
-        </div>
-      </button>
-
-      {expanded && activeIssues.length > 0 && (
-        <div className="border-t px-4 py-3 space-y-2">
-          {activeIssues.map((issue, i) => {
-            const addressed = addressedIssues?.has(issueKey(name, issue)) ?? false;
-            return (
-              <div key={i} className={cn("flex items-start gap-2 text-sm", addressed && "opacity-60")}>
-                <div className="flex-1 space-y-0.5">
-                  <p className={addressed ? "line-through" : undefined}>{issue.description}</p>
-                  {issue.fix && (
-                    <p className="text-xs text-muted-foreground">{issue.fix}</p>
-                  )}
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  {addressed ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-success">
-                      <Check className="h-3 w-3" /> Addressed
-                    </span>
-                  ) : (
-                    <span
-                      className="text-xs font-medium text-success"
-                      title="Estimated score lift after re-analysis. Click Re-analyze to verify."
-                    >
-                      ~+{issue.impact} pts
-                    </span>
-                  )}
-                  {!addressed && issue.field_ref && REWRITABLE_SECTIONS.has(issue.field_ref.section) && onRewrite && (
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-success" onClick={() => onRewrite(issue, name)}>
-                      <Sparkles className="mr-1 h-3 w-3" />Rewrite
-                    </Button>
-                  )}
-                  {!addressed && issue.field_ref && (issue.field_ref.field || issue.field_ref.bulletText) && (
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onFix(issue)}>
-                      <Crosshair className="mr-1 h-3 w-3" />Fix
-                    </Button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-      {expanded && activeIssues.length === 0 && (
-        <div className="border-t px-4 py-3 text-sm text-muted-foreground">
-          No issues found.
-        </div>
-      )}
-    </div>
+function precheck(content: ResumeContent | undefined): PrecheckItem[] {
+  const hasBody = !!(
+    content?.experience?.items?.length ||
+    content?.projects?.items?.length ||
+    content?.education?.items?.length ||
+    content?.volunteering?.items?.length
   );
+  return [
+    { label: "Name", section: "contact", done: !!content?.contact?.name?.trim() },
+    { label: "Email", section: "contact", done: !!content?.contact?.email?.trim() },
+    { label: "Experience, projects or education", section: "experience", done: hasBody },
+    { label: "Skills", section: "skills", done: !!content?.skills?.categories?.length },
+  ];
 }
 
-/* "3 more issues", null when there is nothing to count. */
-function countOf(n: number, singular: string, plural: string): string | null {
-  if (n <= 0) return null;
-  return `${n} ${n === 1 ? singular : plural}`;
-}
-
-/* "a, b, and c" */
-function joinList(parts: string[]): string {
-  if (parts.length <= 1) return parts.join("");
-  if (parts.length === 2) return `${parts[0]} and ${parts[1]}`;
-  return `${parts.slice(0, -1).join(", ")}, and ${parts[parts.length - 1]}`;
-}
-
-/* Shapes only: stands in for the hidden rows without carrying any text. */
-const PLACEHOLDER_ROWS = [
-  { title: "78%", fix: "52%" },
-  { title: "64%", fix: "70%" },
-  { title: "85%", fix: "44%" },
-];
-
-/* ── Free plan: top fixes in full, then what the full report holds ── */
-function LockedReportBody({
-  report,
-  onFix,
-  onUpgrade,
-}: {
-  report: LockedAtsReport;
-  onFix: (issue: { description: string; field_ref?: FieldRef }) => void;
-  onUpgrade: () => void;
-}) {
-  const hiddenParts = [
-    countOf(report.hidden.issues, "more issue", "more issues"),
-    countOf(report.hidden.missing_keywords, "missing keyword", "missing keywords"),
-    countOf(report.hidden.suggestions, "suggestion", "suggestions"),
-  ].filter((p): p is string => p !== null);
-
-  return (
-    <>
-      {report.teaser_issues.length > 0 ? (
-        <div className="rounded-lg border" style={{ marginBottom: "12px" }} data-testid="ats-teaser">
-          <div className="border-b px-4 py-3">
-            <h4 className="text-sm font-semibold">Top fixes</h4>
-            <p className="text-xs text-muted-foreground">The changes that add the most points.</p>
-          </div>
-          <div className="space-y-3 px-4 py-3">
-            {report.teaser_issues.map((issue, i) => (
-              <div key={i} className="flex items-start gap-2 text-sm">
-                <div className="flex-1 space-y-0.5">
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {CATEGORY_LABELS[issue.category] || issue.category}
-                  </p>
-                  <p>{issue.description}</p>
-                  {issue.fix && <p className="text-xs text-muted-foreground">{issue.fix}</p>}
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <span
-                    className="text-xs font-medium text-success"
-                    title="Estimated score lift after re-analysis. Click Re-analyze to verify."
-                  >
-                    ~+{issue.impact} pts
-                  </span>
-                  {issue.field_ref && (issue.field_ref.field || issue.field_ref.bulletText) && (
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => onFix(issue)}>
-                      <Crosshair className="mr-1 h-3 w-3" />Fix
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground" style={{ marginBottom: "12px" }}>No issues found.</p>
-      )}
-
-      {hiddenParts.length > 0 && (
-        <div className="overflow-hidden rounded-lg border" style={{ marginBottom: "12px" }} data-testid="ats-locked">
-          <div className="flex items-start gap-3 border-b bg-muted/40 px-4 py-3">
-            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-            <p className="text-sm font-semibold">Your full report has {joinList(hiddenParts)}.</p>
-          </div>
-          <div aria-hidden="true" className="pointer-events-none select-none space-y-3 px-4 py-3 blur-sm">
-            {PLACEHOLDER_ROWS.map((row, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="flex-1 space-y-1.5">
-                  <div className="h-2.5 rounded-full bg-muted" style={{ width: row.title }} />
-                  <div className="h-2 rounded-full bg-muted" style={{ width: row.fix }} />
-                </div>
-                <div className="h-5 w-12 shrink-0 rounded bg-success/20" />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginBottom: "12px" }}>
-        <UpgradeBanner trigger="ats" onUpgrade={onUpgrade} />
-      </div>
-    </>
-  );
-}
-
-export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedAt, estimatedScore, currentSkills, content, onRewriteAccept, plan = "free", autoScan = false, onDownload }: AtsPanelProps) {
+export function AtsPanel({
+  cvId,
+  report: initialReport,
+  estimatedScore,
+  currentSkills,
+  content,
+  onRewriteAccept,
+  plan = "free",
+  autoScan = false,
+}: AtsPanelProps) {
   const router = useRouter();
   const { log } = useActivity();
   const { openUpgradeModal } = useUpgradeModal();
+
   const [report, setReport] = useState<AtsPanelReport | null>(initialReport);
-  const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState<AnalysisStep>("reading");
-  const [error, setError] = useState("");
-  const [errorCode, setErrorCode] = useState("");
-  const [errorRole, setErrorRole] = useState("");
-  const [limitDaysReset, setLimitDaysReset] = useState<number | null>(null);
-  const [enhancementsOpen, setEnhancementsOpen] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanStep, setScanStep] = useState<ScanStep>("reading");
+  const [error, setError] = useState<(PanelError & { source: "scan" | "fix_all" }) | null>(null);
+
+  const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
+  const [addressedIssues, setAddressedIssues] = useState<Set<string>>(new Set());
+  const [openGroups, setOpenGroups] = useState<Set<string> | null>(null);
+
   const [rewriteOpen, setRewriteOpen] = useState(false);
   const [rewriteIssue, setRewriteIssue] = useState<{ description: string; fix: string; category: string; field_ref?: FieldRef } | null>(null);
   const [rewriteOriginal, setRewriteOriginal] = useState("");
-  const [addedKeywords, setAddedKeywords] = useState<Set<string>>(new Set());
-  const [addressedIssues, setAddressedIssues] = useState<Set<string>>(new Set());
-  const [fixAllLoading, setFixAllLoading] = useState(false);
+
+  const [fixAllRunning, setFixAllRunning] = useState(false);
   const [fixAllStep, setFixAllStep] = useState(0);
   const [fixAllResult, setFixAllResult] = useState<FixAllResult | null>(null);
   const [fixAllOpen, setFixAllOpen] = useState(false);
-  const [guaranteeOpen, setGuaranteeOpen] = useState(false);
-  const [guaranteeClaiming, setGuaranteeClaiming] = useState(false);
-  const [guaranteeResult, setGuaranteeResult] = useState<string | null>(null);
+  const fixAllAbort = useRef<AbortController | null>(null);
+  const [comparison, setComparison] = useState<FixAllComparison | null>(null);
 
-  // Auto-trigger scan on first landing when CV was just uploaded
+  const lockedReport = report && isLockedReport(report) ? report : null;
+  const fullReport = report && !isLockedReport(report) ? report : null;
+  const isPro = plan === "pro";
+
+  const verifiedScore = report?.score ?? 0;
+  const displayScore = estimatedScore ? estimatedScore.estimated_score : verifiedScore;
+  const isEstimated = !!estimatedScore && estimatedScore.estimated_score !== verifiedScore;
+  const targetRole = content?.targetTitle?.title?.trim() || undefined;
+
+  // A new report starts a fresh session of added keywords, addressed issues and open groups.
   useEffect(() => {
-    if (autoScan && !initialReport) {
-      handleAnalyse();
-    }
+    setAddedKeywords(new Set());
+    setAddressedIssues(new Set());
+    setOpenGroups(null);
+  }, [report]);
+
+  /* ── Scan ── */
+
+  useEffect(() => {
+    if (!scanning) return;
+    const timers = [setTimeout(() => setScanStep("keywords"), 2000), setTimeout(() => setScanStep("scoring"), 4500)];
+    return () => timers.forEach(clearTimeout);
+  }, [scanning]);
+
+  const handleAnalyse = useCallback(
+    async (opts: { force?: boolean } = {}): Promise<AtsPanelReport | null> => {
+      if (!opts.force && content) {
+        const missing = precheck(content).filter((c) => !c.done);
+        if (missing.length > 0) {
+          setError({ kind: "incomplete", missing, source: "scan" });
+          return null;
+        }
+      }
+
+      setScanning(true);
+      setScanStep("reading");
+      setError(null);
+      try {
+        // The scan reads the saved CV, so push any pending edits first.
+        await flushSave();
+        const res = await fetch("/api/cv/analyse", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cv_id: cvId }),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) {
+          const err = toPanelError(res, data);
+          if (err.kind === "scan_used") log("Hit ATS scan limit");
+          setError({ ...err, source: "scan" });
+          return null;
+        }
+        setScanStep("done");
+        await new Promise((r) => setTimeout(r, 600));
+        setReport(data);
+        log("Ran ATS analysis", { score: data?.overall_score ?? data?.score });
+        router.refresh();
+        return data as AtsPanelReport;
+      } catch {
+        setError({ ...toPanelError(null, null), source: "scan" });
+        return null;
+      } finally {
+        setScanning(false);
+      }
+    },
+    [cvId, content, log, router]
+  );
+
+  // First landing after an upload: scan straight away.
+  useEffect(() => {
+    if (autoScan && !initialReport) handleAnalyse();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // The server decides what the browser gets: a locked report never carries
-  // the hidden text, so the panel only has to pick which view to draw.
-  const lockedReport = report && isLockedReport(report) ? report : null;
-  const fullReport = report && !isLockedReport(report) ? report : null;
+  /* ── Fix all ── */
 
-  const hasEstimate = !!estimatedScore;
-  const verifiedScore = report?.score ?? 0;
-  const displayScore = hasEstimate ? estimatedScore.estimated_score : verifiedScore;
-  const isEstimated = hasEstimate && estimatedScore.estimated_score !== verifiedScore;
+  async function handleFixAll() {
+    if (lockedReport || !isPro) {
+      openUpgradeModal("fix_all_limit");
+      return;
+    }
+    const controller = new AbortController();
+    fixAllAbort.current = controller;
+    setFixAllRunning(true);
+    setFixAllStep(0);
+    setError(null);
+    const timers = [setTimeout(() => setFixAllStep(1), 2500), setTimeout(() => setFixAllStep(2), 5000)];
+    try {
+      await flushSave();
+      const res = await fetch("/api/cv/fix-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cv_id: cvId }),
+        signal: controller.signal,
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        if (res.status === 403 && data?.code === "fix_all_limit") {
+          openUpgradeModal("fix_all_limit");
+          return;
+        }
+        const err = toPanelError(res, data);
+        const kind = err.kind === "generic" || err.kind === "ai_down" || err.kind === "scan_used" ? "fix_all" : err.kind;
+        setError({ ...err, kind, message: kind === "fix_all" ? undefined : err.message, source: "fix_all" });
+        return;
+      }
+      setFixAllResult(data as FixAllResult);
+      setFixAllOpen(true);
+    } catch (e) {
+      if ((e as Error)?.name !== "AbortError") {
+        const err = toPanelError(null, null);
+        setError({ ...err, kind: err.kind === "offline" ? "offline" : "fix_all", source: "fix_all" });
+      }
+    } finally {
+      timers.forEach(clearTimeout);
+      fixAllAbort.current = null;
+      setFixAllRunning(false);
+    }
+  }
 
-  useEffect(() => { setAddedKeywords(new Set()); setAddressedIssues(new Set()); }, [report]);
+  function handleFixAllApply(changes: { fieldPath: string; value: string }[]) {
+    for (const change of changes) {
+      if (change.fieldPath === "skills.add") {
+        window.dispatchEvent(new CustomEvent("add-skill", { detail: { skill: change.value } }));
+      } else {
+        window.dispatchEvent(new CustomEvent("rewrite-accept", { detail: { newText: change.value, fieldRef: parseFieldPath(change.fieldPath) } }));
+      }
+    }
+    const beforeCats = fullReport?.category_scores ?? {};
+    const before: FixAllComparison = { applied: changes.length, before: verifiedScore, after: null, categories: [] };
+    setComparison(before);
+    // Let the editor take the changes, then re-scan (handleAnalyse saves first).
+    setTimeout(async () => {
+      const next = await handleAnalyse({ force: true });
+      if (!next || isLockedReport(next)) {
+        setComparison(null);
+        return;
+      }
+      const afterCats = next.category_scores ?? {};
+      const categories = Object.keys(afterCats)
+        .map((key) => ({ key, before: beforeCats[key]?.score ?? afterCats[key].score, after: afterCats[key].score }))
+        .sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before));
+      setComparison({ ...before, after: next.score, categories });
+    }, 400);
+  }
+
+  function parseFieldPath(path: string): FieldRef {
+    if (path === "summary.content") return { section: "summary", field: "content" };
+    const match = path.match(/^experience\.items\.(\d+)\.bullets\.(\d+)$/);
+    if (match && content) {
+      const bullet = content.experience?.items?.[Number(match[1])]?.bullets?.[Number(match[2])];
+      return { section: "experience", field: "bullets", bulletText: bullet || undefined };
+    }
+    return { section: "experience", field: null };
+  }
+
+  /* ── Issue actions ── */
+
+  function handleFix(issue: { field_ref?: FieldRef }) {
+    if (issue.field_ref) jumpToField(issue.field_ref);
+  }
+
+  function handleRewrite(item: FixItem) {
+    const ref = item.issue.field_ref;
+    if (!ref) return;
+    const original = findOriginalText(content, ref);
+    if (!original) return;
+    setRewriteIssue({ description: item.issue.description, fix: item.issue.fix, category: item.category, field_ref: ref });
+    setRewriteOriginal(original);
+    setRewriteOpen(true);
+  }
+
+  function handleAddKeyword(keyword: string) {
+    if (addedKeywords.has(keyword)) return;
+    window.dispatchEvent(new CustomEvent("add-skill", { detail: { skill: keyword } }));
+    setAddedKeywords((prev) => new Set(prev).add(keyword));
+  }
+
+  /* ── Derived report view ── */
 
   const effectiveKeywords = useMemo(() => {
     if (!fullReport?.keywords) return null;
     if (estimatedScore?.keywords_matched || estimatedScore?.keywords_missing) {
-      const matched = estimatedScore.keywords_matched ?? [];
-      const missing = estimatedScore.keywords_missing ?? [];
-      return { ...fullReport.keywords, found: matched, missing };
+      return { found: estimatedScore.keywords_matched ?? [], missing: estimatedScore.keywords_missing ?? [] };
     }
     const skillsLower = new Set((currentSkills ?? []).map((s) => s.toLowerCase()));
     const found = [...(fullReport.keywords.found ?? [])];
@@ -382,596 +336,221 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
         missing.push(kw);
       }
     }
-    return { ...fullReport.keywords, found, missing };
+    return { found, missing };
   }, [fullReport?.keywords, currentSkills, estimatedScore?.keywords_matched, estimatedScore?.keywords_missing]);
 
-  useEffect(() => {
-    if (!loading) return;
-    const timers: NodeJS.Timeout[] = [];
-    timers.push(setTimeout(() => setCurrentStep("keywords"), 2000));
-    timers.push(setTimeout(() => setCurrentStep("scoring"), 4500));
-    return () => timers.forEach(clearTimeout);
-  }, [loading]);
-
-  function handleFix(issue: { description: string; field_ref?: FieldRef }) {
-    if (issue.field_ref) jumpToField(issue.field_ref);
-  }
-
-  function findOriginalText(ref: FieldRef): string {
-    if (!content) return "";
-    if (ref.section === "summary") return content.summary?.content ?? "";
-    if (ref.section === "experience" && ref.bulletText) {
-      for (const item of content.experience?.items ?? []) {
-        for (const bullet of item.bullets ?? []) {
-          if (bullet.toLowerCase().includes(ref.bulletText.toLowerCase().slice(0, 40))) return bullet;
-        }
-      }
+  const groups = useMemo<FixGroup[]>(() => {
+    if (!fullReport?.category_scores) return [];
+    const list: FixGroup[] = Object.entries(fullReport.category_scores).map(([key, cat]) => {
+      const shown = isEstimated ? estimatedScore?.category_scores?.[key]?.score ?? cat.score : cat.score;
+      const items = [...(cat.issues ?? [])]
+        .sort((a, b) => (b.impact ?? 0) - (a.impact ?? 0))
+        .map((issue): FixItem => {
+          const suggestion = isSuggestion(issue, cat.score);
+          const ref = issue.field_ref;
+          const original = ref ? findOriginalText(content, ref) : "";
+          return {
+            id: issueKey(key, issue),
+            category: key,
+            issue,
+            suggestion,
+            addressed: addressedIssues.has(issueKey(key, issue)),
+            quote: ref?.bulletText ? original || ref.bulletText : undefined,
+            canRewrite: !suggestion && !!content && !!ref && REWRITABLE_SECTIONS.has(ref.section) && !!original,
+          };
+        });
+      return {
+        key,
+        title: categoryName(key),
+        score: shown,
+        items,
+        keywords: key === "keywords" && effectiveKeywords ? effectiveKeywords : undefined,
+      };
+    });
+    if (effectiveKeywords && !list.some((g) => g.key === "keywords") && (effectiveKeywords.missing.length || effectiveKeywords.found.length)) {
+      list.push({ key: "keywords", title: "Keywords", items: [], keywords: effectiveKeywords });
     }
-    if (ref.section === "experience" && ref.index != null) {
-      const bullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []);
-      return bullets[ref.index] ?? "";
-    }
-    // Fallback: AI didn't quote a specific bullet (or user edited it after the scan).
-    // Use the first non-empty bullet so the Rewrite click always opens the drawer.
-    if (ref.section === "experience") {
-      const bullets = (content.experience?.items ?? []).flatMap((e) => e.bullets?.filter(Boolean) ?? []);
-      if (bullets.length > 0) return bullets[0];
-    }
-    return "";
-  }
+    const needsWork = (g: FixGroup) => g.items.some((i) => !i.suggestion && !i.addressed) || (g.keywords?.missing.length ?? 0) > 0;
+    list.sort((a, b) => Number(needsWork(b)) - Number(needsWork(a)) || (a.score ?? 100) - (b.score ?? 100));
 
-  function findSectionLabel(ref: FieldRef): string {
-    if (ref.section === "summary") return "Summary";
-    if (ref.section === "experience" && ref.bulletText && content) {
-      for (const item of content.experience?.items ?? []) {
-        for (const bullet of item.bullets ?? []) {
-          if (bullet.toLowerCase().includes(ref.bulletText.toLowerCase().slice(0, 40))) {
-            return `Work Experience · ${[item.role, item.company].filter(Boolean).join(" at ")}`;
-          }
-        }
-      }
-    }
-    return ref.section;
-  }
-
-  function handleRewrite(issue: { description: string; fix: string; field_ref?: FieldRef }, category: string) {
-    if (!issue.field_ref) return;
-    const original = findOriginalText(issue.field_ref);
-    if (!original) return;
-    setRewriteIssue({ ...issue, category });
-    setRewriteOriginal(original);
-    setRewriteOpen(true);
-  }
-
-  function handleAddKeyword(keyword: string) {
-    if (addedKeywords.has(keyword)) return;
-    window.dispatchEvent(new CustomEvent("add-skill", { detail: { skill: keyword } }));
-    const newAdded = new Set(addedKeywords);
-    newAdded.add(keyword);
-    setAddedKeywords(newAdded);
-  }
-
-  async function handleFixAll() {
-    setFixAllLoading(true);
-    setFixAllStep(0);
-    const t1 = setTimeout(() => setFixAllStep(1), 2500);
-    const t2 = setTimeout(() => setFixAllStep(2), 5000);
-    try {
-      const res = await fetch("/api/cv/fix-all", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cv_id: cvId }),
+    const enhancements = (fullReport.enhancements ?? [])
+      .map((e) => (typeof e === "string" ? e : (e as { description?: string })?.description ?? ""))
+      .filter(Boolean);
+    if (enhancements.length) {
+      list.push({
+        key: "suggestions",
+        title: "Suggestions",
+        items: enhancements.map((text, i) => ({
+          id: `suggestion::${i}`,
+          category: "suggestions",
+          issue: { description: text, fix: "", impact: 0 },
+          suggestion: true,
+          addressed: false,
+          canRewrite: false,
+        })),
       });
-      if (res.status === 403) {
-        const data = await res.json();
-        if (data.code === "fix_all_limit") {
-          openUpgradeModal("fix_all_limit");
-        }
-        setFixAllLoading(false);
-        return;
-      }
-      if (!res.ok) { setFixAllLoading(false); return; }
-      const data = await res.json();
-      setFixAllResult(data as FixAllResult);
-      setFixAllOpen(true);
-    } catch { /* ignore */ }
-    clearTimeout(t1);
-    clearTimeout(t2);
-    setFixAllLoading(false);
+    }
+    return list;
+  }, [fullReport, isEstimated, estimatedScore?.category_scores, content, addressedIssues, effectiveKeywords]);
+
+  const openIssues = groups.flatMap((g) => g.items).filter((i) => !i.suggestion && !i.addressed);
+  const missingKeywordCount = effectiveKeywords?.missing.filter((k) => !addedKeywords.has(k)).length ?? 0;
+  const allClear = !!fullReport && openIssues.length === 0 && missingKeywordCount === 0;
+
+  // Worst category that needs work opens first; the rest stay folded.
+  const defaultOpen = useMemo(() => {
+    const first = groups.find((g) => g.items.some((i) => !i.suggestion) || (g.keywords?.missing.length ?? 0) > 0);
+    return new Set(first ? [first.key] : []);
+  }, [groups]);
+  const openKeys = openGroups ?? defaultOpen;
+
+  function toggleGroup(key: string) {
+    const next = new Set(openKeys);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    setOpenGroups(next);
   }
 
-  function handleFixAllApply(changes: { fieldPath: string; value: string }[]) {
-    for (const change of changes) {
-      if (change.fieldPath === "skills.add") {
-        window.dispatchEvent(new CustomEvent("add-skill", { detail: { skill: change.value } }));
-      } else {
-        window.dispatchEvent(new CustomEvent("rewrite-accept", {
-          detail: {
-            newText: change.value,
-            fieldRef: parseFieldPath(change.fieldPath),
-          },
-        }));
-      }
-    }
-    // Re-analyse after applying fixes to refresh score and clear issues
-    setTimeout(() => {
-      handleAnalyse();
-    }, 1000);
+  function revealGroup(key: string) {
+    setOpenGroups(new Set(openKeys).add(key));
+    requestAnimationFrame(() => document.getElementById(groupDomId(key))?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
-  function parseFieldPath(path: string): { section: string; field?: string; bulletText?: string } {
-    if (path === "summary.content") return { section: "summary" };
-    const match = path.match(/^experience\.items\.(\d+)\.bullets\.(\d+)$/);
-    if (match && content) {
-      const expIdx = parseInt(match[1], 10);
-      const bulletIdx = parseInt(match[2], 10);
-      const bullet = content.experience?.items?.[expIdx]?.bullets?.[bulletIdx];
-      return { section: "experience", field: "bullets", bulletText: bullet || undefined };
+  const tiles = useMemo<CategoryTile[] | undefined>(() => {
+    const cats = fullReport?.category_scores;
+    if (!cats) return undefined;
+    const keys = Object.keys(cats).sort((a, b) => {
+      const ia = TILE_ORDER.indexOf(a);
+      const ib = TILE_ORDER.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+    return keys.map((key) => {
+      const group = groups.find((g) => g.key === key);
+      const verified = cats[key].score;
+      const estimate = isEstimated ? estimatedScore?.category_scores?.[key]?.score : undefined;
+      return {
+        key,
+        score: estimate ?? verified,
+        previous: estimate != null && estimate !== verified ? verified : undefined,
+        issues: group?.items.filter((i) => !i.suggestion && !i.addressed).length ?? 0,
+        suggestions: group?.items.filter((i) => i.suggestion).length ?? 0,
+        changed: isEstimated && (estimatedScore?.changed_categories?.includes(key) ?? false),
+      };
+    });
+  }, [fullReport, groups, isEstimated, estimatedScore]);
+
+  const projection = useMemo(() => {
+    const tone = overallTone(displayScore);
+    if (lockedReport) {
+      const teaser = lockedReport.teaser_issues;
+      const gain = teaser.reduce((s, i) => s + Math.max(0, i.impact), 0);
+      if (!teaser.length || gain <= 0) return null;
+      return { text: `Fix the ${plural(teaser.length, "issue", "issues")} below to reach about ${Math.min(100, displayScore + gain)}`, tone };
     }
-    return { section: "experience" };
-  }
+    if (!fullReport) return null;
+    if (allClear) return displayScore >= 90 ? { text: "Nothing left to fix. Match it against a job next.", tone } : null;
+    const gain = openIssues.reduce((s, i) => s + Math.max(0, i.issue.impact ?? 0), 0);
+    if (gain > 0) return { text: `Fixing the ${plural(openIssues.length, "issue", "issues")} below could take you to about ${Math.min(100, displayScore + gain)}`, tone };
+    if (missingKeywordCount > 0) return { text: `Adding the ${plural(missingKeywordCount, "missing keyword", "missing keywords")} could raise your score`, tone };
+    return null;
+  }, [lockedReport, fullReport, allClear, openIssues, missingKeywordCount, displayScore]);
 
-  function scrollPanelToTop() {
-    // Walk up from any element inside this panel to find the scrollable container
-    const el = document.querySelector("[data-panel='ats']");
-    let parent = el?.parentElement;
-    while (parent) {
-      if (parent.scrollHeight > parent.clientHeight) {
-        parent.scrollTo({ top: 0, behavior: "smooth" });
-        break;
-      }
-      parent = parent.parentElement;
-    }
-  }
+  /* ── Render ── */
 
-  async function handleAnalyse() {
-    // Prerequisite check — CV needs minimum content before ATS analysis
-    if (content) {
-      const missing: string[] = [];
-      if (!content.contact?.name?.trim()) missing.push("name");
-      if (!content.contact?.email?.trim()) missing.push("email");
-      const hasBody = !!(
-        content.experience?.items?.length ||
-        content.projects?.items?.length ||
-        content.education?.items?.length ||
-        content.volunteering?.items?.length
-      );
-      if (!hasBody) missing.push("experience, projects, or education");
-      if (!content.skills?.categories?.length) missing.push("skills");
+  const retry = () => (error?.source === "fix_all" ? handleFixAll() : handleAnalyse());
+  const retryForce = () => handleAnalyse({ force: true });
+  const upgradeForScans = () => openUpgradeModal("ats_limit");
+  const showLockedAllClear =
+    !!lockedReport &&
+    lockedReport.teaser_issues.length === 0 &&
+    lockedReport.hidden.issues + lockedReport.hidden.missing_keywords + lockedReport.hidden.suggestions === 0;
 
-      if (missing.length > 0) {
-        setError(`Your resume needs more content before analysis. Please add: ${missing.join(", ")}.`);
-        setErrorCode("incomplete_cv");
-        return;
-      }
-    }
-
-    setLoading(true);
-    setCurrentStep("reading");
-    setError("");
-    setErrorCode("");
-    scrollPanelToTop();
-
-    try {
-      const res = await fetch("/api/cv/analyse", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cv_id: cvId }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 403 && data.code?.includes("limit")) {
-          log("Hit ATS scan limit");
-          openUpgradeModal("ats_limit");
-          setLoading(false);
-          return;
-        }
-        setError(data.error);
-        setErrorCode(data.code || "");
-        setErrorRole(data.role || "");
-        setLimitDaysReset(data.daysUntilReset ?? null);
-        setLoading(false);
-        return;
-      }
-
-      setCurrentStep("done");
-      await new Promise((r) => setTimeout(r, 600));
-      setReport(data);
-      log("Ran ATS analysis", { score: data?.overall_score ?? data?.score });
-      setLoading(false);
-      router.refresh();
-    } catch {
-      setError("Analysis failed. Please try again.");
-      setLoading(false);
-    }
-  }
-
-  /* ── Loading state ── */
-  if (loading) {
-    const stepIndex = ANALYSIS_STEPS.findIndex((s) => s.key === currentStep);
-    const _progress = Math.min(100, ((stepIndex + 0.5) / ANALYSIS_STEPS.length) * 100);
-
+  if (!report) {
     return (
-      <StepLoader
-        steps={ANALYSIS_STEPS as LoaderStep[]}
-        currentStep={stepIndex}
-        centerIcon={Brain}
-        footerText="Please don't close this tab while we analyze your resume."
-      />
-    );
-  }
-
-  /* ── Error state (no report) ── */
-  if (error && !report) {
-    const isIncomplete = errorCode === "incomplete_cv";
-    const isTooLarge = errorCode === "cv_too_large";
-    return (
-      <div className="flex flex-col items-center gap-4 py-8 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-          <AlertCircle className="h-6 w-6 text-destructive" />
-        </div>
-        <div>
-          <p className="font-medium">{isIncomplete ? "Your resume needs a few more details" : isTooLarge ? "Resume too long to analyze" : "Analysis failed"}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{error}</p>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          {isTooLarge && (
-            <Button
-              size="sm"
-              onClick={() => window.dispatchEvent(new CustomEvent("switch-tab", { detail: "editor" }))}
-            >
-              Edit resume →
-            </Button>
-          )}
-          {isIncomplete && (
-            <Button
-              size="sm"
-              onClick={() => window.dispatchEvent(new CustomEvent("switch-tab", { detail: "editor" }))}
-            >
-              Complete your resume →
-            </Button>
-          )}
-          <Button variant="outline" size="sm" onClick={handleAnalyse}>
-            <RotateCcw className="mr-2 h-3.5 w-3.5" />{isIncomplete ? "Try anyway" : "Try again"}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const confidenceValue = (report?.confidence ?? "medium") as "high" | "medium" | "low";
-
-  return (
-    <div data-panel="ats">
-      {/* ── PART 2: Header ── */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
-        <div>
-          <div style={{ fontSize: "14px", fontWeight: 700, color: "#0C1A0E", letterSpacing: "-0.2px" }}>
-            ATS Analysis
-          </div>
-          {report && (
-            <div style={{ fontSize: "10px", color: "#9CA3AF", marginTop: "1px" }}>
-              {formatTimeAgo(report.created_at)}
-            </div>
-          )}
-        </div>
-        {report && (
-          <div style={{ display: "flex", gap: 6 }}>
-            <button
-              onClick={lockedReport ? () => openUpgradeModal("fix_all_limit") : handleFixAll}
-              disabled={fixAllLoading || loading || displayScore >= 95}
-              data-testid="btn-fix-all"
-              style={{
-                background: "#15803d", border: "none", padding: "6px 12px",
-                borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "white",
-                cursor: displayScore >= 95 ? "not-allowed" : "pointer",
-                display: "flex", alignItems: "center", gap: "5px",
-                opacity: displayScore >= 95 ? 0.5 : 1,
-              }}
-            >
-              {fixAllLoading ? <Loader2 size={11} className="animate-spin" /> : <Wand2 size={11} />}
-              Fix using AI
-            </button>
-            <button
-              onClick={handleAnalyse}
-              disabled={loading}
-              data-testid="btn-reanalyse"
-              style={{
-                background: "white", border: "1px solid #E0D8CC", padding: "6px 12px",
-                borderRadius: "8px", fontSize: "11px", fontWeight: 600, color: "#3D3830",
-                cursor: "pointer", display: "flex", alignItems: "center", gap: "5px",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-              }}
-            >
-              <RefreshCw size={11} color="#3D3830" />
-              Re-analyze
-            </button>
-          </div>
+      <div data-panel="ats" className="flex flex-col gap-4">
+        {scanning ? (
+          <Scanning step={scanStep} role={targetRole} />
+        ) : error ? (
+          <FullPanelError error={error} onRetry={retry} onTryAnyway={retryForce} onUpgrade={upgradeForScans} />
+        ) : (
+          <PreScan checks={precheck(content)} role={targetRole} onScan={() => handleAnalyse()} />
         )}
       </div>
+    );
+  }
 
-      {/* ── Inline errors ── */}
-      {error && errorCode === "keyword_list_required" && (
-        <div className="rounded-lg border border-warning/30 bg-warning/10 p-4" style={{ marginBottom: "12px" }}>
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Keywords not yet configured for &quot;{errorRole}&quot;</p>
-              <p className="text-xs text-muted-foreground">ATS scoring requires a keyword list for your target role.</p>
-            </div>
-          </div>
+  const busy = scanning || fixAllRunning;
+  const outOfDate = isEstimated && !!lockedReport;
+
+  return (
+    <div data-panel="ats" className="flex flex-col gap-4">
+      <header className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-0.5">
+          <h2 className="text-xl font-bold leading-tight tracking-[-0.02em] text-[#0C1A0E] sm:text-[22px]">ATS analysis</h2>
+          <span className={cn("text-[13px]", outOfDate ? "font-semibold text-warning" : "text-[#5F5954]")}>
+            {outOfDate ? "Out of date, you've edited since" : `Scanned ${formatTimeAgo(report.created_at)}`}
+          </span>
         </div>
+        <PanelButton onClick={() => handleAnalyse()} disabled={busy} aria-label="Re-scan" data-testid="btn-reanalyse" className="w-11 px-0 sm:w-auto sm:px-4">
+          <RefreshCw className={cn("h-4 w-4", scanning && "animate-spin")} aria-hidden="true" />
+          <span className="hidden sm:inline">Re-scan</span>
+        </PanelButton>
+      </header>
+
+      {error && (
+        <InlineNotice error={error} onRetry={retry} onTryAnyway={retryForce} onUpgrade={upgradeForScans} onDismiss={() => setError(null)} />
       )}
 
-      {error && errorCode?.endsWith("_limit") && (
-        <div className="rounded-lg border border-warning/30 bg-warning/10 p-4" style={{ marginBottom: "12px" }}>
-          <p className="text-sm font-medium">{error}</p>
-          <Button size="sm" className="mt-3" onClick={() => openUpgradeModal("ats_limit" as UpgradeTrigger, limitDaysReset ?? undefined)}>
-            Upgrade for unlimited
-          </Button>
-        </div>
-      )}
+      {fixAllRunning && <FixAllRunning step={fixAllStep} onCancel={() => fixAllAbort.current?.abort()} />}
 
-      {error && errorCode !== "keyword_list_required" && !errorCode?.endsWith("_limit") && (
-        <p className="text-sm text-destructive" style={{ marginBottom: "12px" }}>{error}</p>
-      )}
+      {comparison && <AfterFixAll result={comparison} onDismiss={() => setComparison(null)} />}
 
-      {/* ── Empty state with prerequisite checklist ── */}
-      {!report && !loading && !error && (() => {
-        const hasBody = !!(
-          content?.experience?.items?.length ||
-          content?.projects?.items?.length ||
-          content?.education?.items?.length ||
-          content?.volunteering?.items?.length
-        );
-        const checks = [
-          { label: "Name", done: !!content?.contact?.name?.trim() },
-          { label: "Email", done: !!content?.contact?.email?.trim() },
-          { label: "Experience / Projects / Education", done: hasBody },
-          { label: "Skills", done: !!content?.skills?.categories?.length },
-        ];
-        const allDone = checks.every((c) => c.done);
+      <ScoreCard
+        score={displayScore}
+        verifiedScore={verifiedScore}
+        isEstimated={isEstimated}
+        confidence={(report.confidence ?? "medium") as "high" | "medium" | "low"}
+        projection={projection}
+        tiles={fullReport ? tiles : undefined}
+        onTileClick={fullReport ? revealGroup : undefined}
+        rescanning={scanning}
+        onRescan={() => handleAnalyse()}
+      />
 
-        return (
-          <div className="flex flex-col items-center gap-5 py-6">
-            <p className="text-sm text-muted-foreground text-center">
-              {allDone
-                ? "Your resume is ready for analysis."
-                : "Complete these sections before running ATS analysis."}
-            </p>
+      {lockedReport &&
+        (showLockedAllClear ? (
+          <AllClear score={displayScore} onFixAll={handleFixAll} />
+        ) : (
+          <LockedReport report={lockedReport} score={displayScore} onFix={handleFix} onUpgrade={upgradeForScans} onFixAll={handleFixAll} />
+        ))}
 
-            <div className="w-full max-w-xs space-y-2">
-              {checks.map((c) => (
-                <div key={c.label} className="flex items-center gap-2.5 rounded-lg border px-3 py-2">
-                  {c.done ? (
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
-                      <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    </span>
-                  ) : (
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
-                  )}
-                  <span className={`text-sm ${c.done ? "text-foreground" : "text-muted-foreground"}`}>{c.label}</span>
-                </div>
-              ))}
-            </div>
+      {fullReport &&
+        (allClear ? (
+          <AllClear score={displayScore} onFixAll={handleFixAll} />
+        ) : (
+          <FixList
+            groups={groups}
+            openKeys={openKeys}
+            onToggle={toggleGroup}
+            onFix={(i) => handleFix(i.issue)}
+            onRewrite={handleRewrite}
+            added={addedKeywords}
+            onAddKeyword={handleAddKeyword}
+            onFixAll={handleFixAll}
+            fixAllDisabled={busy || displayScore >= 95}
+            fixAllLocked={!isPro}
+          />
+        ))}
 
-            <Button onClick={handleAnalyse} disabled={loading || !allDone}>
-              Analyze resume
-            </Button>
-          </div>
-        );
-      })()}
+      {fullReport && isPro && displayScore < 80 && <GuaranteeClaim score={displayScore} />}
 
-      {/* ── Report ── */}
-      {report && (
-        <>
-          {/* PART 1: Score Card */}
-          <div className="rounded-xl border bg-background p-4 mb-3 flex items-center gap-4" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-            {/* Score ring */}
-            <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }} data-testid="ats-score">
-              <circle cx="40" cy="40" r="32" strokeWidth="7" fill="none" className="stroke-muted" />
-              <circle cx="40" cy="40" r="32"
-                stroke={displayScore >= 70 ? "var(--success)" : displayScore >= 50 ? "var(--warning)" : "var(--error)"}
-                strokeWidth="7" fill="none"
-                strokeLinecap="round"
-                strokeDasharray={`${(displayScore / 100) * 2 * Math.PI * 32} ${2 * Math.PI * 32}`}
-                transform="rotate(-90 40 40)"
-                style={{ transition: "stroke-dasharray 0.6s ease" }}
-              />
-              <text x="40" y="37" fontFamily="system-ui" fontSize="18" fontWeight="800" textAnchor="middle" className="fill-foreground">
-                {displayScore}
-              </text>
-              <text x="40" y="50" fontFamily="system-ui" fontSize="8" textAnchor="middle" className="fill-muted-foreground">
-                ATS Score
-              </text>
-            </svg>
-
-            {/* Status */}
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "15px", fontWeight: 700, color: "#0C1A0E", marginBottom: "4px", lineHeight: 1.2 }}>
-                {getScoreLabel(displayScore)}
-              </div>
-              <div style={{ fontSize: "11px", color: "#78716C", lineHeight: 1.5, marginBottom: "8px" }}>
-                {getScoreDescription(displayScore)}
-              </div>
-              <ConfidenceChip level={confidenceValue} size="sm" />
-            </div>
-          </div>
-
-          {/* Download CTA — shown after scan when score is actionable */}
-          {onDownload && displayScore >= 60 && (
-            <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 mb-3 flex items-center justify-between gap-3">
-              <p className="text-sm text-foreground">
-                <span className="font-semibold">Ready to apply?</span>{" "}
-                <span className="text-muted-foreground">Download your resume and start sending it out.</span>
-              </p>
-              <Button size="sm" className="shrink-0" onClick={onDownload}>
-                <Download className="mr-1.5 h-3.5 w-3.5" />Download PDF
-              </Button>
-            </div>
-          )}
-
-          {/* Free plan: two top fixes, the hidden counts, then the upgrade banner */}
-          {lockedReport && (
-            <LockedReportBody
-              report={lockedReport}
-              onFix={handleFix}
-              onUpgrade={() => openUpgradeModal("ats_limit")}
-            />
-          )}
-
-          {/* Fix All Skeleton Loader is rendered as full-screen overlay below */}
-
-          {/* PART 3: Category Bars */}
-          {fullReport?.category_scores && (
-            <div className="space-y-2" style={{ marginBottom: "14px" }}>
-              <h4 className="text-sm font-semibold">Score Breakdown</h4>
-              {Object.entries(fullReport.category_scores).map(([name, data]) => {
-                const estCat = estimatedScore?.category_scores?.[name];
-                const changed = estimatedScore?.changed_categories?.includes(name) ?? false;
-                return (
-                  <CategoryRow
-                    key={name}
-                    name={name}
-                    data={data as AtsCategoryScore}
-                    onFix={handleFix}
-                    onRewrite={content ? handleRewrite : undefined}
-                    estimatedCatScore={isEstimated && estCat ? estCat.score : undefined}
-                    changed={changed && isEstimated}
-                    addressedIssues={addressedIssues}
-                  />
-                );
-              })}
-            </div>
-          )}
-
-          {/* Keywords */}
-          {effectiveKeywords && (
-            <div style={{ marginBottom: "14px" }} className="space-y-3">
-              {effectiveKeywords.missing.length > 0 && (
-                <div>
-                  <h4 className="mb-2 text-sm font-semibold">Missing Keywords</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {effectiveKeywords.missing.map((kw) => {
-                      const added = addedKeywords.has(kw);
-                      return (
-                        <button
-                          key={kw}
-                          disabled={added}
-                          onClick={() => handleAddKeyword(kw)}
-                          className={cn(
-                            "inline-flex items-center gap-1 rounded-full border-[1.5px] px-3 py-1 text-xs font-medium transition-all",
-                            added
-                              ? "border-success text-success cursor-default"
-                              : "bg-transparent text-error border-error/60 hover:bg-error/10"
-                          )}
-                        >
-                          {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
-                          {kw}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-              {effectiveKeywords.found.length > 0 && (
-                <div>
-                  <h4 className="mb-2 text-sm font-semibold">Found Keywords</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {effectiveKeywords.found.map((kw) => (
-                      <span key={kw} className="inline-flex items-center rounded-full border-[1.5px] border-success bg-transparent px-3 py-1 text-xs font-medium text-success">
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Enhancements */}
-          {fullReport?.enhancements && fullReport.enhancements.length > 0 && (
-            <div style={{ marginBottom: "14px" }}>
-              <button
-                type="button"
-                className="flex items-center gap-2 text-sm font-semibold hover:text-success transition-colors"
-                onClick={() => setEnhancementsOpen(!enhancementsOpen)}
-              >
-                <Lightbulb className="h-4 w-4" />
-                Suggestions ({fullReport.enhancements.length})
-                <ChevronDown className={`h-3 w-3 transition-transform ${enhancementsOpen ? "rotate-180" : ""}`} />
-              </button>
-              {enhancementsOpen && (
-                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-                  {fullReport.enhancements.map((s, i) => (
-                    <li key={i} className="flex gap-2">
-                      <span>•</span>
-                      {typeof s === "string" ? s : (s as { description?: string })?.description || JSON.stringify(s)}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
-
-          {/* PART 4: Footer */}
-          {fullReport && (
-            <>
-              <div style={{ height: "0.5px", background: "#E0D8CC", margin: "14px 0" }} />
-              <div style={{ fontSize: "9.5px", color: "#9CA3AF", textAlign: "center" }}>
-                {isEstimated ? "Estimated score \u00b7 " : ""}
-                <span onClick={handleAnalyse} style={{ color: "#15803d", fontWeight: 500, cursor: "pointer" }}>
-                  Re-analyze for verified score
-                </span>
-              </div>
-            </>
-          )}
-
-          {/* Guarantee CTA */}
-          {fullReport && displayScore < 80 && plan === "pro" && (
-            <div className="text-center mt-3">
-              <button
-                onClick={() => setGuaranteeOpen(true)}
-                className="text-[10px] text-muted-foreground hover:text-success transition-colors"
-              >
-                Still under 80? Claim your guarantee &rarr;
-              </button>
-            </div>
-          )}
-
-          {/* Job match nudge, score-aware: strong and mid nudge to match a JD, weak is hidden */}
-          <JobMatchNudge hasReport={!!report} score={displayScore} />
-        </>
-      )}
-
-      {guaranteeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setGuaranteeOpen(false)}>
-          <div className="bg-background rounded-xl border p-6 max-w-sm mx-4 text-center" onClick={(e) => e.stopPropagation()}>
-            <Shield className="h-8 w-8 text-success mx-auto mb-3" />
-            <p className="text-base font-semibold">We&apos;ll review your resume personally</p>
-            <p className="text-sm text-muted-foreground mt-2">Current score: {displayScore}</p>
-            {guaranteeResult ? (
-              <p className="text-sm text-success mt-4">{guaranteeResult}</p>
-            ) : (
-              <Button
-                className="mt-4 w-full"
-                onClick={async () => {
-                  setGuaranteeClaiming(true);
-                  try {
-                    const res = await fetch("/api/guarantee/claim", { method: "POST" });
-                    const data = await res.json();
-                    setGuaranteeResult(data.message || data.error);
-                  } catch { setGuaranteeResult("We couldn't send your claim. Email hello@thecvedge.com and we'll review it."); }
-                  setGuaranteeClaiming(false);
-                }}
-                disabled={guaranteeClaiming}
-              >
-                {guaranteeClaiming ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                Request review
-              </Button>
-            )}
-          </div>
+      {/* Phones: Fix all stays in reach while scrolling the list. */}
+      {fullReport && !allClear && !fixAllRunning && (
+        <div className="sticky bottom-0 z-10 -mx-4 -mb-4 border-t border-[#E0D8CC] bg-[#F7F5F0] px-4 pb-6 pt-3 lg:hidden">
+          <PanelButton variant="primary" className="h-[50px] w-full rounded-[14px] text-[15px]" onClick={handleFixAll} disabled={busy || displayScore >= 95}>
+            <Wand2 className="h-4 w-4" aria-hidden="true" />
+            Fix all with AI
+          </PanelButton>
         </div>
       )}
 
@@ -981,45 +560,20 @@ export function AtsPanel({ cvId, report: initialReport, cvUpdatedAt: _cvUpdatedA
           onClose={() => setRewriteOpen(false)}
           issue={rewriteIssue}
           originalText={rewriteOriginal}
-          targetRole={content?.targetTitle?.title ?? "General"}
+          targetRole={targetRole ?? "General"}
           sectionType={rewriteIssue.field_ref?.section ?? "experience"}
-          sectionLabel={rewriteIssue.field_ref ? findSectionLabel(rewriteIssue.field_ref) : ""}
+          sectionLabel={rewriteIssue.field_ref ? findSectionLabel(content, rewriteIssue.field_ref) : ""}
           isCurrent={true}
           missingKeywords={effectiveKeywords?.missing ?? []}
           onAccept={(text, ref) => {
             onRewriteAccept?.(text, ref);
-            setAddressedIssues((prev) => {
-              const next = new Set(prev);
-              next.add(issueKey(rewriteIssue.category, rewriteIssue));
-              return next;
-            });
+            setAddressedIssues((prev) => new Set(prev).add(issueKey(rewriteIssue.category, rewriteIssue)));
           }}
         />
       )}
 
       {fixAllResult && (
-        <FixAllDrawer
-          open={fixAllOpen}
-          onClose={() => setFixAllOpen(false)}
-          result={fixAllResult}
-          currentScore={displayScore}
-          onApply={handleFixAllApply}
-        />
-      )}
-
-      {/* Full-screen Fix All loader overlay */}
-      {fixAllLoading && (
-        <StepLoader
-          fullScreen
-          steps={[
-            { label: "Reading your resume", sub: "Parsing sections and bullets", icon: FileText },
-            { label: "Analyzing ATS issues", sub: "Checking keywords and formatting", icon: Search },
-            { label: "Generating fixes", sub: "Rewriting bullets for maximum impact", icon: Wand2 },
-          ]}
-          currentStep={fixAllStep}
-          centerIcon={Wand2}
-          footerText="Please don't close this tab while we fix your resume."
-        />
+        <FixAllDrawer open={fixAllOpen} onClose={() => setFixAllOpen(false)} result={fixAllResult} currentScore={displayScore} onApply={handleFixAllApply} />
       )}
     </div>
   );

@@ -28,6 +28,10 @@ test.describe("Billing Gate Flow", () => {
     const reanalyseBtn = page.getByTestId("btn-reanalyse");
     if (await reanalyseBtn.isVisible().catch(() => false)) {
       await reanalyseBtn.click();
+      // The refusal shows inline above the old report; its button opens the modal.
+      const notice = page.getByTestId("ats-scan-used");
+      await expect(notice).toBeVisible({ timeout: 5000 });
+      await notice.getByRole("button", { name: "Upgrade for unlimited scans" }).click();
       await expect(page.getByTestId("upgrade-modal")).toBeVisible({ timeout: 5000 });
     }
   });

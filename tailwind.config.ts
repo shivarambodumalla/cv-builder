@@ -83,10 +83,33 @@ const config: Config = {
           "0%": { transform: "translateX(-150%)" },
           "60%, 100%": { transform: "translateX(150%)" },
         },
+        // ATS scan illustration: a beam sweeps the page, keywords light up as it passes.
+        "ats-beam": {
+          "0%": { top: "8px", opacity: "0" },
+          "8%, 92%": { opacity: "1" },
+          "100%": { top: "118px", opacity: "0" },
+        },
+        "ats-hit": {
+          "0%, 30%": { backgroundColor: "#E7E1D6" },
+          "45%, 100%": { backgroundColor: "#A7F3D0" },
+        },
+        "ats-glow": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(30,58,95,0)" },
+          "50%": { boxShadow: "0 0 24px 6px rgba(30,58,95,0.18)" },
+        },
+        // A category score that just moved: green wash fading out over 2s.
+        "ats-rise": {
+          "0%": { backgroundColor: "#EEF6F1" },
+          "100%": { backgroundColor: "transparent" },
+        },
       },
       animation: {
         "logo-scroll": "logo-scroll 60s linear infinite",
         "shimmer-sweep": "shimmer-sweep 3s ease-in-out infinite",
+        "ats-beam": "ats-beam 2.4s ease-in-out infinite",
+        "ats-hit": "ats-hit 2.4s ease-in-out infinite",
+        "ats-glow": "ats-glow 2.4s ease-in-out infinite",
+        "ats-rise": "ats-rise 2s ease-out 1",
       },
     },
   },

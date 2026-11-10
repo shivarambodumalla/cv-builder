@@ -676,7 +676,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
                 <div className="lg:hidden">
                   {/* No autoScan here: the desktop AtsPanel is mounted at the same time (only hidden by CSS), so passing it to both would fire two AI scans. */}
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} onDownload={handlePdfDownload} />
+                  <AtsPanel cvId={cv.id} report={latestReport as any} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
                 </div>
               </>
             )}
@@ -867,7 +867,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
           {activeTab === "analyser" && (
             <div className="mx-auto max-w-2xl">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} autoScan={autoScan} onDownload={handlePdfDownload} />
+              <AtsPanel cvId={cv.id} report={latestReport as any} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} autoScan={autoScan} />
             </div>
           )}
 
@@ -937,7 +937,7 @@ export function ResumeEditor({ cv, latestReport, jobMatches, coverLetters, keywo
             return (
               <div className="mx-auto max-w-2xl">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <AtsPanel cvId={cv.id} report={latestReport as any} cvUpdatedAt={cv.updated_at} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
+                <AtsPanel cvId={cv.id} report={latestReport as any} estimatedScore={estimatedScore} currentSkills={currentSkills} content={content} onRewriteAccept={handleRewriteAccept} plan={plan} />
               </div>
             );
           })()}
