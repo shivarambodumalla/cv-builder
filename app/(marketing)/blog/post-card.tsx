@@ -22,6 +22,7 @@ export function PostCard({ post, sizes = GRID_SIZES }: { post: BlogPost; sizes?:
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             sizes={sizes}
+            unoptimized
           />
         ) : (
           <div className="flex h-full items-center justify-center">

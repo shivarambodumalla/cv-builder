@@ -181,7 +181,7 @@ Only the 12 templates in `PHOTO_TEMPLATES` (lib/resume/template-thumbnails.ts) r
 ### Image Optimizer (Vercel quota)
 
 - Vercel Hobby allows 5,000 transformations a month and bills every optimizer cache miss. `images.minimumCacheTTL` is 31 days and `deviceSizes` stops at 1920 (next.config.mjs).
-- Remote images (blog covers in Supabase) are cached by URL, so a replaced image needs a new URL: /api/admin/blog/upload-image appends `?v=<timestamp>`. Local images in public/ are keyed by content, so regenerated thumbnails update on deploy.
+- Blog covers skip the optimizer entirely: the three `<Image>`s that render them (post-card, blog-list featured, the post page) are `unoptimized`, so the browser loads the file straight from Supabase storage and Vercel transforms nothing. Covers must therefore be uploaded pre-compressed: 1200×630 PNG or JPG, under 80 KB. /api/admin/blog/upload-image appends `?v=<timestamp>` and stores with a one-year `cacheControl`, so a replaced cover needs a new upload, not an overwrite. Local images in public/ are keyed by content, so regenerated thumbnails update on deploy.
 - Give every next/image a `sizes` with a px cap at the container's max width (not a bare `33vw`), so wide screens don't request widths the slot never reaches.
 
 | Template | Type | Tier | Display Name |

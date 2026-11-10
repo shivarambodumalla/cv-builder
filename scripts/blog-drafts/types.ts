@@ -21,6 +21,23 @@ export const TEMPLATES_MD = `
 **[Executive Resume Template](/resume-templates/experienced/executive-cv)** — for senior candidates who need the summary and leadership scope to land before the role history.
 `;
 
+/** UK closing block: A4, "CV", layouts UK recruiters and portals read cleanly. */
+export const TEMPLATES_UK_MD = `
+## CV Templates That Parse Cleanly
+
+**[Classic CV Template](/resume-templates/ats-friendly/classic-cv)**: standard headings, one column, no graphics. Set the paper size to A4 and it is the safest default for UK employers and recruitment agencies.
+
+**[Sterling CV Template](/resume-templates/ats-friendly/sterling-cv)**: a serif body with clear rules under each heading, built for large-employer portals and public-sector applications.
+
+**[Classic Serif CV Template](/resume-templates/freshers/classic-serif-cv)**: a clean one-page layout for students, school leavers and graduates.
+`;
+
+export const NEXT_STEP_UK_MD = `
+## Next Step
+
+Upload your CV to the free [ATS CV checker](/resume-checker) to see what an employer's system pulls out of it, then fix the gaps before you apply.
+`;
+
 export const NEXT_STEP_MD = `
 ## Next Step
 

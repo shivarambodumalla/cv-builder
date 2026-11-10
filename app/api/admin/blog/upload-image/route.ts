@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
   const db = createAdminClient();
   const { error } = await db.storage
     .from("blog-images")
-    .upload(path, buffer, { contentType: file.type, upsert: true });
+    // Every upload gets a new ?v= URL, so browsers and Supabase's CDN can keep
+    // the file for a year instead of revalidating it on every view.
+    .upload(path, buffer, { contentType: file.type, upsert: true, cacheControl: "31536000" });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

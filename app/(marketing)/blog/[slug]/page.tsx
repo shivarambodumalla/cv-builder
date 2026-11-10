@@ -144,6 +144,7 @@ export default async function BlogPostPage({
               height={0}
               sizes="(max-width: 896px) 100vw, 896px"
               style={{ width: "100%", height: "auto" }}
+              unoptimized
               priority
             />
           </div>
