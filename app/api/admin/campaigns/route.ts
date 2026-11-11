@@ -8,6 +8,9 @@ import { sendWeeklyJobsEmail } from "@/lib/email/weekly-jobs";
 export const maxDuration = 300;
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const admin = createAdminClient();
   const { data } = await admin.from("campaigns").select("*").order("created_at", { ascending: false });
   return NextResponse.json(data ?? []);

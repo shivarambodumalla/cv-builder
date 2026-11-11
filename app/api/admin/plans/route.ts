@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { invalidatePlanConfigCache } from "@/lib/billing/plan-config";
 
 // Admin check is done by middleware for /api/admin/* routes
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const admin = createAdminClient();
   const [limits, templates, settings] = await Promise.all([
     admin.from("plan_limits").select("*").order("sort_order"),
@@ -20,6 +24,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const body = await request.json();
   const admin = createAdminClient();
   const now = new Date().toISOString();

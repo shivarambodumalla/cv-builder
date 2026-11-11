@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { invalidateExchangeRateCache } from "@/lib/ai/limits";
 
@@ -6,12 +7,18 @@ import { invalidateExchangeRateCache } from "@/lib/ai/limits";
 // No need to double-check here | middleware already redirects non-admins
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const admin = createAdminClient();
   const { data } = await admin.from("ai_settings").select("*").order("feature");
   return NextResponse.json(data ?? []);
 }
 
 export async function PUT(request: NextRequest) {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const body = await request.json();
   const admin = createAdminClient();
 

@@ -6,7 +6,6 @@ import { ExternalLink, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createClient } from "@/lib/supabase/client";
 
 interface TestCase {
   id: string;
@@ -74,6 +73,7 @@ export function TestsPageContent({
   const [testCases, setTestCases] = useState(initialCases);
   const [editingCase, setEditingCase] = useState<TestCase | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const suiteGroups: Record<string, TestCase[]> = {};
   for (const tc of testCases) {
@@ -84,24 +84,21 @@ export function TestsPageContent({
   async function handleSave() {
     if (!editingCase) return;
     setSaving(true);
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("test_cases")
-      .update({
-        suite: editingCase.suite,
-        name: editingCase.name,
-        description: editingCase.description,
-        spec_file: editingCase.spec_file,
-        is_active: editingCase.is_active,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", editingCase.id);
+    setSaveError(null);
+    const res = await fetch("/api/admin/test-cases", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editingCase),
+    }).catch(() => null);
 
-    if (!error) {
+    if (res?.ok) {
       setTestCases((prev) =>
         prev.map((tc) => (tc.id === editingCase.id ? editingCase : tc))
       );
       setEditingCase(null);
+    } else {
+      const data = await res?.json().catch(() => ({}));
+      setSaveError(data?.error ?? "Couldn't save the test case. Check your connection and try again.");
     }
     setSaving(false);
   }
@@ -312,6 +309,7 @@ export function TestsPageContent({
               </div>
             </div>
 
+            {saveError && <p role="alert" className="text-sm text-error">{saveError}</p>}
             <div className="flex gap-2 pt-2">
               <Button onClick={handleSave} disabled={saving} className="flex-1" style={{ backgroundColor: "#065F46" }}>
                 {saving ? "Saving..." : "Save Changes"}

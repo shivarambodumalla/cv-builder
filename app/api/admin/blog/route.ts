@@ -6,6 +6,9 @@ import { submitToIndexNow } from "@/lib/seo/indexnow";
 import { marked } from "marked";
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const db = createAdminClient();
   const { data, error } = await db
     .from("blog_posts")

@@ -1,8 +1,8 @@
 // Payment wall (upgrade modal) outcomes, from the "Saw upgrade modal" /
 // "Dismissed upgrade modal" rows that context/upgrade-modal-context.tsx logs.
-// The "Get Pro" click itself is not logged: checkout redirects away without
-// closing the modal, so an open with no dismiss is the closest proxy (it also
-// counts closed tabs). Only signed-in users reach user_activity.
+// An open with no dismiss is read as "not closed" (it also counts closed
+// tabs). The pay click itself is logged separately as "Clicked pay button" by
+// /api/billing/checkout-url. Only signed-in users reach user_activity.
 
 export interface WallEvent {
   user_id: string;

@@ -6,6 +6,9 @@ import { isJobsTemplate, type JobsTemplate } from "@/lib/email/system-templates"
 import { sendWeeklyJobsEmail } from "@/lib/email/weekly-jobs";
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const admin = createAdminClient();
   const { data } = await admin.from("email_templates").select("*").order("name");
   return NextResponse.json(data ?? []);

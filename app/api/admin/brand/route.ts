@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -12,6 +13,9 @@ async function checkAdmin(_request: NextRequest) {
 }
 
 export async function GET() {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const admin = createAdminClient();
   const { data } = await admin.from("brand_settings").select("*").limit(1).single();
   return NextResponse.json(data);

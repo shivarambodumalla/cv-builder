@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { EXCLUDED_USER_IDS } from "@/lib/admin/constants";
 
 export async function GET(request: NextRequest) {
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
+
   const admin = createAdminClient();
   const { searchParams } = new URL(request.url);
   const range = searchParams.get("range"); // "today" | "YYYY-MM" | "YYYY-MM-DD"
