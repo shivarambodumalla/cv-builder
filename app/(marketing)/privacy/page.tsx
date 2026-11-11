@@ -34,6 +34,7 @@ const sections = [
       "Usage data: pages visited, features used, timestamps, and device information",
       "How you first found CVEdge: the referring website and campaign tags (such as utm_source) from your first visit, used for analytics only",
       "An estimated age, worked out from the education and work dates in your CV, used for internal analytics only. It is never shown to other users or shared",
+      "Ratings and reviews you give us. A written review may be shown on our site with your first name and profile photo; email us to have yours removed",
       "Cookie consent preferences",
       "Subscription and billing data (processed by Lemon Squeezy. We do not store payment card details)",
     ],

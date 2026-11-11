@@ -94,7 +94,7 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
         r.comment ? (
           <>
             <p className="whitespace-pre-wrap">{r.comment}</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "OK to quote (first name + photo)" : "Private"}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "Can be published (first name + photo)" : "Declined to be quoted"}</p>
           </>
         ) : (
           <span className="text-xs text-muted-foreground">–</span>

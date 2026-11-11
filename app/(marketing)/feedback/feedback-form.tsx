@@ -16,7 +16,6 @@ export function FeedbackForm({ userId, token, initialRating }: Props) {
   const [rating, setRating] = useState(initialRating);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
-  const [canPublish, setCanPublish] = useState(false);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error" | "unauthorized">("idle");
 
   async function submit() {
@@ -26,7 +25,7 @@ export function FeedbackForm({ userId, token, initialRating }: Props) {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating, comment, source: "email", can_publish: canPublish, u: userId, t: token }),
+        body: JSON.stringify({ rating, comment, source: "email", u: userId, t: token }),
       });
       if (res.status === 401) { setState("unauthorized"); return; }
       if (!res.ok) throw new Error("failed");
@@ -83,10 +82,7 @@ export function FeedbackForm({ userId, token, initialRating }: Props) {
       />
 
       {comment.trim().length > 0 && (
-        <label className="mt-3 flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
-          <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} className="mt-0.5" />
-          <span>You may quote this on the CVEdge site with my first name and profile photo.</span>
-        </label>
+        <p className="mt-3 text-xs text-muted-foreground">We may show your review on CVEdge with your first name and profile photo.</p>
       )}
 
       {state === "error" && <p className="mt-3 text-sm text-error">Could not send. Please try again.</p>}

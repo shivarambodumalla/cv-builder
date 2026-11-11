@@ -56,7 +56,6 @@ export function FeedbackPrompt({ open, cvId, onClose, onSubmitted }: FeedbackPro
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
-  const [canPublish, setCanPublish] = useState(false);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   useEffect(() => {
@@ -78,7 +77,7 @@ export function FeedbackPrompt({ open, cvId, onClose, onSubmitted }: FeedbackPro
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating, comment, cv_id: cvId, source: "popup", can_publish: canPublish }),
+        body: JSON.stringify({ rating, comment, cv_id: cvId, source: "popup" }),
       });
       if (!res.ok) throw new Error("failed");
       try {
@@ -154,10 +153,7 @@ export function FeedbackPrompt({ open, cvId, onClose, onSubmitted }: FeedbackPro
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none mb-2"
                   />
                   {comment.trim().length > 0 && (
-                    <label className="flex items-start gap-2 text-[11px] text-muted-foreground mb-3 cursor-pointer">
-                      <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} className="mt-0.5" />
-                      <span>You may quote this on the CVEdge site with my first name and profile photo.</span>
-                    </label>
+                    <p className="text-[11px] text-muted-foreground mb-3">We may show your review on CVEdge with your first name and profile photo.</p>
                   )}
                 </>
               )}

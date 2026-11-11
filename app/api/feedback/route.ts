@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
     comment?: string;
     cv_id?: string;
     source?: string;
-    can_publish?: boolean;
     u?: string;
     t?: string;
   };
@@ -53,7 +52,9 @@ export async function POST(request: NextRequest) {
 
   const comment = (body.comment ?? "").toString().trim().slice(0, MAX_COMMENT) || null;
   const source = body.source === "email" ? "email" : "popup";
-  const canPublish = body.can_publish === true && !!comment;
+  // No per-review opt-in any more: the form says a review may be shown, and an
+  // admin still has to publish it. Rows saved before this keep their answer.
+  const canPublish = !!comment;
 
   const admin = createAdminClient();
   const { error } = await admin.from("feedback").insert({
@@ -87,7 +88,6 @@ export async function POST(request: NextRequest) {
           ${profile?.user_number ? `· <a href="https://www.thecvedge.com/admin/users/${profile.user_number}">User #${profile.user_number}</a>` : ""}
         </p>
         ${comment ? `<blockquote style="margin:0 0 12px;padding:12px;background:#f5f5f5;border-radius:6px;font-size:14px">${escapeHtml(comment)}</blockquote>` : "<p style=\"color:#666;font-size:13px\">No comment.</p>"}
-        <p style="font-size:13px">Can quote publicly: <strong>${canPublish ? "yes" : "no"}</strong></p>
         <p style="font-size:13px"><a href="https://www.thecvedge.com/admin/feedback">Open feedback in admin</a></p>
       `
     );
