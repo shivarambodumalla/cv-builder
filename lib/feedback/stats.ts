@@ -28,11 +28,11 @@ export async function getRatingStats(): Promise<RatingStats> {
 }
 
 /** Stats for public display: null until there are enough to stand behind. */
-export async function getPublicRatingStats(): Promise<{ average: number; count: number } | null> {
+export async function getPublicRatingStats(): Promise<RatingStats | null> {
   try {
     const stats = await getRatingStats();
     if (stats.count < MIN_PUBLIC_RATINGS) return null;
-    return { average: stats.average, count: stats.count };
+    return stats;
   } catch {
     return null;
   }

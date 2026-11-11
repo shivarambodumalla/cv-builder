@@ -38,7 +38,7 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function act(id: string, action: "publish" | "archive" | "restore") {
+  async function act(id: string, action: "publish" | "unpublish" | "archive" | "restore") {
     setBusy(id);
     setError(null);
     try {
@@ -94,7 +94,7 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
         r.comment ? (
           <>
             <p className="whitespace-pre-wrap">{r.comment}</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "OK to quote (first name)" : "Private"}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "OK to quote (first name + photo)" : "Private"}</p>
           </>
         ) : (
           <span className="text-xs text-muted-foreground">–</span>
@@ -111,6 +111,9 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
         <div className="inline-flex gap-1">
           {r.status === "new" && r.comment && r.can_publish && (
             <Button size="sm" variant="outline" className={actionClass} disabled={busy === r.id} onClick={() => act(r.id, "publish")}>Publish</Button>
+          )}
+          {r.status === "published" && (
+            <Button size="sm" variant="outline" className={actionClass} disabled={busy === r.id} onClick={() => act(r.id, "unpublish")}>Unpublish</Button>
           )}
           {r.status !== "archived" ? (
             <Button size="sm" variant="ghost" className={actionClass} disabled={busy === r.id} onClick={() => act(r.id, "archive")}>Archive</Button>

@@ -89,12 +89,16 @@ export async function POST(request: NextRequest) {
           .select("total_pdf_downloads")
           .eq("id", user.id)
           .single();
+        const previous = data?.total_pdf_downloads ?? 0;
+        const now = new Date().toISOString();
         await adminClient
           .from("profiles")
           .update({
-            total_pdf_downloads: (data?.total_pdf_downloads ?? 0) + 1,
-            // Drives the next-day feedback email (cron/feedback-request)
-            last_pdf_download_at: new Date().toISOString(),
+            total_pdf_downloads: previous + 1,
+            last_pdf_download_at: now,
+            // Drives the one-time feedback email (cron/feedback-request): set on
+            // the first download only, never overwritten.
+            ...(previous === 0 ? { first_pdf_download_at: now } : {}),
           })
           .eq("id", user.id);
       })(),

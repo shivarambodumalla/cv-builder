@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { ALL_ROLES } from "@/lib/jobs/role-categories";
 import { getAllPostsForSitemap } from "@/lib/blog/posts";
+import { hasPublicReviews } from "@/lib/feedback/reviews";
 import { TEMPLATE_CATEGORIES, getAllLeafParams, getCanonicalLeafPath, getLeafData } from "@/lib/resume-templates/data";
 import { CV_FORMATS } from "@/lib/cv-formats/data";
 import { hasRoleContent } from "@/lib/roles/role-content";
@@ -62,6 +63,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch {
     // Supabase unavailable at build time — blog posts omitted from sitemap
   }
+
+  // /reviews is noindex until it has a published review or a public rating.
+  const reviewsPages: MetadataRoute.Sitemap = (await hasPublicReviews())
+    ? [{ url: "https://www.thecvedge.com/reviews", lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 }]
+    : [];
 
   // --- Mentorship funnel pages ---
   const MENTORSHIP_LAST_MODIFIED = new Date("2026-07-12T00:00:00Z");
@@ -174,6 +180,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...interviewPrepRolePages,
     ...careerPathPages,
     ...blogPostPages,
+    ...reviewsPages,
     { url: "https://www.thecvedge.com/about", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.5 },
     { url: "https://www.thecvedge.com/contact", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.5 },
     { url: "https://www.thecvedge.com/privacy", lastModified: STABLE_LAST_MODIFIED, changeFrequency: "yearly", priority: 0.2 },

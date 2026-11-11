@@ -15,7 +15,7 @@ export default async function AdminFeedbackPage() {
     getRatingStats(),
     admin
       .from("feedback")
-      .select("id, user_id, cv_id, rating, comment, source, can_publish, status, testimonial_id, created_at")
+      .select("id, user_id, cv_id, rating, comment, source, can_publish, status, created_at")
       .order("created_at", { ascending: false })
       .limit(500),
   ]);
@@ -49,7 +49,7 @@ export default async function AdminFeedbackPage() {
         <h2 className="text-lg font-semibold tracking-tight">Feedback & Ratings</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Ratings collected after PDF downloads (in-app prompt + next-day email). The homepage shows the average and
-          emits AggregateRating only once there are {MIN_PUBLIC_RATINGS} or more. Publishing a consented comment adds it to the testimonials carousel.
+          emits AggregateRating only once there are {MIN_PUBLIC_RATINGS} or more. Publish puts a consented comment on /reviews and the homepage carousel; Unpublish takes it off. The email goes once, the day after a user&apos;s first download.
         </p>
       </div>
       <FeedbackTable rows={feedback} stats={stats} minPublic={MIN_PUBLIC_RATINGS} />

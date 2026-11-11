@@ -1397,6 +1397,15 @@ export function getCanonicalLeafPath(categorySlug: string, leaf: TemplateLeafDat
   return `/resume-templates/${primarySlug}/${primaryLeaf.leafSlug}`;
 }
 
+/** Canonical template page for a template slug (its first leaf), or null when no category lists it. */
+export function templatePagePath(templateSlug: string): string | null {
+  for (const cat of TEMPLATE_CATEGORIES) {
+    const leaf = cat.templates.find((t) => t.templateSlug === templateSlug);
+    if (leaf) return getCanonicalLeafPath(cat.slug, leaf);
+  }
+  return null;
+}
+
 export function getAllLeafParams(): { category: string; template: string }[] {
   return TEMPLATE_CATEGORIES.flatMap((c) =>
     c.templates.map((t) => ({ category: c.slug, template: t.leafSlug }))

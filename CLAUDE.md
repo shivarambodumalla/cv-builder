@@ -175,6 +175,8 @@ Only the 12 templates in `PHOTO_TEMPLATES` (lib/resume/template-thumbnails.ts) r
 
 - One Letter-size JPEG per template (1275×1650, 150 DPI) at `public/img/templates/<name>-resume-template.jpg`. Old filenames (`harward.jpg`, `slate.jpg`, …) 301 to the new ones via `oldThumbnailRedirects` in next.config.mjs.
 - Generated, never hand-made: `npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts [template…]`. It renders the PDF print document (`buildResumeDocument` + `applyPrintLayoutFixes` from lib/pdf/html-to-pdf.ts), trims oldest bullets until page 1 fits, and screenshots it. Re-run after changing a template's look and commit the images.
+- Homepage hero (components/marketing/hero-animation.tsx): a four-step editor tour (ATS scan, Fix with AI, Edit content, Change design) on the Orchid persona. The design step swaps between `HERO_TOUR` (lib/resume/template-thumbnails.ts: the Orchid persona in ten templates, each in an editor accent, at public/img/templates/hero/tour-<template>.jpg; the panel shows them as a 5 x 2 grid and `thumbAt()` must match it) and then the Orchid `HERO_ACCENTS` variants. The generator's `hero` argument writes both sets; re-run it after changing any of those templates. The hero's template count comes from `getTemplateCounts()`, never typed in.
+- Homepage order (app/(marketing)/page.tsx), phone first: hero → Features tabs (segmented control, framed visual with two labels, shown at every width) → templates (swipe row on phones, 7 linked to their pages via `templatePagePath()`) → verified reviews → More free tools → How it works (3 steps, each with a real screen in public/img/home/) → comparison (list on phones, table from md) → FAQ by topic (`topic` on each item in home-faqs.ts; every answer stays in the HTML for the FAQPage JSON-LD) → Explore CVEdge (descriptive internal links) → final CTA. A phone-only sticky "Scan my resume free" bar shows between the hero button and the final CTA. The Review by Experts hello bar is hidden on `/`. No logo strip.
 - Sample content: 15 fictional US personas in `lib/resume/sample-personas.ts` (555-01xx phones, example.com emails, invented employers, real universities). `TEMPLATE_PERSONA` maps each template to one so category pages, the homepage grid, the features tabs and the hero never repeat a face and /resumes never repeats one within five cards. Check those surfaces before reassigning. Headshots are AI-generated, in `scripts/assets/personas/`.
 - Every surface reads path + alt text from `templateThumbnail()` (lib/resume/template-thumbnails.ts) via `<TemplateThumbnailImage>` (components/shared/template-thumbnail.tsx). Grids use next/image; a template page's main preview uses `canonical` so the indexed URL matches og:image, the `ImageObjectJsonLd` and `/image-sitemap.xml` (listed in robots.txt). Harvard is the top SEO page: keep its alt naming the format.
 
@@ -469,11 +471,14 @@ Three mechanisms coexist:
 
 - Real 1-5 ratings collected after PDF download, two channels feeding one table:
   - In-app: `components/popups/feedback-prompt.tsx` opens 1.5s after a successful download in the editor. Likert stars (Not useful … Excellent), always skippable. Rule: a good rating (4-5, `GOOD_RATING`) silences it for good; 3 or below re-asks on every download; Skip pauses it 24h. The editor page passes the user's latest rating (`lastFeedbackRating`) so the rule holds across devices.
-  - Email: `/api/cron/feedback-request` (daily 10:30 UTC) emails `feedback_request` the day after `profiles.last_pdf_download_at`, once (`feedback_email_sent_at`), skipping anyone who already gave a good rating. Reply-To is the first ADMIN_EMAIL. Star links land on `/feedback?u=&t=&r=` (signed, no login needed, noindex).
+  - Email: `/api/cron/feedback-request` (daily 10:30 UTC) emails `feedback_request` the day after `profiles.first_pdf_download_at`, once ever (`feedback_email_sent_at`), skipping anyone who already gave a good rating. The export route sets `first_pdf_download_at` only when `total_pdf_downloads` was 0 (migration 00086, not backfilled), so users who downloaded before it are never emailed: no backlog. Reply-To is the first ADMIN_EMAIL. Star links land on `/feedback?u=&t=&r=` (signed, no login needed, noindex).
 - POST /api/feedback → `feedback` table + admin email (production only via sendAdminEmail).
-- Admin: /admin/feedback — average, distribution, rows; "Publish" copies a consented comment into `testimonials` (first name + profile target_role, no company).
-- Public rating: `lib/feedback/stats.ts` getPublicRatingStats() returns null below `MIN_PUBLIC_RATINGS` (10). Homepage shows the line under the testimonials heading AND emits AggregateRating only from that value. Never hardcode a rating in JSON-LD — Google treats self-declared ratings as spam.
+- Admin: /admin/feedback — average, distribution, rows. The feedback row IS the review: "Publish" sets `status = 'published'` (only with a comment and `can_publish`), Unpublish/Restore set it back to `new`, Archive hides it and drops its rating from the stats. There is no testimonials table (dropped; migration 00087 also drops `feedback.testimonial_id`, run it after the deploy).
+- Public rating: `lib/feedback/stats.ts` getPublicRatingStats() returns null below `MIN_PUBLIC_RATINGS` (10). Homepage shows the line under the reviews carousel heading AND emits AggregateRating only from that value. Never hardcode a rating in JSON-LD — Google treats self-declared ratings as spam.
 - Seed the email template: `npx tsx scripts/seed-email-templates.ts`.
+- /reviews (app/(marketing)/reviews/page.tsx) and the homepage carousel read `getPublishedReviews()` (lib/feedback/reviews.ts): published, consented `feedback` comments, newest first, with each author's first name, `target_role` and photo joined live from `profiles` (feedback has no FK to profiles, so the join is in code). /reviews adds the public rating with its star distribution and the social-proof counts; it is noindex and out of the sitemap until `hasPublicReviews()` is true. Never generated or placeholder copy under a real user's name.
+- The homepage shows only verified feedback: `getHomepageReviews(5)` and `getVerifiedRatingStats()` in lib/feedback/verified.ts keep rows dated after the rating prompt shipped (2026-09-25), after the author signed up, from an author with a PDF download (`total_pdf_downloads` > 0; `last_pdf_download_at` is newer and empty for older downloads). Most older rows fail this (dated before the account or the feature existed) and must never appear as reviews or count in AggregateRating (FTC 16 CFR 465). Five reviews, then a "Read all reviews" card to /reviews.
+- Review avatars (`<ReviewAvatar>`, components/shared/review-avatar.tsx): the author's `profiles.avatar_url` (quote consent covers "first name and profile photo"), plain `<img>` so it costs no image-optimizer quota. No photo or a broken URL → initials on HSL colours hashed from the name (`avatarColors()` in lib/feedback/avatar.ts).
 
 ## Blog (content lives in the DB)
 
@@ -500,7 +505,7 @@ Three mechanisms coexist:
 
 ## Database Tables
 
-The core tables; supabase/migrations holds the full set (blog_posts, plan_limits, template_catalog, cv_reviews, testimonials, user_activity and others are not listed here).
+The core tables; supabase/migrations holds the full set (blog_posts, plan_limits, template_catalog, cv_reviews, user_activity and others are not listed here).
 
 1. profiles — user data, plan, subscription, usage counters, timezone
 2. cvs — parsed_json (content), design_settings, raw_text, target_role, job description cache
@@ -528,7 +533,7 @@ The core tables; supabase/migrations holds the full set (blog_posts, plan_limits
 24. guarantee_claims — 80+ score guarantee claims
 25. email_suppressions — hard suppression list (bounces, complaints, unsubscribes) — checked before every non-transactional send
 26. email_sent_jobs — dedup log of (user_id, job_id, template_name) so Tue/Wed/Thu digests deliver fresh jobs only
-27. feedback — post-download ratings (user_id, cv_id, rating 1-5, comment, source popup|email, can_publish, status new|published|archived, testimonial_id)
+27. feedback — post-download ratings, and the published reviews (user_id, cv_id, rating 1-5, comment, source popup|email, can_publish, status new|published|archived)
 28. career_paths — Career Path Finder results (user_id null until sign-in, cv_id, source role|resume, current_role, result jsonb, selected_role, input_hash, claimed_at)
 
 **Important column names — do NOT guess, use these exact names:**
@@ -550,7 +555,7 @@ The core tables; supabase/migrations holds the full set (blog_posts, plan_limits
 Four sidebar groups ordered by how often they're used (`app/(admin)/admin/nav-config.ts`). Related pages are tabs inside one entry: each section's `layout.tsx` renders `<AdminSection>` (components/admin/admin-section.tsx, header + tabs, shown only on the tab routes, not on detail pages) and every tab is its own route, so a tab loads only its own data.
 
 - **Run**: Home (/admin) · Users (/admin/users, /users/deleted, detail /users/[number]) · Expert Reviews (/admin/reviews queue, /reviews/sales) · Course (/admin/course funnel, /course/leads CRM)
-- **Grow**: Growth (/admin/growth/traffic: Search Console, GA4, Bing, blog · /growth/funnel · /growth/paywall: popups, nudges and inventory) · Feedback (/admin/feedback ratings, /feedback/testimonials)
+- **Grow**: Growth (/admin/growth/traffic: Search Console, GA4, Bing, blog · /growth/funnel · /growth/paywall: popups, nudges and inventory) · Feedback (/admin/feedback ratings and publishing)
 - **Content**: Blog (/admin/blog) · AI (/admin/ai/usage, /prompts, /keywords, /missing-roles, /settings)
 - **Configure**: Plans & Pricing (/admin/plans quotas and templates, /plans/prices Lemon Squeezy variants) · Email (/admin/email/templates, /campaigns, /logs) · Tests (/admin/tests)
 - **Hidden features** (muted, bottom): Jobs analytics, Job providers, kept while Jobs is hidden

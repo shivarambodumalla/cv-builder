@@ -108,7 +108,8 @@ const nextConfig = {
       { source: "/admin/mentorship", destination: "/admin/course", permanent: false },
       { source: "/admin/mentorship/leads", destination: "/admin/course/leads", permanent: false },
       { source: "/admin/mentorship/leads/:id", destination: "/admin/course/leads/:id", permanent: false },
-      { source: "/admin/testimonials", destination: "/admin/feedback/testimonials", permanent: false },
+      { source: "/admin/testimonials", destination: "/admin/feedback", permanent: false },
+      { source: "/admin/feedback/testimonials", destination: "/admin/feedback", permanent: false },
       { source: "/admin/pricing", destination: "/admin/plans/prices", permanent: false },
       // Retired as a near-duplicate of the surviving PM guide. Redirect rather
       // than 404 so the indexed URL passes its equity to the kept article.

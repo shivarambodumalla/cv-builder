@@ -22,7 +22,7 @@ export function CtaSection({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-center">
         {/* Left */}
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#34D399] mb-2.5">{label}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#6EE7B7] mb-2.5">{label}</p>
           <h2 className="text-2xl sm:text-[28px] font-bold text-[#ECFDF5] leading-tight mb-2">{heading}</h2>
           <p className="text-sm text-[#6EE7B7] mb-6">{subtext}</p>
           <Link
@@ -33,7 +33,7 @@ export function CtaSection({
           </Link>
           <div className="flex flex-wrap gap-4">
             {trustItems.map((t) => (
-              <span key={t} className="text-[11px] text-white/65">
+              <span key={t} className="text-[11px] text-white/80">
                 <span className="text-[#34D399]">&#10003;</span> {t}
               </span>
             ))}

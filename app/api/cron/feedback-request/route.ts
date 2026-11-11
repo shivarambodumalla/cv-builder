@@ -9,9 +9,12 @@ const GOOD_RATING = 4; // keep in sync with components/popups/feedback-prompt.ts
 const APP_URL = "https://www.thecvedge.com";
 
 /**
- * Daily. One email per user, the day after their first PDF download, asking
- * for a 1-5 rating. Skips anyone who already rated in the app. Replies land
- * in the founder's inbox (first ADMIN_EMAIL) rather than the support alias.
+ * Daily. One email per user, ever: the day after their first PDF download,
+ * asking for a 1-5 rating and a comment they can let us quote on /reviews.
+ * Only users whose first download set `first_pdf_download_at` (migration
+ * 00086) qualify, so people who downloaded before that are never emailed.
+ * Skips anyone who already gave a good rating in the app. Replies land in the
+ * founder's inbox (first ADMIN_EMAIL) rather than the support alias.
  */
 export async function GET(request: NextRequest) {
   const secret = request.headers.get("authorization")?.replace("Bearer ", "");
@@ -30,7 +33,8 @@ export async function GET(request: NextRequest) {
   const { data: candidates } = await supabase
     .from("profiles")
     .select("id, email, full_name")
-    .lt("last_pdf_download_at", oneDayAgo)
+    .not("first_pdf_download_at", "is", null)
+    .lt("first_pdf_download_at", oneDayAgo)
     .is("feedback_email_sent_at", null)
     .limit(200);
 

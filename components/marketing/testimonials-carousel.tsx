@@ -2,16 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
-import type { Testimonial } from "@/lib/feedback/testimonials";
+import type { Review } from "@/lib/feedback/reviews";
+import { ReviewAvatar } from "@/components/shared/review-avatar";
 
-
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-}
 
 /* ── Card width + gap must stay in sync with JS offset calc ── */
 const CARD_W = 340; // sm:w-[340px]
@@ -24,7 +17,7 @@ function TestimonialCard({
   testimonial,
   isCenter,
 }: {
-  testimonial: Testimonial;
+  testimonial: Review;
   isCenter: boolean;
 }) {
   return (
@@ -46,21 +39,13 @@ function TestimonialCard({
 
       {/* Author */}
       <div className="mt-6 flex items-center gap-3.5 pt-5 border-t border-border/40">
-        <div
-          className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.gradient} p-[2.5px]`}
-        >
-          <div
-            className={`flex h-full w-full items-center justify-center rounded-full ${testimonial.avatar_bg} text-xs font-bold text-foreground`}
-          >
-            {getInitials(testimonial.name)}
-          </div>
-        </div>
+        <ReviewAvatar name={testimonial.name} avatarUrl={testimonial.avatar_url} className="h-11 w-11 text-xs" />
         <div className="min-w-0">
           <p className="text-xs font-bold tracking-wide text-foreground uppercase">
             {testimonial.name}
           </p>
           <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-            {testimonial.role}{testimonial.company ? ` @ ${testimonial.company}` : ""}
+            {testimonial.role}
           </p>
         </div>
       </div>
@@ -74,8 +59,8 @@ export function TestimonialsCarousel({
   rating = null,
 }: {
   title?: string;
-  /** Published testimonials only (lib/feedback/testimonials.ts), loaded on the server. */
-  testimonials: Testimonial[];
+  /** Published feedback comments only (lib/feedback/reviews.ts), loaded on the server. */
+  testimonials: Review[];
   /** Average of real post-download ratings; null until there are enough to show. */
   rating?: { average: number; count: number } | null;
 }) {

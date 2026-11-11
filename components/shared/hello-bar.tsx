@@ -6,12 +6,14 @@ import { Sparkles } from "lucide-react";
 
 // Pages with their own conversion goal — the CV-review banner competes with them
 const HIDDEN_PATHS = ["/ai-product-design", "/career-path"];
+// The homepage: the bar sat above its one action ("Scan my resume free") and sold a different product.
+const HIDDEN_EXACT = ["/"];
 
 export function HelloBar() {
   const [visible, setVisible] = useState(true);
   const pathname = usePathname();
 
-  if (!visible || HIDDEN_PATHS.some((p) => pathname?.startsWith(p))) return null;
+  if (!visible || HIDDEN_EXACT.includes(pathname ?? "") || HIDDEN_PATHS.some((p) => pathname?.startsWith(p))) return null;
 
   return (
     <div

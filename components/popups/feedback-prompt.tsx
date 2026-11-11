@@ -156,7 +156,7 @@ export function FeedbackPrompt({ open, cvId, onClose, onSubmitted }: FeedbackPro
                   {comment.trim().length > 0 && (
                     <label className="flex items-start gap-2 text-[11px] text-muted-foreground mb-3 cursor-pointer">
                       <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} className="mt-0.5" />
-                      <span>You may quote this on the CVEdge site with my first name.</span>
+                      <span>You may quote this on the CVEdge site with my first name and profile photo.</span>
                     </label>
                   )}
                 </>

@@ -5,8 +5,9 @@
  *   npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts harvard classic
  *   npx tsx --tsconfig scripts/tsconfig.scripts.json scripts/generate-template-thumbnails.ts hero
  *
- * `hero` (also run as part of a full run) renders the homepage hero's accent
- * variants of the Orchid thumbnail into public/img/templates/hero/.
+ * `hero` (also run as part of a full run) renders the homepage hero's images
+ * into public/img/templates/hero/: the accent variants of the Orchid thumbnail
+ * and the HERO_TOUR set (the Orchid persona in other templates and accents).
  *
  * Each template renders its assigned persona (lib/resume/sample-personas.ts)
  * through the same print document the PDF export uses, on Letter paper, and
@@ -29,9 +30,11 @@ import {
   HERO_ACCENT_TEMPLATE,
   HERO_ACCENT_WIDTH,
   HERO_ACCENTS,
+  HERO_TOUR,
   PHOTO_TEMPLATES,
   THUMBNAIL_WIDTH,
   heroAccentSrc,
+  heroTourSrc,
   thumbnailFileName,
 } from "@/lib/resume/template-thumbnails";
 import type { ResumeContent, TemplateName } from "@/lib/resume/types";
@@ -125,9 +128,13 @@ async function render(page: Page, cv: ResumeContent, template: TemplateName, acc
   return (await page.evaluate(MEASURE_CONTENT_BOTTOM)) as number;
 }
 
-/** Persona CV for a template, with its headshot (photo templates) and logo tiles. */
-async function sampleFor(template: TemplateName): Promise<ResumeContent> {
-  const slug = TEMPLATE_PERSONA[template];
+/**
+ * Persona CV for a template, with its headshot (photo templates) and logo tiles.
+ * `personaOf` borrows another template's persona (the hero tour shows one person
+ * in every template).
+ */
+async function sampleFor(template: TemplateName, personaOf: TemplateName = template): Promise<ResumeContent> {
+  const slug = TEMPLATE_PERSONA[personaOf];
   const cv: ResumeContent = structuredClone(PERSONAS[slug]);
   if (PHOTO_TEMPLATES.has(template)) cv.contact.photoUrl = await photoDataUrl(slug);
   for (const item of cv.experience.items) item.logoUrl = monogramLogo(item.company);
@@ -156,6 +163,13 @@ async function renderHeroAccents(page: Page) {
     const file = path.join(process.cwd(), "public", heroAccentSrc(hex));
     await sharp(png).resize(HERO_ACCENT_WIDTH).jpeg({ quality: 80, mozjpeg: true, chromaSubsampling: "4:4:4" }).toFile(file);
     console.log(`Hero accent        ${hex}          ${Math.round(fs.statSync(file).size / 1024)} KB`);
+  }
+  for (const { template, accent } of HERO_TOUR) {
+    const cv = await sampleFor(template, HERO_ACCENT_TEMPLATE);
+    const { png, fits } = await capture(page, cv, template, accent ?? undefined);
+    const file = path.join(process.cwd(), "public", heroTourSrc(template));
+    await sharp(png).resize(HERO_ACCENT_WIDTH).jpeg({ quality: 80, mozjpeg: true, chromaSubsampling: "4:4:4" }).toFile(file);
+    console.log(`Hero tour          ${template.padEnd(16)} ${Math.round(fs.statSync(file).size / 1024)} KB${fits ? "" : "  ⚠ still overflows"}`);
   }
 }
 

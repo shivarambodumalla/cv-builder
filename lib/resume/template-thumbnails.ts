@@ -1,4 +1,4 @@
-import type { TemplateName } from "./types";
+import { ACCENT_COLORS, type TemplateName } from "./types";
 import { TEMPLATE_LABELS } from "./template-labels";
 
 /**
@@ -110,4 +110,35 @@ export const HERO_ACCENT_WIDTH = 640;
 
 export function heroAccentSrc(hex: string): string {
   return `/img/templates/hero/${HERO_ACCENT_TEMPLATE}-${hex.replace("#", "").toLowerCase()}.jpg`;
+}
+
+/**
+ * The hero's "Change design" step swaps between these templates. The generator
+ * renders each one with the HERO_ACCENT_TEMPLATE persona, so the person never
+ * changes mid-demo, and in its own editor accent (null = the template's
+ * default) so each swap reads as a different design. Order is the cycle order;
+ * the first entry is the resume the rest of the hero shows.
+ */
+export const HERO_TOUR: readonly { template: TemplateName; accent: string | null }[] = [
+  { template: HERO_ACCENT_TEMPLATE, accent: null },
+  { template: "executive", accent: ACCENT_COLORS.navy },
+  { template: "aurora", accent: ACCENT_COLORS.teal },
+  { template: "regent", accent: ACCENT_COLORS.darkGold },
+  { template: "meridian", accent: ACCENT_COLORS.forestGreen },
+  { template: "classic-serif", accent: ACCENT_COLORS.deepRed },
+  { template: "portrait", accent: ACCENT_COLORS.plum },
+  { template: "graphite", accent: ACCENT_COLORS.slate },
+  { template: "classic", accent: ACCENT_COLORS.steelBlue },
+  { template: "bold-accent", accent: ACCENT_COLORS.rust },
+];
+
+/**
+ * The homepage templates showcase, in display order. Templates that share a
+ * sample persona (orchid/classic-serif, regent/classic) sit five cards apart,
+ * so no face shows twice on screen.
+ */
+export const HOME_SHOWCASE: readonly TemplateName[] = HERO_TOUR.map((t) => t.template);
+
+export function heroTourSrc(template: TemplateName): string {
+  return `/img/templates/hero/tour-${template}.jpg`;
 }

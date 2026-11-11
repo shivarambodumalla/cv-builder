@@ -85,7 +85,7 @@ export function FeedbackForm({ userId, token, initialRating }: Props) {
       {comment.trim().length > 0 && (
         <label className="mt-3 flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
           <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} className="mt-0.5" />
-          <span>You may quote this on the CVEdge site with my first name.</span>
+          <span>You may quote this on the CVEdge site with my first name and profile photo.</span>
         </label>
       )}
 
