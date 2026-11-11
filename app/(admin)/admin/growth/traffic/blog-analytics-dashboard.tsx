@@ -29,7 +29,7 @@ function fmtDate(iso: string): string {
 
 /** Blog views and link clicks for the page's ?range (the picker sits in the page header). */
 export function BlogAnalyticsDashboard() {
-  const { from, to } = useAdminRange("30d");
+  const { from, to } = useAdminRange();
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

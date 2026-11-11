@@ -25,7 +25,7 @@ export default function GrowthRevenuePage({
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
-  const range = resolveRange(searchParams, "30d");
+  const range = resolveRange(searchParams);
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -36,7 +36,7 @@ export default function GrowthRevenuePage({
             didn&apos;t record them before), so earlier renewal revenue is missing.
           </p>
         </div>
-        <DateRangePicker presets={["7d", "30d", "90d", "custom"]} fallback="30d" className="shrink-0" />
+        <DateRangePicker className="shrink-0" />
       </div>
       <Suspense
         key={rangeQuery(range)}

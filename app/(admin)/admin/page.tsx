@@ -1,14 +1,32 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DateRangePicker } from "@/components/admin/date-range-picker";
-import { BlockHeading, ListSkeleton, TilesSkeleton } from "@/components/admin/home/block";
-import { MoneyBlock } from "@/components/admin/home/money-block";
-import { JourneyStrip } from "@/components/admin/home/journey-strip";
+import { TilesSkeleton } from "@/components/admin/home/block";
 import { NeedsReply } from "@/components/admin/home/needs-reply";
-import { PaywallBlock } from "@/components/admin/home/paywall-block";
-import { HealthBlock } from "@/components/admin/home/health-block";
+import {
+  AiCostCard,
+  AudienceCard,
+  CountriesCard,
+  FunnelCard,
+  KpiGrid,
+  PaywallCard,
+  RevenueCard,
+  SignupsCard,
+  SourcesCard,
+  TopPagesCard,
+  TopUsersCard,
+  TrafficCard,
+} from "@/components/admin/home/dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { comparisonLabel, rangeQuery, resolveRange, weekEarlier } from "@/lib/admin/date-range";
+import { comparisonLabel, previousRange, rangeQuery, RANGE_LABELS, resolveRange } from "@/lib/admin/date-range";
+import {
+  getBreakdown,
+  getFunnel,
+  getOverview,
+  getTopPages,
+  getTopUsers,
+  type TopUsersOrder,
+} from "@/lib/admin/dashboard";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -16,62 +34,112 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const TOP_ORDERS: TopUsersOrder[] = ["actions", "time", "ai_cost"];
+
+function CardSkeleton({ className = "h-[320px]" }: { className?: string }) {
+  return <Skeleton className={`rounded-xl ${className}`} aria-busy />;
+}
+
+function formatDay(day: string) {
+  return new Date(`${day}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+}
+
 /**
- * The daily view: money, the visitor-to-paid journey against the same day
- * last week, what needs a reply, where the paywall bites, and today's costs.
- * Each block loads on its own so one slow query never holds up the rest.
+ * The admin dashboard. Every query starts once, here, and each card waits only
+ * for its own data, so one slow query never holds up the page. Default range
+ * is month to date; numbers compare against the same number of days before.
  */
 export default function AdminHomePage({
   searchParams,
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
-  const range = resolveRange(searchParams, "today");
-  const compare = weekEarlier(range);
-  const q = rangeQuery(range);
+  const range = resolveRange(searchParams);
+  const previous = previousRange(range);
+  const rawOrder = Array.isArray(searchParams.top) ? searchParams.top[0] : searchParams.top;
+  const order: TopUsersOrder = TOP_ORDERS.includes(rawOrder as TopUsersOrder) ? (rawOrder as TopUsersOrder) : "actions";
+
+  const overview = getOverview(range);
+  const funnel = getFunnel(range);
+  const topPages = getTopPages(range);
+  const topUsers = getTopUsers(range, order);
+  const breakdown = getBreakdown(range);
+
+  const span = range.days === 1 ? formatDay(range.from) : `${formatDay(range.from)} – ${formatDay(range.to)}`;
+  const compareSpan =
+    previous.days === 1 ? formatDay(previous.from) : `${formatDay(previous.from)} – ${formatDay(previous.to)}`;
+  const topHref = (o: TopUsersOrder) => `/admin?${rangeQuery(range)}&top=${o}`;
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Home</h1>
-        <DateRangePicker presets={["today", "yesterday", "7d"]} fallback="today" />
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Home</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {RANGE_LABELS[range.preset]} · {span}
+            <span className="hidden sm:inline"> · compared with {compareSpan}</span>
+          </p>
+        </div>
+        <DateRangePicker />
       </div>
 
-      <section>
-        <BlockHeading title="Money" />
-        <Suspense key={q} fallback={<TilesSkeleton />}>
-          <MoneyBlock range={range} compare={compare} />
-        </Suspense>
-      </section>
+      <Suspense fallback={<CardSkeleton className="h-14" />}>
+        <NeedsReply />
+      </Suspense>
 
-      <section>
-        <BlockHeading title="Journey" note={comparisonLabel(range, "week")} />
-        <Suspense key={q} fallback={<Skeleton className="h-[120px] rounded-lg" />}>
-          <JourneyStrip range={range} compare={compare} />
-        </Suspense>
-      </section>
+      <Suspense fallback={<TilesSkeleton count={6} className="md:grid-cols-3 xl:grid-cols-6" />}>
+        <KpiGrid data={overview} compareLabel={comparisonLabel(range, "previous")} />
+      </Suspense>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <section>
-          <BlockHeading title="Needs a reply" />
-          <Suspense fallback={<ListSkeleton />}>
-            <NeedsReply />
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <Suspense fallback={<CardSkeleton />}>
+            <TrafficCard data={overview} />
           </Suspense>
-        </section>
-        <section>
-          <BlockHeading title="Paywall" href={`/admin/growth/paywall?${q}`} linkLabel="All features" />
-          <Suspense key={q} fallback={<ListSkeleton />}>
-            <PaywallBlock range={range} limit={6} />
-          </Suspense>
-        </section>
+        </div>
+        <Suspense fallback={<CardSkeleton />}>
+          <FunnelCard data={funnel} />
+        </Suspense>
       </div>
 
-      <section>
-        <BlockHeading title="Cost and health" note="today, UTC" />
-        <Suspense fallback={<TilesSkeleton />}>
-          <HealthBlock />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Suspense fallback={<CardSkeleton />}>
+          <SignupsCard data={overview} />
         </Suspense>
-      </section>
+        <Suspense fallback={<CardSkeleton />}>
+          <PaywallCard data={overview} />
+        </Suspense>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Suspense fallback={<CardSkeleton />}>
+          <TopPagesCard data={topPages} />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton />}>
+          <TopUsersCard data={topUsers} order={order} hrefFor={topHref} />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton />}>
+          <CountriesCard data={breakdown} />
+        </Suspense>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Suspense fallback={<CardSkeleton />}>
+          <RevenueCard data={overview} />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton />}>
+          <AiCostCard data={overview} />
+        </Suspense>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Suspense fallback={<CardSkeleton className="h-[220px]" />}>
+          <AudienceCard data={breakdown} />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton className="h-[220px]" />}>
+          <SourcesCard data={breakdown} />
+        </Suspense>
+      </div>
     </div>
   );
 }

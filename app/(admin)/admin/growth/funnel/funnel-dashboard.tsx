@@ -15,10 +15,9 @@ import type { FunnelData } from "./sections/types";
 import { VisitorFlow } from "./sections/visitor-flow";
 import { VisitsOverTime } from "./sections/visits-over-time";
 
-const PRESETS = ["today", "7d", "30d", "90d", "custom"] as const;
 
 export function FunnelDashboard() {
-  const { fromIso, toIso, days } = useAdminRange("30d");
+  const { fromIso, toIso, days } = useAdminRange();
   const [data, setData] = useState<FunnelData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -59,7 +58,7 @@ export function FunnelDashboard() {
 
   return (
     <div className="space-y-6">
-      <DateRangePicker presets={[...PRESETS]} fallback="30d" />
+      <DateRangePicker />
 
       {error && <p className="text-sm text-error">{error}</p>}
       {loading && (

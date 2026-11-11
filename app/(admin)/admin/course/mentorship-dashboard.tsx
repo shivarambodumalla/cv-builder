@@ -97,7 +97,7 @@ const gscCountryName = (alpha3: string): string => {
 };
 
 export function MentorshipDashboard() {
-  const { from, to, fromIso, toIso } = useAdminRange("30d");
+  const { from, to, fromIso, toIso } = useAdminRange();
   const [stats, setStats] = useState<Stats | null>(null);
   const [search, setSearch] = useState<SearchData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -187,7 +187,7 @@ export function MentorshipDashboard() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <DateRangePicker fallback="30d" />
+          <DateRangePicker />
           <Button asChild size="sm" variant="secondary" className="min-h-[44px] sm:min-h-0">
             <Link href="/admin/course/leads">View Leads</Link>
           </Button>

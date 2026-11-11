@@ -15,7 +15,7 @@ export default function GrowthTrafficPage({
   return (
     <div className="space-y-10">
       <section>
-        <SignupsByChannel range={resolveRange(searchParams, "30d")} />
+        <SignupsByChannel range={resolveRange(searchParams)} />
       </section>
       <section className="space-y-4 border-t pt-8">
         <div>

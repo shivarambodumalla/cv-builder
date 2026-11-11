@@ -30,7 +30,7 @@ interface JobsData {
 }
 
 export function JobsAnalyticsDashboard() {
-  const { fromIso, toIso } = useAdminRange("30d");
+  const { fromIso, toIso } = useAdminRange();
   const [data, setData] = useState<JobsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -59,7 +59,7 @@ export function JobsAnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
-      <DateRangePicker presets={["today", "7d", "30d", "90d", "custom"]} fallback="30d" />
+      <DateRangePicker />
 
       {error && <p className="text-sm text-error">{error}</p>}
       {loading && <div className="flex items-center gap-2 text-sm text-muted-foreground py-16 justify-center"><Loader2 className="h-4 w-4 animate-spin" /> Loading...</div>}

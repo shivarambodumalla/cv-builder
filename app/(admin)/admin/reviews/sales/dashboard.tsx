@@ -73,7 +73,7 @@ const TIER_COLOR: Record<string, string> = {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export function CvReviewDashboard() {
-  const { from, to } = useAdminRange("30d");
+  const { from, to } = useAdminRange();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -105,7 +105,7 @@ export function CvReviewDashboard() {
 
   return (
     <div className="space-y-6">
-      <DateRangePicker fallback="30d" />
+      <DateRangePicker />
 
       {error && <p className="text-sm text-error">{error}</p>}
       {loading && (

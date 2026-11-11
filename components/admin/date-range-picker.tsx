@@ -4,6 +4,8 @@ import { useId, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
+  ADMIN_PRESETS,
+  DEFAULT_PRESET,
   RANGE_LABELS,
   resolveRange,
   type RangePreset,
@@ -11,7 +13,7 @@ import {
 } from "@/lib/admin/date-range";
 
 /** The current range from the URL, for client dashboards that fetch their own data. */
-export function useAdminRange(fallback: Exclude<RangePreset, "custom"> = "30d"): ResolvedRange {
+export function useAdminRange(fallback: Exclude<RangePreset, "custom"> = DEFAULT_PRESET): ResolvedRange {
   const params = useSearchParams();
   const key = params.toString();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -24,8 +26,8 @@ export function useAdminRange(fallback: Exclude<RangePreset, "custom"> = "30d"):
  * and client dashboards via useAdminRange().
  */
 export function DateRangePicker({
-  presets = ["7d", "30d", "90d", "custom"],
-  fallback = "30d",
+  presets = ADMIN_PRESETS,
+  fallback = DEFAULT_PRESET,
   className,
 }: {
   presets?: RangePreset[];

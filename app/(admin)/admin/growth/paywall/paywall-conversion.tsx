@@ -24,7 +24,7 @@ export function PaywallConversion({ range }: { range: ResolvedRange }) {
             user&apos;s last paywall in the 24 hours before it.
           </p>
         </div>
-        <DateRangePicker fallback="30d" className="shrink-0" />
+        <DateRangePicker className="shrink-0" />
       </div>
 
       <Suspense key={rangeQuery(range)} fallback={<><TilesSkeleton count={3} /><ListSkeleton rows={6} /></>}>

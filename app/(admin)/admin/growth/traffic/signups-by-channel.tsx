@@ -16,7 +16,7 @@ export function SignupsByChannel({ range }: { range: ResolvedRange }) {
             Where each new account first came from. Source tracking started Nov 2026; earlier signups show as Unknown.
           </p>
         </div>
-        <DateRangePicker fallback="30d" className="shrink-0" />
+        <DateRangePicker className="shrink-0" />
       </div>
       <Suspense key={rangeQuery(range)} fallback={<ListSkeleton rows={5} />}>
         <ChannelList range={range} />

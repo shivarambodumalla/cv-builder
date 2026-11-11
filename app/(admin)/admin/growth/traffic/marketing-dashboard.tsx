@@ -26,7 +26,7 @@ type Tab = "keywords" | "pages";
  * page header; the blog section reads the same range).
  */
 export function MarketingDashboard() {
-  const { from, to } = useAdminRange("30d");
+  const { from, to } = useAdminRange();
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

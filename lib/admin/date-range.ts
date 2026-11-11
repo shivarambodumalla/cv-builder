@@ -5,16 +5,25 @@
  * 7 days including today.
  */
 
-export type RangePreset = "today" | "yesterday" | "7d" | "30d" | "90d" | "custom";
+export type RangePreset = "today" | "yesterday" | "7d" | "30d" | "mtd" | "60d" | "90d" | "365d" | "custom";
 
 export const RANGE_LABELS: Record<RangePreset, string> = {
   today: "Today",
   yesterday: "Yesterday",
   "7d": "7 days",
   "30d": "30 days",
+  mtd: "Month to date",
+  "60d": "60 days",
   "90d": "90 days",
+  "365d": "1 year",
   custom: "Custom",
 };
+
+/** The presets every admin picker offers, in display order. */
+export const ADMIN_PRESETS: RangePreset[] = ["today", "yesterday", "7d", "30d", "mtd", "60d", "90d", "365d", "custom"];
+
+/** Default range across the admin: the current calendar month so far. */
+export const DEFAULT_PRESET = "mtd" as const;
 
 export interface ResolvedRange {
   preset: RangePreset;
@@ -63,8 +72,14 @@ export function presetRange(preset: Exclude<RangePreset, "custom">, now: Date = 
       return rangeFromDays(addDays(today, -6), today, preset);
     case "30d":
       return rangeFromDays(addDays(today, -29), today, preset);
+    case "mtd":
+      return rangeFromDays(`${today.slice(0, 8)}01`, today, preset);
+    case "60d":
+      return rangeFromDays(addDays(today, -59), today, preset);
     case "90d":
       return rangeFromDays(addDays(today, -89), today, preset);
+    case "365d":
+      return rangeFromDays(addDays(today, -364), today, preset);
   }
 }
 
@@ -74,7 +89,7 @@ export function presetRange(preset: Exclude<RangePreset, "custom">, now: Date = 
  */
 export function resolveRange(
   params: URLSearchParams | Record<string, string | string[] | undefined>,
-  fallback: Exclude<RangePreset, "custom"> = "30d",
+  fallback: Exclude<RangePreset, "custom"> = DEFAULT_PRESET,
   now: Date = new Date(),
 ): ResolvedRange {
   const get = (key: string): string | undefined => {
@@ -119,4 +134,40 @@ export function comparisonLabel(r: ResolvedRange, against: "week" | "previous"):
     return `vs last ${weekday}`;
   }
   return r.days === 1 ? "vs day before" : `vs prior ${r.days} days`;
+}
+
+export type Bucket = "day" | "week" | "month";
+
+/** Chart granularity for a range: daily up to 62 days, weekly up to 180, then monthly. */
+export function bucketFor(r: ResolvedRange): Bucket {
+  if (r.days <= 62) return "day";
+  if (r.days <= 180) return "week";
+  return "month";
+}
+
+/** Start day (YYYY-MM-DD) of the bucket a day falls in. Weeks start Monday. */
+export function bucketStart(day: string, bucket: Bucket): string {
+  if (bucket === "day") return day;
+  if (bucket === "month") return `${day.slice(0, 8)}01`;
+  const d = new Date(`${day}T00:00:00Z`);
+  const offset = (d.getUTCDay() + 6) % 7;
+  return addDays(day, -offset);
+}
+
+/** Every bucket in the range, oldest first, with a short axis label. */
+export function bucketsIn(r: ResolvedRange, bucket: Bucket = bucketFor(r)): { key: string; label: string }[] {
+  const seen = new Set<string>();
+  const out: { key: string; label: string }[] = [];
+  for (const day of daysIn(r)) {
+    const key = bucketStart(day, bucket);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const d = new Date(`${key}T00:00:00Z`);
+    const label =
+      bucket === "month"
+        ? d.toLocaleDateString("en-US", { month: "short", year: "2-digit", timeZone: "UTC" })
+        : d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+    out.push({ key, label });
+  }
+  return out;
 }

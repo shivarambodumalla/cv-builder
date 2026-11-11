@@ -16,7 +16,7 @@ export default function GrowthPaywallPage({
   return (
     <div className="space-y-10">
       <section>
-        <PaywallConversion range={resolveRange(searchParams, "30d")} />
+        <PaywallConversion range={resolveRange(searchParams)} />
       </section>
       <section className="space-y-4 border-t pt-8">
         <div>

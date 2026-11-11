@@ -16,7 +16,6 @@ export type { Loaded };
 
 const HOUR_MS = 3_600_000;
 const DAY_MS = 24 * HOUR_MS;
-const FALLBACK_SPEND_CAP_USD = 10;
 
 /**
  * The Lemon Squeezy webhook started writing renewal rows with this release.
@@ -157,49 +156,7 @@ async function activePro(): Promise<ActivePro> {
   return { total, byPeriod };
 }
 
-export interface HomeMoney {
-  current: MoneySummary;
-  previous: MoneySummary;
-  activePro: ActivePro;
-}
-
-export function getMoney(range: ResolvedRange, compare: ResolvedRange): Promise<Loaded<HomeMoney>> {
-  return load("money", async () => {
-    const [cur, prev, pro] = await Promise.all([paymentEvents(range), paymentEvents(compare), activePro()]);
-    return { current: summarizeMoney(cur), previous: summarizeMoney(prev), activePro: pro };
-  });
-}
-
-// ── Journey ────────────────────────────────────────────────────────────
-
-export interface JourneyCounts {
-  visitors: number;
-  signups: number;
-  usSignups: number;
-  ranAts: number;
-  hitPaywall: number;
-  clickedPay: number;
-  paid: number;
-}
-
 const PAYWALL_EVENTS = ["feature_blocked", "Saw upgrade modal"];
-/** The ATS panel logs "Ran ATS analysis"; trackATSScan() logs "Ran ATS scan". */
-const ATS_EVENTS = ["Ran ATS analysis", "Ran ATS scan"];
-
-async function distinctActivityUsers(events: string[], range: ResolvedRange, internal: Set<string>): Promise<number> {
-  const db = createAdminClient();
-  const rows = await fetchAll<{ user_id: string | null }>((from, to) =>
-    db
-      .from("user_activity")
-      .select("user_id")
-      .in("event", events)
-      .gte("created_at", range.fromIso)
-      .lte("created_at", range.toIso)
-      .order("id")
-      .range(from, to),
-  );
-  return new Set(rows.map((r) => r.user_id).filter((id): id is string => !!id && !internal.has(id))).size;
-}
 
 /** PostgREST filter value excluding internal ids from a profiles count. */
 function notInList(ids: Set<string>): string {
@@ -219,44 +176,6 @@ async function signupCounts(range: ResolvedRange, internal: Set<string>): Promis
   };
   const [all, us] = await Promise.all([base(), base().eq("signup_country_code", "US")]);
   return { all: mustCount(all), us: mustCount(us) };
-}
-
-async function journeyCounts(range: ResolvedRange): Promise<JourneyCounts> {
-  const db = createAdminClient();
-  const internal = await internalUserIds();
-  const [visitorsRes, signups, ranAts, hitPaywall, intents, payments] = await Promise.all([
-    db.rpc("funnel_unique_visitors", { from_date: range.from, to_date: range.to }).single<{ unique_visitors: number }>(),
-    signupCounts(range, internal),
-    distinctActivityUsers(ATS_EVENTS, range, internal),
-    distinctActivityUsers(PAYWALL_EVENTS, range, internal),
-    fetchAll<{ user_id: string }>((from, to) =>
-      db
-        .from("checkout_intents")
-        .select("user_id")
-        .gte("created_at", range.fromIso)
-        .lte("created_at", range.toIso)
-        .order("id")
-        .range(from, to),
-    ),
-    paymentEvents(range),
-  ]);
-  const distinct = (ids: string[]) => new Set(ids.filter((id) => !internal.has(id))).size;
-  return {
-    visitors: Number(must(visitorsRes)?.unique_visitors ?? 0),
-    signups: signups.all,
-    usSignups: signups.us,
-    ranAts,
-    hitPaywall,
-    clickedPay: distinct(intents.map((r) => r.user_id)),
-    paid: distinct(payments.filter((p) => p.type === "first").map((p) => p.userId)),
-  };
-}
-
-export function getJourney(range: ResolvedRange, compare: ResolvedRange): Promise<Loaded<{ current: JourneyCounts; previous: JourneyCounts }>> {
-  return load("journey", async () => {
-    const [current, previous] = await Promise.all([journeyCounts(range), journeyCounts(compare)]);
-    return { current, previous };
-  });
 }
 
 // ── Paywall by feature ─────────────────────────────────────────────────
@@ -648,54 +567,6 @@ export async function getNeedsReply(): Promise<ReplyItem[]> {
   return sources
     .flat()
     .sort((a, b) => TONE_RANK[a.tone] - TONE_RANK[b.tone] || (a.since ?? "").localeCompare(b.since ?? ""));
-}
-
-// ── Cost and health (today, UTC) ───────────────────────────────────────
-
-export interface Health {
-  spendUsd: number;
-  capUsd: number;
-  calls: number;
-  errors: number;
-  signupsToday: number;
-  bounces: number;
-  complaints: number;
-}
-
-export function getHealth(): Promise<Loaded<Health>> {
-  return load("health", async () => {
-    const db = createAdminClient();
-    const today = presetRange("today");
-    const internal = await internalUserIds();
-    const [logs, settings, suppressions, signups] = await Promise.all([
-      fetchAll<{ cost_usd: number | string | null; status: string | null }>((from, to) =>
-        db
-          .from("ai_usage_logs")
-          .select("cost_usd, status")
-          .gte("created_at", today.fromIso)
-          .order("id")
-          .range(from, to),
-      ),
-      db.from("ai_settings").select("daily_spend_cap_usd").eq("feature", "global").maybeSingle(),
-      db
-        .from("email_suppressions")
-        .select("reason")
-        .in("reason", ["bounce", "complaint"])
-        .gte("created_at", today.fromIso),
-      signupCounts(today, internal),
-    ]);
-    const cap = Number(must(settings)?.daily_spend_cap_usd ?? FALLBACK_SPEND_CAP_USD);
-    const supp = (must(suppressions) ?? []) as { reason: string }[];
-    return {
-      spendUsd: logs.reduce((s, r) => s + Number(r.cost_usd ?? 0), 0),
-      capUsd: cap > 0 ? cap : FALLBACK_SPEND_CAP_USD,
-      calls: logs.length,
-      errors: logs.filter((r) => r.status !== "success").length,
-      signupsToday: signups.all,
-      bounces: supp.filter((r) => r.reason === "bounce").length,
-      complaints: supp.filter((r) => r.reason === "complaint").length,
-    };
-  });
 }
 
 // ── Revenue detail ─────────────────────────────────────────────────────

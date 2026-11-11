@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Sparkline } from "./charts/sparkline";
+import type { SeriesTone } from "./charts/types";
 
 export type Tone = "success" | "warning" | "error" | "neutral";
 
@@ -10,6 +12,13 @@ const TONE_TEXT: Record<Tone, string> = {
   neutral: "text-muted-foreground",
 };
 
+const TONE_SPARK: Record<Tone, SeriesTone> = {
+  success: "success",
+  warning: "warning",
+  error: "error",
+  neutral: "primary",
+};
+
 const TONE_BAR: Record<Tone, string> = {
   success: "bg-success",
   warning: "bg-warning",
@@ -18,9 +27,9 @@ const TONE_BAR: Record<Tone, string> = {
 };
 
 /**
- * The one number tile for admin pages: label, value, an optional line under
- * it (a comparison or context) and an optional meter. Status colour comes
- * only from the success / warning / error tokens.
+ * The one number tile for admin pages: label, value, an optional sparkline,
+ * an optional line under it (a comparison or context) and an optional meter.
+ * Status colour comes only from the success / warning / error tokens.
  */
 export function StatTile({
   label,
@@ -28,6 +37,7 @@ export function StatTile({
   note,
   tone = "neutral",
   meter,
+  spark,
   href,
   className,
 }: {
@@ -39,6 +49,8 @@ export function StatTile({
   tone?: Tone;
   /** 0..1 fill for a small bar under the note, e.g. spend against a cap. */
   meter?: number;
+  /** Trend under the value, one number per bucket, oldest first. Drawn in the tile's tone. */
+  spark?: number[];
   href?: string;
   className?: string;
 }) {
@@ -46,6 +58,7 @@ export function StatTile({
     <>
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <span className="text-2xl font-bold tracking-tight tabular-nums">{value}</span>
+      {spark && spark.length > 1 && <Sparkline values={spark} tone={TONE_SPARK[tone]} className="my-1" />}
       {note && <span className={cn("text-xs tabular-nums", TONE_TEXT[tone])}>{note}</span>}
       {meter !== undefined && (
         <span className="mt-1 block h-1 overflow-hidden rounded-full bg-muted" aria-hidden>
