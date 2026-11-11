@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { internalUserIds } from "@/lib/admin/constants";
-import { load, must, type Loaded } from "@/lib/admin/query";
+import { fetchAll, load, must, type Loaded } from "@/lib/admin/query";
 import {
   bucketFor,
   bucketStart,
@@ -206,14 +206,25 @@ export function getFunnel(range: ResolvedRange): Promise<Loaded<FunnelStep[]>> {
     const db = createAdminClient();
     const ex = await exclude();
     const args = { p_from: range.from, p_to: range.to, p_exclude: ex };
-    const [traffic, signups, events, ats, paywall, payments] = await Promise.all([
+    const [traffic, signups, events, ats, paywall, payments, cvRows] = await Promise.all([
       db.rpc("admin_traffic_totals", { p_from: range.from, p_to: range.to }),
       db.rpc("admin_signups_daily", args),
-      db.rpc("admin_event_users", { ...args, p_events: ["Created CV", "Downloaded PDF", "Clicked pay button"] }),
+      db.rpc("admin_event_users", { ...args, p_events: ["Downloaded PDF", "Clicked pay button"] }),
       db.rpc("admin_any_event_users", { ...args, p_events: ATS_EVENTS }),
       db.rpc("admin_any_event_users", { ...args, p_events: ["feature_blocked", "Saw upgrade modal"] }),
       db.rpc("admin_payments_daily", args),
+      // The "Created CV" activity event is never logged in practice, so count from the table.
+      fetchAll<{ user_id: string | null }>((from, to) =>
+        db
+          .from("cvs")
+          .select("user_id")
+          .gte("created_at", range.fromIso)
+          .lte("created_at", range.toIso)
+          .order("id")
+          .range(from, to),
+      ),
     ]);
+    const createdCv = new Set(cvRows.map((r) => r.user_id).filter((id): id is string => !!id && !ex.includes(id))).size;
     const visitors = num((must(traffic) as { visitors: number }[])[0]?.visitors);
     const signupCount = sum((must(signups) as SignupRow[]).map((r) => num(r.signups)));
     const eventUsers = new Map((must(events) as { event: string; users: number }[]).map((e) => [e.event, num(e.users)]));
@@ -222,7 +233,7 @@ export function getFunnel(range: ResolvedRange): Promise<Loaded<FunnelStep[]>> {
     return [
       { key: "visitors", label: "Visitors", value: visitors, href: "/admin/growth/traffic", hint: "Unique visitors to marketing pages" },
       { key: "signups", label: "Signed up", value: signupCount, href: "/admin/users" },
-      { key: "created_cv", label: "Created a CV", value: eventUsers.get("Created CV") ?? 0 },
+      { key: "created_cv", label: "Created a CV", value: createdCv },
       { key: "ats", label: "Ran ATS scan", value: num(must(ats)) },
       { key: "download", label: "Downloaded PDF", value: eventUsers.get("Downloaded PDF") ?? 0 },
       { key: "paywall", label: "Hit the paywall", value: num(must(paywall)), href: "/admin/growth/paywall" },
