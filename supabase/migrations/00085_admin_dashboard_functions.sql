@@ -128,8 +128,8 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
     ORDER BY COALESCE(subscription_id, user_id::text || ':' || (started_at AT TIME ZONE 'UTC')::date), started_at
   ),
   f AS (SELECT day, COUNT(*)::bigint n, SUM(amount) amt FROM firsts GROUP BY day),
-  r AS (SELECT (started_at AT TIME ZONE 'UTC')::date day, COUNT(*)::bigint n, SUM(amount) amt FROM scoped WHERE status = 'renewal' GROUP BY 1),
-  x AS (SELECT (started_at AT TIME ZONE 'UTC')::date day, COUNT(*)::bigint n, SUM(amount) amt FROM scoped WHERE status = 'refunded' GROUP BY 1)
+  r AS (SELECT (started_at AT TIME ZONE 'UTC')::date AS day, COUNT(*)::bigint n, SUM(amount) amt FROM scoped WHERE status = 'renewal' GROUP BY 1),
+  x AS (SELECT (started_at AT TIME ZONE 'UTC')::date AS day, COUNT(*)::bigint n, SUM(amount) amt FROM scoped WHERE status = 'refunded' GROUP BY 1)
   SELECT d.day,
     COALESCE(f.n, 0), COALESCE(f.amt, 0),
     COALESCE(r.n, 0), COALESCE(r.amt, 0),
@@ -145,7 +145,7 @@ RETURNS TABLE(day date, cost_usd numeric, calls bigint)
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
   WITH days AS (SELECT gs::date AS day FROM generate_series(p_from, p_to, interval '1 day') gs),
   logs AS (
-    SELECT (created_at AT TIME ZONE 'UTC')::date day, SUM(cost_usd) cost, COUNT(*)::bigint calls FROM ai_usage_logs
+    SELECT (created_at AT TIME ZONE 'UTC')::date AS day, SUM(cost_usd) cost, COUNT(*)::bigint calls FROM ai_usage_logs
     WHERE created_at >= admin_day_start(p_from) AND created_at < admin_day_start(p_to + 1)
     GROUP BY 1
   ),
