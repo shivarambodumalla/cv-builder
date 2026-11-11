@@ -26,10 +26,11 @@ import { TestimonialsCarousel } from "@/components/marketing/testimonials-carous
 import { getPublicRatingStats } from "@/lib/feedback/stats";
 import { getPlanLimits, getProTemplateSlugs, getTemplateCounts } from "@/lib/billing/plan-config";
 import { getPublishedTestimonials } from "@/lib/feedback/testimonials";
+import { getSocialProof, socialProofLine } from "@/lib/marketing/social-proof";
 
 export const metadata: Metadata = {
   title: "Free ATS Resume Scanner: Check Your ATS Score",
-  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score and top issues free. Pro fixes them with AI. 1,200+ resumes scanned.",
+  description: "Your resume is filtered by ATS before humans see it. CVEdge shows your real ATS score and top issues free. Pro fixes them with AI. 1,200+ resume scans.",
   alternates: {
     canonical: "https://www.thecvedge.com",
     languages: {
@@ -65,14 +66,15 @@ const COMPARISON = [
 export default async function HomePage() {
   // Real post-download ratings. Null until enough exist to display, and the
   // schema below only carries a rating that is visible on this page.
-  const [rating, testimonials, planLimits, templateCounts, proSlugs] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials(), getPlanLimits(), getTemplateCounts(), getProTemplateSlugs()]);
+  const [rating, testimonials, planLimits, templateCounts, proSlugs, proof] = await Promise.all([getPublicRatingStats(), getPublishedTestimonials(), getPlanLimits(), getTemplateCounts(), getProTemplateSlugs(), getSocialProof()]);
+  const proofLine = socialProofLine(proof);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "CVEdge",
     url: "https://www.thecvedge.com",
-    description: "Free ATS resume scanner and builder. Check your ATS score, see your top issues, and fix them in the editor. Pro adds AI fixes. 1,200+ resumes scanned.",
+    description: "Free ATS resume scanner and builder. Check your ATS score, see your top issues, and fix them in the editor. Pro adds AI fixes. 1,200+ resume scans.",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free plan; Pro from $5/week" },
@@ -134,10 +136,10 @@ export default async function HomePage() {
                 </Button>
               </div>
 
-              {/* Trust line */}
-              <p className="text-sm text-muted-foreground mt-1 max-w-full">
-                1,200+ resumes scanned &middot; Avg score improvement +18 points
-              </p>
+              {/* Trust line: live counts only (lib/marketing/social-proof.ts) */}
+              {proofLine && (
+                <p className="text-sm text-muted-foreground mt-1 max-w-full">{proofLine}</p>
+              )}
             </div>
 
             {/* Right column: animated preview (scales responsively) */}
