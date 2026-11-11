@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSignupModal, type SignupTrigger } from "@/components/popups/signup-modal";
 import { Button } from "@/components/ui/button";
+import { StatTile } from "@/components/admin/stat-tile";
 import { cn } from "@/lib/utils";
 import { Check, Eye, X, Download, Briefcase, Upload, ArrowRight, BarChart3, Sparkles, BookOpen, FileText } from "lucide-react";
 
@@ -48,7 +49,6 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 const CATEGORY_LABELS = { signup_modal: "Signup Modals", popover: "Bottom-Right Popovers", inline: "Inline Nudges" };
-const CATEGORY_COLORS = { signup_modal: "bg-[#065F46] text-white", popover: "bg-primary/10 text-primary", inline: "bg-muted text-muted-foreground" };
 const CATEGORY_DESCS = {
   signup_modal: "Full-screen modals for anonymous visitors to drive signups",
   popover: "Non-blocking bottom-right cards for authenticated users: green header + beige body",
@@ -71,15 +71,15 @@ export function PopupAudit() {
   return (
     <div className="space-y-6">
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {(["signup_modal", "popover", "inline"] as const).map((cat) => (
-          <div key={cat} className="rounded-xl border p-4">
-            <p className="text-[11px] text-muted-foreground">{CATEGORY_LABELS[cat]}</p>
-            <p className="text-2xl font-bold mt-1">{POPUPS.filter(p => p.category === cat).length}</p>
-            <span className={cn("inline-block mt-2 rounded-full px-2 py-0.5 text-[10px] font-bold", CATEGORY_COLORS[cat])}>
-              All active
-            </span>
-          </div>
+          <StatTile
+            key={cat}
+            label={CATEGORY_LABELS[cat]}
+            value={POPUPS.filter((p) => p.category === cat).length}
+            note="All active"
+            tone="success"
+          />
         ))}
       </div>
 
@@ -95,35 +95,37 @@ export function PopupAudit() {
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">{CATEGORY_DESCS[cat]}</p>
             </div>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/10 text-xs">
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Name</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Pages</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Trigger</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Cooldown</th>
-                  <th className="text-right px-4 py-2 font-medium text-muted-foreground">Preview</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((p) => (
-                  <tr key={p.id} className="border-b last:border-0 hover:bg-muted/20">
-                    <td className="px-4 py-2.5">
-                      <span className="font-medium text-xs">{p.name}</span>
-                      <span className="text-[10px] text-muted-foreground ml-2">{p.who}</span>
-                    </td>
-                    <td className="px-4 py-2.5"><div className="flex flex-wrap gap-1">{p.pages.map(pg => <span key={pg} className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono">{pg}</span>)}</div></td>
-                    <td className="px-4 py-2.5 text-xs text-muted-foreground max-w-[180px]">{p.condition}</td>
-                    <td className="px-4 py-2.5 text-xs text-muted-foreground">{p.frequency}</td>
-                    <td className="px-4 py-2.5 text-right">
-                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => handlePreview(p)}>
-                        <Eye className="h-3 w-3" /> Preview
-                      </Button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/10 text-xs">
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Name</th>
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Pages</th>
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Trigger</th>
+                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Cooldown</th>
+                    <th className="text-right px-4 py-2 font-medium text-muted-foreground">Preview</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {items.map((p) => (
+                    <tr key={p.id} className="border-b last:border-0 hover:bg-muted/20">
+                      <td className="px-4 py-2.5">
+                        <span className="font-medium text-xs">{p.name}</span>
+                        <span className="text-[10px] text-muted-foreground ml-2">{p.who}</span>
+                      </td>
+                      <td className="px-4 py-2.5"><div className="flex flex-wrap gap-1">{p.pages.map(pg => <span key={pg} className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono">{pg}</span>)}</div></td>
+                      <td className="px-4 py-2.5 text-xs text-muted-foreground max-w-[180px]">{p.condition}</td>
+                      <td className="px-4 py-2.5 text-xs text-muted-foreground">{p.frequency}</td>
+                      <td className="px-4 py-2.5 text-right">
+                        <Button size="sm" variant="outline" className="h-11 text-xs gap-1 sm:h-7" onClick={() => handlePreview(p)}>
+                          <Eye className="h-3 w-3" /> Preview
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         );
       })}

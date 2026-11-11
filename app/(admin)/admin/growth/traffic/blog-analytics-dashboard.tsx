@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Loader2, TrendingUp, Eye, FileText, ExternalLink, MousePointerClick } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAdminRange } from "@/components/admin/date-range-picker";
+import { StatTile } from "@/components/admin/stat-tile";
 
 interface TopPost  { path: string; slug: string; views: number }
 interface DayPoint { date: string; views: number }
@@ -17,25 +19,6 @@ interface Data {
   topLinks: TopLink[];
 }
 
-type Preset = "7d" | "30d" | "90d" | "all";
-
-const PRESETS: { key: Preset; label: string }[] = [
-  { key: "7d", label: "7 days" },
-  { key: "30d", label: "30 days" },
-  { key: "90d", label: "90 days" },
-  { key: "all", label: "All time" },
-];
-
-function getRange(preset: Preset): { from: string; to: string } {
-  const to = new Date().toISOString().slice(0, 10);
-  const from = new Date();
-  if (preset === "7d")  from.setDate(from.getDate() - 6);
-  if (preset === "30d") from.setDate(from.getDate() - 29);
-  if (preset === "90d") from.setDate(from.getDate() - 89);
-  if (preset === "all") from.setFullYear(2020);
-  return { from: from.toISOString().slice(0, 10), to };
-}
-
 function fmt(n: number): string {
   return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
 }
@@ -44,36 +27,35 @@ function fmtDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function StatCard({ icon: Icon, label, value, sub }: { icon: React.ElementType; label: string; value: string; sub?: string }) {
-  return (
-    <div className="rounded-xl border bg-card p-5 space-y-2">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Icon className="h-3.5 w-3.5" />
-        {label}
-      </div>
-      <p className="text-2xl font-bold tracking-tight">{value}</p>
-      {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
-    </div>
-  );
-}
-
+/** Blog views and link clicks for the page's ?range (the picker sits in the page header). */
 export function BlogAnalyticsDashboard() {
-  const [preset, setPreset] = useState<Preset>("30d");
+  const { from, to } = useAdminRange("30d");
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<"posts" | "links">("posts");
 
-  const fetchData = useCallback(async (p: Preset) => {
-    setLoading(true); setError("");
-    const { from, to } = getRange(p);
-    const res = await fetch(`/api/admin/blog-analytics?from=${from}&to=${to}`);
-    if (!res.ok) { setError("Failed to load analytics"); setLoading(false); return; }
-    setData(await res.json());
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetchData("30d"); }, [fetchData]);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError("");
+    fetch(`/api/admin/blog-analytics?from=${from}&to=${to}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json: Data = await res.json();
+        if (!cancelled) setData(json);
+      })
+      .catch((err) => {
+        console.error("[blog-analytics] load failed:", err);
+        if (!cancelled) setError("Failed to load analytics");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [from, to]);
 
   const maxViews = Math.max(...(data?.dailyTrend.map((d) => d.views) ?? [1]), 1);
   const maxPostViews = Math.max(...(data?.topPosts.map((p) => p.views) ?? [1]), 1);
@@ -81,22 +63,6 @@ export function BlogAnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Preset selector */}
-      <div className="flex gap-1 rounded-lg bg-muted p-0.5 w-fit">
-        {PRESETS.map((pr) => (
-          <button
-            key={pr.key}
-            onClick={() => { setPreset(pr.key); fetchData(pr.key); }}
-            className={cn(
-              "rounded-md px-3 py-1.5 text-xs transition-colors",
-              preset === pr.key ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {pr.label}
-          </button>
-        ))}
-      </div>
-
       {loading && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground py-8">
           <Loader2 className="h-4 w-4 animate-spin" /> Loading…
@@ -108,11 +74,11 @@ export function BlogAnalyticsDashboard() {
       {data && !loading && (
         <>
           {/* Stat cards */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard icon={Eye} label="Total blog views" value={fmt(data.totalViews)} />
-            <StatCard icon={FileText} label="Post views" value={fmt(data.postViews)} sub="Individual articles" />
-            <StatCard icon={TrendingUp} label="Blog index views" value={fmt(data.indexViews)} sub="/blog listing page" />
-            <StatCard icon={MousePointerClick} label="Link clicks" value={fmt(data.topLinks.reduce((s, l) => s + l.clicks, 0))} sub="Across all posts" />
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatTile label="Total blog views" value={fmt(data.totalViews)} />
+            <StatTile label="Post views" value={fmt(data.postViews)} note="Individual articles" />
+            <StatTile label="Blog index views" value={fmt(data.indexViews)} note="/blog listing page" />
+            <StatTile label="Link clicks" value={fmt(data.topLinks.reduce((s, l) => s + l.clicks, 0))} note="Across all posts" />
           </div>
 
           {/* Daily trend */}
@@ -147,7 +113,7 @@ export function BlogAnalyticsDashboard() {
                   key={t}
                   onClick={() => setActiveTab(t)}
                   className={cn(
-                    "rounded-md px-3 py-1.5 text-xs capitalize transition-colors",
+                    "min-h-[44px] rounded-md px-3 py-1.5 text-xs capitalize transition-colors sm:min-h-0",
                     activeTab === t ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -158,7 +124,7 @@ export function BlogAnalyticsDashboard() {
 
             {/* Top posts */}
             {activeTab === "posts" && (
-              <div className="rounded-xl border bg-card overflow-hidden">
+              <div className="rounded-xl border bg-card overflow-x-auto">
                 {data.topPosts.length === 0 ? (
                   <p className="p-6 text-sm text-muted-foreground">No post views recorded yet.</p>
                 ) : (
@@ -178,7 +144,7 @@ export function BlogAnalyticsDashboard() {
                               href={`https://www.thecvedge.com${post.path}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm hover:text-primary transition-colors flex items-center gap-1 group"
+                              className="min-h-[44px] text-sm hover:text-primary transition-colors flex items-center gap-1 group sm:min-h-0"
                             >
                               <span className="line-clamp-1">{post.slug.replace(/-/g, " ")}</span>
                               <ExternalLink className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -203,7 +169,7 @@ export function BlogAnalyticsDashboard() {
 
             {/* Top link clicks */}
             {activeTab === "links" && (
-              <div className="rounded-xl border bg-card overflow-hidden">
+              <div className="rounded-xl border bg-card overflow-x-auto">
                 {data.topLinks.length === 0 ? (
                   <p className="p-6 text-sm text-muted-foreground">No link clicks recorded yet.</p>
                 ) : (

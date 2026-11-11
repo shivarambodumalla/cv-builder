@@ -1,6 +1,9 @@
+"use client";
+
 import { Chip } from "@/components/ui/chip";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
+import { DataTable, type DataTableColumn } from "@/components/admin/data-table";
+import { StatTile } from "@/components/admin/stat-tile";
 import type { DeletedAccount } from "./page";
 
 function fmt(date: string | null): string {
@@ -19,6 +22,65 @@ function isStillBilling(a: DeletedAccount): boolean {
   return !!a.subscription_id && !a.subscription_cancelled;
 }
 
+const COLUMNS: DataTableColumn<DeletedAccount>[] = [
+  {
+    key: "user",
+    header: "User",
+    sortValue: (a) => a.user_number,
+    className: "font-medium tabular-nums",
+    cell: (a) => (a.user_number ? `#${a.user_number}` : a.user_id.slice(0, 8)),
+  },
+  {
+    key: "email",
+    header: "Email",
+    sortValue: (a) => a.email,
+    cell: (a) => a.email ?? <span className="text-muted-foreground">erased</span>,
+  },
+  {
+    key: "signed_up",
+    header: "Signed up",
+    sortValue: (a) => a.signed_up_at,
+    className: "text-muted-foreground whitespace-nowrap",
+    cell: (a) => fmt(a.signed_up_at),
+  },
+  {
+    key: "deleted",
+    header: "Deleted",
+    sortValue: (a) => a.deleted_at,
+    className: "text-muted-foreground whitespace-nowrap",
+    cell: (a) => fmt(a.deleted_at),
+  },
+  { key: "by", header: "By", sortValue: (a) => a.deleted_by, className: "capitalize text-muted-foreground", cell: (a) => a.deleted_by },
+  {
+    key: "plan",
+    header: "Plan",
+    sortValue: (a) => a.plan,
+    cell: (a) => (a.plan === "pro" ? <Chip variant="active">Pro</Chip> : <span className="text-muted-foreground">{a.plan ?? "–"}</span>),
+  },
+  {
+    key: "subscription",
+    header: "Subscription",
+    className: "font-mono text-xs text-muted-foreground",
+    cell: (a) => a.subscription_id ?? "–",
+  },
+  {
+    key: "upstream",
+    header: "Upstream",
+    // Still billing first when sorted ascending
+    sortValue: (a) => (!a.subscription_id ? 2 : a.subscription_cancelled ? 1 : 0),
+    cell: (a) =>
+      !a.subscription_id ? (
+        <span className="text-muted-foreground">–</span>
+      ) : a.subscription_cancelled ? (
+        <span className="text-success font-medium">Cancelled</span>
+      ) : (
+        <span className="text-error font-semibold" title={a.cancel_error ?? undefined}>
+          Still active
+        </span>
+      ),
+  },
+];
+
 export function DeletedAccountsTable({ accounts }: { accounts: DeletedAccount[] }) {
   const billing = accounts.filter(isStillBilling);
   const paid = accounts.filter((a) => a.subscription_id);
@@ -33,27 +95,16 @@ export function DeletedAccountsTable({ accounts }: { accounts: DeletedAccount[] 
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Card>
-          <CardContent className="pt-5">
-            <p className="text-xs text-muted-foreground">Deleted</p>
-            <p className="text-2xl font-bold tabular-nums">{accounts.length}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-5">
-            <p className="text-xs text-muted-foreground">Had a subscription</p>
-            <p className="text-2xl font-bold tabular-nums">{paid.length}</p>
-          </CardContent>
-        </Card>
-        <Card className={billing.length > 0 ? "border-error" : undefined}>
-          <CardContent className="pt-5">
-            <p className="text-xs text-muted-foreground">Still billing</p>
-            <p className={`text-2xl font-bold tabular-nums ${billing.length > 0 ? "text-error" : ""}`}>
-              {billing.length}
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <StatTile label="Deleted" value={accounts.length} />
+        <StatTile label="Had a subscription" value={paid.length} />
+        <StatTile
+          label="Still billing"
+          value={billing.length}
+          note={billing.length > 0 ? "Cancel and refund" : "None"}
+          tone={billing.length > 0 ? "error" : "success"}
+          className={billing.length > 0 ? "border-error" : undefined}
+        />
       </div>
 
       {billing.length > 0 && (
@@ -73,67 +124,14 @@ export function DeletedAccountsTable({ accounts }: { accounts: DeletedAccount[] 
         </div>
       )}
 
-      {accounts.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center text-sm text-muted-foreground">
-            No deleted accounts recorded.
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardHeader className="pb-0" />
-          <CardContent className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="pb-2 font-medium">User</th>
-                  <th className="pb-2 font-medium">Email</th>
-                  <th className="pb-2 font-medium">Signed up</th>
-                  <th className="pb-2 font-medium">Deleted</th>
-                  <th className="pb-2 font-medium">By</th>
-                  <th className="pb-2 font-medium">Plan</th>
-                  <th className="pb-2 font-medium">Subscription</th>
-                  <th className="pb-2 font-medium">Upstream</th>
-                </tr>
-              </thead>
-              <tbody>
-                {accounts.map((a) => (
-                  <tr key={a.user_id} className="border-b last:border-0">
-                    <td className="py-2.5 font-medium tabular-nums">
-                      {a.user_number ? `#${a.user_number}` : a.user_id.slice(0, 8)}
-                    </td>
-                    <td className="py-2.5">
-                      {a.email ?? <span className="text-muted-foreground">erased</span>}
-                    </td>
-                    <td className="py-2.5 text-muted-foreground whitespace-nowrap">{fmt(a.signed_up_at)}</td>
-                    <td className="py-2.5 text-muted-foreground whitespace-nowrap">{fmt(a.deleted_at)}</td>
-                    <td className="py-2.5 capitalize text-muted-foreground">{a.deleted_by}</td>
-                    <td className="py-2.5">
-                      {a.plan === "pro"
-                        ? <Chip variant="active">Pro</Chip>
-                        : <span className="text-muted-foreground">{a.plan ?? "–"}</span>}
-                    </td>
-                    <td className="py-2.5 font-mono text-xs text-muted-foreground">
-                      {a.subscription_id ?? "–"}
-                    </td>
-                    <td className="py-2.5">
-                      {!a.subscription_id ? (
-                        <span className="text-muted-foreground">–</span>
-                      ) : a.subscription_cancelled ? (
-                        <span className="text-success font-medium">Cancelled</span>
-                      ) : (
-                        <span className="text-error font-semibold" title={a.cancel_error ?? undefined}>
-                          Still active
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      )}
+      <DataTable
+        rows={accounts}
+        columns={COLUMNS}
+        rowKey={(a) => a.user_id}
+        searchFields={(a) => [a.email, a.user_number ? `#${a.user_number}` : a.user_id, a.subscription_id]}
+        searchPlaceholder="Search email, user # or subscription"
+        emptyText="No deleted accounts recorded."
+      />
     </div>
   );
 }

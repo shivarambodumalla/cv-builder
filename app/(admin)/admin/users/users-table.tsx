@@ -222,7 +222,8 @@ function ColumnPicker({
 
   function toggle(key: string) {
     const next = new Set(visible);
-    next.has(key) ? next.delete(key) : next.add(key);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
     onChange(next);
   }
 

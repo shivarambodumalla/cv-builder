@@ -7,7 +7,7 @@ import { fetchAll, load, must } from "@/lib/admin/query";
 import { int } from "@/lib/admin/format";
 import { StatTile } from "@/components/admin/stat-tile";
 import { LoadError } from "@/components/admin/home/block";
-import { ActivityChart } from "./activity-chart";
+import { ActivityChart } from "@/components/admin/activity-chart";
 import { RegistrationsChart } from "./registrations-chart";
 import { PaymentWallChart } from "./payment-wall-chart";
 

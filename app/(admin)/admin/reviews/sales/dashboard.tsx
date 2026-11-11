@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
-  Loader2, ArrowRight, TrendingUp, TrendingDown, DollarSign,
+  Loader2, TrendingUp, TrendingDown,
   ShoppingCart, CheckCircle, Clock, Search, ExternalLink,
   Eye, MousePointerClick, CreditCard, Package, Database, BarChart3,
   AlertCircle,
 } from "lucide-react";
+import { DateRangePicker, useAdminRange } from "@/components/admin/date-range-picker";
+import { StatTile } from "@/components/admin/stat-tile";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,34 +50,18 @@ interface AnalyticsData {
   gscAvailable: boolean;
 }
 
-// ─── Preset helpers ───────────────────────────────────────────────────────────
-
-type Preset = "7d" | "30d" | "90d" | "custom";
-const PRESETS: { key: Preset; label: string }[] = [
-  { key: "7d", label: "7 Days" },
-  { key: "30d", label: "30 Days" },
-  { key: "90d", label: "90 Days" },
-  { key: "custom", label: "Custom" },
-];
-
-function getDateRange(preset: Preset): { from: string; to: string } {
-  const to = new Date().toISOString().slice(0, 10);
-  const from = new Date(Date.now() - (preset === "7d" ? 6 : preset === "30d" ? 29 : 89) * 86400000)
-    .toISOString()
-    .slice(0, 10);
-  return { from, to };
-}
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function pct(n: number, d: number) { return d === 0 ? 0 : Math.round((n / d) * 100); }
 function fp(n: number) { return `${n}%`; }
 function fmt(n: number) { return n.toLocaleString(); }
 function fmtRev(n: number) { return `$${n % 1 === 0 ? n.toLocaleString() : n.toFixed(2)}`; }
 
-const STATUS_STYLE: Record<string, string> = {
-  completed: "bg-success/15 text-success",
-  pending: "bg-warning/15 text-warning",
-  in_progress: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
-  cancelled: "bg-error/15 text-error",
+const STATUS_STYLE: Record<string, { chip: string; bar: string }> = {
+  completed: { chip: "bg-success/15 text-success", bar: "bg-success" },
+  pending: { chip: "bg-warning/15 text-warning", bar: "bg-warning" },
+  in_progress: { chip: "bg-primary/15 text-primary", bar: "bg-primary" },
+  cancelled: { chip: "bg-error/15 text-error", bar: "bg-error" },
 };
 
 const TIER_COLOR: Record<string, string> = {
@@ -89,67 +73,39 @@ const TIER_COLOR: Record<string, string> = {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export function CvReviewDashboard() {
-  const [preset, setPreset] = useState<Preset>("30d");
-  const [customFrom, setCustomFrom] = useState("");
-  const [customTo, setCustomTo] = useState("");
+  const { from, to } = useAdminRange("30d");
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchData = useCallback(async (pr: Preset, cfrom?: string, cto?: string) => {
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     setError("");
-    const { from, to } = pr === "custom" && cfrom && cto
-      ? { from: cfrom, to: cto }
-      : getDateRange(pr);
-    const res = await fetch(`/api/admin/cv-review-analytics?from=${from}&to=${to}`);
-    if (!res.ok) {
-      setError((await res.json().catch(() => ({}))).error ?? `Error ${res.status}`);
-      setLoading(false);
-      return;
-    }
-    setData(await res.json());
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetchData("30d"); }, [fetchData]);
-
-  function handlePreset(pr: Preset) { setPreset(pr); if (pr !== "custom") fetchData(pr); }
+    fetch(`/api/admin/cv-review-analytics?from=${from}&to=${to}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error ?? `Error ${res.status}`);
+        }
+        const json: AnalyticsData = await res.json();
+        if (!cancelled) setData(json);
+      })
+      .catch((err: Error) => {
+        console.error("[cv-review-sales] load failed:", err);
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [from, to]);
 
   return (
     <div className="space-y-6">
-      {/* ── Date Picker ── */}
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="flex gap-1 rounded-lg bg-muted p-0.5">
-          {PRESETS.map((pr) => (
-            <button
-              key={pr.key}
-              onClick={() => handlePreset(pr.key)}
-              className={cn(
-                "rounded-md px-3 py-1.5 text-xs transition-colors",
-                preset === pr.key ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {pr.label}
-            </button>
-          ))}
-        </div>
-        {preset === "custom" && (
-          <div className="flex items-end gap-2">
-            <div>
-              <label className="text-[10px] text-muted-foreground">From</label>
-              <Input type="date" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="h-8 text-xs w-36" />
-            </div>
-            <div>
-              <label className="text-[10px] text-muted-foreground">To</label>
-              <Input type="date" value={customTo} onChange={(e) => setCustomTo(e.target.value)} className="h-8 text-xs w-36" />
-            </div>
-            <Button size="sm" className="h-8 text-xs" onClick={() => fetchData("custom", customFrom, customTo)} disabled={!customFrom || !customTo || loading}>
-              Apply
-            </Button>
-          </div>
-        )}
-      </div>
+      <DateRangePicker fallback="30d" />
 
       {error && <p className="text-sm text-error">{error}</p>}
       {loading && (
@@ -162,14 +118,14 @@ export function CvReviewDashboard() {
         <>
           {/* ── 1. HERO METRICS ── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <HeroCard icon={DollarSign} label="Revenue" value={fmtRev(data.totalRevenue)} accent="text-success" />
-            <HeroCard icon={ShoppingCart} label="Orders" value={fmt(data.totalOrders)} />
-            <HeroCard icon={CreditCard} label="Avg Order" value={fmtRev(Math.round(data.avgOrderValue))} />
-            <HeroCard
-              icon={CheckCircle}
+            <StatTile label="Revenue" value={fmtRev(data.totalRevenue)} />
+            <StatTile label="Orders" value={fmt(data.totalOrders)} />
+            <StatTile label="Avg Order" value={fmtRev(Math.round(data.avgOrderValue))} />
+            <StatTile
               label="Completion Rate"
               value={fp(pct(data.statusStats.completed, data.totalOrders))}
-              accent="text-success"
+              note={`${fmt(data.statusStats.completed)} completed`}
+              tone={data.statusStats.completed > 0 ? "success" : "neutral"}
             />
           </div>
 
@@ -192,20 +148,6 @@ export function CvReviewDashboard() {
           <RecentOrders orders={data.recentOrders} />
         </>
       )}
-    </div>
-  );
-}
-
-// ─── Hero Card ────────────────────────────────────────────────────────────────
-
-function HeroCard({ icon: Icon, label, value, accent }: { icon: React.ElementType; label: string; value: string; accent?: string }) {
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <div className="flex items-center gap-2 mb-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground font-medium">{label}</span>
-      </div>
-      <p className={cn("text-2xl font-bold tabular-nums", accent ?? "text-foreground")}>{value}</p>
     </div>
   );
 }
@@ -309,7 +251,7 @@ function SalesFunnel({ funnel, ga4Available }: { funnel: FunnelStep[]; ga4Availa
                 </span>
 
                 {/* Icon + label */}
-                <div className="flex items-center gap-2 w-32 shrink-0">
+                <div className="flex items-center gap-2 w-24 shrink-0 sm:w-32">
                   <Icon className={cn("h-3.5 w-3.5 shrink-0", isLast ? "text-success" : "text-muted-foreground")} />
                   <div>
                     <p className={cn("text-xs font-medium leading-tight", isLast && "text-success")}>{step.label}</p>
@@ -330,10 +272,10 @@ function SalesFunnel({ funnel, ga4Available }: { funnel: FunnelStep[]; ga4Availa
                 </div>
 
                 {/* Count + pct of top */}
-                <div className="text-right shrink-0 w-24">
+                <div className="text-right shrink-0 sm:w-24">
                   <span className={cn("text-sm font-bold tabular-nums", isLast && "text-success")}>{fmt(step.count)}</span>
                   {i > 0 && top > 0 && (
-                    <span className="text-[10px] text-muted-foreground ml-1.5 tabular-nums">
+                    <span className="hidden text-[10px] text-muted-foreground ml-1.5 tabular-nums sm:inline">
                       {fp(pct(step.count, top))} of top
                     </span>
                   )}
@@ -503,12 +445,12 @@ function StatusBreakdown({ statusStats, totalOrders }: { statusStats: AnalyticsD
           const share = totalOrders > 0 ? pct(count, totalOrders) : 0;
           return (
             <div key={key} className="flex items-center gap-3">
-              <div className={cn("flex items-center gap-1.5 w-28 shrink-0", STATUS_STYLE[key])}>
+              <div className={cn("flex items-center gap-1.5 w-28 shrink-0", STATUS_STYLE[key].chip)}>
                 <Icon className="h-3.5 w-3.5 shrink-0" />
                 <span className="text-xs font-medium">{label}</span>
               </div>
               <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                <div className={cn("h-full rounded-full", STATUS_STYLE[key].includes("success") ? "bg-success" : STATUS_STYLE[key].includes("warning") ? "bg-warning" : STATUS_STYLE[key].includes("error") ? "bg-error" : "bg-blue-500")}
+                <div className={cn("h-full rounded-full", STATUS_STYLE[key].bar)}
                   style={{ width: `${Math.max(share, count > 0 ? 2 : 0)}%` }} />
               </div>
               <span className="text-sm font-bold tabular-nums w-8 text-right">{count}</span>
@@ -526,14 +468,14 @@ function StatusBreakdown({ statusStats, totalOrders }: { statusStats: AnalyticsD
 function GscPanel({ gsc, available }: { gsc: AnalyticsData["gsc"]; available: boolean }) {
   return (
     <div className="rounded-xl border p-5">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <Search className="h-4 w-4 text-muted-foreground" />
         <h2 className="text-sm font-semibold">Organic Search (Google Search Console)</h2>
         <a
           href="https://search.google.com/search-console"
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground"
+          className="ml-auto flex min-h-[44px] items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground sm:min-h-0"
         >
           Open GSC <ExternalLink className="h-3 w-3" />
         </a>
@@ -542,10 +484,10 @@ function GscPanel({ gsc, available }: { gsc: AnalyticsData["gsc"]; available: bo
       {!available ? (
         <div className="flex items-center gap-2 rounded-md bg-muted/50 border px-4 py-3">
           <AlertCircle className="h-4 w-4 text-muted-foreground shrink-0" />
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-medium">Search Console not configured</p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              Add <code className="bg-muted px-1 rounded">cvedge-analytics@cvedge-analytics.iam.gserviceaccount.com</code> as a user in Google Search Console to see organic traffic data.
+              Add <code className="bg-muted px-1 rounded break-all">cvedge-analytics@cvedge-analytics.iam.gserviceaccount.com</code> as a user in Google Search Console to see organic traffic data.
             </p>
           </div>
         </div>
@@ -553,10 +495,20 @@ function GscPanel({ gsc, available }: { gsc: AnalyticsData["gsc"]; available: bo
         <div className="space-y-5">
           {/* Summary metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <GscStat label="Organic Clicks" value={fmt(gsc.clicks)} tone="success" />
-            <GscStat label="Impressions" value={fmt(gsc.impressions)} />
-            <GscStat label="Avg CTR" value={fp(Math.round(gsc.ctr * 100))} tone={gsc.ctr > 0.03 ? "success" : "warning"} />
-            <GscStat label="Avg Position" value={gsc.position > 0 ? gsc.position.toFixed(1) : "–"} tone={gsc.position > 0 && gsc.position <= 10 ? "success" : "warning"} />
+            <StatTile label="Organic Clicks" value={fmt(gsc.clicks)} />
+            <StatTile label="Impressions" value={fmt(gsc.impressions)} />
+            <StatTile
+              label="Avg CTR"
+              value={fp(Math.round(gsc.ctr * 100))}
+              note={gsc.ctr > 0.03 ? "Above 3%" : "Below 3%"}
+              tone={gsc.ctr > 0.03 ? "success" : "warning"}
+            />
+            <StatTile
+              label="Avg Position"
+              value={gsc.position > 0 ? gsc.position.toFixed(1) : "–"}
+              note={gsc.position > 0 ? (gsc.position <= 10 ? "Page one" : "Below page one") : undefined}
+              tone={gsc.position > 0 && gsc.position <= 10 ? "success" : "warning"}
+            />
           </div>
 
           {/* Top queries */}
@@ -572,7 +524,7 @@ function GscPanel({ gsc, available }: { gsc: AnalyticsData["gsc"]; available: bo
                       <span className={cn("text-[10px] font-bold w-5 text-center", i === 0 ? "text-success" : "text-muted-foreground")}>
                         #{i + 1}
                       </span>
-                      <span className="text-xs w-44 truncate font-medium">{q.query}</span>
+                      <span className="text-xs w-28 truncate font-medium sm:w-44">{q.query}</span>
                       <div className="flex-1 h-4 rounded bg-muted/50 overflow-hidden relative">
                         <div className="h-full rounded bg-success/20" style={{ width: `${barW}%` }} />
                         <span className="absolute inset-y-0 left-2 flex items-center text-[10px] font-bold tabular-nums">{q.clicks}</span>
@@ -588,17 +540,6 @@ function GscPanel({ gsc, available }: { gsc: AnalyticsData["gsc"]; available: bo
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-function GscStat({ label, value, tone }: { label: string; value: string; tone?: "success" | "warning" | "error" }) {
-  return (
-    <div className="rounded-lg border bg-muted/20 px-3 py-2.5">
-      <p className="text-[10px] text-muted-foreground">{label}</p>
-      <p className={cn("text-lg font-bold tabular-nums mt-0.5", tone === "success" ? "text-success" : tone === "warning" ? "text-warning" : tone === "error" ? "text-error" : "text-foreground")}>
-        {value}
-      </p>
     </div>
   );
 }
@@ -638,7 +579,7 @@ function RecentOrders({ orders }: { orders: AnalyticsData["recentOrders"] }) {
                   <td className="px-5 py-2.5 text-muted-foreground font-mono">{r.user_id.slice(0, 8)}…</td>
                   <td className="px-5 py-2.5 capitalize">{r.tier}</td>
                   <td className="px-5 py-2.5">
-                    <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide", STATUS_STYLE[r.status] ?? "bg-muted text-muted-foreground")}>
+                    <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide", STATUS_STYLE[r.status]?.chip ?? "bg-muted text-muted-foreground")}>
                       {r.status.replace("_", " ")}
                     </span>
                   </td>

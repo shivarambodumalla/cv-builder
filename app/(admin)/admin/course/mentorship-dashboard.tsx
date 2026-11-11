@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2, Users, Eye, Download, Phone, FileText, GraduationCap, Flame, TrendingUp, MousePointerClick, MapPin, Search, Globe } from "lucide-react";
-import { ActivityChart, type ChartSeries } from "../activity-chart";
+import { Loader2, MapPin, Search, Globe } from "lucide-react";
+import { DateRangePicker, useAdminRange } from "@/components/admin/date-range-picker";
+import { StatTile } from "@/components/admin/stat-tile";
+import { ActivityChart, type ChartSeries } from "@/components/admin/activity-chart";
 
 interface DailyPoint {
   day: string;
@@ -67,26 +69,6 @@ interface SearchData {
   pages?: SearchPageRow[];
 }
 
-type Preset = "7d" | "30d" | "90d" | "all";
-
-function getRange(preset: Preset): { from?: string; to?: string } {
-  if (preset === "all") return {};
-  const to = new Date();
-  to.setUTCHours(23, 59, 59, 999);
-  const from = new Date();
-  from.setUTCHours(0, 0, 0, 0);
-  const days = preset === "7d" ? 6 : preset === "30d" ? 29 : 89;
-  from.setUTCDate(from.getUTCDate() - days);
-  return { from: from.toISOString(), to: to.toISOString() };
-}
-
-const PRESETS: { key: Preset; label: string }[] = [
-  { key: "7d", label: "Week" },
-  { key: "30d", label: "Month" },
-  { key: "90d", label: "3 Months" },
-  { key: "all", label: "All Time" },
-];
-
 const countryName = (code: string | null): string => {
   if (!code) return "Unknown";
   try {
@@ -115,57 +97,60 @@ const gscCountryName = (alpha3: string): string => {
 };
 
 export function MentorshipDashboard() {
-  const [preset, setPreset] = useState<Preset>("30d");
+  const { from, to, fromIso, toIso } = useAdminRange("30d");
   const [stats, setStats] = useState<Stats | null>(null);
   const [search, setSearch] = useState<SearchData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchStats = useCallback(async (pr: Preset) => {
-    setLoading(true);
-    setError("");
-    const { from, to } = getRange(pr);
-    const params = new URLSearchParams();
-    if (from) params.set("from", from);
-    if (to) params.set("to", to);
-
-    // GSC allows max ~16 months lookback; "all" maps to that window
-    const searchParams = new URLSearchParams();
-    if (from) searchParams.set("from", from.slice(0, 10));
-    else searchParams.set("from", new Date(Date.now() - 480 * 86400000).toISOString().slice(0, 10));
-    if (to) searchParams.set("to", to.slice(0, 10));
-
-    const [res, searchRes] = await Promise.all([
-      fetch(`/api/admin/mentorship/stats?${params}`),
-      fetch(`/api/admin/mentorship/search?${searchParams}`),
-    ]);
-    if (!res.ok) {
-      setError(`Failed to load stats (${res.status})`);
-      setLoading(false);
-      return;
-    }
-    setStats(await res.json());
-    setSearch(searchRes.ok ? await searchRes.json() : null);
-    setLoading(false);
-  }, []);
-
   useEffect(() => {
-    fetchStats(preset);
-  }, [preset, fetchStats]);
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      setError("");
+      try {
+        const statsQuery = new URLSearchParams({ from: fromIso, to: toIso });
+        // The search API shifts the window back for Search Console's ~3-day lag
+        const searchQuery = new URLSearchParams({ from, to });
+        const [res, searchRes] = await Promise.all([
+          fetch(`/api/admin/mentorship/stats?${statsQuery}`),
+          fetch(`/api/admin/mentorship/search?${searchQuery}`),
+        ]);
+        if (!res.ok) throw new Error(`Failed to load stats (${res.status})`);
+        if (!searchRes.ok) console.error("[mentorship] search data failed:", searchRes.status);
+        const [statsJson, searchJson] = await Promise.all([
+          res.json() as Promise<Stats>,
+          searchRes.ok ? (searchRes.json() as Promise<SearchData>) : Promise.resolve(null),
+        ]);
+        if (cancelled) return;
+        setStats(statsJson);
+        setSearch(searchJson);
+      } catch (err) {
+        console.error("[mentorship] load failed:", err);
+        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load stats");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [from, to, fromIso, toIso]);
 
   const cards = stats
     ? [
-        { label: "Visitors", value: stats.visitors, icon: Users },
-        { label: "CTA Clicks", value: stats.ctaClicks, icon: MousePointerClick },
-        { label: "Leads", value: stats.leads, icon: FileText },
-        { label: "Curriculum Views", value: stats.curriculumViews, icon: Eye },
-        { label: "Downloads", value: stats.downloads, icon: Download },
-        { label: "Calls Booked", value: stats.callsBooked, icon: Phone },
-        { label: "Applications", value: stats.applications, icon: FileText },
-        { label: "Enrolled", value: stats.enrolled, icon: GraduationCap },
-        { label: "Hot Leads (100+)", value: stats.hotLeads, icon: Flame },
-        { label: "Visitor → Lead %", value: `${stats.leadConversionPct}%`, icon: TrendingUp },
-        { label: "Lead → Enrolled %", value: `${stats.conversionPct}%`, icon: TrendingUp },
+        { label: "Visitors", value: stats.visitors },
+        { label: "CTA Clicks", value: stats.ctaClicks },
+        { label: "Leads", value: stats.leads },
+        { label: "Curriculum Views", value: stats.curriculumViews },
+        { label: "Downloads", value: stats.downloads },
+        { label: "Calls Booked", value: stats.callsBooked },
+        { label: "Applications", value: stats.applications },
+        { label: "Enrolled", value: stats.enrolled },
+        { label: "Hot Leads (100+)", value: stats.hotLeads },
+        { label: "Visitor → Lead %", value: `${stats.leadConversionPct}%` },
+        { label: "Lead → Enrolled %", value: `${stats.conversionPct}%` },
       ]
     : [];
 
@@ -201,18 +186,9 @@ export function MentorshipDashboard() {
             Mentorship landing page traffic, leads &amp; pipeline (admin visits excluded)
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {PRESETS.map((p) => (
-            <Button
-              key={p.key}
-              variant={preset === p.key ? "default" : "outline"}
-              size="sm"
-              onClick={() => setPreset(p.key)}
-            >
-              {p.label}
-            </Button>
-          ))}
-          <Button asChild size="sm" variant="secondary">
+        <div className="flex flex-wrap items-center gap-2">
+          <DateRangePicker fallback="30d" />
+          <Button asChild size="sm" variant="secondary" className="min-h-[44px] sm:min-h-0">
             <Link href="/admin/course/leads">View Leads</Link>
           </Button>
         </div>
@@ -226,15 +202,9 @@ export function MentorshipDashboard() {
         </div>
       ) : stats ? (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
             {cards.map((card) => (
-              <div key={card.label} className="border border-border rounded-lg p-4 bg-card">
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <card.icon className="w-4 h-4" />
-                  <span className="text-xs font-medium">{card.label}</span>
-                </div>
-                <div className="text-2xl font-bold">{card.value}</div>
-              </div>
+              <StatTile key={card.label} label={card.label} value={card.value} />
             ))}
           </div>
 
@@ -305,7 +275,7 @@ export function MentorshipDashboard() {
 
           {search?.configured && search.summary && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Search className="w-4 h-4 text-muted-foreground" />
                 <h2 className="text-sm font-semibold">Google Search Performance</h2>
                 <span className="text-xs text-muted-foreground">
@@ -313,18 +283,11 @@ export function MentorshipDashboard() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: "Impressions", value: search.summary.totalImpressions.toLocaleString() },
-                  { label: "Clicks", value: search.summary.totalClicks.toLocaleString() },
-                  { label: "CTR", value: `${search.summary.avgCtr}%` },
-                  { label: "Avg Position", value: search.summary.avgPosition },
-                ].map((card) => (
-                  <div key={card.label} className="border border-border rounded-lg p-4 bg-card">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">{card.label}</div>
-                    <div className="text-2xl font-bold">{card.value}</div>
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <StatTile label="Impressions" value={search.summary.totalImpressions.toLocaleString()} />
+                <StatTile label="Clicks" value={search.summary.totalClicks.toLocaleString()} />
+                <StatTile label="CTR" value={`${search.summary.avgCtr}%`} />
+                <StatTile label="Avg Position" value={search.summary.avgPosition} />
               </div>
 
               <div className="grid gap-6 lg:grid-cols-2">

@@ -3,11 +3,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/admin-auth";
 import { REVIEW_TIERS } from "@/lib/cv-review/config";
 import { getGa4AccessToken, getGscAccessToken, isGa4Configured, isGscConfigured } from "@/lib/gsc/client";
+import { fetchSearchPerformance, runGa4Report } from "@/lib/gsc/queries";
 
 export const dynamic = "force-dynamic";
-
-const GA4_API = "https://analyticsdata.googleapis.com/v1beta";
-const GSC_API = "https://searchconsole.googleapis.com/webmasters/v3";
 
 async function fetchGA4EventCounts(
   token: string,
@@ -16,29 +14,18 @@ async function fetchGA4EventCounts(
   to: string,
   events: string[]
 ): Promise<Record<string, number> | null> {
-  try {
-    const res = await fetch(`${GA4_API}/properties/${propertyId}:runReport`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        dateRanges: [{ startDate: from, endDate: to }],
-        dimensions: [{ name: "eventName" }],
-        metrics: [{ name: "eventCount" }],
-        dimensionFilter: {
-          filter: { fieldName: "eventName", inListFilter: { values: events } },
-        },
-      }),
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const counts: Record<string, number> = {};
-    for (const row of data.rows ?? []) {
-      counts[row.dimensionValues[0].value] = Number(row.metricValues[0].value);
-    }
-    return counts;
-  } catch {
-    return null;
-  }
+  const rows = await runGa4Report(token, propertyId, {
+    dateRanges: [{ startDate: from, endDate: to }],
+    dimensions: [{ name: "eventName" }],
+    metrics: [{ name: "eventCount" }],
+    dimensionFilter: {
+      filter: { fieldName: "eventName", inListFilter: { values: events } },
+    },
+  });
+  if (!rows) return null;
+  const counts: Record<string, number> = {};
+  for (const row of rows) counts[row.dimensionValues[0].value] = Number(row.metricValues[0].value);
+  return counts;
 }
 
 async function fetchGA4PageViews(
@@ -48,25 +35,15 @@ async function fetchGA4PageViews(
   to: string,
   pagePath: string
 ): Promise<number> {
-  try {
-    const res = await fetch(`${GA4_API}/properties/${propertyId}:runReport`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        dateRanges: [{ startDate: from, endDate: to }],
-        dimensions: [{ name: "pagePath" }],
-        metrics: [{ name: "screenPageViews" }],
-        dimensionFilter: {
-          filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: pagePath } },
-        },
-      }),
-    });
-    if (!res.ok) return 0;
-    const data = await res.json();
-    return (data.rows ?? []).reduce((sum: number, r: { metricValues: { value: string }[] }) => sum + Number(r.metricValues[0].value), 0);
-  } catch {
-    return 0;
-  }
+  const rows = await runGa4Report(token, propertyId, {
+    dateRanges: [{ startDate: from, endDate: to }],
+    dimensions: [{ name: "pagePath" }],
+    metrics: [{ name: "screenPageViews" }],
+    dimensionFilter: {
+      filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: pagePath } },
+    },
+  });
+  return (rows ?? []).reduce((sum, r) => sum + Number(r.metricValues[0].value), 0);
 }
 
 async function fetchGA4DailyTrend(
@@ -75,95 +52,49 @@ async function fetchGA4DailyTrend(
   from: string,
   to: string
 ): Promise<{ date: string; event: string; count: number }[]> {
-  try {
-    const res = await fetch(`${GA4_API}/properties/${propertyId}:runReport`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        dateRanges: [{ startDate: from, endDate: to }],
-        dimensions: [{ name: "date" }, { name: "eventName" }],
-        metrics: [{ name: "eventCount" }],
-        dimensionFilter: {
-          filter: {
-            fieldName: "eventName",
-            inListFilter: { values: ["cv_review_funnel_view", "cv_review_funnel_click", "begin_checkout", "cv_review_section_view", "purchase"] },
-          },
-        },
-        orderBys: [{ dimension: { dimensionName: "date" } }],
-        limit: 2000,
-      }),
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.rows ?? []).map((r: { dimensionValues: { value: string }[]; metricValues: { value: string }[] }) => ({
-      date: r.dimensionValues[0].value, // YYYYMMDD
-      event: r.dimensionValues[1].value,
-      count: Number(r.metricValues[0].value),
-    }));
-  } catch {
-    return [];
-  }
+  const rows = await runGa4Report(token, propertyId, {
+    dateRanges: [{ startDate: from, endDate: to }],
+    dimensions: [{ name: "date" }, { name: "eventName" }],
+    metrics: [{ name: "eventCount" }],
+    dimensionFilter: {
+      filter: {
+        fieldName: "eventName",
+        inListFilter: { values: ["cv_review_funnel_view", "cv_review_funnel_click", "begin_checkout", "cv_review_section_view", "purchase"] },
+      },
+    },
+    orderBys: [{ dimension: { dimensionName: "date" } }],
+    limit: 2000,
+  });
+  return (rows ?? []).map((r) => ({
+    date: r.dimensionValues[0].value, // YYYYMMDD
+    event: r.dimensionValues[1].value,
+    count: Number(r.metricValues[0].value),
+  }));
 }
 
-async function fetchGSCCvReview(
-  token: string,
-  siteUrl: string,
-  from: string,
-  to: string
-): Promise<{ totalClicks: number; totalImpressions: number; avgCtr: number; avgPosition: number; queries: { query: string; clicks: number; impressions: number; ctr: number; position: number }[] }> {
-  const empty = { totalClicks: 0, totalImpressions: 0, avgCtr: 0, avgPosition: 0, queries: [] };
-  try {
-    const [summaryRes, queryRes] = await Promise.all([
-      fetch(`${GSC_API}/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          startDate: from,
-          endDate: to,
-          dimensions: ["page"],
-          dimensionFilterGroups: [{
-            filters: [{ dimension: "page", operator: "contains", expression: "/cv-review" }],
-          }],
-          rowLimit: 5,
-        }),
-      }),
-      fetch(`${GSC_API}/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          startDate: from,
-          endDate: to,
-          dimensions: ["query"],
-          dimensionFilterGroups: [{
-            filters: [{ dimension: "page", operator: "contains", expression: "/cv-review" }],
-          }],
-          rowLimit: 20,
-          orderBy: [{ fieldName: "clicks", sortOrder: "DESCENDING" }],
-        }),
-      }),
-    ]);
+const CV_REVIEW_PAGES = "/cv-review";
 
-    if (!summaryRes.ok || !queryRes.ok) return empty;
-    const [summaryData, queryData] = await Promise.all([summaryRes.json(), queryRes.json()]);
+async function fetchGSCCvReview(from: string, to: string) {
+  const [pages, queryRows] = await Promise.all([
+    fetchSearchPerformance({ from, to, pageRegex: CV_REVIEW_PAGES, dimensions: ["page"], rowLimit: 25 }),
+    fetchSearchPerformance({ from, to, pageRegex: CV_REVIEW_PAGES, dimensions: ["query"], rowLimit: 20, orderBy: "clicks" }),
+  ]);
 
-    const totalClicks = (summaryData.rows ?? []).reduce((s: number, r: { clicks: number }) => s + r.clicks, 0);
-    const totalImpressions = (summaryData.rows ?? []).reduce((s: number, r: { impressions: number }) => s + r.impressions, 0);
-    const avgCtr = totalImpressions > 0 ? totalClicks / totalImpressions : 0;
-    const positionSum = (summaryData.rows ?? []).reduce((s: number, r: { position: number; clicks: number }) => s + r.position * r.clicks, 0);
-    const avgPosition = totalClicks > 0 ? positionSum / totalClicks : 0;
+  const totalClicks = pages.reduce((s, r) => s + r.clicks, 0);
+  const totalImpressions = pages.reduce((s, r) => s + r.impressions, 0);
+  const avgCtr = totalImpressions > 0 ? totalClicks / totalImpressions : 0;
+  const positionSum = pages.reduce((s, r) => s + r.position * r.clicks, 0);
+  const avgPosition = totalClicks > 0 ? positionSum / totalClicks : 0;
 
-    const queries = (queryData.rows ?? []).map((r: { keys: string[]; clicks: number; impressions: number; ctr: number; position: number }) => ({
-      query: r.keys[0],
-      clicks: r.clicks,
-      impressions: r.impressions,
-      ctr: r.ctr,
-      position: r.position,
-    }));
+  const queries = queryRows.map((r) => ({
+    query: r.keys[0],
+    clicks: r.clicks,
+    impressions: r.impressions,
+    ctr: r.ctr,
+    position: r.position,
+  }));
 
-    return { totalClicks, totalImpressions, avgCtr, avgPosition, queries };
-  } catch {
-    return empty;
-  }
+  return { totalClicks, totalImpressions, avgCtr, avgPosition, queries };
 }
 
 export async function GET(request: NextRequest) {
@@ -228,9 +159,8 @@ export async function GET(request: NextRequest) {
 
   // GA4 + GSC — use same OAuth token as marketing analytics
   const propertyId = process.env.GA4_PROPERTY_ID;
-  const siteUrl = process.env.GSC_SITE_URL;
   const ga4On = isGa4Configured() && !!propertyId;
-  const gscOn = isGscConfigured() && !!siteUrl;
+  const gscOn = isGscConfigured();
 
   // GA4 data lags ~24-48h — cap to yesterday
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
@@ -258,8 +188,8 @@ export async function GET(request: NextRequest) {
     ga4Token && propertyId
       ? fetchGA4DailyTrend(ga4Token, propertyId, ga4From, ga4To)
       : Promise.resolve([]),
-    gscToken && siteUrl
-      ? fetchGSCCvReview(gscToken, siteUrl, ga4From, ga4To)
+    gscToken
+      ? fetchGSCCvReview(ga4From, ga4To)
       : Promise.resolve({ totalClicks: 0, totalImpressions: 0, avgCtr: 0, avgPosition: 0, queries: [] }),
   ]);
 

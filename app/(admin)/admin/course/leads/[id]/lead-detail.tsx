@@ -70,7 +70,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
   const [savingStatus, setSavingStatus] = useState(false);
 
   const fetchLead = useCallback(async () => {
-    const res = await fetch(`/api/admin/course/leads/${leadId}`);
+    const res = await fetch(`/api/admin/mentorship/leads/${leadId}`);
     if (!res.ok) {
       setError(`Failed to load lead (${res.status})`);
       setLoading(false);
@@ -89,7 +89,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
   const changeStatus = async (status: string) => {
     if (!lead || status === lead.status) return;
     setSavingStatus(true);
-    const res = await fetch(`/api/admin/course/leads/${leadId}`, {
+    const res = await fetch(`/api/admin/mentorship/leads/${leadId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
@@ -101,7 +101,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
   const addNote = async () => {
     if (!note.trim()) return;
     setSavingNote(true);
-    const res = await fetch(`/api/admin/course/leads/${leadId}/note`, {
+    const res = await fetch(`/api/admin/mentorship/leads/${leadId}/note`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ note }),

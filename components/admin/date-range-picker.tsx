@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -38,6 +38,7 @@ export function DateRangePicker({
   const current = useAdminRange(fallback);
   const [customFrom, setCustomFrom] = useState(current.from);
   const [customTo, setCustomTo] = useState(current.to);
+  const selectId = useId();
 
   function push(next: Record<string, string | null>) {
     const q = new URLSearchParams(params.toString());
@@ -56,9 +57,9 @@ export function DateRangePicker({
   return (
     <div className={cn("flex flex-wrap items-center gap-2", className)}>
       {/* Phones: one select instead of a row of buttons */}
-      <label className="sr-only" htmlFor="admin-range-select">Date range</label>
+      <label className="sr-only" htmlFor={selectId}>Date range</label>
       <select
-        id="admin-range-select"
+        id={selectId}
         value={current.preset}
         onChange={(e) => choose(e.target.value as RangePreset)}
         className="h-11 rounded-md border bg-background px-3 text-sm sm:hidden"

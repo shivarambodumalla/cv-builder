@@ -3,7 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { DataTable, type DataTableColumn } from "@/components/admin/data-table";
+import { StatTile } from "@/components/admin/stat-tile";
 import type { RatingStats } from "@/lib/feedback/stats";
 
 export interface FeedbackRow {
@@ -56,24 +59,82 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
 
   const live = stats.count >= minPublic;
   const maxBucket = Math.max(1, ...Object.values(stats.distribution));
+  const actionClass = "min-h-[44px] sm:min-h-0";
+
+  const columns: DataTableColumn<FeedbackRow>[] = [
+    {
+      key: "when",
+      header: "When",
+      sortValue: (r) => r.created_at,
+      className: "whitespace-nowrap text-xs text-muted-foreground",
+      cell: (r) => new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    },
+    {
+      key: "user",
+      header: "User",
+      sortValue: (r) => r.full_name || r.email,
+      className: "min-w-[160px]",
+      cell: (r) => (
+        <>
+          {r.user_number ? (
+            <Link href={`/admin/users/${r.user_number}`} className="font-medium hover:underline">{r.full_name || r.email || `#${r.user_number}`}</Link>
+          ) : (
+            <span>{r.full_name || r.email || "Unknown"}</span>
+          )}
+          <p className="text-xs text-muted-foreground">{r.email}{r.plan ? ` · ${r.plan}` : ""}</p>
+        </>
+      ),
+    },
+    { key: "rating", header: "Rating", sortValue: (r) => r.rating, className: "whitespace-nowrap", cell: (r) => <Stars n={r.rating} /> },
+    {
+      key: "comment",
+      header: "Comment",
+      className: "max-w-md min-w-[200px]",
+      cell: (r) =>
+        r.comment ? (
+          <>
+            <p className="whitespace-pre-wrap">{r.comment}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "OK to quote (first name)" : "Private"}</p>
+          </>
+        ) : (
+          <span className="text-xs text-muted-foreground">–</span>
+        ),
+    },
+    { key: "source", header: "Via", sortValue: (r) => r.source, className: "text-xs capitalize", cell: (r) => r.source },
+    { key: "status", header: "Status", sortValue: (r) => r.status, className: "text-xs capitalize", cell: (r) => r.status },
+    {
+      key: "actions",
+      header: "Actions",
+      align: "right",
+      className: "whitespace-nowrap",
+      cell: (r) => (
+        <div className="inline-flex gap-1">
+          {r.status === "new" && r.comment && r.can_publish && (
+            <Button size="sm" variant="outline" className={actionClass} disabled={busy === r.id} onClick={() => act(r.id, "publish")}>Publish</Button>
+          )}
+          {r.status !== "archived" ? (
+            <Button size="sm" variant="ghost" className={actionClass} disabled={busy === r.id} onClick={() => act(r.id, "archive")}>Archive</Button>
+          ) : (
+            <Button size="sm" variant="ghost" className={actionClass} disabled={busy === r.id} onClick={() => act(r.id, "restore")}>Restore</Button>
+          )}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6">
       {/* Summary */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border bg-card p-4">
-          <p className="text-xs text-muted-foreground">Average</p>
-          <p className="text-3xl font-bold">{stats.count ? stats.average.toFixed(1) : "–"}<span className="text-base font-normal text-muted-foreground"> / 5</span></p>
-        </div>
-        <div className="rounded-xl border bg-card p-4">
-          <p className="text-xs text-muted-foreground">Ratings</p>
-          <p className="text-3xl font-bold">{stats.count}</p>
-          <p className={`text-xs mt-1 ${live ? "text-success" : "text-warning"}`}>
-            {live ? "Shown on homepage with AggregateRating" : `${minPublic - stats.count} more before it goes public`}
-          </p>
-        </div>
-        <div className="rounded-xl border bg-card p-4">
-          <p className="text-xs text-muted-foreground mb-2">Distribution</p>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <StatTile label="Average" value={stats.count ? `${stats.average.toFixed(1)} / 5` : "–"} />
+        <StatTile
+          label="Ratings"
+          value={stats.count}
+          note={live ? "Shown on homepage with AggregateRating" : `${minPublic - stats.count} more before it goes public`}
+          tone={live ? "success" : "warning"}
+        />
+        <div className="col-span-2 rounded-lg border bg-card p-4 sm:col-span-1">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Distribution</p>
           <div className="space-y-1">
             {[5, 4, 3, 2, 1].map((n) => {
               const c = stats.distribution[n as 1 | 2 | 3 | 4 | 5];
@@ -93,62 +154,16 @@ export function FeedbackTable({ rows: initial, stats, minPublic }: { rows: Feedb
 
       {error && <p className="text-sm text-error">{error}</p>}
 
-      {/* Rows */}
-      {rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No feedback yet. It arrives after users download a PDF.</p>
-      ) : (
-        <div className="overflow-x-auto rounded-xl border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-xs text-muted-foreground">
-              <tr>
-                <th className="px-3 py-2 text-left font-medium">When</th>
-                <th className="px-3 py-2 text-left font-medium">User</th>
-                <th className="px-3 py-2 text-left font-medium">Rating</th>
-                <th className="px-3 py-2 text-left font-medium">Comment</th>
-                <th className="px-3 py-2 text-left font-medium">Via</th>
-                <th className="px-3 py-2 text-left font-medium">Status</th>
-                <th className="px-3 py-2 text-right font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className={`border-t align-top ${r.status === "archived" ? "opacity-50" : ""}`}>
-                  <td className="px-3 py-2 whitespace-nowrap text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
-                  <td className="px-3 py-2 min-w-[160px]">
-                    {r.user_number ? (
-                      <Link href={`/admin/users/${r.user_number}`} className="font-medium hover:underline">{r.full_name || r.email || `#${r.user_number}`}</Link>
-                    ) : (
-                      <span>{r.full_name || r.email || "Unknown"}</span>
-                    )}
-                    <p className="text-xs text-muted-foreground">{r.email}{r.plan ? ` · ${r.plan}` : ""}</p>
-                  </td>
-                  <td className="px-3 py-2 whitespace-nowrap"><Stars n={r.rating} /></td>
-                  <td className="px-3 py-2 max-w-md">
-                    {r.comment ? <p className="whitespace-pre-wrap">{r.comment}</p> : <span className="text-xs text-muted-foreground">–</span>}
-                    {r.comment && (
-                      <p className="mt-1 text-[11px] text-muted-foreground">{r.can_publish ? "OK to quote (first name)" : "Private"}</p>
-                    )}
-                  </td>
-                  <td className="px-3 py-2 text-xs capitalize">{r.source}</td>
-                  <td className="px-3 py-2 text-xs capitalize">{r.status}</td>
-                  <td className="px-3 py-2 text-right whitespace-nowrap">
-                    <div className="inline-flex gap-1">
-                      {r.status === "new" && r.comment && r.can_publish && (
-                        <Button size="sm" variant="outline" disabled={busy === r.id} onClick={() => act(r.id, "publish")}>Publish</Button>
-                      )}
-                      {r.status !== "archived" ? (
-                        <Button size="sm" variant="ghost" disabled={busy === r.id} onClick={() => act(r.id, "archive")}>Archive</Button>
-                      ) : (
-                        <Button size="sm" variant="ghost" disabled={busy === r.id} onClick={() => act(r.id, "restore")}>Restore</Button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <DataTable
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        initialSort={{ key: "when", dir: "desc" }}
+        searchFields={(r) => [r.full_name, r.email, r.comment]}
+        searchPlaceholder="Search name, email or comment"
+        emptyText="No feedback yet. It arrives after users download a PDF."
+        rowClassName={(r) => cn("align-top", r.status === "archived" && "opacity-50")}
+      />
     </div>
   );
 }

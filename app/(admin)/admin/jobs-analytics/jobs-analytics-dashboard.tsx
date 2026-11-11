@@ -1,31 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Loader2, MousePointerClick, Bookmark, Users, ArrowRight, Building2, Briefcase, TrendingUp } from "lucide-react";
-
-type Preset = "today" | "7d" | "30d" | "90d" | "180d" | "365d" | "custom";
-
-function getRange(preset: Preset): { from: string; to: string } {
-  const to = new Date(); to.setHours(23, 59, 59, 999);
-  const from = new Date(); from.setHours(0, 0, 0, 0);
-  switch (preset) {
-    case "7d": from.setDate(from.getDate() - 6); break;
-    case "30d": from.setDate(from.getDate() - 29); break;
-    case "90d": from.setDate(from.getDate() - 89); break;
-    case "180d": from.setDate(from.getDate() - 179); break;
-    case "365d": from.setDate(from.getDate() - 364); break;
-  }
-  return { from: from.toISOString(), to: to.toISOString() };
-}
-
-const PRESETS: { key: Preset; label: string }[] = [
-  { key: "today", label: "Today" }, { key: "7d", label: "Week" }, { key: "30d", label: "Month" },
-  { key: "90d", label: "3 Months" }, { key: "180d", label: "6 Months" }, { key: "365d", label: "1 Year" },
-  { key: "custom", label: "Custom" },
-];
+import { Loader2, MousePointerClick, Users, ArrowRight, Building2, Briefcase, TrendingUp } from "lucide-react";
+import { DateRangePicker, useAdminRange } from "@/components/admin/date-range-picker";
+import { StatTile } from "@/components/admin/stat-tile";
 
 function p(count: number, base: number): number { return base === 0 ? 0 : Math.round((count / base) * 1000) / 10; }
 
@@ -51,54 +30,51 @@ interface JobsData {
 }
 
 export function JobsAnalyticsDashboard() {
-  const [preset, setPreset] = useState<Preset>("30d");
-  const [customFrom, setCustomFrom] = useState("");
-  const [customTo, setCustomTo] = useState("");
+  const { fromIso, toIso } = useAdminRange("30d");
   const [data, setData] = useState<JobsData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const fetchData = useCallback(async (pr: Preset, cfrom?: string, cto?: string) => {
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
-    let from: string, to: string;
-    if (pr === "custom" && cfrom && cto) { from = new Date(cfrom).toISOString(); to = new Date(cto + "T23:59:59.999Z").toISOString(); }
-    else ({ from, to } = getRange(pr));
-    const res = await fetch(`/api/admin/jobs-analytics?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
-    if (res.ok) setData(await res.json());
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { fetchData("30d"); }, [fetchData]);
-  function handlePreset(pr: Preset) { setPreset(pr); if (pr !== "custom") fetchData(pr); }
+    setError("");
+    fetch(`/api/admin/jobs-analytics?from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Failed to load jobs analytics (${res.status})`);
+        const json: JobsData = await res.json();
+        if (!cancelled) setData(json);
+      })
+      .catch((err: Error) => {
+        console.error("[jobs-analytics] load failed:", err);
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [fromIso, toIso]);
 
   return (
     <div className="space-y-6">
-      {/* Date range */}
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="flex gap-1 rounded-lg bg-muted p-0.5">
-          {PRESETS.map((pr) => (
-            <button key={pr.key} onClick={() => handlePreset(pr.key)} className={cn("rounded-md px-3 py-1.5 text-xs transition-colors", preset === pr.key ? "bg-background shadow-sm font-medium" : "text-muted-foreground hover:text-foreground")}>
-              {pr.label}
-            </button>
-          ))}
-        </div>
-        {preset === "custom" && (
-          <div className="flex items-end gap-2">
-            <div><label className="text-[10px] text-muted-foreground">From</label><Input type="date" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="h-8 text-xs w-36" /></div>
-            <div><label className="text-[10px] text-muted-foreground">To</label><Input type="date" value={customTo} onChange={(e) => setCustomTo(e.target.value)} className="h-8 text-xs w-36" /></div>
-            <Button size="sm" className="h-8 text-xs" onClick={() => fetchData("custom", customFrom, customTo)} disabled={!customFrom || !customTo || loading}>Apply</Button>
-          </div>
-        )}
-      </div>
+      <DateRangePicker presets={["today", "7d", "30d", "90d", "custom"]} fallback="30d" />
 
+      {error && <p className="text-sm text-error">{error}</p>}
       {loading && <div className="flex items-center gap-2 text-sm text-muted-foreground py-16 justify-center"><Loader2 className="h-4 w-4 animate-spin" /> Loading...</div>}
 
       {data && !loading && (
         <>
           {/* Hero metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <MetricCard icon={Users} label="Unique Searchers" value={data.uniqueSearchers} />
-            <MetricCard icon={MousePointerClick} label="Apply Clicks" value={data.totalClicks} sub={data.uniqueSearchers > 0 ? `${p(data.totalClicks, data.uniqueSearchers)}% click rate` : undefined} />
-            <MetricCard icon={Bookmark} label="Jobs Saved" value={data.totalSaves} />
+            <StatTile label="Unique Searchers" value={data.uniqueSearchers.toLocaleString()} />
+            <StatTile
+              label="Apply Clicks"
+              value={data.totalClicks.toLocaleString()}
+              note={data.uniqueSearchers > 0 ? `${p(data.totalClicks, data.uniqueSearchers)}% click rate` : undefined}
+            />
+            <StatTile label="Jobs Saved" value={data.totalSaves.toLocaleString()} />
           </div>
 
           {/* Jobs funnel */}
@@ -138,7 +114,7 @@ export function JobsAnalyticsDashboard() {
           {data.daily.length > 0 && (
             <div className="rounded-xl border p-5">
               <h2 className="text-sm font-semibold mb-3">Daily Apply Clicks</h2>
-              <div className="flex items-end gap-1" style={{ height: 120 }}>
+              <div className="flex items-end gap-1 overflow-x-auto" style={{ height: 120 }}>
                 {data.daily.map((d) => {
                   const max = Math.max(...data.daily.map(x => x.clicks), 1);
                   const h = Math.max((d.clicks / max) * 100, 2);
@@ -259,37 +235,39 @@ export function JobsAnalyticsDashboard() {
                 <h2 className="text-sm font-semibold">Top Applicants</h2>
                 <span className="text-[10px] text-muted-foreground ml-auto">Who&apos;s applying the most</span>
               </div>
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b bg-muted/10">
-                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">User</th>
-                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Role</th>
-                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Location</th>
-                    <th className="text-right px-4 py-2 font-medium text-muted-foreground">Applications</th>
-                    <th className="text-right px-4 py-2 font-medium text-muted-foreground">Avg Match</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.topApplicants.map((u) => (
-                    <tr key={u.id} className="border-b last:border-0 hover:bg-muted/20">
-                      <td className="px-4 py-2.5">
-                        <a href={`/admin/users/${u.user_number}`} className="hover:underline">
-                          <p className="font-medium">{u.name || "–"}</p>
-                          <p className="text-[10px] text-muted-foreground">{u.email}</p>
-                        </a>
-                      </td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{u.role || "–"}</td>
-                      <td className="px-4 py-2.5 text-muted-foreground">{u.city || "–"}</td>
-                      <td className="px-4 py-2.5 text-right font-bold tabular-nums">{u.clicks}</td>
-                      <td className="px-4 py-2.5 text-right">
-                        {u.avgScore > 0 ? (
-                          <span className={cn("font-bold tabular-nums", u.avgScore >= 70 ? "text-success" : u.avgScore >= 40 ? "text-warning" : "text-muted-foreground")}>{u.avgScore}%</span>
-                        ) : "–"}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b bg-muted/10">
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">User</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Role</th>
+                      <th className="text-left px-4 py-2 font-medium text-muted-foreground">Location</th>
+                      <th className="text-right px-4 py-2 font-medium text-muted-foreground">Applications</th>
+                      <th className="text-right px-4 py-2 font-medium text-muted-foreground">Avg Match</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {data.topApplicants.map((u) => (
+                      <tr key={u.id} className="border-b last:border-0 hover:bg-muted/20">
+                        <td className="px-4 py-2.5">
+                          <a href={`/admin/users/${u.user_number}`} className="block min-h-[44px] hover:underline sm:min-h-0">
+                            <p className="font-medium">{u.name || "–"}</p>
+                            <p className="text-[10px] text-muted-foreground">{u.email}</p>
+                          </a>
+                        </td>
+                        <td className="px-4 py-2.5 text-muted-foreground">{u.role || "–"}</td>
+                        <td className="px-4 py-2.5 text-muted-foreground">{u.city || "–"}</td>
+                        <td className="px-4 py-2.5 text-right font-bold tabular-nums">{u.clicks}</td>
+                        <td className="px-4 py-2.5 text-right">
+                          {u.avgScore > 0 ? (
+                            <span className={cn("font-bold tabular-nums", u.avgScore >= 70 ? "text-success" : u.avgScore >= 40 ? "text-warning" : "text-muted-foreground")}>{u.avgScore}%</span>
+                          ) : "–"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -341,19 +319,6 @@ export function JobsAnalyticsDashboard() {
           )}
         </>
       )}
-    </div>
-  );
-}
-
-function MetricCard({ icon: Icon, label, value, sub, color }: { icon: React.ElementType; label: string; value: number | string; sub?: string; color?: string }) {
-  return (
-    <div className="rounded-xl border p-4">
-      <div className="flex items-center gap-2 mb-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
-        <span className="text-[11px] text-muted-foreground font-medium">{label}</span>
-      </div>
-      <p className={cn("text-2xl font-bold tabular-nums", color)}>{typeof value === "number" ? value.toLocaleString() : value}</p>
-      {sub && <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>}
     </div>
   );
 }

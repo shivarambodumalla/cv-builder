@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { DataTable, type DataTableColumn } from "@/components/admin/data-table";
 
 export interface EmailLogRow {
   id: string;
@@ -46,6 +47,52 @@ function pct(numerator: number, denominator: number): string {
   if (denominator <= 0) return "–";
   return `${Math.round((numerator / denominator) * 100)}%`;
 }
+
+const dash = <span className="text-muted-foreground/60">–</span>;
+
+// Search, filters and paging run on the server (URL params), so the table
+// only renders the current page: no client sort or search.
+const COLUMNS: DataTableColumn<EmailLogRow>[] = [
+  { key: "to", header: "To", className: "font-medium max-w-[200px] truncate", cell: (log) => log.to_email },
+  { key: "template", header: "Template", className: "whitespace-nowrap", cell: (log) => log.template_name },
+  { key: "subject", header: "Subject", className: "text-muted-foreground max-w-[300px] truncate", cell: (log) => log.subject },
+  {
+    key: "status",
+    header: "Status",
+    cell: (log) => (
+      <span
+        className={`text-xs px-1.5 py-0.5 rounded ${log.status === "sent" ? "bg-success/15 text-success" : "bg-error/15 text-error"}`}
+        title={log.error || undefined}
+      >
+        {log.status}
+      </span>
+    ),
+  },
+  {
+    key: "delivered",
+    header: <span title="Delivered by Resend">Delivered</span>,
+    className: "whitespace-nowrap",
+    cell: (log) => <span title={log.delivered_at ?? undefined}>{log.delivered_at ? <span className="text-success">✓</span> : dash}</span>,
+  },
+  {
+    key: "opens",
+    header: <span title="Opens (count)">Opens</span>,
+    className: "whitespace-nowrap tabular-nums",
+    cell: (log) => <span title={log.opened_at ?? undefined}>{log.open_count > 0 ? log.open_count : dash}</span>,
+  },
+  {
+    key: "clicks",
+    header: <span title="Link clicks (count)">Clicks</span>,
+    className: "whitespace-nowrap tabular-nums",
+    cell: (log) => <span title={log.clicked_at ?? undefined}>{log.click_count > 0 ? log.click_count : dash}</span>,
+  },
+  {
+    key: "sent",
+    header: "Sent",
+    className: "text-muted-foreground whitespace-nowrap",
+    cell: (log) => new Date(log.created_at).toLocaleString(),
+  },
+];
 
 export function EmailLogsTable({
   logs, total, page, pageSize, templates, query, status, template,
@@ -91,7 +138,7 @@ export function EmailLogsTable({
 
       {engagement.length > 0 && (
         <div className="rounded-md border bg-muted/30">
-          <div className="flex items-center justify-between px-3 py-2 border-b">
+          <div className="flex flex-wrap items-center justify-between gap-1 px-3 py-2 border-b">
             <h2 className="text-sm font-semibold">Engagement: last {engagementWindowDays} days</h2>
             <p className="text-[11px] text-muted-foreground">
               Open/click rates inflated by image pre-fetch (Apple Mail). Read directionally.
@@ -139,14 +186,14 @@ export function EmailLogsTable({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Search by recipient or subject…"
-            className="pl-8 h-9"
+            className="pl-8 h-11 sm:h-9"
           />
         </div>
 
         <select
           value={status}
           onChange={(e) => setParam("status", e.target.value)}
-          className="h-9 rounded-md border bg-background px-2 text-sm"
+          className="h-11 rounded-md border bg-background px-2 text-sm sm:h-9"
         >
           <option value="">All statuses</option>
           <option value="sent">Sent</option>
@@ -156,7 +203,7 @@ export function EmailLogsTable({
         <select
           value={template}
           onChange={(e) => setParam("template", e.target.value)}
-          className="h-9 rounded-md border bg-background px-2 text-sm max-w-[220px]"
+          className="h-11 rounded-md border bg-background px-2 text-sm max-w-[220px] sm:h-9"
         >
           <option value="">All templates</option>
           {templates.map((t) => (
@@ -168,7 +215,7 @@ export function EmailLogsTable({
           <Button
             variant="ghost"
             size="sm"
-            className="h-9"
+            className="h-11 sm:h-9"
             onClick={() => {
               setInput("");
               startTransition(() => router.replace("?", { scroll: false }));
@@ -179,58 +226,13 @@ export function EmailLogsTable({
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-md border">
-        <table className="w-full text-xs sm:text-sm">
-          <thead>
-            <tr className="border-b bg-muted/40 text-left text-muted-foreground">
-              <th className="px-3 py-2 font-medium">To</th>
-              <th className="px-3 py-2 font-medium">Template</th>
-              <th className="px-3 py-2 font-medium">Subject</th>
-              <th className="px-3 py-2 font-medium">Status</th>
-              <th className="px-3 py-2 font-medium whitespace-nowrap" title="Delivered by Resend">Delivered</th>
-              <th className="px-3 py-2 font-medium whitespace-nowrap" title="Opens (count)">Opens</th>
-              <th className="px-3 py-2 font-medium whitespace-nowrap" title="Link clicks (count)">Clicks</th>
-              <th className="px-3 py-2 font-medium whitespace-nowrap">Sent</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map((log) => (
-              <tr key={log.id} className="border-b last:border-0 hover:bg-muted/30">
-                <td className="px-3 py-2 font-medium max-w-[200px] truncate">{log.to_email}</td>
-                <td className="px-3 py-2 whitespace-nowrap">{log.template_name}</td>
-                <td className="px-3 py-2 text-muted-foreground max-w-[300px] truncate">{log.subject}</td>
-                <td className="px-3 py-2">
-                  <span
-                    className={`text-xs px-1.5 py-0.5 rounded ${log.status === "sent" ? "bg-success/15 text-success" : "bg-error/15 text-error"}`}
-                    title={log.error || undefined}
-                  >
-                    {log.status}
-                  </span>
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap" title={log.delivered_at ?? undefined}>
-                  {log.delivered_at ? <span className="text-success">✓</span> : <span className="text-muted-foreground/60">–</span>}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap tabular-nums" title={log.opened_at ?? undefined}>
-                  {log.open_count > 0 ? log.open_count : <span className="text-muted-foreground/60">–</span>}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap tabular-nums" title={log.clicked_at ?? undefined}>
-                  {log.click_count > 0 ? log.click_count : <span className="text-muted-foreground/60">–</span>}
-                </td>
-                <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
-                  {new Date(log.created_at).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-            {logs.length === 0 && (
-              <tr>
-                <td colSpan={8} className="py-6 text-center text-muted-foreground">
-                  {hasFilters ? "No emails match these filters" : "No emails sent yet"}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        rows={logs}
+        columns={COLUMNS}
+        rowKey={(log) => log.id}
+        paginate={false}
+        emptyText={hasFilters ? "No emails match these filters" : "No emails sent yet"}
+      />
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
@@ -241,7 +243,7 @@ export function EmailLogsTable({
             <Button
               variant="outline"
               size="sm"
-              className="h-8"
+              className="h-11 sm:h-8"
               disabled={page <= 1 || pending}
               onClick={() => setParam("page", String(page - 1))}
             >
@@ -250,7 +252,7 @@ export function EmailLogsTable({
             <Button
               variant="outline"
               size="sm"
-              className="h-8"
+              className="h-11 sm:h-8"
               disabled={page >= totalPages || pending}
               onClick={() => setParam("page", String(page + 1))}
             >

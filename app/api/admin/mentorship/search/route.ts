@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getGscAccessToken, isGscConfigured } from "@/lib/gsc/client";
-import {
-  fetchGSCFilteredQueries,
-  fetchGSCFilteredCountries,
-  fetchGSCFilteredTrend,
-  fetchGSCFilteredPages,
-} from "@/lib/gsc/queries";
+import { fetchSearchPerformance, searchConsoleWindow } from "@/lib/gsc/queries";
+import { presetRange } from "@/lib/admin/date-range";
 
 export const dynamic = "force-dynamic";
 
@@ -22,22 +18,18 @@ export async function GET(request: NextRequest) {
   const token = await getGscAccessToken();
   if (!token) return NextResponse.json({ configured: false });
 
-  const siteUrl = process.env.GSC_SITE_URL!;
-
-  // GSC data lags ~2-3 days; clamp the end date accordingly
-  const maxTo = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
   const { searchParams } = new URL(request.url);
-  const requestedTo = searchParams.get("to")?.slice(0, 10) ?? maxTo;
-  const to = requestedTo > maxTo ? maxTo : requestedTo;
-  const from =
-    searchParams.get("from")?.slice(0, 10) ??
-    new Date(Date.now() - 31 * 86400000).toISOString().slice(0, 10);
+  const defaults = presetRange("30d");
+  const { from, to } = searchConsoleWindow(
+    searchParams.get("from")?.slice(0, 10) ?? defaults.from,
+    searchParams.get("to")?.slice(0, 10) ?? defaults.to,
+  );
 
   const [rawQueries, rawCountries, rawTrend, rawPages] = await Promise.all([
-    fetchGSCFilteredQueries(token, siteUrl, from, to, MENTORSHIP_PAGE_REGEX),
-    fetchGSCFilteredCountries(token, siteUrl, from, to, MENTORSHIP_PAGE_REGEX),
-    fetchGSCFilteredTrend(token, siteUrl, from, to, MENTORSHIP_PAGE_REGEX),
-    fetchGSCFilteredPages(token, siteUrl, from, to, MENTORSHIP_PAGE_REGEX),
+    fetchSearchPerformance({ from, to, pageRegex: MENTORSHIP_PAGE_REGEX, dimensions: ["query"], rowLimit: 50, orderBy: "impressions" }),
+    fetchSearchPerformance({ from, to, pageRegex: MENTORSHIP_PAGE_REGEX, dimensions: ["country"], rowLimit: 25, orderBy: "impressions" }),
+    fetchSearchPerformance({ from, to, pageRegex: MENTORSHIP_PAGE_REGEX, dimensions: ["date"], rowLimit: 500 }),
+    fetchSearchPerformance({ from, to, pageRegex: MENTORSHIP_PAGE_REGEX, dimensions: ["page"], rowLimit: 25, orderBy: "impressions" }),
   ]);
 
   const round1 = (n: number) => Math.round(n * 10) / 10;

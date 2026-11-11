@@ -2,11 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getGscAccessToken, getGa4AccessToken, isGscConfigured, isGa4Configured } from "@/lib/gsc/client";
 import {
-  fetchGSCTopQueries,
-  fetchGSCTopPages,
-  fetchGSCDailyTrend,
-  fetchGSCQueryPages,
-  fetchGSCPrevPeriodQueries,
+  fetchSearchPerformance,
+  searchConsoleWindow,
   fetchGA4Channels,
   fetchGA4Geo,
   fetchGA4Devices,
@@ -17,14 +14,9 @@ import {
   fetchGA4Hourly,
 } from "@/lib/gsc/queries";
 import { getBingReport } from "@/lib/bing/client";
+import { presetRange } from "@/lib/admin/date-range";
 
 export const dynamic = "force-dynamic";
-
-function defaultDates() {
-  const to = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
-  const from = new Date(Date.now() - 31 * 86400000).toISOString().slice(0, 10);
-  return { from, to };
-}
 
 function prevPeriod(from: string, to: string) {
   const fromDate = new Date(from + "T00:00:00Z");
@@ -52,11 +44,12 @@ export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
   if (auth instanceof NextResponse) return auth;
 
-  const defaults = defaultDates();
+  const defaults = presetRange("30d");
   const { searchParams } = new URL(request.url);
   const from = searchParams.get("from") ?? defaults.from;
   const to = searchParams.get("to") ?? defaults.to;
-  const { prevFrom, prevTo } = prevPeriod(from, to);
+  const gscRange = searchConsoleWindow(from, to);
+  const { prevFrom, prevTo } = prevPeriod(gscRange.from, gscRange.to);
 
   const gscOn = isGscConfigured();
   const ga4On = isGa4Configured();
@@ -71,7 +64,6 @@ export async function GET(request: NextRequest) {
     ga4On ? getGa4AccessToken() : Promise.resolve(null),
   ]);
 
-  const siteUrl = process.env.GSC_SITE_URL!;
   const propertyId = process.env.GA4_PROPERTY_ID!;
 
   const gsc = gscOn && gscToken;
@@ -93,11 +85,13 @@ export async function GET(request: NextRequest) {
     rawHourly,
     bing,
   ] = await Promise.all([
-    gsc ? fetchGSCTopQueries(gscToken!, siteUrl, from, to) : Promise.resolve([]),
-    gsc ? fetchGSCTopPages(gscToken!, siteUrl, from, to) : Promise.resolve([]),
-    gsc ? fetchGSCDailyTrend(gscToken!, siteUrl, from, to) : Promise.resolve([]),
-    gsc ? fetchGSCQueryPages(gscToken!, siteUrl, from, to) : Promise.resolve([]),
-    gsc ? fetchGSCPrevPeriodQueries(gscToken!, siteUrl, prevFrom, prevTo) : Promise.resolve([]),
+    gsc ? fetchSearchPerformance({ ...gscRange, dimensions: ["query"], rowLimit: 50, orderBy: "clicks" }) : Promise.resolve([]),
+    gsc ? fetchSearchPerformance({ ...gscRange, dimensions: ["page"], rowLimit: 25, orderBy: "clicks" }) : Promise.resolve([]),
+    gsc ? fetchSearchPerformance({ ...gscRange, dimensions: ["date"], rowLimit: 500 }) : Promise.resolve([]),
+    // Top (query, page) pair per keyword: maps keyword → landing page
+    gsc ? fetchSearchPerformance({ ...gscRange, dimensions: ["query", "page"], rowLimit: 50, orderBy: "clicks" }) : Promise.resolve([]),
+    // Previous period, for position deltas
+    gsc ? fetchSearchPerformance({ from: prevFrom, to: prevTo, dimensions: ["query"], rowLimit: 100 }) : Promise.resolve([]),
     ga4 ? fetchGA4Channels(ga4Token!, propertyId, from, to) : Promise.resolve([]),
     ga4 ? fetchGA4Geo(ga4Token!, propertyId, from, to) : Promise.resolve([]),
     ga4 ? fetchGA4Devices(ga4Token!, propertyId, from, to) : Promise.resolve([]),
@@ -302,6 +296,7 @@ export async function GET(request: NextRequest) {
     // Env vars present but Google refused the refresh token (revoked/expired)
     authFailed: (gscOn && !gscToken) || (ga4On && !ga4Token),
     gscConfigured: gscOn && !!gscToken,
+    gscRange,
     ga4Configured: ga4On && !!ga4Token,
     summary: { totalClicks, totalImpressions, avgCtr, avgPosition },
     topQueries,

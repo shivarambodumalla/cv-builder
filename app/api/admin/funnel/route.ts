@@ -283,25 +283,6 @@ export async function GET(request: NextRequest) {
       .slice(0, 10);
   }
 
-  // ── Jobs funnel ──
-  const pvJobs = Number((await pvRpc("/jobs")).data?.total ?? 0);
-  const _jobsPageAuth = visitedEditor.data?.count ?? 0; // reuse "Opened jobs page" event
-  const [jobSearches, jobClicks, jobSaves] = await Promise.all([
-    admin.from("user_activity").select("id", { count: "exact", head: true })
-      .eq("event", "Opened jobs page").gte("created_at", from).lte("created_at", to),
-    admin.from("job_clicks").select("id", { count: "exact", head: true })
-      .gte("created_at", from).lte("created_at", to),
-    admin.from("saved_jobs").select("id", { count: "exact", head: true })
-      .gte("saved_at", from).lte("saved_at", to),
-  ]);
-
-  const jobsFunnel = [
-    { key: "jobs_page_anon", label: "Jobs Page (public)", count: pvJobs },
-    { key: "jobs_page_auth", label: "Jobs Page (logged in)", count: jobSearches.count ?? 0 },
-    { key: "job_clicks", label: "Job Clicks (Apply)", count: jobClicks.count ?? 0 },
-    { key: "job_saves", label: "Jobs Saved", count: jobSaves.count ?? 0 },
-  ];
-
   // ── Interview Prep funnel ──
   const pvInterviewPrep = Number((await pvRpc("/interview-prep")).data?.total ?? 0);
   const [storyCount, qualityScoredCount, prepUsedCount] = await Promise.all([
@@ -463,7 +444,6 @@ export async function GET(request: NextRequest) {
     engagement,
     conversion,
     extras,
-    jobsFunnel,
     interviewFunnel,
     cvReviewFunnel,
     careerPathFunnel,
