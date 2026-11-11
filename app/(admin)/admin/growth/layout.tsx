@@ -10,6 +10,7 @@ export default function GrowthLayout({ children }: { children: React.ReactNode }
           { href: "/admin/growth/traffic", label: "Traffic" },
           { href: "/admin/growth/funnel", label: "Funnel" },
           { href: "/admin/growth/paywall", label: "Paywall & popups" },
+          { href: "/admin/growth/revenue", label: "Revenue" },
         ]}
       />
       {children}

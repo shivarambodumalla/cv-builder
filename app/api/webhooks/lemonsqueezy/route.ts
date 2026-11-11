@@ -281,8 +281,61 @@ export async function POST(request: NextRequest) {
       break;
     }
 
+    case "subscription_payment_success": {
+      // "initial" is the first payment, already recorded by subscription_created.
+      // Only renewals are new money here.
+      if (attrs?.billing_reason !== "renewal") break;
+
+      const subscriptionId = attrs?.subscription_id ? String(attrs.subscription_id) : null;
+      const paidAt = attrs?.created_at || new Date().toISOString();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_period")
+        .eq("id", userId)
+        .maybeSingle();
+
+      // Lemon Squeezy retries webhooks: one row per subscription invoice.
+      if (subscriptionId) {
+        const { count } = await supabase
+          .from("subscription_history")
+          .select("id", { count: "exact", head: true })
+          .eq("subscription_id", subscriptionId)
+          .eq("status", "renewal")
+          .eq("started_at", paidAt);
+        if (count) {
+          console.log(`[webhook] renewal for ${userId} already recorded`);
+          break;
+        }
+      }
+
+      const { error: renewalError } = await supabase.from("subscription_history").insert({
+        user_id: userId,
+        plan: "pro",
+        period: profile?.subscription_period || "monthly",
+        status: "renewal",
+        amount: invoiceNetUsd(attrs),
+        currency: "USD",
+        subscription_id: subscriptionId,
+        started_at: paidAt,
+      });
+      if (renewalError) {
+        console.error("[webhook] renewal history insert failed:", renewalError);
+        alertAdmin("Subscription History", renewalError.message, { userId, event: "renewal" });
+      } else {
+        console.log(`[webhook] renewal recorded for ${userId}`);
+      }
+      break;
+    }
+
     case "order_refunded":
     case "subscription_payment_refunded": {
+      // Read the subscription before it is cleared below, for the history row.
+      const { data: before } = await supabase
+        .from("profiles")
+        .select("subscription_period, subscription_id")
+        .eq("id", userId)
+        .maybeSingle();
+
       await supabase.from("profiles").update({
         plan: "free",
         subscription_status: "refunded",
@@ -291,6 +344,34 @@ export async function POST(request: NextRequest) {
         current_period_end: null,
       }).eq("id", userId);
       console.log(`[webhook] ${eventName} for ${userId}, access revoked`);
+
+      // A subscription refund can fire both events; record the money once.
+      const refunded = -centsToUsd(attrs?.refunded_amount_usd ?? attrs?.refunded_amount);
+      const since = new Date(Date.now() - 3_600_000).toISOString();
+      const { count: alreadyRecorded } = await supabase
+        .from("subscription_history")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("status", "refunded")
+        .eq("amount", refunded)
+        .gte("started_at", since);
+      if (!alreadyRecorded) {
+        const customData = payload.meta?.custom_data || attrs?.custom_data;
+        const { error: refundError } = await supabase.from("subscription_history").insert({
+          user_id: userId,
+          plan: customData?.product_type === "cv_review" ? "cv_review" : "pro",
+          period: before?.subscription_period || "refunded",
+          status: "refunded",
+          amount: refunded,
+          currency: "USD",
+          subscription_id: attrs?.subscription_id ? String(attrs.subscription_id) : before?.subscription_id ?? null,
+          started_at: new Date().toISOString(),
+        });
+        if (refundError) {
+          console.error("[webhook] refund history insert failed:", refundError);
+          alertAdmin("Subscription History", refundError.message, { userId, event: String(eventName) });
+        }
+      }
       alertAdmin("Refund processed", `${eventName}: access revoked`, {
         userId,
         email: attrs?.user_email ?? "unknown",
@@ -319,4 +400,21 @@ export async function POST(request: NextRequest) {
 
 function isBillingPeriod(value: unknown): value is BillingPeriod {
   return typeof value === "string" && (BILLING_PERIODS as string[]).includes(value);
+}
+
+/** Lemon Squeezy money fields are integer cents. */
+function centsToUsd(cents: unknown): number {
+  const n = Number(cents);
+  return Number.isFinite(n) ? Math.round(n) / 100 : 0;
+}
+
+/**
+ * What an invoice earned, in USD, before tax: first payments are recorded at
+ * the pre-tax price (firstPaymentUsd), so renewals must be too.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function invoiceNetUsd(attrs: any): number {
+  const total = attrs?.total_usd ?? attrs?.total;
+  const tax = attrs?.total_usd !== undefined ? attrs?.tax_usd : attrs?.tax;
+  return centsToUsd(Number(total ?? 0) - Number(tax ?? 0));
 }
