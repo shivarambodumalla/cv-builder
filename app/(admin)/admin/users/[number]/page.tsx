@@ -16,7 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, ExternalLink, MapPin, Globe } from "lucide-react";
 import { UserActions } from "./user-actions";
 import { UserResumes, type UserResume } from "./user-resumes";
-import { ActivityTimeline, type ActivityEvent } from "./activity-timeline";
+import { ActivityTimeline } from "./activity-timeline";
+import { loadUserActivity } from "@/lib/admin/activity-feed";
 import { computeYearsOfExperience } from "@/lib/resume/years-of-experience";
 import { describeEstimatedAge } from "@/lib/resume/estimated-age";
 import { channelLabel } from "@/lib/analytics/channel";
@@ -196,7 +197,7 @@ export default async function UserDetailPage({
   const coverLetterCount = [...coverLettersByCvId.values()].reduce((sum, arr) => sum + arr.length, 0);
 
   // Parallel fetch: sessions + activity + subscription history (all just need user id)
-  const [{ data: sessions }, { data: activityRows }, { data: history }] = await Promise.all([
+  const [{ data: sessions }, activity, { data: history }] = await Promise.all([
     supabase
       .from("page_sessions")
       .select("path, duration_ms")
@@ -204,12 +205,7 @@ export default async function UserDetailPage({
       .not("duration_ms", "is", null)
       .order("created_at", { ascending: false })
       .limit(1000),
-    supabase
-      .from("user_activity")
-      .select("id, event, page, metadata, created_at")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(200),
+    loadUserActivity(userId),
     supabase
       .from("subscription_history")
       .select("id, plan, period, amount, currency, status, started_at, ended_at")
@@ -243,14 +239,6 @@ export default async function UserDetailPage({
     const d = Math.floor(h / 24);
     return `${d}d ${h % 24}h`;
   };
-
-  const activity: ActivityEvent[] = (activityRows ?? []).map((r) => ({
-    id: r.id,
-    event: r.event,
-    page: r.page,
-    metadata: (r.metadata as Record<string, unknown> | null) ?? null,
-    created_at: r.created_at,
-  }));
 
   const renewalDate = profile.current_period_end
     ? new Date(profile.current_period_end).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
@@ -691,7 +679,7 @@ export default async function UserDetailPage({
 
         <TabsContent value="activity" className="space-y-6">
           {/* Activity Timeline */}
-          <ActivityTimeline events={activity} />
+          <ActivityTimeline items={activity.items} failed={activity.failed} />
 
           {/* Page Sessions */}
           {topPages.length > 0 && (

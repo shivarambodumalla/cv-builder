@@ -1,179 +1,166 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import type { ActivityCategory, ActivityItem } from "@/lib/admin/activity-feed";
 
-export interface ActivityEvent {
-  id: string;
-  event: string;
-  page: string | null;
-  metadata: Record<string, unknown> | null;
-  created_at: string;
-}
+type Filter = "key" | "all" | ActivityCategory;
 
-const ATS_EVENTS = /ats|fix all|rewrite/i;
-const JOB_EVENTS = /job match|red flag|offer eval|tailor/i;
-const CV_EVENTS = /\bcv\b|pdf|template|resume/i;
-const UPGRADE_EVENTS = /upgrade/i;
-const LIMIT_EVENTS = /\blimit\b/i;
-const PAGE_EVENTS = /^opened /i;
+const CATEGORY: Record<ActivityCategory, { label: string; dot: string }> = {
+  paywall: { label: "Paywall", dot: "bg-warning" },
+  billing: { label: "Billing", dot: "bg-success" },
+  product: { label: "Product", dot: "bg-primary" },
+  ai: { label: "AI calls", dot: "bg-[#1E3A5F]" },
+  account: { label: "Account", dot: "bg-foreground" },
+  popups: { label: "Popups", dot: "bg-muted-foreground/50" },
+  pages: { label: "Page views", dot: "bg-muted-foreground/30" },
+};
 
-function eventColor(event: string): string {
-  if (LIMIT_EVENTS.test(event)) return "#DC2626";
-  if (UPGRADE_EVENTS.test(event)) return "#F59E0B";
-  if (ATS_EVENTS.test(event)) return "#065F46";
-  if (JOB_EVENTS.test(event)) return "#2563EB";
-  if (CV_EVENTS.test(event)) return "#7C3AED";
-  if (PAGE_EVENTS.test(event)) return "#9CA3AF";
-  return "#78716C";
-}
+const CATEGORY_ORDER: ActivityCategory[] = ["paywall", "billing", "product", "ai", "account", "popups", "pages"];
+/** Page views and popups are noise for "what did this person do"; hidden by default. */
+const NOISE: ActivityCategory[] = ["pages", "popups"];
+const PAGE_SIZE = 100;
 
-function categorize(event: string): string {
-  if (LIMIT_EVENTS.test(event)) return "Limits";
-  if (UPGRADE_EVENTS.test(event)) return "Upgrade";
-  if (ATS_EVENTS.test(event)) return "ATS";
-  if (JOB_EVENTS.test(event)) return "Job match";
-  if (CV_EVENTS.test(event)) return "CV";
-  if (PAGE_EVENTS.test(event)) return "Page views";
-  return "Other";
-}
-
-function formatTime(iso: string): { primary: string; secondary: string } {
+function formatTime(iso: string): string {
   const d = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const mins = Math.round(diffMs / 60000);
-
-  // Absolute date+time always shown
-  const absolute = d.toLocaleString("en-US", {
+  const mins = Math.round((Date.now() - d.getTime()) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  return d.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
+    year: d.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined,
     hour: "numeric",
     minute: "2-digit",
   });
-
-  // Relative only for < 60 min
-  if (mins < 1) return { primary: "just now", secondary: absolute };
-  if (mins < 60) return { primary: `${mins}m ago`, secondary: absolute };
-
-  // For older events, show absolute as primary
-  const isToday = d.toDateString() === now.toDateString();
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const isYesterday = d.toDateString() === yesterday.toDateString();
-
-  if (isToday) {
-    const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-    return { primary: `Today, ${time}`, secondary: "" };
-  }
-  if (isYesterday) {
-    const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-    return { primary: `Yesterday, ${time}`, secondary: "" };
-  }
-
-  return { primary: absolute, secondary: d.getFullYear() !== now.getFullYear() ? String(d.getFullYear()) : "" };
 }
 
-function renderMetadata(metadata: Record<string, unknown> | null): string {
-  if (!metadata) return "";
-  const parts: string[] = [];
-  if (metadata.score !== undefined) parts.push(`score: ${metadata.score}`);
-  if (metadata.grade !== undefined) parts.push(`grade: ${metadata.grade}`);
-  if (metadata.template !== undefined) parts.push(`template: ${metadata.template}`);
-  if (metadata.tone !== undefined) parts.push(`tone: ${metadata.tone}`);
-  if (metadata.mode !== undefined) parts.push(`mode: ${metadata.mode}`);
-  if (metadata.trigger !== undefined) parts.push(`trigger: ${metadata.trigger}`);
-  if (metadata.count !== undefined) parts.push(`count: ${metadata.count}`);
-  if (metadata.changes !== undefined) parts.push(`changes: ${metadata.changes}`);
-  return parts.join(" · ");
-}
+export function ActivityTimeline({ items, failed }: { items: ActivityItem[]; failed: string[] }) {
+  const [filter, setFilter] = useState<Filter>("key");
+  const [shown, setShown] = useState(PAGE_SIZE);
 
-export function ActivityTimeline({ events }: { events: ActivityEvent[] }) {
-  if (events.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">No activity recorded yet.</p>
-          <p className="mt-1 text-xs text-muted-foreground">Activity is tracked from this point forward.</p>
-        </CardContent>
-      </Card>
-    );
+  const counts = useMemo(() => {
+    const m = new Map<ActivityCategory, number>();
+    for (const i of items) m.set(i.category, (m.get(i.category) ?? 0) + 1);
+    return m;
+  }, [items]);
+
+  const visible = useMemo(
+    () =>
+      items.filter((i) =>
+        filter === "all" ? true : filter === "key" ? !NOISE.includes(i.category) : i.category === filter,
+      ),
+    [items, filter],
+  );
+
+  const keyCount = items.filter((i) => !NOISE.includes(i.category)).length;
+  const weekAgo = Date.now() - 7 * 86_400_000;
+  const thisWeek = items.filter((i) => !NOISE.includes(i.category) && new Date(i.at).getTime() > weekAgo).length;
+
+  const chips: { key: Filter; label: string; count: number }[] = [
+    { key: "key", label: "Key actions", count: keyCount },
+    { key: "all", label: "Everything", count: items.length },
+    ...CATEGORY_ORDER.filter((c) => (counts.get(c) ?? 0) > 0).map((c) => ({
+      key: c as Filter,
+      label: CATEGORY[c].label,
+      count: counts.get(c) ?? 0,
+    })),
+  ];
+
+  function choose(next: Filter) {
+    setFilter(next);
+    setShown(PAGE_SIZE);
   }
-
-  // Summary stats
-  const totalActions = events.length;
-  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const thisWeek = events.filter((e) => new Date(e.created_at).getTime() > weekAgo).length;
-
-  const categoryCounts = new Map<string, number>();
-  for (const e of events) {
-    const cat = categorize(e.event);
-    categoryCounts.set(cat, (categoryCounts.get(cat) ?? 0) + 1);
-  }
-  const [mostUsed] = [...categoryCounts.entries()].sort((a, b) => b[1] - a[1]);
 
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Activity</CardTitle>
-          <span className="text-xs text-muted-foreground">Last {totalActions} events</span>
-        </div>
+        <CardTitle className="text-base">Activity</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Summary stats */}
+        {failed.length > 0 && (
+          <p role="alert" className="rounded-md border border-error/30 bg-error/10 px-3 py-2 text-xs text-error">
+            Couldn&apos;t load: {failed.join(", ")}. The rest is shown.
+          </p>
+        )}
+
         <div className="grid grid-cols-3 divide-x divide-border rounded-lg border bg-muted/30">
-          <div className="px-3 py-2">
-            <p className="text-[10px] uppercase text-muted-foreground">Total actions</p>
-            <p className="mt-0.5 text-lg font-bold">{totalActions}</p>
-          </div>
-          <div className="px-3 py-2">
-            <p className="text-[10px] uppercase text-muted-foreground">This week</p>
-            <p className="mt-0.5 text-lg font-bold">{thisWeek}</p>
-          </div>
-          <div className="px-3 py-2">
-            <p className="text-[10px] uppercase text-muted-foreground">Most used</p>
-            <p className="mt-0.5 text-sm font-semibold truncate">{mostUsed?.[0] ?? "–"}</p>
-          </div>
+          {[
+            { label: "Key actions", value: keyCount },
+            { label: "This week", value: thisWeek },
+            { label: "Paywall hits", value: counts.get("paywall") ?? 0 },
+          ].map((s) => (
+            <div key={s.label} className="px-3 py-2">
+              <p className="text-[10px] uppercase text-muted-foreground">{s.label}</p>
+              <p className="mt-0.5 text-lg font-bold tabular-nums">{s.value}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Timeline */}
-        <ul className="space-y-2">
-          {events.map((e) => {
-            const meta = renderMetadata(e.metadata);
-            const time = formatTime(e.created_at);
-            return (
-              <li key={e.id} className="flex items-start gap-3 text-sm">
+        <div role="group" aria-label="Filter activity" className="flex flex-wrap gap-1.5">
+          {chips.map((c) => (
+            <button
+              key={c.key}
+              type="button"
+              aria-pressed={filter === c.key}
+              onClick={() => choose(c.key)}
+              className={cn(
+                "flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors sm:min-h-[30px]",
+                filter === c.key
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              {c.label}
+              <span className="tabular-nums opacity-70">{c.count}</span>
+            </button>
+          ))}
+        </div>
+
+        {visible.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            {items.length === 0 ? "No activity recorded for this user yet." : "Nothing in this filter."}
+          </p>
+        ) : (
+          <ul className="space-y-2.5">
+            {visible.slice(0, shown).map((i) => (
+              <li key={i.id} className="flex items-start gap-3 text-sm">
                 <span
-                  className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full")}
-                  style={{ backgroundColor: eventColor(e.event) }}
+                  className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", CATEGORY[i.category].dot)}
+                  title={CATEGORY[i.category].label}
                   aria-hidden
                 />
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="font-medium">{e.event}</p>
-                    <span className="shrink-0 text-right text-xs text-muted-foreground">
-                      {time.primary}
-                      {time.secondary && (
-                        <span className="ml-1.5 opacity-60">{time.secondary}</span>
-                      )}
-                    </span>
+                    <p className="font-medium">
+                      <span className="sr-only">{CATEGORY[i.category].label}: </span>
+                      {i.label}
+                    </p>
+                    <span className="shrink-0 text-right text-xs tabular-nums text-muted-foreground">{formatTime(i.at)}</span>
                   </div>
-                  {(meta || e.page) && (
-                    <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
-                      {meta && <Badge variant="secondary" className="text-[10px]">{meta}</Badge>}
-                      {e.page && <span className="truncate font-mono">{e.page}</span>}
-                    </div>
+                  {(i.detail || i.page) && (
+                    <p className="mt-0.5 break-words text-xs text-muted-foreground">
+                      {i.detail}
+                      {i.detail && i.page && " · "}
+                      {i.page && <span className="font-mono">{i.page}</span>}
+                    </p>
                   )}
                 </div>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ul>
+        )}
+
+        {visible.length > shown && (
+          <button
+            type="button"
+            onClick={() => setShown((n) => n + PAGE_SIZE)}
+            className="min-h-[44px] w-full rounded-md border text-xs font-medium text-muted-foreground hover:bg-muted sm:min-h-[36px]"
+          >
+            Show {Math.min(PAGE_SIZE, visible.length - shown)} more of {visible.length - shown}
+          </button>
+        )}
       </CardContent>
     </Card>
   );

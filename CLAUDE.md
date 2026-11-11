@@ -562,6 +562,7 @@ Four sidebar groups ordered by how often they're used (`app/(admin)/admin/nav-co
 - Old URLs (/admin/funnel, /admin/prompts, /admin/mentorship/leads/:id …) 307 to their tab via next.config.mjs; emails sent before Nov 2026 still link to them
 - Sidebar badge: pending expert reviews (counted in the admin layout). Phones get the same nav in a left drawer; tabs scroll sideways; touch targets 44px
 - Users table: Est. Age (`profiles.estimated_birth_year`, from lib/resume/estimated-age.ts, shown "~29" with its basis) and Source (`profiles.acquisition_channel`, see "Signup source"); one card per user on phones
+- User detail › Activity: `lib/admin/activity-feed.ts` merges user_activity with payments, ratings, resumes created, AI calls and guarantee claims, and turns raw event names (`feature_blocked`, `popover_*`, `picker_*`) into plain labels in `describeActivity()`. Add a case there when a new event is logged. Page views and popups are hidden behind filters by default
 - Resume Preview: /admin/resume-preview/[id]
 
 ## Signup source (first touch)
