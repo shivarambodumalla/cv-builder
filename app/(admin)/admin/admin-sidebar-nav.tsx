@@ -3,61 +3,61 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-interface NavLink {
-  href: string;
-  label: string;
-}
-
-interface NavGroup {
-  title: string;
-  links: NavLink[];
-}
+import { NAV_GROUPS, activeNavHref } from "./nav-config";
 
 interface Props {
-  groups: NavGroup[];
+  /** Count badges by nav href, e.g. pending expert reviews. */
+  badges?: Record<string, number>;
+  onNavigate?: () => void;
 }
 
-export function AdminSidebarNav({ groups }: Props) {
-  const pathname = usePathname();
-
-  // Longest matching href wins, so "/admin/mentorship" isn't lit on /admin/mentorship/leads
-  const activeHref = groups
-    .flatMap((g) => g.links)
-    .filter(
-      (l) =>
-        pathname === l.href ||
-        (l.href !== "/admin" && pathname?.startsWith(`${l.href}/`))
-    )
-    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+export function AdminSidebarNav({ badges = {}, onNavigate }: Props) {
+  const activeHref = activeNavHref(usePathname());
 
   return (
-    <nav className="p-4 space-y-5">
-      {groups.map((group) => (
-        <div key={group.title}>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-3 mb-1.5">
+    <nav aria-label="Admin" className="space-y-5 p-4">
+      {NAV_GROUPS.map((group) => (
+        <div key={group.title} className={cn(group.muted && "border-t pt-4")}>
+          <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
             {group.title}
           </p>
-          <div className="space-y-0.5">
+          <ul className="space-y-0.5">
             {group.links.map((link) => {
               const isActive = link.href === activeHref;
-
+              const badge = badges[link.href] ?? 0;
               return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                  )}
-                >
-                  {link.label}
-                </Link>
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={onNavigate}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      "flex min-h-[44px] items-center justify-between gap-2 rounded-md px-3 font-medium transition-colors lg:min-h-0 lg:py-1.5",
+                      group.muted ? "text-xs" : "text-sm",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : group.muted
+                          ? "text-muted-foreground/80 hover:bg-accent/50 hover:text-foreground"
+                          : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                    )}
+                  >
+                    {link.label}
+                    {badge > 0 && (
+                      <span
+                        className={cn(
+                          "min-w-[20px] rounded-full px-1.5 text-center text-[11px] font-semibold tabular-nums",
+                          isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-warning/15 text-warning",
+                        )}
+                        aria-label={`${badge} waiting`}
+                      >
+                        {badge}
+                      </span>
+                    )}
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       ))}
     </nav>

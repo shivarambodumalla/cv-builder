@@ -46,7 +46,7 @@ function sanitizeContent(raw: unknown): ResumeContent {
 }
 
 export const metadata: Metadata = {
-  title: "Resume Preview | CVEdge Admin",
+  title: "Resume Preview",
 };
 
 export const dynamic = "force-dynamic";

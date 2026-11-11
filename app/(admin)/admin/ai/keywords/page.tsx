@@ -150,7 +150,7 @@ export default function AdminKeywordsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Keywords</h1>
+        <h2 className="text-lg font-semibold tracking-tight">Keywords</h2>
         <Button size="sm" onClick={() => setAddOpen(true)}>
           <Plus className="mr-1.5 h-3.5 w-3.5" /> Add Role
         </Button>

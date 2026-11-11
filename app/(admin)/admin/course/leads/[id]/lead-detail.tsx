@@ -70,7 +70,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
   const [savingStatus, setSavingStatus] = useState(false);
 
   const fetchLead = useCallback(async () => {
-    const res = await fetch(`/api/admin/mentorship/leads/${leadId}`);
+    const res = await fetch(`/api/admin/course/leads/${leadId}`);
     if (!res.ok) {
       setError(`Failed to load lead (${res.status})`);
       setLoading(false);
@@ -89,7 +89,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
   const changeStatus = async (status: string) => {
     if (!lead || status === lead.status) return;
     setSavingStatus(true);
-    const res = await fetch(`/api/admin/mentorship/leads/${leadId}`, {
+    const res = await fetch(`/api/admin/course/leads/${leadId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
@@ -101,7 +101,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
   const addNote = async () => {
     if (!note.trim()) return;
     setSavingNote(true);
-    const res = await fetch(`/api/admin/mentorship/leads/${leadId}/note`, {
+    const res = await fetch(`/api/admin/course/leads/${leadId}/note`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ note }),
@@ -126,7 +126,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
       <div className="space-y-4">
         <p className="text-sm text-error">{error || "Lead not found"}</p>
         <Button asChild variant="outline" size="sm">
-          <Link href="/admin/mentorship/leads">
+          <Link href="/admin/course/leads">
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to leads
           </Link>
         </Button>
@@ -139,7 +139,7 @@ export function LeadDetail({ leadId }: { leadId: string }) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Link
-            href="/admin/mentorship/leads"
+            href="/admin/course/leads"
             className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground mb-2"
           >
             <ArrowLeft className="w-3.5 h-3.5 mr-1" /> All leads

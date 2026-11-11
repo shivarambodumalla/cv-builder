@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CvReviewDashboard } from "./dashboard";
 
 export const metadata: Metadata = {
-  title: "CV Review Analytics | CVEdge Admin",
+  title: "CV Review Analytics",
 };
 
 export default async function CvReviewAnalyticsPage() {
@@ -15,7 +15,7 @@ export default async function CvReviewAnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">CV Review Funnel & Sales</h1>
+        <h2 className="text-lg font-semibold tracking-tight">CV Review Funnel & Sales</h2>
         <p className="text-muted-foreground text-sm mt-1">
           End-to-end sales funnel: page views → CTA → checkout → purchase. Revenue from DB, top-of-funnel from GA4.
         </p>

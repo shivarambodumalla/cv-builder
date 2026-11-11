@@ -1,6 +1,6 @@
 import { LeadDetail } from "./lead-detail";
 
-export const metadata = { title: "Lead Detail | Admin" };
+export const metadata = { title: "Lead Detail" };
 
 export default async function MentorshipLeadDetailPage({
   params,

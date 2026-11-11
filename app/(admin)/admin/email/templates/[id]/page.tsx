@@ -5,7 +5,7 @@ import { EmailEditor } from "./email-editor";
 import { getPlanLimits } from "@/lib/billing/plan-config";
 import { quotaTemplateVars } from "@/lib/billing/format-limits";
 
-export const metadata: Metadata = { title: "Edit Template | CVEdge Admin" };
+export const metadata: Metadata = { title: "Edit Template" };
 export const dynamic = "force-dynamic";
 
 interface Props {

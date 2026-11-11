@@ -54,7 +54,7 @@ export default function AdminAiSettingsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">AI Settings</h1>
+        <h2 className="text-lg font-semibold tracking-tight">AI Settings</h2>
         <Button size="sm" onClick={handleSaveAll} disabled={saving}>
           <Save className="mr-1.5 h-3.5 w-3.5" /> {saving ? "Saving..." : "Save All"}
         </Button>

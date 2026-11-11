@@ -86,6 +86,30 @@ const nextConfig = {
       { source: "/jobs/:path*", destination: "/", permanent: false },
       { source: "/my-jobs", destination: "/dashboard", permanent: false },
       { source: "/my-jobs/:path*", destination: "/dashboard", permanent: false },
+      // Admin pages regrouped into tabbed sections (Nov 2026). Old bookmarks and
+      // links in already-sent emails land on the new tab. Temporary, so the
+      // structure can still change without browsers caching the old answer.
+      { source: "/admin/marketing-analytics", destination: "/admin/growth/traffic", permanent: false },
+      { source: "/admin/blog-analytics", destination: "/admin/growth/traffic", permanent: false },
+      { source: "/admin/funnel", destination: "/admin/growth/funnel", permanent: false },
+      { source: "/admin/interventions", destination: "/admin/growth/paywall", permanent: false },
+      { source: "/admin/popup-audit", destination: "/admin/growth/paywall", permanent: false },
+      { source: "/admin/analytics", destination: "/admin/ai/usage", permanent: false },
+      { source: "/admin/prompts", destination: "/admin/ai/prompts", permanent: false },
+      { source: "/admin/keywords", destination: "/admin/ai/keywords", permanent: false },
+      { source: "/admin/missing-roles", destination: "/admin/ai/missing-roles", permanent: false },
+      { source: "/admin/ai-settings", destination: "/admin/ai/settings", permanent: false },
+      { source: "/admin/emails", destination: "/admin/email/templates", permanent: false },
+      { source: "/admin/emails/:id", destination: "/admin/email/templates/:id", permanent: false },
+      { source: "/admin/campaigns", destination: "/admin/email/campaigns", permanent: false },
+      { source: "/admin/email-logs", destination: "/admin/email/logs", permanent: false },
+      { source: "/admin/deleted-accounts", destination: "/admin/users/deleted", permanent: false },
+      { source: "/admin/cv-review-analytics", destination: "/admin/reviews/sales", permanent: false },
+      { source: "/admin/mentorship", destination: "/admin/course", permanent: false },
+      { source: "/admin/mentorship/leads", destination: "/admin/course/leads", permanent: false },
+      { source: "/admin/mentorship/leads/:id", destination: "/admin/course/leads/:id", permanent: false },
+      { source: "/admin/testimonials", destination: "/admin/feedback/testimonials", permanent: false },
+      { source: "/admin/pricing", destination: "/admin/plans/prices", permanent: false },
       // Retired as a near-duplicate of the surviving PM guide. Redirect rather
       // than 404 so the indexed URL passes its equity to the kept article.
       {

@@ -15,7 +15,7 @@ import { PaymentWallChart } from "./payment-wall-chart";
 import { summarizePaymentWall } from "@/lib/admin/payment-wall";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard",
+  title: "Home",
 };
 
 export const dynamic = "force-dynamic";

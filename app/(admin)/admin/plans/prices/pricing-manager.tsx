@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase/client";
 import { Check, Loader2 } from "lucide-react";
 
 interface PricingConfig {
@@ -20,24 +19,34 @@ export function PricingManager({ initialConfigs }: { initialConfigs: PricingConf
   const [configs, setConfigs] = useState(initialConfigs);
   const [saving, setSaving] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSave(config: PricingConfig) {
     setSaving(config.id);
-    const supabase = createClient();
-    await supabase
-      .from("pricing_config")
-      .update({
-        original_price: config.original_price,
-        sale_price: config.sale_price,
-        lemon_squeezy_variant_id: config.lemon_squeezy_variant_id,
-        enabled: config.enabled,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", config.id);
-
-    setSaving(null);
-    setSaved(config.id);
-    setTimeout(() => setSaved(null), 2000);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/pricing", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: config.id,
+          original_price: config.original_price,
+          sale_price: config.sale_price,
+          lemon_squeezy_variant_id: config.lemon_squeezy_variant_id,
+          enabled: config.enabled,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? `Save failed (${res.status})`);
+      }
+      setSaved(config.id);
+      setTimeout(() => setSaved(null), 2000);
+    } catch (err) {
+      setError(`${config.plan} ${config.period}: ${err instanceof Error ? err.message : "Save failed"}`);
+    } finally {
+      setSaving(null);
+    }
   }
 
   function updateConfig(id: string, field: string, value: unknown) {
@@ -47,6 +56,10 @@ export function PricingManager({ initialConfigs }: { initialConfigs: PricingConf
   }
 
   return (
+    <div className="space-y-3">
+    {error && (
+      <p role="alert" className="rounded-md border border-error/30 bg-error/10 px-3 py-2 text-sm text-error">{error}</p>
+    )}
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
@@ -120,6 +133,7 @@ export function PricingManager({ initialConfigs }: { initialConfigs: PricingConf
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }

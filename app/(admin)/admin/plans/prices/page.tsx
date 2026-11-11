@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { PricingManager } from "./pricing-manager";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPricingPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: configs } = await supabase
     .from("pricing_config")
@@ -14,7 +14,7 @@ export default async function AdminPricingPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Pricing Configuration</h1>
+      <h2 className="text-lg font-semibold tracking-tight">Pricing Configuration</h2>
       <p className="text-sm text-muted-foreground">
         Edit prices and Lemon Squeezy variant IDs. Changes take effect immediately.
       </p>

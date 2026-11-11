@@ -196,7 +196,7 @@ export function MentorshipDashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">AI Product Design: Course Funnel</h1>
+          <h2 className="text-lg font-semibold tracking-tight">AI Product Design: Course Funnel</h2>
           <p className="text-sm text-muted-foreground">
             Mentorship landing page traffic, leads &amp; pipeline (admin visits excluded)
           </p>
@@ -213,7 +213,7 @@ export function MentorshipDashboard() {
             </Button>
           ))}
           <Button asChild size="sm" variant="secondary">
-            <Link href="/admin/mentorship/leads">View Leads</Link>
+            <Link href="/admin/course/leads">View Leads</Link>
           </Button>
         </div>
       </div>

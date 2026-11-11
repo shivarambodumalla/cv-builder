@@ -1,5 +1,5 @@
 // Bing Webmaster summary in the terminal: the same report as the Bing section of
-// /admin/marketing-analytics. Read-only (Get* methods only).
+// /admin/growth/traffic. Read-only (Get* methods only).
 //
 // Run: set -a; source .env.local; set +a; npx tsx scripts/bing-report.ts
 //      ... scripts/bing-report.ts --days 90

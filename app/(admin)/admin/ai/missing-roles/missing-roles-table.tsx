@@ -51,7 +51,7 @@ export function MissingRolesTable({
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Missing Roles</h1>
+        <h2 className="text-lg font-semibold tracking-tight">Missing Roles</h2>
         <span className="text-sm text-muted-foreground">
           {missingRoles.length} unique role{missingRoles.length !== 1 ? "s" : ""}
         </span>

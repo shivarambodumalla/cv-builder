@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { DeletedAccountsTable } from "./deleted-accounts-table";
 
 export const metadata: Metadata = {
-  title: "Deleted Accounts | CVEdge Admin",
+  title: "Deleted Accounts",
 };
 
 export const dynamic = "force-dynamic";

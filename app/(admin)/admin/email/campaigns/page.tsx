@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { CampaignManager } from "./campaign-manager";
 import { JOBS_TEMPLATES } from "@/lib/email/system-templates";
 
-export const metadata: Metadata = { title: "Campaigns | CVEdge Admin" };
+export const metadata: Metadata = { title: "Campaigns" };
 export const dynamic = "force-dynamic";
 
 export default async function CampaignsPage() {
@@ -15,7 +15,7 @@ export default async function CampaignsPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Campaigns</h1>
+      <h2 className="text-lg font-semibold tracking-tight">Campaigns</h2>
       <CampaignManager
         campaigns={campaigns ?? []}
         templateNames={(templates ?? []).map((t) => t.name)}

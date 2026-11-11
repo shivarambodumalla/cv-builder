@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
 <p><strong>Intent:</strong> ${intent}</p>
 <p><strong>Score:</strong> ${newScore}${newScore >= 100 ? " 🔥 hot lead" : ""}</p>
 ${utm_source ? `<p><strong>UTM:</strong> ${utm_source} / ${utm_campaign || ""}</p>` : ""}
-<p><a href="https://www.thecvedge.com/admin/mentorship/leads/${lead.id}">Open lead in CRM</a></p>`,
+<p><a href="https://www.thecvedge.com/admin/course/leads/${lead.id}">Open lead in CRM</a></p>`,
         });
       }
     } catch { /* notification failure must not block the lead flow */ }

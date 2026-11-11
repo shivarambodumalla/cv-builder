@@ -26,7 +26,7 @@ export function DeletedAccountsTable({ accounts }: { accounts: DeletedAccount[] 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Deleted Accounts</h1>
+        <h2 className="text-lg font-semibold tracking-tight">Deleted Accounts</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Billing trail retained after erasure. Personal data is removed; these records
           exist so a payment can still be traced to the account that made it.

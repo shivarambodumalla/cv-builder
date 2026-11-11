@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JobsAnalyticsDashboard } from "./jobs-analytics-dashboard";
 
-export const metadata: Metadata = { title: "Jobs Analytics | Admin" };
+export const metadata: Metadata = { title: "Jobs Analytics" };
 
 export default function JobsAnalyticsPage() {
   return (

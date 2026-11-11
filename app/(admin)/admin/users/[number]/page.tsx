@@ -25,7 +25,7 @@ import { getPlanLimits } from "@/lib/billing/plan-config";
 import type { ResumeContent } from "@/lib/resume/types";
 
 export const metadata: Metadata = {
-  title: "User Detail | CVEdge Admin",
+  title: "User Detail",
 };
 
 export const dynamic = "force-dynamic";

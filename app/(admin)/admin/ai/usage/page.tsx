@@ -36,7 +36,7 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="space-y-10">
-      <h1 className="text-2xl font-bold">AI Analytics</h1>
+      <h2 className="text-lg font-semibold tracking-tight">AI Analytics</h2>
 
       {/* Today | real-time, auto-refreshes every 30s */}
       <TodayOverview initial={{

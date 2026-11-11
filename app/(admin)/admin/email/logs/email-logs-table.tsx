@@ -83,7 +83,7 @@ export function EmailLogsTable({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Email Logs</h1>
+        <h2 className="text-lg font-semibold tracking-tight">Email Logs</h2>
         <p className="text-sm text-muted-foreground">
           {pending ? "Loading…" : `${from}–${to} of ${total.toLocaleString()}`}
         </p>

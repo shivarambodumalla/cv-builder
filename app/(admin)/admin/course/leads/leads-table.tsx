@@ -65,7 +65,7 @@ export function LeadsTable() {
     setError("");
     const params = new URLSearchParams({ status, sort });
     if (search) params.set("search", search);
-    const res = await fetch(`/api/admin/mentorship/leads?${params}`);
+    const res = await fetch(`/api/admin/course/leads?${params}`);
     if (!res.ok) {
       setError(`Failed to load leads (${res.status})`);
       setLoading(false);
@@ -86,7 +86,7 @@ export function LeadsTable() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Leads</h1>
+          <h2 className="text-lg font-semibold tracking-tight">Leads</h2>
           <p className="text-sm text-muted-foreground">{total} total</p>
         </div>
         <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export function LeadsTable() {
             <option value="updated_at">Last activity</option>
           </select>
           <Button asChild variant="outline" size="sm">
-            <Link href="/admin/mentorship">Dashboard</Link>
+            <Link href="/admin/course">Dashboard</Link>
           </Button>
         </div>
       </div>
@@ -161,7 +161,7 @@ export function LeadsTable() {
               leads.map((lead) => (
                 <tr key={lead.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                   <td className="px-4 py-2.5">
-                    <Link href={`/admin/mentorship/leads/${lead.id}`} className="hover:underline">
+                    <Link href={`/admin/course/leads/${lead.id}`} className="hover:underline">
                       <div className="font-medium">{lead.name}</div>
                       <div className="text-xs text-muted-foreground">{lead.email}</div>
                     </Link>

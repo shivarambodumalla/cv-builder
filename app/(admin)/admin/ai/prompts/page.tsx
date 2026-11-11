@@ -9,7 +9,7 @@ export default async function AdminPromptsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Prompts</h1>
+      <h2 className="text-lg font-semibold tracking-tight">Prompts</h2>
       <PromptsManager prompts={data ?? []} />
     </div>
   );

@@ -496,7 +496,7 @@ Three mechanisms coexist:
 - Plan-dependent tests (free PDF footer, locked ATS report, Fix All 403) read the test user's plan with `getTestUserPlan()` (tests/e2e/helpers/auth.ts, via /api/billing/check-limit) and skip on Pro. scripts/seed-test-data.sql seeds the test user as Pro, so they only run against a free test account
 - CI: .github/workflows/e2e-tests.yml — build → test → parse → upload to DB → email on failure
 - Admin: /admin/tests — test cases registry + run history + run detail
-- Seed: npx tsx scripts/seed-test-cases.ts (62 test case records)
+- Seed: npx tsx scripts/seed-test-cases.ts (63 test case records)
 
 ## Database Tables
 
@@ -547,25 +547,26 @@ The core tables; supabase/migrations holds the full set (blog_posts, plan_limits
 
 ## Admin Panel (/admin)
 
-- Dashboard: user/CV/report counts
-- Analytics: spend monitor, usage history, cost by feature
-- Users: list + detail with billing info, grant-pro/downgrade/suspend
-- Pricing: edit prices and variant IDs
-- Prompts: edit AI prompts with version history
-- Keywords: manage role keyword lists
-- Missing Roles: unmatched role tracker
-- AI Settings: max_tokens, temperature, spend cap
-- Emails: template editor with preview
-- Campaigns: email campaigns
-- Email Logs: sent email history
-- Tests: test case registry + run history + run detail (linked to GitHub Actions)
-- Funnel: signup/conversion funnel analytics
-- Resume Preview: admin resume preview tool
-- Active link detection via client component (AdminSidebarNav)
+Four sidebar groups ordered by how often they're used (`app/(admin)/admin/nav-config.ts`). Related pages are tabs inside one entry: each section's `layout.tsx` renders `<AdminSection>` (components/admin/admin-section.tsx, header + tabs, shown only on the tab routes, not on detail pages) and every tab is its own route, so a tab loads only its own data.
+
+- **Run**: Home (/admin) · Users (/admin/users, /users/deleted, detail /users/[number]) · Expert Reviews (/admin/reviews queue, /reviews/sales) · Course (/admin/course funnel, /course/leads CRM)
+- **Grow**: Growth (/admin/growth/traffic: Search Console, GA4, Bing, blog · /growth/funnel · /growth/paywall: popups, nudges and inventory) · Feedback (/admin/feedback ratings, /feedback/testimonials)
+- **Content**: Blog (/admin/blog) · AI (/admin/ai/usage, /prompts, /keywords, /missing-roles, /settings)
+- **Configure**: Plans & Pricing (/admin/plans quotas and templates, /plans/prices Lemon Squeezy variants) · Email (/admin/email/templates, /campaigns, /logs) · Tests (/admin/tests)
+- **Hidden features** (muted, bottom): Jobs analytics, Job providers, kept while Jobs is hidden
+- Old URLs (/admin/funnel, /admin/prompts, /admin/mentorship/leads/:id …) 307 to their tab via next.config.mjs; emails sent before Nov 2026 still link to them
+- Sidebar badge: pending expert reviews (counted in the admin layout). Phones get the same nav in a left drawer; tabs scroll sideways; touch targets 44px
+- Users table: Est. Age (`profiles.estimated_birth_year`, from lib/resume/estimated-age.ts, shown "~29" with its basis) and Source (`profiles.acquisition_channel`, see "Signup source"); one card per user on phones
+- Resume Preview: /admin/resume-preview/[id]
+
+## Signup source (first touch)
+
+- A browser's first visit stores landing page, referrer host, utm_* and gclid/msclkid/fbclid in localStorage `cvx_ft` (lib/analytics/first-touch.ts) and sends it once with the page view. /api/telemetry/page-view classifies the channel server-side (lib/analytics/channel.ts) into `visitor_first_touch`, before its path allowlist
+- At signup, /api/telemetry/attribute-visitor copies it onto `profiles.acquisition_*`, only for accounts under 24h old and only once; no data = `unknown`. Signups before Nov 2026 have no source
 
 ## Security
 
-- Admin APIs: requireAdmin() check on all /api/admin routes
+- Admin APIs: every /api/admin handler calls requireAdmin() (or brand's checkAdmin) itself, on top of the middleware gate. Admin pages write through these routes, never the browser Supabase client
 - Mock upgrade: blocked in production for non-admins
 - Race condition fix: atomic .lt() on usage counter updates
 - Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy

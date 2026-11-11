@@ -57,9 +57,10 @@ const TEST_CASES = [
   { suite: "Admin", name: "Admin dashboard loads", description: "Verify admin dashboard renders or redirects", spec_file: "tests/e2e/admin.spec.ts" },
   { suite: "Admin", name: "Admin tests page loads", description: "Verify test management page renders", spec_file: "tests/e2e/admin.spec.ts" },
   { suite: "Admin", name: "Admin users page loads", description: "Verify users list renders", spec_file: "tests/e2e/admin.spec.ts" },
-  { suite: "Admin", name: "Admin prompts page loads", description: "Verify prompts editor renders", spec_file: "tests/e2e/admin.spec.ts" },
-  { suite: "Admin", name: "Admin pricing page loads", description: "Verify pricing manager renders", spec_file: "tests/e2e/admin.spec.ts" },
-  { suite: "Admin", name: "Admin emails page loads", description: "Verify email templates page renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin prompts page loads", description: "Verify AI › Prompts tab renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin pricing page loads", description: "Verify Plans & Pricing › Prices tab renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Admin emails page loads", description: "Verify Email › Templates tab renders", spec_file: "tests/e2e/admin.spec.ts" },
+  { suite: "Admin", name: "Old admin URLs redirect to their new tab", description: "Verify pre-regroup admin URLs land on the matching tab", spec_file: "tests/e2e/admin.spec.ts" },
   // Marketing Pages
   { suite: "Marketing", name: "Homepage loads with H1", description: "Verify homepage renders with main heading", spec_file: "tests/e2e/marketing.spec.ts" },
   { suite: "Marketing", name: "Pricing page loads", description: "Verify pricing page renders", spec_file: "tests/e2e/marketing.spec.ts" },

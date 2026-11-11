@@ -421,7 +421,7 @@ export function EmailEditor({ template: initial, brand, quotaVars }: { template:
       {/* Left: Form */}
       <div className="w-full lg:w-[380px] shrink-0 lg:border-r flex flex-col overflow-hidden">
         <div className="flex items-center gap-2 border-b px-4 py-3">
-          <button onClick={() => router.push("/admin/emails")} className="text-muted-foreground hover:text-foreground">
+          <button onClick={() => router.push("/admin/email/templates")} className="text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
           </button>
           <h2 className="text-sm font-semibold flex-1 truncate">{template.name}</h2>

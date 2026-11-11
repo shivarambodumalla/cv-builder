@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { EmailManager } from "./email-manager";
 import { JOBS_TEMPLATES, JOBS_TEMPLATE_DESCRIPTIONS } from "@/lib/email/system-templates";
 
-export const metadata: Metadata = { title: "Emails | CVEdge Admin" };
+export const metadata: Metadata = { title: "Emails" };
 export const dynamic = "force-dynamic";
 
 export default async function EmailsPage() {
@@ -20,7 +20,7 @@ export default async function EmailsPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Email Templates</h1>
+      <h2 className="text-lg font-semibold tracking-tight">Email Templates</h2>
       <EmailManager
         templates={templates ?? []}
         codeTemplates={codeTemplates}

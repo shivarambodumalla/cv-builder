@@ -4,7 +4,7 @@ import { getRatingStats, MIN_PUBLIC_RATINGS } from "@/lib/feedback/stats";
 import { FeedbackTable, type FeedbackRow } from "./feedback-table";
 
 export const metadata: Metadata = {
-  title: "Feedback & Ratings | CVEdge Admin",
+  title: "Feedback & Ratings",
 };
 
 export const dynamic = "force-dynamic";
@@ -46,7 +46,7 @@ export default async function AdminFeedbackPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Feedback & Ratings</h1>
+        <h2 className="text-lg font-semibold tracking-tight">Feedback & Ratings</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Ratings collected after PDF downloads (in-app prompt + next-day email). The homepage shows the average and
           emits AggregateRating only once there are {MIN_PUBLIC_RATINGS} or more. Publishing a consented comment adds it to the testimonials carousel.

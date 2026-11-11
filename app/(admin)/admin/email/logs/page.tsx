@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Metadata } from "next";
 import { EmailLogsTable, type EmailLogRow, type EngagementSummaryRow } from "./email-logs-table";
 
-export const metadata: Metadata = { title: "Email Logs | CVEdge Admin" };
+export const metadata: Metadata = { title: "Email Logs" };
 export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 50;

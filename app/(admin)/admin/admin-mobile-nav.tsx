@@ -1,41 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { AdminSidebarNav } from "./admin-sidebar-nav";
 
-interface NavGroup {
-  title: string;
-  links: { href: string; label: string }[];
-}
-
-interface Props {
-  groups: NavGroup[];
-}
-
-export function AdminMobileNav({ groups }: Props) {
+export function AdminMobileNav({ badges }: { badges?: Record<string, number> }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close after navigating (covers back/forward as well as taps).
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <div className="lg:hidden">
-      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setOpen(!open)}>
-        {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-      </Button>
-      {open && (
-        <div className="absolute inset-x-0 top-14 z-50 border-b bg-background p-3 space-y-3 animate-in slide-in-from-top-2 max-h-[80vh] overflow-y-auto">
-          {groups.map((group) => (
-            <div key={group.title}>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">{group.title}</p>
-              {group.links.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
+        className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted lg:hidden"
+        aria-label="Open admin menu"
+      >
+        <Menu className="h-5 w-5" />
+      </SheetTrigger>
+      <SheetContent side="left" className="w-72 overflow-y-auto p-0">
+        <SheetHeader className="border-b px-6 py-4 text-left">
+          <SheetTitle asChild>
+            <Link href="/admin" className="text-lg font-bold">CVEdge Admin</Link>
+          </SheetTitle>
+        </SheetHeader>
+        <AdminSidebarNav badges={badges} onNavigate={() => setOpen(false)} />
+      </SheetContent>
+    </Sheet>
   );
 }

@@ -213,7 +213,7 @@ export function EmailManager({
 
     if (data.id) {
       resetCreate();
-      router.push(`/admin/emails/${data.id}`);
+      router.push(`/admin/email/templates/${data.id}`);
     }
   }
 
@@ -385,7 +385,7 @@ export function EmailManager({
                   </td>
                   <td className="py-2 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Link href={`/admin/emails/${t.id}`}>
+                      <Link href={`/admin/email/templates/${t.id}`}>
                         <Button variant="ghost" size="sm" className="h-7 text-xs">
                           <Pencil className="h-3 w-3 mr-1" /> Edit
                         </Button>
