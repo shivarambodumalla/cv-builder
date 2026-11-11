@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { trackSignup, trackLogin } from "@/lib/analytics/events";
 import { logActivity } from "@/lib/analytics/log";
+import { readFirstTouch } from "@/lib/analytics/first-touch";
 
 const STORAGE_KEY = "cvx_vid";
 
@@ -25,13 +26,18 @@ export function AuthEventTracker() {
       logActivity("Logged in", { page: window.location.pathname });
     }
 
-    // Attribute pre-login page views to this user (fire-and-forget)
+    // Attribute pre-login page views and, on signup, the first-touch source
+    // to this user (fire-and-forget). The stored first touch rides along as a
+    // fallback in case the server never saw it.
     const visitor_id = getVisitorId();
-    if (visitor_id) {
+    if (visitor_id || event === "signup") {
       fetch("/api/telemetry/attribute-visitor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ visitor_id }),
+        body: JSON.stringify({
+          visitor_id: visitor_id ?? undefined,
+          first_touch: event === "signup" ? readFirstTouch() ?? undefined : undefined,
+        }),
         keepalive: true,
       }).catch(() => {});
     }

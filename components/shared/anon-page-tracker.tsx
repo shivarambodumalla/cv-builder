@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { captureFirstTouch } from "@/lib/analytics/first-touch";
 
 const STORAGE_KEY = "cvx_vid";
 
@@ -27,12 +28,14 @@ export function AnonPageTracker() {
     if (typeof window !== "undefined" && window.location.hostname === "localhost") return;
 
     const visitor_id = getOrCreateVisitorId();
+    // Only on this browser's first visit: where it came from (referrer, UTM, ad click id).
+    const first_touch = visitor_id ? captureFirstTouch() : null;
 
     // Fire-and-forget — never block rendering
     fetch("/api/telemetry/page-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: pathname, visitor_id: visitor_id || undefined }),
+      body: JSON.stringify({ path: pathname, visitor_id: visitor_id || undefined, first_touch: first_touch ?? undefined }),
     }).catch(() => {});
   }, [pathname]);
 
