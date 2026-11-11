@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { FilterSidebar, FilterState, DEFAULT_FILTERS, countActiveFilters } from "./filter-sidebar";
 import { AdminUsersTable, type AdminUserRow, type SortKey, type SortDir } from "@/app/(admin)/admin/users/users-table";
+import { describeEstimatedAge } from "@/lib/resume/estimated-age";
+import { channelLabel } from "@/lib/analytics/channel";
 
 // ─── URL builder ──────────────────────────────────────────────────────────────
 
@@ -28,6 +30,9 @@ function buildParams(
   if (f.experience_levels.length) p.set("experience_levels", f.experience_levels.join(","));
   if (f.years_exp_min)     p.set("years_exp_min",     f.years_exp_min);
   if (f.years_exp_max)     p.set("years_exp_max",     f.years_exp_max);
+  if (f.age_min)           p.set("age_min",           f.age_min);
+  if (f.age_max)           p.set("age_max",           f.age_max);
+  if (f.acquisition_channel) p.set("acquisition_channel", f.acquisition_channel);
   if (f.skills.length)     p.set("skills",            f.skills.join(","));
   p.set("skills_match", f.skills_match);
   if (f.certification)     p.set("certification",     f.certification);
@@ -122,7 +127,7 @@ export function UsersClient() {
   function handleSort(key: SortKey) {
     const newDir =
       key === sortKey ? (sortDir === "asc" ? "desc" : "asc") :
-      ["total_cvs","total_pdf_downloads","job_clicks","saved_jobs","stories","last_active","joined_at","years_experience","best_ats_score"].includes(key)
+      ["total_cvs","total_pdf_downloads","job_clicks","saved_jobs","stories","last_active","joined_at","years_experience","best_ats_score","estimated_age"].includes(key)
         ? "desc" : "asc";
     setSortKey(key);
     setSortDir(newDir);
@@ -226,6 +231,8 @@ const ALL_CSV_COLS = [
   { key: "industry",            label: "Industry" },
   { key: "experience_level",    label: "Exp Level" },
   { key: "years_experience",    label: "Yrs Exp" },
+  { key: "estimated_age",       label: "Est. Age" },
+  { key: "acquisition",         label: "Source" },
   { key: "employment_status",   label: "Employment" },
   { key: "best_ats_score",      label: "Best ATS" },
   { key: "primary_goal",        label: "Primary Goal" },
@@ -263,6 +270,10 @@ function getCsvValue(u: AdminUserRow, key: string): string {
     case "industry":          return u.industry || "";
     case "experience_level":  return u.experience_level || "";
     case "years_experience":  return u.years_experience != null ? String(u.years_experience) : "";
+    case "estimated_age":     return describeEstimatedAge(u.estimated_birth_year, u.estimated_age_basis)?.age.toString() ?? "";
+    case "acquisition":       return u.acquisition_channel
+      ? [channelLabel(u.acquisition_channel), u.acquisition_source].filter(Boolean).join(" · ")
+      : "";
     case "employment_status": return u.employment_status || "";
     case "best_ats_score":    return u.best_ats_score != null ? String(u.best_ats_score) : "";
     case "primary_goal":      return u.primary_goal || "";

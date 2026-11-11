@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { computeYearsOfExperience } from "@/lib/resume/years-of-experience";
+import { estimateBirthYear } from "@/lib/resume/estimated-age";
 import type { ResumeContent } from "@/lib/resume/types";
 
 const INDUSTRY_MAP: Record<string, string> = {
@@ -102,6 +103,7 @@ export async function syncProfileFromCv(
     const admin = createAdminClient();
 
     const yearsExp = computeYearsOfExperience(content);
+    const estimatedAge = estimateBirthYear(content);
     const targetRole = content.targetTitle?.title?.trim() || null;
     const industry = inferIndustry(targetRole);
     const experienceLevel = inferExperienceLevel(yearsExp);
@@ -131,6 +133,8 @@ export async function syncProfileFromCv(
       education: educationItems,
       years_experience: yearsExp,
       experience_level: experienceLevel,
+      estimated_birth_year: estimatedAge?.birthYear ?? null,
+      estimated_age_basis: estimatedAge?.basis ?? null,
     };
 
     // Only overwrite these if the CV provides a value — don't clear user-set data

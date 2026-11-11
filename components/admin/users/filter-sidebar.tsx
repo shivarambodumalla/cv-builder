@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { AutocompleteInput } from "./autocomplete-input";
 import { COUNTRY_MAP, REGIONS } from "./country-data";
 import { cn } from "@/lib/utils";
+import { ACQUISITION_CHANNELS, CHANNEL_LABELS } from "@/lib/analytics/channel";
 
 // ─── Filter State ─────────────────────────────────────────────────────────────
 
@@ -21,6 +22,9 @@ export interface FilterState {
   experience_levels: string[];
   years_exp_min: string;
   years_exp_max: string;
+  age_min: string;
+  age_max: string;
+  acquisition_channel: string;
   skills: string[];
   skills_match: "any" | "all";
   degree: string;
@@ -45,6 +49,7 @@ export const DEFAULT_FILTERS: FilterState = {
   country_code: "", city: "",
   role: "", industries: [], experience_levels: [],
   years_exp_min: "", years_exp_max: "",
+  age_min: "", age_max: "", acquisition_channel: "",
   skills: [], skills_match: "any",
   degree: "", field_of_study: "", institution: "",
   certification: "",
@@ -57,7 +62,7 @@ export function countActiveFilters(f: FilterState): number {
   return [
     f.plan, f.subscription_status, f.joined_from, f.joined_to, f.last_active_days,
     f.country_code, f.city,
-    f.role, f.years_exp_min, f.years_exp_max,
+    f.role, f.years_exp_min, f.years_exp_max, f.age_min, f.age_max, f.acquisition_channel,
     f.degree, f.field_of_study, f.institution, f.certification,
     f.ats_min, f.ats_max,
     f.has_downloads, f.has_stories, f.has_job_clicks, f.min_cvs,
@@ -68,13 +73,13 @@ export function countActiveFilters(f: FilterState): number {
 // ─── Section active-count helpers ─────────────────────────────────────────────
 
 function accountCount(f: FilterState) {
-  return [f.plan, f.subscription_status, f.joined_from, f.joined_to, f.last_active_days].filter(Boolean).length;
+  return [f.plan, f.subscription_status, f.joined_from, f.joined_to, f.last_active_days, f.acquisition_channel].filter(Boolean).length;
 }
 function locationCount(f: FilterState) {
   return [f.country_code, f.city].filter(Boolean).length;
 }
 function professionalCount(f: FilterState) {
-  return [f.role, f.years_exp_min, f.years_exp_max].filter(Boolean).length +
+  return [f.role, f.years_exp_min, f.years_exp_max, f.age_min, f.age_max].filter(Boolean).length +
     f.industries.length + f.experience_levels.length;
 }
 function skillsCount(f: FilterState) { return f.skills.length; }
@@ -342,6 +347,20 @@ export function FilterSidebar({
               />
             </div>
           </div>
+
+          <div>
+            <Label>Signup source</Label>
+            <select
+              value={filters.acquisition_channel}
+              onChange={(e) => set("acquisition_channel", e.target.value)}
+              className="w-full rounded-md border bg-background px-2 py-1.5 text-[11px] outline-none focus:ring-1 focus:ring-primary/40"
+            >
+              <option value="">All sources</option>
+              {ACQUISITION_CHANNELS.map((c) => (
+                <option key={c} value={c}>{CHANNEL_LABELS[c]}</option>
+              ))}
+            </select>
+          </div>
         </FilterSection>
 
         {/* ── Location ── */}
@@ -439,6 +458,31 @@ export function FilterSidebar({
                 max={50}
                 value={filters.years_exp_max}
                 onChange={(e) => set("years_exp_max", e.target.value)}
+                placeholder="Max"
+                className="flex-1 rounded-md border bg-background px-2 py-1 text-[11px] outline-none focus:ring-1 focus:ring-primary/40"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label>Age (estimated from CV dates)</Label>
+            <div className="flex gap-1.5 items-center">
+              <input
+                type="number"
+                min={16}
+                max={80}
+                value={filters.age_min}
+                onChange={(e) => set("age_min", e.target.value)}
+                placeholder="Min"
+                className="flex-1 rounded-md border bg-background px-2 py-1 text-[11px] outline-none focus:ring-1 focus:ring-primary/40"
+              />
+              <span className="text-[11px] text-muted-foreground shrink-0">–</span>
+              <input
+                type="number"
+                min={16}
+                max={80}
+                value={filters.age_max}
+                onChange={(e) => set("age_max", e.target.value)}
                 placeholder="Max"
                 className="flex-1 rounded-md border bg-background px-2 py-1 text-[11px] outline-none focus:ring-1 focus:ring-primary/40"
               />

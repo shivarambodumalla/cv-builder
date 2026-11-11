@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { resolveCountry } from "@/components/admin/users/country-data";
+import { describeEstimatedAge } from "@/lib/resume/estimated-age";
+import { channelLabel } from "@/lib/analytics/channel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -20,7 +22,7 @@ export type SortKey =
   | "user_number" | "name" | "role" | "location" | "total_cvs"
   | "total_pdf_downloads" | "job_clicks" | "saved_jobs" | "stories"
   | "plan" | "last_active" | "joined_at" | "industry" | "experience_level"
-  | "years_experience" | "best_ats_score";
+  | "years_experience" | "best_ats_score" | "estimated_age" | "acquisition_channel";
 export type SortDir = "asc" | "desc";
 
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250];
@@ -39,6 +41,10 @@ export interface AdminUserRow {
   industry: string | null;
   experience_level: string | null;
   years_experience: number | null;
+  estimated_birth_year: number | null;
+  estimated_age_basis: string | null;
+  acquisition_channel: string | null;
+  acquisition_source: string | null;
   employment_status: string | null;
   best_ats_score: number | null;
   primary_goal: string | null;
@@ -86,6 +92,7 @@ export const COLUMN_GROUPS: { label: string; cols: ColDef[] }[] = [
     label: "Location",
     cols: [
       { key: "signup_location", label: "Signup Location", defaultOn: true,  sortable: "location" },
+      { key: "acquisition",     label: "Source",          defaultOn: true,  sortable: "acquisition_channel" },
       { key: "cv_location",     label: "CV Location",     defaultOn: false },
       { key: "country",         label: "Country",         defaultOn: false },
     ],
@@ -96,7 +103,8 @@ export const COLUMN_GROUPS: { label: string; cols: ColDef[] }[] = [
       { key: "role",              label: "Role",         defaultOn: true,  sortable: "role" },
       { key: "industry",          label: "Industry",     defaultOn: false, sortable: "industry" },
       { key: "experience_level",  label: "Exp Level",    defaultOn: false, sortable: "experience_level" },
-      { key: "years_experience",  label: "Yrs Exp",      defaultOn: false, sortable: "years_experience", align: "right" },
+      { key: "years_experience",  label: "Yrs Exp",      defaultOn: true,  sortable: "years_experience", align: "right" },
+      { key: "estimated_age",     label: "Est. Age",     defaultOn: true,  sortable: "estimated_age", align: "right" },
       { key: "employment_status", label: "Employment",   defaultOn: false },
       { key: "best_ats_score",    label: "Best ATS",     defaultOn: false, sortable: "best_ats_score", align: "right" },
       { key: "primary_goal",      label: "Primary Goal", defaultOn: false },
@@ -107,8 +115,8 @@ export const COLUMN_GROUPS: { label: string; cols: ColDef[] }[] = [
     cols: [
       { key: "total_cvs",           label: "CVs",        defaultOn: true, sortable: "total_cvs",           align: "right" },
       { key: "total_pdf_downloads", label: "Downloads",  defaultOn: true, sortable: "total_pdf_downloads", align: "right" },
-      { key: "job_clicks",          label: "Job Clicks", defaultOn: true, sortable: "job_clicks",          align: "right" },
-      { key: "saved_jobs",          label: "Saved Jobs", defaultOn: true, sortable: "saved_jobs",          align: "right" },
+      { key: "job_clicks",          label: "Job Clicks", defaultOn: false, sortable: "job_clicks",          align: "right" },
+      { key: "saved_jobs",          label: "Saved Jobs", defaultOn: false, sortable: "saved_jobs",          align: "right" },
       { key: "stories",             label: "Stories",    defaultOn: true, sortable: "stories",             align: "right" },
     ],
   },
@@ -149,7 +157,6 @@ function timeAgo(dateStr: string) {
 
 const planClass: Record<string, string> = {
   free:    "bg-muted text-muted-foreground",
-  starter: "bg-primary/10 text-primary",
   pro:     "bg-primary text-primary-foreground",
 };
 
@@ -401,6 +408,27 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
           {user.years_experience != null ? `${user.years_experience}y` : <span className="text-muted-foreground/30">–</span>}
         </td>
       );
+    case "estimated_age": {
+      const est = describeEstimatedAge(user.estimated_birth_year, user.estimated_age_basis);
+      return (
+        <td className="px-4 py-3 text-right tabular-nums text-xs">
+          {est
+            ? <span title={est.detail} className="cursor-help">~{est.age}</span>
+            : <span className="text-muted-foreground/30">–</span>}
+        </td>
+      );
+    }
+    case "acquisition":
+      return (
+        <td className="px-4 py-3 text-xs">
+          {user.acquisition_channel
+            ? <>
+                {channelLabel(user.acquisition_channel)}
+                {user.acquisition_source && <span className="text-muted-foreground"> · {user.acquisition_source}</span>}
+              </>
+            : <span className="text-muted-foreground/30">–</span>}
+        </td>
+      );
     case "employment_status":
       return (
         <td className="px-4 py-3 text-xs text-muted-foreground capitalize">
@@ -489,6 +517,51 @@ function Cell({ user, colKey }: { user: AdminUserRow; colKey: string }) {
     default:
       return <td className="px-4 py-3" />;
   }
+}
+
+// ─── Mobile card (below sm) ──────────────────────────────────────────────────
+
+function UserCard({ user }: { user: AdminUserRow }) {
+  const est = describeEstimatedAge(user.estimated_birth_year, user.estimated_age_basis);
+  const { line: locationLine } = locationFor(user);
+  const facts = [
+    est ? `~${est.age} yrs old` : null,
+    user.years_experience != null ? `${user.years_experience}y exp` : null,
+    user.acquisition_channel ? channelLabel(user.acquisition_channel) : null,
+  ].filter(Boolean);
+
+  return (
+    <li className="border-b last:border-0">
+      <Link
+        href={`/admin/users/${user.user_number}`}
+        className="flex min-h-[44px] items-start gap-3 px-4 py-3 active:bg-muted/60"
+      >
+        <Avatar className="h-9 w-9 shrink-0">
+          {user.avatar_url && (
+            <AvatarImage src={user.avatar_url} alt={user.full_name || user.email} referrerPolicy="no-referrer" />
+          )}
+          <AvatarFallback className="bg-muted text-xs font-semibold">
+            {initials(user.full_name, user.email)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0 flex-1 space-y-0.5">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-medium truncate">{user.full_name || user.email}</p>
+            <Badge variant="secondary" className={cn("capitalize text-[10px] shrink-0", planClass[user.plan])}>
+              {user.plan}
+            </Badge>
+          </div>
+          {user.target_role && <p className="text-xs truncate">{user.target_role}</p>}
+          {facts.length > 0 && (
+            <p className="text-xs text-muted-foreground tabular-nums">{facts.join(" · ")}</p>
+          )}
+          <p className="text-xs text-muted-foreground truncate">
+            {[locationLine, `Joined ${timeAgo(user.joined_at)}`].filter(Boolean).join(" · ")}
+          </p>
+        </div>
+      </Link>
+    </li>
+  );
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -603,7 +676,22 @@ export function AdminUsersTable({
 
 
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
+        {/* Phones: one card per user. The full table needs a wide screen. */}
+        <div className="sm:hidden">
+          {loading && (
+            <div className="px-4 py-12 text-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground mx-auto" />
+            </div>
+          )}
+          {!loading && users.length === 0 && (
+            <p className="px-4 py-12 text-center text-muted-foreground text-sm">No users match the current filters.</p>
+          )}
+          {!loading && users.length > 0 && (
+            <ul>{users.map((user) => <UserCard key={user.id} user={user} />)}</ul>
+          )}
+        </div>
+
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
@@ -668,7 +756,7 @@ export function AdminUsersTable({
             </span>
             <div className="flex items-center gap-2">
               <Button
-                type="button" variant="outline" size="sm" className="h-7 px-2"
+                type="button" variant="outline" size="sm" className="h-11 px-3 sm:h-7 sm:px-2"
                 disabled={page <= 1}
                 onClick={() => onPageChange(page - 1)}
               >
@@ -679,7 +767,7 @@ export function AdminUsersTable({
                 <span className="font-medium text-foreground">{totalPages}</span>
               </span>
               <Button
-                type="button" variant="outline" size="sm" className="h-7 px-2"
+                type="button" variant="outline" size="sm" className="h-11 px-3 sm:h-7 sm:px-2"
                 disabled={page >= totalPages}
                 onClick={() => onPageChange(page + 1)}
               >

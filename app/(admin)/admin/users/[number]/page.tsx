@@ -18,6 +18,8 @@ import { UserActions } from "./user-actions";
 import { UserResumes, type UserResume } from "./user-resumes";
 import { ActivityTimeline, type ActivityEvent } from "./activity-timeline";
 import { computeYearsOfExperience } from "@/lib/resume/years-of-experience";
+import { describeEstimatedAge } from "@/lib/resume/estimated-age";
+import { channelLabel } from "@/lib/analytics/channel";
 import { aggregateSkills, deriveExperienceLevel, EXPERIENCE_LEVEL_LABEL } from "@/lib/resume/aggregate-skills";
 import { getPlanLimits } from "@/lib/billing/plan-config";
 import type { ResumeContent } from "@/lib/resume/types";
@@ -63,7 +65,7 @@ export default async function UserDetailPage({
   // Fetch profile by user_number first to get UUID for subsequent queries
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, total_pdf_downloads, total_ats_scans, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window")
+    .select("id, user_number, email, full_name, avatar_url, plan, subscription_status, subscription_period, subscription_id, current_period_end, created_at, ats_scans_this_month, job_matches_this_month, cover_letters_this_month, ai_rewrites_this_month, total_pdf_downloads, total_ats_scans, ats_scans_this_window, job_matches_this_window, cover_letters_this_window, ai_rewrites_this_window, pdf_downloads_this_window, estimated_birth_year, estimated_age_basis, acquisition_channel, acquisition_source, acquisition_campaign, acquisition_landing_path")
     .eq("user_number", Number(number))
     .single();
 
@@ -156,6 +158,7 @@ export default async function UserDetailPage({
     cover_letters: coverLettersByCvId.get(cv.id) ?? [],
   }));
 
+  const estimatedAge = describeEstimatedAge(profile.estimated_birth_year, profile.estimated_age_basis);
   const yearsOfExperience = (userCvs ?? []).reduce<number | null>((max, cv) => {
     const years = computeYearsOfExperience(cv.parsed_json as ResumeContent | null);
     if (years === null) return max;
@@ -361,6 +364,26 @@ export default async function UserDetailPage({
                 <dt className="text-muted-foreground">Years of Experience</dt>
                 <dd className="font-medium">
                   {yearsOfExperience === null ? "–" : `${yearsOfExperience} yrs`}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Estimated Age</dt>
+                <dd className="font-medium">
+                  {estimatedAge ? `~${estimatedAge.age}` : "–"}
+                  {estimatedAge && <p className="text-xs font-normal text-muted-foreground">{estimatedAge.detail}</p>}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Signup Source</dt>
+                <dd className="font-medium">
+                  {profile.acquisition_channel
+                    ? [channelLabel(profile.acquisition_channel), profile.acquisition_source].filter(Boolean).join(" · ")
+                    : "–"}
+                  {(profile.acquisition_campaign || profile.acquisition_landing_path) && (
+                    <p className="text-xs font-normal text-muted-foreground">
+                      {[profile.acquisition_campaign && `Campaign ${profile.acquisition_campaign}`, profile.acquisition_landing_path && `Landed on ${profile.acquisition_landing_path}`].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
                 </dd>
               </div>
             </dl>
