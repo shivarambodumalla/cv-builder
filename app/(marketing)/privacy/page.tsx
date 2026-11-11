@@ -32,6 +32,8 @@ const sections = [
       "CV content you upload, paste, or create within our editor (including personal details, work history, education, and skills)",
       "IP address and approximate location (city, region, country) at the time of signup, used for analytics only",
       "Usage data: pages visited, features used, timestamps, and device information",
+      "How you first found CVEdge: the referring website and campaign tags (such as utm_source) from your first visit, used for analytics only",
+      "An estimated age, worked out from the education and work dates in your CV, used for internal analytics only. It is never shown to other users or shared",
       "Cookie consent preferences",
       "Subscription and billing data (processed by Lemon Squeezy. We do not store payment card details)",
     ],
@@ -136,7 +138,7 @@ export default function PrivacyPage() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16 sm:py-24">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Last updated: April 2026</p>
+      <p className="mt-2 text-sm text-muted-foreground">Last updated: November 2026</p>
 
       <div className="mt-10 space-y-8">
         {sections.map((s) => (
