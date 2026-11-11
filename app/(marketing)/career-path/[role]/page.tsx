@@ -705,7 +705,7 @@ export default async function CareerPathRolePage({ params }: Params) {
             <div>
               <p className={EYEBROW_NAVY}>Next moves</p>
               <h2 id="moves-heading" className={cn(SECTION_HEADING, "mt-2.5")}>
-                Where {people} go next
+                Career paths for {people}
               </h2>
             </div>
             <p className="max-w-[56ch] text-[15px] leading-relaxed text-[#5F5852]">
@@ -753,7 +753,7 @@ export default async function CareerPathRolePage({ params }: Params) {
                 id="ladder-heading"
                 className="mt-2.5 font-cp-display tracking-[-0.02em] text-[28px] font-bold leading-[1.1]"
               >
-                The {name} ladder
+                {sentenceCase(label)} career progression
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-[#5F5852]">
                 What each level is expected to own. Many people climb this

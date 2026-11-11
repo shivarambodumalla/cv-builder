@@ -3,10 +3,12 @@ import type { RoleCareerPath } from "@/lib/roles/career-moves";
 // Title and description for /career-path/<slug>. Kept out of the page module so
 // a script can check every slug against the length limits.
 
+/** Characters Google shows of a title, counting the brand the layout template appends. */
 export const MAX_TITLE = 60;
 export const MAX_DESCRIPTION = 155;
+const BRAND_SUFFIX = " | CVEdge";
 
-/** Page `title` (the layout template appends the brand). Longest pattern that fits in MAX_TITLE. */
+/** Page `title` (the layout template appends BRAND_SUFFIX). Longest pattern that fits in MAX_TITLE with the suffix. */
 export function careerPathTitle(label: string): string {
   const patterns = [
     `${label} Career Path: Next Roles, Skills & Pay`,
@@ -15,7 +17,7 @@ export function careerPathTitle(label: string): string {
     `${label} Career Path`,
   ];
   return (
-    patterns.find((t) => t.length <= MAX_TITLE) ?? patterns[patterns.length - 1]
+    patterns.find((t) => t.length + BRAND_SUFFIX.length <= MAX_TITLE) ?? patterns[patterns.length - 1]
   );
 }
 
