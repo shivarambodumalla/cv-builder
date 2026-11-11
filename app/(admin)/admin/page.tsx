@@ -19,7 +19,9 @@ import {
 } from "@/components/admin/home/dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { comparisonLabel, previousRange, rangeQuery, RANGE_LABELS, resolveRange } from "@/lib/admin/date-range";
+import { LegacyDashboard } from "@/components/admin/home/legacy-dashboard";
 import {
+  dashboardFunctionsReady,
   getBreakdown,
   getFunnel,
   getOverview,
@@ -49,11 +51,25 @@ function formatDay(day: string) {
  * for its own data, so one slow query never holds up the page. Default range
  * is month to date; numbers compare against the same number of days before.
  */
-export default function AdminHomePage({
+export default async function AdminHomePage({
   searchParams,
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
+  if (!(await dashboardFunctionsReady())) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold tracking-tight">Home</h1>
+        <p role="status" className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm">
+          Showing the previous dashboard. The new one, with charts, funnel and date ranges, turns on by itself
+          once <code className="font-mono text-xs">supabase/migrations/00085_admin_dashboard_functions.sql</code> has
+          been run in Supabase.
+        </p>
+        <LegacyDashboard />
+      </div>
+    );
+  }
+
   const range = resolveRange(searchParams);
   const previous = previousRange(range);
   const rawOrder = Array.isArray(searchParams.top) ? searchParams.top[0] : searchParams.top;

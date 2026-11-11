@@ -286,3 +286,19 @@ export function getBreakdown(range: ResolvedRange): Promise<Loaded<Breakdown>> {
     return out;
   });
 }
+
+/**
+ * Whether migration 00085 (the admin_* functions) is in the database. Home
+ * falls back to the previous dashboard until it is, instead of showing a
+ * page of errors. Any other failure counts as ready, so real query errors
+ * still surface on the cards.
+ */
+export async function dashboardFunctionsReady(): Promise<boolean> {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const { error } = await createAdminClient().rpc("admin_traffic_totals", { p_from: today, p_to: today });
+    return !(error && (error.code === "PGRST202" || error.code === "42883"));
+  } catch {
+    return true;
+  }
+}
