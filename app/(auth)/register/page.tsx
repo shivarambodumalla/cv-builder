@@ -4,7 +4,7 @@ import { ThemeLogo } from "@/components/shared/theme-logo";
 import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { signInWithProvider } from "@/lib/supabase/oauth";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { GoogleButton } from "@/components/shared/google-button";
 import { LinkedInButton } from "@/components/shared/linkedin-button";
@@ -25,19 +25,11 @@ function RegisterContent() {
     `${window.location.origin}/auth/callback${ref ? "?ref=" + ref : ""}`;
 
   async function handleGoogleLogin() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: redirectTo() },
-    });
+    await signInWithProvider("google", redirectTo());
   }
 
   async function handleLinkedInLogin() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "linkedin_oidc",
-      options: { redirectTo: redirectTo() },
-    });
+    await signInWithProvider("linkedin_oidc", redirectTo());
   }
 
   return (

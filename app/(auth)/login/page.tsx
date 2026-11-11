@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { signInWithProvider } from "@/lib/supabase/oauth";
 import { GoogleButton } from "@/components/shared/google-button";
 import { LinkedInButton } from "@/components/shared/linkedin-button";
 import { Check } from "lucide-react";
@@ -30,19 +30,11 @@ function LoginContent() {
   }
 
   async function handleGoogleLogin() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: buildRedirectTo() },
-    });
+    await signInWithProvider("google", buildRedirectTo());
   }
 
   async function handleLinkedInLogin() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "linkedin_oidc",
-      options: { redirectTo: buildRedirectTo() },
-    });
+    await signInWithProvider("linkedin_oidc", buildRedirectTo());
   }
 
   return (

@@ -2,21 +2,15 @@
 
 import { useState } from "react";
 import { Lock, X } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { signInWithProvider } from "@/lib/supabase/oauth";
 
 export function JobsSignInModal({ query, location }: { query: string; location: string }) {
   const [open, setOpen] = useState(true);
 
   async function handleSignIn(provider: "google" | "linkedin_oidc") {
-    const supabase = createClient();
     // After OAuth, callback redirects to /my-jobs with the search term preserved
     const next = `/my-jobs?keyword=${encodeURIComponent(query)}${location ? `&location=${encodeURIComponent(location)}` : ""}`;
-    await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
+    await signInWithProvider(provider, `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`);
   }
 
   if (!open) return null;
